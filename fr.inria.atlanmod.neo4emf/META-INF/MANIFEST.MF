@@ -7,7 +7,8 @@ Bundle-Activator: fr.inria.atlanmod.neo4emf.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.8.3",
- fr.inria.atlanmod.neo4emf.change;bundle-version="1.0.0"
+ fr.inria.atlanmod.neo4emf.change;bundle-version="1.0.0",
+ fr.inria.atlanmod.neo4emf.libs;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: fr.inria.atlanmod.neo4emf,

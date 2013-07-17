@@ -3,23 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/concurrentlinkedhashmap-lru-1.3.1.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/lucene-core-3.6.2.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-cypher-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-graph-algo-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-graph-matching-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-jmx-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-kernel-2.0.0-M03.jar" sourcepath="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-kernel-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-lucene-index-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-management-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-shell-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/neo4j-udc-2.0.0-M03.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/org.apache.servicemix.bundles.jline-0.9.94_1.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/scala-library-2.10.0.jar"/>
-	<classpathentry kind="lib" path="C:/neo4j-advanced-2.0.0-M03/lib/server-api-2.0.0-M03.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/NEO4J"/>
-	<classpathentry kind="lib" path="C:/Users/abenelal/Downloads/arakhneRefs-5.10.jar"/>
-	<classpathentry kind="lib" path="C:/Users/abenelal/Downloads/commons-lang-2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

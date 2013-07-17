@@ -1,0 +1,16 @@
+This file contains the major developers and contributors. See http://www.arakhne.org/arakhneRefs/ for more details.
+
+1. Core Developers for Weak Reference Utilities
+
+St&eacute;phane GALLAND <galland@arakhne.org>
+Nicolas GAUD <gaud@arakhne.org>
+Alexandre WILLAUME <willaume@arakhne.org>
+Olivier LAMOTTE <lamotte@arakhne.org>
+Mahdi HANNOUN <mahdi.hannoun@emse.fr>
+Marc BAUMGARTNER <mabaumga@stud.uni-frankfurt.de>
+Yuku Sugianto <yukuku@gmail.com>
+
+
+
+2. Contributors for Weak Reference Utilities
+
