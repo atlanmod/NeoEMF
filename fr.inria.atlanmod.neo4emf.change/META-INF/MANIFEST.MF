@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Change
+Bundle-SymbolicName: fr.inria.atlanmod.neo4emf.change
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: fr.inria.atlanmod.neo4emf.change.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;bundle-version="2.8.3"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: fr.inria.atlanmod.neo4emf.change,
+ fr.inria.atlanmod.neo4emf.change.impl

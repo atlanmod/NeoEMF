@@ -1,0 +1,93 @@
+<%@ jet package="fr.inria.atlanmod.neo4emf.codegen.templates.model" imports="java.util.* org.eclipse.emf.codegen.ecore.genmodel.* " class="MappingReltypesClass"%>
+<%
+/**
+ * Copyright (c) 2002-2006 IBM Corporation and others.
+ * All rights reserved.   This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors: amine ben
+ *   IBM - Initial API and implementation
+ */
+%>
+<%GenPackage genPackage = (GenPackage)argument; GenModel genModel=genPackage.getGenModel();
+ String namePrefix = genPackage.getReflectionPackageName();
+	    namePrefix= namePrefix.substring(0, 1).toUpperCase()+namePrefix.substring(1);
+	     /* Trick to import java.util.* without warnings */Iterator.class.getName();%>
+<%@ include file="../Header.javajetinc"%>
+package <%=genPackage.getInterfacePackageName()%>.Reltypes;
+
+<%genModel.addImport("org.neo4j.graphdb.RelationshipType");%>
+<%genModel.addImport("java.awt.Point");%>
+<%genModel.addImport("java.util.Map");%>
+<%genModel.addImport("java.util.HashMap");%>
+<%genModel.addImport(genPackage.getReflectionPackageName()+"."+genPackage.getPackageInterfaceName());%>
+<%genModel.markImportLocation(stringBuffer);%>
+/**
+ * <!-- begin-user-doc -->
+ * Neo4j <b>relationships mapping</b> for model persistence.
+ * It provides hashmaps to map relationships to the appropriate feature ID.
+ * <!-- end-user-doc -->
+ * @see <%=genPackage.getQualifiedPackageInterfaceName()%>
+ * @generated
+ */
+public class <%=namePrefix%>NeoMappings 
+{
+<%if (genModel.hasCopyrightField()) {%>
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public static final <%=genModel.getImportedName("java.lang.String")%> copyright = <%=genModel.getCopyrightFieldLiteral()%>;<%=genModel.getNonNLS()%>
+
+<%}%>
+	private static <%=namePrefix%>NeoMappings instance;
+	
+	
+	/**
+	 * 
+	 * @generated
+	 */
+	 
+	public static <%=namePrefix%>NeoMappings getInstance(){
+		if (instance == null)
+			return new <%=namePrefix%>NeoMappings ();
+		else return instance;
+		}
+		
+	/**
+	 *getter of the Map
+	 * @generated
+	 */
+		public Map <Point,RelationshipType> getMap(){
+		return reference2relation;
+	}
+	
+	/**
+	 * constructor of Relationship type mappings
+	 * @generated
+	 */
+private final Map <Point,RelationshipType> reference2relation;
+	
+		
+		private <%=namePrefix%>NeoMappings (){
+			reference2relation= new HashMap <Point,RelationshipType>();
+<% for (GenClassifier genClassifier : genPackage.getOrderedGenClassifiers()) { 
+	if (genClassifier instanceof GenClass) { GenClass cls = (GenClass)genClassifier; 
+		for (GenFeature feat : cls.getAllGenFeatures()) {
+    		if (feat.isReferenceType()){
+    		%>
+	reference2relation.put(new Point(<%=genPackage.getPackageInterfaceName()%>.<%=cls.getClassifierID()
+		%>,<%=genPackage.getPackageInterfaceName()%>.<%=cls.getFeatureID(feat)%>),<%=namePrefix%>Reltypes.<%=cls.getFeatureID(feat)%>);
+					<%}
+					}
+				}
+			}	%>
+		}
+
+} 
+	
+//<%=genPackage.getAdapterFactoryClassName()%>
+<%genModel.emitSortedImports();%>
