@@ -21,7 +21,6 @@ public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	public static IChangeLog<Entry> getInstance() {
 		if (INSTANCE==null)
 				{ INSTANCE = (ChangeLog) IChangeLogFactory.eINSTANCE.createChangeLog();}

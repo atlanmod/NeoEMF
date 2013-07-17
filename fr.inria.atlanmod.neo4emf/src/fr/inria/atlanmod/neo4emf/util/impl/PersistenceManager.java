@@ -24,7 +24,6 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
-import sun.security.action.GetLongAction;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
@@ -79,16 +78,17 @@ public class PersistenceManager implements IPersistenceManager {
 		unloader = new Unloader(this, null);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public void save(Map options) {
-		serializer.save(options);		
+	public void save(Map<?,?> options) {
+		serializer.save((Map<String,Object>)options);		
 	}		
 	@Override
 	public void load() {
 		load (null);		
 	}	
 	@Override
-	public void load(Map options) {
+	public void load(Map<?, ?> options) {
 		loader.load(options);	
 	}
 	@Override

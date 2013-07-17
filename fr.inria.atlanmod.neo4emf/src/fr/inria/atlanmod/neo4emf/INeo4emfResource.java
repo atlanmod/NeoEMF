@@ -11,12 +11,11 @@ package fr.inria.atlanmod.neo4emf;
  * Descritpion ! To come
  * @author Amine BENELALLAM
  * */
-import java.util.Map;
+
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.Resource.Internal;
 
 
 
@@ -47,8 +46,7 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * saves the model changes according to the options in the map 
 	 * @param options {@link Map} 
 	 */
-	
-	public void save (Map options);
+
 //	/**
 //	 * load the model roots and save them in the resource contents
 //	 */

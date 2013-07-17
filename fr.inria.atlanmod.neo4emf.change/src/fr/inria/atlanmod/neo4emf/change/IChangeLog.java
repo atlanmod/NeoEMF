@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
-import fr.inria.atlanmod.neo4emf.change.impl.Entry;
-
 public interface IChangeLog<E> extends List<E>{
 	
 

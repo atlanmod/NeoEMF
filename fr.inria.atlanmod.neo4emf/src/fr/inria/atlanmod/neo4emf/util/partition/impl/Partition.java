@@ -15,6 +15,7 @@ public class Partition implements IPartition {
 		orderedReferences.add(ref);
 		startCls= ref.getEContainingClass();
 	}
+	@SuppressWarnings("unused")
 	private EClass startCls;
 	private List<EReference> orderedReferences;
 	

@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.neo4j.graphdb.RelationshipType;
 
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResourceFactory;
 

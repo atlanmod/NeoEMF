@@ -1,7 +1,5 @@
 package fr.inria.atlanmod.neo4emf.util;
 
-import org.eclipse.emf.ecore.EDataType.Internal.ConversionDelegate.Factory;
-
 import fr.inria.atlanmod.neo4emf.util.impl.PersistenceServiceFactory;
 
 /**

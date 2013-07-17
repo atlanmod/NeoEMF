@@ -17,7 +17,7 @@ public class ChangeAdapterImpl extends AdapterImpl {
 	@Override
 	public void notifyChanged(Notification msg){
 		
-		if (msg.getEventType()==((INeo4emfNotification)msg).GET){
+		if (msg.getEventType()==INeo4emfNotification.GET){
 			EObject eObject = (EObject)msg.getNotifier();
 			((INeo4emfResource)eObject.eResource()).notifyGet(eObject,(EStructuralFeature)msg.getFeature());
 		}

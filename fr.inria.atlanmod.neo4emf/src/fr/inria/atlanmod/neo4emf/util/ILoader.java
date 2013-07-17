@@ -25,7 +25,7 @@ public interface ILoader {
 	 * 
 	 * @param options {@link Map}
 	 */
-	public void load(Map options);
+	public void load(Map<?, ?> options);
 	/**
 	 * maps the node properties to the eObject attributes
 	 * 

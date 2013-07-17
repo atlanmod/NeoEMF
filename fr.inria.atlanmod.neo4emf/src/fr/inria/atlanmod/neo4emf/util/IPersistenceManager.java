@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
@@ -27,7 +26,6 @@ import org.neo4j.graphdb.Transaction;
 import scala.collection.generic.BitOperations.Int;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 
 public interface IPersistenceManager {
@@ -37,7 +35,7 @@ public interface IPersistenceManager {
 	 * @param options {@link Map}
 	 * @see ISerializer#save(Map)
 	 */
-	public void save(Map options);
+	public void save(Map<?, ?> options);
 	/**
 	 * Save the resource using  the default options 
 	 */
@@ -51,7 +49,7 @@ public interface IPersistenceManager {
 	 * @param options {@link Map}
 	 * @see ILoader#load(Map)
 	 */
-	public void load(Map options);
+	public void load(Map<?, ?> options);
 	/**
 	 * Create a backend's transaction 
 	 * @return {@link Transaction}

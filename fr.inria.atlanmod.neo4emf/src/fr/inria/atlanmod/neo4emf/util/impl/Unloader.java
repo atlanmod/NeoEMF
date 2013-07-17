@@ -4,13 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.lang.model.type.PrimitiveType;
-
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
@@ -20,8 +15,8 @@ import fr.inria.atlanmod.neo4emf.util.IUnloader;
 public class Unloader  extends Thread implements IUnloader {
 
 	private IPersistenceManager manager;
-	private Map options;
-	public Unloader(IPersistenceManager manager, Map options) {
+	private Map<String, Object> options;
+	public Unloader(IPersistenceManager manager, Map<String, Object> options) {
 		super();
 		this.manager = manager;
 		this.start();
@@ -81,6 +76,7 @@ public class Unloader  extends Thread implements IUnloader {
 	}
 
 
+	@SuppressWarnings("deprecation")
 	public void shutUnloader(){
 		this.stop();
 	}
@@ -90,7 +86,7 @@ public class Unloader  extends Thread implements IUnloader {
 	 * @param options
 	 * @return {@link Map} merged options
 	 */
-	private Map mergeWithDefaultOptions(Map option) {
+	private Map<String, Object> mergeWithDefaultOptions(Map<String, Object> option) {
 		initOptions();
 		if (option==null) return options;
 		for (int i=0; i< unloadOptions.length; i++)
@@ -101,7 +97,7 @@ public class Unloader  extends Thread implements IUnloader {
 	}
 
 	private void initOptions() {
-		options =  new HashMap();
+		options =  new HashMap<String, Object>();
 		for (int i=0;i<unloadOptions.length; i++ )
 			options.put(unloadOptions[i], unloadDeafultValues[i]);
 

@@ -21,6 +21,6 @@ public interface ISerializer {
 	int DEFAULT_TRANSACTIONS_COUNT = 10000;
 	String [] saveOptions = {MAX_OPERATIONS_PER_TRANSACTION};
 	Object [] saveDefaultValues={DEFAULT_TRANSACTIONS_COUNT};
-	void save(Map options);
+	void save(Map<String, Object> options);
 
 }

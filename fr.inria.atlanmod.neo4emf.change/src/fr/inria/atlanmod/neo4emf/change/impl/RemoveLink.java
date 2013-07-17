@@ -37,5 +37,9 @@ public class RemoveLink extends Entry {
 		return oldValue;
 	}
 
+	public Object getNewValue() {
+		return newValue;
+	}
+
     
 }

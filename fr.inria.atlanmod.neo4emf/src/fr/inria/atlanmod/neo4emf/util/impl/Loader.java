@@ -41,7 +41,7 @@ public class Loader implements ILoader {
 	 * @see ILoader#load(Map)
 	 */
 	@Override
-	public void load(Map options) {
+	public void load(Map<?, ?> options) {
 		// TODO introduce the load strategies
 		try {
 		List <Node> nodes= manager.getAllRootNodes();

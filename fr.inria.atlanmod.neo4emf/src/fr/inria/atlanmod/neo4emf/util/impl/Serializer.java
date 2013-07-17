@@ -35,18 +35,18 @@ import fr.inria.atlanmod.neo4emf.util.ISerializer;
 public class Serializer implements ISerializer {
 	
 	IPersistenceManager manager;
-	Map defaultOptions ;
+	Map<String, Object> defaultOptions ;
 	//INodeBuilder nodeBuilder;
 	public Serializer (IPersistenceManager manager){
 		this.manager = manager;
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	/**
 	 *  @see {@link INeo4emfResource#save()}
 	 */
-	public void save(Map options) {
+	public void save(Map<String,Object> options) {
 		if (options == null)
 			options = new HashMap();
 		options= mergeWithDefaultOptions(options);
@@ -81,7 +81,7 @@ public class Serializer implements ISerializer {
 	 * @return  {@link Map} default Options 
 	 */
 	private void initOptions() {
-		 defaultOptions =  new HashMap();
+		 defaultOptions =  new HashMap<String, Object>();
 		for (int i=0;i<saveOptions.length; i++ )
 			defaultOptions.put(saveOptions[i], saveDefaultValues[i]);
 		
@@ -93,7 +93,7 @@ public class Serializer implements ISerializer {
 	 * @param options
 	 * @return {@link Map} merged options
 	 */
-	private Map mergeWithDefaultOptions(Map options) {
+	private Map<String, Object> mergeWithDefaultOptions(Map<String, Object> options) {
 		initOptions();
 		for (int i=0; i< saveOptions.length; i++)
 			if (options.containsKey(saveOptions[i])){

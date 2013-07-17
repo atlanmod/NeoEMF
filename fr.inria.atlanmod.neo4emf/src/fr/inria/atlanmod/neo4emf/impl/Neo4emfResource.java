@@ -42,6 +42,7 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
  * storeDirectory represents the location of the store Database
  * @see IPersistenceService	
  */
+	@SuppressWarnings("unused")
 	private String storeDirectory;
 /**
  * Neo4emfResource Constructor  	
@@ -78,7 +79,7 @@ public void save() {
  * {@link INeo4emfResource#save(Map)}
  */
 @Override
-public void save (Map options){
+public void save (Map<?, ?> options){
 	persistenceManager.save(options);
 	}
 /**

@@ -14,28 +14,23 @@ package fr.inria.atlanmod.neo4emf.util.impl;
  * */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.Index;
-import org.neo4j.graphdb.traversal.Evaluator;
+
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.Traversal;
 
-import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
 import fr.inria.atlanmod.neo4emf.util.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.util.IPersistenceService;
 
@@ -44,7 +39,6 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 
 	String storeDir;
 	IPersistenceManager manager;
-	@SuppressWarnings("deprecation")
 	public PersistenceService(String storeDir,IPersistenceManager mng) {	
 		super(storeDir);
 		this.storeDir= storeDir;
