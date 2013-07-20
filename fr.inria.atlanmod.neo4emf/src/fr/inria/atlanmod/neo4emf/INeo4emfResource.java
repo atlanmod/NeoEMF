@@ -13,6 +13,10 @@ package fr.inria.atlanmod.neo4emf;
  * */
 
 
+import java.util.List;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -62,5 +66,22 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * @param feature {@link EStructuralFeature}
 	 */
 	public void notifyGet(EObject eObject, EStructuralFeature feature);
+	/**
+	 * unload the partition holding the <b>ID</b> {@codePID}
+	 * @param PID {@link Integer}
+	 */
 	void unload(int PID);
+	/**
+	 * return all the instances of type <b>eClass</b>
+	 * @param eClass {@link EClass}
+	 * @return
+	 */
+	public EList<INeo4emfObject>  getAllInstances (EClass eClass);
+	/**
+	 * return all the instances of type <b>eClass</b>
+	 * @param eClassID {@link Integer}
+	 * @return {@link List}
+	 */
+	public EList<INeo4emfObject>  getAllInstances (int eClassID);
+	
 }

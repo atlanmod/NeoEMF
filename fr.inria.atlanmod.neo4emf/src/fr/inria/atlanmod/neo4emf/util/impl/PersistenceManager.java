@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -60,7 +62,7 @@ public class PersistenceManager implements IPersistenceManager {
 	/**
 	 * {@link EReference} to {@link RelationshipType} mapping of the package
 	 */
-	Map<Point,RelationshipType> eRef2relType;	
+	Map<String,Map<Point,RelationshipType>> eRef2relType;	
 	/**
 	 * Global constructor
 	 * @param neo4emfResource {@link Neo4emfResource}
@@ -68,7 +70,7 @@ public class PersistenceManager implements IPersistenceManager {
 	 * @param eRef2relType {@link Map}
 	 */
 	public PersistenceManager(Neo4emfResource neo4emfResource,
-			String storeDirectory, Map<Point,RelationshipType> eRef2relType) {
+			String storeDirectory, Map<String,Map<Point,RelationshipType>> eRef2relType) {
 		resource = neo4emfResource;
 		persistenceService = IPersistenceServiceFactory.eINSTANCE.createPersistenceService(storeDirectory,this);
 		serializer = new Serializer(this);
@@ -108,9 +110,9 @@ public class PersistenceManager implements IPersistenceManager {
 		return persistenceService.getNodeById(((INeo4emfObject)eObj).getNodeId());
 	}
 	@Override
-	public RelationshipType getRelTypefromERef(int clsID, int eRefID) {
-		Point point = new Point (clsID,eRefID);
-		return eRef2relType.get(point);
+	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
+		return eRef2relType.get(key).get(new Point (clsID,eRefID));
+	
 	}
 	@Override
 	public Node createNodefromEObject(EObject eObject) {
@@ -154,7 +156,7 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	@Override
 	public void getOnDemand(EObject obj, int featureId) {	
-		List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),eRef2relType.get(new Point(obj.eClass().getClassifierID(),featureId)));
+		List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),getRelTypefromERef(obj.eClass().getEPackage().getNsURI(), obj.eClass().getClassifierID(), featureId));
 		loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
 	}
 	@Override
@@ -256,5 +258,11 @@ public class PersistenceManager implements IPersistenceManager {
 		unloader.unloadPartition(partition);	
 	}
 
+	@Override
+	public EList<INeo4emfObject> getAllInstancesOfType(EClass eClass) {
+		List<Node> nodeList = persistenceService.getAllNodesOfType (eClass);
+		return loader.getAllInstances(eClass, nodeList);
+	}
+	
 	
 }

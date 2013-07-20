@@ -38,7 +38,7 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 	 * @ see {@link INeo4emfResourceFactory#createResource(String, Map)}
 	 */
 	@Override
-	public INeo4emfResource createResource(String storeDirectory, Map <Point, RelationshipType> map) {
+	public INeo4emfResource createResource(String storeDirectory, Map< String ,Map <Point, RelationshipType>> map) {
 		return new Neo4emfResource(storeDirectory,map);
 	}
 	/**

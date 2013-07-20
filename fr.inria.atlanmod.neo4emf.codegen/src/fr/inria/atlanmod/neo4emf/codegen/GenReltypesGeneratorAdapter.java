@@ -46,28 +46,23 @@ public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 	  @Override
 	  protected Diagnostic generateModel(Object object, Monitor monitor)
 	  {
-	    GenPackage genPackage = (GenPackage)object;
-	    GenModel genModel = genPackage.getGenModel();
+		  GenPackage genPackage = (GenPackage) object;
+		  GenModel genModel = genPackage.getGenModel();
 
 	    monitor.beginTask("", 2);
 	    message = Neo4emfGeneratorPlugin.INSTANCE.getString("GeneratingModelDescription.message");    
 	    monitor.subTask(message);
-	    String namePrefix = genPackage.getReflectionPackageName();
-	    namePrefix= namePrefix.substring(0, 1).toUpperCase()+namePrefix.substring(1);
 	    ensureProjectExists
 	      (genModel.getModelDirectory(), genModel, MODEL_PROJECT_TYPE, genModel.isUpdateClasspath(), createMonitor(monitor, 1));
 
 	    generateJava
 	      (genModel.getModelDirectory(),
-	       genPackage.getReflectionPackageName()+".Reltypes",
-	       namePrefix+"Reltypes",
+	       "reltypes","Reltypes",
 	       getJETEmitter(getJETEmitterDescriptors(), REL_TYPES_ID),
 	       null,
 	       createMonitor(monitor, 1));
 	    
-	    generateJava(genModel.getModelDirectory(),
-	    	   genPackage.getReflectionPackageName()+".Reltypes",
-	    	   namePrefix+"NeoMappings",
+	    generateJava(genModel.getModelDirectory(),"reltypes","ReltypesMappings",
 		       getJETEmitter(getJETEmitterDescriptors(), MAP_REL_TYPES_ID),
 		       null,
 		       createMonitor(monitor, 1));

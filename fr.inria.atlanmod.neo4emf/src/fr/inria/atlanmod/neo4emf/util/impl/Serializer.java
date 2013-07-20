@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Node;
@@ -33,7 +34,7 @@ import fr.inria.atlanmod.neo4emf.util.ISerializer;
 
 
 public class Serializer implements ISerializer {
-	
+
 	IPersistenceManager manager;
 	Map<String, Object> defaultOptions ;
 	//INodeBuilder nodeBuilder;
@@ -50,7 +51,7 @@ public class Serializer implements ISerializer {
 		if (options == null)
 			options = new HashMap();
 		options= mergeWithDefaultOptions(options);
-		 
+
 		int counter=0;
 
 		Transaction tx = manager.beginTx();
@@ -63,16 +64,13 @@ public class Serializer implements ISerializer {
 					tx.success();
 					tx.finish();
 					tx= manager.beginTx();
-						}
 				}
-
-
-		tx.success();
-			} 
-		finally {
-			tx.finish();
-			//manager.shutdown();
+			}
 			
+		} catch(Exception e) {manager.shutdown();
+		}finally {
+			tx.success();
+			tx.finish();
 		}	
 		ChangeLog.getInstance().clear();	
 	}
@@ -81,12 +79,12 @@ public class Serializer implements ISerializer {
 	 * @return  {@link Map} default Options 
 	 */
 	private void initOptions() {
-		 defaultOptions =  new HashMap<String, Object>();
+		defaultOptions =  new HashMap<String, Object>();
 		for (int i=0;i<saveOptions.length; i++ )
 			defaultOptions.put(saveOptions[i], saveDefaultValues[i]);
-		
+
 	}
-	
+
 	/**
 	 * merges the options in the save method's parameters with 
 	 * the default options 
@@ -101,7 +99,7 @@ public class Serializer implements ISerializer {
 				defaultOptions.put(saveOptions[i], options.get(saveOptions[i]));	}
 		return defaultOptions;
 	}
-	
+
 	/**
 	 * casts the ChangeLog entry to the appropriate atomic persistence 
 	 * action within transactions  
@@ -110,19 +108,19 @@ public class Serializer implements ISerializer {
 	private void serializeEntrySwitch(Entry e) {
 
 
-			
-			if ( e instanceof NewObject)
-					createNewObject(e.geteObject());
-			if ( e instanceof AddLink )	
-					addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
-			if ( e instanceof RemoveLink)
-					removeExistingLink(e.geteObject(), ((AddLink) e).geteReference(), ((RemoveLink) e).getOldValue());
-			if ( e instanceof SetAttribute )
-					setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
-			if ( e instanceof DeleteObject)
-					deleteExistingObject(e.geteObject());
-		
-		
+
+		if ( e instanceof NewObject)
+			createNewObject(e.geteObject());
+		if ( e instanceof AddLink )	
+			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
+		if ( e instanceof RemoveLink)
+			removeExistingLink(e.geteObject(), ((AddLink) e).geteReference(), ((RemoveLink) e).getOldValue());
+		if ( e instanceof SetAttribute )
+			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
+		if ( e instanceof DeleteObject)
+			deleteExistingObject(e.geteObject());
+
+
 
 	}
 
@@ -130,29 +128,59 @@ public class Serializer implements ISerializer {
 
 
 	}
+	private boolean isPrimitive(String str){
+		if (str.equals("Boolean") 
+				|| str.equals("Integer") 
+				|| str.equals("Short") 
+				|| str.equals("Long") 
+				|| str.equals("Float")
+				|| str.equals("String") 
+				|| str.equals("Double"))
+			return false;
+		return true;
+	}
 
-	private void setAttributeValue(EObject eObj,
-			EAttribute eAtt, Object newValue) {
-		Node n = manager.getNodeById(eObj);
-		n.setProperty(eAtt.getName(), newValue);
+	@SuppressWarnings("unchecked")
+	private void setAttributeValue(EObject eObject,
+			EAttribute at, Object newValue) {
+		Node n = manager.getNodeById(eObject);
+		if (newValue!= null && !at.isMany()){
+			if (at.getEType() instanceof EEnum)
+				n.setProperty(at.getName(), newValue.toString());
+			else if (isPrimitive(at.getName()))
+				n.setProperty(at.getName(), newValue);
+			else 
+				n.setProperty(at.getName(), newValue.toString());
+		}			
+		else if (newValue != null && at.isMany()){
+			n.setProperty(at.getName(), ((EList<EObject>) newValue).toArray());}
+		else if (!at.isMany()){ 
+			if (at.getEType().getName().equals("Boolean"))
+				n.setProperty(at.getName(), false );
+			else if (at.getEType().getName().equals("String"))
+				n.setProperty(at.getName(), "");
+			else 
+				n.setProperty(at.getName(), 0);
+		}
+		else {n.setProperty(at.getName(), new Object[1]);}
 	}
 
 	private void removeExistingLink(EObject eObject, EReference eRef, Object object) {
 		Node n = manager.getNodeById(eObject);
 		Node n2 = manager.getNodeById((EObject)object);
-		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getClassifierID(),eRef.getFeatureID());
+		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
 		Iterator<Relationship> it = n.getRelationships(rel).iterator();
 		while (it.hasNext()){
 			Relationship relship = it.next();
-		if (relship.getEndNode().getId() == n2.getId())
-			relship.delete();
+			if (relship.getEndNode().getId() == n2.getId())
+				relship.delete();
 		}
 	}
 
 	private void addNewLink(EObject eObject, EReference eRef, Object object) {
 		Node n = manager.getNodeById(eObject);
 		Node n2 = manager.getNodeById((EObject)object);
-		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getClassifierID(),eRef.getFeatureID());
+		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
 		n.createRelationshipTo(n2, rel);
 
 	}
@@ -167,6 +195,6 @@ public class Serializer implements ISerializer {
 			n.setProperty(at.getName(), "");}
 		manager.putNodeId(eObject,n.getId());
 		// TODO set the node id in the eObject 
-		
-		}
+
 	}
+}

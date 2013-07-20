@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.Node;
@@ -74,7 +76,7 @@ public interface IPersistenceManager {
 	 * @param eRefID {@link Int}
 	 * @return {@link RelationshipType}
 	 */
-	public RelationshipType getRelTypefromERef(int clsID, int eRefID);
+	public RelationshipType getRelTypefromERef(String key,int clsID, int eRefID);
 	/**
 	 * Create a node from an EObject
 	 * @param eObject {@link EObject}
@@ -205,7 +207,13 @@ public interface IPersistenceManager {
 	 * @param unloadStrategyId
 	 */
 	public void unload(int unloadStrategyId);
-
+	/**
+	 * return all the instanecs of type eClass
+	 * @see INeo4emfResource#getAllInstances
+	 * @return {@link List}
+	 */
+	public EList<INeo4emfObject> getAllInstancesOfType(EClass eClass);
+	
 
 	
 }

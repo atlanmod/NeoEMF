@@ -18,20 +18,17 @@ public class ReltypesClass
   protected final String TEXT_1 = "";
   protected final String TEXT_2 = "/**" + NL + " *" + NL + " * ";
   protected final String TEXT_3 = "Id";
-  protected final String TEXT_4 = NL + " */" + NL + "package ";
-  protected final String TEXT_5 = ".Reltypes;" + NL;
-  protected final String TEXT_6 = NL + "/**" + NL + " * <!-- begin-user-doc -->" + NL + " * Neo4j <b>relationships</b> for model persistence." + NL + " * It provides an adapter <code>createXXX</code> method for each class of the model." + NL + " * <!-- end-user-doc -->" + NL + " * @see ";
-  protected final String TEXT_7 = NL + " * @generated" + NL + " */" + NL + "public enum ";
-  protected final String TEXT_8 = "Reltypes implements RelationshipType" + NL + "{";
-  protected final String TEXT_9 = NL + "\t/**" + NL + "\t * <!-- begin-user-doc -->" + NL + "\t * <!-- end-user-doc -->" + NL + "\t * @generated" + NL + "\t */" + NL + "\tpublic static final ";
-  protected final String TEXT_10 = " copyright = ";
-  protected final String TEXT_11 = ";";
-  protected final String TEXT_12 = NL;
-  protected final String TEXT_13 = NL + "\t";
-  protected final String TEXT_14 = NL + "    \t\t";
-  protected final String TEXT_15 = "," + NL + "    \t\t";
-  protected final String TEXT_16 = NL + "} " + NL + "" + NL + "//";
-  protected final String TEXT_17 = NL;
+  protected final String TEXT_4 = NL + " */" + NL + "package reltypes;" + NL;
+  protected final String TEXT_5 = NL + "/**" + NL + " * <!-- begin-user-doc -->" + NL + " * Neo4j <b>relationships</b> for model persistence." + NL + " * It provides an adapter <code>createXXX</code> method for each class of the model." + NL + " * <!-- end-user-doc -->" + NL + " * @generated" + NL + " */" + NL + "public enum Reltypes implements RelationshipType" + NL + "{";
+  protected final String TEXT_6 = NL + "\t/**" + NL + "\t * <!-- begin-user-doc -->" + NL + "\t * <!-- end-user-doc -->" + NL + "\t * @generated" + NL + "\t */" + NL + "\tpublic static final ";
+  protected final String TEXT_7 = " copyright = ";
+  protected final String TEXT_8 = ";";
+  protected final String TEXT_9 = NL;
+  protected final String TEXT_10 = NL + "\t";
+  protected final String TEXT_11 = NL + "    \t\t";
+  protected final String TEXT_12 = "," + NL + "    \t\t";
+  protected final String TEXT_13 = NL + "} " + NL + "" + NL + "//Reltypes Class";
+  protected final String TEXT_14 = NL;
 
   public String generate(Object argument)
   {
@@ -48,51 +45,44 @@ public class ReltypesClass
  *   IBM - Initial API and implementation
  */
 
-    GenPackage genPackage = (GenPackage)argument; GenModel genModel=genPackage.getGenModel();
- String namePrefix = genPackage.getReflectionPackageName();
-	    namePrefix= namePrefix.substring(0, 1).toUpperCase()+namePrefix.substring(1);
-	     /* Trick to import java.util.* without warnings */Iterator.class.getName();
+     GenPackage genPck = (GenPackage) argument; GenModel genModel= genPck.getGenModel();
+ /* Trick to import java.util.* without warnings */Iterator.class.getName();
     stringBuffer.append(TEXT_1);
     stringBuffer.append(TEXT_2);
     stringBuffer.append("$");
     stringBuffer.append(TEXT_3);
     stringBuffer.append("$");
     stringBuffer.append(TEXT_4);
-    stringBuffer.append(genPackage.getInterfacePackageName());
-    stringBuffer.append(TEXT_5);
     genModel.addImport("org.neo4j.graphdb.RelationshipType");
     genModel.markImportLocation(stringBuffer);
-    stringBuffer.append(TEXT_6);
-    stringBuffer.append(genPackage.getQualifiedPackageInterfaceName());
-    stringBuffer.append(TEXT_7);
-    stringBuffer.append(namePrefix);
-    stringBuffer.append(TEXT_8);
+    stringBuffer.append(TEXT_5);
     if (genModel.hasCopyrightField()) {
-    stringBuffer.append(TEXT_9);
+    stringBuffer.append(TEXT_6);
     stringBuffer.append(genModel.getImportedName("java.lang.String"));
-    stringBuffer.append(TEXT_10);
+    stringBuffer.append(TEXT_7);
     stringBuffer.append(genModel.getCopyrightFieldLiteral());
-    stringBuffer.append(TEXT_11);
+    stringBuffer.append(TEXT_8);
     stringBuffer.append(genModel.getNonNLS());
-    stringBuffer.append(TEXT_12);
+    stringBuffer.append(TEXT_9);
     }
-    stringBuffer.append(TEXT_13);
-     for (GenClassifier genClassifier : genPackage.getOrderedGenClassifiers()) { 
-	if (genClassifier instanceof GenClass) { GenClass genClass = (GenClass)genClassifier; 
-		for (GenFeature genFeature : genClass.getAllGenFeatures()) {
-    		if (genFeature.isReferenceType()){
+    stringBuffer.append(TEXT_10);
+     for (GenPackage genPackage : genModel.getAllGenPackagesWithClassifiers()){
+	for (GenClassifier genClassifier : genPackage.getOrderedGenClassifiers()) { 
+		if (genClassifier instanceof GenClass) { GenClass genClass = (GenClass)genClassifier; 
+			for (GenFeature genFeature : genClass.getAllGenFeatures()) {
+    			 if(genFeature.isReferenceType()){
     		
-    stringBuffer.append(TEXT_14);
+    stringBuffer.append(TEXT_11);
     stringBuffer.append(genClass.getFeatureID(genFeature));
-    stringBuffer.append(TEXT_15);
+    stringBuffer.append(TEXT_12);
     		} 
        			}
        		}
        	}
-    stringBuffer.append(TEXT_16);
-    stringBuffer.append(genPackage.getAdapterFactoryClassName());
+    }
+    stringBuffer.append(TEXT_13);
     genModel.emitSortedImports();
-    stringBuffer.append(TEXT_17);
+    stringBuffer.append(TEXT_14);
     return stringBuffer.toString();
   }
 }

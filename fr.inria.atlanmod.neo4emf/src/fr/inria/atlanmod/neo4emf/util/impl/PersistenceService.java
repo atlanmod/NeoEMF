@@ -51,16 +51,19 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 	}
 
 	@Override
-	public Node createWithIndexIfNotExists(EClass c){		
-		if (getMetaIndex().get(ID_META, c.getClassifierID()).getSingle() != null)
-			return getMetaIndex().get(ID_META, c.getClassifierID()).getSingle();
+	public Node createWithIndexIfNotExists(EClass c){	
+		String value = getIdMetaValueFromClass(c);
+		if (getMetaIndex().get(ID_META,value).getSingle() != null)
+			return getMetaIndex().get(ID_META,value).getSingle();
 		Node n = createNode();
 		n.setProperty(ECLASS_NAME,c.getName() );
 		n.setProperty(NS_URI, c.getEPackage().getNsURI());
-		getMetaIndex().putIfAbsent(n, ID_META, c.getClassifierID());
+		getMetaIndex().putIfAbsent(n, ID_META, value);
 		return n;					
 	}
-
+	private String getIdMetaValueFromClass(EClass c){
+		return c.getEPackage().getName()+"_"+c.getClassifierID();
+	}
 	public Node createResourceNodeIfAbsent(){
 		if (getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle() != null)
 			return getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle();
@@ -154,5 +157,11 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 			return false ;
 		return true;
 		}
+
+	@Override
+	public List<Node> getAllNodesOfType(EClass eClass) {
+		Node eClassNode = getMetaIndex().get(ID_META, getIdMetaValueFromClass(eClass)).getSingle();	
+		return fetchNodesByRT(eClassNode.getId(), INSTANCE_OF, Direction.INCOMING);
+	}
 
 }

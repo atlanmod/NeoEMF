@@ -15,8 +15,12 @@ package fr.inria.atlanmod.neo4emf.util;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.neo4j.graphdb.Node;
+
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
 public interface ILoader {
 	
@@ -42,5 +46,14 @@ public interface ILoader {
 	 * @param nodes {@link List}
 	 */
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node, List<Node> nodes);
+	/**
+	 * build a list of NeoObjects of type <b>eClass</b>
+	 * from a list of nodes representing these elements  
+	 * @param eClass {@link EClass}
+	 * @param nodeList {@link List}
+	 * @return {@link List}
+	 */
+	public EList<INeo4emfObject> getAllInstances(EClass eClass,
+			List<Node> nodeList);
 	
 }

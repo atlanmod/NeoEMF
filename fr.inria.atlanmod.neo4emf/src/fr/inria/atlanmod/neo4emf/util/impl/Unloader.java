@@ -32,18 +32,13 @@ public class Unloader  extends Thread implements IUnloader {
 
 	private void deleteObject(EObject neoObj) {
 		List<EReference> refList=neoObj.eClass().getEAllReferences();
-		//EReference container = null;
+		
 		((Neo4emfObject)neoObj).clearId();
 		for (EReference str : refList) {
-			//			if (str.isContainer()) {
-			//				container = str;
-			//				continue;
-			//			}
+			
 			if (neoObj.eGet(str)!=null)
 				neoObj.eSet(str, null);	
 		}
-		//		if (container !=null)
-		//		neoObj.eSet(container, null);
 		neoObj = null;
 	}
 

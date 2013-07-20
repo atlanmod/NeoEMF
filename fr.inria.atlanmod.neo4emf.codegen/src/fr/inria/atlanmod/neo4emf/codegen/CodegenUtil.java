@@ -10,4 +10,8 @@ public class CodegenUtil {
 		StringBuffer str = new StringBuffer(" extends Data");
 		return str.append(cls.getClassExtends().substring(9, cls.getClassExtends().length()-4)).toString();
 	}
+//	public static boolean hasParentClass(GenClass genClass){
+//			if (.getClassExtends())
+//		return true;
+//	}
 }

@@ -113,10 +113,17 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 */
 	boolean isRootNode(Node node);
 	/**
+	 * return a List of nodes of type eClass
+	 * @param eClass {@link EClass}
+	 * @return
+	 */
+	List<Node> getAllNodesOfType(EClass eClass);
+	/**
 	 * Enum class for the meta_relations 
 	 * @author Amine BENELALLAM
 	 *
 	 */
+	
 	public enum MetaRelation implements RelationshipType {	
 		/**
 		 * Instance of relationship
@@ -127,6 +134,7 @@ public interface IPersistenceService extends GraphDatabaseService {
 		 */
 		IS_ROOT
 	}
+	
 
 
 

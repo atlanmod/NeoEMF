@@ -35,7 +35,7 @@ public interface INeo4emfResourceFactory  {
 		 * @return {@link INeo4emfObject}
 		 */
 		INeo4emfResource createResource(String storeDirectory,
-				Map<Point, RelationshipType> map);
+				Map< String ,Map <Point, RelationshipType>> map);
 
 	
 }
