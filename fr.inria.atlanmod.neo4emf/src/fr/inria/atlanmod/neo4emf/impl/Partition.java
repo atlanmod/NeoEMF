@@ -6,15 +6,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.arakhne.util.ref.WeakValueTreeMap;
+import org.jboss.util.collection.SoftValueTreeMap;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.INeo4emfPartition;
 
-public class Partition implements INeo4emfPartition {
+public class Partition extends AbstractPartition {
 
 	private WeakReference<EObject> eObjet;
 	private List<Tail> tails;
@@ -55,6 +53,8 @@ public class Partition implements INeo4emfPartition {
 	}
 	
 	public boolean containsKey(long nodeId) {
+		if (eObjet.get()==null){
+			System.out.println("null value"); return false;}
 		if (((INeo4emfObject)eObjet.get()).getNodeId() ==  nodeId) return true;
 		for (Tail tail : tails)
 			if (tail.containsKey(nodeId)) return true;
@@ -76,11 +76,11 @@ public class Partition implements INeo4emfPartition {
 	
 	protected static class Tail {
 		protected int featureID;
-		protected WeakValueTreeMap<Long, INeo4emfObject> objectsMap;
+		protected SoftValueTreeMap<Long, INeo4emfObject> objectsMap;
 		protected Tail(int featureID) {
 			super();
 			this.featureID = featureID;
-			this.objectsMap = new WeakValueTreeMap<Long, INeo4emfObject>();
+			this.objectsMap = new SoftValueTreeMap<Long, INeo4emfObject>();
 		}
 		
 		
@@ -97,10 +97,10 @@ public class Partition implements INeo4emfPartition {
 		protected void setFeatureID(int featureID) {
 			this.featureID = featureID;
 		}
-		protected WeakValueTreeMap<Long, INeo4emfObject> getObjectsMap() {
+		protected SoftValueTreeMap<Long, INeo4emfObject> getObjectsMap() {
 			return objectsMap;
 		}
-		protected void setObjectsMap(WeakValueTreeMap<Long, INeo4emfObject> objectsMap) {
+		protected void setObjectsMap(SoftValueTreeMap<Long, INeo4emfObject> objectsMap) {
 			this.objectsMap = objectsMap;
 		}
 		

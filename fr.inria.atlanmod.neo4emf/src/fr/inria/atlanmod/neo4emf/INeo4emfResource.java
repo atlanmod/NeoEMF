@@ -19,6 +19,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 
@@ -26,16 +27,24 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 public interface INeo4emfResource extends Resource, Resource.Internal {
 	/**
-	 * fetches the single-valued attributes lazily on demand  
+	 * Fetches the single-valued attributes lazily on demand  
 	 * @param object {@link EObject}
 	 */
 	public void fetchAttributes(EObject object);
 	/**
-	 * gets multi-valued elements of an object by FeatureID
+	 * Gets multi-valued elements of an object by FeatureID
 	 * @param object {@link EObject}	
 	 * @param featureId (Int)
 	 */
 	public void getOnDemand(EObject object,int featureId);
+	/**
+	 * Gets element's container 
+	 * @param eObject {@link EObject}
+	 * @param featureId {@link Integer}
+	 * @return {@link EObject}
+	 * @throws Exception 
+	 */
+	public EObject getContainerOnDemand(EObject eObject, int  featureId);
 	
 	/**
 	 * saves the model changes that have been done 

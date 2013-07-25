@@ -15,8 +15,12 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 
 
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -28,13 +32,15 @@ import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
+import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.util.*;
 
 
 public class PersistenceManager implements IPersistenceManager {
-	
+
 	/**
 	 * the persistence Backend {@link PersistenceService}
 	 */
@@ -79,11 +85,16 @@ public class PersistenceManager implements IPersistenceManager {
 		loader = new Loader(this);
 		unloader = new Unloader(this, null);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void save(Map<?,?> options) {
-		serializer.save((Map<String,Object>)options);		
+		try{
+			serializer.save((Map<String,Object>)options);	}
+		catch(Exception e){ 
+			shutdown();
+			e.printStackTrace();
+		}
 	}		
 	@Override
 	public void load() {
@@ -91,7 +102,12 @@ public class PersistenceManager implements IPersistenceManager {
 	}	
 	@Override
 	public void load(Map<?, ?> options) {
-		loader.load(options);	
+		try {
+			loader.load(options);	}
+		catch(Exception e){ 
+			shutdown();
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public void save() {
@@ -112,7 +128,7 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
 		return eRef2relType.get(key).get(new Point (clsID,eRefID));
-	
+
 	}
 	@Override
 	public Node createNodefromEObject(EObject eObject) {
@@ -129,7 +145,7 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	@Override
 	public void addObjectsToContents(List<INeo4emfObject> objects) {
-			resource.getContents().addAll(objects);		
+		resource.getContents().addAll(objects);		
 	}
 	@Override
 	public String getNodeType(Node n) {
@@ -146,22 +162,50 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	@Override
 	public void putToProxy(INeo4emfObject object, EStructuralFeature str, int partitionID){
-		Partition partition = proxyManager.getWeakObjectsTree().get(partitionID);
-		partition.put(object.getNodeId(), object, str);
+		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(partitionID);
+		if (partition == null) {
+			System.out.println("partition does not exist "); return ;}
+		if (partition instanceof Partition)
+		((Partition)partition).put(object.getNodeId(), object, str);
+		else 
+		System.out.println("TODO");
+		// TODO put flatened to proxy
 	}
 	@Override
 	public void putAllToProxy(List<INeo4emfObject> objects) {
 		for (INeo4emfObject obj : objects)
-				proxyManager.putHeadToProxy(obj);
+			proxyManager.putHeadToProxy(obj);
 	}
 	@Override
 	public void getOnDemand(EObject obj, int featureId) {	
-		List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),getRelTypefromERef(obj.eClass().getEPackage().getNsURI(), obj.eClass().getClassifierID(), featureId));
-		loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
+		try{
+			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),
+					getRelTypefromERef(obj.eClass().getEPackage().getNsURI(), obj.eClass().getClassifierID(), featureId));
+			loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
+		}catch(Exception e){ 
+			shutdown();
+			e.printStackTrace();
+		}
 	}
+	
+	@Override
+	public EObject getContainerOnDemand(EObject eObject, int featureId)  {
+		EObject eResult = null;
+		try{
+			List<Node> singleNode = persistenceService.getNodesOnDemand(((INeo4emfObject)eObject).getNodeId(), 
+				getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(), eObject.eClass().getClassifierID(), featureId));		
+			eResult = loader.getContainerOnDemand(eObject, featureId, getNodeById(eObject),singleNode.get(0));
+			}catch(Exception e){ 
+				shutdown();
+				e.printStackTrace();
+			}
+		return  eResult;
+	}
+
+	
 	@Override
 	public int  proxyContainsLongKey(long id){
-		for (Map.Entry<Integer,Partition> entry : proxyManager.getWeakObjectsTree().entrySet())
+		for (Entry<Integer, AbstractPartition> entry : proxyManager.getWeakObjectsTree().entrySet())
 			if (entry.getValue()!= null && entry.getValue().containsKey(id))
 				return entry.getKey();
 		return -1;	
@@ -177,8 +221,8 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	@Override
 	public void updateProxyManager(INeo4emfObject eObject, EStructuralFeature feature) {
-		 proxyManager.updatePartitionsHistory(eObject, feature.getFeatureID(), feature instanceof EReference);
-			
+		proxyManager.updatePartitionsHistory(eObject, feature.getFeatureID(), feature instanceof EReference);
+
 	}
 	@Override
 	public boolean isRootNode(Node node) {
@@ -192,55 +236,42 @@ public class PersistenceManager implements IPersistenceManager {
 	public boolean isHead(EObject eObject) {
 		return proxyManager.isHead(eObject);
 	}
-	@Override
-	public int  createNewPartition(EObject obj, int partitionID) {
-		
-		int newIndex = getNewPartitionID();
-		((INeo4emfObject)obj).setPartitionId(partitionID);
-		((INeo4emfObject)obj).setProxy(true);
-		proxyManager.getWeakObjectsTree().put(newIndex, new Partition(obj));
-		//proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex, oldIndex);
-		return newIndex;
-	}
-	@Override
-	public void createNewPartitionHistory(int newId) {
-		proxyManager.addNewHistory(newId);
-	}
+	
 	@Override
 	public void delegate(EObject eObject) {
 		boolean isFound = false;
 		int newPID=-1;
 		INeo4emfObject neoObject = (INeo4emfObject) eObject;
-		for (Map.Entry<Integer, Partition> entry: proxyManager.getWeakObjectsTree().entrySet()){
+		for (Entry<Integer, AbstractPartition> entry: proxyManager.getWeakObjectsTree().entrySet()){
 			if (entry.getKey() == neoObject.getPartitionId() || !entry.getValue().containsKey(neoObject.getNodeId()))
 				continue;
 			if (!isFound){
-			INeo4emfObject object = entry.getValue().get(neoObject.getNodeId());
-			object.setProxy(false);
-			newPID = entry.getKey();
-			object.setPartitionId(newPID);
+				INeo4emfObject object = entry.getValue().get(neoObject.getNodeId());
+				object.setProxy(false);
+				newPID = entry.getKey();
+				object.setPartitionId(newPID);
 			}else {
 				entry.getValue().get(neoObject.getNodeId()).setPartitionId(newPID);
 			}
 		}
 	}
-	 @Override
+	@Override
 	public void unloadPartition(int PID){
-		 Partition partition = proxyManager.getWeakObjectsTree().get(PID);
-		 unloader.unloadPartition(partition);
-		 proxyManager.getWeakObjectsTree().remove(PID);
-		 Runtime.getRuntime().gc();
-	 }
+		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(PID);
+		unloader.unloadPartition(partition);
+		proxyManager.getWeakObjectsTree().remove(PID);
+		Runtime.getRuntime().gc();
+	}
 
 	@Override
 	public boolean doUnload() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public void unload(int unloadStrategyId) {
-		Partition partition = null;
+		AbstractPartition partition = null;
 		switch (unloadStrategyId) {
 		case IUnloader.LIFO:
 			partition = proxyManager.getLIFOPartition();
@@ -260,9 +291,42 @@ public class PersistenceManager implements IPersistenceManager {
 
 	@Override
 	public EList<INeo4emfObject> getAllInstancesOfType(EClass eClass) {
-		List<Node> nodeList = persistenceService.getAllNodesOfType (eClass);
-		return loader.getAllInstances(eClass, nodeList);
+		EList<EClass> classesList = ((Loader)loader).subClassesOf(eClass);
+		EList<INeo4emfObject> allInstances = new BasicEList<INeo4emfObject>();
+		List<Node> nodeList = new ArrayList<Node>();
+		try{
+			for (EClass eCls : classesList){	
+				nodeList = persistenceService.getAllNodesOfType (eClass);
+				if(nodeList.isEmpty()) continue;
+				allInstances.addAll(loader.getAllInstances(eCls, nodeList));
+			}
+		}catch(Exception e){ 
+			shutdown();
+			e.printStackTrace();
+		}
+		return allInstances;
 	}
-	
-	
+
+	@Override
+	public void createNewPartitionHistory(int newId) {
+		proxyManager.addNewHistory(newId);
+	}
+
+	@Override
+	public FlatPartition createNewFlatPartition(int id) {
+		FlatPartition result = new FlatPartition();
+		proxyManager.getWeakObjectsTree().put(id,result );
+		return result;
+	}
+	@Override
+	public int  createNewPartition(EObject obj, int partitionID) {
+
+		int newIndex = getNewPartitionID();
+		((INeo4emfObject)obj).setPartitionId(partitionID);
+		((INeo4emfObject)obj).setProxy(true);
+		proxyManager.getWeakObjectsTree().put(newIndex, new Partition(obj));
+		//proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex, oldIndex);
+		return newIndex;
+	}
+
 }

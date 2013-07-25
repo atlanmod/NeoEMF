@@ -114,13 +114,11 @@ public class Serializer implements ISerializer {
 		if ( e instanceof AddLink )	
 			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
 		if ( e instanceof RemoveLink)
-			removeExistingLink(e.geteObject(), ((AddLink) e).geteReference(), ((RemoveLink) e).getOldValue());
+			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue());
 		if ( e instanceof SetAttribute )
 			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
 		if ( e instanceof DeleteObject)
 			deleteExistingObject(e.geteObject());
-
-
 
 	}
 

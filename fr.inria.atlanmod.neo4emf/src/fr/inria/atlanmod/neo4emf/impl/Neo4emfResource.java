@@ -16,6 +16,7 @@ package fr.inria.atlanmod.neo4emf.impl;
 import java.awt.Point;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -51,6 +52,7 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
  * @param storeDirectory
  */
 public Neo4emfResource(String storeDirectory, Map<String,Map<Point,RelationshipType>> map) {
+		super();
 		this.storeDirectory=storeDirectory;
 		persistenceManager =  new PersistenceManager(this,storeDirectory,map);
 	}
@@ -114,12 +116,20 @@ public void unload(int PID){
 }
 @Override
 public EList<INeo4emfObject> getAllInstances(EClass eClass) {
-	return persistenceManager.getAllInstancesOfType(eClass); 
+	EList<INeo4emfObject> result =  persistenceManager.getAllInstancesOfType(eClass);
+		getContents().addAll(result);
+	return result;
 }
 @Override
 public EList<INeo4emfObject> getAllInstances(int eClassID) {
 	// TODO Auto-generated method stub
 	return null;
+}
+@Override
+public EObject getContainerOnDemand(EObject eObject, int featureId){
+	// TODO Auto-generated method stub
+		return persistenceManager.getContainerOnDemand(eObject,featureId);
+
 }
 
 }

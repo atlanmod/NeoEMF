@@ -7,19 +7,20 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.util.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.util.IUnloader;
 
-public class Unloader  extends Thread implements IUnloader {
+public class Unloader implements IUnloader {
 
 	private IPersistenceManager manager;
 	private Map<String, Object> options;
 	public Unloader(IPersistenceManager manager, Map<String, Object> options) {
 		super();
 		this.manager = manager;
-		this.start();
+		//this.start();
 		options = mergeWithDefaultOptions(options);
 	}
 	private void unloadElement(EObject object) {
@@ -49,7 +50,7 @@ public class Unloader  extends Thread implements IUnloader {
 	}
 
 	@Override
-	public void unloadPartition(Partition partition) {
+	public void unloadPartition(AbstractPartition partition) { 
 		for (INeo4emfObject neoObj : partition.flattened()){
 			unloadElement(neoObj);			
 		}
@@ -57,7 +58,7 @@ public class Unloader  extends Thread implements IUnloader {
 	}
 
 
-	@Override 
+	//@Override 
 	public void run(){
 		while (! manager.doUnload()){
 			try {
@@ -73,7 +74,7 @@ public class Unloader  extends Thread implements IUnloader {
 
 	@SuppressWarnings("deprecation")
 	public void shutUnloader(){
-		this.stop();
+		//this.stop();
 	}
 	/**
 	 * merges the options in the save method's parameters with 

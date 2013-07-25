@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neo4emf.util.impl;
  * */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
@@ -161,7 +162,9 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 	@Override
 	public List<Node> getAllNodesOfType(EClass eClass) {
 		Node eClassNode = getMetaIndex().get(ID_META, getIdMetaValueFromClass(eClass)).getSingle();	
+		if (eClassNode == null) return Collections.emptyList();
 		return fetchNodesByRT(eClassNode.getId(), INSTANCE_OF, Direction.INCOMING);
 	}
 
+	
 }

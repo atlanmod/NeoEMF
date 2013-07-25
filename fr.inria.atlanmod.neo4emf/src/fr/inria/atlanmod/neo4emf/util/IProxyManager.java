@@ -16,25 +16,25 @@ package fr.inria.atlanmod.neo4emf.util;
 
 import java.util.WeakHashMap;
 
-import org.arakhne.util.ref.WeakValueTreeMap;
+import org.jboss.util.collection.SoftValueTreeMap;
 import org.eclipse.emf.ecore.EObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.impl.Partition;
+import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 
 public interface IProxyManager {
 	long getNode(EObject eObj);
 	WeakHashMap<EObject, Long> getWeakNodeIds();
 	INeo4emfObject getEObject(int id,long id1);
-	WeakValueTreeMap<Integer,Partition>getWeakObjectsTree ();
+	SoftValueTreeMap<Integer,AbstractPartition>getWeakObjectsTree ();
 	void updatePartitionsHistory(INeo4emfObject eObject  , int feature, boolean  isReference);
 	int newPartitionID();
 	boolean isHead(EObject eObject);
 	void movePartitionTo(INeo4emfObject obj,int newIndex, int oldIndex);
 	void putHeadToProxy(INeo4emfObject obj);
 	void addNewHistory(int newId);
-	Partition getLeastRecentlyUsedPartition();
-	Partition getLIFOPartition();
-	Partition getLeastFrequentlyPartition();
-	Partition getFIFOPartition();
+	AbstractPartition getLeastRecentlyUsedPartition();
+	AbstractPartition getLIFOPartition();
+	AbstractPartition getLeastFrequentlyPartition();
+	AbstractPartition getFIFOPartition();
 	
 }

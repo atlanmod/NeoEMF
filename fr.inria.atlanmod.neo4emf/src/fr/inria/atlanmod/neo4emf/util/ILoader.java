@@ -24,6 +24,11 @@ import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
 public interface ILoader {
 	
+	public static final String DUPLICATION_TOLERANT = "duplication_tolerant";
+	
+	public static final boolean DUPLICATION_TOLERANT_DEFAULT_VALUE = true;
+	
+	
 	/**
 	 * load Root elements from the Backend
 	 * 
@@ -55,5 +60,12 @@ public interface ILoader {
 	 */
 	public EList<INeo4emfObject> getAllInstances(EClass eClass,
 			List<Node> nodeList);
+	/**
+	 * Get Container on demand 
+	 * @param eObject {@link EObject}
+	 * @param featureId {@link Integer}
+	 * @return {@link EObject}
+	 */
+	public EObject getContainerOnDemand(EObject eObject, int featureId,Node node, Node containerNode);
 	
 }

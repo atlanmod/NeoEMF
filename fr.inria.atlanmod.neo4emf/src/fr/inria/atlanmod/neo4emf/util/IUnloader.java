@@ -1,5 +1,6 @@
 package fr.inria.atlanmod.neo4emf.util;
 
+import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 
 /**
@@ -25,6 +26,6 @@ public interface IUnloader {
 	public static final int LEAST_FREQUENTLY_USED = 3;
 	String [] unloadOptions = {TIMER_TO_AWAKE,UNLOAD_STRATEGY};
 	Object [] unloadDeafultValues = {DEFAULT_TIMER,LIFO};
-	public void unloadPartition(Partition partition);
+	public void unloadPartition(AbstractPartition partition);
 	
 }

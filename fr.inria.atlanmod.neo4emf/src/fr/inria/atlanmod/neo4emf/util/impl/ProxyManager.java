@@ -16,13 +16,18 @@ package fr.inria.atlanmod.neo4emf.util.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.WeakHashMap;
 
 import org.eclipse.emf.ecore.EObject;
-import org.arakhne.util.ref.WeakValueTreeMap;
+import org.jboss.util.collection.SoftValueTreeMap;
+//import org.jboss.util.collection.TreeMap;
 
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
+import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.util.IProxyManager;
 
@@ -33,9 +38,9 @@ public class ProxyManager implements IProxyManager {
 	private WeakHashMap<? extends EObject, Long> objects2nodes;
 	/**
 	 * maps the partitions ID to the physical partition 
-	 * A partitions a @see {@link WeakValueTreeMap} mapping objects and their node ID.
+	 * A partitions a @see {@link TreeMap} mapping objects and their node ID.
 	 */
-	private WeakValueTreeMap<Integer,Partition> partitions;
+	private SoftValueTreeMap<Integer,AbstractPartition> partitions;
 	/**
 	 * saves the usage count of a partition 
 	 */	
@@ -57,7 +62,7 @@ public class ProxyManager implements IProxyManager {
 
 	public ProxyManager(){
 		objects2nodes = new WeakHashMap<INeo4emfObject, Long>();
-		partitions = new WeakValueTreeMap<Integer,Partition>();
+		partitions = new SoftValueTreeMap<Integer,AbstractPartition>();
 		partitionsUsageCount = new ArrayList<UsageCount>();
 		partitionsUsageHistory = new ArrayList<Integer>();
 		//partitionsWithinObjects = new ArrayList<PartitionsByObject>();
@@ -74,15 +79,15 @@ public class ProxyManager implements IProxyManager {
 	}
 
 	@Override
-	public  WeakValueTreeMap<Integer,Partition> getWeakObjectsTree (){
+	public  SoftValueTreeMap<Integer,AbstractPartition> getWeakObjectsTree (){
 		return partitions;
 	}
 	@Override
-	public Partition getLeastRecentlyUsedPartition(){
+	public AbstractPartition getLeastRecentlyUsedPartition(){
 		return partitions.get(partitionsUsageHistory.get(partitionsUsageHistory.size())-1);
 	}
 	@Override
-	public Partition getLIFOPartition(){
+	public AbstractPartition getLIFOPartition(){
 		for (int i = availablePartitionId; i> -1; i--){
 			if (partitions.containsKey(i))
 				return partitions.get(i);
@@ -90,7 +95,7 @@ public class ProxyManager implements IProxyManager {
 		return null;
 	}
 	@Override
-	public Partition getFIFOPartition() {
+	public AbstractPartition getFIFOPartition() {
 		for (int i = 0 ; i>= availablePartitionId; i--){
 			if (partitions.containsKey(i))
 				return partitions.get(i);
@@ -99,7 +104,7 @@ public class ProxyManager implements IProxyManager {
 	}
 	
 	@Override
-	public Partition getLeastFrequentlyPartition(){
+	public AbstractPartition getLeastFrequentlyPartition(){
 		// TODO finish implementation
 		UsageCount minUsage= partitionsUsageCount.get(0);
 		for (int i=0; i<partitionsUsageCount.size(); i++)
@@ -164,9 +169,21 @@ public class ProxyManager implements IProxyManager {
 
 
 	private int GetReferencePartitionID(INeo4emfObject eObject) {
-		for (Map.Entry<Integer, Partition> entry : partitions.entrySet())
-			if (((INeo4emfObject)entry.getValue().geteObjet()).getNodeId() == eObject.getNodeId())
-				return entry.getKey();
+		//TODO to check if its true for FlatPartition 
+		for (Entry<Integer, AbstractPartition> entry : partitions.entrySet()){
+			int bol = entry.getValue() instanceof Partition? 1:0 ;
+			switch (bol) {
+			case 1:
+				if (((INeo4emfObject)((Partition)entry.getValue()).geteObjet()).getNodeId() == eObject.getNodeId())
+					return entry.getKey();
+				break;
+
+			case 0:
+				System.out.println("FlatPartition");
+				return -1;
+				// TODO do not forget the break statement
+			}
+		}
 		return -1;
 	}
 
@@ -200,9 +217,12 @@ public class ProxyManager implements IProxyManager {
 
 	@Override
 	public boolean isHead(EObject eObject) {
-		for (Map.Entry<Integer, Partition> entry : partitions.entrySet())
-			if (entry.getValue().geteObjet() == eObject)
-				return true;
+		for (Entry<Integer, AbstractPartition> entry : partitions.entrySet()){
+			if (entry.getValue() instanceof Partition){
+			if (((Partition)entry.getValue()).geteObjet() == eObject)
+				return true;}
+			else if (((FlatPartition)entry.getValue()).containsKey(((INeo4emfObject)eObject).getNodeId()))
+				return true;}
 		return false;
 	}
 
@@ -219,9 +239,7 @@ public class ProxyManager implements IProxyManager {
 
 	@Override
 	public void putHeadToProxy(INeo4emfObject obj ) {
-		// first time created elements 
 		partitions.put(obj.getPartitionId(), new Partition(obj));
-	
 	}
 	protected static class UsageCount implements Comparable<UsageCount>{
 		

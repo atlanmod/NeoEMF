@@ -473,12 +473,14 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
       <%if (genFeature.isListType() && genModel.isVirtualDelegation()) {%>      
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
 	  <%}%>
+	   <% if (!genFeature.isContainer()){%>
 		if (getNodeId()<0 && data == null ) 
 			return null;
-		if ( data == null || !(data instanceof Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)){
+		if ( data == null || !(data instanceof Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>))
 			data = new Data<%=genClass.getInterfaceName()%>();
-			((INeo4emfResource) this.eResource()).fetchAttributes(this);
-				}
+		<%if (! genFeature.isReferenceType()){ %>	
+		if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> == null)	((INeo4emfResource) this.eResource()).fetchAttributes(this);
+		<% }}%>		
 	  <%if (genFeature.isListType()) {%> 
 		if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> == null)	
 		{
@@ -488,12 +490,13 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 			((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>;
 			if (getNodeId()>-1) 
 			((INeo4emfResource) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);			
-        <%}%>
-		}
+        <%}%>}
 		return ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%><%=genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes() ? ".map()" : ""%>;
       <%} 	  	  
 	  else if (genFeature.isContainer()) {%>
-		if (eContainerFeatureID() != <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>) return null;
+		if (getNodeId() > 0 && eContainer() == null) {
+			<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
+			basicSet<%=genFeature.getAccessorName()%>(<%=genFeature.getSafeName()%>,null);}
 		return (<%=genFeature.getImportedType(genClass)%>)eContainer();
       <%} 	  
 	  else {%>
@@ -748,7 +751,9 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 <%@ include file="Class/setGenFeature.pre.insert.javajetinc" fail="silent" %>
 	<% if (!genModel.isDynamicDelegation() && !genModel.isReflectiveDelegation() && !genFeature.hasSettingDelegate() && !genModel.isVirtualDelegation()){%>
 		if (data==null) data =  new Data<%=genClass.getInterfaceName()%>();
-	<%}%>
+		<%if (CodegenUtil.getDataClassExtends(genClass) != ""){%>
+		else if (!(data instanceof Data<%=genClass.getInterfaceName()%>)) data = new Data<%=genClass.getInterfaceName()%>((Data<%=genClass.getClassExtendsGenClass().getInterfaceName()%>)data);
+	<%}}%>
     <%if (genModel.isDynamicDelegation()) {%>
 		eDynamicSet(<%=genClass.getQualifiedFeatureID(genFeature)%>, <%=genFeature.getQualifiedFeatureAccessor()%>, <%if (!isJDK50 && genFeature.isPrimitiveType()) {%>new <%=genFeature.getObjectType(genClass)%>(<%}%>new<%=genFeature.getCapName()%><%if (!isJDK50 && genFeature.isPrimitiveType()) {%>)<%}%>);
     <%} else if (genModel.isReflectiveDelegation()) {%>
@@ -2169,7 +2174,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 
 // data Class generation 
 <%if (isImplementation) {%>
-protected static  class Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%><%=CodegenUtil.getDataClassExtends (genClass)%>
+protected static  class Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%><%=CodegenUtil.getDataClassExtends(genClass)%>
 
 {
 
@@ -2388,6 +2393,26 @@ protected static  class Data<%=genClass.getInterfaceName()%><%=genClass.getTypeP
   <%}%>
 	}
 	
+		<%if ( CodegenUtil.getDataClassExtends (genClass) !=""){%>
+	/**
+	 *Constructor of Data<%=genClass.getInterfaceName()%>
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param {@link <%=genClass.getClassExtendsGenClass().getInterfaceName()%> }
+	 * @generated
+	 */
+	public Data<%=genClass.getInterfaceName()%>(Data<%=genClass.getClassExtendsGenClass().getInterfaceName()%> data)
+	{
+		super();		
+		<% for (GenFeature genFeat : genClass.getClassExtendsGenClass().getDeclaredFieldGenFeatures()){%>
+		<%=genFeat.getSafeName()%> = data.<%=genFeat.getSafeName()%>;
+				<%}%>
+				
+  <%for (GenFeature genFeature : genClass.getFlagGenFeaturesWithDefault()) {%>
+		<%=genClass.getFlagsField(genFeature)%> |= <%=genFeature.getUpperName()%>_EFLAG<%if (!genFeature.isBooleanType()) {%>_DEFAULT<%}%>;
+  <%}%>
+	}
+	<%}%>
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

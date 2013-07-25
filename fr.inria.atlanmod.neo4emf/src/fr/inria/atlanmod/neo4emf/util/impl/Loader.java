@@ -14,15 +14,14 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
 
 import org.neo4j.graphdb.Node;
 
-import scala.collection.generic.BitOperations.Int;
-
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
+import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.util.ILoader;
 import fr.inria.atlanmod.neo4emf.util.IPersistenceManager;
 
@@ -35,6 +34,8 @@ public class Loader implements ILoader {
 	 * a Map of Loaded packages
 	 */
 	Map<String,EPackage> ePackageMap; 
+
+	Map<String, Object> options;
 
 	public Loader (IPersistenceManager manager){
 		this.manager=manager;
@@ -69,16 +70,21 @@ public class Loader implements ILoader {
 	@Override
 	public EList<INeo4emfObject> getAllInstances(EClass eClass,
 			List<Node> nodeList) {
+		int sizeChange = ChangeLog.getInstance().size();
 		EList<INeo4emfObject> eObjectList = new BasicEList<INeo4emfObject>();
 		EPackage ePck= eClass.getEPackage();
 		int newId = manager.getNewPartitionID();
+		FlatPartition partition = manager.createNewFlatPartition(newId);
 		for (Node node : nodeList){
 			INeo4emfObject obj = (INeo4emfObject)ePck.getEFactoryInstance().create(eClass);
 			obj.setNodeId(node.getId());
 			obj.setPartitionId(newId);
 			eObjectList.add(obj);
-			
+			partition.put(obj);
 		}
+		manager.createNewPartitionHistory(newId);
+		manager.addObjectsToContents(eObjectList);
+		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-sizeChange);
 		return eObjectList;
 	}
 	/**
@@ -144,7 +150,6 @@ public class Loader implements ILoader {
 			}
 		}
 		return metamodel;
-
 	}
 	/**
 	 * register a subPackage if not exists 
@@ -183,6 +188,7 @@ public class Loader implements ILoader {
 		}catch (Exception e)
 		{	
 			manager.shutdown();
+			e.printStackTrace();
 		}
 
 	}
@@ -193,67 +199,111 @@ public class Loader implements ILoader {
 	@Override	
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) {
 		try {
-			int size = ChangeLog.getInstance().size();
-			int newId=((INeo4emfObject)obj).getPartitionId();
-			if (!manager.isHead(obj)){
-				newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)obj).getPartitionId());
-				manager.createNewPartitionHistory(newId);
-			}
-
-			EStructuralFeature str = Loader.getFeatureFromID(obj,featureId);
-			EList<EObject> objectList = new BasicEList<EObject>();
-			for (Node n : nodes){
-				EObject object = getObjectsFromNodeIfNotExists(obj, n, newId);
-				objectList.add(object);
-				manager.putToProxy((INeo4emfObject)object, str, newId);
-				manager.updateProxyManager((INeo4emfObject)object, str);
-			}
-
-			if (str.isMany())
-				((EList<EObject>)obj.eGet(str)).addAll(objectList);
-			else obj.eSet(str, objectList.get(0));
-			ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);}
+				int size = ChangeLog.getInstance().size();
+				int newId=((INeo4emfObject)obj).getPartitionId();
+				if (!manager.isHead(obj)){
+					newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)obj).getPartitionId());
+					manager.createNewPartitionHistory(newId);
+					}	
+				EReference str = Loader.getFeatureFromID(obj,featureId);	
+				List<EObject> objectList = new ArrayList<EObject>();
+				for (Node n : nodes){
+					EObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment());				
+					objectList.add(object);
+					manager.putToProxy((INeo4emfObject)object, str, newId);
+					//manager.updateProxyManager((INeo4emfObject)object, str);
+					}
+				if (str.isMany())
+					((EList<EObject>)obj.eGet(str)).addAll(objectList);
+				else obj.eSet(str, objectList.get(0));
+				ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);}
 		catch(Exception e){
 			manager.shutdown();
+			e.printStackTrace();
+
 		}
 
 	}
 
-
+	@Override
+	public EObject getContainerOnDemand (EObject eObject, int featureId, Node node, Node containerNode)  {
+		EObject result = null;
+		int size = ChangeLog.getInstance().size();
+		//result = getObjectsFromNodeIfNotExists(eObject, containerNode, ((INeo4emfObject)eObject).getPartitionId(),true);
+		int newId=((INeo4emfObject)eObject).getPartitionId();
+		if (!manager.isHead(eObject)){
+			newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)eObject).getPartitionId());
+			manager.createNewPartitionHistory(newId);
+			}
+		result = getObjectsFromNodeIfNotExists(eObject, containerNode, newId, false);
+		manager.putToProxy((INeo4emfObject)result, Loader.getFeatureFromID(eObject, featureId), newId);
+		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
+		// TODO setup all other References 
+		return result;
+	}
+	
 	/**
 	 * return the <b>Structural Feature from its ID</b>
 	 * @param obj {@link EObject}
 	 * @param featureId {@link Int}
 	 * @return
 	 */
-	private static EStructuralFeature getFeatureFromID(EObject obj,
+	private static EReference getFeatureFromID(EObject obj,
 			int featureId) {
-		for (EStructuralFeature ref : obj.eClass().getEAllStructuralFeatures())
+		for (EReference ref : obj.eClass().getEAllReferences())
 			if (ref.getFeatureID()==featureId) return ref;
 		return null;
 	}
+	
 	/**
-	 * Get object from the node if not exist 
+	 * Get EMF object from a Neo4j node 
+	 * if the node does not exist it creates a new node 
+	 * otherwise it creates a proxy and or move it to a new partition 
 	 * @param eObject {@link EObject}
 	 * @param node {@link Node}
-	 * @param newID {@link Int}
-	 * @return
+	 * @param newID {@link Integer}
+	 * @param forceMove {@link Boolean}
+	 * @return {@link EObject}
 	 */
-	private EObject getObjectsFromNodeIfNotExists(EObject eObject, Node node, int newID) {
-
+	private EObject getObjectsFromNodeIfNotExists(EObject eObject, Node node, int newID, boolean forceMove) {
+		
 		EObject eObj = manager.getObjectFromProxy(node.getId());
 		if (eObj == null ) {
 			eObj = getObjectsFromNode(node);
 			((INeo4emfObject)eObj).setPartitionId(newID);}
-		else {eObj = getObjectsFromNode(node);
-		((INeo4emfObject)eObj).setPartitionId(((INeo4emfObject)eObject).getPartitionId());	
-		((INeo4emfObject)eObj).setProxy(true);
+		else {
+			eObj = getObjectsFromNode(node);
+			int PID = forceMove ? newID :((INeo4emfObject)eObject).getPartitionId();
+			((INeo4emfObject)eObj).setPartitionId(PID);
+			if (forceMove)
+			((INeo4emfObject)eObject).setProxy(true);
+			else ((INeo4emfObject)eObj).setProxy(true);
+			((INeo4emfObject)eObject).setPartitionId(PID);
 		}
+		
 		return eObj;
 	}
 	
+	public EList<EClass> subClassesOf(EClass eClass) {
+		EList<EClass> classesList = new BasicEList<EClass>();
+		EList<EClass> allClasses = getAllClassesInPackages(eClass.getEPackage());
+		for (EClass cls : allClasses){
+			if (cls.getEAllSuperTypes().contains(eClass)){
+				classesList.add(cls);
+			}
+		}
+		classesList.add(eClass);
+		return classesList;
+	}
 
-
+	private EList<EClass> getAllClassesInPackages(EPackage ePackage) {
+		EList<EClass> eClassesList = new BasicEList<EClass>(); 
+		for ( EClassifier eClassifier : ePackage.getEClassifiers()){
+			if (eClassifier instanceof EClass)
+				eClassesList.add((EClass)eClassifier );
+		}
+		return eClassesList;			
+	}
 
 }
 

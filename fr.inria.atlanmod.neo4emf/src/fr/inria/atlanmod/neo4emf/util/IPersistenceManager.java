@@ -25,9 +25,8 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
-import scala.collection.generic.BitOperations.Int;
-
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 
 public interface IPersistenceManager {
@@ -213,6 +212,16 @@ public interface IPersistenceManager {
 	 * @return {@link List}
 	 */
 	public EList<INeo4emfObject> getAllInstancesOfType(EClass eClass);
+	/**
+	 * Get the element's container
+	 * @param eObject
+	 * @param featureId
+	 * @return {@link EObject}
+	 * @throws Exception 
+	 */
+	public EObject getContainerOnDemand(EObject eObject, int featureId);
+	
+	public FlatPartition createNewFlatPartition(int id);
 	
 
 	
