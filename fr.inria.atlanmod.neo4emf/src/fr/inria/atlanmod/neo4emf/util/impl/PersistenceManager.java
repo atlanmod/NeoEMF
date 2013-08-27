@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -258,8 +257,8 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void unloadPartition(int PID){
 		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(PID);
-		unloader.unloadPartition(partition);
-		proxyManager.getWeakObjectsTree().remove(PID);
+		unloader.unloadPartition(partition, PID);
+		//proxyManager.getWeakObjectsTree().remove(PID);
 		Runtime.getRuntime().gc();
 	}
 
@@ -271,7 +270,7 @@ public class PersistenceManager implements IPersistenceManager {
 
 	@Override
 	public void unload(int unloadStrategyId) {
-		AbstractPartition partition = null;
+		int partition = -1;
 		switch (unloadStrategyId) {
 		case IUnloader.LIFO:
 			partition = proxyManager.getLIFOPartition();
@@ -286,7 +285,7 @@ public class PersistenceManager implements IPersistenceManager {
 			partition = proxyManager.getLeastFrequentlyPartition();
 			break;
 		}
-		unloader.unloadPartition(partition);	
+		unloader.unloadPartition(proxyManager.getWeakObjectsTree().get(partition), partition);	
 	}
 
 	@Override
@@ -328,5 +327,29 @@ public class PersistenceManager implements IPersistenceManager {
 		//proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex, oldIndex);
 		return newIndex;
 	}
+	@Override
+	public void moveToPartition(EObject eObj, int fromPID, int toPID, int featureId) {
+		proxyManager.moveToPartition(eObj, fromPID, toPID, featureId);
+		
+	}
+
+	@Override
+	public void setUsageTrace(int PID, int partitionId, int featureId, EObject eObject) {
+		((ProxyManager)proxyManager).addUsageTrace(PID, partitionId, featureId, eObject);
+		
+	}
+
+	@Override
+	public Map<Integer, ArrayList<INeo4emfObject>> getAffectedElement(
+			INeo4emfObject neoObj, int key) {
+		return proxyManager.getSideEffectsMap( neoObj, key);
+	}
+
+	@Override
+	public void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map) {
+		eRef2relType = map;
+		
+	}
+
 
 }

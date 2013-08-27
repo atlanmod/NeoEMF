@@ -17,6 +17,8 @@ import java.util.Map;
 import java.awt.Point;
 
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
 import org.neo4j.graphdb.RelationshipType;
 
@@ -25,14 +27,28 @@ import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
 
 public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 		INeo4emfResourceFactory {
-
+	
+	
+	Map<String,Map<Point,RelationshipType>> relationshipsMap; 
+	
+	public Neo4emfResourceFactory(Map<String, Map<Point, RelationshipType>> map) {
+		super();
+		this.relationshipsMap = map;
+	}
+	public Neo4emfResourceFactory() {
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	/**
 	 * creates the resource 
 	 */
-	public INeo4emfResource createResource() {
-		// TODO Auto-generated method stub
-		return null;
+	public INeo4emfResource createResource(URI uri) {
+		
+		Assert.isNotNull(relationshipsMap, "RelationshipType map is null");
+		Assert.isNotNull(uri, "URI is Null");
+		
+		return new Neo4emfResource(uri, relationshipsMap);
+		
 	}
 	/**
 	 * @ see {@link INeo4emfResourceFactory#createResource(String, Map)}
@@ -49,6 +65,12 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 		if (eINSTANCE == null)
 			return new Neo4emfResourceFactory();
 		return eINSTANCE;
+	}
+	
+	@Override
+	public INeo4emfResourceFactory setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map){
+		this.relationshipsMap = map;
+		return (INeo4emfResourceFactory) this;
 	}
 	
 }

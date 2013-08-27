@@ -1,5 +1,6 @@
 package fr.inria.atlanmod.neo4emf.util.impl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -206,13 +207,15 @@ public class Loader implements ILoader {
 					manager.createNewPartitionHistory(newId);
 					}	
 				EReference str = Loader.getFeatureFromID(obj,featureId);	
-				List<EObject> objectList = new ArrayList<EObject>();
+				List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
 				for (Node n : nodes){
-					EObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment());				
+					INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment(),featureId);				
 					objectList.add(object);
 					manager.putToProxy((INeo4emfObject)object, str, newId);
 					//manager.updateProxyManager((INeo4emfObject)object, str);
 					}
+				if (!str.isContainment())
+					manager.addObjectsToContents(objectList);
 				if (str.isMany())
 					((EList<EObject>)obj.eGet(str)).addAll(objectList);
 				else obj.eSet(str, objectList.get(0));
@@ -235,10 +238,12 @@ public class Loader implements ILoader {
 			newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)eObject).getPartitionId());
 			manager.createNewPartitionHistory(newId);
 			}
-		result = getObjectsFromNodeIfNotExists(eObject, containerNode, newId, false);
+		result = getObjectsFromNodeIfNotExists(eObject, containerNode, newId, false, featureId);
+		ArrayList<INeo4emfObject> arrayResult =new ArrayList<INeo4emfObject>();
+		arrayResult.add((INeo4emfObject)result);
+		manager.addObjectsToContents(arrayResult);
 		manager.putToProxy((INeo4emfObject)result, Loader.getFeatureFromID(eObject, featureId), newId);
 		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
-		// TODO setup all other References 
 		return result;
 	}
 	
@@ -258,29 +263,32 @@ public class Loader implements ILoader {
 	/**
 	 * Get EMF object from a Neo4j node 
 	 * if the node does not exist it creates a new node 
-	 * otherwise it creates a proxy and or move it to a new partition 
+	 * otherwise it returns the given abject after making
+	 *  sure that the new partition does not fit more to it 
 	 * @param eObject {@link EObject}
 	 * @param node {@link Node}
 	 * @param newID {@link Integer}
 	 * @param forceMove {@link Boolean}
+	 * @param featureId 
 	 * @return {@link EObject}
 	 */
-	private EObject getObjectsFromNodeIfNotExists(EObject eObject, Node node, int newID, boolean forceMove) {
+	private INeo4emfObject getObjectsFromNodeIfNotExists(EObject eObject, Node node, int newID, boolean forceMove, int featureId) {
 		
-		EObject eObj = manager.getObjectFromProxy(node.getId());
+		INeo4emfObject eObj = (INeo4emfObject) manager.getObjectFromProxy(node.getId());
 		if (eObj == null ) {
 			eObj = getObjectsFromNode(node);
 			((INeo4emfObject)eObj).setPartitionId(newID);}
 		else {
-			eObj = getObjectsFromNode(node);
 			int PID = forceMove ? newID :((INeo4emfObject)eObject).getPartitionId();
 			((INeo4emfObject)eObj).setPartitionId(PID);
-			if (forceMove)
-			((INeo4emfObject)eObject).setProxy(true);
-			else ((INeo4emfObject)eObj).setProxy(true);
-			((INeo4emfObject)eObject).setPartitionId(PID);
+			if (forceMove){
+				manager.moveToPartition(eObj,((INeo4emfObject)eObject).getPartitionId(),PID, featureId);
+				manager.setUsageTrace(PID,((INeo4emfObject)eObject).getPartitionId(), featureId, eObject);
+			}
+			else
+				manager.setUsageTrace(((INeo4emfObject)eObject).getPartitionId(),PID, featureId, eObject);
+			
 		}
-		
 		return eObj;
 	}
 	

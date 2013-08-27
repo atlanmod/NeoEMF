@@ -14,19 +14,25 @@ package fr.inria.atlanmod.neo4emf;
 import java.awt.Point;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.neo4j.graphdb.RelationshipType;
 
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResourceFactory;
 
 
-public interface INeo4emfResourceFactory  {
+
+public interface INeo4emfResourceFactory extends Resource.Factory {
 	
 		/**
 		 * The singleton instance
 		 */
 		INeo4emfResourceFactory eINSTANCE = Neo4emfResourceFactory.init();
-		public INeo4emfResource createResource();
+		/**
+		 * Creates a resource from an URI
+		 */
+		public abstract INeo4emfResource createResource(URI uri);
 		
 		/**
 		 * creates {@link Neo4emfResource} 
@@ -37,5 +43,7 @@ public interface INeo4emfResourceFactory  {
 		INeo4emfResource createResource(String storeDirectory,
 				Map< String ,Map <Point, RelationshipType>> map);
 
-	
+		 INeo4emfResourceFactory setRelationshipsMap(Map<String, Map<Point, RelationshipType>> map);
+
+		
 }

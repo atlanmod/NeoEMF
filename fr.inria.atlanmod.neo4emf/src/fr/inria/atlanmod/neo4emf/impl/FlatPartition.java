@@ -44,5 +44,11 @@ public class FlatPartition extends AbstractPartition {
 		map.put(obj.getNodeId(), obj);
 		
 	}
+
+	@Override
+	public void remove(long nodeId) {
+		map.remove(nodeId);
+		
+	}
 	
 }

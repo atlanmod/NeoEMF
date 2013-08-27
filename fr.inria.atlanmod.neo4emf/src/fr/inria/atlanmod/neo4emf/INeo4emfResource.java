@@ -13,14 +13,16 @@ package fr.inria.atlanmod.neo4emf;
  * */
 
 
+import java.awt.Point;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.neo4j.graphdb.RelationshipType;
 
 
 
@@ -92,5 +94,10 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * @return {@link List}
 	 */
 	public EList<INeo4emfObject>  getAllInstances (int eClassID);
+	/**
+	 * Sets the relationships Map in the persistenceManager
+	 * @param map
+	 */
+	void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map);
 	
 }

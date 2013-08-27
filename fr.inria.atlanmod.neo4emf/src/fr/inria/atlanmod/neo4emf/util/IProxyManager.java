@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neo4emf.util;
  * @author Amine BENELALLAM
  * */
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jboss.util.collection.SoftValueTreeMap;
@@ -32,9 +34,11 @@ public interface IProxyManager {
 	void movePartitionTo(INeo4emfObject obj,int newIndex, int oldIndex);
 	void putHeadToProxy(INeo4emfObject obj);
 	void addNewHistory(int newId);
-	AbstractPartition getLeastRecentlyUsedPartition();
-	AbstractPartition getLIFOPartition();
-	AbstractPartition getLeastFrequentlyPartition();
-	AbstractPartition getFIFOPartition();
-	
+	int getLeastRecentlyUsedPartition();
+	int getLIFOPartition();
+	int getLeastFrequentlyPartition();
+	int getFIFOPartition();
+	void moveToPartition(EObject eObj,int fromPID, int toPID, int featureId);
+	Map<Integer, ArrayList<INeo4emfObject>> getSideEffectsMap(
+			INeo4emfObject neoObj, int key);	
 }

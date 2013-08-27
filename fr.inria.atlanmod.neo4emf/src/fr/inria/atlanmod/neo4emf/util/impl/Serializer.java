@@ -133,9 +133,12 @@ public class Serializer implements ISerializer {
 				|| str.equals("Long") 
 				|| str.equals("Float")
 				|| str.equals("String") 
-				|| str.equals("Double"))
+				|| str.equals("Double")
+				|| str.equals("Byte")
+				)
 			return false;
 		return true;
+		// TODO debug this instruction
 	}
 
 	@SuppressWarnings("unchecked")

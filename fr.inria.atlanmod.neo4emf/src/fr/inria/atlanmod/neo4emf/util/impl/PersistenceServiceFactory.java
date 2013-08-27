@@ -25,7 +25,7 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 	@Override	
  public IPersistenceService createPersistenceService (String path, IPersistenceManager persistenceService){
 		IPersistenceService service = new PersistenceService(path, persistenceService);
-		//registerShutdownHook(service);
+		registerShutdownHook(service);
 		return service;
 				
 	}
@@ -49,7 +49,7 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 			public void run()
 			{
 				graphDb.shutdown();
-				System.out.println("SHUTDOWN HOOK");
+				//System.out.println("SHUTDOWN HOOK");
 			}
 		} );
 	}

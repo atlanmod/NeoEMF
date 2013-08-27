@@ -16,8 +16,9 @@ package fr.inria.atlanmod.neo4emf.impl;
 import java.awt.Point;
 import java.util.Map;
 
-import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -50,12 +51,18 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 /**
  * Neo4emfResource Constructor  	
  * @param storeDirectory
+ * @param relationship map
  */
 public Neo4emfResource(String storeDirectory, Map<String,Map<Point,RelationshipType>> map) {
 		super();
 		this.storeDirectory=storeDirectory;
 		persistenceManager =  new PersistenceManager(this,storeDirectory,map);
 	}
+public Neo4emfResource(URI uri, Map<String,Map<Point,RelationshipType>> map){
+	super(uri);
+	this.storeDirectory=neo4emfURItoString(uri);
+	persistenceManager =  new PersistenceManager(this,storeDirectory,map);
+}
 /**
  * @link {@link INeo4emfResource#fetchAttributes(EObject)}
  */
@@ -130,6 +137,22 @@ public EObject getContainerOnDemand(EObject eObject, int featureId){
 	// TODO Auto-generated method stub
 		return persistenceManager.getContainerOnDemand(eObject,featureId);
 
+}
+@Override
+public void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map) {
+	persistenceManager.setRelationshipsMap(map);
+	
+}
+private static String neo4emfURItoString (URI uri){ 
+	Assert.isTrue(uri.scheme().equals("neo4emf"), "protocol shoul be neo4emf !!");
+	StringBuffer buff = new StringBuffer();
+	if (uri.hasDevice())
+		buff.append(uri.device()).append("/");
+	for (int i = 0; uri.segmentCount() > 0 && i < uri.segmentCount(); i++)
+		buff.append(uri.segment(i)).append("/");
+	return buff.toString();
+		
+	
 }
 
 }

@@ -2,7 +2,6 @@ package fr.inria.atlanmod.neo4emf.impl;
 
 import java.util.List;
 
-import org.jboss.util.collection.SoftValueTreeMap;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfPartition;
@@ -18,5 +17,7 @@ public abstract class AbstractPartition implements INeo4emfPartition {
 	public abstract INeo4emfObject get(long nodeId);
 
 	public abstract List<INeo4emfObject> flattened();
+
+	public abstract void remove(long nodeId);
 
 }

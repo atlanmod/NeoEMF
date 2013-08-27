@@ -1,15 +1,17 @@
 package fr.inria.atlanmod.neo4emf.util.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.util.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.util.IUnloader;
 
@@ -23,37 +25,54 @@ public class Unloader implements IUnloader {
 		//this.start();
 		options = mergeWithDefaultOptions(options);
 	}
-	private void unloadElement(EObject object) {
+	
+	private void unloadElement(EObject object, int key) {
 		INeo4emfObject neoObj = (INeo4emfObject)object;
-		if (neoObj.eIsProxy())
-			deleteObject(neoObj);	
+		if ( neoObj.eIsProxy())
+			deleteObject(neoObj);
+			//EcoreUtil.delete(neoObj);
 		else
-			delegateAndDelete(neoObj);
+			deleteObjectAndSideEffects(neoObj,key);
+			
 	}
 
+	private void deleteObjectAndSideEffects(INeo4emfObject neoObj, int key) {
+		
+		Map <Integer, ArrayList<INeo4emfObject>> affectedElements = manager.getAffectedElement(neoObj, key);
+		for (Map.Entry<Integer, ArrayList<INeo4emfObject>> element : affectedElements.entrySet()){
+			for (INeo4emfObject object : element.getValue()){
+				unloadElement(object, element.getKey());
+			}
+			
+		}
+		deleteObject(neoObj);
+		//EcoreUtil.delete(neoObj);
+	}
+	
 	private void deleteObject(EObject neoObj) {
 		List<EReference> refList=neoObj.eClass().getEAllReferences();
 		
 		((Neo4emfObject)neoObj).clearId();
-		for (EReference str : refList) {
-			
+		for (EReference str : refList) {	
 			if (neoObj.eGet(str)!=null)
 				neoObj.eSet(str, null);	
 		}
+		EcoreUtil.remove(neoObj);
 		neoObj = null;
 	}
 
-	private void delegateAndDelete(EObject eObject){
-		manager.delegate(eObject);
-		deleteObject(eObject);
-
-	}
+//	private void delegateAndDelete(EObject eObject){
+//		manager.delegate(eObject);
+//		deleteObject(eObject);
+//
+//	}
 
 	@Override
-	public void unloadPartition(AbstractPartition partition) { 
+	public void unloadPartition(AbstractPartition partition, int key) { 
 		for (INeo4emfObject neoObj : partition.flattened()){
-			unloadElement(neoObj);			
+			unloadElement(neoObj, key);			
 		}
+		
 		//unloadElement(partition.geteObjet());
 	}
 
@@ -71,8 +90,6 @@ public class Unloader implements IUnloader {
 
 	}
 
-
-	@SuppressWarnings("deprecation")
 	public void shutUnloader(){
 		//this.stop();
 	}

@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neo4emf.util;
  * @author Amine BENELALLAM
  * */
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -222,6 +223,12 @@ public interface IPersistenceManager {
 	public EObject getContainerOnDemand(EObject eObject, int featureId);
 	
 	public FlatPartition createNewFlatPartition(int id);
+	public void moveToPartition(EObject eObject, int fromPID, int toPID, int featureId);
+	public void setUsageTrace(int pID, int partitionId, int featureId, EObject eObject);
+	public Map<Integer, ArrayList<INeo4emfObject>> getAffectedElement(
+			INeo4emfObject neoObj, int key);
+	public void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map);
+	//public void deleteFromContents(EObject neoObj);
 	
 
 	

@@ -3,6 +3,7 @@ package fr.inria.atlanmod.neo4emf.impl;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class Partition extends AbstractPartition {
 		
 	}
 	
-	private Tail getTail(int featureID) {
+	public Tail getTail(int featureID) {
 		for (Tail tail : tails)
 			if (tail.getFeatureID() == featureID ) return tail;
 		return null;
@@ -74,7 +75,7 @@ public class Partition extends AbstractPartition {
 	 *
 	 */
 	
-	protected static class Tail {
+	public static class Tail {
 		protected int featureID;
 		protected SoftValueTreeMap<Long, INeo4emfObject> objectsMap;
 		protected Tail(int featureID) {
@@ -104,11 +105,13 @@ public class Partition extends AbstractPartition {
 			this.objectsMap = objectsMap;
 		}
 		
-		protected void put (long key, EObject value){
+		public void put (long key, EObject value){
 			objectsMap.put(key, (INeo4emfObject)value);
 			
 		}
-
+		protected void remove (long key){
+			if (containsKey(key)) objectsMap.remove(key);
+		}
 
 		protected Collection<? extends INeo4emfObject> flattenedObjects() {
 			List<INeo4emfObject> list = new ArrayList<INeo4emfObject>();
@@ -124,6 +127,27 @@ public class Partition extends AbstractPartition {
 				flattenedList.addAll(tail.flattenedObjects());
 			flattenedList.add((INeo4emfObject) eObjet.get());
 		return flattenedList;
+	}
+
+	@Override
+	public void remove(long nodeId) {
+		for (Tail tail : tails){
+			if (tail.containsKey(nodeId)){
+				tail.remove(nodeId);
+				return;
+			}
+				
+		}
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<INeo4emfObject> getTailByFeatureID(int featureID) {
+		for (Tail tail : tails)
+			if (tail.featureID == featureID){
+				return (List<INeo4emfObject>) tail.flattenedObjects();
+			}
+		return Collections.emptyList();		
 	}
 
 	
