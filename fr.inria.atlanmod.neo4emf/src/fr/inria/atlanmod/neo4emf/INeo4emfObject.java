@@ -42,11 +42,6 @@ public interface INeo4emfObject extends EObject, Comparable <INeo4emfObject>{
 		public void setPartitionId(int id);
 
 		void setProxy(boolean isProxy);
-
-//		boolean isHasProxy();
-//
-//		void setHasProxy(boolean hasProxy);
-	
 		
 
 }

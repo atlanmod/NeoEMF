@@ -42,8 +42,12 @@ public interface INeo4emfResourceFactory extends Resource.Factory {
 		 */
 		INeo4emfResource createResource(String storeDirectory,
 				Map< String ,Map <Point, RelationshipType>> map);
-
-		 INeo4emfResourceFactory setRelationshipsMap(Map<String, Map<Point, RelationshipType>> map);
+		/**
+		 * Sets the relationshipsMap to create the Factory
+		 * @param map
+		 * @return
+		 */
+		INeo4emfResourceFactory setRelationshipsMap(Map<String, Map<Point, RelationshipType>> map);
 
 		
 }

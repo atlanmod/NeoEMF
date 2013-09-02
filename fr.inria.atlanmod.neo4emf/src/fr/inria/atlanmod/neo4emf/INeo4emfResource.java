@@ -24,10 +24,19 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.neo4j.graphdb.RelationshipType;
 
+import fr.inria.atlanmod.neo4emf.drivers.ILoader;
+import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
+
 
 
 
 public interface INeo4emfResource extends Resource, Resource.Internal {
+	
+	public String MAX_OPERATIONS_PER_TRANSACTION = ISerializer.MAX_OPERATIONS_PER_TRANSACTION;
+	
+	public static final String DUPLICATION_TOLERANT = ILoader.DUPLICATION_TOLERANT;
+	
+	public static final String DYNAMIC_LOADING = ILoader.DYNAMIC_LOADING;
 	/**
 	 * Fetches the single-valued attributes lazily on demand  
 	 * @param object {@link EObject}
@@ -99,5 +108,6 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * @param map
 	 */
 	void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map);
+	
 	
 }

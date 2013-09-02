@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/abenelal/Downloads/jboss-common-core-2.2.22.GA.jar"/>
+	<classpathentry kind="lib" path="C:/eclispe_juno_32/eclipse/plugins/org.eclipse.emf.ecore.xmi_2.9.0.v20130528-0742.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
