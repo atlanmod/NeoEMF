@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neo4emf;
  * Descritpion ! To come
  * @author Amine BENELALLAM
  * */
-import java.awt.Point;
+import fr.inria.atlanmod.neo4emf.Point;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;

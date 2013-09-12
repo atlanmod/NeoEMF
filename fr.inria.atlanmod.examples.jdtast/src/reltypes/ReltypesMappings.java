@@ -9,7 +9,7 @@ import Core.CorePackage;
 import DOM.DOMPackage;
 
 
-import java.awt.Point;
+import fr.inria.atlanmod.neo4emf.Point;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -596,10 +596,7 @@ public class ReltypesMappings {
 			mapDOMPackage.put(new Point(DOMPackage.SINGLE_MEMBER_ANNOTATION,DOMPackage.SINGLE_MEMBER_ANNOTATION__VALUE),Reltypes.SINGLE_MEMBER_ANNOTATION__VALUE);
 					
 			reference2relation.put(DOMPackage.eNS_URI,mapDOMPackage);
-		
-		
-			
-		
+					
 		}
 		
 	/**

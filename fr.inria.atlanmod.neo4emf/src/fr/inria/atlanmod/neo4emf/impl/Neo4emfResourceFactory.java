@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neo4emf.impl;
  * */
 
 import java.util.Map;
-import java.awt.Point;
+import fr.inria.atlanmod.neo4emf.Point;
 
 
 import org.eclipse.core.runtime.Assert;
@@ -44,8 +44,8 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 	 */
 	public INeo4emfResource createResource(URI uri) {
 		
-		Assert.isNotNull(relationshipsMap, "RelationshipType map is null");
-		Assert.isNotNull(uri, "URI is Null");
+		// Assert.isNotNull(relationshipsMap, "RelationshipType map is null");
+		//Assert.isNotNull(uri, "URI is Null");
 		
 		return new Neo4emfResource(uri, relationshipsMap);
 		

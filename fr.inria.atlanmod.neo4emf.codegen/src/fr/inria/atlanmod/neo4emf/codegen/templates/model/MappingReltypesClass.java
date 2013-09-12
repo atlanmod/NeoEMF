@@ -66,7 +66,7 @@ public class MappingReltypesClass
     stringBuffer.append("$");
     stringBuffer.append(TEXT_4);
     genModel.addImport("org.neo4j.graphdb.RelationshipType");
-    genModel.addImport("java.awt.Point");
+    genModel.addImport("fr.inria.atlanmod.neo4emf.Point");
     genModel.addImport("java.util.Map");
     genModel.addImport("java.util.HashMap");
     genModel.markImportLocation(stringBuffer);

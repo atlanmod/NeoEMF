@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * Descritpion ! To come
  * @author Amine BENELALLAM
  * */
-import java.awt.Point;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,7 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.Node;
@@ -31,11 +32,13 @@ import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.*;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
+import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 
 public class PersistenceManager implements IPersistenceManager {
@@ -126,9 +129,16 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	@Override
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
+		if (eRef2relType==null || eRef2relType.isEmpty())
+			setupERelationshipTypesMap(key);
 		return eRef2relType.get(key).get(new Point (clsID,eRefID));
 
 	}
+	private void setupERelationshipTypesMap(String key) {
+		eRef2relType = Neo4emfResourceUtil.createRelationshipTypesMap(key);
+		resource.setRelationshipsMap(eRef2relType);
+	}
+
 	@Override
 	public Node createNodefromEObject(EObject eObject) {
 		return persistenceService.createNodeFromEObject(eObject);
@@ -178,8 +188,11 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void getOnDemand(EObject obj, int featureId) {	
 		try{
+			EClass eClass = obj.eClass();
+			EPackage ePackage = eClass.getEPackage();
+			RelationshipType relationship = getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
 			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),
-					getRelTypefromERef(obj.eClass().getEPackage().getNsURI(), obj.eClass().getClassifierID(), featureId));
+						relationship);
 			loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
 		}catch(Exception e){ 
 			shutdown();
@@ -347,8 +360,7 @@ public class PersistenceManager implements IPersistenceManager {
 
 	@Override
 	public void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map) {
-		eRef2relType = map;
-		
+		eRef2relType = map;	
 	}
 
 

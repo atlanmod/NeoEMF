@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -26,6 +27,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.codegen.util.CodeGenUtil;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -33,63 +35,117 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
-import org.neo4j.graphdb.index.IndexManager;
-
-
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService;
 
 public class Neo4emfResourceUtil {
 	
-	public void importFromXMI(Resource resource, String xmiPath, String outputPath){
+	public static void importFromXMI(String xmiPath, String outputPath, String ecorePath){
 		// Init variables 
 		deleteFileOrDirectory(new File(outputPath));
 		IPersistenceService graphDB = new PersistenceService(outputPath,null);
-		// Serialize the resource in Neo4j DB	
-		serializeResource(graphDB,xmiPath, resource);
+		// Serialize the resource in Neo4j DB
+		Resource metaResource = intiMetalmodel(ecorePath);
+		serializeResource(graphDB,xmiPath, metaResource);
 		
 	}
 	
-	private void serializeResource(IPersistenceService graphDB, String xmiPath, Resource resource){
+	private static Resource intiMetalmodel(String ecorePath) {
+		 URI modelFileURI = URI.createURI(ecorePath);
+		 ResourceSet rSet = new ResourceSetImpl();
+		 rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
+         rSet.setPackageRegistry(EPackage.Registry.INSTANCE);
+         Resource metaResource = rSet.getResource(modelFileURI, true);
+         registerResource(metaResource);
+		return metaResource;
+	}
+
+	
+	public static void registerResource(Resource resource){
+		TreeIterator<EObject> iter = resource.getAllContents();
+        while (iter.hasNext()){
+       	 EObject object =  iter.next();
+       	 if (object instanceof EPackage){
+       		 EPackage p = (EPackage)object;
+       		    EPackage.Registry.INSTANCE.put(p.getNsURI(), p);
+       	 }	  
+        }
+	}
+	private static void serializeResource(IPersistenceService graphDB, String xmiPath, Resource metaResource){
 		
-		try {
-		EList<EObject> objectsList= resourceToObjectsList(xmiPath);
+		try {		
+			Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+			Map<String, Object> map = reg.getExtensionToFactoryMap();
+			map.put("xmi", new XMIResourceFactoryImpl());
+			// Create a resource set to hold the resources.
+			ResourceSet resourceSet = new ResourceSetImpl();
+			// Create a new empty resource.
+			//File file = new File(xmiPath);
+			URI uri = URI.createFileURI(xmiPath);
+			Resource resource = resourceSet.getResource(uri, true);
+			//System.out.println(" roots count is :  "+resource.getContents().size());
+			//EObject root = resource.getContents().get(0);
+		EList<EObject> objectsList= resourceToObjectsList(resource);
 		Map<EObject,Long> eObjectsToNodes =  persistNodes(graphDB, objectsList);
 		System.out.println("persist the nodes");
-		persistReferences(graphDB, objectsList, eObjectsToNodes, resource);
+		persistReferences(graphDB, objectsList, eObjectsToNodes, metaResource);
 		System.out.println("Finish");
 		}finally{
 			graphDB.shutdown();
 		}
 	}	
 
+	public static Map<String, Map<Point, RelationshipType>>createRelationshipTypesMap(String key){
+		Map<String,Map<Point, RelationshipType>> result = new HashMap<String,Map<Point, RelationshipType>>();
+		EPackage pck = EPackage.Registry.INSTANCE.getEPackage(key);
+		Assert.isNotNull(pck, "Unregistered ePackage with NS_URI: "+key );
+		Resource resource = pck.eResource();
+		for (EPackage ePck : getResourcePackages(resource)){
+			result.put(ePck.getNsURI(), createRelationshipTypesMapForPackage(ePck));
+		}
+		return result;
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private static EPackage getFirstParentEPackage(EPackage pck) {
+		return pck.getESuperPackage()== null ? pck : getFirstParentEPackage(pck.getESuperPackage());
+		
+	}
 
-private Map<Point, RelationshipType> createRelTypesMap(Resource resource) {
+	public static Map<Point, RelationshipType> createRelationshipTypesMapForPackage(EPackage pck){
 		Map<Point, RelationshipType> map = new HashMap<Point, RelationshipType>();
-		for (EPackage pck : getResourcePackages(resource)){
 		for (EClass clsfier : getOrderedClassifiers(pck)){
 			for (EStructuralFeature str : clsfier.getEAllReferences())
-				if (map.containsKey(new Point(clsfier.getClassifierID(), str.getFeatureID())))
-				map.put(new Point(clsfier.getClassifierID(), str.getFeatureID()), DynamicRelationshipType.withName(formatRelationshipName(str)));
-			}
+				if (! map.containsKey(new Point(clsfier.getClassifierID(), str.getFeatureID()))){
+					String stri = formatRelationshipName(str);
+					map.put(new Point(clsfier.getClassifierID(), str.getFeatureID()), DynamicRelationshipType.withName(stri));
+				}
+		}
+		return map;
+	}
+private static Map<Point, RelationshipType> createRelTypesMap(Resource resource) {
+		Map<Point, RelationshipType> map = new HashMap<Point, RelationshipType>();
+		for (EPackage pck : getResourcePackages(resource)){
+			map.putAll(createRelationshipTypesMapForPackage(pck));
 		}
 		return map;
 	}
 
 
-private String formatRelationshipName(EStructuralFeature str) {
-	return FormatClassifierName(str.getEType()) + "__" + CodeGenUtil.format(str.getName(), '_', null, false, false).toUpperCase();
+private static String formatRelationshipName(EStructuralFeature str) {
+	return FormatClassifierName(str.getEContainingClass()) + "__" + CodeGenUtil.format(str.getName(), '_', null, false, false).toUpperCase();
 	
 }
-private String FormatClassifierName(EClassifier cls)
+private static String FormatClassifierName(EClassifier cls)
 {
   String name = cls.getName();
   String prefix = cls.getEPackage().getNsPrefix();
   return CodeGenUtil.format(name, '_', prefix, true, true).toUpperCase();
 }
 
-private EList<EClass> getOrderedClassifiers(EPackage package_) {
+private static EList<EClass> getOrderedClassifiers(EPackage package_) {
 	EList<EClass> result = new BasicEList<EClass>();
 	Set<EClass> resultSet = new HashSet<EClass>();
 
@@ -97,7 +153,7 @@ private EList<EClass> getOrderedClassifiers(EPackage package_) {
     {
       List<EClass> extendChain = new LinkedList<EClass>();
       Set<EClass> visited = new HashSet<EClass>();
-      for (EClass class_ = iter.next(); class_ != null && visited.add(class_); class_ = class_.getESuperTypes().get(0))
+      for (EClass class_ = iter.next(); class_ != null && visited.add(class_); class_ = class_.getESuperTypes().isEmpty()? null : class_.getESuperTypes().get(0))
       {
         if (package_ == class_.getEPackage() && resultSet.add(class_))
         {
@@ -110,16 +166,17 @@ private EList<EClass> getOrderedClassifiers(EPackage package_) {
 }
 
 
-private EList<EClass> getEClasses(EPackage package_) {
+private static EList<EClass> getEClasses(EPackage package_) {
 	EList<EClass> listCls = new BasicEList<EClass>();
-	
-	return listCls;
-	
-	
+	for (EClassifier clsfier : package_.getEClassifiers()){
+		if (clsfier instanceof EClass)
+			listCls.add((EClass)clsfier);
+	}
+	return listCls;	
 }
 
 
-private EList<EPackage> getResourcePackages(Resource resource){
+private static EList<EPackage> getResourcePackages(Resource resource){
 	EList<EPackage> pckList = new BasicEList<EPackage>(); 
 	Iterator<EObject> iterator = resource.getAllContents();
 	while (iterator.hasNext()){
@@ -150,7 +207,7 @@ private EList<EPackage> getResourcePackages(Resource resource){
 
 
 
-	private void persistReferences(IPersistenceService graphDB, 
+	private static void persistReferences(IPersistenceService graphDB, 
 			EList<EObject> objectsList,
 			Map<EObject,Long> eObjectsToNodes,
 			Resource resource) {
@@ -195,7 +252,7 @@ private EList<EPackage> getResourcePackages(Resource resource){
 		}
 	}
 
-	private void createPropertyForObjects(IPersistenceService graphDB,
+	private static void createPropertyForObjects(IPersistenceService graphDB,
 						Map<EObject, Long> eObjectsToNodes,
 					EObject eObject,
 				EObject eObjectEnd, 
@@ -208,20 +265,9 @@ private EList<EPackage> getResourcePackages(Resource resource){
 		// get the reltype
 	}
 
-	private EList<EObject> resourceToObjectsList(String xmiPath){
+	private  static EList<EObject> resourceToObjectsList(Resource resource){
 		EList<EObject> objectsList = new BasicEList<EObject>();	
-		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-		Map<String, Object> map = reg.getExtensionToFactoryMap();
-		map.put("xmi", new XMIResourceFactoryImpl());
-		// Create a resource set to hold the resources.
-		ResourceSet resourceSet = new ResourceSetImpl();
-		// Create a new empty resource.
-		//File file = new File(xmiPath);
-		URI uri = URI.createFileURI(xmiPath);
-
-		Resource resource = resourceSet.getResource(uri, true);
-		//System.out.println(" roots count is :  "+resource.getContents().size());
-		//EObject root = resource.getContents().get(0);
+		
 
 		TreeIterator<EObject> iterator = resource.getAllContents();
 		while (iterator.hasNext()){
@@ -234,7 +280,7 @@ private EList<EPackage> getResourcePackages(Resource resource){
 		return objectsList;
 	}
 
-	public Node createWithIndexIfNotExists(EClass c, 
+	public static Node createWithIndexIfNotExists(EClass c, 
 			IPersistenceService graphDB ){		
 		if (getMetaIndex(graphDB).get(IPersistenceService.ID_META, c.getEPackage().getName()+"_"+c.getClassifierID()).getSingle() != null)
 			return getMetaIndex(graphDB).get(IPersistenceService.ID_META, c.getEPackage().getName()+"_"+c.getClassifierID()).getSingle();
@@ -245,7 +291,7 @@ private EList<EPackage> getResourcePackages(Resource resource){
 		return n;					
 	}
 
-	public Node createResourceNodeIfAbsent(IPersistenceService graphDB){
+	public static Node createResourceNodeIfAbsent(IPersistenceService graphDB){
 		if (getMetaIndex(graphDB).get(IPersistenceService.ID_META, IPersistenceService.RESOURCE_NODE).getSingle() != null)
 			return getMetaIndex(graphDB).get(IPersistenceService.ID_META, IPersistenceService.RESOURCE_NODE).getSingle();
 		Node n = graphDB.createNode();
@@ -253,30 +299,27 @@ private EList<EPackage> getResourcePackages(Resource resource){
 		return n;					
 	}
 
-	public Index<Node> getMetaIndex(IPersistenceService graphDB){
-		
-		IndexManager index = graphDB.index();
-		return index.forNodes(IPersistenceService.META_ELEMENTS);
-			
+	public static Index<Node> getMetaIndex(IPersistenceService graphDB){		
+		return  graphDB.getMetaIndex();		
 	}
 
-	public Node createNodeFromEObject(EObject eObject,IPersistenceService graphDB) {
+	public static Node createNodeFromEObject(EObject eObject,IPersistenceService graphDB) {
 		Node node = graphDB.createNode();
-		Node typeNode = createWithIndexIfNotExists(eObject.eClass(), null);
+		Node typeNode = createWithIndexIfNotExists(eObject.eClass(), graphDB);
 		node.createRelationshipTo(typeNode, IPersistenceService.INSTANCE_OF);
 		if (isRoot(eObject))
 			createResourceNodeIfAbsent(graphDB).createRelationshipTo(node, IPersistenceService.IS_ROOT);		
 		return node;
 	}
 	
-	private boolean isRoot(EObject eObject) {		
+	private static boolean isRoot(EObject eObject) {		
 		if (eObject.eContainer() instanceof EPackage 
 				|| eObject.eContainer() == null ) 
 			return true;
 		return false;
 	}
 
-	private Map<EObject, Long> persistNodes(IPersistenceService graphDB,		
+	private static Map<EObject, Long> persistNodes(IPersistenceService graphDB,		
 							EList<EObject> objectsList){
 		
 		Map<EObject, Long>  eObjectsToNodes= new HashMap<EObject,Long>();
@@ -303,7 +346,7 @@ private EList<EPackage> getResourcePackages(Resource resource){
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void setupAttributes(EObject eObject, Node n) {
+	private static void setupAttributes(EObject eObject, Node n) {
 		// TODO Auto-generated method stub
 		EList<EAttribute> atrList= eObject.eClass().getEAllAttributes();
 		java.util.Iterator<EAttribute> it = atrList.iterator();
@@ -331,7 +374,7 @@ private EList<EPackage> getResourcePackages(Resource resource){
 		}
 	}
 	
-	private boolean isPrimitive(String str){
+	private static boolean isPrimitive(String str){
 		if (str.equals("Boolean") 
 				|| str.equals("Integer") 
 				|| str.equals("Short") 
@@ -342,4 +385,21 @@ private EList<EPackage> getResourcePackages(Resource resource){
 			return false;
 		return true;
 	}
+	
+	@SuppressWarnings("unused")
+	private static String formatUniquePackageName(EPackage pck){
+		return formatUniquePackageNameLevel_i(pck,"",0);
+	}
+
+	private static String formatUniquePackageNameLevel_i(EPackage pck,
+			String string, int i) {
+		String underScores = "";
+		for (int j=0;j>i;j++)
+			underScores+="_";
+		String localName= underScores+pck.getNsURI();
+		string +=localName;
+		return pck.getESuperPackage()!=null ? formatUniquePackageNameLevel_i(pck,string,i+1): string;
+	}
+	
+
 }

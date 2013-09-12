@@ -24,8 +24,8 @@
 	<classpathentry kind="lib" path="C:/neo4j-enterprise-1.9.RC1/lib/scala-library-2.10.0.jar"/>
 	<classpathentry kind="lib" path="C:/neo4j-enterprise-1.9.RC1/lib/server-api-1.9.RC1.jar"/>
 	<classpathentry kind="lib" path="C:/neo4j-enterprise-1.9.RC1/lib/slf4j-api-1.6.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/abenelal/Downloads/arakhneRefs-5.10.jar"/>
 	<classpathentry kind="lib" path="C:/Users/abenelal/Downloads/jboss-common-core-2.2.22.GA.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

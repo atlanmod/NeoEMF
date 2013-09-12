@@ -37,6 +37,7 @@ public class JDTASTMain {
 		EPackage.Registry.INSTANCE.put("org.amma.dsl.jdt.primitiveTypes", PrimitiveTypesPackage.eINSTANCE);
 		resource.load(null);
 		INeo4emfObject root = (INeo4emfObject) resource.getContents().get(0);
+		root.eGet(root.eClass().getEStructuralFeature(0));
 		 ((IJavaModelImpl)root).getExternalPackageFragmentRoots();
 		 System.out.println(root instanceof INeo4emfObject);
 		 System.out.println(root instanceof EObject);

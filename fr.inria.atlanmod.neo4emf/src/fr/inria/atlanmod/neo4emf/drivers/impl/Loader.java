@@ -12,14 +12,21 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+import org.eclipse.emf.ecore.impl.EcoreFactoryImpl;
 
 import org.neo4j.graphdb.Node;
 
+import sun.security.jca.GetInstance.Instance;
+
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.INeoFactory;
 import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
@@ -125,7 +132,16 @@ public class Loader implements ILoader {
 		String ns_uri = manager.getNodeContainingPackage(n);
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
 		int size = ChangeLog.getInstance().size();
-		INeo4emfObject obj = (INeo4emfObject)ePck.getEFactoryInstance().create(getEClassFromNodeName(eClassName,ePck));
+		EFactory factory =null;
+		String factoryInstanceName = ePck.getEFactoryInstance().getClass().getName();
+		if (ePck.getEFactoryInstance().getClass().getName().equals("org.eclipse.emf.ecore.impl.EFactoryImpl")){
+			factory = INeoFactory.eINSTANCE;
+			factory.setEPackage(ePck);
+					} 
+		else {
+			factory = ePck.getEFactoryInstance();
+					}
+		INeo4emfObject obj = (INeo4emfObject)factory.create(getEClassFromNodeName(eClassName,ePck));
 		obj.setNodeId(n.getId());	
 		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-size);
 		return obj ;
@@ -243,7 +259,7 @@ public class Loader implements ILoader {
 				if (!str.isContainment())
 					manager.addObjectsToContents(objectList);
 				if (str.isMany())
-					((EList<EObject>)obj.eGet(str)).addAll(objectList);
+					 obj.eSet(str,objectList);
 				else obj.eSet(str, objectList.get(0));
 				ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);}
 		catch(Exception e){

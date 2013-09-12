@@ -15,12 +15,14 @@ import org.eclipse.emf.ecore.EFactory;
  * @generated
  */
 public interface CoreFactory extends EFactory {
+	
 	/**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	
 	CoreFactory eINSTANCE = Core.impl.CoreFactoryImpl.init();
 
 	/**
@@ -30,6 +32,7 @@ public interface CoreFactory extends EFactory {
 	 * @return a new object of class '<em>IJava Model</em>'.
 	 * @generated
 	 */
+	
 	IJavaModel createIJavaModel();
 
 	/**
@@ -39,6 +42,7 @@ public interface CoreFactory extends EFactory {
 	 * @return a new object of class '<em>IJava Project</em>'.
 	 * @generated
 	 */
+	
 	IJavaProject createIJavaProject();
 
 	/**
@@ -48,6 +52,7 @@ public interface CoreFactory extends EFactory {
 	 * @return a new object of class '<em>Binary Package Fragment Root</em>'.
 	 * @generated
 	 */
+	
 	BinaryPackageFragmentRoot createBinaryPackageFragmentRoot();
 
 	/**

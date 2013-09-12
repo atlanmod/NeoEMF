@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neo4emf;
  * */
 
 
-import java.awt.Point;
+import fr.inria.atlanmod.neo4emf.Point;
 import java.util.List;
 import java.util.Map;
 

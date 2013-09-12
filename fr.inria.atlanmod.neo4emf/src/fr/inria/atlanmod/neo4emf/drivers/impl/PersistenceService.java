@@ -100,9 +100,8 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 	public ArrayList<Node> getAllRootNodes() {
 		Node resourceNode = getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle();
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
-
-
 	}
+	
 	private ArrayList<Node> fetchNodesByRT(long nodeId, RelationshipType relType, Direction direction) {
 		Traverser tvr =  setUpTraversal(nodeId,relType,direction);
 		return traverseNodes(tvr);
