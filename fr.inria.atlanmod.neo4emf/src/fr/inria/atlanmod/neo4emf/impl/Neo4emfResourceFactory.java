@@ -17,7 +17,6 @@ import java.util.Map;
 import fr.inria.atlanmod.neo4emf.Point;
 
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
 import org.neo4j.graphdb.RelationshipType;

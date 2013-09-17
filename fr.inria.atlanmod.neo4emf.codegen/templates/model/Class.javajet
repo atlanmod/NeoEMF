@@ -111,7 +111,6 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 	 * @generated
 	 */
 	<%=publicStaticFinalFlag%><%=genModel.getImportedName("java.lang.String")%> copyright = <%=genModel.getCopyrightFieldLiteral()%>;<%=genModel.getNonNLS()%>
-
 <%}%>
 <%if (isImplementation && genModel.getDriverNumber() != null) {%>
 	/**
@@ -220,6 +219,8 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 	 */
 	 	protected Data<%=genClass.getInterfaceName()%> data;
 	 <%}%>
+	 
+	 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -233,7 +234,21 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 		<%=genClass.getFlagsField(genFeature)%> |= <%=genFeature.getUpperName()%>_EFLAG<%if (!genFeature.isBooleanType()) {%>_DEFAULT<%}%>;
   <%}%>
 	}
-
+	
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	 <%if (! genModel.getRootExtendsClass().contains(genClass.getClassExtends().substring(9))){%>@Override<%}%>
+	protected Data<%=genClass.getInterfaceName()%> getData(){
+		if ( data == null || !(data instanceof Data<%=genClass.getInterfaceName()%>)){
+			data = new Data<%=genClass.getInterfaceName()%>();
+			if (isLoaded())
+			((INeo4emfResource) this.eResource()).fetchAttributes(this);
+			}
+		return (Data<%=genClass.getInterfaceName()%>) data;
+	}
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -472,29 +487,19 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 	else if (!genFeature.isVolatile()) {%>
       <%if (genFeature.isListType() && genModel.isVirtualDelegation()) {%>      
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
-	  <%}%>
-	   <% if (!genFeature.isContainer()){%>
-		if (getNodeId()<0 && data == null ) 
-			return null;
-		if ( data == null || !(data instanceof Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>))
-			data = new Data<%=genClass.getInterfaceName()%>();
-		<%if (! genFeature.isReferenceType()){ %>	
-		if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> == null)	((INeo4emfResource) this.eResource()).fetchAttributes(this);
-		<% }}%>		
+	  <%}%>	
 	  <%if (genFeature.isListType()) {%> 
-		if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> == null)	
-		{
+		if (getData().<%=genFeature.getSafeName()%> == null){
         <%if (genModel.isVirtualDelegation()) {%>
 			eVirtualSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, <%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>);
-        <%} else {%>
-			((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>;
-			if (getNodeId()>-1) 
+        <%} else {%>getData().<%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>;
+			if (isLoaded()) 
 			((INeo4emfResource) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);			
         <%}%>}
-		return ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%><%=genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes() ? ".map()" : ""%>;
+		return getData().<%=genFeature.getSafeName()%><%=genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes() ? ".map()" : ""%>;
       <%} 	  	  
 	  else if (genFeature.isContainer()) {%>
-		if (getNodeId() > 0 && eContainer() == null) {
+		if (isLoaded() && eContainer() == null) {
 			<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
 			basicSet<%=genFeature.getAccessorName()%>(<%=genFeature.getSafeName()%>,null);}
 		return (<%=genFeature.getImportedType(genClass)%>)eContainer();
@@ -504,7 +509,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
           <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%><%if (genFeature.hasEDefault()) {%>, <%=genFeature.getEDefault()%><%}%>);
           <%}%>
-		if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> == null && getNodeId()>-1)
+		if (getData().<%=genFeature.getSafeName()%> == null && isLoaded())
 		{
 			((INeo4emfResource) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
 		}
@@ -518,9 +523,9 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		return Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_VALUES[(<%=genClass.getFlagsField(genFeature)%> & Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG) >>> Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_OFFSET];
           <%}%>
         <%} else {%>
-		if ( getNodeId()>-1 ) 
+		if ( isLoaded()) 
 			eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, null, null));
-		return ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>;
+		return getData().<%=genFeature.getSafeName()%>;
         <%}%>
       <%}%>
     <%} 	
@@ -596,7 +601,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
       <%if (genModel.isVirtualDelegation()) {%>
 		return (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
       <%} else {%>
-		return data != null ? ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> : null;
+		return data != null ? getData().<%=genFeature.getSafeName()%> : null;
       <%}%>
     <%} else if (genFeature.hasDelegateFeature()) { GenFeature delegateFeature = genFeature.getDelegateFeature();%>
       <%if (delegateFeature.isWrappedFeatureMapType()) {%>
@@ -632,7 +637,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 	public <%=genModel.getImportedName("org.eclipse.emf.common.notify.NotificationChain")%> basicSet<%=genFeature.getAccessorName()%>(<%=genFeature.getImportedInternalType(genClass)%> new<%=genFeature.getCapName()%>, <%=genModel.getImportedName("org.eclipse.emf.common.notify.NotificationChain")%> msgs)
 	{
 	<% if (! genModel.isDynamicDelegation() && !genModel.isReflectiveDelegation() && ! genFeature.hasSettingDelegate() && ! genFeature.isContainer() && !genModel.isVirtualDelegation()){%>
-		if (data==null) data =  new Data<%=genClass.getInterfaceName()%>();
+		
 	<%}%>
     <%if (genFeature.isContainer()) {%>
 <%@ include file="Class/basicSetGenFeature.pre.insert.javajetinc" fail="silent" %>
@@ -649,8 +654,8 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
       <%if (genModel.isVirtualDelegation()) {%>
 		Object old<%=genFeature.getCapName()%> = eVirtualSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, new<%=genFeature.getCapName()%>);
       <%} else {%>
-		<%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>;
-		((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%>;
+		<%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = getData().<%=genFeature.getSafeName()%>;
+		getData().<%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%>;
       <%}%>
       <%if (genFeature.isUnsettable()) {%>
         <%if (genModel.isVirtualDelegation()) {%>
@@ -732,12 +737,12 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 	 */
 <%@ end %><%//Class/setGenFeature.javadoc.override.javajetinc%>
 <%} else {%>
-	/**
-	 * <!-- begin-user-doc -->
-	 *YY2
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+/**
+ * <!-- begin-user-doc -->
+ *YY2
+ * <!-- end-user-doc -->
+ * @generated
+ */
 <%if (isJDK50) { //Class/setGenFeature.annotations.insert.javajetinc%>
 <%@ include file="Class/setGenFeature.annotations.insert.javajetinc" fail="silent" %>
 <%}%>
@@ -750,9 +755,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 	{
 <%@ include file="Class/setGenFeature.pre.insert.javajetinc" fail="silent" %>
 	<% if (!genModel.isDynamicDelegation() && !genModel.isReflectiveDelegation() && !genFeature.hasSettingDelegate() && !genModel.isVirtualDelegation()){%>
-		if (data==null) data =  new Data<%=genClass.getInterfaceName()%>();
 		<%if (CodegenUtil.getDataClassExtends(genClass) != ""){%>
-		else if (!(data instanceof Data<%=genClass.getInterfaceName()%>)) data = new Data<%=genClass.getInterfaceName()%>((Data<%=genClass.getClassExtendsGenClass().getInterfaceName()%>)data);
 	<%}}%>
     <%if (genModel.isDynamicDelegation()) {%>
 		eDynamicSet(<%=genClass.getQualifiedFeatureID(genFeature)%>, <%=genFeature.getQualifiedFeatureAccessor()%>, <%if (!isJDK50 && genFeature.isPrimitiveType()) {%>new <%=genFeature.getObjectType(genClass)%>(<%}%>new<%=genFeature.getCapName()%><%if (!isJDK50 && genFeature.isPrimitiveType()) {%>)<%}%>);
@@ -782,16 +785,16 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
         <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
         <%}%>
-		if (new<%=genFeature.getCapName()%> != ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>)
+		if (new<%=genFeature.getCapName()%> != getData().<%=genFeature.getSafeName()%>)
 		{
 			<%=genModel.getImportedName("org.eclipse.emf.common.notify.NotificationChain")%> msgs = null;
-			if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> != null)
+			if (getData().<%=genFeature.getSafeName()%> != null)
         <%if (!genFeature.isBidirectional()) {%>
-				msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>) ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
+				msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>) getData().<%=genFeature.getSafeName()%>).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
 			if (new<%=genFeature.getCapName()%> != null)
 				msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)new<%=genFeature.getCapName()%>).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
         <%} else { GenFeature reverseFeature = genFeature.getReverse(); GenClass targetClass = reverseFeature.getGenClass(); String reverseOffsetCorrection = targetClass.hasOffsetCorrection() ? " + " + genClass.getOffsetCorrectionField(genFeature) : "";%>
-				msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>) ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
+				msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>) getData().<%=genFeature.getSafeName()%>).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
 			if (new<%=genFeature.getCapName()%> != null)
 				msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)new<%=genFeature.getCapName()%>).eInverseAdd(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
         <%}%>
@@ -843,20 +846,20 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
         <%} else {%>
           <%if (!genModel.isVirtualDelegation() || genFeature.isPrimitiveType()) {%>
             <%if (!genModel.isSuppressNotification()) {%>
-		<%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>;
+		<%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = getData().<%=genFeature.getSafeName()%>;
             <%}%>
           <%}%>
           <%if (genFeature.isEnumType()) {%>
             <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? <%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
             <%} else {%>
-		((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? ((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
+		getData().<%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? getData().<%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
             <%}%>
           <%} else {%>
             <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = <%=genFeature.getInternalTypeCast()%>new<%=genFeature.getCapName()%>;
             <%} else {%>
-		((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> = <%=genFeature.getInternalTypeCast()%>new<%=genFeature.getCapName()%>;
+		getData().<%=genFeature.getSafeName()%> = <%=genFeature.getInternalTypeCast()%>new<%=genFeature.getCapName()%>;
             <%}%>
           <%}%>
           <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
@@ -884,7 +887,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
         <%} else {%>
           <%if (!genModel.isSuppressNotification()) {%>
 		if (eNotificationRequired())
-			eNotify(new <%=genModel.getImportedName("org.eclipse.emf.ecore.impl.ENotificationImpl")%>(this, <%=genModel.getImportedName("org.eclipse.emf.common.notify.Notification")%>.SET, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>old<%=genFeature.getCapName()%> == EVIRTUAL_NO_VALUE ? <%=genFeature.getEDefault()%> : old<%=genFeature.getCapName()%><%} else {%>old<%=genFeature.getCapName()%><%}%>, <%if (genClass.isFlag(genFeature)) {%>new<%=genFeature.getCapName()%><%} else {%>((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%><%}%>));
+			eNotify(new <%=genModel.getImportedName("org.eclipse.emf.ecore.impl.ENotificationImpl")%>(this, <%=genModel.getImportedName("org.eclipse.emf.common.notify.Notification")%>.SET, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>old<%=genFeature.getCapName()%> == EVIRTUAL_NO_VALUE ? <%=genFeature.getEDefault()%> : old<%=genFeature.getCapName()%><%} else {%>old<%=genFeature.getCapName()%><%}%>, <%if (genClass.isFlag(genFeature)) {%>new<%=genFeature.getCapName()%><%} else {%>getData().<%=genFeature.getSafeName()%><%}%>));
           <%}%>
         <%}%>
       <%}%>
@@ -1024,18 +1027,18 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
         <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
         <%}%>
-		if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> != null) ((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.InternalEList")%>.Unsettable<%=singleWildcard%>)<%=genFeature.getSafeName()%>).unset();
+		if (getData().<%=genFeature.getSafeName()%> != null) ((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.InternalEList")%>.Unsettable<%=singleWildcard%>)<%=genFeature.getSafeName()%>).unset();
       <%} else if (genFeature.isBidirectional() || genFeature.isEffectiveContains()) {%>
         <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
         <%}%>
-		if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> != null)
+		if (getData().<%=genFeature.getSafeName()%> != null)
 		{
 			<%=genModel.getImportedName("org.eclipse.emf.common.notify.NotificationChain")%> msgs = null;
         <%if (!genFeature.isBidirectional()) {%>
-			msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
+			msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)getData().<%=genFeature.getSafeName()%>).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
         <%} else { GenFeature reverseFeature = genFeature.getReverse(); GenClass targetClass = reverseFeature.getGenClass(); String reverseOffsetCorrection = targetClass.hasOffsetCorrection() ? " + " + genClass.getOffsetCorrectionField(genFeature) : "";%>
-			msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
+			msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)getData().<%=genFeature.getSafeName()%>).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
         <%}%>
 			msgs = basicUnset<%=genFeature.getAccessorName()%>(msgs);
 			if (msgs != null) msgs.dispatch();
@@ -1396,7 +1399,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
   <%}%>
 	public <%=genModel.getImportedName("org.eclipse.emf.common.notify.NotificationChain")%> eInverseAdd(<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%> otherEnd, int featureID, <%=genModel.getImportedName("org.eclipse.emf.common.notify.NotificationChain")%> msgs)
 	{
-		if (data==null) data = new Data<%= genClass.getInterfaceName()%>();
+
 		switch (featureID<%=negativeOffsetCorrection%>)
 		{
 <%for (GenFeature genFeature : genClass.getEInverseAddGenFeatures()) {%>
@@ -1421,11 +1424,11 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
     <%} else if (genFeature.isVolatile() || genClass.getImplementingGenModel(genFeature).isDynamicDelegation()) {%>
 				<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = <%if (genFeature.isResolveProxies()) {%>basicGet<%=genFeature.getAccessorName()%><%} else {%><%=genFeature.getGetAccessor()%><%}%>();
     <%}%>
-				if (((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%> != null)
+				if (getData().<%=genFeature.getSafeName()%> != null)
     <%if (genFeature.isEffectiveContains()) {%>
-					msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
+					msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)getData().<%=genFeature.getSafeName()%>).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
     <%} else { GenFeature reverseFeature = genFeature.getReverse(); GenClass targetClass = reverseFeature.getGenClass(); String reverseOffsetCorrection = targetClass.hasOffsetCorrection() ? " + " + genClass.getOffsetCorrectionField(genFeature) : "";%>
-					msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).<%=genFeature.getSafeName()%>).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
+					msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)getData().<%=genFeature.getSafeName()%>).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
     <%}%>
 				return basicSet<%=genFeature.getAccessorName()%>((<%=genFeature.getImportedType(genClass)%>)otherEnd, msgs);
   <%}%>
@@ -2033,7 +2036,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		if (data != null) result.append(((Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>)data).toString());
+		if (data != null) result.append(data.toString());
 		
 		return result.toString();
 		}
@@ -2387,13 +2390,13 @@ protected static  class Data<%=genClass.getInterfaceName()%><%=genClass.getTypeP
 	 */
 	public Data<%=genClass.getInterfaceName()%>()
 	{
-		super();
+		<%if ( CodegenUtil.getDataClassExtends(genClass) !=""){%> super(); <%}%>
   <%for (GenFeature genFeature : genClass.getFlagGenFeaturesWithDefault()) {%>
 		<%=genClass.getFlagsField(genFeature)%> |= <%=genFeature.getUpperName()%>_EFLAG<%if (!genFeature.isBooleanType()) {%>_DEFAULT<%}%>;
   <%}%>
 	}
 	
-		<%if ( CodegenUtil.getDataClassExtends (genClass) !=""){%>
+		<%if ( CodegenUtil.getDataClassExtends(genClass) !=""){%>
 	/**
 	 *Constructor of Data<%=genClass.getInterfaceName()%>
 	 * <!-- begin-user-doc -->
@@ -2401,17 +2404,12 @@ protected static  class Data<%=genClass.getInterfaceName()%><%=genClass.getTypeP
 	 * @param {@link <%=genClass.getClassExtendsGenClass().getInterfaceName()%> }
 	 * @generated
 	 */
-	public Data<%=genClass.getInterfaceName()%>(Data<%=genClass.getClassExtendsGenClass().getInterfaceName()%> data)
-	{
-		super();		
-		<% for (GenFeature genFeat : genClass.getClassExtendsGenClass().getDeclaredFieldGenFeatures()){%>
-		<%=genFeat.getSafeName()%> = data.<%=genFeat.getSafeName()%>;
-				<%}%>
-				
-  <%for (GenFeature genFeature : genClass.getFlagGenFeaturesWithDefault()) {%>
-		<%=genClass.getFlagsField(genFeature)%> |= <%=genFeature.getUpperName()%>_EFLAG<%if (!genFeature.isBooleanType()) {%>_DEFAULT<%}%>;
-  <%}%>
-	}
+	//public Data<%=genClass.getInterfaceName()%>(Data<%=genClass.getClassExtendsGenClass().getInterfaceName()%> data)
+	//{
+	//	this();		
+	//	<% for (GenFeature genFeat : genClass.getClassExtendsGenClass().getDeclaredFieldGenFeatures()){%>
+	//	<%=genFeat.getSafeName()%> = data.<%=genFeat.getSafeName()%>;<%}%>
+	//	}
 	<%}%>
 	/**
 	 * <!-- begin-user-doc -->

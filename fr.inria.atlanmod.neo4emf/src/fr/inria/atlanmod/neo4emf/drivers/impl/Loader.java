@@ -16,14 +16,8 @@ import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.impl.EFactoryImpl;
-import org.eclipse.emf.ecore.impl.EcoreFactoryImpl;
-
 import org.neo4j.graphdb.Node;
-
-import sun.security.jca.GetInstance.Instance;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeoFactory;
@@ -133,6 +127,7 @@ public class Loader implements ILoader {
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
 		int size = ChangeLog.getInstance().size();
 		EFactory factory =null;
+		@SuppressWarnings("unused")
 		String factoryInstanceName = ePck.getEFactoryInstance().getClass().getName();
 		if (ePck.getEFactoryInstance().getClass().getName().equals("org.eclipse.emf.ecore.impl.EFactoryImpl")){
 			factory = INeoFactory.eINSTANCE;
@@ -238,7 +233,6 @@ public class Loader implements ILoader {
 	/**
 	 * Construct the list of links of <b>obj</b> from the node List
 	 */
-	@SuppressWarnings("unchecked")
 	@Override	
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) {
 		try {

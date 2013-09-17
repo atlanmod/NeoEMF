@@ -16,12 +16,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -203,9 +204,15 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		ChangeLog.getInstance().addNewEntry(msg);
 	}
 	
-
+	protected boolean isLoaded() {
+		return getNodeId()>-1 & eResource() instanceof INeo4emfResource;
+	}
 	
 	public static class NeoObjectData{
 		
 	}
+
+
+
+	
 }

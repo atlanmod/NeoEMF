@@ -54,13 +54,16 @@ public class Unloader implements IUnloader {
 		
 		((Neo4emfObject)neoObj).clearId();
 		for (EReference str : refList) {	
-			if (neoObj.eGet(str)!=null)
-				neoObj.eSet(str, null);	
+			if (neoObj.eGet(str)!=null){
+				if (!str.isMany()) 
+					neoObj.eSet(str, null);
+				else 
+					((List)neoObj.eGet(str)).clear();
+				}
 		}
 		EcoreUtil.remove(neoObj);
 		neoObj = null;
 	}
-
 //	private void delegateAndDelete(EObject eObject){
 //		manager.delegate(eObject);
 //		deleteObject(eObject);
@@ -71,11 +74,9 @@ public class Unloader implements IUnloader {
 	public void unloadPartition(AbstractPartition partition, int key) { 
 		for (INeo4emfObject neoObj : partition.flattened()){
 			unloadElement(neoObj, key);			
-		}
-		
+		}		
 		//unloadElement(partition.geteObjet());
 	}
-
 
 	//@Override 
 	public void run(){
