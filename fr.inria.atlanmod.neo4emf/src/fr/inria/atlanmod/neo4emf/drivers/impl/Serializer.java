@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
@@ -31,6 +32,7 @@ import fr.inria.atlanmod.neo4emf.change.impl.*;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 
 public class Serializer implements ISerializer {
@@ -51,15 +53,13 @@ public class Serializer implements ISerializer {
 		if (options == null)
 			options = new HashMap();
 		options= mergeWithDefaultOptions(options);
-
 		int counter=0;
-
 		Transaction tx = manager.beginTx();
 		try {
 			for (Entry e : ChangeLog.getInstance() ){
 				serializeEntrySwitch(e);
 				counter++;
-				if (counter%((int)options.get(MAX_OPERATIONS_PER_TRANSACTION))==0)
+				if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
 				{	
 					tx.success();
 					tx.finish();
@@ -67,12 +67,16 @@ public class Serializer implements ISerializer {
 				}
 			}
 			
-		} catch(Exception e) {manager.shutdown();
+		} catch(Exception e) {
+			e.printStackTrace();
+			manager.shutdown();
 		}finally {
 			tx.success();
 			tx.finish();
 		}	
-		ChangeLog.getInstance().clear();	
+		ChangeLog.getInstance().clear();
+		// the changelog is cleared after an exception is raised
+		// TODO look for a way to manage this 
 	}
 	/**
 	 * init the default options of 
@@ -145,21 +149,32 @@ public class Serializer implements ISerializer {
 	private void setAttributeValue(EObject eObject,
 			EAttribute at, Object newValue) {
 		Node n = manager.getNodeById(eObject);
+//		if (newValue == "")
+//			System.out.println("new value is void");
+		
 		if (newValue!= null && !at.isMany()){
+		
 			if (at.getEType() instanceof EEnum)
 				n.setProperty(at.getName(), newValue.toString());
+			
 			else if (isPrimitive(at.getName()))
 				n.setProperty(at.getName(), newValue);
+			
 			else 
 				n.setProperty(at.getName(), newValue.toString());
-		}			
+		}	
+		
 		else if (newValue != null && at.isMany()){
 			n.setProperty(at.getName(), ((EList<EObject>) newValue).toArray());}
+		
 		else if (!at.isMany()){ 
-			if (at.getEType().getName().equals("Boolean"))
+		
+			if (at.getEType().getName().equals("Boolean") || at.getEType().getName().equals("EBoolean"))
 				n.setProperty(at.getName(), false );
-			else if (at.getEType().getName().equals("String"))
+			
+			else if (at.getEType().getName().equals("String") || at.getEType().getName().equals("EString"))
 				n.setProperty(at.getName(), "");
+			
 			else 
 				n.setProperty(at.getName(), 0);
 		}
@@ -179,15 +194,17 @@ public class Serializer implements ISerializer {
 	}
 
 	private void addNewLink(EObject eObject, EReference eRef, Object object) {
-		Node n = manager.getNodeById(eObject);
-		Node n2 = manager.getNodeById((EObject)object);
-		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
+		Node n = this.manager.getNodeById(eObject);
+		Node n2 = this.manager.getNodeById((EObject)object);
+		RelationshipType rel = this.manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
+	//		System.out.println("n : "+ n+"  n2 : "+ n2 + " type : "+ rel + " EReference : " + eRef);
+		if (rel == null) {
+			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil.formatRelationshipName(eObject.eClass(), eRef));}
 		n.createRelationshipTo(n2, rel);
-
 	}
 
 	private void createNewObject(EObject eObject) {
-		Node n = manager.createNodefromEObject(eObject);
+		Node n = this.manager.createNodefromEObject(eObject);
 		((Neo4emfObject)eObject).setNodeId(n.getId());
 		EList<EAttribute> atrList= eObject.eClass().getEAllAttributes();
 		Iterator<EAttribute> it = atrList.iterator();

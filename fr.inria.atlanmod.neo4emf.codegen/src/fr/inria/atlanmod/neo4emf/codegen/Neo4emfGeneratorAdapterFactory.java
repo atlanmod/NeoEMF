@@ -25,7 +25,7 @@ public class Neo4emfGeneratorAdapterFactory extends GenModelGeneratorAdapterFact
 	  		genPackageGeneratorAdapter = new GenReltypesGeneratorAdapter(this);
 	  	}
 	  	return genPackageGeneratorAdapter;
-//  return null;
+//	  return null;
   }
   
   @Override
@@ -43,7 +43,8 @@ public class Neo4emfGeneratorAdapterFactory extends GenModelGeneratorAdapterFact
   }
   
   @Override
-  public Adapter createGenClassAdapter()
-  {return null;}
+  public Adapter createGenClassAdapter() {
+	  return null;
+	  }
   
 }

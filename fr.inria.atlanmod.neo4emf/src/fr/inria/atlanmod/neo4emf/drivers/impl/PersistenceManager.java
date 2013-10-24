@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 
 
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -26,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
@@ -46,31 +48,31 @@ public class PersistenceManager implements IPersistenceManager {
 	/**
 	 * the persistence Backend {@link PersistenceService}
 	 */
-	IPersistenceService persistenceService;
+	protected IPersistenceService persistenceService;
 	/**
 	 * The loader and eObjects builder {@link Loader}
 	 */
-	ILoader loader;
+	protected ILoader loader;
 	/**
 	 * Serializer and nodes converter {@link Serializer}
 	 */
-	ISerializer serializer;
+	protected ISerializer serializer;
 	/**
 	 * Unloader {@link Unloader}
 	 */
-	IUnloader unloader;
+	protected IUnloader unloader;
 	/**
 	 * The resource {@link Neo4emfResource}
 	 */
-	INeo4emfResource resource;
+	protected INeo4emfResource resource;
 	/**
 	 * The loaded elements manager {@link ProxyManager}
 	 */
-	IProxyManager proxyManager;
+	protected IProxyManager proxyManager;
 	/**
 	 * {@link EReference} to {@link RelationshipType} mapping of the package
 	 */
-	Map<String,Map<Point,RelationshipType>> eRef2relType;	
+	protected Map<String,Map<Point,RelationshipType>> eRef2relType;	
 	/**
 	 * Global constructor
 	 * @param neo4emfResource {@link Neo4emfResource}
@@ -78,22 +80,36 @@ public class PersistenceManager implements IPersistenceManager {
 	 * @param eRef2relType {@link Map}
 	 */
 	public PersistenceManager(Neo4emfResource neo4emfResource,
-			String storeDirectory, Map<String,Map<Point,RelationshipType>> eRef2relType) {
-		resource = neo4emfResource;
-		persistenceService = IPersistenceServiceFactory.eINSTANCE.createPersistenceService(storeDirectory,this);
-		serializer = new Serializer(this);
+				String storeDirectory, 
+			Map<String, Map<Point, RelationshipType>> eRef2relType) {
+		this.resource = neo4emfResource;
+		this.persistenceService = IPersistenceServiceFactory.eINSTANCE.createPersistenceService(storeDirectory,this);
+		this.serializer = new Serializer(this);
 		this.eRef2relType = eRef2relType;
-		proxyManager = new ProxyManager();
-		loader = new Loader(this);
-		unloader = new Unloader(this, null);
+		this.proxyManager = new ProxyManager();
+		this.loader = new Loader(this);
+		this.unloader = new Unloader(this, null);
+	}
+
+	public PersistenceManager(Neo4emfResource neo4emfResource,
+			String storeDirectory,
+			Map<String, Map<Point, RelationshipType>> map,
+			Map<String, String> params) {
+		this.resource = neo4emfResource;
+		this.persistenceService = IPersistenceServiceFactory.eINSTANCE.createPersistenceService(storeDirectory,this,params);
+		this.serializer = new Serializer(this);
+		this.eRef2relType = eRef2relType;
+		this.proxyManager = new ProxyManager();
+		this.loader = new Loader(this);
+		this.unloader = new Unloader(this, null);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void save(Map<?,?> options) {
-		try{
-			serializer.save((Map<String,Object>)options);	}
-		catch(Exception e){ 
+		try {
+			this.serializer.save((Map<String, Object>) options); }
+		catch (Exception e) { 
 			shutdown();
 			e.printStackTrace();
 		}
@@ -131,18 +147,21 @@ public class PersistenceManager implements IPersistenceManager {
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
 		if (eRef2relType==null || eRef2relType.isEmpty())
 			setupERelationshipTypesMap(key);
-		return eRef2relType.get(key).get(new Point (clsID,eRefID));
+		RelationshipType rel = eRef2relType.get(key).get(new Point (clsID,eRefID));
+		return rel;
+			
 
 	}
 	private void setupERelationshipTypesMap(String key) {
 		eRef2relType = Neo4emfResourceUtil.createRelationshipTypesMap(key);
 		resource.setRelationshipsMap(eRef2relType);
 	}
-
+	
 	@Override
 	public Node createNodefromEObject(EObject eObject) {
 		return persistenceService.createNodeFromEObject(eObject);
 	}
+	
 	@Override
 	public void putNodeId(EObject eObject, long id) {
 		if (! proxyManager.getWeakNodeIds().containsKey(eObject))
@@ -170,10 +189,10 @@ public class PersistenceManager implements IPersistenceManager {
 		loader.fetchAttributes(obj,node);	
 	}
 	@Override
-	public void putToProxy(INeo4emfObject object, EStructuralFeature str, int partitionID){
+	public void putToProxy(INeo4emfObject object, EStructuralFeature str, int partitionID) throws NullPointerException{
 		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(partitionID);
 		if (partition == null) {
-			System.out.println("partition does not exist "); return ;}
+			throw new NullPointerException();}
 		if (partition instanceof Partition)
 		((Partition)partition).put(object.getNodeId(), object, str);
 		else 
@@ -246,7 +265,7 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	@Override
 	public boolean isHead(EObject eObject) {
-		return proxyManager.isHead(eObject);
+		return this.proxyManager.isHead(eObject);
 	}
 	
 	@Override
@@ -255,22 +274,23 @@ public class PersistenceManager implements IPersistenceManager {
 		int newPID=-1;
 		INeo4emfObject neoObject = (INeo4emfObject) eObject;
 		for (Entry<Integer, AbstractPartition> entry: proxyManager.getWeakObjectsTree().entrySet()){
-			if (entry.getKey() == neoObject.getPartitionId() || !entry.getValue().containsKey(neoObject.getNodeId()))
+			if (entry.getKey() == neoObject.getPartitionId() || !entry.getValue().containsKey(neoObject.getNodeId())) {
 				continue;
-			if (!isFound){
+			}
+			if (!isFound) {
 				INeo4emfObject object = entry.getValue().get(neoObject.getNodeId());
 				object.setProxy(false);
 				newPID = entry.getKey();
 				object.setPartitionId(newPID);
-			}else {
+			} else {
 				entry.getValue().get(neoObject.getNodeId()).setPartitionId(newPID);
 			}
 		}
 	}
 	@Override
-	public void unloadPartition(int PID){
-		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(PID);
-		unloader.unloadPartition(partition, PID);
+	public void unloadPartition(int PID) {
+		AbstractPartition partition = this.proxyManager.getWeakObjectsTree().get(PID);
+		this.unloader.unloadPartition(partition, PID);
 		//proxyManager.getWeakObjectsTree().remove(PID);
 		Runtime.getRuntime().gc();
 	}
@@ -308,9 +328,11 @@ public class PersistenceManager implements IPersistenceManager {
 		List<Node> nodeList = new ArrayList<Node>();
 		try{
 			for (EClass eCls : classesList){	
-				nodeList = persistenceService.getAllNodesOfType (eClass);
-				if(nodeList.isEmpty()) continue;
-				allInstances.addAll(loader.getAllInstances(eCls, nodeList));
+				nodeList = this.persistenceService.getAllNodesOfType (eClass);
+				if (nodeList.isEmpty()) {
+					continue;
+				}
+				allInstances.addAll(this.loader.getAllInstances(eCls, nodeList));
 			}
 		}catch(Exception e){ 
 			shutdown();
@@ -321,46 +343,47 @@ public class PersistenceManager implements IPersistenceManager {
 
 	@Override
 	public void createNewPartitionHistory(int newId) {
-		proxyManager.addNewHistory(newId);
+		this.proxyManager.addNewHistory(newId);
 	}
 
 	@Override
 	public FlatPartition createNewFlatPartition(int id) {
 		FlatPartition result = new FlatPartition();
-		proxyManager.getWeakObjectsTree().put(id,result );
+		this.proxyManager.getWeakObjectsTree().put(id,result );
 		return result;
 	}
 	@Override
 	public int  createNewPartition(EObject obj, int partitionID) {
 
 		int newIndex = getNewPartitionID();
-		((INeo4emfObject)obj).setPartitionId(partitionID);
-		((INeo4emfObject)obj).setProxy(true);
-		proxyManager.getWeakObjectsTree().put(newIndex, new Partition(obj));
+		((INeo4emfObject) obj).setPartitionId(partitionID);
+		((INeo4emfObject) obj).setProxy(true);
+		this.proxyManager.getWeakObjectsTree().put(newIndex, new Partition(obj));
 		//proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex, oldIndex);
 		return newIndex;
 	}
 	@Override
 	public void moveToPartition(EObject eObj, int fromPID, int toPID, int featureId) {
-		proxyManager.moveToPartition(eObj, fromPID, toPID, featureId);
+		Assert.isNotNull(eObj,"eObject should not be null");
+		this.proxyManager.moveToPartition(eObj, fromPID, toPID, featureId);
 		
 	}
 
 	@Override
 	public void setUsageTrace(int PID, int partitionId, int featureId, EObject eObject) {
-		((ProxyManager)proxyManager).addUsageTrace(PID, partitionId, featureId, eObject);
+		((ProxyManager) this.proxyManager).addUsageTrace(PID, partitionId, featureId, eObject);
 		
 	}
 
 	@Override
 	public Map<Integer, ArrayList<INeo4emfObject>> getAffectedElement(
 			INeo4emfObject neoObj, int key) {
-		return proxyManager.getSideEffectsMap( neoObj, key);
+		return this.proxyManager.getSideEffectsMap( neoObj, key);
 	}
 
 	@Override
 	public void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map) {
-		eRef2relType = map;	
+		this.eRef2relType = map;	
 	}
 
 

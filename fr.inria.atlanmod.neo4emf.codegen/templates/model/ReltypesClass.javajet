@@ -1,4 +1,4 @@
-<%@ jet package="fr.inria.atlanmod.neo4emf.codegen.templates.model" imports="java.util.* org.eclipse.emf.codegen.ecore.genmodel.* " class="ReltypesClass"%>
+<%@ jet package="fr.inria.atlanmod.neo4emf.codegen.templates.model" imports="java.util.* org.eclipse.emf.codegen.ecore.genmodel.* fr.inria.atlanmod.neo4emf.codegen.CodegenUtil " class="ReltypesClass"%>
 <%
 /**
  * Copyright (c) 2002-2006 IBM Corporation and others.
@@ -6,15 +6,16 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors: amine ben
  *   IBM - Initial API and implementation
  */
 %>
+
 <% GenPackage genPck = (GenPackage) argument; GenModel genModel= genPck.getGenModel();
  /* Trick to import java.util.* without warnings */Iterator.class.getName();%>
 <%@ include file="../Header.javajetinc"%>
-package reltypes;
+package <%=genPck.getInterfacePackageName()%>.reltypes;
 
 <%genModel.addImport("org.neo4j.graphdb.RelationshipType");%>
 <%genModel.markImportLocation(stringBuffer);%>
@@ -40,7 +41,7 @@ public enum Reltypes implements RelationshipType
 <% for (GenPackage genPackage : genModel.getAllGenPackagesWithClassifiers()){
 	for (GenClassifier genClassifier : genPackage.getOrderedGenClassifiers()) { 
 		if (genClassifier instanceof GenClass) { GenClass genClass = (GenClass)genClassifier; 
-			for (GenFeature genFeature : genClass.getAllGenFeatures()) {
+			for (GenFeature genFeature : CodegenUtil.getEAllGenFeatures(genClass)) {
     			 if(genFeature.isReferenceType()){
     		%>
     		<%=genClass.getFeatureID(genFeature)%>,

@@ -19,12 +19,12 @@ public class FlatPartition extends AbstractPartition {
 
 	@Override
 	public boolean containsKey(long nodeId) {
-		return map.containsKey(nodeId);
+		return this.map.containsKey(nodeId);
 	}
 
 	@Override
 	public INeo4emfObject get(long nodeId) {
-		return map.get(nodeId);
+		return this.map.get(nodeId);
 	}
 
 	@Override
@@ -46,8 +46,8 @@ public class FlatPartition extends AbstractPartition {
 	}
 
 	@Override
-	public void remove(long nodeId) {
-		map.remove(nodeId);
+	public void remove(final long nodeId) {
+		this.map.remove(nodeId);
 		
 	}
 	

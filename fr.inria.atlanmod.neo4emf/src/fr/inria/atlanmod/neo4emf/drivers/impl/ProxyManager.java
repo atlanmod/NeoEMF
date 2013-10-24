@@ -24,6 +24,7 @@ import java.util.WeakHashMap;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.core.runtime.Assert;
 
+import org.jboss.util.NullArgumentException;
 import org.jboss.util.collection.SoftValueTreeMap;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -190,10 +191,16 @@ public class ProxyManager implements IProxyManager {
 		}
 	}
 
-
-	private int GetReferencePartitionID(INeo4emfObject eObject) {
+	private int GetReferencePartitionID(INeo4emfObject eObject) throws NullArgumentException {
 		//TODO to check if its true for FlatPartition 
+		Assert.isNotNull(eObject, "Null object");
+		
 		for (Entry<Integer, AbstractPartition> entry : partitions.entrySet()){
+			Object  partition = entry .getValue();
+			EObject eObj = ((Partition)partition).geteObjet();
+			Assert.isNotNull(partition,"Null Partition");
+			if (eObj == null) {
+				throw new NullArgumentException();}
 			int bol = entry.getValue() instanceof Partition? 1:0 ;
 			switch (bol) {
 			case 1:
@@ -214,8 +221,7 @@ public class ProxyManager implements IProxyManager {
 	private void setEAttirbuteUsage(EObject eObject) {
 		int id = ((INeo4emfObject)eObject).getPartitionId();
 		setUsageCount(id);
-		setHistoryId(id);
-		
+		setHistoryId(id);		
 	}
 
 
@@ -287,7 +293,12 @@ public class ProxyManager implements IProxyManager {
 	
 	@Override
 	public void moveToPartition(EObject eObj, int fromPID, int toPID, int featureId) {
-		if (partitions.containsKey(fromPID)) partitions.get(fromPID).remove(((INeo4emfObject)eObj).getNodeId());
+		if (fromPID == toPID) {
+			return;
+		}
+		if (partitions.containsKey(fromPID)) {
+			partitions.get(fromPID).remove(((INeo4emfObject)eObj).getNodeId());
+		}
 		Tail tail = ((Partition) partitions.get(toPID)).getTail(featureId);
 		tail.put(((INeo4emfObject)eObj).getNodeId(), eObj);
 		

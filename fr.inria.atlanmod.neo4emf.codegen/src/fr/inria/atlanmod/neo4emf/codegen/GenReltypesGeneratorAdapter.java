@@ -3,6 +3,8 @@ package fr.inria.atlanmod.neo4emf.codegen;
 import java.util.List;
 
 import org.eclipse.emf.codegen.ecore.generator.GeneratorAdapterFactory;
+import org.eclipse.emf.codegen.ecore.genmodel.GenClass;
+import org.eclipse.emf.codegen.ecore.genmodel.GenFeature;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter;
@@ -33,40 +35,56 @@ public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 	  public GenReltypesGeneratorAdapter(GeneratorAdapterFactory generatorAdapterFactory)
 	  {
 	    super(generatorAdapterFactory);
-	   
-		
+	   	
 	  }
 	  
 	  @Override
 	  public boolean canGenerate(Object object, Object projectType)
 	  {
-	    return MODEL_PROJECT_TYPE.equals(projectType) ? super.canGenerate(object, projectType) : false;
+	    return MODEL_PROJECT_TYPE.equals(projectType) 
+	    		? ( hasReferences((GenPackage) object) ? super.canGenerate(object, projectType) : false ): false;
 	  }
 
-	  @Override
+	  private boolean hasReferences(GenPackage object) {
+		for (GenClass genClass : object.getOrderedGenClasses()){
+			for (GenFeature feat :genClass.getAllGenFeatures())
+				 if(feat.isReferenceType())
+					 return true;
+		}
+		return false;
+	}
+
+	@Override
 	  protected Diagnostic generateModel(Object object, Monitor monitor)
 	  {
 		  GenPackage genPackage = (GenPackage) object;
 		  GenModel genModel = genPackage.getGenModel();
-
+		  
+		 if (hasReferences(genPackage)){ 
+//		  GenModel genModel = (GenModel) object;
 	    monitor.beginTask("", 2);
-	    message = Neo4emfGeneratorPlugin.INSTANCE.getString("GeneratingModelDescription.message");    
 	    monitor.subTask(message);
 	    ensureProjectExists
 	      (genModel.getModelDirectory(), genModel, MODEL_PROJECT_TYPE, genModel.isUpdateClasspath(), createMonitor(monitor, 1));
 
 	    generateJava
 	      (genModel.getModelDirectory(),
-	       "reltypes","Reltypes",
+	    		  genPackage.getInterfacePackageName()+
+	    		  ".reltypes",
+	       "Reltypes",
 	       getJETEmitter(getJETEmitterDescriptors(), REL_TYPES_ID),
 	       null,
 	       createMonitor(monitor, 1));
-	    
-	    generateJava(genModel.getModelDirectory(),"reltypes","ReltypesMappings",
+	  
+	    generateJava(genModel.getModelDirectory(),
+	    		genPackage.getInterfacePackageName()+
+	    		".reltypes",
+	    		"ReltypesMappings",
 		       getJETEmitter(getJETEmitterDescriptors(), MAP_REL_TYPES_ID),
 		       null,
 		       createMonitor(monitor, 1));
-	    return Diagnostic.OK_INSTANCE;
+		 }
+		 return Diagnostic.OK_INSTANCE;
 	  }
 
 	  @Override

@@ -35,6 +35,7 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
 public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 
 
+	
 	/** 
 	 * The persistence manager holds the communication between the resource and 
 	 * the different persistence units 
@@ -52,30 +53,38 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	 * @param storeDirectory
 	 * @param relationship map
 	 */
-	public Neo4emfResource(String storeDirectory, Map<String,Map<Point,RelationshipType>> map) {
+	public Neo4emfResource(final String storeDirectory, final Map<String,Map<Point,RelationshipType>> map,Map<String, String> params ) {
 		super();
 		this.storeDirectory=storeDirectory;
-		persistenceManager =  new PersistenceManager(this,storeDirectory,map);
+		if (params == null){
+		this.persistenceManager =  new PersistenceManager(this,storeDirectory,map);}
+		else {
+			this.persistenceManager =  new PersistenceManager(this,storeDirectory,map,params);
+		}
 	}
-	public Neo4emfResource(URI uri, Map<String,Map<Point,RelationshipType>> map){
+	public Neo4emfResource(final URI uri, Map<String,Map<Point,RelationshipType>> map,  Map<String, String> params){
 		super(uri);
 		this.storeDirectory=neo4emfURItoString(uri);
-		persistenceManager =  new PersistenceManager(this,storeDirectory,map);
+		if (params == null){
+			this.persistenceManager =  new PersistenceManager(this,storeDirectory,map);}
+			else {
+				this.persistenceManager =  new PersistenceManager(this,storeDirectory,map,params);
+			}
 	}
 	/**
 	 * @link {@link INeo4emfResource#fetchAttributes(EObject)}
 	 */
 	@Override
-	public void fetchAttributes(EObject obj) {
-		persistenceManager.fetchAttributes(obj);
+	public void fetchAttributes(final EObject obj) {
+		this.persistenceManager.fetchAttributes(obj);
 
 	}
 	/**
 	 * @link {@link INeo4emfResource#getOnDemand(EObject, int)}
 	 */
 	@Override
-	public void getOnDemand(EObject obj, int featureId) {
-		persistenceManager.getOnDemand(obj, featureId);
+	public void getOnDemand(final EObject obj, final int featureId) {
+		this.persistenceManager.getOnDemand(obj, featureId);
 
 	}
 	/**
@@ -90,14 +99,14 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	 */
 	@Override
 	public void save (Map<?, ?> options){
-		persistenceManager.save(options);
+		this.persistenceManager.save(options);
 	}
 	/**
 	 * shuting down the backend
 	 */
 	@Override
 	public void shutdown() {
-		persistenceManager.shutdown();
+		this.persistenceManager.shutdown();
 
 	}
 	/**
@@ -106,23 +115,29 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	 */
 	@Override 
 	public void load (Map <?,?> options){
-		persistenceManager.load(options);
+		this.persistenceManager.load(options);
 	}
 	/**
 	 * {@link INeo4emfResource#notifyGet(EObject, EStructuralFeature)}
 	 */
 	@Override
 	public void notifyGet(EObject eObject, EStructuralFeature feature) {
-		persistenceManager.updateProxyManager((INeo4emfObject)eObject, feature);
+		try {
+			Assert.isNotNull(eObject, "eObject should not be null ");
+		this.persistenceManager.updateProxyManager((INeo4emfObject)eObject, feature);}
+		catch (Exception e){
+			this.persistenceManager.shutdown();
+			e.printStackTrace();
+		}
 
 	}
 	@Override
 	public void unload(int PID){
-		persistenceManager.unloadPartition(PID);
+		this.persistenceManager.unloadPartition(PID);
 	}
 	@Override
 	public EList<INeo4emfObject> getAllInstances(EClass eClass) {
-		EList<INeo4emfObject> result =  persistenceManager.getAllInstancesOfType(eClass);
+		EList<INeo4emfObject> result =  this.persistenceManager.getAllInstancesOfType(eClass);
 		getContents().addAll(result);
 		return result;
 	}
@@ -134,16 +149,16 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	@Override
 	public EObject getContainerOnDemand(EObject eObject, int featureId){
 		// TODO Auto-generated method stub
-		return persistenceManager.getContainerOnDemand(eObject,featureId);
+		return this.persistenceManager.getContainerOnDemand(eObject,featureId);
 
 	}
 	@Override
 	public void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map) {
-		persistenceManager.setRelationshipsMap(map);
+		this.persistenceManager.setRelationshipsMap(map);
 
 	}
 	private static String neo4emfURItoString (URI uri){ 
-		Assert.isTrue(uri.scheme().equals("neo4emf"), "protocol shoul be neo4emf !!");
+		Assert.isTrue(uri.scheme().equals("neo4emf"), "protocol should be neo4emf !!");
 		StringBuffer buff = new StringBuffer();
 		if (uri.hasDevice())
 			buff.append(uri.device()).append("/");

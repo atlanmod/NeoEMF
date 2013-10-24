@@ -18,23 +18,28 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.xmi.FeatureNotFoundException;
 import org.neo4j.graphdb.Node;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
 public interface ILoader {
 	
+	public static final String FULL_LOADING = "full_loading";
+	
 	public static final String DUPLICATION_TOLERANT = "duplication_tolerant";
 	
-	public static final String DYNAMIC_LOADING = "dynamic_load";
+	public static final String LOADING_STRATEGY = "loading_strategy";
 	
-	public static final boolean DYNAMIC_LOADING_DEFAULT_VALUE = true;
+	public static final String DYNAMIC_LOADING = "dynamic_loading";
+	
+	public static final String STATIC_LOADING = "static_loading";
 	
 	public static final boolean DUPLICATION_TOLERANT_DEFAULT_VALUE = true;
 	
-	String [] loadOptions = {DUPLICATION_TOLERANT,DYNAMIC_LOADING};
+	String [] loadOptions = {DUPLICATION_TOLERANT,LOADING_STRATEGY};
 	
-	Object [] loadDefaultValues = {DUPLICATION_TOLERANT_DEFAULT_VALUE, DYNAMIC_LOADING_DEFAULT_VALUE};
+	Object [] loadDefaultValues = {DUPLICATION_TOLERANT_DEFAULT_VALUE, DYNAMIC_LOADING};
 	
 	/**
 	 * load Root elements from the Back-end
@@ -56,8 +61,9 @@ public interface ILoader {
 	 * @param featureId {@link Integer}
 	 * @param node {@link Node}
 	 * @param nodes {@link List}
+	 * @throws FeatureNotFoundException 
 	 */
-	public void getObjectsOnDemand(EObject obj, int featureId, Node node, List<Node> nodes);
+	public void getObjectsOnDemand(EObject obj, int featureId, Node node, List<Node> nodes) throws FeatureNotFoundException;
 	/**
 	 * build a list of NeoObjects of type <b>eClass</b>
 	 * from a list of nodes representing these elements  

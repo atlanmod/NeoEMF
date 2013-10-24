@@ -1,4 +1,4 @@
-<%@ jet package="fr.inria.atlanmod.neo4emf.codegen.templates.model" imports="java.util.* org.eclipse.emf.codegen.ecore.genmodel.* " class="MappingReltypesClass"%>
+<%@ jet package="fr.inria.atlanmod.neo4emf.codegen.templates.model" imports="java.util.* org.eclipse.emf.codegen.ecore.genmodel.* fr.inria.atlanmod.neo4emf.codegen.CodegenUtil " class="MappingReltypesClass"%>
 <%
 /**
  * Copyright (c) 2002-2006 IBM Corporation and others.
@@ -11,11 +11,11 @@
  *   IBM - Initial API and implementation
  */
 %>
-<% GenPackage genPck = (GenPackage) argument; GenModel genModel= genPck.getGenModel(); 
+<% GenPackage genPck = (GenPackage) argument; GenModel genModel= genPck.getGenModel();
  
 	     /* Trick to import java.util.* without warnings */Iterator.class.getName();%>
 <%@ include file="../Header.javajetinc"%>
-package reltypes;
+package <%=genPck.getInterfacePackageName()%>.reltypes;
 
 <%genModel.addImport("org.neo4j.graphdb.RelationshipType");%>
 <%genModel.addImport("fr.inria.atlanmod.neo4emf.Point");%>
@@ -25,13 +25,13 @@ package reltypes;
 <% for (GenPackage genPackage : genModel.getAllGenPackagesWithClassifiers())
 	 genModel.addImport(genPackage.getReflectionPackageName()+"."+genPackage.getPackageInterfaceName());%>
 
-/**
- * <!-- begin-user-doc -->
- * Neo4j <b>relationships mapping</b> for model persistence.
- * It provides hashmaps to map relationships to the appropriate feature ID.
- * <!-- end-user-doc -->
- * @generated
- */
+	/**
+ 	* <!-- begin-user-doc -->
+ 	* Neo4j <b>relationships mapping</b> for model persistence.
+ 	* It provides hashmaps to map relationships to the appropriate feature ID.
+ 	* <!-- end-user-doc -->
+ 	* @generated
+ 	*/
 public class ReltypesMappings {
 <%if (genModel.hasCopyrightField()) {%>
 	/**
@@ -82,7 +82,7 @@ public class ReltypesMappings {
 					Map<Point,RelationshipType> map<%=genPackage.getPackageInterfaceName()%> = new HashMap<Point,RelationshipType>();
 				<%} 
 				GenClass cls = (GenClass)genClassifier; 
-				for (GenFeature feat : cls.getAllGenFeatures()) {
+				for (GenFeature feat : CodegenUtil.getEAllGenFeatures(cls)) {
     				if(feat.isReferenceType()){
     				%>
 			map<%=genPackage.getPackageInterfaceName()%>.put(new Point(<%=genPackage.getPackageInterfaceName()%>.<%=cls.getClassifierID()

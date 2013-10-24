@@ -1,5 +1,7 @@
 package fr.inria.atlanmod.neo4emf.drivers;
 
+import java.util.Map;
+
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceServiceFactory;
 
 /**
@@ -31,5 +33,8 @@ public interface IPersistenceServiceFactory {
 	 */
 	IPersistenceService createPersistenceService(String path,
 			IPersistenceManager persistenceManager);
+
+	IPersistenceService createPersistenceService(String path,
+			IPersistenceManager persistenceManager, Map<String, String> config);
 	
 }

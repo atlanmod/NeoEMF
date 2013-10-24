@@ -28,9 +28,9 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 		INeo4emfResourceFactory {
 	
 	
-	Map<String,Map<Point,RelationshipType>> relationshipsMap; 
+	Map<String, Map<Point, RelationshipType>> relationshipsMap; 
 	
-	public Neo4emfResourceFactory(Map<String, Map<Point, RelationshipType>> map) {
+	public Neo4emfResourceFactory(final Map<String, Map<Point, RelationshipType>> map) {
 		super();
 		this.relationshipsMap = map;
 	}
@@ -41,33 +41,33 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 	/**
 	 * creates the resource 
 	 */
-	public INeo4emfResource createResource(URI uri) {
+	public INeo4emfResource createResource(final URI uri) {
 		
 		// Assert.isNotNull(relationshipsMap, "RelationshipType map is null");
 		//Assert.isNotNull(uri, "URI is Null");
 		
-		return new Neo4emfResource(uri, relationshipsMap);
-		
+		return new Neo4emfResource(uri, this.relationshipsMap, null);	
 	}
 	/**
 	 * @ see {@link INeo4emfResourceFactory#createResource(String, Map)}
 	 */
 	@Override
-	public INeo4emfResource createResource(String storeDirectory, Map< String ,Map <Point, RelationshipType>> map) {
-		return new Neo4emfResource(storeDirectory,map);
+	public INeo4emfResource createResource(final String storeDirectory, final Map< String, Map <Point, RelationshipType>> map) {
+		return new Neo4emfResource(storeDirectory, map, null);
 	}
 	/**
 	 * init the singleton instance
 	 * @return singleton instance 
 	 */
 	public static INeo4emfResourceFactory init() {
-		if (eINSTANCE == null)
+		if (eINSTANCE == null) {
 			return new Neo4emfResourceFactory();
+		}
 		return eINSTANCE;
 	}
 	
 	@Override
-	public INeo4emfResourceFactory setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map){
+	public INeo4emfResourceFactory setRelationshipsMap(final Map<String, Map<Point, RelationshipType>> map){
 		this.relationshipsMap = map;
 		return (INeo4emfResourceFactory) this;
 	}

@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neo4emf;
  * Descritpion ! To come
  * @author Amine BENELALLAM
  * */
-import fr.inria.atlanmod.neo4emf.Point;
+
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
@@ -41,7 +41,7 @@ public interface INeo4emfResourceFactory extends Resource.Factory {
 		 * @return {@link INeo4emfObject}
 		 */
 		INeo4emfResource createResource(String storeDirectory,
-				Map< String ,Map <Point, RelationshipType>> map);
+				Map< String , Map <Point, RelationshipType>> map);
 		/**
 		 * Sets the relationshipsMap to create the Factory
 		 * @param map

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.util.collection.SoftValueTreeMap;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -30,6 +31,7 @@ public class Partition extends AbstractPartition {
 		return false;
 	}
 	public Partition (EObject eObject){
+		Assert.isNotNull(eObject, " eObject should not be null");
 		this.eObjet=new WeakReference<EObject>(eObject);
 		tails = new ArrayList<Tail>();
 	}
@@ -49,13 +51,15 @@ public class Partition extends AbstractPartition {
 	public Tail getTail(int featureID) {
 		for (Tail tail : tails)
 			if (tail.getFeatureID() == featureID ) return tail;
-		return null;
+		Tail newTail = new Tail(featureID);
+		tails.add(newTail);
+		return newTail;
 					
 	}
 	
-	public boolean containsKey(long nodeId) {
-		if (eObjet.get()==null){
-			System.out.println("null value"); return false;}
+	public boolean containsKey(long nodeId) throws NullPointerException {
+		if (eObjet.get()==null){			
+			throw new NullPointerException();}
 		if (((INeo4emfObject)eObjet.get()).getNodeId() ==  nodeId) return true;
 		for (Tail tail : tails)
 			if (tail.containsKey(nodeId)) return true;

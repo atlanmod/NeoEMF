@@ -51,6 +51,7 @@ public class Neo4emfResourceUtil {
 		
 	}
 	
+	
 	private static Resource intiMetalmodel(String ecorePath) {
 		 URI modelFileURI = URI.createURI(ecorePath);
 		 ResourceSet rSet = new ResourceSetImpl();
@@ -72,6 +73,8 @@ public class Neo4emfResourceUtil {
        	 }	  
         }
 	}
+
+	
 	private static void serializeResource(IPersistenceService graphDB, String xmiPath, Resource metaResource){
 		
 		try {		
@@ -88,9 +91,9 @@ public class Neo4emfResourceUtil {
 			//EObject root = resource.getContents().get(0);
 		EList<EObject> objectsList= resourceToObjectsList(resource);
 		Map<EObject,Long> eObjectsToNodes =  persistNodes(graphDB, objectsList);
-		System.out.println("persist the nodes");
+		//System.out.println("persist the nodes");
 		persistReferences(graphDB, objectsList, eObjectsToNodes, metaResource);
-		System.out.println("Finish");
+		//System.out.println("Finish");
 		}finally{
 			graphDB.shutdown();
 		}
@@ -119,7 +122,7 @@ public class Neo4emfResourceUtil {
 		for (EClass clsfier : getOrderedClassifiers(pck)){
 			for (EStructuralFeature str : clsfier.getEAllReferences())
 				if (! map.containsKey(new Point(clsfier.getClassifierID(), str.getFeatureID()))){
-					String stri = formatRelationshipName(str);
+					String stri = formatRelationshipName(clsfier,str);
 					map.put(new Point(clsfier.getClassifierID(), str.getFeatureID()), DynamicRelationshipType.withName(stri));
 				}
 		}
@@ -134,8 +137,8 @@ private static Map<Point, RelationshipType> createRelTypesMap(Resource resource)
 	}
 
 
-private static String formatRelationshipName(EStructuralFeature str) {
-	return FormatClassifierName(str.getEContainingClass()) + "__" + CodeGenUtil.format(str.getName(), '_', null, false, false).toUpperCase();
+public static String formatRelationshipName(EClass clsfier, EStructuralFeature str) {
+	return FormatClassifierName(clsfier) + "__" + CodeGenUtil.format(str.getName(), '_', null, false, false).toUpperCase();
 	
 }
 private static String FormatClassifierName(EClassifier cls)

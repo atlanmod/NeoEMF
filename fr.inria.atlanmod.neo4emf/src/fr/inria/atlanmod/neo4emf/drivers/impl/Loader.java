@@ -1,5 +1,7 @@
 package fr.inria.atlanmod.neo4emf.drivers.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +18,9 @@ import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.xmi.FeatureNotFoundException;
 import org.neo4j.graphdb.Node;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -52,20 +56,27 @@ public class Loader implements ILoader {
 			options = new HashMap<String, Object>();
 		options= mergeWithDefaultOptions(options);
 		// TODO introduce the load strategies
-		if (((Boolean)options.get(DYNAMIC_LOADING)) == true)
+		if (((String)options.get(LOADING_STRATEGY)).equals(DYNAMIC_LOADING)){
 			dynamicLoad(options);
-		else staticLoad(options);
+		} else if (((String)options.get(LOADING_STRATEGY)).equals(FULL_LOADING)) {
+			fullLoad(options);
+		} else { staticLoad(options); }
+	}
+	private void fullLoad(Map<?, ?> options) {
+		// TODO Auto-generated method stub
+		
 	}
 	private Map<?, ?> mergeWithDefaultOptions(Map<?, ?> options) {
 		initOptions();
-		for (int i=0; i< loadOptions.length; i++)
+		for (int i=0; i< loadOptions.length; i++) {
 			if (options.containsKey(loadOptions[i])){
 				defaultOptions.remove(loadOptions[i]);
 				defaultOptions.put(loadOptions[i], options.get(loadOptions[i]));	}
-		return defaultOptions;
+		}
+		return this.defaultOptions;
 	}
 	private void initOptions() {
-		defaultOptions =  new HashMap<String, Object>();
+		this.defaultOptions =  new HashMap<String, Object>();
 		for (int i=0;i<loadOptions.length; i++ )
 			defaultOptions.put(loadOptions[i], loadDefaultValues[i]);	
 	}
@@ -93,6 +104,8 @@ public class Loader implements ILoader {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	/**
 	 * @see ILoader#getAllInstances(EClass, List)
 	 */
@@ -116,6 +129,7 @@ public class Loader implements ILoader {
 		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-sizeChange);
 		return eObjectList;
 	}
+	
 	/**
 	 * get an Object from Node 
 	 * @param n  {@link Node}
@@ -208,18 +222,48 @@ public class Loader implements ILoader {
 	@Override
 	public void fetchAttributes(EObject obj, Node n) {
 		try{
+			
+			Object attributeValue= null;
+			
 			int size = ChangeLog.getInstance().size();
+			
 			for (EAttribute attr : obj.eClass().getEAllAttributes()) {
-				if (attr.getEType() instanceof EEnum){
+			
+				attributeValue = n.getProperty(attr.getName());
+				Class<?> cls = attributeValue.getClass();
+				
+				 if (attributeValue.toString().equals("")){ 
+						
+						if (attr.getEType().getName().equals("Boolean") || attr.getEType().getName().equals("EBoolean")){
+							attributeValue=(Boolean)false;
+						}
+						else if (attr.getEType().getName().equals("String") || attr.getEType().getName().equals("EString")){
+							attributeValue=(String)"";
+						}
+						else {
+							 if (attr.getEType().getName().equals("EByte")){
+                               attributeValue = new Byte((byte) 0) ;}
+                        else if (attr.getEType().getName().equals("EBigInteger"))
+                                        attributeValue = new BigInteger("0");
+                        else if (attr.getEType().getName().equals("EBigDecimal"))
+                                        attributeValue = new BigDecimal("0");
+                        else if (attr.getEType().getName().equals("ELong"))
+                                attributeValue = Long.parseLong("0");
+                        else
+							attributeValue=(Integer)0;
+						}
+						obj.eSet(attr, attributeValue);
+					}
+				
+				 else if (attr.getEType() instanceof EEnum){
 					EEnum enumCls = getEEnumFromNodeName(attr.getEType().getName());
-					obj.eSet(attr, enumCls.getEEnumLiteralByLiteral((String) n.getProperty(attr.getName())));
+					Object enumObject = enumCls.getEPackage().getEFactoryInstance().createFromString(enumCls, (String)attributeValue);
+					obj.eSet(attr, enumObject);
 				}else if (attr.isMany()){
-
-					obj.eSet(attr,Arrays.asList((List<?>)n.getProperty(attr.getName())) );
-
+					obj.eSet(attr,Arrays.asList((List<?>)attributeValue) );
 				}
 				else{
-					obj.eSet(attr, n.getProperty(attr.getName()));
+					obj.eSet(attr, attributeValue);
 				}
 			}
 			ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
@@ -234,7 +278,7 @@ public class Loader implements ILoader {
 	 * Construct the list of links of <b>obj</b> from the node List
 	 */
 	@Override	
-	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) {
+	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) throws FeatureNotFoundException {
 		try {
 				int size = ChangeLog.getInstance().size();
 				int newId=((INeo4emfObject)obj).getPartitionId();
@@ -242,21 +286,28 @@ public class Loader implements ILoader {
 					newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)obj).getPartitionId());
 					manager.createNewPartitionHistory(newId);
 					}	
-				EReference str = Loader.getFeatureFromID(obj,featureId);	
+				EReference str = Loader.getFeatureFromID(obj,featureId);
+				if (str == null) {
+					throw new FeatureNotFoundException("", obj, "", -1, -1);}
 				List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
 				for (Node n : nodes){
-					INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment(),featureId);				
+					INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment(),featureId);
+					
 					objectList.add(object);
 					manager.putToProxy((INeo4emfObject)object, str, newId);
 					//manager.updateProxyManager((INeo4emfObject)object, str);
 					}
+				
+
 				if (!str.isContainment())
 					manager.addObjectsToContents(objectList);
 				if (str.isMany())
 					 obj.eSet(str,objectList);
 				else obj.eSet(str, objectList.get(0));
 				ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);}
-		catch(Exception e){
+		catch (FeatureNotFoundException e){
+			e.printStackTrace();
+		}catch(Exception e){
 			manager.shutdown();
 			e.printStackTrace();
 
@@ -291,9 +342,9 @@ public class Loader implements ILoader {
 	 */
 	private static EReference getFeatureFromID(EObject obj,
 			int featureId) {
-		for (EReference ref : obj.eClass().getEAllReferences())
-			if (ref.getFeatureID()==featureId) return ref;
-		return null;
+		EStructuralFeature ref = obj.eClass().getEAllStructuralFeatures().get(featureId);
+				return (EReference) (ref instanceof EReference ? ref : null);
+		
 	}
 	
 	/**
@@ -325,6 +376,8 @@ public class Loader implements ILoader {
 				manager.setUsageTrace(((INeo4emfObject)eObject).getPartitionId(),PID, featureId, eObject);
 			
 		}
+//		if (eObj == null) {
+//			System.out.println("null eObject");}
 		return eObj;
 	}
 	

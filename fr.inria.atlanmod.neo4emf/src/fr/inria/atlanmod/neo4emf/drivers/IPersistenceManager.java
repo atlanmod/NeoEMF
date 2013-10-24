@@ -133,8 +133,9 @@ public interface IPersistenceManager {
 	 * @param object {@link EObject}
 	 * @param str {@link EStructuralFeature}
 	 * @param partitionID {@link Int}
+	 * @throws NullPointerException
 	 */
-	void putToProxy(INeo4emfObject object, EStructuralFeature str, int partitionID);
+	void putToProxy(INeo4emfObject object, EStructuralFeature str, int partitionID) throws NullPointerException;
 	
 	/**
 	 * return the partition ID containing the nodeId <b>id</b>

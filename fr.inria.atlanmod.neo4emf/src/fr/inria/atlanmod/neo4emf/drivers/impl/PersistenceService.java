@@ -16,6 +16,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -25,25 +26,47 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.Index;
-
+import org.neo4j.graphdb.index.IndexProvider;
+import org.neo4j.index.lucene.LuceneIndexProvider;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.Traversal;
+import org.neo4j.kernel.extension.KernelExtensionFactory;
+import org.neo4j.kernel.impl.cache.CacheProvider;
+import org.neo4j.kernel.impl.transaction.xaframework.TransactionInterceptorProvider;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
+
+
 
 
 public class PersistenceService extends EmbeddedGraphDatabase implements IPersistenceService {
 
 	String storeDir;
 	IPersistenceManager manager;
-	public PersistenceService(String storeDir,IPersistenceManager mng) {	
+	@SuppressWarnings("deprecation")
+	
+	public PersistenceService(String storeDir,Map<String, String> config, List<IndexProvider> indexProviders, List<KernelExtensionFactory<?>> kernelExtensions, List<CacheProvider> cacheProviders, List<TransactionInterceptorProvider> txInterceptorProviders, IPersistenceManager mng) {	
+		super(storeDir,config, indexProviders, kernelExtensions, cacheProviders,
+  txInterceptorProviders );
+		this.storeDir = storeDir;
+		this.manager = mng;		
+	}
+
+	public PersistenceService(String storeDir, IPersistenceManager mng) {	
 		super(storeDir);
-		this.storeDir= storeDir;
-		manager = mng;
+		this.storeDir = storeDir;
+		this.manager = mng;
+		
+	}
+	public PersistenceService(String path, Map<String, String> config,
+			IPersistenceManager persistenceManager) {
+		super(path,(Map<String, String>) config);
+		this.storeDir = storeDir;
+		this.manager = persistenceManager;
 	}
 
 	@Override
@@ -65,7 +88,7 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 	private String getIdMetaValueFromClass(EClass c){
 		return c.getEPackage().getName()+"_"+c.getClassifierID();
 	}
-	public Node createResourceNodeIfAbsent(){
+	public Node createResourceNodeIfAbsent() {
 		if (getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle() != null)
 			return getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle();
 		Node n = createNode();
@@ -98,7 +121,8 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 
 	@Override
 	public ArrayList<Node> getAllRootNodes() {
-		Node resourceNode = getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle();
+		Index<Node> index = getMetaIndex();
+		Node resourceNode = index.get(ID_META, RESOURCE_NODE).getSingle();
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
 	}
 	

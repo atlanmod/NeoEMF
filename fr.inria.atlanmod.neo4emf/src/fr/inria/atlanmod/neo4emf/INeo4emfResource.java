@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neo4emf;
  * */
 
 
-import fr.inria.atlanmod.neo4emf.Point;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +36,17 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	public static final String DUPLICATION_TOLERANT = ILoader.DUPLICATION_TOLERANT;
 	
 	public static final String DYNAMIC_LOADING = ILoader.DYNAMIC_LOADING;
+	
+	public static final String STATIC_LOADING = ILoader.STATIC_LOADING;
+	
+	public static final String FULL_LOADING = ILoader.FULL_LOADING;
+	
+	public static final String LOADING_STRATEGY = ILoader.LOADING_STRATEGY;
+	
+	
+	
+	
+	
 	/**
 	 * Fetches the single-valued attributes lazily on demand  
 	 * @param object {@link EObject}

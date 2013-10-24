@@ -46,7 +46,7 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	/**
 	 * hasProxy flag
 	 */
-	protected NeoObjectData getObjectData(){	
+	protected NeoObjectData getObjectData() {	
 		return null;
 	}
 	//protected boolean hasProxy;
@@ -65,43 +65,48 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	 */
 	@Override
 	public long getNodeId() {
-		if (id=="") return -1;	
-		return Long.parseLong(id.substring(id.lastIndexOf("/")+1));
+		if (this.id == "") {
+			return -1;
+		}	
+		return Long.parseLong(this.id.substring(this.id.lastIndexOf("/") + 1));
 	}
 	/**
 	 * @see INeo4emfObject#setNodeId()
 	 */
 	@Override
-	public void setNodeId(long nodeId){
-		if (id=="")
-			id= "/"+nodeId;
-		else 
-			this.id = id.substring(0,id.lastIndexOf("/"))+nodeId;
+	public void setNodeId(final long nodeId){
+		if (this.id == "") {
+			this.id = "/" + nodeId;
+		} else {
+			this.id = this.id.substring(0, this.id.lastIndexOf("/")) + nodeId;
+		}
 	}
 	@Override
 	public int getPartitionId() {
-		if (id=="" || id.lastIndexOf("/")==0) return -1;
-		return Integer.parseInt(id.substring(0,id.lastIndexOf("/")));
+		if (this.id == "" || this.id.lastIndexOf("/") == 0) {
+			return -1;
+		}
+		return Integer.parseInt(this.id.substring(0, this.id.lastIndexOf("/")));
 	}
 	@Override
-	public void setPartitionId(int partId) {
-		id = partId+id.substring(id.lastIndexOf("/"));
+	public void setPartitionId(final int partId) {
+		this.id = partId + this.id.substring(this.id.lastIndexOf("/"));
 	}
 	
 	/**
 	 * Constructor  
 	 */
-	public Neo4emfObject (){
+	public Neo4emfObject() {
 		super();
-		id="";
-		isProxy= false;
+		this.id = "";
+		this.isProxy = false;
 	}
 	
-	public Neo4emfObject(EClass eClass) {
+	public Neo4emfObject(final EClass eClass) {
 		super();
 		eSetClass(eClass);
-		id="";
-		isProxy=false;
+		this.id = "";
+		this.isProxy = false;
 	}
 
 	/**
@@ -117,72 +122,99 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	 *@return {@link int }
 	 */
 	@Override
-	public int compareTo(INeo4emfObject o) {
+	public int compareTo(final INeo4emfObject o) {
 		return this.equals(o)? 0 : this.eContainer().eClass().getName().compareTo(o.eContainer().eClass().getName());
 	}
 	
 	@Override
-	public boolean eIsProxy(){
+	public boolean eIsProxy() {
 		// TODO redefine the eIsproxy method 
-		return isProxy;
+		return this.isProxy;
 	}
 	@Override
-	public void setProxy(boolean isProxy) {
+	public void setProxy(final boolean isProxy) {
 		this.isProxy = isProxy;
 	}
 	
 	@Override 
-	public Object eGet( EStructuralFeature eFeature ){
+	public Object eGet(final EStructuralFeature eFeature ) {
 		return eGet(eFeature, true);
 	}
 	@Override 
-	public Object eGet(EStructuralFeature str, boolean resolve){
+	public Object eGet(final EStructuralFeature str, boolean resolve ){
 		return eGet(str, true, true);
 	}
 	
 	@Override
-	public Object eGet(EStructuralFeature eFeature, boolean resolve, boolean coreType){ 
+	public Object eGet(final EStructuralFeature eFeature, final boolean resolve, final boolean coreType){ 
 		 int featureID = eDerivedStructuralFeatureID(eFeature);
 		 Assert.isTrue(featureID >= 0, "Invalid feature : "+ eFeature.getName()); 
 		 return eGet(featureID, resolve, coreType);
 	 }
 	 
-
+	
 	@Override 
-	public Object eGet(int featureID, boolean resolve, boolean coreType){
+	public Object eGet(final int featureID, final boolean resolve, final boolean coreType){
 		 EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
-		 Assert.isNotNull(eFeature, "Invalid feature : "+ eFeature);
-		 Object result = simple_eGet(featureID, resolve, coreType);	
-		 if (id == "")
-			 return result;
-		 if (! eFeature.isMany()){		
-			 if (result != null )
-				 return result;
+		 Assert.isNotNull(eFeature, "Invalid feature : " + eFeature);
+		 Object result = simpleGet(featureID, resolve, coreType, true);	
+		 if (this.id == "") {
+			return result;
+		}
+		 if (!eFeature.isMany()) {		
+			 if (result != null) {
+				return result;
+			}
 		 } else {
-			 if (!((List<?>)result).isEmpty())
-				 return result;
+			 if (!((List<?>) result).isEmpty()) {
+				return result;
+			}
 		 }
 		 
 		 Assert.isTrue(eResource() != null && eResource() instanceof INeo4emfResource, "The resource is either null or not of type INeo4emfResource");
 		 INeo4emfResource resource = (INeo4emfResource) eResource();
-		 if (eFeature instanceof EAttribute)
-			 resource.fetchAttributes(this);
-		 else
-		 	 resource.getOnDemand(this, featureID);
-		 return simple_eGet(featureID, resolve, coreType);
+		 if (eFeature instanceof EAttribute) {
+			resource.fetchAttributes(this);
+		} else {
+			resource.getOnDemand(this, featureID);
+		}
+		 return simpleGet(featureID, resolve, coreType, false);
 	
 	}
-	
-	protected Object simple_eGet(int featureID, boolean resolve, boolean coreType){
+	 protected Object eDynamicGet(final int dynamicFeatureID, final EStructuralFeature eFeature, final boolean resolve, final boolean coreType){
+		Assert.isTrue(dynamicFeatureID >= 0, "invalid Feature with " + eFeature);
+		Object result = eSettingDelegate(eFeature).dynamicGet(this, eSettings(), dynamicFeatureID, resolve, coreType);
+		if (result == null) {
+			INeo4emfResource resource = (INeo4emfResource) eResource();	 	
+			if (eFeature instanceof EAttribute) {
+				resource.fetchAttributes(this);
+			} else { 
+				 resource.getOnDemand(this, dynamicFeatureID + eStaticFeatureCount()); 
+			 	 }
+		}
+		return simpleGet(dynamicFeatureID + eStaticFeatureCount(), resolve, coreType, true);
+	 	
+	 }
+		 
+		 
+		 protected Object simpleGet(final int featureID, final boolean resolve, final boolean coreType, final boolean notificationRequired){
 		int dynamicFeatureID = featureID - eStaticFeatureCount();
 		 EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
 		 Assert.isTrue(eFeature != null , "Invalid featureID: " + featureID);
 		 Object result = eSettingDelegate(eFeature).dynamicGet(this, eSettings(), dynamicFeatureID, resolve, coreType);
-		 if (result != null){
+		 if (result != null && notificationRequired) {
 			 Notification msg = new ENotificationImpl(this, INeo4emfNotification.GET, eFeature, null, null);
 			 ChangeLog.getInstance().addNewEntry(msg);
 		 }
 		return result;
+	}
+	
+	@Override
+	protected void eDynamicSet(final int dynamicFeatureID, final EStructuralFeature eFeature, Object newValue){
+		Object oldValue = simpleGet(dynamicFeatureID + eStaticFeatureCount(), true, true, false);
+		eSettingDelegate(eFeature).dynamicSet(this, eSettings(), dynamicFeatureID, newValue);
+		Notification msg = new ENotificationImpl(this, Notification.SET, eFeature, oldValue, newValue);
+		ChangeLog.getInstance().addNewEntry(msg);
 	}
 	
 	@Override 
@@ -196,19 +228,27 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public void eSet(int featureID,  Object newValue){
 		super.eSet(featureID, newValue);
 		EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID); 
-		Object oldValue = simple_eGet(featureID, true, true);
 		int dynamicFeatureID = featureID - eStaticFeatureCount();
 		Assert.isTrue(eFeature.isChangeable()," illegal argument feature Cannot be changed : " + eFeature);
 		eDynamicSet(dynamicFeatureID, eFeature, newValue);
-		Notification msg = new ENotificationImpl(this, Notification.SET, eFeature, oldValue, newValue);
-		ChangeLog.getInstance().addNewEntry(msg);
 	}
 	
+	@Override 
+	protected Object eVirtualValue(int index){
+		// handle virtual delegation in the eResource
+		//		Object result = eVirtualValues()[index];
+		//		if (result != null )
+		//			return result;
+		//		else {
+		//			
+		//		}
+		throw new UnsupportedOperationException();		
+	}
 	protected boolean isLoaded() {
-		return getNodeId()>-1 & eResource() instanceof INeo4emfResource;
+		return getNodeId() > -1 & eResource() instanceof INeo4emfResource;
 	}
 	
-	public static class NeoObjectData{
+	public static class NeoObjectData {
 		
 	}
 
