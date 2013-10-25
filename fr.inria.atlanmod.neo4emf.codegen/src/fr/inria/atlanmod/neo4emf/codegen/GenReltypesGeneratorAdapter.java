@@ -84,6 +84,6 @@ public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 	@Override
 	protected void addClasspathEntries(JETEmitter jetEmitter) throws JETException {
 		super.addClasspathEntries(jetEmitter);
-		jetEmitter.addVariable("NEO4EMF_GENERATOR", Neo4emfGeneratorPlugin.ID);
+		jetEmitter.addVariable("NEO4EMF_GENERATOR", Neo4emfGeneratorPlugin.PLUGIN_ID);
 	}
 }
