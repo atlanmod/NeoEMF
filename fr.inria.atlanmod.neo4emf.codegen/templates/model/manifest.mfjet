@@ -39,9 +39,9 @@ Export-Package: <%=pack%><%while(packagesIterator.hasNext()) { pack = packagesIt
 Require-Bundle: <%=pluginID%><%if (!pluginID.startsWith("org.eclipse.core.runtime")){%>;visibility:=reexport<%} while(requiredPluginIterator.hasNext()) { pluginID = requiredPluginIterator.next();%>,
  <%=pluginID%><%if (!pluginID.startsWith("org.eclipse.core.runtime")){%>;visibility:=reexport<%}}%>
 <%}%>,
+ org.eclipse.equinox.common,
+ org.eclipse.emf.codegen,
  fr.inria.atlanmod.neo4emf;visibility:=reexport,
- fr.inria.atlanmod.neo4emf.change,
- org.eclipse.equinox.common,org.eclipse.emf.codegen
 <%if (genModel.getRuntimeVersion() == GenRuntimeVersion.EMF22 || genModel.getRuntimeVersion() == GenRuntimeVersion.EMF23) {%>
 Eclipse-LazyStart: true
 <%}%>

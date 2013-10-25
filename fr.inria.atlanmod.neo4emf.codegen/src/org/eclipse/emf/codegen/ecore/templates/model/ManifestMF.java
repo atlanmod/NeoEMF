@@ -36,7 +36,7 @@ public class ManifestMF
   protected final String TEXT_19 = ",";
   protected final String TEXT_20 = NL + " ";
   protected final String TEXT_21 = ";visibility:=reexport";
-  protected final String TEXT_22 = "," + NL + " fr.inria.atlanmod.neo4emf;visibility:=reexport," + NL + " fr.inria.atlanmod.neo4emf.change," + NL + " org.eclipse.equinox.common,org.eclipse.emf.codegen";
+  protected final String TEXT_22 = "," + NL + " org.eclipse.equinox.common," + NL + " org.eclipse.emf.codegen," + NL + " fr.inria.atlanmod.neo4emf;visibility:=reexport,";
   protected final String TEXT_23 = NL + "Eclipse-LazyStart: true";
   protected final String TEXT_24 = NL + "Bundle-ActivationPolicy: lazy";
   protected final String TEXT_25 = NL;

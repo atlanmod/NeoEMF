@@ -8,13 +8,14 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi,
- org.eclipse.emf.codegen.ecore,
- fr.inria.atlanmod.neo4emf.change
+ org.eclipse.emf.codegen.ecore
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Atlanmod INRIA
 Export-Package: com.googlecode.concurrentlinkedhashmap,
  fr.inria.atlanmod.neo4emf,
+ fr.inria.atlanmod.neo4emf.change,
+ fr.inria.atlanmod.neo4emf.change.impl,
  fr.inria.atlanmod.neo4emf.drivers,
  fr.inria.atlanmod.neo4emf.drivers.impl,
  fr.inria.atlanmod.neo4emf.impl,
