@@ -1,6 +1,0 @@
-Weak Reference Utilities
-Copyright (c) 2006-2013 Arakhn&ecirc;.org Consortium
-
-This product is distributed under the license(s):
-GNU Lesser General Public License version 3.0
-
