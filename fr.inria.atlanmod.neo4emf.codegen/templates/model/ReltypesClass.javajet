@@ -15,7 +15,7 @@
 <% GenPackage genPck = (GenPackage) argument; GenModel genModel= genPck.getGenModel();
  /* Trick to import java.util.* without warnings */Iterator.class.getName();%>
 <%@ include file="../Header.javajetinc"%>
-package <%=genPck.getInterfacePackageName()%>.reltypes;
+package <%=genModel.getModelPluginID()%>.reltypes;
 
 <%genModel.addImport("org.neo4j.graphdb.RelationshipType");%>
 <%genModel.markImportLocation(stringBuffer);%>

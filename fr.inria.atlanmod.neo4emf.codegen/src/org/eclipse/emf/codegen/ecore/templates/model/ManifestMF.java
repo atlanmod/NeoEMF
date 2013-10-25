@@ -28,16 +28,18 @@ public class ManifestMF
   protected final String TEXT_11 = NL + "Export-Package: ";
   protected final String TEXT_12 = ",";
   protected final String TEXT_13 = NL + " ";
-  protected final String TEXT_14 = "," + NL + " reltypes";
-  protected final String TEXT_15 = NL + "Require-Bundle: ";
-  protected final String TEXT_16 = ";visibility:=reexport";
-  protected final String TEXT_17 = ",";
-  protected final String TEXT_18 = NL + " ";
-  protected final String TEXT_19 = ";visibility:=reexport";
-  protected final String TEXT_20 = "," + NL + " fr.inria.atlanmod.neo4emf;visibility:=reexport," + NL + " fr.inria.atlanmod.neo4emf.change," + NL + " org.eclipse.equinox.common,org.eclipse.emf.codegen";
-  protected final String TEXT_21 = NL + "Eclipse-LazyStart: true";
-  protected final String TEXT_22 = NL + "Bundle-ActivationPolicy: lazy";
-  protected final String TEXT_23 = NL;
+  protected final String TEXT_14 = ",";
+  protected final String TEXT_15 = NL + " ";
+  protected final String TEXT_16 = ".reltypes";
+  protected final String TEXT_17 = NL + "Require-Bundle: ";
+  protected final String TEXT_18 = ";visibility:=reexport";
+  protected final String TEXT_19 = ",";
+  protected final String TEXT_20 = NL + " ";
+  protected final String TEXT_21 = ";visibility:=reexport";
+  protected final String TEXT_22 = "," + NL + " fr.inria.atlanmod.neo4emf;visibility:=reexport," + NL + " fr.inria.atlanmod.neo4emf.change," + NL + " org.eclipse.equinox.common,org.eclipse.emf.codegen";
+  protected final String TEXT_23 = NL + "Eclipse-LazyStart: true";
+  protected final String TEXT_24 = NL + "Bundle-ActivationPolicy: lazy";
+  protected final String TEXT_25 = NL;
 
   public String generate(Object argument)
   {
@@ -86,26 +88,29 @@ public class ManifestMF
     stringBuffer.append(pack);
     }
     stringBuffer.append(TEXT_14);
+    stringBuffer.append(TEXT_15);
+    stringBuffer.append(genModel.getModelPluginID());
+    stringBuffer.append(TEXT_16);
     }
     Iterator<String> requiredPluginIterator = genModel.getModelRequiredPlugins().iterator(); if (requiredPluginIterator.hasNext()) { String pluginID = requiredPluginIterator.next();
-    stringBuffer.append(TEXT_15);
-    stringBuffer.append(pluginID);
-    if (!pluginID.startsWith("org.eclipse.core.runtime")){
-    stringBuffer.append(TEXT_16);
-    } while(requiredPluginIterator.hasNext()) { pluginID = requiredPluginIterator.next();
     stringBuffer.append(TEXT_17);
-    stringBuffer.append(TEXT_18);
     stringBuffer.append(pluginID);
     if (!pluginID.startsWith("org.eclipse.core.runtime")){
+    stringBuffer.append(TEXT_18);
+    } while(requiredPluginIterator.hasNext()) { pluginID = requiredPluginIterator.next();
     stringBuffer.append(TEXT_19);
+    stringBuffer.append(TEXT_20);
+    stringBuffer.append(pluginID);
+    if (!pluginID.startsWith("org.eclipse.core.runtime")){
+    stringBuffer.append(TEXT_21);
     }}
     }
-    stringBuffer.append(TEXT_20);
-    if (genModel.getRuntimeVersion() == GenRuntimeVersion.EMF22 || genModel.getRuntimeVersion() == GenRuntimeVersion.EMF23) {
-    stringBuffer.append(TEXT_21);
-    }
     stringBuffer.append(TEXT_22);
+    if (genModel.getRuntimeVersion() == GenRuntimeVersion.EMF22 || genModel.getRuntimeVersion() == GenRuntimeVersion.EMF23) {
     stringBuffer.append(TEXT_23);
+    }
+    stringBuffer.append(TEXT_24);
+    stringBuffer.append(TEXT_25);
     return stringBuffer.toString();
   }
 }

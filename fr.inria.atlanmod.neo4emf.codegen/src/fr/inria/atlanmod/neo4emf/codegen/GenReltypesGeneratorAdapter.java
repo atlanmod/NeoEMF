@@ -14,90 +14,76 @@ import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.Monitor;
 
 public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
-	protected static final int REL_TYPES_ID =0;
-	protected static final int MAP_REL_TYPES_ID= 1;
-	
-	protected static final JETEmitterDescriptor[] JET_EMITTER_DESCRIPTORS =
-		  {
-	    new JETEmitterDescriptor("model/ReltypesClass.javajet", "fr.inria.atlanmod.neo4emf.codegen.templates.model.ReltypesClass")
-		,  new JETEmitterDescriptor("model/MappingReltypesClass.javajet", "fr.inria.atlanmod.neo4emf.codegen.templates.model.MappingReltypesClass")  };
+	protected static final int REL_TYPES_ID = 0;
+	protected static final int MAP_REL_TYPES_ID = 1;
 
-	protected JETEmitterDescriptor[] getJETEmitterDescriptors()
-	  {
-	    return JET_EMITTER_DESCRIPTORS;
-	  }
+	protected static final JETEmitterDescriptor[] JET_EMITTER_DESCRIPTORS = {
+			new JETEmitterDescriptor("model/ReltypesClass.javajet", "fr.inria.atlanmod.neo4emf.codegen.templates.model.ReltypesClass"),
+			new JETEmitterDescriptor("model/MappingReltypesClass.javajet", "fr.inria.atlanmod.neo4emf.codegen.templates.model.MappingReltypesClass") };
 
-	  public GenReltypesGeneratorAdapter()
-	  {
-	    super();
-	  }
+	protected JETEmitterDescriptor[] getJETEmitterDescriptors() {
+		return JET_EMITTER_DESCRIPTORS;
+	}
 
-	  public GenReltypesGeneratorAdapter(GeneratorAdapterFactory generatorAdapterFactory)
-	  {
-	    super(generatorAdapterFactory);
-	   	
-	  }
-	  
-	  @Override
-	  public boolean canGenerate(Object object, Object projectType)
-	  {
-	    return MODEL_PROJECT_TYPE.equals(projectType) 
-	    		? ( hasReferences((GenPackage) object) ? super.canGenerate(object, projectType) : false ): false;
-	  }
+	public GenReltypesGeneratorAdapter() {
+		super();
+	}
 
-	  private boolean hasReferences(GenPackage object) {
-		for (GenClass genClass : object.getOrderedGenClasses()){
-			for (GenFeature feat :genClass.getAllGenFeatures())
-				 if(feat.isReferenceType())
-					 return true;
+	public GenReltypesGeneratorAdapter(GeneratorAdapterFactory generatorAdapterFactory) {
+		super(generatorAdapterFactory);
+	}
+
+	@Override
+	public boolean canGenerate(Object object, Object projectType) {
+		// return MODEL_PROJECT_TYPE.equals(projectType)
+		// ? ( hasReferences((GenPackage) object) ? super.canGenerate(object,
+		// projectType) : false ): false;
+		return MODEL_PROJECT_TYPE.equals(projectType) ? super.canGenerate(object, projectType) : false;
+	}
+
+	private boolean hasReferences(GenPackage object) {
+		for (GenClass genClass : object.getOrderedGenClasses()) {
+			for (GenFeature feat : genClass.getAllGenFeatures())
+				if (feat.isReferenceType())
+					return true;
 		}
 		return false;
 	}
 
 	@Override
-	  protected Diagnostic generateModel(Object object, Monitor monitor)
-	  {
-		  GenPackage genPackage = (GenPackage) object;
-		  GenModel genModel = genPackage.getGenModel();
-		  
-		 if (hasReferences(genPackage)){ 
-//		  GenModel genModel = (GenModel) object;
-	    monitor.beginTask("", 2);
-	    monitor.subTask(message);
-	    ensureProjectExists
-	      (genModel.getModelDirectory(), genModel, MODEL_PROJECT_TYPE, genModel.isUpdateClasspath(), createMonitor(monitor, 1));
+	protected Diagnostic generateModel(Object object, Monitor monitor) {
+		GenPackage genPackage = (GenPackage) object;
+		GenModel genModel = genPackage.getGenModel();
 
-	    generateJava
-	      (genModel.getModelDirectory(),
-	    		  genPackage.getInterfacePackageName()+
-	    		  ".reltypes",
-	       "Reltypes",
-	       getJETEmitter(getJETEmitterDescriptors(), REL_TYPES_ID),
-	       null,
-	       createMonitor(monitor, 1));
-	  
-	    generateJava(genModel.getModelDirectory(),
-	    		genPackage.getInterfacePackageName()+
-	    		".reltypes",
-	    		"ReltypesMappings",
-		       getJETEmitter(getJETEmitterDescriptors(), MAP_REL_TYPES_ID),
-		       null,
-		       createMonitor(monitor, 1));
-		 }
-		 return Diagnostic.OK_INSTANCE;
-	  }
+		// if (hasReferences(genPackage)){
+		monitor.beginTask("", 2);
+		monitor.subTask(message);
+		ensureProjectExists(genModel.getModelDirectory(), genModel, MODEL_PROJECT_TYPE, genModel.isUpdateClasspath(), createMonitor(monitor, 1));
 
-	  @Override
-	  protected void addBaseTemplatePathEntries(List<String> templatePath)
-	  {
-	    templatePath.add(Neo4emfGeneratorPlugin.INSTANCE.getBaseURL().toString() + "templates");
-	    super.addBaseTemplatePathEntries(templatePath);
-	  }
+		generateJava(genModel.getModelDirectory(),
+				genModel.getModelPluginID() + ".reltypes", "Reltypes",
+				getJETEmitter(getJETEmitterDescriptors(), REL_TYPES_ID),
+				null,
+				createMonitor(monitor, 1));
 
-	  @Override
-	  protected void addClasspathEntries(JETEmitter jetEmitter) throws JETException
-	  {
-	    super.addClasspathEntries(jetEmitter);
-	    jetEmitter.addVariable("NEO4EMF_GENERATOR", Neo4emfGeneratorPlugin.ID);
-	  }
+		generateJava(genModel.getModelDirectory(),
+				genModel.getModelPluginID() + ".reltypes", "ReltypesMappings",
+				getJETEmitter(getJETEmitterDescriptors(), MAP_REL_TYPES_ID),
+				null,
+				createMonitor(monitor, 1));
+		// }
+		return Diagnostic.OK_INSTANCE;
 	}
+
+	@Override
+	protected void addBaseTemplatePathEntries(List<String> templatePath) {
+		templatePath.add(Neo4emfGeneratorPlugin.INSTANCE.getBaseURL().toString() + "templates");
+		super.addBaseTemplatePathEntries(templatePath);
+	}
+
+	@Override
+	protected void addClasspathEntries(JETEmitter jetEmitter) throws JETException {
+		super.addClasspathEntries(jetEmitter);
+		jetEmitter.addVariable("NEO4EMF_GENERATOR", Neo4emfGeneratorPlugin.ID);
+	}
+}

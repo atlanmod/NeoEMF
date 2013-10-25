@@ -57,7 +57,7 @@ public class ReltypesClass
     stringBuffer.append(TEXT_4);
     stringBuffer.append("$");
     stringBuffer.append(TEXT_5);
-    stringBuffer.append(genPck.getInterfacePackageName());
+    stringBuffer.append(genModel.getModelPluginID());
     stringBuffer.append(TEXT_6);
     genModel.addImport("org.neo4j.graphdb.RelationshipType");
     genModel.markImportLocation(stringBuffer);

@@ -8,8 +8,7 @@ Bundle-Activator: fr.inria.atlanmod.neo4emf.codegen.Neo4emfGeneratorPlugin$Imple
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.codegen.ecore
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
