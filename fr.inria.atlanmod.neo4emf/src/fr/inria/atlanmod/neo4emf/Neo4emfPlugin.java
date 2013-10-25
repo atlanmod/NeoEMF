@@ -17,18 +17,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Neo4emfPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "fr.inria.atlanmod.neo4emf"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	private static Neo4emfPlugin plugin;
 	
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public Neo4emfPlugin() {
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static Neo4emfPlugin getDefault() {
 		return plugin;
 	}
 

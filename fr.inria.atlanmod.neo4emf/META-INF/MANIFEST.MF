@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Neo4emf
 Bundle-SymbolicName: fr.inria.atlanmod.neo4emf;singleton:=true
 Bundle-Version: 0.5.0.qualifier
-Bundle-Activator: fr.inria.atlanmod.neo4emf.Activator
+Bundle-Activator: fr.inria.atlanmod.neo4emf.Neo4emfPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore,
