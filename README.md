@@ -6,7 +6,7 @@ This project introduces NEO4EMF, a Neo4j-based model repository and persistence 
 
 Wiki
 ----
-Check out our Wiki page in [neo4emf.com](www.neo4emf.com).
+Check out our Wiki page in [neo4emf.com](http://neo4emf.com).
 
 Contact us :
 ------------
