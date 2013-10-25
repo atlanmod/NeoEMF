@@ -21,7 +21,6 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.IndexProvider;
 import org.neo4j.index.lucene.LuceneIndexProvider;
 import org.neo4j.kernel.impl.cache.CacheProvider;
-import org.neo4j.kernel.impl.cache.GCResistantCacheProvider;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
@@ -34,12 +33,7 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 
 	@Override	
  public IPersistenceService createPersistenceService( String path, IPersistenceManager persistenceManager, Map<String,String> config ){
-		
-
-//		
-//		IPersistenceService service = new PersistenceService(path, config, indexProviders, kernelExtensions, cacheProviders,
-//				txInterceptorProviders, persistenceManager);
-		IPersistenceService service = new PersistenceService(path, config, persistenceManager);
+		IPersistenceService service = new PersistenceService(path, persistenceManager);
 		registerShutdownHook(service);
 		return service;
 				
@@ -51,24 +45,25 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 		return eINSTANCE;
 	}
 	
+//	public PersistenceServiceFactory (){
+//		//the cache providers
+//	    ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
+////	    cacheList.add( new GCResistantCacheProvider() );
+//
+//	    //the index providers
+//	    IndexProvider lucene = new LuceneIndexProvider();
+//	    ArrayList<IndexProvider> provs = new ArrayList<IndexProvider>();
+//	    provs.add( lucene );
+//	    ListIndexIterable providers = new ListIndexIterable();
+//	    providers.setIndexProviders( provs );
+//	    this.setIndexProviders( providers );
+//	    this.setCacheProviders( cacheList );
+//	}
+	
 	 /**
      * Register a shutdown so the database shuts clearly when an exception is raised
      * @param persistenceService {@link IPersistenceService}
      */
-	public PersistenceServiceFactory (){
-		//the cache providers
-	    ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-	    cacheList.add( new GCResistantCacheProvider() );
-
-	    //the index providers
-	    IndexProvider lucene = new LuceneIndexProvider();
-	    ArrayList<IndexProvider> provs = new ArrayList<IndexProvider>();
-	    provs.add( lucene );
-	    ListIndexIterable providers = new ListIndexIterable();
-	    providers.setIndexProviders( provs );
-	    this.setIndexProviders( providers );
-	    this.setCacheProviders( cacheList );
-	}
 	private static void registerShutdownHook( final IPersistenceService graphDb )
 	{
 

@@ -22,51 +22,56 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.event.KernelEventHandler;
+import org.neo4j.graphdb.event.TransactionEventHandler;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.graphdb.index.IndexProvider;
-import org.neo4j.index.lucene.LuceneIndexProvider;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.index.lucene.LuceneKernelExtensionFactory;
 import org.neo4j.kernel.Traversal;
 import org.neo4j.kernel.extension.KernelExtensionFactory;
 import org.neo4j.kernel.impl.cache.CacheProvider;
-import org.neo4j.kernel.impl.transaction.xaframework.TransactionInterceptorProvider;
+import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 
 
-
-
-public class PersistenceService extends EmbeddedGraphDatabase implements IPersistenceService {
+public class PersistenceService implements IPersistenceService {
 
 	String storeDir;
 	IPersistenceManager manager;
-	@SuppressWarnings("deprecation")
+	GraphDatabaseService db;
 	
-	public PersistenceService(String storeDir,Map<String, String> config, List<IndexProvider> indexProviders, List<KernelExtensionFactory<?>> kernelExtensions, List<CacheProvider> cacheProviders, List<TransactionInterceptorProvider> txInterceptorProviders, IPersistenceManager mng) {	
-		super(storeDir,config, indexProviders, kernelExtensions, cacheProviders,
-  txInterceptorProviders );
-		this.storeDir = storeDir;
-		this.manager = mng;		
-	}
-
-	public PersistenceService(String storeDir, IPersistenceManager mng) {	
-		super(storeDir);
-		this.storeDir = storeDir;
-		this.manager = mng;
+	public PersistenceService(String storeDir, IPersistenceManager persistenceManager) {
+		this.storeDir= storeDir;
 		
-	}
-	public PersistenceService(String path, Map<String, String> config,
-			IPersistenceManager persistenceManager) {
-		super(path,(Map<String, String>) config);
-		this.storeDir = storeDir;
-		this.manager = persistenceManager;
+        //the cache providers
+        ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
+        cacheList.add( new SoftCacheProvider() );
+ 
+        //the kernel extensions
+        LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
+        List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
+        extensions.add( lucene );
+ 
+        //the database setup
+        GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
+        gdbf.setKernelExtensions( extensions );
+        gdbf.setCacheProviders( cacheList );
+        db = gdbf.newEmbeddedDatabase( storeDir );
+        
+		manager = persistenceManager;
 	}
 
 	@Override
@@ -187,6 +192,77 @@ public class PersistenceService extends EmbeddedGraphDatabase implements IPersis
 		Node eClassNode = getMetaIndex().get(ID_META, getIdMetaValueFromClass(eClass)).getSingle();	
 		if (eClassNode == null) return Collections.emptyList();
 		return fetchNodesByRT(eClassNode.getId(), INSTANCE_OF, Direction.INCOMING);
+	}
+
+	@Override
+	public Transaction beginTx() {
+		return db.beginTx();
+	}
+
+	@Override
+	public Node createNode() {
+		return db.createNode();
+	}
+
+	@Override
+	@Deprecated
+	public Iterable<Node> getAllNodes() {
+		return db.getAllNodes();
+	}
+
+	@Override
+	public Node getNodeById(long arg0) {
+		return db.getNodeById(arg0);
+	}
+
+	@Override
+	@Deprecated
+	public Node getReferenceNode() {
+		return db.getReferenceNode();
+	}
+
+	@Override
+	public Relationship getRelationshipById(long arg0) {
+		return db.getRelationshipById(arg0);
+	}
+
+	@Override
+	@Deprecated
+	public Iterable<RelationshipType> getRelationshipTypes() {
+		return db.getRelationshipTypes();
+	}
+
+	@Override
+	public IndexManager index() {
+		return db.index();
+	}
+
+	@Override
+	public KernelEventHandler registerKernelEventHandler(KernelEventHandler arg0) {
+		return db.registerKernelEventHandler(arg0);
+	}
+
+	@Override
+	public <T> TransactionEventHandler<T> registerTransactionEventHandler(
+			TransactionEventHandler<T> arg0) {
+		return db.registerTransactionEventHandler(arg0);
+	}
+
+	@Override
+	public void shutdown() {
+		db.shutdown();
+	}
+
+	@Override
+	public KernelEventHandler unregisterKernelEventHandler(
+			KernelEventHandler arg0) {
+		return db.unregisterKernelEventHandler(arg0);
+	}
+
+	@Override
+	public <T> TransactionEventHandler<T> unregisterTransactionEventHandler(
+			TransactionEventHandler<T> arg0) {
+		return db.unregisterTransactionEventHandler(arg0);
 	}
 
 	
