@@ -41,7 +41,7 @@ Require-Bundle: <%=pluginID%><%if (!pluginID.startsWith("org.eclipse.core.runtim
 <%}%>,
  org.eclipse.equinox.common,
  org.eclipse.emf.codegen,
- fr.inria.atlanmod.neo4emf;visibility:=reexport,
+ fr.inria.atlanmod.neo4emf;visibility:=reexport
 <%if (genModel.getRuntimeVersion() == GenRuntimeVersion.EMF22 || genModel.getRuntimeVersion() == GenRuntimeVersion.EMF23) {%>
 Eclipse-LazyStart: true
 <%}%>
