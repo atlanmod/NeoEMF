@@ -13,13 +13,9 @@ package fr.inria.atlanmod.neo4emf.codegen;
 import java.util.List;
 
 import org.eclipse.emf.codegen.ecore.generator.GeneratorAdapterFactory;
-import org.eclipse.emf.codegen.ecore.genmodel.GenClass;
-import org.eclipse.emf.codegen.ecore.genmodel.GenFeature;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter;
-import org.eclipse.emf.codegen.jet.JETEmitter;
-import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.Monitor;
 
@@ -51,14 +47,14 @@ public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 		return MODEL_PROJECT_TYPE.equals(projectType) ? super.canGenerate(object, projectType) : false;
 	}
 
-	private boolean hasReferences(GenPackage object) {
-		for (GenClass genClass : object.getOrderedGenClasses()) {
-			for (GenFeature feat : genClass.getAllGenFeatures())
-				if (feat.isReferenceType())
-					return true;
-		}
-		return false;
-	}
+	//	private boolean hasReferences(GenPackage object) {
+	//		for (GenClass genClass : object.getOrderedGenClasses()) {
+	//			for (GenFeature feat : genClass.getAllGenFeatures())
+	//				if (feat.isReferenceType())
+	//					return true;
+	//		}
+	//		return false;
+	//	}
 
 	@Override
 	protected Diagnostic generateModel(Object object, Monitor monitor) {
