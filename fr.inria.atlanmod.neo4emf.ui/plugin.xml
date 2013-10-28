@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="fr.inria.atlanmod.neo4emf.ui.opendb"
+            objectClass="org.eclipse.core.resources.IFolder">
+         <action
+               class="fr.inria.atlanmod.neo4emf.ui.popup.actions.OpenNeo4emfDb"
+               enablesFor="1"
+               id="fr.inria.atlanmod.neo4emf.ui.action1"
+               label="Browse database">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="fr.inria.atlanmod.neo4emf.ui.editors.Neo4emfEditor"
+            contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
+            default="false"
+            icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
+            id="fr.inria.atlanmod.neo4emf.ui.Neo4emfEditor"
+            name="Neo4EMF Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="fr.inria.atlanmod.neo4emf.ui.editor.CreateDynamicInstance"
+            objectClass="org.eclipse.emf.ecore.EClass">
+         <action
+               class="fr.inria.atlanmod.neo4emf.ui.actions.CreateDynamicInstanceAction"
+               enablesFor="1"
+               id="fr.inria.atlanmod.neo4emf.ui.editor.CreateDynamicInstanceAction"
+               label="Create &amp;Neo4EMF Dynamic Instance..."
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.emf.importer.modelImporterDescriptors">
+      <modelImporterDescriptor
+            description="Create the Ecore model based on other Ecore or EMOF models"
+            extensions="ecore,emof"
+            icon="icons/full/obj16/Neo4emfModelFile.gif"
+            id="fr.inria.atlanmod.neo4emf.ui.modelImporterDescriptor"
+            name="Ecore model (Neo4EMF Native)"
+            wizard="fr.inria.atlanmod.neo4emf.ui.wizards.Neo4emfModelImporterWizard">
+      </modelImporterDescriptor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?endof=additions">
+         <menu
+               label="Neo4EMF">
+         </menu>
+      </menuContribution>
+   </extension>
+</plugin>
