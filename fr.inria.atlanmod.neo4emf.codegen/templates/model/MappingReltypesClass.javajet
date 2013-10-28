@@ -15,7 +15,7 @@
  
 	     /* Trick to import java.util.* without warnings */Iterator.class.getName();%>
 <%@ include file="../Header.javajetinc"%>
-package <%=genPck.getInterfacePackageName()%>.reltypes;
+package <%=genModel.getModelPluginID()%>.reltypes;
 
 <%genModel.addImport("org.neo4j.graphdb.RelationshipType");%>
 <%genModel.addImport("fr.inria.atlanmod.neo4emf.Point");%>
