@@ -36,10 +36,9 @@ public class ManifestMF
   protected final String TEXT_19 = ",";
   protected final String TEXT_20 = NL + " ";
   protected final String TEXT_21 = ";visibility:=reexport";
-  protected final String TEXT_22 = "," + NL + " org.eclipse.equinox.common," + NL + " org.eclipse.emf.codegen," + NL + " fr.inria.atlanmod.neo4emf;visibility:=reexport,";
-  protected final String TEXT_23 = NL + "Eclipse-LazyStart: true";
-  protected final String TEXT_24 = NL + "Bundle-ActivationPolicy: lazy";
-  protected final String TEXT_25 = NL;
+  protected final String TEXT_22 = NL + "Eclipse-LazyStart: true";
+  protected final String TEXT_23 = NL + "Bundle-ActivationPolicy: lazy";
+  protected final String TEXT_24 = NL;
 
   public String generate(Object argument)
   {
@@ -105,12 +104,11 @@ public class ManifestMF
     stringBuffer.append(TEXT_21);
     }}
     }
-    stringBuffer.append(TEXT_22);
     if (genModel.getRuntimeVersion() == GenRuntimeVersion.EMF22 || genModel.getRuntimeVersion() == GenRuntimeVersion.EMF23) {
-    stringBuffer.append(TEXT_23);
+    stringBuffer.append(TEXT_22);
     }
+    stringBuffer.append(TEXT_23);
     stringBuffer.append(TEXT_24);
-    stringBuffer.append(TEXT_25);
     return stringBuffer.toString();
   }
 }

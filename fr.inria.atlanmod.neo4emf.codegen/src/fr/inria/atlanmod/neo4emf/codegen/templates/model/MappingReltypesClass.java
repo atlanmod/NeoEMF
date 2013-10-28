@@ -67,7 +67,7 @@ public class MappingReltypesClass
     stringBuffer.append(TEXT_3);
     stringBuffer.append("$");
     stringBuffer.append(TEXT_4);
-    stringBuffer.append(genPck.getInterfacePackageName());
+    stringBuffer.append(genModel.getModelPluginID());
     stringBuffer.append(TEXT_5);
     genModel.addImport("org.neo4j.graphdb.RelationshipType");
     genModel.addImport("fr.inria.atlanmod.neo4emf.Point");
