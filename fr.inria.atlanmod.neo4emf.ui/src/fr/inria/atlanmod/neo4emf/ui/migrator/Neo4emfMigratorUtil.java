@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2010-2012 Eike Stepper (Berlin, Germany) and others.
+/**
+ * Copyright (c) 2008, 2013 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Abel Gómez - Adapted to Neo4EMF models
  */
 package fr.inria.atlanmod.neo4emf.ui.migrator;
 
@@ -22,7 +23,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 /**
- * @author Eike Stepper
+ * @author abelgomez
  */
 public abstract class Neo4emfMigratorUtil {
 
