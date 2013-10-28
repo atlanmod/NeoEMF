@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2013 IBM Corporation and others.
  * All rights reserved.   This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,10 @@ import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 /**
- * The <b>Plugin</b> for the Validator Generator Extension plug-in.
+ * Neo4emfGeneratorPlugin singleton instance
+ * 
+ * @author abelgomez
+ * 
  */
 public final class Neo4emfGeneratorPlugin extends EMFPlugin {
 	
