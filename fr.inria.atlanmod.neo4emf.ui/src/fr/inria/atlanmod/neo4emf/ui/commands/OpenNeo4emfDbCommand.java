@@ -8,87 +8,78 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-package fr.inria.atlanmod.neo4emf.ui.popup.actions;
+package fr.inria.atlanmod.neo4emf.ui.commands;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionDelegate;
-import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
+
+import fr.inria.atlanmod.neo4emf.ui.Neo4emfUiPlugin;
+import fr.inria.atlanmod.neo4emf.ui.editors.Neo4emfEditor;
 
 /**
  * 
  * @author abelgomez
  *
  */
-public class OpenNeo4emfDb implements IObjectActionDelegate {
+public class OpenNeo4emfDbCommand extends AbstractHandler {
 
-	private Shell shell;
 	private IFolder folder;
-	
-	/**
-	 * Constructor for Action1.
-	 */
-	public OpenNeo4emfDb() {
-		super();
-	}
 
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		shell = targetPart.getSite().getShell();
-	}
-
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 */
-	public void run(IAction action) {
-
-		new UIJob(shell.getDisplay(), "Dummy job") {
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		
+		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+		ISelectionService service = window.getSelectionService();
+		ISelection selection = service.getSelection();
+		
+		folder = null;
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			Object elt = structuredSelection.getFirstElement();
+			if (elt instanceof IFolder) {
+				folder = (IFolder) elt;
+			}
+		}
+		if (folder == null) return null;
+		
+		new UIJob(window.getShell().getDisplay(), "Create Dynamic Instance") {
 
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-				try {
 					URI uri = URI.createURI("neo4emf:" + folder.getLocationURI().getRawSchemeSpecificPart());
 					URIEditorInput editorInput = new URIEditorInput(uri);
 					if (editorInput != null) {
 						IWorkbench workbench = PlatformUI.getWorkbench();
 						IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-						page.openEditor(editorInput, "fr.inria.atlanmod.neo4emf.ui.Neo4emfEditor");
+						try {
+							page.openEditor(editorInput, Neo4emfEditor.EDITOR_ID);
+						} catch (PartInitException e) {
+							return new Status(IStatus.ERROR, Neo4emfUiPlugin.PLUGIN_ID, "Unable to open editor", e);
+						}
 					}
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
 				return Status.OK_STATUS;
 			}
 		}.schedule();
+		return null;
 	}
-
-	/**
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		
-		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-		Object elt = structuredSelection.getFirstElement();
-		if (elt instanceof IFolder) {
-			folder = (IFolder) elt;
-		}
-		
-	}
-
 }

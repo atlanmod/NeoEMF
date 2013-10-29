@@ -8,22 +8,26 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-package fr.inria.atlanmod.neo4emf.ui.actions;
+package fr.inria.atlanmod.neo4emf.ui.commands;
 
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.IActionDelegate;
+import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionDelegate;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 import fr.inria.atlanmod.neo4emf.ui.wizards.DynamicModelWizard;
 
@@ -32,17 +36,19 @@ import fr.inria.atlanmod.neo4emf.ui.wizards.DynamicModelWizard;
  * Create a dynamic instance of an {@link EClass}.
  * @author abelgomez
  */
-public class CreateDynamicInstanceAction extends ActionDelegate implements IActionDelegate {
+public class CreateDynamicInstanceCommand extends AbstractHandler {
 	protected static final URI PLATFORM_RESOURCE = URI.createPlatformResourceURI("/", false);
 
 	protected EClass eClass;
 
-	public CreateDynamicInstanceAction() {
-		super();
-	}
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 */
 	@Override
-	public void run(IAction action) {
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		
+		initializeEClass(event);
+		
 		URI uri = eClass.eResource().getURI();
 		IStructuredSelection selection = StructuredSelection.EMPTY;
 		if (uri != null && uri.isHierarchical()) {
@@ -54,24 +60,33 @@ public class CreateDynamicInstanceAction extends ActionDelegate implements IActi
 			}
 		}
 
+		// Register the EClass EPackage if  it is not registered yet
+		if (EPackage.Registry.INSTANCE.getEPackage(eClass.getEPackage().getNsURI()) == null) {
+			EPackage.Registry.INSTANCE.put(eClass.getEPackage().getNsURI(), eClass.getEPackage());
+		}
+		
 		DynamicModelWizard dynamicModelWizard = new DynamicModelWizard(eClass);
 		dynamicModelWizard.init(PlatformUI.getWorkbench(), selection);
 		WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), dynamicModelWizard);
 
 		wizardDialog.open();
+		return null;
 	}
 
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
+	public void initializeEClass(ExecutionEvent event) throws ExecutionException {
+		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+		ISelectionService service = window.getSelectionService();
+		ISelection selection = service.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			Object object = ((IStructuredSelection) selection).getFirstElement();
 			if (object instanceof EClass) {
 				eClass = (EClass) object;
-				action.setEnabled(!eClass.isAbstract());
+				setEnabled(!eClass.isAbstract());
 				return;
 			}
 		}
 		eClass = null;
-		action.setEnabled(false);
+		setEnabled(false);
 	}
+	
 }

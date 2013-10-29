@@ -3,20 +3,6 @@
 <plugin>
 
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="false"
-            id="fr.inria.atlanmod.neo4emf.ui.opendb"
-            objectClass="org.eclipse.core.resources.IFolder">
-         <action
-               class="fr.inria.atlanmod.neo4emf.ui.popup.actions.OpenNeo4emfDb"
-               enablesFor="1"
-               id="fr.inria.atlanmod.neo4emf.ui.action1"
-               label="Browse database">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="fr.inria.atlanmod.neo4emf.ui.editors.Neo4emfEditor"
@@ -26,20 +12,6 @@
             id="fr.inria.atlanmod.neo4emf.ui.Neo4emfEditor"
             name="Neo4EMF Editor">
       </editor>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="fr.inria.atlanmod.neo4emf.ui.editor.CreateDynamicInstance"
-            objectClass="org.eclipse.emf.ecore.EClass">
-         <action
-               class="fr.inria.atlanmod.neo4emf.ui.actions.CreateDynamicInstanceAction"
-               enablesFor="1"
-               id="fr.inria.atlanmod.neo4emf.ui.editor.CreateDynamicInstanceAction"
-               label="Create &amp;Neo4EMF Dynamic Instance..."
-               menubarPath="additions">
-         </action>
-      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.emf.importer.modelImporterDescriptors">
@@ -78,7 +50,45 @@
                   </with>
                </visibleWhen>
             </command>
+            <command
+                  commandId="fr.inria.atlanmod.neo4emf.ui.openDB"
+                  style="push">
+               <visibleWhen>
+                  <with
+                        variable="activeMenuSelection">
+                     <iterate
+                           ifEmpty="false">
+                        <adapt
+                              type="org.eclipse.core.resources.IFolder">
+                           <test
+                                 property="fr.inria.atlanmod.neo4emf.ui.isNeo4JDB"
+                                 value="true">
+                           </test>
+                        </adapt>
+                     </iterate>
+                  </with>
+               </visibleWhen>
+            </command>
          </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="fr.inria.atlanmod.neo4emf.ui.createDynamicInstance"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.eclipse.emf.ecore.EClass">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -88,5 +98,25 @@
             id="fr.inria.atlanmod.neo4emf.ui.migrate"
             name="&amp;Migrate EMF Generator Model">
       </command>
+      <command
+            defaultHandler="fr.inria.atlanmod.neo4emf.ui.commands.OpenNeo4emfDbCommand"
+            id="fr.inria.atlanmod.neo4emf.ui.openDB"
+            name="&amp;Open Model Database">
+      </command>
+      <command
+            defaultHandler="fr.inria.atlanmod.neo4emf.ui.commands.CreateDynamicInstanceCommand"
+            id="fr.inria.atlanmod.neo4emf.ui.createDynamicInstance"
+            name="Create &amp;Neo4EMF Dynamic Instance...">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="fr.inria.atlanmod.neo4emf.ui.tester.Neo4JDatabase"
+            id="fr.inria.atlanmod.neo4emf.ui.isNeo4JDB"
+            namespace="fr.inria.atlanmod.neo4emf.ui"
+            properties="isNeo4JDB"
+            type="org.eclipse.core.resources.IFolder">
+      </propertyTester>
    </extension>
 </plugin>

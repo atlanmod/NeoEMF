@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.codegen.ecore,
  org.eclipse.emf.importer,
  fr.inria.atlanmod.neo4emf,
- fr.inria.atlanmod.neo4emf.codegen
+ fr.inria.atlanmod.neo4emf.codegen,
+ org.eclipse.core.expressions
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

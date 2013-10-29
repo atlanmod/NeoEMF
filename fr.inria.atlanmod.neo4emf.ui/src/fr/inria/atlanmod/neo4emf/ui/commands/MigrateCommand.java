@@ -76,7 +76,7 @@ public class MigrateCommand extends AbstractHandler {
 								showMessage("The selected generator model was already migrated.", false);
 							} else {
 								genModel.eResource().save(null);
-								showMessage("The selected generator model has been migrated:" + "\n" + msg, false);
+								showMessage("The selected generator model has been migrated:" + "\n\n" + msg, false);
 							}
 						}
 					}
