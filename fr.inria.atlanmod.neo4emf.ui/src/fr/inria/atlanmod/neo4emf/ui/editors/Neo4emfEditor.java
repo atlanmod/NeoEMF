@@ -26,6 +26,7 @@ import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
  */
 public class Neo4emfEditor extends EcoreEditor {
 
+	public static final String EDITOR_ID = "fr.inria.atlanmod.neo4emf.ui.Neo4emfEditor";
 	
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
