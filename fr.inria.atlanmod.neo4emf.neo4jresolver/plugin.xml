@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="neo4jInstallers" name="Neo4J Library Installer" schema="schema/neo4jInstallers.exsd"/>
+   <extension
+       point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+          id="fr.inria.atlanmod.neo4emf.neo4jresolver.NEO4J_CONTAINER"
+          class="fr.inria.atlanmod.neo4emf.neo4jresolver.cp.container.internal.Neo4jClasspathContainerInitializer"/>
+   </extension>
+   
+   <extension 
+       point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+          id="fr.inria.atlanmod.neo4emf.neo4jresolver.NEO4J_CONTAINER"
+          name="Neo4J"
+          class="fr.inria.atlanmod.neo4emf.neo4jresolver.cp.page.Neo4jClasspathContainerPage"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="fr.inria.atlanmod.neo4emf.neo4jresolver.preferences.Neo4JRuntimesPreferencePage"
+            id="fr.inria.atlanmod.neo4emf.neo4jresolver.preferences.Neo4JRuntimesPreferencePage"
+            name="Neo4J Runtimes">
+      </page>
+   </extension>
+</plugin>
