@@ -13,22 +13,15 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * @author Amine BENELALLAM
  * */
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.graphdb.index.IndexProvider;
-import org.neo4j.index.lucene.LuceneIndexProvider;
-import org.neo4j.kernel.impl.cache.CacheProvider;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
-import org.neo4j.kernel.ListIndexIterable;
 
 
-@SuppressWarnings("deprecation")
 public class PersistenceServiceFactory extends GraphDatabaseFactory implements IPersistenceServiceFactory {
 
 	@Override	

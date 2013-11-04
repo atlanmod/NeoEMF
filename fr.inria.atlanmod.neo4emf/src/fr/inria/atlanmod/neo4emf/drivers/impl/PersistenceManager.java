@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -27,7 +25,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
@@ -35,7 +32,13 @@ import org.neo4j.graphdb.Transaction;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
-import fr.inria.atlanmod.neo4emf.drivers.*;
+import fr.inria.atlanmod.neo4emf.drivers.ILoader;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
+import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
+import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
+import fr.inria.atlanmod.neo4emf.drivers.IUnloader;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;

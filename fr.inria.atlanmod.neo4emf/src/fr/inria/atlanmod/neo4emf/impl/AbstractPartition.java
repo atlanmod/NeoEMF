@@ -2,7 +2,6 @@ package fr.inria.atlanmod.neo4emf.impl;
 
 import java.util.List;
 
-
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfPartition;
 

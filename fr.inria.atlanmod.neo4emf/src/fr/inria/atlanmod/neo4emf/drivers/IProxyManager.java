@@ -18,8 +18,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.jboss.util.collection.SoftValueTreeMap;
 import org.eclipse.emf.ecore.EObject;
+import org.jboss.util.collection.SoftValueTreeMap;
+
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 

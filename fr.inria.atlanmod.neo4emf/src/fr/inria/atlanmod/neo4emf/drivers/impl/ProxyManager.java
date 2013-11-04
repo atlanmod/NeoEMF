@@ -21,9 +21,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.emf.ecore.EObject;
 import org.jboss.util.NullArgumentException;
 import org.jboss.util.collection.SoftValueTreeMap;
 

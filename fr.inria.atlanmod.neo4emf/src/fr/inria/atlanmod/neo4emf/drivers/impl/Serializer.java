@@ -28,7 +28,13 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
-import fr.inria.atlanmod.neo4emf.change.impl.*;
+import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
+import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
+import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
+import fr.inria.atlanmod.neo4emf.change.impl.Entry;
+import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
+import fr.inria.atlanmod.neo4emf.change.impl.RemoveLink;
+import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;

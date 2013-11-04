@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
-import fr.inria.atlanmod.neo4emf.Point;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
@@ -25,10 +24,11 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.neo4j.graphdb.RelationshipType;
 
-
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
 
 

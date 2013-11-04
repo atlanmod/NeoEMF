@@ -7,11 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.util.collection.SoftValueTreeMap;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.jboss.util.collection.SoftValueTreeMap;
+
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
 public class Partition extends AbstractPartition {

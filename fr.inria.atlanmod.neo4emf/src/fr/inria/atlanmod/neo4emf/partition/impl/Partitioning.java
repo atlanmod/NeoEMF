@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 
-
 import fr.inria.atlanmod.neo4emf.partition.IPartition;
 import fr.inria.atlanmod.neo4emf.partition.IPartitioning;
 
