@@ -11,8 +11,17 @@ package fr.inria.atlanmod.neo4emf;
  * Descritpion ! To come
  * @author Amine BENELALLAM
  * */
+import java.io.File;
+import java.net.MalformedURLException;
+
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+
+import fr.inria.atlanmod.neo4emf.neo4jresolver.Neo4jResolverPlugin;
+import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntime;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -22,8 +31,12 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "fr.inria.atlanmod.neo4emf"; //$NON-NLS-1$
 
+	public static final String NEO4J_RUNTIME_ID = "fr.inria.atlanmod.neo4emf.neo4j-1.9.4"; //$NON-NLS-1$
+
 	// The shared instance
 	private static Neo4emfPlugin plugin;
+
+	private Bundle neo4jBundle;
 	
 	/**
 	 * The constructor
@@ -38,6 +51,19 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		loadNeo4jRuntime(context);
+	}
+
+	private void loadNeo4jRuntime(BundleContext context) throws BundleException, MalformedURLException {
+		INeo4jRuntime runtime = Neo4jResolverPlugin.getDefault().getRuntimesManager().getRuntime(NEO4J_RUNTIME_ID);
+		File file = runtime.getPath().toFile();
+		if (file != null && file.isDirectory()) {
+			neo4jBundle = context.installBundle(file.toURI().toURL().toString());
+			neo4jBundle.start();
+		} else {
+			throw new BundleException(
+					NLS.bind("Unable to load Neo4J bundle ({0}) required by {1}", NEO4J_RUNTIME_ID, PLUGIN_ID ));
+		}
 	}
 
 	/*
@@ -46,6 +72,9 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		if (neo4jBundle != null) {
+			neo4jBundle.stop();
+		}
 		super.stop(context);
 	}
 
