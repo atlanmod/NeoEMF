@@ -9,5 +9,4 @@
       <adapter modelClass="GenModel" class="fr.inria.atlanmod.neo4emf.codegen.GenReltypesGeneratorAdapter"/>
       -->
    </extension>
-
 </plugin>

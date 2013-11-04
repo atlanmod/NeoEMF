@@ -12,14 +12,29 @@ package fr.inria.atlanmod.neo4emf.codegen;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.codegen.ecore.generator.GeneratorAdapterFactory;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.Monitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+
+import fr.inria.atlanmod.neo4emf.neo4jresolver.cp.container.INeo4jClasspathContainer;
 
 public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
+	/**
+	 * 
+	 */
+	private static final String PREFERRED_NEO4J_VERSION = "1.9.4";
 	protected static final int REL_TYPES_ID = 0;
 	protected static final int MAP_REL_TYPES_ID = 1;
 
@@ -78,9 +93,32 @@ public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 				null,
 				createMonitor(monitor, 1));
 		// }
+		
+		fixClasspath(genModel);
 		return Diagnostic.OK_INSTANCE;
 	}
 
+	protected void fixClasspath(GenModel genModel) {
+        try {
+        	IPath neo4jPath = INeo4jClasspathContainer.ID.append(PREFERRED_NEO4J_VERSION);
+        	IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        	IPath path = new Path(genModel.getModelDirectory());
+        	IProject project = workspace.getRoot().getProject(path.segment(0));
+        	IJavaProject javaProject = JavaCore.create(project);
+			IClasspathEntry[] entries = javaProject.getRawClasspath();
+			for (IClasspathEntry entry : entries) {
+				if (entry.getPath().equals(neo4jPath)) { 
+					return;
+				}
+			}
+			IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
+			System.arraycopy(entries, 0, newEntries, 0, entries.length);
+			newEntries[newEntries.length - 1] = JavaCore.newContainerEntry(neo4jPath);
+			javaProject.setRawClasspath(newEntries, new NullProgressMonitor());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	@Override
 	protected void addBaseTemplatePathEntries(List<String> templatePath) {
 		templatePath.add(Neo4emfGeneratorPlugin.INSTANCE.getBaseURL().toString() + "templates");
