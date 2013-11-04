@@ -18,7 +18,6 @@ Export-Package: Core,
  reltypes
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore,
- fr.inria.atlanmod.neo4emf,
- fr.inria.atlanmod.neo4emf.change
+ fr.inria.atlanmod.neo4emf
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.emf.ecore.xmi.impl
