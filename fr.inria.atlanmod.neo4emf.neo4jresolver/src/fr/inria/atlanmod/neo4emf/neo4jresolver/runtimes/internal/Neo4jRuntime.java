@@ -11,7 +11,6 @@
 package fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntime;
 
