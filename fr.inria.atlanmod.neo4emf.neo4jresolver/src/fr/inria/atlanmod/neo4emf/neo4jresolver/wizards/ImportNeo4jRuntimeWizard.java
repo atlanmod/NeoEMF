@@ -33,7 +33,8 @@ import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal.Neo4JRuntimesMa
  */
 public class ImportNeo4jRuntimeWizard extends Wizard {
 
-	private InstallRuntimesWizardData data = new InstallRuntimesWizardData(); 
+	private InstallRuntimesWizardData data = new InstallRuntimesWizardData();
+	private boolean result;
 
 	public ImportNeo4jRuntimeWizard() {
 		setNeedsProgressMonitor(true);
@@ -44,6 +45,7 @@ public class ImportNeo4jRuntimeWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
+		result = true;
 		try {
 			getContainer().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) {
@@ -57,7 +59,10 @@ public class ImportNeo4jRuntimeWizard extends Wizard {
 							IPath runtimePath = runtimeDataAreaPath.append(installer.getVersion()).append(installer.getId());
 							FileUtils.forceMkdir(runtimePath.toFile());
 							installer.install(new SubProgressMonitor(monitor, 1), runtimePath);
-							if (monitor.isCanceled()) return;
+							if (monitor.isCanceled()) {
+								result = false;
+								return;
+							}
 							Neo4JRuntimesManager.INSTANCE.initializeRuntimeMetadata(installer, runtimePath);
 						}
 					} catch (IOException e) {
@@ -70,7 +75,7 @@ public class ImportNeo4jRuntimeWizard extends Wizard {
 		} catch (InvocationTargetException | InterruptedException e) {
 			Logger.log(Logger.SEVERITY_ERROR, e);
 		}
-		return true;
+		return result;
 	}
 
 	/* (non-Javadoc)
