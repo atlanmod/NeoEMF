@@ -49,6 +49,29 @@ public class AvailableNeo4jRuntimesWizardPage extends WizardPage {
 	private CheckboxTableViewer viewer;
 	private Text descText;
 	
+	INeo4jRuntimeListener listener = new INeo4jRuntimeListener() {
+		@Override
+		public void notifyChange(Event event) {
+			final AbstractNeo4jRuntimeInstaller source = event.getSource();
+			getShell().getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (viewer != null && !viewer.getTable().isDisposed()) {
+						if (viewer.getSelection() instanceof IStructuredSelection) {
+							IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+							if (selection.getFirstElement() != null) {
+								AbstractNeo4jRuntimeInstaller installer = (AbstractNeo4jRuntimeInstaller) selection.getFirstElement();
+								if (source.equals(installer) && descText != null && !descText.isDisposed())  {
+									descText.setText(installer.getDescription());
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+	};
+	
 	public AvailableNeo4jRuntimesWizardPage(InstallRuntimesWizardData data) {
 		super(AvailableNeo4jRuntimesWizardPage.class.getName(),
 				"Install Neo4J runtime Libraries", null);
@@ -72,30 +95,14 @@ public class AvailableNeo4jRuntimesWizardPage extends WizardPage {
 	}
 
 	private void addInstallersListeners() {
-		INeo4jRuntimeListener listener = new INeo4jRuntimeListener() {
-			@Override
-			public void notifyChange(Event event) {
-				final AbstractNeo4jRuntimeInstaller source = event.getSource();
-				getShell().getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						if (viewer != null && !viewer.getTable().isDisposed()) {
-							if (viewer.getSelection() instanceof IStructuredSelection) {
-								IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-								if (selection.getFirstElement() != null) {
-									AbstractNeo4jRuntimeInstaller installer = (AbstractNeo4jRuntimeInstaller) selection.getFirstElement();
-									if (source.equals(installer) && descText != null && !descText.isDisposed())  {
-										descText.setText(installer.getDescription());
-									}
-								}
-							}
-						}
-					}
-				});
-			}
-		};
 		for (AbstractNeo4jRuntimeInstaller installer : installers) {
 			installer.addChangeListener(listener);
+		}
+	}
+
+	private void removeInstallersListeners() {
+		for (AbstractNeo4jRuntimeInstaller installer : installers) {
+			installer.removeChangeListener(listener);
 		}
 	}
 	
@@ -167,5 +174,14 @@ public class AvailableNeo4jRuntimesWizardPage extends WizardPage {
 				viewer.setSelection(new StructuredSelection(viewer.getElementAt(0)));
 			}
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.DialogPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		removeInstallersListeners();
+		super.dispose();
 	}
 }
