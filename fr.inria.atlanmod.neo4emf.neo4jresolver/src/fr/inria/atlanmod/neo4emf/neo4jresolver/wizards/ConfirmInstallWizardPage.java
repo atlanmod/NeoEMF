@@ -66,7 +66,7 @@ public class ConfirmInstallWizardPage extends WizardPage {
 		label.setText("The following runtimes will be installed:");
 		
 		SashForm sashForm = new SashForm(composite, SWT.NONE);
-		sashForm.setLayoutData(new RowData(700, 250));
+		sashForm.setLayoutData(new RowData(800, 250));
 		Table table = new Table(sashForm, SWT.BORDER);
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(new ArrayContentProvider());
@@ -85,7 +85,7 @@ public class ConfirmInstallWizardPage extends WizardPage {
 			}
 		});
 		licenseText = new Text(sashForm, SWT.BORDER | SWT.READ_ONLY | SWT.MULTI | SWT.V_SCROLL);
-		sashForm.setWeights(new int[] { 250, 450} );
+		sashForm.setWeights(new int[] { 350, 450} );
 		
 		acceptButton = new Button(composite, SWT.RADIO);
 		acceptButton.setText("I &accept the terms in the license agreements");
