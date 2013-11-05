@@ -1,9 +1,7 @@
 package fr.inria.atlanmod.neo4emf.neo4jresolver;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -36,25 +34,11 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		checkRuntimes();
+		checkRuntimesAsync();
 	}
 	
-	private void checkRuntimes() {
-		final Display display = getWorkbench().getDisplay();
-		display.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if (Neo4JRuntimesManager.INSTANCE.getRuntimes().isEmpty()) {
-					boolean launch = MessageDialog.openQuestion(
-							display.getActiveShell(),
-							"Install Neo4J runtime?",
-							"No available Neo4J runtimes found. Launch the installation wizard?");
-					if (launch) {
-						Neo4JRuntimesManager.INSTANCE.launchInstallRuntimesWizard();
-					}
-				}
-			}
-		});
+	private void checkRuntimesAsync() {
+		Neo4JRuntimesManager.INSTANCE.checkRuntimes(true);
 	}
 
 	/*

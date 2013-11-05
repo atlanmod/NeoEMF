@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -99,6 +100,28 @@ public class Neo4JRuntimesManager implements INeo4jRuntimesManager {
 
 	private static IPath dataAreaPath;
 	
+	private Runnable checkRuntimeRunnable = new Runnable() {
+		private volatile boolean running = false;
+		@Override
+		public synchronized void run() {
+			if (running) return;
+			running = true;
+			try {
+				if (Neo4JRuntimesManager.INSTANCE.getRuntimes().isEmpty()) {
+					boolean launch = MessageDialog.openQuestion(
+							getDisplay().getActiveShell(),
+							"Install Neo4J runtime?",
+							"No available Neo4J runtimes found. Launch the installation wizard?");
+					if (launch) {
+						Neo4JRuntimesManager.INSTANCE.launchInstallRuntimesWizard();
+					}
+				}
+			} finally {
+				running = false;
+			}
+		}
+	};
+	
 	static {
 		INSTANCE = new Neo4JRuntimesManager();
 	}
@@ -110,6 +133,21 @@ public class Neo4JRuntimesManager implements INeo4jRuntimesManager {
 		return installedRuntimes;
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntimesManager#checkRuntimes(boolean)
+	 */
+	@Override
+	public boolean checkRuntimes(boolean blockOnOpen) {
+		final Display display = getDisplay();
+		if (blockOnOpen) {
+			display.syncExec(checkRuntimeRunnable);
+		} else {
+			display.asyncExec(checkRuntimeRunnable);
+		}
+		return getRuntimes().isEmpty();
+	}
+
 	/* (non-Javadoc)
 	 * @see fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal.INeo4jRuntimesManager#getRuntime(java.lang.String)
 	 */
@@ -136,8 +174,8 @@ public class Neo4JRuntimesManager implements INeo4jRuntimesManager {
 	 * @see fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal.INeo4jRuntimesManager#launchInstallRuntimesWizard()
 	 */
 	@Override
-	public void launchInstallRuntimesWizard() {
-		final Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+	public synchronized void launchInstallRuntimesWizard() {
+		final Display display = getDisplay();
 		display.syncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -309,5 +347,8 @@ public class Neo4JRuntimesManager implements INeo4jRuntimesManager {
 			return null;
 		}
 	}
-	
+
+	private Display getDisplay() {
+		return Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+	}
 }

@@ -20,6 +20,8 @@ public interface INeo4jRuntimesManager {
 
 	public abstract INeo4jRuntime getRuntime(String id);
 
+	public abstract boolean checkRuntimes(boolean blockOnOpen);
+
 	public abstract void launchInstallRuntimesWizard();
 	
 	public abstract void uninstall(String id) throws IOException;
