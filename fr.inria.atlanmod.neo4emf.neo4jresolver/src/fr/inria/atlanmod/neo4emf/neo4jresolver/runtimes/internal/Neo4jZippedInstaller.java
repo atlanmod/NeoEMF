@@ -213,12 +213,17 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 			int total = length;
 			int totalRead = 0;
 			ZipEntry entry;
+			float kBps = -1;
 	        while((entry = zipStream.getNextEntry()) != null) {
 	        	if (monitor.isCanceled())
 	        		break;
 				String fullFilename = entry.getName();
 				IPath fullFilenamePath = new Path(fullFilename);
-				monitor.subTask(NLS.bind("Reading \"{0}\"", fullFilename));
+				int secsRemaining = (int) ((total-totalRead)/1024/kBps);
+				String textRemaining = secsToText(secsRemaining);
+				monitor.subTask(NLS.bind("{0} remaining. Reading {1}", 
+						textRemaining.length() > 0 ? textRemaining : "unknown time", 
+						StringUtils.abbreviateMiddle(fullFilenamePath.removeFirstSegments(1).toString(), "...", 45)));
 				int entrySize = (int) entry.getCompressedSize();
 				OutputStream output = null;
 					try {
@@ -234,9 +239,8 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 							output = new NullOutputStream();
 						}
 						int secs = (int) ((System.currentTimeMillis() - start) / 1000);
-						float kBps = (float) totalRead/1024/secs;
-						int secsRemaining = (int) ((total-totalRead)/1024/kBps);
-						String textRemaining = secsToText(secsRemaining);
+						kBps = (float) totalRead/1024/secs;
+
 						while ((len = zipStream.read(buffer)) > 0) {
 							if (monitor.isCanceled())
 								break;
@@ -270,6 +274,7 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 	 * @return
 	 */
 	private String secsToText(int secsRemaining) {
+		if (secsRemaining < 0) return "";
 		int mins = secsRemaining / 60;
 		int secs = secsRemaining % 60;
 		StringBuilder builder = new StringBuilder();
