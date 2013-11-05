@@ -18,6 +18,8 @@ import java.io.IOException;
  */
 public interface INeo4jRuntimesManager {
 
+	public abstract AbstractNeo4jRuntimeInstaller getInstaller(String id);
+
 	public abstract INeo4jRuntime getRuntime(String id);
 
 	public abstract boolean checkRuntimes(boolean blockOnOpen);
@@ -25,5 +27,6 @@ public interface INeo4jRuntimesManager {
 	public abstract void launchInstallRuntimesWizard();
 	
 	public abstract void uninstall(String id) throws IOException;
+
 
 }

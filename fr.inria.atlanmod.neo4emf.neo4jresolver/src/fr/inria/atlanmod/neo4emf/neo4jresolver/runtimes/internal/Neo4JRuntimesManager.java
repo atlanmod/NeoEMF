@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
@@ -220,7 +222,20 @@ public class Neo4JRuntimesManager implements INeo4jRuntimesManager {
 				}
 			}
 		} 
-		return installers;
+		return Collections.unmodifiableList(installers);
+	}
+	
+	/* (non-Javadoc)
+	 * @see fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntimesManager#getInstaller(java.lang.String)
+	 */
+	@Override
+	public AbstractNeo4jRuntimeInstaller getInstaller(String id) {
+		for (AbstractNeo4jRuntimeInstaller installer : getInstallers()) {
+			if (StringUtils.equals(installer.getId(), id)) {
+				return installer;
+			}
+		}
+		return null;
 	}
 	
 	private void load() {

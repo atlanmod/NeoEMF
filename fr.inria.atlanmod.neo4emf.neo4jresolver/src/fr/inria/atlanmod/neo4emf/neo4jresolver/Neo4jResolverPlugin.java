@@ -1,7 +1,6 @@
 package fr.inria.atlanmod.neo4emf.neo4jresolver;
 
 import java.io.File;
-import java.net.MalformedURLException;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
