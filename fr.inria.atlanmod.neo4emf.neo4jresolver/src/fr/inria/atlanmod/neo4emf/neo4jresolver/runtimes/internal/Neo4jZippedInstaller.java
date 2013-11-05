@@ -62,7 +62,7 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 					connection.setConnectTimeout(1000);
 					connection.setReadTimeout(1000);
 					size = connection.getContentLength();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					size = ERROR;
 				}
 				notifyListeners();
