@@ -38,7 +38,7 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 	}
 	
 	private void checkRuntimesAsync() {
-		Neo4JRuntimesManager.INSTANCE.checkRuntimes(true);
+		Neo4JRuntimesManager.INSTANCE.checkRuntimes(false);
 	}
 
 	/*
