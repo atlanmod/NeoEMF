@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -23,9 +24,12 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.NullOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 
 import fr.inria.atlanmod.neo4emf.neo4jresolver.logger.Logger;
@@ -202,31 +206,56 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 					NLS.bind("Reading from {1}", getVersion(), getUrl().toString()),
 					length >= 0 ? length : IProgressMonitor.UNKNOWN);
 	
-			if (connection.getContentLengthLong() >= 0)
 			urlStream = connection.getInputStream();
 			ZipInputStream zipStream = new ZipInputStream(urlStream);
-	        
-			byte[] buffer = new byte[2048];
+			byte[] buffer = new byte[1024*8];
+			long start = System.currentTimeMillis();
+			int total = length;
+			int totalRead = 0;
 			ZipEntry entry;
 	        while((entry = zipStream.getNextEntry()) != null) {
-				if (monitor.isCanceled())
-					break;
+	        	if (monitor.isCanceled())
+	        		break;
 				String fullFilename = entry.getName();
+				IPath fullFilenamePath = new Path(fullFilename);
 				monitor.subTask(NLS.bind("Reading \"{0}\"", fullFilename));
-				if (jarFiles.contains(fullFilename)) {
-					String filename = FilenameUtils.getName(fullFilename);
-					FileOutputStream output = null;
+				int entrySize = (int) entry.getCompressedSize();
+				OutputStream output = null;
 					try {
-						output = new FileOutputStream(dirPath.append(filename).toOSString());
 						int len = 0;
+						int read = 0;
+						String action = null;
+						if (jarFiles.contains(fullFilename)) {
+							action = "Copying";
+							String filename = FilenameUtils.getName(fullFilename);
+							output = new FileOutputStream(dirPath.append(filename).toOSString());
+						} else {
+							action = "Skipping";
+							output = new NullOutputStream();
+						}
+						int secs = (int) ((System.currentTimeMillis() - start) / 1000);
+						float kBps = (float) totalRead/1024/secs;
+						int secsRemaining = (int) ((total-totalRead)/1024/kBps);
+						String textRemaining = secsToText(secsRemaining);
 						while ((len = zipStream.read(buffer)) > 0) {
+							if (monitor.isCanceled())
+								break;
+							read += len;
+							monitor.subTask(NLS.bind("{0} remaining. {1} {2} at {3}KB/s ({4}KB / {5}KB)", 
+									new Object[] { 
+									String.format("%s", textRemaining.length() > 0 ? textRemaining : "unknown time"), 
+									action, 
+									StringUtils.abbreviateMiddle(fullFilenamePath.removeFirstSegments(1).toString(), "...", 45), 
+									String.format("%,.1f", kBps), 
+									String.format("%,.1f", (float) read/1024), 
+									String.format("%,.1f", (float) entry.getSize()/1024) }));
 							output.write(buffer, 0, len);
 						}
+						totalRead += entrySize;
+						monitor.worked(entrySize);
 					} finally {
 						IOUtils.closeQuietly(output);
 					}
-				}
-				monitor.worked((int) entry.getCompressedSize());
 	        }
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, NLS.bind("Unable to install Neo4J v.{0} from {1}", getVersion(), getUrl().toString()), e);
@@ -234,6 +263,23 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 			IOUtils.closeQuietly(urlStream);
 			monitor.done();
 		}
+	}
+
+	/**
+	 * @param secsRemaining
+	 * @return
+	 */
+	private String secsToText(int secsRemaining) {
+		int mins = secsRemaining / 60;
+		int secs = secsRemaining % 60;
+		StringBuilder builder = new StringBuilder();
+		if (mins > 0)
+			builder.append(NLS.bind("{0}min ", mins));
+		if (mins > 0 && secs > 0)
+			builder.append("and ");
+		if (secs > 0)
+			builder.append(NLS.bind("{0}s", secs));
+		return builder.toString();
 	}
 
 }
