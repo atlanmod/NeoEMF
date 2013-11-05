@@ -1,10 +1,20 @@
 package fr.inria.atlanmod.neo4emf.neo4jresolver;
 
+import java.io.File;
+import java.net.MalformedURLException;
+
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.statushandlers.StatusManager;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
+import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntime;
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntimesManager;
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal.Neo4JRuntimesManager;
 
@@ -20,6 +30,15 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 	
 	// The shared instance
 	private static Neo4jResolverPlugin plugin;
+
+	private ILogListener logListener = new ILogListener() {
+		@Override
+		public void logging(IStatus status, String plugin) {
+			if (status.matches(IStatus.ERROR)) {
+				StatusManager.getManager().handle(status, StatusManager.BLOCK);
+			}
+		}
+	};
 	
 	/**
 	 * The constructor
@@ -35,6 +54,7 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		checkRuntimesAsync();
+		getDefault().getLog().addLogListener(logListener);
 	}
 	
 	private void checkRuntimesAsync() {
@@ -46,6 +66,7 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
+		getDefault().getLog().removeLogListener(logListener);
 		plugin = null;
 		super.stop(context);
 	}
@@ -77,6 +98,22 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		super.initializeImageRegistry(reg);
 		reg.put(OBJ16_LIBRARY_OBJ, getImageDescriptor("icons/full/obj16/library_obj.gif"));
+	}
+	
+	public Bundle loadRuntimeInContext(BundleContext context, String runtimeId) throws BundleException {
+		Bundle neo4jBundle = null;
+		INeo4jRuntime runtime = getRuntimesManager().getRuntime(runtimeId);
+		try {
+			File file = runtime.getPath().toFile();
+			if (file != null && file.isDirectory()) {
+				neo4jBundle = context.installBundle(file.toURI().toURL().toString());
+				neo4jBundle.start();
+			}
+		} catch (Exception e) {
+			throw new BundleException(
+					NLS.bind("Unable to load Neo4J bundle ({0}) required by {1}", runtimeId, context.getBundle().getSymbolicName()));
+		}
+		return neo4jBundle;
 	}
 	
 	public INeo4jRuntimesManager getRuntimesManager() {
