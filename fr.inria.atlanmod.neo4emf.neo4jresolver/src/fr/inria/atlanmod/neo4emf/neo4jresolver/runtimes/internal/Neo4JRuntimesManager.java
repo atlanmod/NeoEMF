@@ -123,6 +123,16 @@ public class Neo4JRuntimesManager implements INeo4jRuntimesManager {
 	}
 	
 	/* (non-Javadoc)
+	 * @see fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntimesManager#uninstall(java.lang.String)
+	 */
+	@Override
+	public void uninstall(String id) throws IOException {
+		INeo4jRuntime runtime = getRuntime(id);
+		FileUtils.forceDelete(runtime.getPath().toFile());
+		load();
+	}
+	
+	/* (non-Javadoc)
 	 * @see fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal.INeo4jRuntimesManager#launchInstallRuntimesWizard()
 	 */
 	@Override

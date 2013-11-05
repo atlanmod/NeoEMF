@@ -10,6 +10,8 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes;
 
+import java.io.IOException;
+
 /**
  * @author abelgomez
  *
@@ -19,5 +21,7 @@ public interface INeo4jRuntimesManager {
 	public abstract INeo4jRuntime getRuntime(String id);
 
 	public abstract void launchInstallRuntimesWizard();
+	
+	public abstract void uninstall(String id) throws IOException;
 
 }
