@@ -54,16 +54,8 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 		loadNeo4jRuntime(context);
 	}
 
-	private void loadNeo4jRuntime(BundleContext context) throws BundleException, MalformedURLException {
-		INeo4jRuntime runtime = Neo4jResolverPlugin.getDefault().getRuntimesManager().getRuntime(NEO4J_RUNTIME_ID);
-		File file = runtime.getPath().toFile();
-		if (file != null && file.isDirectory()) {
-			neo4jBundle = context.installBundle(file.toURI().toURL().toString());
-			neo4jBundle.start();
-		} else {
-			throw new BundleException(
-					NLS.bind("Unable to load Neo4J bundle ({0}) required by {1}", NEO4J_RUNTIME_ID, PLUGIN_ID ));
-		}
+	private void loadNeo4jRuntime(BundleContext context) throws BundleException {
+		neo4jBundle = Neo4jResolverPlugin.getDefault().installNeo4jRuntimeInContext(context, NEO4J_RUNTIME_ID);
 	}
 
 	/*

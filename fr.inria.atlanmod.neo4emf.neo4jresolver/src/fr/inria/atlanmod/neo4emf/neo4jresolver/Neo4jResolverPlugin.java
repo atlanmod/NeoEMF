@@ -100,7 +100,7 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 		reg.put(OBJ16_LIBRARY_OBJ, getImageDescriptor("icons/full/obj16/library_obj.gif"));
 	}
 	
-	public Bundle loadRuntimeInContext(BundleContext context, String runtimeId) throws BundleException {
+	public Bundle installNeo4jRuntimeInContext(BundleContext context, String runtimeId) throws BundleException {
 		Bundle neo4jBundle = null;
 		INeo4jRuntime runtime = getRuntimesManager().getRuntime(runtimeId);
 		try {
