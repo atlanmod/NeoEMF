@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -25,7 +23,6 @@ import org.eclipse.osgi.util.NLS;
 
 import fr.inria.atlanmod.neo4emf.neo4jresolver.logger.Logger;
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.AbstractNeo4jRuntimeInstaller;
-import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal.Neo4JRuntimesManager;
 
 /**
  * @author abelgomez
@@ -53,20 +50,19 @@ public class ImportNeo4jRuntimeWizard extends Wizard {
 					try {
 						List<AbstractNeo4jRuntimeInstaller> installers = data.getInstallersToInstall();
 						monitor.beginTask("Installing", installers.size());
+						
 						for (AbstractNeo4jRuntimeInstaller installer : installers) {
 							monitor.setTaskName(NLS.bind("Installing {0}", installer.getName()));
-							IPath runtimeDataAreaPath = Neo4JRuntimesManager.INSTANCE.getRuntimeDataArea();
-							IPath runtimePath = runtimeDataAreaPath.append(installer.getVersion()).append(installer.getId());
-							FileUtils.forceMkdir(runtimePath.toFile());
-							installer.install(new SubProgressMonitor(monitor, 1), runtimePath);
+							try {
+								installer.install(new SubProgressMonitor(monitor, 1));
+							} catch (IOException e) {
+								Logger.log(Logger.SEVERITY_ERROR, NLS.bind("Unable to install Neo4J v.{0}", installer.getVersion()), e);
+							}
 							if (monitor.isCanceled()) {
 								result = false;
 								return;
 							}
-							Neo4JRuntimesManager.INSTANCE.initializeRuntimeMetadata(installer, runtimePath);
 						}
-					} catch (IOException e) {
-						Logger.log(Logger.SEVERITY_ERROR, "Unable to create directory for runtime", e);
 					} finally {
 						monitor.done();
 					}

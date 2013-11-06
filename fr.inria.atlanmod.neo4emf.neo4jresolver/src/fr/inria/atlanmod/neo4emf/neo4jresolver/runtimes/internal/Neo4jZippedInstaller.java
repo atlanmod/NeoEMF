@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 
-import fr.inria.atlanmod.neo4emf.neo4jresolver.logger.Logger;
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.AbstractNeo4jRuntimeInstaller;
 
 /**
@@ -189,7 +188,7 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 	 * @see fr.inria.atlanmod.neo4emf.neo4jresolver.installer.INeo4jInstallerHandler#install(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
-	public void performInstall(IProgressMonitor monitor, IPath dirPath) {
+	public void performInstall(IProgressMonitor monitor, IPath dirPath) throws IOException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
@@ -261,8 +260,6 @@ public class Neo4jZippedInstaller extends AbstractNeo4jRuntimeInstaller {
 						IOUtils.closeQuietly(output);
 					}
 	        }
-		} catch (IOException e) {
-			Logger.log(Logger.SEVERITY_ERROR, NLS.bind("Unable to install Neo4J v.{0} from {1}", getVersion(), getUrl().toString()), e);
 		} finally {
 			IOUtils.closeQuietly(urlStream);
 			monitor.done();
