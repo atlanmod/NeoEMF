@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="neo4jRuntimes" name="Neo4J Runtimes" schema="schema/neo4jRuntimes.exsd"/>
    <extension
          point="org.eclipse.emf.ecore.protocol_parser">
       <parser
@@ -722,6 +723,13 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 &lt;http://www.gnu.org/licenses/&gt;.
          </License>
                         </ZippedInstaller>
+   </extension>
+   <extension
+         point="fr.inria.atlanmod.neo4emf.neo4jRuntimes">
+      <UseRuntime
+            id="fr.inria.atlanmod.neo4emf.neo4j-1.9.4"
+            priority="0">
+      </UseRuntime>
    </extension>
 
 </plugin>

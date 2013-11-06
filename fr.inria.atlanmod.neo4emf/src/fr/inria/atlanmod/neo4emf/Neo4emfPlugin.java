@@ -11,17 +11,15 @@ package fr.inria.atlanmod.neo4emf;
  * Descritpion ! To come
  * @author Amine BENELALLAM
  * */
-import java.io.File;
-import java.net.MalformedURLException;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
 import fr.inria.atlanmod.neo4emf.neo4jresolver.Neo4jResolverPlugin;
-import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntime;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -31,7 +29,13 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "fr.inria.atlanmod.neo4emf"; //$NON-NLS-1$
 
-	public static final String NEO4J_RUNTIME_ID = "fr.inria.atlanmod.neo4emf.neo4j-1.9.4"; //$NON-NLS-1$
+	public static final String DEFAULT_NEO4J_RUNTIME_ID = "fr.inria.atlanmod.neo4emf.neo4j-1.9.4"; //$NON-NLS-1$
+
+	private static final String INSTALLERS_EXTENSION_POINT_ID = "fr.inria.atlanmod.neo4emf.neo4jRuntimes";
+
+	private static final String ATT_ID = "id";
+	
+	private static final String ATT_PRIORITY = "priority";
 
 	// The shared instance
 	private static Neo4emfPlugin plugin;
@@ -55,7 +59,7 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 	}
 
 	private void loadNeo4jRuntime(BundleContext context) throws BundleException {
-		neo4jBundle = Neo4jResolverPlugin.getDefault().installNeo4jRuntimeInContext(context, NEO4J_RUNTIME_ID);
+		neo4jBundle = Neo4jResolverPlugin.getDefault().installNeo4jRuntimeInContext(context, getRuntimeId());
 	}
 
 	/*
@@ -79,4 +83,15 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	private String getRuntimeId() {
+		String id = DEFAULT_NEO4J_RUNTIME_ID;
+		int priority = Integer.MIN_VALUE;
+		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(INSTALLERS_EXTENSION_POINT_ID);
+		for (IConfigurationElement element : elements) {
+			if (Integer.valueOf(element.getAttribute(ATT_PRIORITY)) > priority) {
+				id = element.getAttribute(ATT_ID);
+			}
+		}
+		return id;
+	}
 }
