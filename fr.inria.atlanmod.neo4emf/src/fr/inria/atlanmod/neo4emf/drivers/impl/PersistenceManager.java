@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -25,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.jboss.util.Null;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
@@ -43,6 +45,7 @@ import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
+import fr.inria.atlanmod.neo4emf.logger.Logger;
 import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 
@@ -143,14 +146,23 @@ public class PersistenceManager implements IPersistenceManager {
 		persistenceService.shutdown();	
 	}
 	@Override
-	public Node getNodeById (EObject eObj) throws NullPointerException {
-		return persistenceService.getNodeById(((INeo4emfObject)eObj).getNodeId());
+	public Node getNodeById (EObject eObj)  {
+		Assert.isTrue(((INeo4emfObject)eObj).getNodeId() >= 0, "nodeId is > -1");
+		Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getNodeId());
+		if (result == null ) {
+			throw new NullPointerException(" Cannot find the node ");
+		} else {
+			return result;
+		}
 	}
 	@Override
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
 		if (eRef2relType==null || eRef2relType.isEmpty())
 			setupERelationshipTypesMap(key);
 		RelationshipType rel = eRef2relType.get(key).get(new Point (clsID,eRefID));
+		if ( rel == null ) {
+			throw new NullPointerException(" Cannot find the node ");
+		}
 		return rel;
 			
 
@@ -198,9 +210,9 @@ public class PersistenceManager implements IPersistenceManager {
 			throw new NullPointerException();}
 		if (partition instanceof Partition)
 		((Partition)partition).put(object.getNodeId(), object, str);
-		else 
-		System.out.println("TODO");
-		// TODO put flatened to proxy
+		else
+			Logger.log(IStatus.WARNING, "//TODO : put flatened partitions to proxy");
+		
 	}
 	@Override
 	public void putAllToProxy(List<INeo4emfObject> objects) {
@@ -331,7 +343,7 @@ public class PersistenceManager implements IPersistenceManager {
 		List<Node> nodeList = new ArrayList<Node>();
 		try{
 			for (EClass eCls : classesList){	
-				nodeList = this.persistenceService.getAllNodesOfType (eClass);
+				nodeList = this.persistenceService.getAllNodesOfType (eCls);
 				if (nodeList.isEmpty()) {
 					continue;
 				}

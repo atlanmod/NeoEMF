@@ -15,11 +15,13 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
+import fr.inria.atlanmod.neo4emf.logger.Logger;
 
 
 public class PersistenceServiceFactory extends GraphDatabaseFactory implements IPersistenceServiceFactory {
@@ -66,7 +68,7 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 			public void run()
 			{
 				graphDb.shutdown();
-				//System.out.println("SHUTDOWN HOOK");
+				Logger.log(IStatus.INFO, "Shutdown hook ");
 			}
 		} );
 	}

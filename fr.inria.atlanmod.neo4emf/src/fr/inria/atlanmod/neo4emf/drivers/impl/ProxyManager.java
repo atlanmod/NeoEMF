@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EObject;
 import org.jboss.util.NullArgumentException;
 import org.jboss.util.collection.SoftValueTreeMap;
@@ -32,6 +33,7 @@ import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.impl.Partition.Tail;
+import fr.inria.atlanmod.neo4emf.logger.Logger;
 
 public class ProxyManager implements IProxyManager {
 	/**
@@ -149,6 +151,10 @@ public class ProxyManager implements IProxyManager {
 
 
 	private void setEReferenceUsage(INeo4emfObject eObject) {
+		if (eObject == null ) {
+			Logger.log(IStatus.ERROR, "EObject is Null");
+			throw new NullPointerException();	
+		}
 		int id = GetReferencePartitionID(eObject);
 		if (id != -1) {
 			setUsageCount(id);
@@ -199,6 +205,7 @@ public class ProxyManager implements IProxyManager {
 			EObject eObj = ((Partition)partition).geteObjet();
 			Assert.isNotNull(partition,"Null Partition");
 			if (eObj == null) {
+				Logger.log(IStatus.ERROR, new NullArgumentException());
 				throw new NullArgumentException();}
 			int bol = entry.getValue() instanceof Partition? 1:0 ;
 			switch (bol) {
@@ -208,9 +215,9 @@ public class ProxyManager implements IProxyManager {
 				break;
 
 			case 0:
-				System.out.println("FlatPartition");
+				Logger.log(IStatus.WARNING, "FLatPartition does not have an ID : " + entry.getValue() );
 				return -1;
-				// TODO do not forget the break statement
+				
 			}
 		}
 		return -1;
@@ -222,18 +229,6 @@ public class ProxyManager implements IProxyManager {
 		setUsageCount(id);
 		setHistoryId(id);		
 	}
-
-
-//	private void setUsageHistoryForReference(int index) {
-//		// TODO Auto-generated method stub
-//		for (int i=0; i< partitionsUsageHistory.size(); i++){
-//			if (partitionsUsageHistory.get(i)==index){
-//				partitionsUsageHistory.remove(i);
-//				partitionsUsageHistory.add(0, index);
-//				return;
-//			}
-//		}
-//	}
 
 
 	@Override

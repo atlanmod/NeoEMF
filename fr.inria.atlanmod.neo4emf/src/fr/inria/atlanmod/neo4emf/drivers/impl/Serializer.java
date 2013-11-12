@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EEnum;
@@ -38,6 +39,7 @@ import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import fr.inria.atlanmod.neo4emf.logger.Logger;
 import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 
@@ -155,8 +157,6 @@ public class Serializer implements ISerializer {
 	private void setAttributeValue(EObject eObject,
 			EAttribute at, Object newValue) {
 		Node n = manager.getNodeById(eObject);
-//		if (newValue == "")
-//			System.out.println("new value is void");
 		
 		if (newValue!= null && !at.isMany()){
 		
@@ -199,11 +199,14 @@ public class Serializer implements ISerializer {
 		}
 	}
 
-	private void addNewLink(EObject eObject, EReference eRef, Object object) {
+	private void addNewLink(EObject eObject, EReference eRef, Object object) throws NullPointerException{
 		Node n = this.manager.getNodeById(eObject);
 		Node n2 = this.manager.getNodeById((EObject)object);
+		if(n == null || n2 == null) {
+			Logger.log(IStatus.WARNING, "Dummy objects");
+			return;
+		}
 		RelationshipType rel = this.manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
-	//		System.out.println("n : "+ n+"  n2 : "+ n2 + " type : "+ rel + " EReference : " + eRef);
 		if (rel == null) {
 			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil.formatRelationshipName(eObject.eClass(), eRef));}
 		n.createRelationshipTo(n2, rel);

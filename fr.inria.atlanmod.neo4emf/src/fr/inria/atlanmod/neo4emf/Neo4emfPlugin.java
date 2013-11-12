@@ -13,8 +13,11 @@ package fr.inria.atlanmod.neo4emf;
  * */
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -42,6 +45,15 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 
 	private Bundle neo4jBundle;
 	
+	private static ILogListener  logListener = new ILogListener() {
+		
+		@Override
+		public void logging(IStatus status, String plugin) {
+			if (status.matches(IStatus.ERROR)) {
+				StatusManager.getManager().handle(status, StatusManager.BLOCK);
+			} 
+		}
+	};
 	/**
 	 * The constructor
 	 */
@@ -56,6 +68,7 @@ public class Neo4emfPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		loadNeo4jRuntime(context);
+		getDefault().getLog().addLogListener(logListener);
 	}
 
 	private void loadNeo4jRuntime(BundleContext context) throws BundleException {

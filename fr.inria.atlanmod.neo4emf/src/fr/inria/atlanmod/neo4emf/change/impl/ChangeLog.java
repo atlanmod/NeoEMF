@@ -17,9 +17,7 @@ public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 	private static ChangeLog INSTANCE=null; 
 	@Override
 	public void addNewEntry(Notification msg) {
-		INSTANCE.add(IChangeLogFactory.eINSTANCE.createEntry(msg));
-		System.out.print("");
-		
+		INSTANCE.add(IChangeLogFactory.eINSTANCE.createEntry(msg));	
 	}
 
 	public static IChangeLog<Entry> getInstance() {

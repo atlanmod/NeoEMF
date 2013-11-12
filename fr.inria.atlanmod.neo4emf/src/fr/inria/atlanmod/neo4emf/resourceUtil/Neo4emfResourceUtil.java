@@ -85,16 +85,14 @@ public class Neo4emfResourceUtil {
 			// Create a resource set to hold the resources.
 			ResourceSet resourceSet = new ResourceSetImpl();
 			// Create a new empty resource.
-			//File file = new File(xmiPath);
 			URI uri = URI.createFileURI(xmiPath);
 			Resource resource = resourceSet.getResource(uri, true);
-			//System.out.println(" roots count is :  "+resource.getContents().size());
-			//EObject root = resource.getContents().get(0);
+
 		EList<EObject> objectsList= resourceToObjectsList(resource);
 		Map<EObject,Long> eObjectsToNodes =  persistNodes(graphDB, objectsList);
-		//System.out.println("persist the nodes");
+
 		persistReferences(graphDB, objectsList, eObjectsToNodes, metaResource);
-		//System.out.println("Finish");
+
 		}finally{
 			graphDB.shutdown();
 		}
@@ -278,9 +276,9 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 			Object obj = iterator.next();
 			if (obj instanceof EObject)
 				objectsList.add((EObject)obj);
-			//System.out.println("The size of the resource is : "+objectsList.size());	
+
 		}
-		//System.out.println("The size of the resource is : "+objectsList.size());
+
 		return objectsList;
 	}
 

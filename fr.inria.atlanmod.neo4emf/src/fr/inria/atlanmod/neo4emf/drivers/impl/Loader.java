@@ -376,8 +376,7 @@ public class Loader implements ILoader {
 				manager.setUsageTrace(((INeo4emfObject)eObject).getPartitionId(),PID, featureId, eObject);
 			
 		}
-//		if (eObj == null) {
-//			System.out.println("null eObject");}
+
 		return eObj;
 	}
 	
