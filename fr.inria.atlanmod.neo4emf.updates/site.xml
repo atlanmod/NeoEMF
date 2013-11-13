@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/fr.inria.atlanmod.neo4emf.feature_0.1.0.qualifier.jar" id="fr.inria.atlanmod.neo4emf.feature" version="0.1.0.qualifier">
+      <category name="Neo4EMF"/>
+   </feature>
+   <category-def name="Neo4EMF" label="Neo4EMF"/>
+</site>
