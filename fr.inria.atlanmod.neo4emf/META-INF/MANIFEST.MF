@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Neo4emf
+Bundle-Name: Neo4EMF Runtime
 Bundle-SymbolicName: fr.inria.atlanmod.neo4emf;singleton:=true
-Bundle-Version: 0.5.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: fr.inria.atlanmod.neo4emf.Neo4emfPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  fr.inria.atlanmod.neo4emf.neo4jresolver;visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-Vendor: Atlanmod INRIA
+Bundle-Vendor: AtlanMod - Inria
 Export-Package: fr.inria.atlanmod.neo4emf,
  fr.inria.atlanmod.neo4emf.change,
  fr.inria.atlanmod.neo4emf.change.impl,
