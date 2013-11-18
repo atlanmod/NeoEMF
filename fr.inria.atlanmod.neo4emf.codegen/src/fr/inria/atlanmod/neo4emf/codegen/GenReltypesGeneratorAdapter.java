@@ -16,12 +16,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.codegen.ecore.generator.GeneratorAdapterFactory;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter;
+import org.eclipse.emf.common.util.BasicMonitor;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -94,12 +94,13 @@ public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 				createMonitor(monitor, 1));
 		// }
 		
-		fixClasspath(genModel);
+		fixClasspath(genModel, createMonitor(monitor, 1));
 		return Diagnostic.OK_INSTANCE;
 	}
 
-	protected void fixClasspath(GenModel genModel) {
+	protected void fixClasspath(GenModel genModel, Monitor monitor) {
         try {
+        	monitor.beginTask("Updating project's classpath", 1);
         	IPath neo4jPath = INeo4jClasspathContainer.ID.append(PREFERRED_NEO4J_VERSION);
         	IWorkspace workspace = ResourcesPlugin.getWorkspace();
         	IPath path = new Path(genModel.getModelDirectory());
@@ -114,9 +115,11 @@ public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 			IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
 			System.arraycopy(entries, 0, newEntries, 0, entries.length);
 			newEntries[newEntries.length - 1] = JavaCore.newContainerEntry(neo4jPath);
-			javaProject.setRawClasspath(newEntries, new NullProgressMonitor());
+			javaProject.setRawClasspath(newEntries, BasicMonitor.toIProgressMonitor(createMonitor(monitor, 1)));
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			monitor.done();
 		}
 	}
 	@Override
