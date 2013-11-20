@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osgi.util.NLS;
@@ -13,6 +14,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
+import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.AbstractNeo4jRuntimeInstaller;
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntime;
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.INeo4jRuntimesManager;
 import fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes.internal.Neo4JRuntimesManager;
@@ -52,12 +54,19 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		checkRuntimesAsync();
+		if (Platform.getBundle("fr.inria.atlanmod.neo4emf.neo4j") == null) {
+			checkRuntimesAsync();
+		}
 		getDefault().getLog().addLogListener(logListener);
 	}
 	
 	private void checkRuntimesAsync() {
-		Neo4JRuntimesManager.INSTANCE.checkRuntimes(false);
+		Thread check = new Thread() {
+			public void run() {
+				Neo4JRuntimesManager.INSTANCE.checkRuntimes();
+			}
+		};
+		check.start();
 	}
 
 	/*
@@ -99,6 +108,16 @@ public class Neo4jResolverPlugin extends AbstractUIPlugin {
 		reg.put(OBJ16_LIBRARY_OBJ, getImageDescriptor("icons/full/obj16/library_obj.gif"));
 	}
 	
+	/**
+	 * Tries to install the bundle with the id <code>runtimeId</code> (which has
+	 * been previously installed in the local file system installed using an
+	 * {@link AbstractNeo4jRuntimeInstaller}) in the context of the given bundle
+	 * 
+	 * @param context
+	 * @param runtimeId
+	 * @return
+	 * @throws BundleException
+	 */
 	public Bundle installNeo4jRuntimeInContext(BundleContext context, String runtimeId) throws BundleException {
 		Bundle neo4jBundle = null;
 		INeo4jRuntime runtime = getRuntimesManager().getRuntime(runtimeId);

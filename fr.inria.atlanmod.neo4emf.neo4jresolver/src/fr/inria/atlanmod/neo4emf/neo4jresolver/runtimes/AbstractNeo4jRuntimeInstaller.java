@@ -41,7 +41,7 @@ public abstract class AbstractNeo4jRuntimeInstaller {
 
 	public abstract String getLicenseText();
 
-	public abstract void performInstall(IProgressMonitor monitor, IPath runtimePath) throws IOException;
+	protected abstract void performInstall(IProgressMonitor monitor, IPath runtimePath) throws IOException;
 	
 	public void install(IProgressMonitor monitor) throws IOException {
 		if (monitor == null) {
@@ -54,6 +54,7 @@ public abstract class AbstractNeo4jRuntimeInstaller {
 			FileUtils.forceMkdir(runtimePath.toFile());
 			performInstall(new SubProgressMonitor(monitor, 1), runtimePath);
 			Neo4JRuntimesManager.INSTANCE.initializeRuntimeMetadata(this, runtimePath);
+			Neo4JRuntimesManager.INSTANCE.configureAsProjectPlugin(this, runtimePath);
 		} finally {
 			monitor.done();
 		}

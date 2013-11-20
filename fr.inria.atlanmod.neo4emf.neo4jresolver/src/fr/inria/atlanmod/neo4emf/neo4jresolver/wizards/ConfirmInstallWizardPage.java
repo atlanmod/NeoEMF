@@ -21,8 +21,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -57,16 +58,18 @@ public class ConfirmInstallWizardPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
-		RowLayout layout = new RowLayout(SWT.VERTICAL);
-		layout.justify = true;
-		layout.spacing = 5;
-		composite.setLayout(layout);
+		composite.setLayout(new GridLayout(1, false));
 		
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("The following runtimes will be installed:");
+		label.setLayoutData(new GridData());
 		
 		SashForm sashForm = new SashForm(composite, SWT.NONE);
-		sashForm.setLayoutData(new RowData(800, 250));
+		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		layoutData.minimumWidth = 800;
+		layoutData.minimumHeight = 250;
+		sashForm.setLayoutData(layoutData);
+		sashForm.setLayout(new FillLayout(SWT.HORIZONTAL | SWT.VERTICAL));
 		Table table = new Table(sashForm, SWT.BORDER);
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(new ArrayContentProvider());
@@ -78,7 +81,7 @@ public class ConfirmInstallWizardPage extends WizardPage {
 				if (!event.getSelection().isEmpty() && event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					AbstractNeo4jRuntimeInstaller installer = (AbstractNeo4jRuntimeInstaller) selection.getFirstElement();
-					licenseText.setText(installer.getLicenseText());
+					licenseText.setText(installer.getLicenseText() != null ? installer.getLicenseText() : "");
 				} else {
 					licenseText.setText("");
 				}
@@ -89,6 +92,7 @@ public class ConfirmInstallWizardPage extends WizardPage {
 		
 		acceptButton = new Button(composite, SWT.RADIO);
 		acceptButton.setText("I &accept the terms in the license agreements");
+		acceptButton.setLayoutData(new GridData());
 		acceptButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -98,6 +102,7 @@ public class ConfirmInstallWizardPage extends WizardPage {
 		
 		rejectButton = new Button(composite, SWT.RADIO);
 		rejectButton.setText("I do &not accept the terms in the license agreements");
+		rejectButton.setLayoutData(new GridData());
 		rejectButton.setSelection(true);
 		
 		setControl(composite);

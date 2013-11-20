@@ -10,7 +10,6 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes;
 
-import java.io.IOException;
 
 /**
  * @author abelgomez
@@ -18,15 +17,28 @@ import java.io.IOException;
  */
 public interface INeo4jRuntimesManager {
 
-	public abstract AbstractNeo4jRuntimeInstaller getInstaller(String id);
+//	public abstract AbstractNeo4jRuntimeInstaller getInstaller(String id);
 
+	/**
+	 * Returns the runtime with the given id
+	 * @param id
+	 * @return
+	 * The {@link INeo4jRuntime} or <code>null</code> if not found
+	 */
 	public abstract INeo4jRuntime getRuntime(String id);
 
-	public abstract boolean checkRuntimes(boolean blockOnOpen);
+	/**
+	 * Checks the installed runtimes and launches the installation wizard if no
+	 * runtimes are found. Implementors should consider threading issues (i.e.
+	 * implement the method as <code>synchronized</code>).
+	 * 
+	 * @return
+	 */
+	public abstract void checkRuntimes();
 
-	public abstract void launchInstallRuntimesWizard();
+//	public abstract void launchInstallRuntimesWizard();
 	
-	public abstract void uninstall(String id) throws IOException;
+//	public abstract void uninstall(String id) throws IOException;
 
 
 }

@@ -2,20 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="neo4jInstallers" name="Neo4J Library Installer" schema="schema/neo4jInstallers.exsd"/>
-   <extension
-       point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-          id="fr.inria.atlanmod.neo4emf.neo4jresolver.NEO4J_CONTAINER"
-          class="fr.inria.atlanmod.neo4emf.neo4jresolver.cp.container.internal.Neo4jClasspathContainerInitializer"/>
-   </extension>
    
-   <extension 
-       point="org.eclipse.jdt.ui.classpathContainerPage">
-      <classpathContainerPage
-          id="fr.inria.atlanmod.neo4emf.neo4jresolver.NEO4J_CONTAINER"
-          name="Neo4J"
-          class="fr.inria.atlanmod.neo4emf.neo4jresolver.cp.page.Neo4jClasspathContainerPage"/>
-   </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -23,5 +10,29 @@
             id="fr.inria.atlanmod.neo4emf.neo4jresolver.preferences.Neo4JRuntimesPreferencePage"
             name="Neo4J Runtimes">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+      <deleteParticipant
+            class="fr.inria.atlanmod.neo4emf.neo4jresolver.refactoring.Neo4JProjectDeleteParticipant"
+            id="fr.inria.atlanmod.neo4emf.neo4jresolver.deleteParticipant"
+            name="Neo4J Runtime Delete Resource">
+      </deleteParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.moveParticipants">
+      <moveParticipant
+            class="fr.inria.atlanmod.neo4emf.neo4jresolver.MoveParticipant1"
+            id="fr.inria.atlanmod.neo4emf.neo4jresolver.moveParticipant1"
+            name="Neo4J Runtime Mocve Resource">
+      </moveParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.renameParticipants">
+      <renameParticipant
+            class="fr.inria.atlanmod.neo4emf.neo4jresolver.RenameParticipant1"
+            id="fr.inria.atlanmod.neo4emf.neo4jresolver.renameParticipant1"
+            name="Neo4J Runtime Rename Resource">
+      </renameParticipant>
    </extension>
 </plugin>
