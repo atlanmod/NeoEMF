@@ -107,18 +107,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <discovery label="Atlanmod EMF Utils" url="http://abelgomez.github.io/emf.utils/updates/"/>
    </url>
 
-   <includes
-         id="fr.inria.atlanmod.emf.packageregistry.feature"
-         version="0.0.0"
-         name="EMF Utils - Observable EPackage Registry"
-         optional="true"/>
-
-   <includes
-         id="fr.inria.atlanmod.emf.utils.feature"
-         version="0.0.0"
-         name="EMF Utils"
-         optional="true"/>
-
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.emf.ecore"/>
