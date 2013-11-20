@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="fr.inria.atlanmod.neo4emf.neo4jinstaller.feature"
-      label="Neo4J installer for Neo4EMF"
+      label="Neo4J Installer for Neo4EMF"
       version="0.1.0.qualifier"
       provider-name="AtlanMod - INRIA">
 
