@@ -104,16 +104,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="org.eclipse.emf.codegen.ecore"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.emf.ecore.editor"/>
       <import plugin="org.eclipse.emf.edit.ui"/>
       <import plugin="org.eclipse.emf.importer"/>
@@ -130,13 +127,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugin
          id="fr.inria.atlanmod.neo4emf.codegen"
-         download-size="0"
-         install-size="0"
-         version="0.1.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="fr.inria.atlanmod.neo4emf.neo4jresolver"
          download-size="0"
          install-size="0"
          version="0.1.0.qualifier"

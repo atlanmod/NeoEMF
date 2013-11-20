@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="fr.inria.atlanmod.neo4emf.neo4jresolver.feature"
+      label="Neo4J Runtimes Installer"
+      version="0.1.0.qualifier"
+      provider-name="AtlanMod - INRIA">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ltk.core.refactoring"/>
+   </requires>
+
+   <plugin
+         id="fr.inria.atlanmod.neo4emf.neo4jresolver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
