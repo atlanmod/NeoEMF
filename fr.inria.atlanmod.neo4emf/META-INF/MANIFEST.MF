@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore.xmi,
  org.eclipse.emf.codegen.ecore,
  org.eclipse.ui;resolution:=optional,
- fr.inria.atlanmod.neo4emf.neo4jresolver;resolution:=optional;visibility:=reexport
+ fr.inria.atlanmod.neo4emf.neo4jresolver;resolution:=optional;visibility:=reexport,
+ fr.inria.atlanmod.neo4emf.neo4j;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: AtlanMod - Inria
