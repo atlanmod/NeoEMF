@@ -11,6 +11,9 @@
  */
 package fr.inria.atlanmod.neo4emf.ui.migrator;
 
+import java.text.MessageFormat;
+import java.util.List;
+
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.common.util.BasicDiagnostic;
@@ -28,9 +31,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.importer.ModelImporter;
-
-import java.text.MessageFormat;
-import java.util.List;
 
 /**
  * @author abelgomez

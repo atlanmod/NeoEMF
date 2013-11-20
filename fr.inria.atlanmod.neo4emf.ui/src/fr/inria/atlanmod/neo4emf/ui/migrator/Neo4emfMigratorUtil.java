@@ -11,9 +11,6 @@
  */
 package fr.inria.atlanmod.neo4emf.ui.migrator;
 
-import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -21,6 +18,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.WrappedException;
+
+import fr.inria.atlanmod.neo4emf.Neo4emfPlugin;
 
 /**
  * @author abelgomez
@@ -35,7 +37,9 @@ public abstract class Neo4emfMigratorUtil {
 
 	private static final String TEMPLATE_DIRECTORY = "platform:/plugin/fr.inria.atlanmod.neo4emf.codegen/templates";
 
-	public static final String PLUGIN_VARIABLE = "NEO4EMF=fr.inria.atlanmod.neo4emf";
+	public static final String PLUGIN_VARIABLE_NEO4J = "NEO4J=" + Neo4emfPlugin.DEFAULT_NEO4J_RUNTIME_ID;
+
+	public static final String PLUGIN_VARIABLE_NEO4EMF = "NEO4EMF=fr.inria.atlanmod.neo4emf";
 	
 	public static final String TEMPLATE_PLUGIN_VARIABLE = "NEO4EMF_GENERATOR=fr.inria.atlanmod.neo4emf.codegen";
 
@@ -74,10 +78,13 @@ public abstract class Neo4emfMigratorUtil {
 		}
 		
 		EList<String> pluginVariables = genModel.getModelPluginVariables();
-		if (!pluginVariables.contains(PLUGIN_VARIABLE)) {
-			pluginVariables.add(PLUGIN_VARIABLE);
+		if (!pluginVariables.contains(PLUGIN_VARIABLE_NEO4EMF)) {
+			pluginVariables.add(PLUGIN_VARIABLE_NEO4J);
+			pluginVariables.add(PLUGIN_VARIABLE_NEO4EMF);
 			builder.append("Added Model Plugin Variables = ");
-			builder.append(PLUGIN_VARIABLE);
+			builder.append(PLUGIN_VARIABLE_NEO4J);
+			builder.append(", ");
+			builder.append(PLUGIN_VARIABLE_NEO4EMF);
 			builder.append("\n");
 		}
 

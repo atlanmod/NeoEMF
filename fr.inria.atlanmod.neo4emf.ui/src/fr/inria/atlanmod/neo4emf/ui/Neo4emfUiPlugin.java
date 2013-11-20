@@ -10,9 +10,14 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neo4emf.ui;
 
+import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.BundleContext;
+
+import fr.inria.atlanmod.neo4emf.Neo4emfPlugin;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -25,6 +30,15 @@ public class Neo4emfUiPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Neo4emfUiPlugin plugin;
+	
+	private static ILogListener logListener = new ILogListener() {
+		@Override
+		public void logging(IStatus status, String plugin) {
+			if (status.matches(IStatus.ERROR)) {
+				StatusManager.getManager().handle(status, StatusManager.BLOCK);
+			} 
+		}
+	};
 	
 	/**
 	 * The constructor
@@ -39,6 +53,12 @@ public class Neo4emfUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		checkNeo4emfPlugin();
+		Neo4emfUiPlugin.getDefault().getLog().addLogListener(logListener);
+	}
+
+	private void checkNeo4emfPlugin() {
+		Neo4emfPlugin.getDefault();
 	}
 
 	/*
@@ -46,6 +66,7 @@ public class Neo4emfUiPlugin extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
+		Neo4emfUiPlugin.getDefault().getLog().removeLogListener(logListener);
 		plugin = null;
 		super.stop(context);
 	}

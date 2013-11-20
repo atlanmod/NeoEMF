@@ -13,7 +13,12 @@ package fr.inria.atlanmod.neo4emf.ui.wizards;
 import java.util.Collections;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -38,8 +43,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewFolderMainPage;
 import org.eclipse.ui.part.ISetSelectionTarget;
+import org.osgi.framework.Bundle;
 
 import fr.inria.atlanmod.neo4emf.INeoFactory;
+import fr.inria.atlanmod.neo4emf.Neo4emfPlugin;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 
 /**
@@ -97,18 +104,25 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 	@Override
 	public boolean performFinish() {
 		try {
+			if (!((Platform.getBundle(Neo4emfPlugin.PLUGIN_ID).getState() & Bundle.ACTIVE) == Bundle.ACTIVE)) {
+				MessageDialog.openError(getShell(), "Unable to create instance", "The Neo4EMF bundle is not active. Maybe missing Neo4J runtime?.\nTry installing a Neo4J runtime and restart.");
+				return false;
+			}
+			
 			// Remember the folder.
 			//
 			final IFolder dbFolder = createNewFolder();
 			// Get the URI of the model file.
 			//
 			final URI dbURI = URI.createURI("neo4emf:" + dbFolder.getLocationURI().getRawSchemeSpecificPart(), true);
-
+			
 			// Do the work within an operation.
 			//
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
 				@Override
 				protected void execute(IProgressMonitor progressMonitor) {
+					if (progressMonitor == null) progressMonitor = new NullProgressMonitor();
+					progressMonitor.beginTask("Create Neo4EMF resource", 2);
 					Neo4emfResource resource = null;
 					try {
 						// Create a resource set
@@ -131,9 +145,14 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 						// Save the contents of the resource to the file system.
 						//
 						resource.save(Collections.emptyMap());
-
+						dbFolder.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
 					} catch (Exception exception) {
 						exception.printStackTrace();
+						try {
+							dbFolder.delete(true, new SubProgressMonitor(progressMonitor, 1));
+						} catch (CoreException e) {
+							e.printStackTrace();
+						}
 					} finally {
 						// Shutdown resource
 						//
