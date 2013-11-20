@@ -111,15 +111,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="fr.inria.atlanmod.emf.packageregistry.feature"
          version="0.0.0"
          name="EMF Utils - Observable EPackage Registry"
-         optional="true"
-         search-location="both"/>
+         optional="true"/>
 
    <includes
          id="fr.inria.atlanmod.emf.utils.feature"
          version="0.0.0"
          name="EMF Utils"
-         optional="true"
-         search-location="both"/>
+         optional="true"/>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
