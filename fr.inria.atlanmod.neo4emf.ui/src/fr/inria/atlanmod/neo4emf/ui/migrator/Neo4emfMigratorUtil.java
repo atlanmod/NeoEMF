@@ -37,7 +37,7 @@ public abstract class Neo4emfMigratorUtil {
 
 	private static final String TEMPLATE_DIRECTORY = "platform:/plugin/fr.inria.atlanmod.neo4emf.codegen/templates";
 
-	public static final String PLUGIN_VARIABLE_NEO4J = "NEO4J=" + Neo4emfPlugin.DEFAULT_NEO4J_RUNTIME_ID;
+	public static final String PLUGIN_VARIABLE_NEO4J = "NEO4J=" + Neo4emfPlugin.getDefault().getRuntimeId();
 
 	public static final String PLUGIN_VARIABLE_NEO4EMF = "NEO4EMF=fr.inria.atlanmod.neo4emf";
 	

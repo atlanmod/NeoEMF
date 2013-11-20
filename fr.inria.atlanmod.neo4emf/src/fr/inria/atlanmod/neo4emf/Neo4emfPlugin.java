@@ -165,7 +165,7 @@ public class Neo4emfPlugin extends Plugin {
 	 * Returns the ID of the bundle containing the Neo4J runtime libraries
 	 * @return
 	 */
-	private String getRuntimeId() {
+	public String getRuntimeId() {
 		String id = DEFAULT_NEO4J_RUNTIME_ID;
 		int priority = Integer.MIN_VALUE;
 		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(INSTALLERS_EXTENSION_POINT_ID);
