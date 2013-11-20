@@ -11,7 +11,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.codegen.ecore,
  org.eclipse.core.resources,
- org.eclipse.jdt.core,
- fr.inria.atlanmod.neo4emf.neo4jresolver
+ org.eclipse.jdt.core
 Eclipse-LazyStart: true
 Bundle-ActivationPolicy: lazy
