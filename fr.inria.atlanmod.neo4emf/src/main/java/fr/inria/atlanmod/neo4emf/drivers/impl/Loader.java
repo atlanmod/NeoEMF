@@ -114,11 +114,11 @@ public class Loader implements ILoader {
 			List<Node> nodeList) {
 		int sizeChange = ChangeLog.getInstance().size();
 		EList<INeo4emfObject> eObjectList = new BasicEList<INeo4emfObject>();
-		EPackage ePck= eClass.getEPackage();
 		int newId = manager.getNewPartitionID();
 		FlatPartition partition = manager.createNewFlatPartition(newId);
 		for (Node node : nodeList){
-			INeo4emfObject obj = (INeo4emfObject)ePck.getEFactoryInstance().create(eClass);
+			String ns_uri = manager.getNodeContainingPackage(node);
+			INeo4emfObject obj = (INeo4emfObject)loadMetamodelFromURI(ns_uri).getEFactoryInstance().create(eClass);
 			obj.setNodeId(node.getId());
 			obj.setPartitionId(newId);
 			eObjectList.add(obj);
@@ -282,37 +282,42 @@ public class Loader implements ILoader {
 	@Override	
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) throws FeatureNotFoundException {
 		try {
-				int size = ChangeLog.getInstance().size();
-				int newId=((INeo4emfObject)obj).getPartitionId();
-				if (!manager.isHead(obj)){
-					newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)obj).getPartitionId());
-					manager.createNewPartitionHistory(newId);
-					}	
-				EReference str = Loader.getFeatureFromID(obj,featureId);
-				if (str == null) {
-					throw new FeatureNotFoundException("", obj, "", -1, -1);}
-				List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
-				for (Node n : nodes){
-					INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment(),featureId);
-					
-					objectList.add(object);
-					manager.putToProxy((INeo4emfObject)object, str, newId);
-					//manager.updateProxyManager((INeo4emfObject)object, str);
-					}
-				
+			int size = ChangeLog.getInstance().size();
+			int newId = ((INeo4emfObject) obj).getPartitionId();
+			
+			if (!manager.isHead(obj)) {
+				newId = manager.createNewPartition(getObjectsFromNode(node), ((INeo4emfObject) obj).getPartitionId());
+				manager.createNewPartitionHistory(newId);
+			}
+			
+			EReference str = Loader.getFeatureFromID(obj, featureId);
+			if (str == null) {
+				throw new FeatureNotFoundException("", obj, "", -1, -1);
+			}
+			
+			List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
+			for (Node n : nodes) {
+				INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment(), featureId);
+				objectList.add(object);
+				manager.putToProxy((INeo4emfObject) object, str, newId);
+				// manager.updateProxyManager((INeo4emfObject)object, str);
+			}
 
-				if (!str.isContainment())
-					manager.addObjectsToContents(objectList);
-				if (str.isMany())
-					 obj.eSet(str,objectList);
-				else obj.eSet(str, objectList.get(0));
-				ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);}
-		catch (FeatureNotFoundException e){
+			// TODO: Check this code! It causes movements of objects from their
+			// containers to the root of the resource...
+			// if (!str.isContainment())
+			// manager.addObjectsToContents(objectList);
+			if (str.isMany()) {
+				obj.eSet(str, objectList);
+			} else if (!objectList.isEmpty()) {
+				obj.eSet(str, objectList.get(0));
+			}
+			ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
+		} catch (FeatureNotFoundException e) {
 			e.printStackTrace();
-		}catch(Exception e){
+		} catch (Exception e) {
 			manager.shutdown();
 			e.printStackTrace();
-
 		}
 
 	}
