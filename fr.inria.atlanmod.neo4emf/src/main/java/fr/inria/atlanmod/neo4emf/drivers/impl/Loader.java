@@ -141,15 +141,17 @@ public class Loader implements ILoader {
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
 		int size = ChangeLog.getInstance().size();
 		EFactory factory =null;
-		@SuppressWarnings("unused")
-		String factoryInstanceName = ePck.getEFactoryInstance().getClass().getName();
-		if (ePck.getEFactoryInstance().getClass().getName().equals("org.eclipse.emf.ecore.impl.EFactoryImpl")){
+
+		if (ePck.getEFactoryInstance() == null) {
+			ePck.setEFactoryInstance(INeoFactory.eINSTANCE);
+		}
+		if (ePck.getEFactoryInstance().getClass().getName()
+				.equals("org.eclipse.emf.ecore.impl.EFactoryImpl")) {
 			factory = INeoFactory.eINSTANCE;
 			factory.setEPackage(ePck);
-					} 
-		else {
+		} else {
 			factory = ePck.getEFactoryInstance();
-					}
+		}
 		INeo4emfObject obj = (INeo4emfObject)factory.create(getEClassFromNodeName(eClassName,ePck));
 		obj.setNodeId(n.getId());	
 		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-size);
