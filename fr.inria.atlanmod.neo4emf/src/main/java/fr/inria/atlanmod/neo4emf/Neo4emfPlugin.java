@@ -125,7 +125,8 @@ public class Neo4emfPlugin extends Plugin {
 
 	private void loadNeo4jRuntime(BundleContext context) throws BundleException, RuntimeNotFoundException {
 		String id = getRuntimeId();
-		neo4jBundle = Platform.getBundle(id);
+		neo4jBundle = Platform.getBundle(DEFAULT_NEO4J_RUNTIME_ID) != null ? 
+				Platform.getBundle(DEFAULT_NEO4J_RUNTIME_ID) : Platform.getBundle(getRuntimeId());
 		if (neo4jBundle == null) {
 			if (isNeo4jResolverAvailable()) {
 				if (Neo4jResolverPlugin.getDefault().getRuntimesManager().getRuntime(id) != null) {
