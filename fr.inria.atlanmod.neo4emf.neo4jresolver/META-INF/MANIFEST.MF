@@ -18,4 +18,3 @@ Bundle-ClassPath: .,
  libs/commons-io-2.4.jar,
  libs/commons-lang3-3.1.jar
 Bundle-Vendor: AtlanMod - Inria
-Import-Package: fr.inria.atlanmod.neo4emf.neo4jresolver.runtimes
