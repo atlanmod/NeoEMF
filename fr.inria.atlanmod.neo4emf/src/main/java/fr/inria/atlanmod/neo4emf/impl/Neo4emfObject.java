@@ -25,7 +25,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
+import fr.inria.atlanmod.neo4emf.change.IChangeLog;
+import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 
 
 
@@ -153,30 +154,32 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	
 	@Override 
 	public Object eGet(final int featureID, final boolean resolve, final boolean coreType){
-		 EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
-		 Assert.isNotNull(eFeature, "Invalid feature : " + eFeature);
-		 Object result = simpleGet(featureID, resolve, coreType, true);	
-		 if (this.id == "") {
+		EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
+		Assert.isNotNull(eFeature, "Invalid feature : " + eFeature);
+		// agomez - 2013-12-06: Disable notification of GET
+		// Object result = simpleGet(featureID, resolve, coreType, true);
+		Object result = simpleGet(featureID, resolve, coreType, false);
+		if (this.id  == "" || eResource() == null) {
 			return result;
 		}
-		 if (!eFeature.isMany()) {		
-			 if (result != null) {
+		if (!eFeature.isMany()) {
+			if (result != null) {
 				return result;
 			}
-		 } else {
-			 if (!((List<?>) result).isEmpty()) {
+		} else {
+			if (!((List<?>) result).isEmpty()) {
 				return result;
 			}
-		 }
-		 
-		 Assert.isTrue(eResource() != null && eResource() instanceof INeo4emfResource, "The resource is either null or not of type INeo4emfResource");
-		 INeo4emfResource resource = (INeo4emfResource) eResource();
-		 if (eFeature instanceof EAttribute) {
+		}
+
+		Assert.isTrue(eResource() != null && eResource() instanceof INeo4emfResource, "The resource is either null or not of type INeo4emfResource");
+		INeo4emfResource resource = (INeo4emfResource) eResource();
+		if (eFeature instanceof EAttribute) {
 			resource.fetchAttributes(this);
 		} else {
 			resource.getOnDemand(this, featureID);
 		}
-		 return simpleGet(featureID, resolve, coreType, false);
+		return simpleGet(featureID, resolve, coreType, false);
 	
 	}
 	 protected Object eDynamicGet(final int dynamicFeatureID, final EStructuralFeature eFeature, final boolean resolve, final boolean coreType){
@@ -190,7 +193,9 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 				 resource.getOnDemand(this, dynamicFeatureID + eStaticFeatureCount()); 
 			 	 }
 		}
-		return simpleGet(dynamicFeatureID + eStaticFeatureCount(), resolve, coreType, true);
+		// agomez - 2013-12-06: Disable notification of GET
+		// return simpleGet(dynamicFeatureID + eStaticFeatureCount(), resolve, coreType, true);
+		return simpleGet(dynamicFeatureID + eStaticFeatureCount(), resolve, coreType, false);
 	 	
 	 }
 		 
@@ -202,17 +207,17 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		 Object result = eSettingDelegate(eFeature).dynamicGet(this, eSettings(), dynamicFeatureID, resolve, coreType);
 		 if (result != null && notificationRequired) {
 			 Notification msg = new ENotificationImpl(this, INeo4emfNotification.GET, eFeature, null, null);
-			 ChangeLog.getInstance().addNewEntry(msg);
+			 getChangeLog().addNewEntry(msg);
 		 }
 		return result;
 	}
+		private IChangeLog<Entry> getChangeLog() {
+			return ((Neo4emfResource)eResource()).getChangeLog();
+		}
 	
 	@Override
 	protected void eDynamicSet(final int dynamicFeatureID, final EStructuralFeature eFeature, Object newValue){
-		Object oldValue = simpleGet(dynamicFeatureID + eStaticFeatureCount(), true, true, false);
 		eSettingDelegate(eFeature).dynamicSet(this, eSettings(), dynamicFeatureID, newValue);
-		Notification msg = new ENotificationImpl(this, Notification.SET, eFeature, oldValue, newValue);
-		ChangeLog.getInstance().addNewEntry(msg);
 	}
 	
 	@Override 
@@ -249,8 +254,4 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public static class NeoObjectData {
 		
 	}
-
-
-
-	
 }

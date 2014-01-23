@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
@@ -27,6 +28,10 @@ import org.neo4j.graphdb.RelationshipType;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
+import fr.inria.atlanmod.neo4emf.change.IChangeLog;
+import fr.inria.atlanmod.neo4emf.change.IChangeLogFactory;
+import fr.inria.atlanmod.neo4emf.change.impl.Entry;
+import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
@@ -34,7 +39,7 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
 
 public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 
-
+	private IChangeLog<Entry> changeLog;
 	
 	/** 
 	 * The persistence manager holds the communication between the resource and 
@@ -55,21 +60,17 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	 */
 	public Neo4emfResource(final String storeDirectory, final Map<String,Map<Point,RelationshipType>> map,Map<String, String> params ) {
 		super();
-		this.storeDirectory=storeDirectory;
-		if (params == null){
-		this.persistenceManager =  new PersistenceManager(this,storeDirectory,map);}
-		else {
-			this.persistenceManager =  new PersistenceManager(this,storeDirectory,map,params);
+		this.storeDirectory = storeDirectory;
+		if (params == null) {
+			this.persistenceManager = new PersistenceManager(this, storeDirectory, map);
+		} else {
+			this.persistenceManager = new PersistenceManager(this, storeDirectory, map, params);
 		}
+		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
 	}
 	public Neo4emfResource(final URI uri, Map<String,Map<Point,RelationshipType>> map,  Map<String, String> params){
-		super(uri);
-		this.storeDirectory=neo4emfURItoString(uri);
-		if (params == null){
-			this.persistenceManager =  new PersistenceManager(this,storeDirectory,map);}
-			else {
-				this.persistenceManager =  new PersistenceManager(this,storeDirectory,map,params);
-			}
+		this(neo4emfURItoString(uri), map, params);
+		setURI(uri);
 	}
 	/**
 	 * @link {@link INeo4emfResource#fetchAttributes(EObject)}
@@ -169,4 +170,28 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.ecore.resource.impl.ResourceImpl#attached(org.eclipse.emf.ecore.EObject)
+	 */
+	@Override
+	public void attached(EObject eObject) {
+		super.attached(eObject);
+		addChangeLogEntries(eObject);
+		Iterator<EObject> it = eObject.eAllContents();
+		while (it.hasNext()) {
+			EObject itEObject = (EObject) it.next();
+			addChangeLogEntries(itEObject);
+		}
+	}
+	private void addChangeLogEntries(EObject eObject) {
+		if (eObject instanceof INeo4emfObject) {
+			if (((INeo4emfObject)eObject).getNodeId() == -1) {
+				getChangeLog().add(new NewObject(eObject));
+			}
+		}
+	}
+
+	public IChangeLog<Entry> getChangeLog() {
+		return changeLog;
+	}
 }

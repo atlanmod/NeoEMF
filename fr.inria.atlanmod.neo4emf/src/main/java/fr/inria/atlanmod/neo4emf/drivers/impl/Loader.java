@@ -23,18 +23,19 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.xmi.FeatureNotFoundException;
 import org.neo4j.graphdb.Node;
 
+import scala.Int;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeoFactory;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
+import fr.inria.atlanmod.neo4emf.change.IChangeLog;
+import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
-import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 
 public class Loader implements ILoader {
 	/**
 	 * the manager and delegator
 	 */
-	IPersistenceManager manager;
+	PersistenceManager manager;
 	/**
 	 * a Map of Loaded packages
 	 */
@@ -42,7 +43,7 @@ public class Loader implements ILoader {
 
 	Map<String, Object> defaultOptions;
 
-	public Loader (IPersistenceManager manager){
+	public Loader (PersistenceManager manager){
 		this.manager=manager;
 		ePackageMap = new  HashMap<String,EPackage>();
 	}
@@ -112,7 +113,7 @@ public class Loader implements ILoader {
 	@Override
 	public EList<INeo4emfObject> getAllInstances(EClass eClass,
 			List<Node> nodeList) {
-		int sizeChange = ChangeLog.getInstance().size();
+		int sizeChange = getChangeLog().size();
 		EList<INeo4emfObject> eObjectList = new BasicEList<INeo4emfObject>();
 		int newId = manager.getNewPartitionID();
 		FlatPartition partition = manager.createNewFlatPartition(newId);
@@ -126,8 +127,11 @@ public class Loader implements ILoader {
 		}
 		manager.createNewPartitionHistory(newId);
 		manager.addObjectsToContents(eObjectList);
-		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-sizeChange);
+		getChangeLog().removeLastChanges(getChangeLog().size()-sizeChange);
 		return eObjectList;
+	}
+	private IChangeLog<Entry> getChangeLog() {
+		return manager.getResource().getChangeLog();
 	}
 	
 	/**
@@ -139,23 +143,20 @@ public class Loader implements ILoader {
 		String eClassName = manager.getNodeType(n);
 		String ns_uri = manager.getNodeContainingPackage(n);
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
-		int size = ChangeLog.getInstance().size();
-		EFactory factory =null;
-
-		if (ePck.getEFactoryInstance() == null) {
-			ePck.setEFactoryInstance(INeoFactory.eINSTANCE);
-		}
-		if (ePck.getEFactoryInstance().getClass().getName()
-				.equals("org.eclipse.emf.ecore.impl.EFactoryImpl")) {
+		int size = getChangeLog().size();
+		EFactory factory = null;
+		@SuppressWarnings("unused")
+		String factoryInstanceName = ePck.getEFactoryInstance().getClass().getName();
+		if (ePck.getEFactoryInstance().getClass().getName().equals("org.eclipse.emf.ecore.impl.EFactoryImpl")) {
 			factory = INeoFactory.eINSTANCE;
 			factory.setEPackage(ePck);
 		} else {
 			factory = ePck.getEFactoryInstance();
 		}
-		INeo4emfObject obj = (INeo4emfObject)factory.create(getEClassFromNodeName(eClassName,ePck));
-		obj.setNodeId(n.getId());	
-		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-size);
-		return obj ;
+		INeo4emfObject obj = (INeo4emfObject) factory.create(getEClassFromNodeName(eClassName, ePck));
+		obj.setNodeId(n.getId());
+		getChangeLog().removeLastChanges(getChangeLog().size() - size);
+		return obj;
 	}
 	/**
 	 * Return an {@link EClass} from its class name
@@ -227,7 +228,7 @@ public class Loader implements ILoader {
 			
 			Object attributeValue= null;
 			
-			int size = ChangeLog.getInstance().size();
+			int size = getChangeLog().size();
 			
 			for (EAttribute attr : obj.eClass().getEAllAttributes()) {
 			
@@ -268,7 +269,7 @@ public class Loader implements ILoader {
 					obj.eSet(attr, attributeValue);
 				}
 			}
-			ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
+			getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		}catch (Exception e)
 		{	
 			manager.shutdown();
@@ -282,7 +283,7 @@ public class Loader implements ILoader {
 	@Override	
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) throws FeatureNotFoundException {
 		try {
-			int size = ChangeLog.getInstance().size();
+			int size = getChangeLog().size();
 			int newId = ((INeo4emfObject) obj).getPartitionId();
 			
 			if (!manager.isHead(obj)) {
@@ -312,7 +313,7 @@ public class Loader implements ILoader {
 			} else if (!objectList.isEmpty()) {
 				obj.eSet(str, objectList.get(0));
 			}
-			ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
+			getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		} catch (FeatureNotFoundException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -325,7 +326,7 @@ public class Loader implements ILoader {
 	@Override
 	public EObject getContainerOnDemand (EObject eObject, int featureId, Node node, Node containerNode)  {
 		EObject result = null;
-		int size = ChangeLog.getInstance().size();
+		int size = getChangeLog().size();
 		//result = getObjectsFromNodeIfNotExists(eObject, containerNode, ((INeo4emfObject)eObject).getPartitionId(),true);
 		int newId=((INeo4emfObject)eObject).getPartitionId();
 		if (!manager.isHead(eObject)){
@@ -337,7 +338,7 @@ public class Loader implements ILoader {
 		arrayResult.add((INeo4emfObject)result);
 		manager.addObjectsToContents(arrayResult);
 		manager.putToProxy((INeo4emfObject)result, Loader.getFeatureFromID(eObject, featureId), newId);
-		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
+		getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		return result;
 	}
 	

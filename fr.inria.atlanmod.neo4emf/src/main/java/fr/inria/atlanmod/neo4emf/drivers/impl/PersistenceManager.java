@@ -31,7 +31,6 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
@@ -69,7 +68,7 @@ public class PersistenceManager implements IPersistenceManager {
 	/**
 	 * The resource {@link Neo4emfResource}
 	 */
-	protected INeo4emfResource resource;
+	protected Neo4emfResource resource;
 	/**
 	 * The loaded elements manager {@link ProxyManager}
 	 */
@@ -113,8 +112,8 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void save(Map<?,?> options) {
 		try {
-			this.serializer.save((Map<String, Object>) options); }
-		catch (Exception e) { 
+			this.serializer.save((Map<String, Object>) options);
+		} catch (Exception e) {
 			shutdown();
 			e.printStackTrace();
 		}
@@ -126,8 +125,8 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void load(Map<?, ?> options) {
 		try {
-			loader.load(options);	}
-		catch(Exception e){ 
+			loader.load(options);
+		} catch (Exception e) {
 			shutdown();
 			e.printStackTrace();
 		}
@@ -400,5 +399,8 @@ public class PersistenceManager implements IPersistenceManager {
 		this.eRef2relType = map;	
 	}
 
+	public Neo4emfResource getResource() {
+		return resource;
+	}
 
 }

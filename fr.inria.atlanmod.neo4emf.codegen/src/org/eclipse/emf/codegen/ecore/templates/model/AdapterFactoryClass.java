@@ -53,7 +53,7 @@ public class AdapterFactoryClass
   protected final String TEXT_36 = " <em>";
   protected final String TEXT_37 = "</em>}'." + NL + "\t * <!-- begin-user-doc -->" + NL + "\t * This default implementation returns null so that we can easily ignore cases;" + NL + "\t * it's useful to ignore a case when inheritance will catch all the cases anyway." + NL + "\t * <!-- end-user-doc -->" + NL + "\t * @return the new adapter." + NL + "\t * @see ";
   protected final String TEXT_38 = NL + "\t * @generated" + NL + "\t */" + NL + "\tpublic Adapter create";
-  protected final String TEXT_39 = "Adapter()" + NL + "\t{" + NL + "\t\treturn new AdapterImpl(){" + NL + "\t\t@Override" + NL + "\t\tpublic void notifyChanged(Notification msg){\t\t\t" + NL + "\t\t\t\tif (msg.getEventType()==INeo4emfNotification.GET){" + NL + "\t\t\t\t\tEObject eObject = (EObject)msg.getNotifier();" + NL + "\t\t\t\t\t((INeo4emfResource)eObject.eResource()).notifyGet(eObject,(EStructuralFeature)msg.getFeature());" + NL + "\t\t\t\t}" + NL + "\t\t\t\tChangeLog.getInstance().addNewEntry(msg);" + NL + "\t\t\t}" + NL + "\t\t};" + NL + "\t}";
+  protected final String TEXT_39 = "Adapter()" + NL + "\t{" + NL + "\t\treturn null;" + NL + "\t}";
   protected final String TEXT_40 = NL + NL + "\t/**" + NL + "\t * Creates a new adapter for the default case." + NL + "\t * <!-- begin-user-doc -->" + NL + "\t * This default implementation returns null." + NL + "\t * <!-- end-user-doc -->" + NL + "\t * @return the new adapter." + NL + "\t * @generated" + NL + "\t */" + NL + "\tpublic Adapter create";
   protected final String TEXT_41 = "Adapter()" + NL + "\t{" + NL + "\t\treturn null;" + NL + "\t}" + NL + " \t" + NL + "}\t" + NL + "//";
 

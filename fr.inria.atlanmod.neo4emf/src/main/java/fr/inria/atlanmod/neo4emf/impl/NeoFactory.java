@@ -6,8 +6,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeoFactory;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
-import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
+import fr.inria.atlanmod.neo4emf.resourceUtil.ChangeAdapterImpl;
 
 public class NeoFactory extends EFactoryImpl implements INeoFactory{
 	
@@ -27,7 +26,8 @@ public class NeoFactory extends EFactoryImpl implements INeoFactory{
 	
 	protected EObject basicCreate(EClass eClass){
 		INeo4emfObject eObject = new Neo4emfObject(eClass);
-		ChangeLog.getInstance().add(new NewObject(eObject));
+//		ChangeLog.getInstance().add(new NewObject(eObject));
+		eObject.eAdapters().add(new ChangeAdapterImpl());
 		return eObject;
 		
 	}

@@ -3,6 +3,9 @@ package fr.inria.atlanmod.neo4emf.resourceUtil;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
+
 public class ChangeAdapterImpl extends AdapterImpl {
 	
 	public ChangeAdapterImpl () {
@@ -11,11 +14,10 @@ public class ChangeAdapterImpl extends AdapterImpl {
 	
 	@Override
 	public void notifyChanged(Notification msg){
-		
-//		if (msg.getEventType()==INeo4emfNotification.GET){
-//			EObject eObject = (EObject)msg.getNotifier();
-//			((INeo4emfResource)eObject.eResource()).notifyGet(eObject,(EStructuralFeature)msg.getFeature());
-//		}
-//			ChangeLog.getInstance().addNewEntry(msg);
+		Neo4emfObject eObject = (Neo4emfObject) msg.getNotifier();
+		Neo4emfResource resource = (Neo4emfResource) eObject.eResource();
+		if (resource != null) {
+			resource.getChangeLog().addNewEntry(msg);
+		}
 	}
 }

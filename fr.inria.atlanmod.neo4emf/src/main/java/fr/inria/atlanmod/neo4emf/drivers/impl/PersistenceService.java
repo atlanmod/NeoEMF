@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -116,10 +115,11 @@ public class PersistenceService implements IPersistenceService {
 	}
 
 	private boolean isRoot(EObject eObject) {		
-		EClass cls = eObject.eClass();
-		for(EReference ref : cls.getEAllReferences())
-			if(ref.isContainer()) return false;
-		 return true;
+		if (eObject.eContainer() == null && eObject.eResource() != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
