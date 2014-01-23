@@ -90,16 +90,20 @@ public class Loader implements ILoader {
 		try {
 			List <Node> nodes= manager.getAllRootNodes();
 			List <INeo4emfObject> objects = new ArrayList<INeo4emfObject>();
-			for (Node n : nodes){
-				INeo4emfObject obj = getObjectsFromNode(n);
-				int newId = manager.getNewPartitionID();
-				obj.setPartitionId(newId);
-				objects.add(obj);
-				manager.createNewPartitionHistory(newId);
+			
+			if (!nodes.isEmpty()) {
+				for (Node n : nodes){
+					INeo4emfObject obj = getObjectsFromNode(n);
+					int newId = manager.getNewPartitionID();
+					obj.setPartitionId(newId);
+					objects.add(obj);
+					manager.createNewPartitionHistory(newId);
+				}
+				manager.addObjectsToContents(objects);
+				manager.putAllToProxy(objects);
 			}
-			manager.addObjectsToContents(objects);
-			manager.putAllToProxy(objects);
-		}catch(Exception e) {
+			
+		} catch(Exception e) {
 			manager.shutdown();
 			e.printStackTrace();
 		}
@@ -305,7 +309,9 @@ public class Loader implements ILoader {
 					manager.addObjectsToContents(objectList);
 				if (str.isMany())
 					 obj.eSet(str,objectList);
-				else obj.eSet(str, objectList.get(0));
+				else  if (objectList.size() == 0) 
+							obj.eSet(str, null);
+					else  obj.eSet(str, objectList.get(0));
 				ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);}
 		catch (FeatureNotFoundException e){
 			e.printStackTrace();

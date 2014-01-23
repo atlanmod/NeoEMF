@@ -309,14 +309,16 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		Node node = graphDB.createNode();
 		Node typeNode = createWithIndexIfNotExists(eObject.eClass(), graphDB);
 		node.createRelationshipTo(typeNode, IPersistenceService.INSTANCE_OF);
-		if (isRoot(eObject))
-			createResourceNodeIfAbsent(graphDB).createRelationshipTo(node, IPersistenceService.IS_ROOT);		
+		if (isRoot(eObject)) {
+			createResourceNodeIfAbsent(graphDB).createRelationshipTo(node, IPersistenceService.IS_ROOT);
+			}
 		return node;
 	}
 	
 	private static boolean isRoot(EObject eObject) {		
 		if (eObject.eContainer() instanceof EPackage 
-				|| eObject.eContainer() == null ) 
+				|| eObject.eContainer() instanceof Resource
+					|| eObject.eContainer() == null) 
 			return true;
 		return false;
 	}
