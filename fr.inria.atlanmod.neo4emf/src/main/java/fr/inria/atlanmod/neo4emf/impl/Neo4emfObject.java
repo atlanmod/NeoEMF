@@ -12,15 +12,21 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.AbstractTreeIterator;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EContentsEList;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -259,4 +265,41 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public boolean eIsSet(EStructuralFeature eFeature) {
 		return eGet(eFeature) != null;
 	}
+	
+	public EList<EObject> eResolvedContents() {
+		return new EContentsEList<EObject>(this) {
+			@Override
+			protected boolean resolve() {
+				return false;
+			}
+		};
+	}
+	
+	public TreeIterator<EObject> eAllResolvedContents() {
+		return new AbstractTreeIterator<EObject>(this, false) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Iterator<EObject> getChildren(Object object) {
+				return ((Neo4emfObject) object).eResolvedContents().iterator();
+			}
+		};
+	}
+	
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj == this) {
+//	            return true;
+//		} else if (obj == null) {
+//			return false;
+//		} else if(obj.getClass() != this.getClass()) {
+//			return false;
+//		} else if (((Neo4emfObject) obj).getNodeId() == -1) {
+//			return false;
+//		} else if (this.getNodeId() == -1) {
+//			return false;
+//		} else {
+//			return ((Neo4emfObject) obj).getNodeId() == this.getNodeId();
+//		}
+//	}
 }
