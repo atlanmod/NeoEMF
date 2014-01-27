@@ -42,6 +42,16 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService;
 
 public class Neo4emfResourceUtil {
 	
+	
+	public static void importFromXMI(String xmiPath, String outputPath){
+		// Init variables 
+		deleteFileOrDirectory(new File(outputPath));
+		IPersistenceService graphDB = new PersistenceService(outputPath,null);
+		// Serialize the resource in Neo4j DB
+		serializeResource(graphDB, xmiPath, null);
+		
+	}
+	
 	public static void importFromXMI(String xmiPath, String outputPath, String ecorePath){
 		// Init variables 
 		deleteFileOrDirectory(new File(outputPath));
@@ -127,6 +137,15 @@ public class Neo4emfResourceUtil {
 		}
 		return map;
 	}
+	
+	private static Map<Point, RelationshipType> createRelTypesMap(EList<EObject> objectsList) {
+		Map<Point, RelationshipType> map = new HashMap<Point, RelationshipType>();
+		for (EPackage pck : getEObjectsEPackages(objectsList)){
+			map.putAll(createRelationshipTypesMapForPackage(pck));
+		}
+		return map;
+	}
+	
 private static Map<Point, RelationshipType> createRelTypesMap(Resource resource) {
 		Map<Point, RelationshipType> map = new HashMap<Point, RelationshipType>();
 		for (EPackage pck : getResourcePackages(resource)){
@@ -134,6 +153,7 @@ private static Map<Point, RelationshipType> createRelTypesMap(Resource resource)
 		}
 		return map;
 	}
+
 
 
 public static String formatRelationshipName(EClass clsfier, EStructuralFeature str) {
@@ -178,6 +198,17 @@ private static EList<EClass> getEClasses(EPackage package_) {
 }
 
 
+private static Set<EPackage> getEObjectsEPackages(EList<EObject> objectsList){
+	Set<EPackage> pckList = new HashSet<EPackage>(); 
+	Iterator<EObject> iterator = objectsList.iterator();
+		while (iterator.hasNext()) {
+			EObject obj = iterator.next();
+			pckList.add(obj.eClass().getEPackage());
+		}
+	return pckList;
+}
+
+
 private static EList<EPackage> getResourcePackages(Resource resource){
 	EList<EPackage> pckList = new BasicEList<EPackage>(); 
 	Iterator<EObject> iterator = resource.getAllContents();
@@ -214,7 +245,14 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 			Map<EObject,Long> eObjectsToNodes,
 			Resource resource) {
 		
-		Map<Point,RelationshipType> reltypesMap = createRelTypesMap(resource);
+		Map<Point,RelationshipType> reltypesMap; 
+		
+		if (resource != null) {
+			reltypesMap = createRelTypesMap(resource);			
+		} else {
+			reltypesMap = createRelTypesMap(objectsList);			
+		}
+		
 		
 		int i=0;
 		Transaction tx = graphDB.beginTx();
@@ -222,7 +260,12 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 			
 		for (EObject eObject : objectsList){
 			for (EReference eRef : eObject.eClass().getEAllReferences()){
-				if (eObject.eGet(eRef) != null)
+				Object value = null;
+				try {
+					value = eObject.eGet(eRef);
+				} catch (ClassCastException e) {};
+				
+				if (value != null) {
 					if (eRef.isMany()){
 						@SuppressWarnings({"unchecked"})
 						EList<EObject> objList = (EList<EObject>) eObject.eGet(eRef);
@@ -235,6 +278,7 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 							EObject singleEObject = (EObject) eObject.eGet(eRef);
 							createPropertyForObjects(graphDB, eObjectsToNodes, eObject, singleEObject, eRef, reltypesMap);
 						}
+				}
 				i++;
 				if (i==ISerializer.DEFAULT_TRANSACTIONS_COUNT){
 					tx.success();
@@ -365,11 +409,13 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 			else if (eObject.eGet(at) != null && at.isMany()){
 				n.setProperty(at.getName(), ((EList<EDataType>) eObject.eGet(at)).toArray());}
 			else if (!at.isMany()){ 
-				if (at.getEType().getName().equals("Boolean"))
+				if (at.getEType().getInstanceClass().isAssignableFrom(Boolean.class))
 					n.setProperty(at.getName(), false );
-				else if (at.getEType().getName().equals("String"))
+				else if (at.getEType().getInstanceClass().isAssignableFrom(String.class))
 					n.setProperty(at.getName(), "");
-				else 
+				else if (at.getEType().getInstanceClass().isAssignableFrom(Integer.class))
+					n.setProperty(at.getName(), 0);
+				else
 					n.setProperty(at.getName(), 0);
 				}
 			else {n.setProperty(at.getName(), new Object[1]);}
@@ -403,5 +449,15 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		return pck.getESuperPackage()!=null ? formatUniquePackageNameLevel_i(pck,string,i+1): string;
 	}
 	
-
+	public static URI createNeo4emfURI(File file) {
+		URI fileUri = URI.createFileURI(file.getAbsolutePath());
+		URI uri = URI.createHierarchicalURI(
+				"neo4emf", 
+				fileUri.authority(),
+				fileUri.device(),
+				fileUri.segments(),
+				fileUri.query(),
+				fileUri.fragment());
+		return uri;
+	}
 }
