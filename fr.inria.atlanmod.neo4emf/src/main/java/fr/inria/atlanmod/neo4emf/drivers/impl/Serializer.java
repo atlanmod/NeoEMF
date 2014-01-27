@@ -31,6 +31,7 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
 import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
@@ -63,10 +64,13 @@ public class Serializer implements ISerializer {
 		options= mergeWithDefaultOptions(options);
 		int counter=0;
 		Transaction tx = manager.beginTx();
+		IChangeLog<Entry> changeLog = manager.getResource().getChangeLog();
 		try {
 			// TODO: Fix with a more efficient implementation
 			// First execute only for create objects
-			for (Entry e : manager.getResource().getChangeLog() ){
+			Iterator<Entry> it = changeLog.iterator();
+			while (it.hasNext()) {
+				Entry e = it.next();
 				if (e instanceof NewObject) {
 					serializeEntrySwitch(e);
 					counter++;
@@ -79,7 +83,9 @@ public class Serializer implements ISerializer {
 				}
 			}
 			// other updates...
-			for (Entry e : manager.getResource().getChangeLog() ){
+			it = changeLog.iterator();
+			while (it.hasNext()) {
+				Entry e = it.next();
 				if (!(e instanceof NewObject)) {
 					serializeEntrySwitch(e);
 					counter++;
@@ -99,7 +105,7 @@ public class Serializer implements ISerializer {
 			tx.success();
 			tx.finish();
 		}	
-		manager.getResource().getChangeLog().clear();
+		changeLog.clear();
 		// the changelog is cleared after an exception is raised
 		// TODO look for a way to manage this 
 	}
@@ -254,7 +260,11 @@ public class Serializer implements ISerializer {
 			Iterator<EReference> itRef = refList.iterator();
 			while (itRef.hasNext()) {
 				EReference ref = itRef.next();
-				if (eObject.eIsSet(ref)) {
+				boolean isSet = false;
+				try {
+					isSet = eObject.eIsSet(ref);
+				} catch (ClassCastException e) {};
+				if (isSet) {
 					if (ref.getUpperBound() == -1) {
 						List<EObject> eObjects = (List<EObject>) eObject.eGet(ref);
 						for (EObject referencedEObject : eObjects) {

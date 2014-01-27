@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -35,11 +36,14 @@ import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
+import fr.inria.atlanmod.neo4emf.resourceUtil.ChangeAdapterImpl;
 
 
 public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 
 	private IChangeLog<Entry> changeLog;
+	
+	private Adapter changeAdapter = new ChangeAdapterImpl();
 	
 	/** 
 	 * The persistence manager holds the communication between the resource and 
@@ -176,10 +180,12 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	@Override
 	public void attached(EObject eObject) {
 		super.attached(eObject);
+		eObject.eAdapters().add(changeAdapter);
 		addChangeLogEntries(eObject);
 		Iterator<EObject> it = eObject.eAllContents();
 		while (it.hasNext()) {
 			EObject itEObject = (EObject) it.next();
+			itEObject.eAdapters().add(changeAdapter);
 			addChangeLogEntries(itEObject);
 		}
 	}
@@ -188,6 +194,17 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 			if (((INeo4emfObject)eObject).getNodeId() == -1) {
 				getChangeLog().add(new NewObject(eObject));
 			}
+		}
+	}
+	
+	@Override
+	public void detached(EObject eObject) {
+		super.detached(eObject);
+		eObject.eAdapters().remove(changeAdapter);
+		Iterator<EObject> it = eObject.eAllContents();
+		while (it.hasNext()) {
+			EObject itEObject = (EObject) it.next();
+			itEObject.eAdapters().remove(changeAdapter);
 		}
 	}
 

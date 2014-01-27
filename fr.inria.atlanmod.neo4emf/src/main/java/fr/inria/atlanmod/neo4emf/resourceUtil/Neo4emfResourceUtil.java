@@ -47,13 +47,13 @@ public class Neo4emfResourceUtil {
 		deleteFileOrDirectory(new File(outputPath));
 		IPersistenceService graphDB = new PersistenceService(outputPath,null);
 		// Serialize the resource in Neo4j DB
-		Resource metaResource = intiMetalmodel(ecorePath);
+		Resource metaResource = initMetalmodel(ecorePath);
 		serializeResource(graphDB,xmiPath, metaResource);
 		
 	}
 	
 	
-	private static Resource intiMetalmodel(String ecorePath) {
+	private static Resource initMetalmodel(String ecorePath) {
 		 URI modelFileURI = URI.createURI(ecorePath);
 		 ResourceSet rSet = new ResourceSetImpl();
 		 rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());

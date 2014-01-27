@@ -39,12 +39,12 @@ public class ProxyManager implements IProxyManager {
 	/**
 	 * maps the objects to the appropriate nodes while saving the model
 	 */
-	private WeakHashMap<? extends EObject, Long> objects2nodes;
+	private HashMap<? extends EObject, Long> objects2nodes;
 	/**
 	 * maps the partitions ID to the physical partition 
 	 * A partitions a @see {@link TreeMap} mapping objects and their node ID.
 	 */
-	private SoftValueTreeMap<Integer,AbstractPartition> partitions;
+	private TreeMap<Integer,AbstractPartition> partitions;
 	/**
 	 * saves the usage count of a partition 
 	 */	
@@ -56,7 +56,7 @@ public class ProxyManager implements IProxyManager {
 	/**
 	 * 
 	 */
-	private WeakHashMap<INeo4emfObject, INeo4emfObject> object2proxy;
+	private HashMap<INeo4emfObject, INeo4emfObject> object2proxy;
 	/**
 	 * Maps each partition to the partitions using it  
 	 */
@@ -68,20 +68,20 @@ public class ProxyManager implements IProxyManager {
 	int availablePartitionId;
 	@SuppressWarnings("unchecked")
 	@Override
-	public WeakHashMap<EObject, Long> getWeakNodeIds(){
-		return (WeakHashMap<EObject, Long>) objects2nodes;
+	public HashMap<EObject, Long> getWeakNodeIds(){
+		return (HashMap<EObject, Long>) objects2nodes;
 	}
 
 
 	public ProxyManager(){
-		objects2nodes = new WeakHashMap<INeo4emfObject, Long>();
-		partitions = new SoftValueTreeMap<Integer,AbstractPartition>();
+		objects2nodes = new HashMap<INeo4emfObject, Long>();
+		partitions = new TreeMap<Integer,AbstractPartition>();
 		partitionsUsageCount = new ArrayList<UsageCount>();
 		partitionsUsageHistory = new ArrayList<Integer>();
 		//partitionsWithinObjects = new ArrayList<PartitionsByObject>();
 		availablePartitionId = -1;
 		usageTraces = new HashMap<Integer,List<UsageTrace>>();
-		object2proxy =  new WeakHashMap<INeo4emfObject,INeo4emfObject>();
+		object2proxy =  new HashMap<INeo4emfObject,INeo4emfObject>();
 	}
 	public boolean matchProxy(INeo4emfObject eObject, INeo4emfObject proxyEObject){
 		boolean result = object2proxy.containsKey(eObject);
@@ -103,7 +103,7 @@ public class ProxyManager implements IProxyManager {
 		usageTraces.get(usedPID).add(new UsageTrace(userPID, featureId, eObj));
 	}
 	@Override
-	public  SoftValueTreeMap<Integer,AbstractPartition> getWeakObjectsTree (){
+	public  TreeMap<Integer,AbstractPartition> getWeakObjectsTree (){
 		return partitions;
 	}
 	@Override

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 
-public interface IChangeLog<E> extends List<E>{
+public interface IChangeLog<E> extends List<E> {
 	
 
 	

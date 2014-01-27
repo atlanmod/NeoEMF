@@ -32,6 +32,7 @@ import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 
 public class Loader implements ILoader {
+	
 	/**
 	 * the manager and delegator
 	 */
@@ -144,10 +145,13 @@ public class Loader implements ILoader {
 		String ns_uri = manager.getNodeContainingPackage(n);
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
 		int size = getChangeLog().size();
-		EFactory factory = null;
-		@SuppressWarnings("unused")
-		String factoryInstanceName = ePck.getEFactoryInstance().getClass().getName();
-		if (ePck.getEFactoryInstance().getClass().getName().equals("org.eclipse.emf.ecore.impl.EFactoryImpl")) {
+		EFactory factory =null;
+
+		if (ePck.getEFactoryInstance() == null) {
+			ePck.setEFactoryInstance(INeoFactory.eINSTANCE);
+		}
+		if (ePck.getEFactoryInstance().getClass().getName()
+				.equals("org.eclipse.emf.ecore.impl.EFactoryImpl")) {
 			factory = INeoFactory.eINSTANCE;
 			factory.setEPackage(ePck);
 		} else {
@@ -231,51 +235,52 @@ public class Loader implements ILoader {
 			int size = getChangeLog().size();
 			
 			for (EAttribute attr : obj.eClass().getEAllAttributes()) {
-			
-				attributeValue = n.getProperty(attr.getName());
-				Class<?> cls = attributeValue.getClass();
-				
-				 if (attributeValue.toString().equals("")){ 
+					if ( n.hasProperty(attr.getName())) {
+							
+						attributeValue = n.getProperty(attr.getName());
+						Class<?> cls = attributeValue.getClass();
 						
-						if (attr.getEType().getName().equals("Boolean") || attr.getEType().getName().equals("EBoolean")){
-							attributeValue=(Boolean)false;
-						}
-						else if (attr.getEType().getName().equals("String") || attr.getEType().getName().equals("EString")){
-							attributeValue=(String)"";
-						}
-						else {
-							 if (attr.getEType().getName().equals("EByte")){
-                               attributeValue = new Byte((byte) 0) ;}
-                        else if (attr.getEType().getName().equals("EBigInteger"))
-                                        attributeValue = new BigInteger("0");
-                        else if (attr.getEType().getName().equals("EBigDecimal"))
-                                        attributeValue = new BigDecimal("0");
-                        else if (attr.getEType().getName().equals("ELong"))
-                                attributeValue = Long.parseLong("0");
-                        else
-							attributeValue=(Integer)0;
-						}
+						 if (attributeValue.toString().equals("")){ 
+								
+								if (attr.getEType().getName().equals("Boolean") || attr.getEType().getName().equals("EBoolean")){
+									attributeValue=(Boolean)false;
+								}
+								else if (attr.getEType().getName().equals("String") || attr.getEType().getName().equals("EString")){
+									attributeValue=(String)"";
+								}
+								else {
+									 if (attr.getEType().getName().equals("EByte")){
+		                               attributeValue = new Byte((byte) 0) ;}
+		                        else if (attr.getEType().getName().equals("EBigInteger"))
+		                                        attributeValue = new BigInteger("0");
+		                        else if (attr.getEType().getName().equals("EBigDecimal"))
+		                                        attributeValue = new BigDecimal("0");
+		                        else if (attr.getEType().getName().equals("ELong"))
+		                                attributeValue = Long.parseLong("0");
+		                        else
+									attributeValue=(Integer)0;
+								}
+								obj.eSet(attr, attributeValue);
+							}
+						
+					 else if (attr.getEType() instanceof EEnum){
+						EEnum enumCls = getEEnumFromNodeName(attr.getEType().getName());
+						Object enumObject = enumCls.getEPackage().getEFactoryInstance().createFromString(enumCls, (String)attributeValue);
+						obj.eSet(attr, enumObject);
+					}else if (attr.isMany()){
+						obj.eSet(attr,Arrays.asList((List<?>)attributeValue) );
+					}
+					else{
 						obj.eSet(attr, attributeValue);
 					}
-				
-				 else if (attr.getEType() instanceof EEnum){
-					EEnum enumCls = getEEnumFromNodeName(attr.getEType().getName());
-					Object enumObject = enumCls.getEPackage().getEFactoryInstance().createFromString(enumCls, (String)attributeValue);
-					obj.eSet(attr, enumObject);
-				}else if (attr.isMany()){
-					obj.eSet(attr,Arrays.asList((List<?>)attributeValue) );
 				}
-				else{
-					obj.eSet(attr, attributeValue);
-				}
+				getChangeLog().removeLastChanges(getChangeLog().size() - size);
 			}
-			getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		}catch (Exception e)
 		{	
 			manager.shutdown();
 			e.printStackTrace();
 		}
-
 	}
 	/**
 	 * Construct the list of links of <b>obj</b> from the node List

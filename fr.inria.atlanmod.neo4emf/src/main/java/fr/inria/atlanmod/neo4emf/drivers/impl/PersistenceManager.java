@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
@@ -158,9 +159,6 @@ public class PersistenceManager implements IPersistenceManager {
 		if (eRef2relType==null || eRef2relType.isEmpty())
 			setupERelationshipTypesMap(key);
 		RelationshipType rel = eRef2relType.get(key).get(new Point (clsID,eRefID));
-		if ( rel == null ) {
-			throw new NullPointerException(" Cannot find the node ");
-		}
 		return rel;
 			
 
@@ -221,8 +219,14 @@ public class PersistenceManager implements IPersistenceManager {
 	public void getOnDemand(EObject obj, int featureId) {	
 		try{
 			EClass eClass = obj.eClass();
+			
 			EPackage ePackage = eClass.getEPackage();
 			RelationshipType relationship = getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
+			if ( relationship == null ) {
+				  //throw new NullPointerException(" Cannot find the relationship ");
+				String stri = Neo4emfResourceUtil.formatRelationshipName(eClass,eClass.getEStructuralFeature(featureId));
+				relationship = DynamicRelationshipType.withName(stri);
+			}
 			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),
 						relationship);
 			loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);

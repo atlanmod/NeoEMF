@@ -45,31 +45,26 @@ public class ChangeLogFactory implements IChangeLogFactory {
 
 	@Override
 	public NewObject createNewObject(Notification msg) {
-		// TODO Auto-generated method stub
 		return new NewObject(msg);
 	}
 
 	@Override
 	public RemoveLink CreateRemoveLink(Notification msg) {
-		// TODO Auto-generated method stub
 		return new RemoveLink(msg);
 	}
 
 	@Override
 	public SetAttribute createSetAttribute(Notification msg) {
-		// TODO Auto-generated method stub
 		return new SetAttribute(msg);
 	}
 
 	@Override
 	public DeleteObject createDeleteObject(Notification msg) {
-		// TODO Auto-generated method stub
 		return new DeleteObject(msg);
 	}
 
 	@Override
 	public AddLink createAddLink(Notification msg) {
-		// TODO Auto-generated method stub
 		return new AddLink(msg);
 	}
 

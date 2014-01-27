@@ -254,4 +254,9 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public static class NeoObjectData {
 		
 	}
+	
+	@Override
+	public boolean eIsSet(EStructuralFeature eFeature) {
+		return eGet(eFeature) != null;
+	}
 }
