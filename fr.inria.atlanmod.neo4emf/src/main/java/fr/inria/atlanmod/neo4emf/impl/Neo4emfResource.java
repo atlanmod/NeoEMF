@@ -173,40 +173,40 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 
 
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.emf.ecore.resource.impl.ResourceImpl#attached(org.eclipse.emf.ecore.EObject)
-	 */
-	@Override
-	public void attached(EObject eObject) {
-		super.attached(eObject);
-		eObject.eAdapters().add(changeAdapter);
-		addChangeLogEntries(eObject);
-		Iterator<EObject> it = eObject.eAllContents();
-		while (it.hasNext()) {
-			EObject itEObject = (EObject) it.next();
-			itEObject.eAdapters().add(changeAdapter);
-			addChangeLogEntries(itEObject);
-		}
-	}
-	private void addChangeLogEntries(EObject eObject) {
-		if (eObject instanceof INeo4emfObject) {
-			if (((INeo4emfObject)eObject).getNodeId() == -1) {
-				getChangeLog().add(new NewObject(eObject));
-			}
-		}
-	}
-	
-	@Override
-	public void detached(EObject eObject) {
-		super.detached(eObject);
-		eObject.eAdapters().remove(changeAdapter);
-		Iterator<EObject> it = eObject.eAllContents();
-		while (it.hasNext()) {
-			EObject itEObject = (EObject) it.next();
-			itEObject.eAdapters().remove(changeAdapter);
-		}
-	}
+//
+//	/* (non-Javadoc)
+//	 * @see org.eclipse.emf.ecore.resource.impl.ResourceImpl#attached(org.eclipse.emf.ecore.EObject)
+//	 */
+//	@Override
+//	public void attached(EObject eObject) {
+//		super.attached(eObject);
+//		eObject.eAdapters().add(changeAdapter);
+//		addChangeLogEntries(eObject);
+//		Iterator<EObject> it = eObject.eAllContents();
+//		while (it.hasNext()) {
+//			EObject itEObject = (EObject) it.next();
+//			itEObject.eAdapters().add(changeAdapter);
+//			addChangeLogEntries(itEObject);
+//		}
+//	}
+//	private void addChangeLogEntries(EObject eObject) {
+//		if (eObject instanceof INeo4emfObject) {
+//			if (((INeo4emfObject)eObject).getNodeId() == -1) {
+//				getChangeLog().add(new NewObject(eObject));
+//			}
+//		}
+//	}
+//	
+//	@Override
+//	public void detached(EObject eObject) {
+//		super.detached(eObject);
+//		eObject.eAdapters().remove(changeAdapter);
+//		Iterator<EObject> it = eObject.eAllContents();
+//		while (it.hasNext()) {
+//			EObject itEObject = (EObject) it.next();
+//			itEObject.eAdapters().remove(changeAdapter);
+//		}
+//	}
 
 	public IChangeLog<Entry> getChangeLog() {
 		return changeLog;
