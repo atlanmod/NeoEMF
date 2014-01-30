@@ -263,6 +263,7 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	
 	@Override
 	public boolean eIsSet(EStructuralFeature eFeature) {
+		//return simpleGet(eFeature.getFeatureID(),true, true, false) != null;
 		return eGet(eFeature) != null;
 	}
 	

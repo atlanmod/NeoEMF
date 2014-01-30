@@ -23,9 +23,11 @@ import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.jboss.util.NullArgumentException;
 import org.jboss.util.collection.SoftValueTreeMap;
+import org.neo4j.graphdb.Node;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
@@ -63,6 +65,10 @@ public class ProxyManager implements IProxyManager {
 	private HashMap<Integer, List<UsageTrace>> usageTraces;
 	
 	/**
+	 * Maps existant element in the Database
+	 */
+	private HashMap<EClass, TreeMap<Long, EObject>> nodes2objects;
+	/**
 	 * first Available partitionId
 	 */
 	int availablePartitionId;
@@ -82,6 +88,7 @@ public class ProxyManager implements IProxyManager {
 		availablePartitionId = -1;
 		usageTraces = new HashMap<Integer,List<UsageTrace>>();
 		object2proxy =  new HashMap<INeo4emfObject,INeo4emfObject>();
+		nodes2objects = new HashMap<EClass, TreeMap<Long,EObject>>();
 	}
 	public boolean matchProxy(INeo4emfObject eObject, INeo4emfObject proxyEObject){
 		boolean result = object2proxy.containsKey(eObject);
@@ -344,4 +351,27 @@ public class ProxyManager implements IProxyManager {
 			usageTraces.get(key).removeAll(usedTraces);
 		return map;
 		}
+
+
+	@Override
+	public void putToProxy(INeo4emfObject obj) {
+		EClass eClass = obj.eClass();
+		
+		if (nodes2objects.containsKey(eClass)) {
+			nodes2objects.get(eClass).put(obj.getNodeId(), obj);
+		} else {
+				TreeMap<Long, EObject> treeMap  = new TreeMap<Long, EObject>();
+				treeMap.put (obj.getNodeId(), obj);
+				nodes2objects.put(eClass, treeMap);
+			}	
+		}
+
+
+	@Override
+	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
+		if (nodes2objects.containsKey(eClassifier)) {
+			return (INeo4emfObject) (nodes2objects.get(eClassifier).containsKey(n.getId()) ? nodes2objects.get(eClassifier).get(n.getId()) : null) ;
+		}
+		return null;
+	}
 	}

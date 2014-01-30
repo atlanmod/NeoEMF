@@ -233,6 +233,7 @@ public interface IPersistenceManager {
 	//public void deleteFromContents(EObject neoObj);
 	void setRelationshipsMap(
 			Map<String, Map<Point, RelationshipType>> map);
+	void putAllToProxy2(List<INeo4emfObject> objects);
 	
 
 	

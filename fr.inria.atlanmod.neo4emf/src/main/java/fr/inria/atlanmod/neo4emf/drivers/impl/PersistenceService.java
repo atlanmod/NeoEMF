@@ -40,6 +40,7 @@ import org.neo4j.kernel.extension.KernelExtensionFactory;
 import org.neo4j.kernel.impl.cache.CacheProvider;
 import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 
@@ -134,6 +135,9 @@ public class PersistenceService implements IPersistenceService {
 		return traverseNodes(tvr);
 	}
 	private ArrayList<Node> fetchNodesByRT(long nodeId, RelationshipType relType) {
+//		if (nodeId == 6542) {
+//			System.out.println();
+//		}
 		return fetchNodesByRT(nodeId, relType, Direction.OUTGOING);
 	}
 
@@ -148,7 +152,8 @@ public class PersistenceService implements IPersistenceService {
 		Node startNode = getNodeById(nodeId);
 		TraversalDescription td =  Traversal.description().breadthFirst()
 				.relationships(relType, direction)
-				.evaluator(Evaluators.excludeStartPosition());
+				.evaluator(Evaluators.excludeStartPosition())
+				.evaluator(Evaluators.toDepth(1));
 		return td.traverse(startNode);
 
 	}
@@ -262,6 +267,7 @@ public class PersistenceService implements IPersistenceService {
 			TransactionEventHandler<T> arg0) {
 		return db.unregisterTransactionEventHandler(arg0);
 	}
+
 
 	
 }

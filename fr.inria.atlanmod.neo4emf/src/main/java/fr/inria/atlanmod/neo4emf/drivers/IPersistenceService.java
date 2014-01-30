@@ -23,6 +23,8 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.Index;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+
 
 public interface IPersistenceService extends GraphDatabaseService {
 	/**
@@ -133,6 +135,7 @@ public interface IPersistenceService extends GraphDatabaseService {
 		 */
 		IS_ROOT
 	}
+
 	
 
 

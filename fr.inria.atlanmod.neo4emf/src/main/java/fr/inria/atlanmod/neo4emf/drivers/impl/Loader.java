@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -94,13 +95,13 @@ public class Loader implements ILoader {
 			List <INeo4emfObject> objects = new ArrayList<INeo4emfObject>();
 			for (Node n : nodes){
 				INeo4emfObject obj = getObjectsFromNode(n);
-				int newId = manager.getNewPartitionID();
-				obj.setPartitionId(newId);
+//				int newId = manager.getNewPartitionID();
+//				obj.setPartitionId(newId);
 				objects.add(obj);
-				manager.createNewPartitionHistory(newId);
+//				manager.createNewPartitionHistory(newId);
 			}
 			manager.addObjectsToContents(objects);
-			manager.putAllToProxy(objects);
+			//manager.putAllToProxy(objects);
 		}catch(Exception e) {
 			manager.shutdown();
 			e.printStackTrace();
@@ -116,21 +117,23 @@ public class Loader implements ILoader {
 			List<Node> nodeList) {
 		int sizeChange = getChangeLog().size();
 		EList<INeo4emfObject> eObjectList = new BasicEList<INeo4emfObject>();
-		int newId = manager.getNewPartitionID();
-		FlatPartition partition = manager.createNewFlatPartition(newId);
+		//int newId = manager.getNewPartitionID();
+		//FlatPartition partition = manager.createNewFlatPartition(newId);
 		for (Node node : nodeList){
 			String ns_uri = manager.getNodeContainingPackage(node);
-			INeo4emfObject obj = (INeo4emfObject)loadMetamodelFromURI(ns_uri).getEFactoryInstance().create(eClass);
+			INeo4emfObject obj = getObjectFromNodeIfNotExist(node, eClass); //(INeo4emfObject)loadMetamodelFromURI(ns_uri).getEFactoryInstance().create(eClass);
 			obj.setNodeId(node.getId());
-			obj.setPartitionId(newId);
+			//obj.setPartitionId(newId);
 			eObjectList.add(obj);
-			partition.put(obj);
+			//partition.put(obj);
 		}
-		manager.createNewPartitionHistory(newId);
-		manager.addObjectsToContents(eObjectList);
+	//	manager.createNewPartitionHistory(newId);
+	//	manager.addObjectsToContents(eObjectList);
+	//	manager.putAllToProxy(eObjectList);
 		getChangeLog().removeLastChanges(getChangeLog().size()-sizeChange);
 		return eObjectList;
 	}
+
 	private IChangeLog<Entry> getChangeLog() {
 		return manager.getResource().getChangeLog();
 	}
@@ -159,6 +162,7 @@ public class Loader implements ILoader {
 		}
 		INeo4emfObject obj = (INeo4emfObject) factory.create(getEClassFromNodeName(eClassName, ePck));
 		obj.setNodeId(n.getId());
+		manager.putAllToProxy(ECollections.singletonEList(obj));
 		getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		return obj;
 	}
@@ -289,13 +293,7 @@ public class Loader implements ILoader {
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) throws FeatureNotFoundException {
 		try {
 			int size = getChangeLog().size();
-			int newId = ((INeo4emfObject) obj).getPartitionId();
-			
-			if (!manager.isHead(obj)) {
-				newId = manager.createNewPartition(getObjectsFromNode(node), ((INeo4emfObject) obj).getPartitionId());
-				manager.createNewPartitionHistory(newId);
-			}
-			
+//			
 			EReference str = Loader.getFeatureFromID(obj, featureId);
 			if (str == null) {
 				throw new FeatureNotFoundException("", obj, "", -1, -1);
@@ -303,12 +301,11 @@ public class Loader implements ILoader {
 			
 			List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
 			for (Node n : nodes) {
-				INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment(), featureId);
+				INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, featureId);
 				objectList.add(object);
-				manager.putToProxy((INeo4emfObject) object, str, newId);
-				// manager.updateProxyManager((INeo4emfObject)object, str);
+				
 			}
-
+			// manager.putAllToProxy(objectList);
 			// TODO: Check this code! It causes movements of objects from their
 			// containers to the root of the resource...
 			// if (!str.isContainment())
@@ -328,8 +325,8 @@ public class Loader implements ILoader {
 
 	}
 
-	@Override
-	public EObject getContainerOnDemand (EObject eObject, int featureId, Node node, Node containerNode)  {
+
+	public EObject getContainerOnDemand2 (EObject eObject, int featureId, Node node, Node containerNode)  {
 		EObject result = null;
 		int size = getChangeLog().size();
 		//result = getObjectsFromNodeIfNotExists(eObject, containerNode, ((INeo4emfObject)eObject).getPartitionId(),true);
@@ -347,6 +344,21 @@ public class Loader implements ILoader {
 		return result;
 	}
 	
+	@Override
+	public EObject getContainerOnDemand (EObject eObject, int featureId, Node node, Node containerNode)  {
+		EObject result = null;
+		int size = getChangeLog().size();
+		result = getObjectsFromNodeIfNotExists(eObject, containerNode, featureId);
+		ArrayList<INeo4emfObject> arrayResult =new ArrayList<INeo4emfObject>();
+		arrayResult.add((INeo4emfObject)result);
+		manager.addObjectsToContents(arrayResult);
+		if (manager.getResource().getContents().contains(eObject)) {
+			manager.getResource().getContents().remove(eObject);
+		}
+		//manager.putToProxy((INeo4emfObject)result, Loader.getFeatureFromID(eObject, featureId), newId);
+		getChangeLog().removeLastChanges(getChangeLog().size() - size);
+		return result;
+	}
 	/**
 	 * return the <b>Structural Feature from its ID</b>
 	 * @param obj {@link EObject}
@@ -359,7 +371,17 @@ public class Loader implements ILoader {
 				return (EReference) (ref instanceof EReference ? ref : null);
 		
 	}
-	
+	private INeo4emfObject getObjectFromNodeIfNotExist(Node node, EClass eClass) {
+		INeo4emfObject eObj = manager.getObjectFromProxy((EClass) eClass, node);
+		if (eObj == null ) {
+			eObj = getObjectsFromNode(node);
+			}
+		return eObj;
+	}
+	private INeo4emfObject getObjectsFromNodeIfNotExists(EObject obj, Node n, int featureId) {
+		EClassifier eClassifier = obj.eClass().getEAllStructuralFeatures().get(featureId).getEType();
+		return getObjectFromNodeIfNotExist(n, (EClass)eClassifier);
+	}
 	/**
 	 * Get EMF object from a Neo4j node 
 	 * if the node does not exist it creates a new node 

@@ -213,6 +213,11 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void putAllToProxy(List<INeo4emfObject> objects) {
 		for (INeo4emfObject obj : objects)
+			proxyManager.putToProxy(obj);
+	}
+	@Override
+	public void putAllToProxy2(List<INeo4emfObject> objects) {
+		for (INeo4emfObject obj : objects)
 			proxyManager.putHeadToProxy(obj);
 	}
 	@Override
@@ -221,7 +226,8 @@ public class PersistenceManager implements IPersistenceManager {
 			EClass eClass = obj.eClass();
 			
 			EPackage ePackage = eClass.getEPackage();
-			RelationshipType relationship = getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
+		//	RelationshipType relationship =  getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
+			RelationshipType relationship =  null;
 			if ( relationship == null ) {
 				  //throw new NullPointerException(" Cannot find the relationship ");
 				String stri = Neo4emfResourceUtil.formatRelationshipName(eClass,eClass.getEStructuralFeature(featureId));
@@ -405,6 +411,10 @@ public class PersistenceManager implements IPersistenceManager {
 
 	public Neo4emfResource getResource() {
 		return resource;
+	}
+
+	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
+		return proxyManager.getObjectFromProxy(eClassifier, n);
 	}
 
 }
