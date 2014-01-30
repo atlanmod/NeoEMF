@@ -22,11 +22,10 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -35,9 +34,6 @@ import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 @RunWith(Parameterized.class)
 public class StructuralTest {
 	
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-
 	private EPackage ePackage;
 	private EFactory eFactory;
 	//private Map mapping;
@@ -45,21 +41,24 @@ public class StructuralTest {
 	
 	private INeo4emfResource neo4emfRoot;
 	
+	private ValueFactory valueFactory;
+	
 	@Parameterized.Parameters
 	public static List<Object[]> data() {
-		return InputData.allData();
+		return InputData.allData("Structural");
 	}
 	
-	public StructuralTest(Object currentEPackage, Object currentEFactory, Object currentMapping, Object neoRes) {
+	public StructuralTest(Object currentEPackage, Object currentEFactory, Object currentMapping, Object neoResource) {
 		ePackage = (EPackage)currentEPackage;
 		eFactory = (EFactory)currentEFactory;
 		//mapping = (Map)currentMapping;
 		
-		neo4emfRoot = (INeo4emfResource)neoRes;
+		neo4emfRoot = (INeo4emfResource)neoResource;
 		// Register the package
 		EPackage.Registry.INSTANCE.put(ePackage.getName().toLowerCase(), ePackage);
 		// extract classes from the package
 		packageClassifiers = ePackage.getEClassifiers();
+		valueFactory = new ValueFactory(ePackage, eFactory);
 	}
 	
 	@Before
@@ -120,7 +119,7 @@ public class StructuralTest {
 				EObject classInstance = eFactory.create(currentClass);
 				if(it instanceof EAttribute) {
 					EAttribute attribute = (EAttribute)it;
-					Object attributeValue = generateValue(attribute);
+					Object attributeValue = valueFactory.generateValue(attribute);
 					if(attribute.isChangeable()) {
 						classInstance.eSet(attribute,attributeValue);
 						Assert.assertEquals("Attribute \""+attribute.getName()+"\" of object \""+currentClass.getName()+"\" not set properly.",
@@ -163,7 +162,7 @@ public class StructuralTest {
 							// double elements.
 							EObject classInstance = eFactory.create(currentClass);
 							// Do not call generateValue, it will return a list.
-							Object value = (Object)getValue(feature.getEType());
+							Object value = (Object)valueFactory.getValue(feature.getEType());
 							EList<Object> toSet = new BasicEList<Object>();
 							toSet.add(value);
 							toSet.add(value);
@@ -199,7 +198,7 @@ public class StructuralTest {
 				EObject classInstance = eFactory.create(currentClass);
 				if(it instanceof EReference){
 					EReference reference = (EReference)it;
-					Object referenceValue = generateValue(reference);
+					Object referenceValue = valueFactory.generateValue(reference);
 					checkEReferences(classInstance, reference, referenceValue);
 					checkEOppositeReference(classInstance, reference, referenceValue);
 				}
@@ -236,7 +235,7 @@ public class StructuralTest {
 				if(it instanceof EReference) {
 					EReference reference = (EReference)it;
 					if(reference.isChangeable()) {
-						Object referenceValue = generateValue(reference);
+						Object referenceValue = valueFactory.generateValue(reference);
 						if(referenceValue instanceof EObject) {
 						neo4emfRoot.getContents().add((EObject)referenceValue);
 						}
@@ -423,40 +422,5 @@ public class StructuralTest {
 		}
 		assert !containsClassInstance : "Resource previously registering the EObject \"" + currentClass.getName() + 
 			"\" still contains the EObject after its deletion (getAllContents method).";
-	}
-	
-	/**
-	 * Returns a generated value for the given EObject.
-	 * @param eObject the object to generate a value for.
-	 * @return Object the generated value.
-	 * @note If the given EObject is multi-valued the returned Object
-	 * will be a EList<Object>.
-	 */
-	private Object generateValue(EStructuralFeature eFeature) {
-		if(eFeature.isMany()) {
-			EList<Object> features = new BasicEList<Object>();
-			features.add(getValue(eFeature.getEType()));
-			features.add(getValue(eFeature.getEType()));
-			return features;
-		}
-		return getValue(eFeature.getEType());
-	}
-	
-	/**
-	 * Returns a single generated value for the given EClassifier.
-	 * @param classifier the classifier to generate a value for.
-	 * @return Object the generated value.
-	 * @note This method is used internally by generateValue().
-	 * @bug The generation of EDataType values is not correctly supported
-	 * (it can only generate values for basic types like EString, EInt ...)
-	 */
-	private Object getValue(EClassifier classifier) {
-		// TODO handle datatypes properly
-		// TODO handle enums (they are subclasses of EClassifier)
-		if(ePackage.eContents().contains(classifier)) {
-			// The classifier is a generated class
-			return eFactory.create((EClass)classifier);
-		}
-		return EcoreUtil.createFromString((EDataType) classifier, Integer.toString((int)(Math.random()*100)));
 	}
 }
