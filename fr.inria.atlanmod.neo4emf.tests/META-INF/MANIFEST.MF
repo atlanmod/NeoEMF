@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests
+Bundle-SymbolicName: fr.inria.atlanmod.neo4emf.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: mgraph;bundle-version="1.0.0",
+ org.junit;bundle-version="4.11.0",
+ mteach;bundle-version="0.1.0"
