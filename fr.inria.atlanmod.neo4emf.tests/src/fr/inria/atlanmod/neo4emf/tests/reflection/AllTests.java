@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ StructuralTest.class })
+@SuiteClasses({ StructuralTest.class, ChangelogTest.class })
 public class AllTests extends TestCase {
 
 }

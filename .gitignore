@@ -213,5 +213,4 @@ pip-log.txt
 .mr.developer.cfg
 
 *.class
-
-*.class
+/fr.inria.atlanmod.neo4emf.tests/data/output
