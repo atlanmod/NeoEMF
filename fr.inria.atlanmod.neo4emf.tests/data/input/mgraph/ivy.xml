@@ -20,12 +20,14 @@
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info
-        organisation="AtlanMod"
-        module="Neo4EMF"
+        organisation=""
+        module=""
         status="integration">
 	</info>
 	<dependencies>
-		<dependency org="org.neo4j" name="neo4j" rev="1.9.4"/>
+	<dependency org="org.neo4j" name="neo4j" rev="1.9.4"/>
+		<dependency org="org.eclipse.emf" name="org.eclipse.emf.ecore" rev="2.9.1-v20130827-0309"/>
 		<dependency org="org.eclipse.emf" name="org.eclipse.emf.common" rev="2.9.1-v20130827-0309"/>
+            
 	</dependencies>
 </ivy-module>
