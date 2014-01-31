@@ -42,13 +42,16 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService;
 
 public class Neo4emfResourceUtil {
 	
-	
 	public static void importFromXMI(String xmiPath, String outputPath){
+		importFromXMI(URI.createFileURI(xmiPath), outputPath);		
+	}
+	
+	public static void importFromXMI(URI xmiUri, String outputPath){
 		// Init variables 
 		deleteFileOrDirectory(new File(outputPath));
 		IPersistenceService graphDB = new PersistenceService(outputPath,null);
 		// Serialize the resource in Neo4j DB
-		serializeResource(graphDB, xmiPath, null);
+		serializeResource(graphDB, xmiUri, null);
 		
 	}
 	
@@ -58,7 +61,7 @@ public class Neo4emfResourceUtil {
 		IPersistenceService graphDB = new PersistenceService(outputPath,null);
 		// Serialize the resource in Neo4j DB
 		Resource metaResource = initMetalmodel(ecorePath);
-		serializeResource(graphDB,xmiPath, metaResource);
+		serializeResource(graphDB,URI.createFileURI(xmiPath), metaResource);
 		
 	}
 	
@@ -86,7 +89,7 @@ public class Neo4emfResourceUtil {
 	}
 
 	
-	private static void serializeResource(IPersistenceService graphDB, String xmiPath, Resource metaResource){
+	private static void serializeResource(IPersistenceService graphDB, URI xmiUri, Resource metaResource){
 		
 		try {		
 			Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
@@ -95,8 +98,7 @@ public class Neo4emfResourceUtil {
 			// Create a resource set to hold the resources.
 			ResourceSet resourceSet = new ResourceSetImpl();
 			// Create a new empty resource.
-			URI uri = URI.createFileURI(xmiPath);
-			Resource resource = resourceSet.getResource(uri, true);
+			Resource resource = resourceSet.getResource(xmiUri, true);
 
 		EList<EObject> objectsList= resourceToObjectsList(resource);
 		Map<EObject,Long> eObjectsToNodes =  persistNodes(graphDB, objectsList);

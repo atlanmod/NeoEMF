@@ -31,6 +31,7 @@ import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.IChangeLogFactory;
+import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
@@ -42,8 +43,6 @@ import fr.inria.atlanmod.neo4emf.resourceUtil.ChangeAdapterImpl;
 public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 
 	private IChangeLog<Entry> changeLog;
-	
-	private Adapter changeAdapter = new ChangeAdapterImpl();
 	
 	/** 
 	 * The persistence manager holds the communication between the resource and 
@@ -112,15 +111,24 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	@Override
 	public void shutdown() {
 		this.persistenceManager.shutdown();
-
+		isLoaded = false;
 	}
+	
 	/**
 	 * load the roots elements of the model 
 	 * @param options {@link Map}
 	 */
 	@Override 
-	public void load (Map <?,?> options){
-		this.persistenceManager.load(options);
+	public void load (Map <?,?> options) {
+		if (!isLoaded) {
+			try {
+				isLoading = true;
+				this.persistenceManager.load(options);
+				isLoaded = true;
+			} finally {
+				isLoading = false;
+			}
+		}
 	}
 	/**
 	 * {@link INeo4emfResource#notifyGet(EObject, EStructuralFeature)}
@@ -143,7 +151,7 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	@Override
 	public EList<INeo4emfObject> getAllInstances(EClass eClass) {
 		EList<INeo4emfObject> result =  this.persistenceManager.getAllInstancesOfType(eClass);
-		getContents().addAll(result);
+//		getContents().addAll(result);
 		return result;
 	}
 	@Override
@@ -173,40 +181,49 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 
 
 	}
-//
-//	/* (non-Javadoc)
-//	 * @see org.eclipse.emf.ecore.resource.impl.ResourceImpl#attached(org.eclipse.emf.ecore.EObject)
-//	 */
-//	@Override
-//	public void attached(EObject eObject) {
-//		super.attached(eObject);
-//		eObject.eAdapters().add(changeAdapter);
-//		addChangeLogEntries(eObject);
-//		Iterator<EObject> it = eObject.eAllContents();
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.emf.ecore.resource.impl.ResourceImpl#attached(org.eclipse.emf.ecore.EObject)
+	 */
+	@Override
+	public void attached(EObject eObject) {
+		super.attached(eObject);
+		Neo4emfObject neoObject = (Neo4emfObject) eObject;
+		if (eObject.eResource() != this || neoObject.getNodeId() == -1) { 
+			if (!isLoading) {
+				addChangeLogCreateEntry(neoObject);
+				Iterator<EObject> it = neoObject.eAllResolvedContents();
+				while (it.hasNext()) {
+					Neo4emfObject itEObject = (Neo4emfObject) it.next();
+					addChangeLogCreateEntry(itEObject);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void detached(EObject eObject) {
+		super.detached(eObject);
+//		Neo4emfObject neoObject = (Neo4emfObject) eObject;
+//		addChangeLogCreateEntry(neoObject);
+//		Iterator<EObject> it = neoObject.eAllResolvedContents();
 //		while (it.hasNext()) {
-//			EObject itEObject = (EObject) it.next();
-//			itEObject.eAdapters().add(changeAdapter);
-//			addChangeLogEntries(itEObject);
+//			Neo4emfObject itEObject = (Neo4emfObject) it.next();
+//			addChangeLogDeleteEntry(itEObject);
 //		}
-//	}
-//	private void addChangeLogEntries(EObject eObject) {
-//		if (eObject instanceof INeo4emfObject) {
-//			if (((INeo4emfObject)eObject).getNodeId() == -1) {
-//				getChangeLog().add(new NewObject(eObject));
-//			}
-//		}
-//	}
-//	
-//	@Override
-//	public void detached(EObject eObject) {
-//		super.detached(eObject);
-//		eObject.eAdapters().remove(changeAdapter);
-//		Iterator<EObject> it = eObject.eAllContents();
-//		while (it.hasNext()) {
-//			EObject itEObject = (EObject) it.next();
-//			itEObject.eAdapters().remove(changeAdapter);
-//		}
-//	}
+	}
+
+	private void addChangeLogCreateEntry(INeo4emfObject neoObject) {
+		if (neoObject.getNodeId() == -1) {
+			getChangeLog().add(new NewObject(neoObject));
+		}
+	}
+	
+	private void addChangeLogDeleteEntry(INeo4emfObject neoObject) {
+		if (neoObject.getNodeId() == -1) {
+			getChangeLog().add(new DeleteObject(neoObject));
+		}
+	}
 
 	public IChangeLog<Entry> getChangeLog() {
 		return changeLog;

@@ -473,6 +473,8 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
   <%}%>
 	public <%=genFeature.getImportedType(genClass)%> <%=genFeature.getGetAccessor()%><%if (genClass.hasCollidingGetAccessorOperation(genFeature)) {%>_<%}%>()
 	{
+		try {
+		loadingOnDemand = true;
 <%@ include file="Class/getGenFeature.pre.insert.javajetinc" fail="silent" %>
     <%if (genModel.isDynamicDelegation()) {%>
 		return <%if (!isJDK50 && genFeature.isPrimitiveType()) {%>(<%}%>(<%=genFeature.getObjectType(genClass)%>)eDynamicGet(<%=genClass.getQualifiedFeatureID(genFeature)%>, <%=genFeature.getQualifiedFeatureAccessor()%>, true, <%=!genFeature.isEffectiveSuppressEMFTypes()%>)<%if (!isJDK50 && genFeature.isPrimitiveType()) {%>).<%=genFeature.getPrimitiveValueFunction()%>()<%}%>;
@@ -523,7 +525,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		return Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_VALUES[(<%=genClass.getFlagsField(genFeature)%> & Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG) >>> Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_OFFSET];
           <%}%>
         <%} else if (!genFeature.isProperty()) {%>
-		if ( isLoaded()) {
+		if (isLoaded()) {
 			((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
 		}
 		return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
@@ -573,7 +575,10 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		throw new UnsupportedOperationException();
 <%@ end %><%//Class/getGenFeature.todo.override.javajetinc%>
       <%}%>
-    <%}%>	
+    <%}%>
+ 	  	} finally {
+			loadingOnDemand = false;
+		}
 	}
 <%}%>
 <%@ end %><%//Class/getGenFeature.override.javajetinc%>
@@ -919,6 +924,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		throw new UnsupportedOperationException();
 <%@ end %><%//Class/setGenFeature.todo.override.javajetinc%>
     <%}%>
+    addChangelogEntry(new<%=genFeature.getCapName()%>, <%=genClass.getQualifiedFeatureID(genFeature)%>);
 	}
 <%}%>
 <%@ end %><%//Class/setGenFeature.override.javajetinc%>
