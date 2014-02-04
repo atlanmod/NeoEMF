@@ -320,8 +320,6 @@ public class ChangelogTest {
 				setReference.add(addReferenceEntry.geteReference());
 			}
 		}
-		System.out.println(setReferenceBase.size());
-		System.out.println(setReference.size());
 		// Check that all the SetAttribute entries are consistent with the generated
 		// EAttributes
 		for(EReference effectiveSetReference : setReference) {
