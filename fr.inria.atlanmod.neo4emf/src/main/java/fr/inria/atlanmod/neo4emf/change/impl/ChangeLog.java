@@ -1,15 +1,15 @@
 package fr.inria.atlanmod.neo4emf.change.impl;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.IChangeLogFactory;
 
-// TODO: The implementation of the ChangeLog as a CopyOnWriteArrayList is buggy
+// TODO: The implementation of the ChangeLog as a ArrayList will fail if using adapers to track model changes
 // Re-implement and guarantee that synchronization is properly done!!!!! 
-public class ChangeLog extends CopyOnWriteArrayList<Entry> implements IChangeLog<Entry> {
+public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 	
 //	private List<Entry> internalChangelog = Collections.synchronizedList(new ArrayList<Entry>()); 
 	
