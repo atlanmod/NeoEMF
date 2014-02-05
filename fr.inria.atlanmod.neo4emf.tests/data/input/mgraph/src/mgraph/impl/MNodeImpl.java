@@ -100,7 +100,7 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+	public String getName() {	
 	  		
 		if ( isLoaded()) 
 			eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MNODE__NAME, null, null));
@@ -129,7 +129,7 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MGraph getGraph() {
+	public MGraph getGraph() {	
 	  
 		if (isLoaded() && eContainer() == null) {
 			MGraph graph = (MGraph) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, MgraphPackage.MNODE__GRAPH);
@@ -177,7 +177,7 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<MEdge> getFrom() {
+	public EList<MEdge> getFrom() {	
 	   
 		
 		if (getData().from == null){
@@ -192,7 +192,7 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<MEdge> getTo() {
+	public EList<MEdge> getTo() {	
 	   
 		
 		if (getData().to == null){

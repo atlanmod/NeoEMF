@@ -94,7 +94,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+	public String getName() {	
 	  		
 		if ( isLoaded()) 
 			eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__NAME, null, null));
@@ -123,7 +123,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MNode getInComing() {
+	public MNode getInComing() {	
 	  
 		if (getData().inComing == null && isLoaded()) {
 			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__IN_COMING);
@@ -188,7 +188,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MNode getOutGoing() {
+	public MNode getOutGoing() {	
 	  
 		if (getData().outGoing == null && isLoaded()) {
 			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__OUT_GOING);
@@ -253,7 +253,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MGraph getGraph() {
+	public MGraph getGraph() {	
 	  
 		if (isLoaded() && eContainer() == null) {
 			MGraph graph = (MGraph) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, MgraphPackage.MEDGE__GRAPH);

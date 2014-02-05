@@ -97,7 +97,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+	public String getName() {	
 	  		
 		if ( isLoaded()) 
 			eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MGRAPH__NAME, null, null));
@@ -126,7 +126,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<MNode> getNodes() {
+	public EList<MNode> getNodes() {	
 	   
 		
 		if (getData().nodes == null){
@@ -141,7 +141,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<MEdge> getEdges() {
+	public EList<MEdge> getEdges() {	
 	   
 		
 		if (getData().edges == null){
