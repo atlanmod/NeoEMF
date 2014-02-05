@@ -334,4 +334,21 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public void eSetDirectResource(Internal resource) {
 		super.eSetDirectResource(resource);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+	            return true;
+		} else if (obj == null) {
+			return false;
+		} else if(obj.getClass() != this.getClass()) {
+			return false;
+		} else if (((Neo4emfObject) obj).getNodeId() == -1) {
+			return false;
+		} else if (this.getNodeId() == -1) {
+			return false;
+		} else {
+			return ((Neo4emfObject) obj).getNodeId() == this.getNodeId();
+		}
+	}
 }
