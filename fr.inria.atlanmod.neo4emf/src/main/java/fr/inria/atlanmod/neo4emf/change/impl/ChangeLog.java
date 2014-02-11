@@ -30,7 +30,6 @@ public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 	
 	@Override
 	public void addNewEntry(Notification msg) {
-		System.out.println("add");
 		if(lock == 0) {
 			// Same test in add method, avoid createEntry call
 			INSTANCE.add(IChangeLogFactory.eINSTANCE.createEntry(msg));	
@@ -41,7 +40,6 @@ public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 	public boolean add(Entry e) {
 		if(lock == 0) {
 			if(size() == stackSize-1) {
-				System.out.println("need a commit");
 				commit();
 			}
 			return super.add(e);
@@ -66,16 +64,10 @@ public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 	}
 	
 	private void commit() {
-		if(saver != null) {
-			System.out.println("flushing changelog");
-			Map<String,Object> options = new HashMap<String,Object>();
-			options.put("tmp_save", true);
-			saver.save(options);
-			System.out.println(size());
-		}
-		else {
-			System.out.println("no saver for the changelog");
-		}
+		assert saver != null : "No saver provided to the ChangeLog";
+		Map<String,Object> options = new HashMap<String,Object>();
+		options.put("tmp_save", true);
+		saver.save(options);
 	}
 
 	public static IChangeLog<Entry> getInstance() {

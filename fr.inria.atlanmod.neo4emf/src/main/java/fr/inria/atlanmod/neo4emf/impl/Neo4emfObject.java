@@ -138,7 +138,6 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	
 	public Neo4emfObject(final EClass eClass) {
 		super();
-		System.out.println("DEBUG MODE");
 		eSetClass(eClass);
 		this.id = "";
 		this.isProxy = false;

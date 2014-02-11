@@ -107,27 +107,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	  		
 		if ( isLoaded()) 
 			eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MGRAPH__NAME, null, null));
-//		return getData().name;
-		// reprendre �a mais seulement pour les EReferences.
-//		SoftReference<?> name = getData().name;
-//		if(name.isEnqueued()) {
-//			System.out.println("Name has been enqueued");
-//		}
-//		else {
-//			System.out.println("Name hasn't been enqueued");
-//		}
-//		return getData().name.get();
-		
 		return getData().name;
-		
-		// Trouver quand on doit vider la ReferenceQueue
-		// Peut �tre au moment des commits en base (commits r�versibles), on pourrait
-		// PEUT ETRE (� v�rifier sur papier) vider la pile. Pas gagn�, on risque d'avoir des vieilles
-		// r�ferences qui ne veulent plus rien dire.
-		
-		// Une autre solution serait d'avoir une pile par objet, comme �a elle est supprim�e en
-		// m�me temps que celui-ci lorsque sa r�f�rence faible est gc. Mieux, comme �a le gc
-		// s'occupe aussi de "vider" la pile.
 	}
  /**
  * <!-- begin-user-doc -->
@@ -162,7 +142,6 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	     */
 		SoftReference<EList<MNode>> nodes = getData().nodes;
 		if(nodes == null) {
-//			System.out.println("No SoftReference");
 			/*
 			 * The data hasn't been initialized yet and hasn't been unloaded
 			 * to (in that case it would be a SoftReference pointing on null).
@@ -175,14 +154,12 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 			return getData().nodes.get();
 		}
 		else {
-//			System.out.println("Found SoftReference");
 			/*
 			 * The data has been initialized (there is a SoftReference instantiated).
 			 * Check if the soft referenced object is still reachable.
 			 */
 			EList<MNode> nodeList = nodes.get();
 			if(nodes.isEnqueued()) {
-//				System.out.println("SoftReference has been collected");
 				/*
 				 * The referenced object has been collected by the gc, it needs to be loaded
 				 * from the database.
@@ -198,7 +175,6 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 				return nodes.get();
 			}
 			else {
-//				System.out.println("Soft reference hasn't been collected");
 				/*
 				 * The referenced object hasn't been collected by the gc, its content
 				 * is valid.
@@ -231,14 +207,12 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 			return getData().edges.get();
 		}
 		else {
-//			System.out.println("Found SoftReference");
 			/*
 			 * The data has been initialized (there is a SoftReference instantiated).
 			 * Check if the soft referenced object is still reachable.
 			 */
 			EList<MEdge> edgeList = edges.get();
 			if(edges.isEnqueued()) {
-//				System.out.println("SoftReference has been collected");
 				/*
 				 * The referenced object has been collected by the gc, it needs to be loaded
 				 * from the database.
@@ -254,7 +228,6 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 				return edges.get();
 			}
 			else {
-//				System.out.println("Soft reference hasn't been collected");
 				/*
 				 * The referenced object hasn't been collected by the gc, its content
 				 * is valid.

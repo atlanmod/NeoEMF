@@ -27,7 +27,6 @@ public class LoadTest {
 	@Before
 	public void setUp() {
 		//Neo4emfResourceUtil.deleteDirectoryIfExists(new File("./MyFirstneo4emfDB"));
-		int IT = 10;
 		// Create the resourceSet
 		ResourceSet resourceSet = new ResourceSetImpl();
 		// Create an URI with neo4emf as protocol 
@@ -55,38 +54,6 @@ public class LoadTest {
 		n1.getTo().add(edge);
 		n2.getFrom().add(edge);
 		resource.save();*/
-		
-	//	try {
-	//	resource.save();
-	//	EList<INeo4emfObject> nodeList = resource.getAllInstances(MgraphPackage.Literals.MNODE);
-	//	MNode node = (MNode)nodeList.get(0);
-	//		MGraph mg = (MGraph)node.eGet(MgraphPackage.Literals.MNODE__GRAPH);
-	//	System.out.println(mg);
-	//	resource.unload(1);
-	//	System.out.println(ChangeLog.getInstance().size());
-/*		((INeo4emfResource)resource).load(null);
-		System.out.println("Changelog size : " + ChangeLog.getInstance().size());
-		MGraph root = (MGraph) resource.getContents().get(0);
-		System.out.println("Changelog size : " + ChangeLog.getInstance().size());
-		
-		for (MNode currentNode : root.getNodes())
-			System.out.println("Partition ID : " + currentNode.getPartitionId());
-		System.out.println("Changelog size : " + ChangeLog.getInstance().size());
-		MNode loadNode = ((MNode)root.getNodes().get(0));
-		 loadNode.getFrom();
-		 loadNode.getName();
-		 System.out.println(loadNode.getName());
-		MEdge loadEdge = ((MEdge)root.getEdges().get(0));
-		System.out.println(loadEdge.getName());
-		System.out.println(loadEdge.getOutGoing().getName());
-		System.out.println(loadEdge.getInComing());
-		 //MEdge edge = (MEdge)loadNode.getTo().get(0);
-		System.out.println("getTo size : " + loadNode.getTo().size());
-		loadNode.getTo();
-		System.out.println("Changelog size : " + ChangeLog.getInstance().size());
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally {resource.shutdown();}*/
 	}
 	
 	@Test

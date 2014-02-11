@@ -117,7 +117,6 @@ public class Loader implements ILoader {
 		Transaction tx = manager.beginTx();
 		try {
 			for(Node n : nodes) {
-				System.out.println("deleting " + n.getId());
 				// faire une méthode imbriquée avec suppression dans le meta index
 				// transaction counter
 				for(Relationship rel : n.getRelationships()) {

@@ -125,7 +125,6 @@ public class PersistenceService implements IPersistenceService {
 			Node base = getNodeById(((INeo4emfObject)eObject).getNodeId());
 			for(Relationship r :  base.getRelationships()) {
 				if(!r.getType().equals(INSTANCE_OF) && !r.getType().equals(IS_ROOT)) {
-					System.out.println("rtype : " + r.getType());
 					if(r.getEndNode().equals(base)) {
 						r.getStartNode().createRelationshipTo(newNode, r.getType());
 					}
@@ -136,7 +135,6 @@ public class PersistenceService implements IPersistenceService {
 			}
 			newNode.createRelationshipTo(base, IS_TMP_OF);
 		}
-		System.out.println("pouet " + newNode.getId());
 		//getMetaIndex().putIfAbsent(newNode, ID_META, TMP_NODE);
 		getMetaIndex().add(newNode, ID_META, TMP_NODE);
 		return newNode;

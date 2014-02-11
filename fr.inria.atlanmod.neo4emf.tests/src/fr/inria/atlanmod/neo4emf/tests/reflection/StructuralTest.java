@@ -81,7 +81,6 @@ public class StructuralTest {
 	public void testCreateClassInstance() {
 		for(EClassifier currentClassifier : packageClassifiers) {
 			EClass currentClass = (EClass)currentClassifier;
-			System.out.println("Testing factory creation for class " + currentClass.getName());
 			EObject classInstance = eFactory.create(currentClass);
 			Assert.assertNotEquals("Instance of the class \""+currentClass.getName()+"\" is null.", classInstance, null);
 			for(EObject it : currentClass.eContents()) {
@@ -114,7 +113,6 @@ public class StructuralTest {
 	public void testSetAttribute() {
 		for(EClassifier currentClassifier : packageClassifiers) {
 			EClass currentClass = (EClass)currentClassifier;
-			System.out.println("Testing attributes for class " + currentClass.getName());
 			for(EObject it : currentClass.eContents()) {
 				EObject classInstance = eFactory.create(currentClass);
 				if(it instanceof EAttribute) {
@@ -151,7 +149,6 @@ public class StructuralTest {
 	public void testSetOrderedFeatures() {
 		for(EClassifier currentClassifier : packageClassifiers) {
 			EClass currentClass = (EClass)currentClassifier;
-			System.out.println("Testing ordered features for class " + currentClass.getName());
 			for(EObject it : currentClass.eContents()) {
 				if(it instanceof EStructuralFeature) {
 					EStructuralFeature feature = (EStructuralFeature)it;
@@ -192,7 +189,6 @@ public class StructuralTest {
 	public void testSetReference() {
 		for(EClassifier currentClassifier : packageClassifiers) {
 			EClass currentClass = (EClass)currentClassifier;
-			System.out.println("Testing references for class " + currentClass.getName());
 			for(EObject it : currentClass.eContents()) {
 				// loop in the contents and instantiate a model
 				EObject classInstance = eFactory.create(currentClass);
@@ -220,7 +216,6 @@ public class StructuralTest {
 	public void testDeleteClassInstance() {
 		for(EClassifier currentClassifier : packageClassifiers) {
 			EClass currentClass = (EClass)currentClassifier;
-			System.out.println("Testing util deletion of class " + currentClass.getName());
 			EObject classInstance = eFactory.create(currentClass);
 			neo4emfRoot.getContents().add(classInstance);
 			// EObjects contained in classInstance.

@@ -379,8 +379,6 @@ public class ChangelogTest {
 				setReference.add(addReferenceEntry.geteReference());
 			}
 		}
-		System.out.println(setReferenceBase.size());
-		System.out.println(setReference.size());
 		// Check that all the SetAttribute entries are consistent with the generated
 		// EAttributes
 		for(EReference effectiveSetReference : setReference) {
@@ -453,57 +451,4 @@ public class ChangelogTest {
 		}
 		assert setReference.size() == setReferenceBase.size() / 2 : "Changelog does not contain the right number of SetAttribute entry : expected " + setReferenceBase.size()/2 + ", found " + setReference.size();
 	}
-	/*
-	@Test
-	public void testSetReferenceGraph() {
-		Map<EClass, Integer> eObjectCount = new HashMap<EClass, Integer>();
-		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
-		while(it.hasNext()) {
-			Entry currentEntry = it.next();
-			if(currentEntry instanceof AddLink) {
-				AddLink addLink = (AddLink)currentEntry;
-				if(eObjectCount.containsKey(addLink.geteObject().eClass())) {
-					eObjectCount.put(addLink.geteObject().eClass(), eObjectCount.get(addLink.geteObject().eClass()) + 1);
-				}
-				else {
-					eObjectCount.put(addLink.geteObject().eClass(), 1);
-				}
-			}
-		}
-		System.out.println(eObjectCount.get(graphs[0].eClass()));
-		System.out.println(eObjectCount.get(nodes[0].eClass()));
-		System.out.println(eObjectCount.get(edges[0].eClass()));
-		assert(eObjectCount.get(graphs[0].eClass()) == graphCount*(nodeCount + edgeCount));
-		assert(eObjectCount.get(nodes[0].eClass()) == nodeCount*graphCount + (graphCount*edgeCount)*2);
-		assert(eObjectCount.get(edges[0].eClass()) == edgeCount*graphCount + (graphCount*edgeCount)*2);
-	}
-	
-	@Test
-	public void testDeleteElementGraph() {
-		// pour le moment le tests ne peut pas passer car le changelog n'est pas informé du
-		// delete
-		Map<EClass, Integer> eObjectCount = new HashMap<EClass, Integer>();
-		
-		neo4emfRoot.getContents().add(graphs[0]); // todo : mettre ça dans la factory
-		EcoreUtil.delete(nodes[0]);
-		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
-		while(it.hasNext()) {
-			Entry currentEntry = it.next();
-			if(currentEntry instanceof DeleteObject) {
-				DeleteObject deleteObject = (DeleteObject)currentEntry;
-				System.out.println("pouet");
-				if(eObjectCount.containsKey(deleteObject.geteObject().eClass())) {
-					eObjectCount.put(deleteObject.geteObject().eClass(), eObjectCount.get(deleteObject.geteObject().eClass()) + 1);
-				}
-				else {
-					eObjectCount.put(deleteObject.geteObject().eClass(), 1);
-				}
-			}
-		}
-		assert(eObjectCount.get(graphs[0].eClass()) != null);
-		assert(eObjectCount.get(graphs[0].eClass()) == 1);
-	}
-	*/
 }
