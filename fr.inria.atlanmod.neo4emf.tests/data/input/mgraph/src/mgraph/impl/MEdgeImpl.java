@@ -187,12 +187,10 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
  * @generated
  */
 	public void setInComing(MNode newInComing) {
-	
-		
 		if (newInComing != getData().inComing) {
 			NotificationChain msgs = null;
-			if (getData().inComing != null)
-				msgs = ((InternalEObject) getData().inComing).eInverseRemove(this, MgraphPackage.MNODE__TO, MNode.class, msgs);
+			if (getData().inComing != null && getData().inComing.get() != null)
+				msgs = ((InternalEObject) getData().inComing.get()).eInverseRemove(this, MgraphPackage.MNODE__TO, MNode.class, msgs);
 			if (newInComing != null)
 				msgs = ((InternalEObject)newInComing).eInverseAdd(this, MgraphPackage.MNODE__TO, MNode.class, msgs);
 			msgs = basicSetInComing(newInComing, msgs);
@@ -277,8 +275,8 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		
 		if (newOutGoing != getData().outGoing) {
 			NotificationChain msgs = null;
-			if (getData().outGoing != null)
-				msgs = ((InternalEObject) getData().outGoing).eInverseRemove(this, MgraphPackage.MNODE__FROM, MNode.class, msgs);
+			if (getData().outGoing != null && getData().outGoing.get() != null)
+				msgs = ((InternalEObject) getData().outGoing.get()).eInverseRemove(this, MgraphPackage.MNODE__FROM, MNode.class, msgs);
 			if (newOutGoing != null)
 				msgs = ((InternalEObject)newOutGoing).eInverseAdd(this, MgraphPackage.MNODE__FROM, MNode.class, msgs);
 			msgs = basicSetOutGoing(newOutGoing, msgs);
