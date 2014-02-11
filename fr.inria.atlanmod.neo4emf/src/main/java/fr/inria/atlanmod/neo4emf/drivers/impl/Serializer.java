@@ -102,7 +102,6 @@ public class Serializer implements ISerializer {
 		int counter = 0;
 		try {
 			for(Node n : tmpNodes) {
-				System.out.println(n.getId());
 				Node base = manager.getBaseNodeFromTmp(n);
 				counter += manager.deleteBaseNode(n,base);
 				if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
@@ -296,23 +295,16 @@ public class Serializer implements ISerializer {
 		Node n = null;
 		Node n2 = null;
 		if(tmp) {
-			System.out.println("add new link tmp");
-			System.out.println(eObject);
-			System.out.println(object);
 			n = this.manager.getTmpNodeByNodeId(eObject);
 			if(n == null) {
-				System.out.println("n == null");
 				n = this.manager.createTmpNodeFromEObject(eObject);
 				((Neo4emfObject) eObject).setTmpNodeId(n.getId());
 			}
 			n2 = this.manager.getTmpNodeByNodeId((EObject)object);
 			if(n2 == null) {
-				System.out.println("n2 == null");
 				n2 = this.manager.getNodeById((EObject)object);
 				((Neo4emfObject) object).setTmpNodeId(n.getId());
 			}
-			System.out.println(n);
-			System.out.println(n2);
 		}
 		else {
 			try {

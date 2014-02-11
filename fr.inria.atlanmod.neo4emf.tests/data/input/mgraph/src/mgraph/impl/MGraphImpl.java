@@ -4,7 +4,6 @@
  */
 package mgraph.impl;
 
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
 
@@ -15,14 +14,12 @@ import mgraph.MgraphPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.junit.Assert;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
@@ -52,7 +49,6 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 * @generated
 	 */
 	 protected DataMGraph data;
-//	 protected SoftReference<DataMGraph> data;
 	 
 	 
 	/**
@@ -72,19 +68,11 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 
 	protected DataMGraph getData(){
 		if ( data == null || !(data instanceof DataMGraph)){
-		data = new DataMGraph(garbagedData);
+		data = new DataMGraph();
 		if (isLoaded())
 		((INeo4emfResource) this.eResource()).fetchAttributes(this);
 		}
 		return (DataMGraph) data;
-//		if (data == null || !(data instanceof SoftReference<?>)) {
-//			data = new SoftReference<DataMGraph>(new DataMGraph());
-//			if (isLoaded()) {
-//				((INeo4emfResource) this.eResource()).fetchAttributes(this);
-//			}
-//		}
-//		if(data.get() == null)
-//		return data.get();
 	}
 	
 	/**
@@ -118,9 +106,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	public void setName(String newName) {
 	
 		
-//		String oldName = getData().name.get();
 		String oldName = getData().name;
-//		getData().name = new SoftReference<String>(newName,garbagedData);
 		getData().name = new String(newName);
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(
@@ -432,8 +418,7 @@ protected static  class DataMGraph {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DataMGraph(ReferenceQueue garbagedData) {
-		// TODO see if it is realy needed !
+	public DataMGraph() {
 	}
 	
 		
@@ -447,7 +432,6 @@ protected static  class DataMGraph {
 		StringBuffer result = new StringBuffer(super.toString());		
 		result.append(" (name: ");
 		result.append(name);
-//		result.append(name.get());
 		result.append(')');
 		return result.toString();
 	}

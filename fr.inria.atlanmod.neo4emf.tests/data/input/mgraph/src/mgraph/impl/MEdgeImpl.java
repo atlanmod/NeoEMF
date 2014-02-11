@@ -4,7 +4,6 @@
  */
 package mgraph.impl;
 
-import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 
 import mgraph.MEdge;
@@ -48,8 +47,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * The cached value of the data structure {@link DataMEdge <em>data</em> } 
 	 * @generated
 	 */
-//	 	protected DataMEdge data;
-		protected SoftReference<DataMEdge> data;
+	 	protected DataMEdge data;
 	 
 	 
 	/**
@@ -69,19 +67,13 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 */
 	 
 	protected DataMEdge getData(){
-//		if ( data == null || !(data instanceof DataMEdge)){
-//			data = new DataMEdge();
-//			if (isLoaded())
-//			((INeo4emfResource) this.eResource()).fetchAttributes(this);
-//			}
-//		return (DataMEdge) data;
-		if(data == null || !(data instanceof SoftReference<?>) || data.get() == null) {
-			data = new SoftReference<DataMEdge>(new DataMEdge());
+		if(data == null || !(data instanceof DataMEdge)) {
+			data = new DataMEdge();
 			if(isLoaded()) {
 				((INeo4emfResource)this.eResource()).fetchAttributes(this);
 			}
 		}
-		return data.get();
+		return (DataMEdge)data;
 	}
 	
 	/**
@@ -130,13 +122,34 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * @generated
 	 */
 	public MNode getInComing() {	
-	  
-		if (getData().inComing == null && isLoaded()) {
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__IN_COMING);
-		}		
-		if ( isLoaded()) 
-			eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__IN_COMING, null, null));
-		return getData().inComing;	
+		SoftReference<MNode> inComing = getData().inComing;
+		if(inComing == null) {
+			getData().inComing = new SoftReference<MNode>(null,garbagedData);
+			if(isLoaded()) {
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__IN_COMING);
+				eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__IN_COMING, null, null));
+			}
+			return getData().inComing.get();
+		}
+		else {
+			MNode inComingNode = inComing.get();
+			if(inComing.isEnqueued()) {
+				assert isLoaded() : "The SoftReference has been enqueued but the EObject ("+toString()+") hasn't been saved into the database";
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__IN_COMING);
+				eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__IN_COMING, null, null));
+				return inComing.get();
+			}
+			else {
+				if(inComingNode == null) {
+					if(isLoaded()) {
+						((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__IN_COMING);
+						eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__IN_COMING, null, null));
+					}
+					return inComing.get();
+				}
+				return inComingNode;
+			}
+		}
 	}
 	/**
 	 * <!-- begin-user-doc -->
@@ -145,7 +158,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * @generated
 	 */
 	public MNode basicGetInComing() {
-		return data != null ? getData().inComing : null;
+		return data != null && data.inComing != null ? getData().inComing.get() : null;
 	}
 
 	/**
@@ -155,11 +168,11 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * @generated
 	 */
 	public NotificationChain basicSetInComing(MNode newInComing, NotificationChain msgs) {
-	
-		
-	
-		MNode oldInComing = getData().inComing;
-		getData().inComing = newInComing;
+		MNode oldInComing = null;
+		if(getData().inComing != null) {
+			oldInComing = getData().inComing.get();
+		}
+		getData().inComing = new SoftReference<MNode>(newInComing,garbagedData);
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MgraphPackage.MEDGE__IN_COMING, oldInComing, newInComing);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
@@ -195,13 +208,34 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * @generated
 	 */
 	public MNode getOutGoing() {	
-	  
-		if (getData().outGoing == null && isLoaded()) {
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__OUT_GOING);
-		}		
-		if ( isLoaded()) 
-			eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__OUT_GOING, null, null));
-		return getData().outGoing;	
+		SoftReference<MNode> outGoing = getData().outGoing;
+		if(outGoing == null) {
+			getData().outGoing = new SoftReference<MNode>(null,garbagedData);
+			if(isLoaded()) {
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__OUT_GOING);
+				eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__OUT_GOING, null, null));
+			}
+			return getData().outGoing.get();
+		}
+		else {
+			MNode outGoingNode = outGoing.get();
+			if(outGoing.isEnqueued()) {
+				assert isLoaded() : "The SoftReference has been enqueued but the EObject ("+toString()+") hasn't been saved into the database";
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__OUT_GOING);
+				eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__OUT_GOING, null, null));
+				return outGoing.get();
+			}
+			else {
+				if(outGoingNode == null) {
+					if(isLoaded()) {
+						((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__OUT_GOING);
+						eNotify(new ENotificationImpl(this, INeo4emfNotification.GET, MgraphPackage.MEDGE__OUT_GOING, null, null));
+					}
+					return outGoing.get();
+				}
+				return outGoingNode;
+			}
+		}
 	}
 	/**
 	 * <!-- begin-user-doc -->
@@ -210,7 +244,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * @generated
 	 */
 	public MNode basicGetOutGoing() {
-		return data != null ? getData().outGoing : null;
+		return data != null && data.outGoing != null ? getData().outGoing.get() : null;
 	}
 
 	/**
@@ -220,11 +254,11 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * @generated
 	 */
 	public NotificationChain basicSetOutGoing(MNode newOutGoing, NotificationChain msgs) {
-	
-		
-	
-		MNode oldOutGoing = getData().outGoing;
-		getData().outGoing = newOutGoing;
+		MNode oldOutGoing = null;
+		if(getData().outGoing != null) {
+			oldOutGoing = getData().outGoing.get();
+		}
+		getData().outGoing = new SoftReference<MNode>(newOutGoing,garbagedData);
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MgraphPackage.MEDGE__OUT_GOING, oldOutGoing, newOutGoing);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
@@ -260,7 +294,6 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * @generated
 	 */
 	public MGraph getGraph() {	
-	  
 		if (isLoaded() && eContainer() == null) {
 			MGraph graph = (MGraph) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, MgraphPackage.MEDGE__GRAPH);
 			basicSetGraph(graph,null);}
@@ -505,7 +538,7 @@ protected static  class DataMEdge {
 	 * @generated
 	 * @ordered
 	 */
-	protected MNode inComing;
+	protected SoftReference<MNode> inComing;
 
 	/**
 	 * The cached value of the '{@link #getOutGoing() <em>Out Going</em>}' reference.
@@ -515,7 +548,7 @@ protected static  class DataMEdge {
 	 * @generated
 	 * @ordered
 	 */
-	protected MNode outGoing;
+	protected SoftReference<MNode> outGoing;
 
 	/**
 	 *Constructor of DataMEdge

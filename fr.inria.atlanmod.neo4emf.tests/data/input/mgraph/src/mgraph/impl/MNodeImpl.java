@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -72,12 +72,6 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 */
 	 
 	protected DataMNode getData(){
-//		if ( data == null || !(data instanceof DataMNode)){
-//			data = new DataMNode();
-//			if (isLoaded())
-//			((INeo4emfResource) this.eResource()).fetchAttributes(this);
-//			}
-//		return (DataMNode) data;
 		if (data == null || !(data instanceof DataMNode)) {
 			data = new DataMNode();
 			if (isLoaded()) {
@@ -180,14 +174,36 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<MEdge> getFrom() {	
-	   
-		
-		if (getData().from == null){
-		getData().from = new EObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__FROM, MgraphPackage.MEDGE__OUT_GOING);
-			if (isLoaded()) 
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);			}
-		return getData().from;	
+	public EList<MEdge> getFrom() {
+		SoftReference<EList<MEdge>> from = getData().from;
+		if(from == null) {
+			EList<MEdge> newList = new EObjectContainmentWithInverseEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__FROM, MgraphPackage.MEDGE__OUT_GOING);
+			getData().from = new SoftReference<EList<MEdge>>(newList,garbagedData);
+			if(isLoaded()) {
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);
+			}
+			return getData().from.get();
+		}
+		else {
+			EList<MEdge> edgeList = from.get();
+			if(from.isEnqueued()) {
+				assert isLoaded() : "The SoftReference has been enqueued but the EObject ("+toString()+") hasn't been saved into the database";
+				EList<MEdge> newList = new EObjectContainmentWithInverseEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__FROM, MgraphPackage.MEDGE__OUT_GOING);
+				getData().from = new SoftReference<EList<MEdge>>(newList,garbagedData);
+				from = getData().from;
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);
+				return from.get();
+			}
+			else {
+				if(edgeList == null) {
+					if(isLoaded()) {
+						((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);
+					}
+					return from.get();
+				}
+				return edgeList;
+			}
+		}
 	}
 	/**
 	 * <!-- begin-user-doc -->
@@ -196,13 +212,35 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 * @generated
 	 */
 	public EList<MEdge> getTo() {	
-	   
-		
-		if (getData().to == null){
-		getData().to = new EObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__TO, MgraphPackage.MEDGE__IN_COMING);
-			if (isLoaded()) 
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);			}
-		return getData().to;	
+		SoftReference<EList<MEdge>> to = getData().to;
+		if(to == null) {
+			EList<MEdge> newList = new EObjectContainmentWithInverseEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__TO, MgraphPackage.MEDGE__IN_COMING);
+			getData().to = new SoftReference<EList<MEdge>>(newList,garbagedData);
+			if(isLoaded()) {
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);
+			}
+			return getData().to.get();
+		}
+		else {
+			EList<MEdge> edgeList = to.get();
+			if(to.isEnqueued()) {
+				assert isLoaded() : "The SoftReference has been enqueued but the EObject ("+toString()+") hasn't been saved into the database";
+				EList<MEdge> newList = new EObjectContainmentWithInverseEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__TO, MgraphPackage.MEDGE__IN_COMING);
+				getData().to = new SoftReference<EList<MEdge>>(newList,garbagedData);
+				to = getData().to;
+				((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);
+				return to.get();
+			}
+			else {
+				if(edgeList == null) {
+					if(isLoaded()) {
+						((INeo4emfResource)this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);
+					}
+					return to.get();
+				}
+				return edgeList;
+			}
+		}
 	}
 /**
 	 * <!-- begin-user-doc -->
@@ -406,7 +444,7 @@ protected static  class DataMNode {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<MEdge> from;
+	protected SoftReference<EList<MEdge>> from;
 
 	/**
 	 * The cached value of the '{@link #getTo() <em>To</em>}' reference list.
@@ -416,7 +454,7 @@ protected static  class DataMNode {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<MEdge> to;
+	protected SoftReference<EList<MEdge>> to;
 
 	/**
 	 *Constructor of DataMNode
