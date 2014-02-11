@@ -17,7 +17,8 @@ public class ChangeLogFactory implements IChangeLogFactory {
 
 	@Override
 	public IChangeLog<Entry> createChangeLog() {
-		return new ChangeLog();	
+		// Add the max Changelog size
+		return new ChangeLog(1);	
 		
 	}
 

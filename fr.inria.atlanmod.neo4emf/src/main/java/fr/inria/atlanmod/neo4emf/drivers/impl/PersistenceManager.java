@@ -154,6 +154,28 @@ public class PersistenceManager implements IPersistenceManager {
 			return result;
 		}
 	}
+	
+	@Override
+	public Node getTmpNodeByNodeId(EObject eObj) {
+		if(((INeo4emfObject)eObj).getTmpNodeId() >= 0) {
+			// Node is already created, just retrieve it
+			Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getTmpNodeId());
+			if (result == null ) {
+				throw new NullPointerException(" Cannot find the node ");
+			} else {
+				return result;
+			}
+		}
+		else {
+			// return null if there is no tmp id
+			return null;
+		}
+//		else {
+//			// Tmp Node hasn't been created, create and return it.
+//			return createTmpNodeFromEObject(eObj);
+//		}
+	}
+	
 	@Override
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
 		if (eRef2relType==null || eRef2relType.isEmpty())
@@ -177,6 +199,11 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	
 	@Override
+	public Node createTmpNodeFromEObject(EObject eObject) {
+		return persistenceService.createTmpNodeFromEObject(eObject);
+	}
+	
+	@Override
 	public void putNodeId(EObject eObject, long id) {
 		if (! proxyManager.getWeakNodeIds().containsKey(eObject))
 			proxyManager.getWeakNodeIds().put(eObject, id);		
@@ -184,6 +211,19 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public ArrayList<Node> getAllRootNodes() {
 		return persistenceService.getAllRootNodes();	
+	}
+	@Override
+	public ArrayList<Node> getAllTmpNodes() {
+		return persistenceService.getAllTmpNodes();
+	}
+	@Override
+	public Node getBaseNodeFromTmp(Node n) {
+		List<Node> nodes = persistenceService.getNodesOnDemand(n.getId(), IPersistenceService.IS_TMP_OF);
+		return nodes.isEmpty() ? null : nodes.get(0);
+	}
+	@Override
+	public int deleteBaseNode(Node tmp, Node base) {
+		return persistenceService.deleteBaseNode(tmp,base);
 	}
 	@Override
 	public void addObjectsToContents(List<INeo4emfObject> objects) {

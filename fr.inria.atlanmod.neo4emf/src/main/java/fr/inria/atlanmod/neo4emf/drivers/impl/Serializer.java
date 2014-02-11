@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,10 +26,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.NotFoundException;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
 import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
@@ -50,6 +53,8 @@ public class Serializer implements ISerializer {
 	//INodeBuilder nodeBuilder;
 	public Serializer (IPersistenceManager manager){
 		this.manager = manager;
+		// TOFIX, juste for testing
+		ChangeLog.getInstance().setSaver(this);
 	}
 
 	@Override
@@ -61,11 +66,15 @@ public class Serializer implements ISerializer {
 		if (options == null)
 			options = new HashMap();
 		options= mergeWithDefaultOptions(options);
+		boolean tmpSave = (boolean)options.get("tmp_save");
+		if(!tmpSave) {
+			flushTmpNodes(options);
+		}
 		int counter=0;
 		Transaction tx = manager.beginTx();
 		try {
 			for (Entry e : ChangeLog.getInstance() ){
-				serializeEntrySwitch(e);
+				serializeEntrySwitch(e,tmpSave);
 				counter++;
 				if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
 				{	
@@ -85,6 +94,31 @@ public class Serializer implements ISerializer {
 		ChangeLog.getInstance().clear();
 		// the changelog is cleared after an exception is raised
 		// TODO look for a way to manage this 
+	}
+	
+	private void flushTmpNodes(Map<String,Object> options) {
+		ArrayList<Node> tmpNodes = this.manager.getAllTmpNodes();
+		Transaction tx = manager.beginTx();
+		int counter = 0;
+		try {
+			for(Node n : tmpNodes) {
+				System.out.println(n.getId());
+				Node base = manager.getBaseNodeFromTmp(n);
+				counter += manager.deleteBaseNode(n,base);
+				if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
+				{	
+					tx.success();
+					tx.finish();
+					tx= manager.beginTx();
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			manager.shutdown();
+		}finally {
+			tx.success();
+			tx.finish();
+		}	
 	}
 	/**
 	 * init the default options of 
@@ -117,27 +151,25 @@ public class Serializer implements ISerializer {
 	 * action within transactions  
 	 * @param e {@link Entry}
 	 */
-	private void serializeEntrySwitch(Entry e) {
-
-
-
+	private void serializeEntrySwitch(Entry e, boolean tmp) {
 		if ( e instanceof NewObject)
-			createNewObject(e.geteObject());
+			createNewObject(e.geteObject(),tmp);
 		if ( e instanceof AddLink )	
-			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
+			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue(),tmp);
 		if ( e instanceof RemoveLink)
-			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue());
+			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue(),tmp);
 		if ( e instanceof SetAttribute )
-			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
+			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue(),tmp);
 		if ( e instanceof DeleteObject)
-			deleteExistingObject(e.geteObject());
+			deleteExistingObject(e.geteObject(),tmp);
 
 	}
 
-	private void deleteExistingObject(EObject geteObject) {
+	private void deleteExistingObject(EObject geteObject, boolean tmp) {
 
 
 	}
+	
 	private boolean isPrimitive(String str){
 		if (str.equals("Boolean") 
 				|| str.equals("Integer") 
@@ -155,9 +187,30 @@ public class Serializer implements ISerializer {
 
 	@SuppressWarnings("unchecked")
 	private void setAttributeValue(EObject eObject,
-			EAttribute at, Object newValue) {
-		Node n = manager.getNodeById(eObject);
-		
+			EAttribute at, Object newValue, boolean tmp) {
+		Node n = null;
+		if(tmp) {
+			n = this.manager.getTmpNodeByNodeId(eObject);
+			if(n == null) {
+				n = this.manager.createTmpNodeFromEObject(eObject);
+				((Neo4emfObject) eObject).setTmpNodeId(n.getId());
+			}
+		}
+		else {
+			try {
+			n = manager.getNodeById(eObject);
+			} catch(NotFoundException e) {
+				// the node has been deleted, try to see if a related tmp node
+				// exists.
+				n = manager.getTmpNodeByNodeId(eObject);
+				if(n != null) {
+					// a tmp node has been found, that means the tmp has been
+					// flushed and the ecore model needs to be updated
+					((INeo4emfObject)eObject).setNodeId(n.getId());
+					((INeo4emfObject)eObject).resetTmpNodeId();
+				}
+			}
+		}
 		if (newValue!= null && !at.isMany()){
 		
 			if (at.getEType() instanceof EEnum)
@@ -187,9 +240,49 @@ public class Serializer implements ISerializer {
 		else {n.setProperty(at.getName(), new Object[1]);}
 	}
 
-	private void removeExistingLink(EObject eObject, EReference eRef, Object object) {
-		Node n = manager.getNodeById(eObject);
-		Node n2 = manager.getNodeById((EObject)object);
+	private void removeExistingLink(EObject eObject, EReference eRef, Object object, boolean tmp) {
+		Node n = null;
+		Node n2 = null;
+		if(tmp) {
+			n = this.manager.getTmpNodeByNodeId(eObject);
+			if(n == null) {
+				n = this.manager.createTmpNodeFromEObject(eObject);
+				((Neo4emfObject) eObject).setTmpNodeId(n.getId());
+			}
+			n2 = manager.getTmpNodeByNodeId((EObject)object);
+			if(n2 == null) {
+				n2 = this.manager.getNodeById((EObject)object);
+				((Neo4emfObject) object).setTmpNodeId(n.getId());
+			}
+		}
+		else {
+			try {
+				n = manager.getNodeById(eObject);
+			} catch(NotFoundException e) {
+				// the node has been deleted, try to see if a related tmp node
+				// exists.
+				n = manager.getTmpNodeByNodeId(eObject);
+				if(n != null) {
+					// a tmp node has been found, that means the tmp has been
+					// flushed and the ecore model needs to be updated
+					((INeo4emfObject)eObject).setNodeId(n.getId());
+					((INeo4emfObject)eObject).resetTmpNodeId();
+				}
+			}
+			try {
+				n2 = manager.getNodeById((EObject)object);
+				} catch(NotFoundException e) {
+					// the node has been deleted, try to see if a related tmp node
+					// exists.
+					n2 = manager.getTmpNodeByNodeId((EObject)object);
+					if(n != null) {
+						// a tmp node has been found, that means the tmp has been
+						// flushed and the ecore model needs to be updated
+						((INeo4emfObject)object).setNodeId(n2.getId());
+						((INeo4emfObject)object).resetTmpNodeId();
+					}
+				}
+		}
 		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
 		Iterator<Relationship> it = n.getRelationships(rel).iterator();
 		while (it.hasNext()){
@@ -199,9 +292,56 @@ public class Serializer implements ISerializer {
 		}
 	}
 
-	private void addNewLink(EObject eObject, EReference eRef, Object object) throws NullPointerException{
-		Node n = this.manager.getNodeById(eObject);
-		Node n2 = this.manager.getNodeById((EObject)object);
+	private void addNewLink(EObject eObject, EReference eRef, Object object, boolean tmp) throws NullPointerException{
+		Node n = null;
+		Node n2 = null;
+		if(tmp) {
+			System.out.println("add new link tmp");
+			System.out.println(eObject);
+			System.out.println(object);
+			n = this.manager.getTmpNodeByNodeId(eObject);
+			if(n == null) {
+				System.out.println("n == null");
+				n = this.manager.createTmpNodeFromEObject(eObject);
+				((Neo4emfObject) eObject).setTmpNodeId(n.getId());
+			}
+			n2 = this.manager.getTmpNodeByNodeId((EObject)object);
+			if(n2 == null) {
+				System.out.println("n2 == null");
+				n2 = this.manager.getNodeById((EObject)object);
+				((Neo4emfObject) object).setTmpNodeId(n.getId());
+			}
+			System.out.println(n);
+			System.out.println(n2);
+		}
+		else {
+			try {
+				n = manager.getNodeById(eObject);
+			} catch(NotFoundException e) {
+				// the node has been deleted, try to see if a related tmp node
+				// exists.
+				n = manager.getTmpNodeByNodeId(eObject);
+				if(n != null) {
+					// a tmp node has been found, that means the tmp has been
+					// flushed and the ecore model needs to be updated
+					((INeo4emfObject)eObject).setNodeId(n.getId());
+					((INeo4emfObject)eObject).resetTmpNodeId();
+				}
+			}
+			try {
+				n2 = manager.getNodeById((EObject)object);
+			} catch(NotFoundException e) {
+				// the node has been deleted, try to see if a related tmp node
+				// exists.
+				n2 = manager.getTmpNodeByNodeId((EObject)object);
+				if(n != null) {
+					// a tmp node has been found, that means the tmp has been
+					// flushed and the ecore model needs to be updated
+					((INeo4emfObject)eObject).setNodeId(n2.getId());
+					((INeo4emfObject)eObject).resetTmpNodeId();
+				}
+			}
+		}
 		if(n == null || n2 == null) {
 			Logger.log(IStatus.WARNING, "Dummy objects");
 			return;
@@ -212,8 +352,15 @@ public class Serializer implements ISerializer {
 		n.createRelationshipTo(n2, rel);
 	}
 
-	private void createNewObject(EObject eObject) {
-		Node n = this.manager.createNodefromEObject(eObject);
+	private void createNewObject(EObject eObject, boolean tmp) {
+		Node n = null;
+		if(tmp) {
+			n = this.manager.createTmpNodeFromEObject(eObject);
+			((Neo4emfObject)eObject).setTmpNodeId(n.getId());
+		}
+		else {
+			n = this.manager.createNodefromEObject(eObject);
+		}
 		((Neo4emfObject)eObject).setNodeId(n.getId());
 		EList<EAttribute> atrList= eObject.eClass().getEAllAttributes();
 		Iterator<EAttribute> it = atrList.iterator();
@@ -222,6 +369,5 @@ public class Serializer implements ISerializer {
 			n.setProperty(at.getName(), "");}
 		manager.putNodeId(eObject,n.getId());
 		// TODO set the node id in the eObject 
-
 	}
 }

@@ -31,6 +31,7 @@ import org.neo4j.graphdb.event.KernelEventHandler;
 import org.neo4j.graphdb.event.TransactionEventHandler;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -41,6 +42,7 @@ import org.neo4j.kernel.extension.KernelExtensionFactory;
 import org.neo4j.kernel.impl.cache.CacheProvider;
 import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 
@@ -114,6 +116,31 @@ public class PersistenceService implements IPersistenceService {
 			createResourceNodeIfAbsent().createRelationshipTo(node, IS_ROOT);		
 		return node;
 	}
+	
+	@Override
+	public Node createTmpNodeFromEObject(EObject eObject) {
+		Node newNode = createNodeFromEObject(eObject);
+		//newNode.setProperty("tmp", "tmp");
+		if(((INeo4emfObject)eObject).getNodeId() >= 0) {
+			Node base = getNodeById(((INeo4emfObject)eObject).getNodeId());
+			for(Relationship r :  base.getRelationships()) {
+				if(!r.getType().equals(INSTANCE_OF) && !r.getType().equals(IS_ROOT)) {
+					System.out.println("rtype : " + r.getType());
+					if(r.getEndNode().equals(base)) {
+						r.getStartNode().createRelationshipTo(newNode, r.getType());
+					}
+					else {
+						newNode.createRelationshipTo(r.getEndNode(), r.getType());
+					}
+				}
+			}
+			newNode.createRelationshipTo(base, IS_TMP_OF);
+		}
+		System.out.println("pouet " + newNode.getId());
+		//getMetaIndex().putIfAbsent(newNode, ID_META, TMP_NODE);
+		getMetaIndex().add(newNode, ID_META, TMP_NODE);
+		return newNode;
+	}
 
 	private boolean isRoot(EObject eObject) {		
 		EClass cls = eObject.eClass();
@@ -127,6 +154,33 @@ public class PersistenceService implements IPersistenceService {
 		Index<Node> index = getMetaIndex();
 		Node resourceNode = index.get(ID_META, RESOURCE_NODE).getSingle();
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
+	}
+	
+	@Override
+	public ArrayList<Node> getAllTmpNodes() {
+		Index<Node> index = getMetaIndex();
+		ArrayList<Node> tmpNodes = new ArrayList<Node>();
+		IndexHits<Node> tmp = index.get(ID_META, TMP_NODE);
+		for(Node n : tmp) {
+			tmpNodes.add(n);
+		}
+		return tmpNodes;
+	}
+	
+	@Override
+	public int deleteBaseNode(Node tmp, Node base) {
+		int counter = 0;
+		if(base != null) {
+			for(Relationship rel : base.getRelationships()) {
+				rel.delete();
+				counter++;
+			}
+			base.delete();
+			counter++;
+			Index<Node> index = getMetaIndex();
+			index.remove(tmp,ID_META);
+		}
+		return counter;
 	}
 	
 	private ArrayList<Node> fetchNodesByRT(long nodeId, RelationshipType relType, Direction direction) {

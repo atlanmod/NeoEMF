@@ -4,10 +4,8 @@
  */
 package mgraph.impl;
 
-import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 
 import mgraph.MEdge;
 import mgraph.MGraph;
@@ -16,14 +14,15 @@ import mgraph.MgraphPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -49,8 +48,8 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 * The cached value of the data structure {@link DataMEdge <em>data</em> } 
 	 * @generated
 	 */
-	 	protected DataMEdge data;
-	 
+//	 	protected DataMEdge data;
+		protected SoftReference<DataMEdge> data;
 	 
 	 
 	/**
@@ -70,12 +69,19 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 */
 	 
 	protected DataMEdge getData(){
-		if ( data == null || !(data instanceof DataMEdge)){
-			data = new DataMEdge();
-			if (isLoaded())
-			((INeo4emfResource) this.eResource()).fetchAttributes(this);
+//		if ( data == null || !(data instanceof DataMEdge)){
+//			data = new DataMEdge();
+//			if (isLoaded())
+//			((INeo4emfResource) this.eResource()).fetchAttributes(this);
+//			}
+//		return (DataMEdge) data;
+		if(data == null || !(data instanceof SoftReference<?>) || data.get() == null) {
+			data = new SoftReference<DataMEdge>(new DataMEdge());
+			if(isLoaded()) {
+				((INeo4emfResource)this.eResource()).fetchAttributes(this);
 			}
-		return (DataMEdge) data;
+		}
+		return data.get();
 	}
 	
 	/**

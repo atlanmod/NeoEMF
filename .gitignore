@@ -213,4 +213,6 @@ pip-log.txt
 .mr.developer.cfg
 
 *.class
+
 /fr.inria.atlanmod.neo4emf.tests/data/output
+/fr.inria.atlanmod.neo4emf.tests/data/input/mgraph/Test/

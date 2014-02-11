@@ -4,11 +4,7 @@
  */
 package mgraph.impl;
 
-import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-
+import java.lang.ref.SoftReference;
 import java.util.Collection;
 
 import mgraph.MEdge;
@@ -18,18 +14,18 @@ import mgraph.MgraphPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -55,8 +51,8 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 * The cached value of the data structure {@link DataMNode <em>data</em> } 
 	 * @generated
 	 */
+//	 	protected DataMNode data;
 	 	protected DataMNode data;
-	 
 	 
 	 
 	/**
@@ -76,12 +72,19 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 */
 	 
 	protected DataMNode getData(){
-		if ( data == null || !(data instanceof DataMNode)){
+//		if ( data == null || !(data instanceof DataMNode)){
+//			data = new DataMNode();
+//			if (isLoaded())
+//			((INeo4emfResource) this.eResource()).fetchAttributes(this);
+//			}
+//		return (DataMNode) data;
+		if (data == null || !(data instanceof DataMNode)) {
 			data = new DataMNode();
-			if (isLoaded())
-			((INeo4emfResource) this.eResource()).fetchAttributes(this);
+			if (isLoaded()) {
+				((INeo4emfResource) this.eResource()).fetchAttributes(this);
 			}
-		return (DataMNode) data;
+		}
+		return data;
 	}
 	
 	/**

@@ -12,6 +12,7 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.lang.ref.ReferenceQueue;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -37,10 +38,18 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	 * eObject ID 
 	 */
 	protected String id;
+	
+	protected String tmpId;
 	/**
 	 * isProxy flag
 	 */
 	protected boolean isProxy;
+	
+	/**
+	 * Local reference queue
+	 */
+	protected ReferenceQueue<Object> garbagedData;
+	
 	/**
 	 * hasProxy flag
 	 */
@@ -68,6 +77,15 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		}	
 		return Long.parseLong(this.id.substring(this.id.lastIndexOf("/") + 1));
 	}
+	
+	@Override
+	public long getTmpNodeId() {
+		if(this.tmpId == "") {
+			return -1;
+		}
+		return Long.parseLong(this.tmpId.substring(this.tmpId.lastIndexOf("/") + 1));
+	}
+	
 	/**
 	 * @see INeo4emfObject#setNodeId()
 	 */
@@ -79,6 +97,22 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 			this.id = this.id.substring(0, this.id.lastIndexOf("/")) + nodeId;
 		}
 	}
+	
+	@Override
+	public void setTmpNodeId(final long nodeId) {
+		if(this.tmpId == "") {
+			this.tmpId = "/" + nodeId;
+		}
+		else {
+			this.tmpId = this.tmpId.substring(0, this.tmpId.lastIndexOf("/")) + nodeId;
+		}
+	}
+	
+	@Override
+	public void resetTmpNodeId() {
+		this.tmpId = "";
+	}
+	
 	@Override
 	public int getPartitionId() {
 		if (this.id == "" || this.id.lastIndexOf("/") == 0) {
@@ -97,11 +131,14 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public Neo4emfObject() {
 		super();
 		this.id = "";
+		this.tmpId = "";
 		this.isProxy = false;
+		this.garbagedData = new ReferenceQueue<Object>();
 	}
 	
 	public Neo4emfObject(final EClass eClass) {
 		super();
+		System.out.println("DEBUG MODE");
 		eSetClass(eClass);
 		this.id = "";
 		this.isProxy = false;

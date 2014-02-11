@@ -71,6 +71,8 @@ public interface IPersistenceManager {
 	 * @see {@link IPersistenceService#getNodeById(long)}
 	 */
 	public Node getNodeById(EObject eObj) throws NullPointerException ;
+	
+	public Node getTmpNodeByNodeId(EObject eObj) throws NullPointerException ;
 	/**
 	 * return the equivalent relationshipType from eObject
 	 * @param clsID {@link Int}
@@ -85,6 +87,9 @@ public interface IPersistenceManager {
 	 * @see IPersistenceService#createNodeFromEObject(EObject)
 	 */
 	public Node createNodefromEObject(EObject eObject);
+	
+	public Node createTmpNodeFromEObject(EObject eObject);
+	
 	/**
 	 * map an {@link EObject} that is loaded to its node Id
 	 * @param eObject
@@ -96,6 +101,12 @@ public interface IPersistenceManager {
 	 * @return {@link List}
 	 */
 	public ArrayList<Node> getAllRootNodes();
+	
+	public ArrayList<Node> getAllTmpNodes();
+	
+	public Node getBaseNodeFromTmp(Node n);
+	
+	public int deleteBaseNode(Node tmp, Node base);
 	/**
 	 * Add object to the resource contents
 	 * @param objects
