@@ -39,10 +39,11 @@ public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 	@Override
 	public boolean add(Entry e) {
 		if(lock == 0) {
-			if(size() == stackSize-1) {
+			boolean added = super.add(e);
+			if(size() == stackSize) {
 				commit();
 			}
-			return super.add(e);
+			return added;
 		}
 		return false;
 	}

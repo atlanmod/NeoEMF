@@ -266,6 +266,12 @@ public class PersistenceManager implements IPersistenceManager {
 			RelationshipType relationship = getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
 			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),
 						relationship);
+			/*
+			 * Load the tmp objects related to the current one if needed.
+			 */
+			if(((INeo4emfObject)obj).getTmpNodeId() >= 0) {
+				nodes.addAll(persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getTmpNodeId(),relationship));
+			}
 			loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
 		}catch(Exception e){ 
 			shutdown();

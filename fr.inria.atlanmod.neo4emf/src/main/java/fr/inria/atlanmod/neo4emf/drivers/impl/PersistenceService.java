@@ -175,9 +175,9 @@ public class PersistenceService implements IPersistenceService {
 			}
 			base.delete();
 			counter++;
-			Index<Node> index = getMetaIndex();
-			index.remove(tmp,ID_META);
 		}
+		Index<Node> index = getMetaIndex();
+		index.remove(tmp,ID_META);
 		return counter;
 	}
 	

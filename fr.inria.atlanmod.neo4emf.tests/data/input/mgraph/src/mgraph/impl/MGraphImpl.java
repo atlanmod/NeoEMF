@@ -126,10 +126,10 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	     * value is valid it will avoid garbage collection during
 	     * this method execution.
 	     */
-		SoftReference<EList<MNode>> nodes = getData().nodes;
-		if(nodes == null) {
+		SoftReference<EList<MNode>> nodeReference = getData().nodes;
+		if(nodeReference == null) {
 			/*
-			 * The data hasn't been initialized yet and hasn't been unloaded
+			 * Data hasn't been initialized yet and hasn't been collected
 			 * to (in that case it would be a SoftReference pointing on null).
 			 */
 			EList<MNode> newList = new EObjectContainmentWithInverseEList<MNode>(MNode.class, this, MgraphPackage.MGRAPH__NODES, MgraphPackage.MNODE__GRAPH);
@@ -141,11 +141,11 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 		}
 		else {
 			/*
-			 * The data has been initialized (there is a SoftReference instantiated).
+			 * Data has been initialized (there is a SoftReference instantiated).
 			 * Check if the soft referenced object is still reachable.
 			 */
-			EList<MNode> nodeList = nodes.get();
-			if(nodes.isEnqueued()) {
+			EList<MNode> nodeList = nodeReference.get();
+			if(nodeReference.isEnqueued()) {
 				/*
 				 * The referenced object has been collected by the gc, it needs to be loaded
 				 * from the database.
@@ -155,10 +155,10 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 				// setting on its content.
 				EList<MNode> newList = new EObjectContainmentWithInverseEList<MNode>(MNode.class, this, MgraphPackage.MGRAPH__NODES, MgraphPackage.MNODE__GRAPH);
 				getData().nodes = new SoftReference<EList<MNode>>(newList,garbagedData);
-				nodes = getData().nodes; // clear that if you have a touch of pity
-				// Needed, otherwise infinite loop between get and set.
+				//nodeReference = getData().nodes;
 				((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__NODES);
-				return nodes.get();
+				System.out.println("test");
+				return getData().nodes.get();
 			}
 			else {
 				/*
@@ -169,7 +169,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 					if (isLoaded())
 		 				((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__NODES);
 					// Not safe, depends if the gc collects between this 2 lines
-					return nodes.get();
+					return nodeReference.get();
 				}
 				// In memory and not null.
 				return nodeList;
