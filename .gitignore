@@ -216,3 +216,7 @@ pip-log.txt
 
 /fr.inria.atlanmod.neo4emf.tests/data/output
 /fr.inria.atlanmod.neo4emf.tests/data/input/mgraph/Test/
+
+# IntelliJ IDEA file
+.idea/
+*.iml
