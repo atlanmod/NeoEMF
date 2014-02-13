@@ -16,9 +16,9 @@ public class AdapterFactoryClass
 
   public final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
   protected final String TEXT_1 = "";
-  protected final String TEXT_2 = "/**" + NL + " *" + NL + " * ";
+  protected final String TEXT_2 = "/**" + NL + "<<<<<<< HEAD" + NL + " *" + NL + " * ";
   protected final String TEXT_3 = "Id";
-  protected final String TEXT_4 = NL + " */" + NL + "package ";
+  protected final String TEXT_4 = NL + " */" + NL + "=======" + NL + " * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes" + NL + " * All rights reserved. This program and the accompanying materials" + NL + " * are made available under the terms of the Eclipse Public License v1.0" + NL + " * which accompanies this distribution, and is available at" + NL + " * http://www.eclipse.org/legal/epl-v10.html" + NL + " * " + NL + " * Contributors:" + NL + " *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation" + NL + " * Descritpion ! To come" + NL + " * @author Amine BENELALLAM" + NL + " **/" + NL + ">>>>>>> e211675... Templates refactoring." + NL + "package ";
   protected final String TEXT_5 = ";" + NL;
   protected final String TEXT_6 = NL;
   protected final String TEXT_7 = NL + "/**" + NL + " * <!-- begin-user-doc -->" + NL + " * The <b>Adapter Factory</b> for the model." + NL + " * It provides an adapter <code>createXXX</code> method for each class of the model." + NL + " * <!-- end-user-doc -->" + NL + " * @see ";

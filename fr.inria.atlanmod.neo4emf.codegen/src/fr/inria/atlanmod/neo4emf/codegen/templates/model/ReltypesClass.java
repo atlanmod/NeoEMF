@@ -18,9 +18,9 @@ public class ReltypesClass
   public final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
   protected final String TEXT_1 = "";
   protected final String TEXT_2 = NL;
-  protected final String TEXT_3 = "/**" + NL + " *" + NL + " * ";
+  protected final String TEXT_3 = "/**" + NL + "<<<<<<< HEAD" + NL + " *" + NL + " * ";
   protected final String TEXT_4 = "Id";
-  protected final String TEXT_5 = NL + " */" + NL + "package ";
+  protected final String TEXT_5 = NL + " */" + NL + "=======" + NL + " * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes" + NL + " * All rights reserved. This program and the accompanying materials" + NL + " * are made available under the terms of the Eclipse Public License v1.0" + NL + " * which accompanies this distribution, and is available at" + NL + " * http://www.eclipse.org/legal/epl-v10.html" + NL + " * " + NL + " * Contributors:" + NL + " *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation" + NL + " * Descritpion ! To come" + NL + " * @author Amine BENELALLAM" + NL + " **/" + NL + ">>>>>>> e211675... Templates refactoring." + NL + "package ";
   protected final String TEXT_6 = ".reltypes;" + NL;
   protected final String TEXT_7 = NL + "/**" + NL + " * <!-- begin-user-doc -->" + NL + " * Neo4j <b>relationships</b> for model persistence." + NL + " * It provides an adapter <code>createXXX</code> method for each class of the model." + NL + " * <!-- end-user-doc -->" + NL + " * @generated" + NL + " */" + NL + "public enum Reltypes implements RelationshipType" + NL + "{";
   protected final String TEXT_8 = NL + "\t/**" + NL + "\t * <!-- begin-user-doc -->" + NL + "\t * <!-- end-user-doc -->" + NL + "\t * @generated" + NL + "\t */" + NL + "\tpublic static final ";
