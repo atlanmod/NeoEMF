@@ -203,5 +203,6 @@
 		throw new UnsupportedOperationException();
 <%@ end %><%//Class/setGenFeature.todo.override.javajetinc%>
     <%}%>
+	    addChangelogEntry(new<%=genFeature.getCapName()%>, <%=genClass.getQualifiedFeatureID(genFeature)%>);
 	}
 <%}%>

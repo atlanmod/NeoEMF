@@ -25,6 +25,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
+import scala.Int;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
@@ -232,6 +233,7 @@ public interface IPersistenceManager {
 	//public void deleteFromContents(EObject neoObj);
 	void setRelationshipsMap(
 			Map<String, Map<Point, RelationshipType>> map);
+	void putAllToProxy2(List<INeo4emfObject> objects);
 	
 
 	

@@ -15,6 +15,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
@@ -29,14 +30,17 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
+<<<<<<< HEAD
+=======
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.change.IChangeLog;
+>>>>>>> 5f51485... merged changelog-refactoring branch
 import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 import fr.inria.atlanmod.neo4emf.change.impl.RemoveLink;
 import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
-import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.logger.Logger;
@@ -45,10 +49,10 @@ import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 public class Serializer implements ISerializer {
 
-	IPersistenceManager manager;
+	PersistenceManager manager;
 	Map<String, Object> defaultOptions ;
 	//INodeBuilder nodeBuilder;
-	public Serializer (IPersistenceManager manager){
+	public Serializer (PersistenceManager manager){
 		this.manager = manager;
 	}
 
@@ -63,7 +67,9 @@ public class Serializer implements ISerializer {
 		options= mergeWithDefaultOptions(options);
 		int counter=0;
 		Transaction tx = manager.beginTx();
+		IChangeLog<Entry> changeLog = manager.getResource().getChangeLog();
 		try {
+<<<<<<< HEAD
 			for (Entry e : ChangeLog.getInstance() ){
 				serializeEntrySwitch(e);
 				counter++;
@@ -72,6 +78,37 @@ public class Serializer implements ISerializer {
 					tx.success();
 					tx.finish();
 					tx= manager.beginTx();
+=======
+			// TODO: Fix with a more efficient implementation
+			// First execute only for create objects
+			Iterator<Entry> it = changeLog.iterator();
+			while (it.hasNext()) {
+				Entry e = it.next();
+				if (e instanceof NewObject) {
+					serializeEntrySwitch(e);
+					counter++;
+					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
+					{	
+						tx.success();
+						tx.finish();
+						tx= manager.beginTx();
+					}
+				}
+			}
+			// other updates...
+			it = changeLog.iterator();
+			while (it.hasNext()) {
+				Entry e = it.next();
+				if (!(e instanceof NewObject)) {
+					serializeEntrySwitch(e);
+					counter++;
+					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
+					{	
+						tx.success();
+						tx.finish();
+						tx= manager.beginTx();
+					}
+>>>>>>> 5f51485... merged changelog-refactoring branch
 				}
 			}
 			
@@ -82,7 +119,7 @@ public class Serializer implements ISerializer {
 			tx.success();
 			tx.finish();
 		}	
-		ChangeLog.getInstance().clear();
+		changeLog.clear();
 		// the changelog is cleared after an exception is raised
 		// TODO look for a way to manage this 
 	}
@@ -123,6 +160,7 @@ public class Serializer implements ISerializer {
 
 		if ( e instanceof NewObject)
 			createNewObject(e.geteObject());
+<<<<<<< HEAD
 		if ( e instanceof AddLink )	
 			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
 		if ( e instanceof RemoveLink)
@@ -130,6 +168,15 @@ public class Serializer implements ISerializer {
 		if ( e instanceof SetAttribute )
 			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
 		if ( e instanceof DeleteObject)
+=======
+		else if ( e instanceof AddLink )	
+			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
+		else if ( e instanceof RemoveLink)
+			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue());
+		else if ( e instanceof SetAttribute )
+			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
+		else if ( e instanceof DeleteObject)
+>>>>>>> 5f51485... merged changelog-refactoring branch
 			deleteExistingObject(e.geteObject());
 
 	}
@@ -213,6 +260,7 @@ public class Serializer implements ISerializer {
 	}
 
 	private void createNewObject(EObject eObject) {
+<<<<<<< HEAD
 		Node n = this.manager.createNodefromEObject(eObject);
 		((Neo4emfObject)eObject).setNodeId(n.getId());
 		EList<EAttribute> atrList= eObject.eClass().getEAllAttributes();
@@ -222,6 +270,60 @@ public class Serializer implements ISerializer {
 			n.setProperty(at.getName(), "");}
 		manager.putNodeId(eObject,n.getId());
 		// TODO set the node id in the eObject 
+=======
+		Node n = null;
+		if (((INeo4emfObject)eObject).getNodeId() == -1) {
+			n = this.manager.createNodefromEObject(eObject);
+			((Neo4emfObject) eObject).setNodeId(n.getId());
+		} else {
+			n = this.manager.getNodeById(eObject);
+		}
+		{
+			EList<EAttribute> atrList = eObject.eClass().getEAllAttributes();
+			Iterator<EAttribute> itAtt = atrList.iterator();
+			while (itAtt.hasNext()) {
+				EAttribute at = itAtt.next();
+				if (eObject.eIsSet(at)) {
+					setAttributeValue(eObject, at, eObject.eGet(at));
+				} else {
+					n.setProperty(at.getName(), "");
+				}
+			}
+		}
+		{
+			EList<EReference> refList = eObject.eClass().getEAllReferences();
+			Iterator<EReference> itRef = refList.iterator();
+			while (itRef.hasNext()) {
+				EReference ref = itRef.next();
+				boolean isSet = false;
+				try {
+					isSet = eObject.eIsSet(ref);
+				} catch (ClassCastException e) {};
+				if (isSet) {
+					if (ref.getUpperBound() == -1) {
+						List<EObject> eObjects = (List<EObject>) eObject.eGet(ref);
+						for (EObject referencedEObject : eObjects) {
+							Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) referencedEObject;
+							if (referencedNeo4emfObject.getNodeId() == -1) {
+								Node childNode = this.manager.createNodefromEObject(referencedEObject);
+								referencedNeo4emfObject.setNodeId(childNode.getId());
+							}
+							addNewLink(eObject, ref, referencedEObject);
+						}
+					} else {
+						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject.eGet(ref);
+						if (referencedNeo4emfObject.getNodeId() == -1) {
+							Node childNode = this.manager.createNodefromEObject(referencedNeo4emfObject);
+							referencedNeo4emfObject.setNodeId(childNode.getId());
+						}
+						addNewLink(eObject, ref, referencedNeo4emfObject);
+					}
+				}
+			}
+		}
+		manager.putNodeId(eObject, n.getId());
+		// TODO set the node id in the eObject
+>>>>>>> 5f51485... merged changelog-refactoring branch
 
 	}
 }
