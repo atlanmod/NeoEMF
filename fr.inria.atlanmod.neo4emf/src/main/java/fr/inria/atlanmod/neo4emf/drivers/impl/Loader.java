@@ -116,11 +116,7 @@ public class Loader implements ILoader {
 	@Override
 	public EList<INeo4emfObject> getAllInstances(EClass eClass,
 			List<Node> nodeList) {
-<<<<<<< HEAD
-		int sizeChange = ChangeLog.getInstance().size();
-=======
 //		int sizeChange = getChangeLog().size();
->>>>>>> 5f51485... merged changelog-refactoring branch
 		EList<INeo4emfObject> eObjectList = new BasicEList<INeo4emfObject>();
 		//int newId = manager.getNewPartitionID();
 		//FlatPartition partition = manager.createNewFlatPartition(newId);
@@ -133,16 +129,10 @@ public class Loader implements ILoader {
 			eObjectList.add(obj);
 			//partition.put(obj);
 		}
-<<<<<<< HEAD
-		manager.createNewPartitionHistory(newId);
-		manager.addObjectsToContents(eObjectList);
-		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-sizeChange);
-=======
 	//	manager.createNewPartitionHistory(newId);
 	//	manager.addObjectsToContents(eObjectList);
 	//	manager.putAllToProxy(eObjectList);
 //		getChangeLog().removeLastChanges(getChangeLog().size()-sizeChange);
->>>>>>> 5f51485... merged changelog-refactoring branch
 		return eObjectList;
 	}
 
@@ -159,11 +149,7 @@ public class Loader implements ILoader {
 		String eClassName = manager.getNodeType(n);
 		String ns_uri = manager.getNodeContainingPackage(n);
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
-<<<<<<< HEAD
-		int size = ChangeLog.getInstance().size();
-=======
 //		int size = getChangeLog().size();
->>>>>>> 5f51485... merged changelog-refactoring branch
 		EFactory factory =null;
 
 		if (ePck.getEFactoryInstance() == null) {
@@ -176,18 +162,11 @@ public class Loader implements ILoader {
 		} else {
 			factory = ePck.getEFactoryInstance();
 		}
-<<<<<<< HEAD
-		INeo4emfObject obj = (INeo4emfObject)factory.create(getEClassFromNodeName(eClassName,ePck));
-		obj.setNodeId(n.getId());	
-		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size()-size);
-		return obj ;
-=======
 		INeo4emfObject obj = (INeo4emfObject) factory.create(getEClassFromNodeName(eClassName, ePck));
 		obj.setNodeId(n.getId());
 		manager.putAllToProxy(ECollections.singletonEList(obj));
 //		getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		return obj;
->>>>>>> 5f51485... merged changelog-refactoring branch
 	}
 	/**
 	 * Return an {@link EClass} from its class name
@@ -257,17 +236,10 @@ public class Loader implements ILoader {
 	public void fetchAttributes(EObject obj, Node n) {
 		try{
 			
-<<<<<<< HEAD
-			Object attributeValue= null;
-			
-			int size = ChangeLog.getInstance().size();
-			
-=======
 			Object attributeValue = null;
 
 //			int size = getChangeLog().size();
 
->>>>>>> 5f51485... merged changelog-refactoring branch
 			for (EAttribute attr : obj.eClass().getEAllAttributes()) {
 				if (n.hasProperty(attr.getName())) {
 
@@ -307,13 +279,7 @@ public class Loader implements ILoader {
 				}
 //				getChangeLog().removeLastChanges(getChangeLog().size() - size);
 			}
-<<<<<<< HEAD
-			ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
-		}catch (Exception e)
-		{	
-=======
 		} catch (Exception e) {
->>>>>>> 5f51485... merged changelog-refactoring branch
 			manager.shutdown();
 			e.printStackTrace();
 		}
@@ -324,36 +290,6 @@ public class Loader implements ILoader {
 	@Override	
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) throws FeatureNotFoundException {
 		try {
-<<<<<<< HEAD
-				int size = ChangeLog.getInstance().size();
-				int newId=((INeo4emfObject)obj).getPartitionId();
-				if (!manager.isHead(obj)){
-					newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)obj).getPartitionId());
-					manager.createNewPartitionHistory(newId);
-					}	
-				EReference str = Loader.getFeatureFromID(obj,featureId);
-				if (str == null) {
-					throw new FeatureNotFoundException("", obj, "", -1, -1);}
-				List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
-				for (Node n : nodes){
-					INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, newId, str.isContainment(),featureId);
-					
-					objectList.add(object);
-					manager.putToProxy((INeo4emfObject)object, str, newId);
-					//manager.updateProxyManager((INeo4emfObject)object, str);
-					}
-				
-
-				if (!str.isContainment())
-					manager.addObjectsToContents(objectList);
-				if (str.isMany())
-					 obj.eSet(str,objectList);
-				else  if (objectList.size() == 0) 
-							obj.eSet(str, null);
-					else  obj.eSet(str, objectList.get(0));
-				ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);}
-		catch (FeatureNotFoundException e){
-=======
 //			int size = getChangeLog().size();
 //			
 			EReference str = Loader.getFeatureFromID(obj, featureId);
@@ -379,7 +315,6 @@ public class Loader implements ILoader {
 			}
 //			getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		} catch (FeatureNotFoundException e) {
->>>>>>> 5f51485... merged changelog-refactoring branch
 			e.printStackTrace();
 		} catch (Exception e) {
 			manager.shutdown();
@@ -391,11 +326,7 @@ public class Loader implements ILoader {
 
 	public EObject getContainerOnDemand2 (EObject eObject, int featureId, Node node, Node containerNode)  {
 		EObject result = null;
-<<<<<<< HEAD
-		int size = ChangeLog.getInstance().size();
-=======
 //		int size = getChangeLog().size();
->>>>>>> 5f51485... merged changelog-refactoring branch
 		//result = getObjectsFromNodeIfNotExists(eObject, containerNode, ((INeo4emfObject)eObject).getPartitionId(),true);
 		int newId=((INeo4emfObject)eObject).getPartitionId();
 		if (!manager.isHead(eObject)){
@@ -407,11 +338,7 @@ public class Loader implements ILoader {
 		arrayResult.add((INeo4emfObject)result);
 		manager.addObjectsToContents(arrayResult);
 		manager.putToProxy((INeo4emfObject)result, Loader.getFeatureFromID(eObject, featureId), newId);
-<<<<<<< HEAD
-		ChangeLog.getInstance().removeLastChanges(ChangeLog.getInstance().size() - size);
-=======
 //		getChangeLog().removeLastChanges(getChangeLog().size() - size);
->>>>>>> 5f51485... merged changelog-refactoring branch
 		return result;
 	}
 	

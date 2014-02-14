@@ -12,12 +12,9 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
-<<<<<<< HEAD
-=======
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
->>>>>>> 5f51485... merged changelog-refactoring branch
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;

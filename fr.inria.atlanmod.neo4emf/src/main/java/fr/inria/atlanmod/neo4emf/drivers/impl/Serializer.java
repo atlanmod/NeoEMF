@@ -30,11 +30,8 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
-<<<<<<< HEAD
-=======
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
->>>>>>> 5f51485... merged changelog-refactoring branch
 import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
 import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
@@ -69,16 +66,6 @@ public class Serializer implements ISerializer {
 		Transaction tx = manager.beginTx();
 		IChangeLog<Entry> changeLog = manager.getResource().getChangeLog();
 		try {
-<<<<<<< HEAD
-			for (Entry e : ChangeLog.getInstance() ){
-				serializeEntrySwitch(e);
-				counter++;
-				if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
-				{	
-					tx.success();
-					tx.finish();
-					tx= manager.beginTx();
-=======
 			// TODO: Fix with a more efficient implementation
 			// First execute only for create objects
 			Iterator<Entry> it = changeLog.iterator();
@@ -108,7 +95,6 @@ public class Serializer implements ISerializer {
 						tx.finish();
 						tx= manager.beginTx();
 					}
->>>>>>> 5f51485... merged changelog-refactoring branch
 				}
 			}
 			
@@ -160,15 +146,6 @@ public class Serializer implements ISerializer {
 
 		if ( e instanceof NewObject)
 			createNewObject(e.geteObject());
-<<<<<<< HEAD
-		if ( e instanceof AddLink )	
-			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
-		if ( e instanceof RemoveLink)
-			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue());
-		if ( e instanceof SetAttribute )
-			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
-		if ( e instanceof DeleteObject)
-=======
 		else if ( e instanceof AddLink )	
 			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
 		else if ( e instanceof RemoveLink)
@@ -176,7 +153,6 @@ public class Serializer implements ISerializer {
 		else if ( e instanceof SetAttribute )
 			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
 		else if ( e instanceof DeleteObject)
->>>>>>> 5f51485... merged changelog-refactoring branch
 			deleteExistingObject(e.geteObject());
 
 	}
@@ -260,17 +236,6 @@ public class Serializer implements ISerializer {
 	}
 
 	private void createNewObject(EObject eObject) {
-<<<<<<< HEAD
-		Node n = this.manager.createNodefromEObject(eObject);
-		((Neo4emfObject)eObject).setNodeId(n.getId());
-		EList<EAttribute> atrList= eObject.eClass().getEAllAttributes();
-		Iterator<EAttribute> it = atrList.iterator();
-		while(it.hasNext()){
-			EAttribute at =it.next();
-			n.setProperty(at.getName(), "");}
-		manager.putNodeId(eObject,n.getId());
-		// TODO set the node id in the eObject 
-=======
 		Node n = null;
 		if (((INeo4emfObject)eObject).getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject);
@@ -323,7 +288,5 @@ public class Serializer implements ISerializer {
 		}
 		manager.putNodeId(eObject, n.getId());
 		// TODO set the node id in the eObject
->>>>>>> 5f51485... merged changelog-refactoring branch
-
 	}
 }
