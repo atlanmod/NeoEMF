@@ -26,12 +26,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
@@ -69,7 +69,7 @@ public class PersistenceManager implements IPersistenceManager {
 	/**
 	 * The resource {@link Neo4emfResource}
 	 */
-	protected INeo4emfResource resource;
+	protected Neo4emfResource resource;
 	/**
 	 * The loaded elements manager {@link ProxyManager}
 	 */
@@ -113,8 +113,8 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void save(Map<?,?> options) {
 		try {
-			this.serializer.save((Map<String, Object>) options); }
-		catch (Exception e) { 
+			this.serializer.save((Map<String, Object>) options);
+		} catch (Exception e) {
 			shutdown();
 			e.printStackTrace();
 		}
@@ -126,8 +126,8 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void load(Map<?, ?> options) {
 		try {
-			loader.load(options);	}
-		catch(Exception e){ 
+			loader.load(options);
+		} catch (Exception e) {
 			shutdown();
 			e.printStackTrace();
 		}
@@ -154,36 +154,11 @@ public class PersistenceManager implements IPersistenceManager {
 			return result;
 		}
 	}
-	
-	@Override
-	public Node getTmpNodeByNodeId(EObject eObj) {
-		if(((INeo4emfObject)eObj).getTmpNodeId() >= 0) {
-			// Node is already created, just retrieve it
-			Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getTmpNodeId());
-			if (result == null ) {
-				throw new NullPointerException(" Cannot find the node ");
-			} else {
-				return result;
-			}
-		}
-		else {
-			// return null if there is no tmp id
-			return null;
-		}
-//		else {
-//			// Tmp Node hasn't been created, create and return it.
-//			return createTmpNodeFromEObject(eObj);
-//		}
-	}
-	
 	@Override
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
 		if (eRef2relType==null || eRef2relType.isEmpty())
 			setupERelationshipTypesMap(key);
 		RelationshipType rel = eRef2relType.get(key).get(new Point (clsID,eRefID));
-		if ( rel == null ) {
-			throw new NullPointerException(" Cannot find the node ");
-		}
 		return rel;
 			
 
@@ -199,11 +174,6 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 	
 	@Override
-	public Node createTmpNodeFromEObject(EObject eObject) {
-		return persistenceService.createTmpNodeFromEObject(eObject);
-	}
-	
-	@Override
 	public void putNodeId(EObject eObject, long id) {
 		if (! proxyManager.getWeakNodeIds().containsKey(eObject))
 			proxyManager.getWeakNodeIds().put(eObject, id);		
@@ -211,19 +181,6 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public ArrayList<Node> getAllRootNodes() {
 		return persistenceService.getAllRootNodes();	
-	}
-	@Override
-	public ArrayList<Node> getAllTmpNodes() {
-		return persistenceService.getAllTmpNodes();
-	}
-	@Override
-	public Node getBaseNodeFromTmp(Node n) {
-		List<Node> nodes = persistenceService.getNodesOnDemand(n.getId(), IPersistenceService.IS_TMP_OF);
-		return nodes.isEmpty() ? null : nodes.get(0);
-	}
-	@Override
-	public int deleteBaseNode(Node tmp, Node base) {
-		return persistenceService.deleteBaseNode(tmp,base);
 	}
 	@Override
 	public void addObjectsToContents(List<INeo4emfObject> objects) {
@@ -256,22 +213,28 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void putAllToProxy(List<INeo4emfObject> objects) {
 		for (INeo4emfObject obj : objects)
+			proxyManager.putToProxy(obj);
+	}
+	@Override
+	public void putAllToProxy2(List<INeo4emfObject> objects) {
+		for (INeo4emfObject obj : objects)
 			proxyManager.putHeadToProxy(obj);
 	}
 	@Override
 	public void getOnDemand(EObject obj, int featureId) {	
 		try{
 			EClass eClass = obj.eClass();
+			
 			EPackage ePackage = eClass.getEPackage();
-			RelationshipType relationship = getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
+		//	RelationshipType relationship =  getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
+			RelationshipType relationship =  null;
+			if ( relationship == null ) {
+				  //throw new NullPointerException(" Cannot find the relationship ");
+				String stri = Neo4emfResourceUtil.formatRelationshipName(eClass,eClass.getEStructuralFeature(featureId));
+				relationship = DynamicRelationshipType.withName(stri);
+			}
 			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),
 						relationship);
-			/*
-			 * Load the tmp objects related to the current one if needed.
-			 */
-			if(((INeo4emfObject)obj).getTmpNodeId() >= 0) {
-				nodes.addAll(persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getTmpNodeId(),relationship));
-			}
 			loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
 		}catch(Exception e){ 
 			shutdown();
@@ -446,5 +409,12 @@ public class PersistenceManager implements IPersistenceManager {
 		this.eRef2relType = map;	
 	}
 
+	public Neo4emfResource getResource() {
+		return resource;
+	}
+
+	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
+		return proxyManager.getObjectFromProxy(eClassifier, n);
+	}
 
 }

@@ -1,3 +1,4 @@
+/** genFeaure.override.javajetinc **/
   <%if (genModel.isArrayAccessors() && genFeature.isListType() && !genFeature.isFeatureMapType() && !genFeature.isMapType()) {%>
 	/**
 	 * <!-- begin-user-doc -->
@@ -93,24 +94,27 @@
     <%}%>
   <%}%>
   <%if (genFeature.isGet() && (isImplementation || !genFeature.isSuppressedGetVisibility())) {%>
-<%@ include file="Class/getGenFeature.override.javajetinc" fail="silent" %>
+<%@ include file="getGenFeature.override.javajetinc" fail="alternative" %>
+<%@start%>
+// Template getGenFeature.override.javajetinc not found !
+<%@end%>
   <%}%>
   <%if (isImplementation && !genModel.isReflectiveDelegation() && genFeature.isBasicGet()) {%>
-<%@ include file="Class/basicGetGenFeature.override.javajetinc" fail="silent" %>
+<%@ include file="basicGetGenFeature.override.javajetinc" fail="silent" %>
   <%}%>
   <%if (isImplementation && !genModel.isReflectiveDelegation() && genFeature.isBasicSet()) {%>
-<%@ include file="Class/basicSetGenFeature.override.javajetinc" fail="silent" %>
+<%@ include file="basicSetGenFeature.override.javajetinc" fail="silent" %>
   <%}%>
   <%if (genFeature.isSet() && (isImplementation || !genFeature.isSuppressedSetVisibility())) {%>
-<%@ include file="Class/setGenFeature.override.javajetinc" fail="silent" %>
+<%@ include file="setGenFeature.override.javajetinc" fail="silent" %>
   <%}%> 
   <%if (isImplementation && !genModel.isReflectiveDelegation() && genFeature.isBasicUnset()) {%>
-<%@ include file="Class/basicUnsetGenFeature.override.javajetinc" fail="silent" %>
+<%@ include file="basicUnsetGenFeature.override.javajetinc" fail="silent" %>
   <%}%>
   <%if (genFeature.isUnset() && (isImplementation || !genFeature.isSuppressedUnsetVisibility())) {%>
-<%@ include file="Class/unsetGenFeature.override.javajetinc" fail="silent" %>
+<%@ include file="unsetGenFeature.override.javajetinc" fail="silent" %>
   <%}%>
   <%if (genFeature.isIsSet() && (isImplementation || !genFeature.isSuppressedIsSetVisibility())) {%>
-<%@ include file="Class/isSetGenFeature.override.javajetinc" fail="silent" %>
+<%@ include file="isSetGenFeature.override.javajetinc" fail="silent" %>
   <%}%>
-<%@ include file="Class/genFeature.insert.javajetinc" fail="silent" %>
+<%@ include file="genFeature.insert.javajetinc" fail="silent" %>

@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import fr.inria.atlanmod.neo4emf.impl.UnloadablePersistentObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -39,7 +40,7 @@ import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
  *
  * @generated
  */
-public class MEdgeImpl extends Neo4emfObject implements MEdge {
+public class MEdgeImpl extends UnloadablePersistentObject implements MEdge {
 
 	 
 	

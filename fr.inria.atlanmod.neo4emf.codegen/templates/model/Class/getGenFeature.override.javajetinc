@@ -92,6 +92,8 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
   <%}%>
 	public <%=genFeature.getImportedType(genClass)%> <%=genFeature.getGetAccessor()%><%if (genClass.hasCollidingGetAccessorOperation(genFeature)) {%>_<%}%>()
 	{
+		try {
+			loadingOnDemand = true;
 <%@ include file="Class/getGenFeature.pre.insert.javajetinc" fail="silent" %>
     <%if (genModel.isDynamicDelegation()) {%>
 		return <%if (!isJDK50 && genFeature.isPrimitiveType()) {%>(<%}%>(<%=genFeature.getObjectType(genClass)%>)eDynamicGet(<%=genClass.getQualifiedFeatureID(genFeature)%>, <%=genFeature.getQualifiedFeatureAccessor()%>, true, <%=!genFeature.isEffectiveSuppressEMFTypes()%>)<%if (!isJDK50 && genFeature.isPrimitiveType()) {%>).<%=genFeature.getPrimitiveValueFunction()%>()<%}%>;
@@ -134,24 +136,21 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		}
         <%}%>		
         <%if (!genFeature.isResolveProxies() && genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
-		if ( isLoaded()) 
-			eNotify(new ENotificationImpl(this, <%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfNotification")%>.GET, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, null, null));
 		return (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%><%if (genFeature.hasEDefault()) {%>, Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>.<%=genFeature.getEDefault()%><%}%>);
         <%} else if (genClass.isFlag(genFeature)) {%>
           <%if (genFeature.isBooleanType()) {%>
-		  if ( isLoaded()) 
-			eNotify(new ENotificationImpl(this, <%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfNotification")%>.GET, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, null, null));
 		return (<%=genClass.getFlagsField(genFeature)%> & Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG) != 0;
           <%} else {%>
-		if ( isLoaded()) 
-			eNotify(new ENotificationImpl(this, <%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfNotification")%>.GET, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, null, null));
 		return Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_VALUES[(<%=genClass.getFlagsField(genFeature)%> & Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG) >>> Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_OFFSET];
           <%}%>
-        <%} else {%>
-		if ( isLoaded()) 
-			eNotify(new ENotificationImpl(this, <%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfNotification")%>.GET, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, null, null));
+        <%} else if (!genFeature.isProperty()) {%>
+		if (isLoaded()) {
+			((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
+		}
 		return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
-        <%}%>
+        <%} else {%>
+		return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
+		<%}%>
       <%}%>
     <%} 	
 	else {//volatile%>
@@ -195,6 +194,9 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		throw new UnsupportedOperationException();
 <%@ end %><%//Class/getGenFeature.todo.override.javajetinc%>
       <%}%>
-    <%}%>	
+    <%}%>
+	} finally {
+	loadingOnDemand = false;
+}
 	}
 <%}%>

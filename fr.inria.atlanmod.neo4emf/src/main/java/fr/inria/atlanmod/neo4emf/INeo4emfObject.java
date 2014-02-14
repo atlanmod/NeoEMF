@@ -24,18 +24,12 @@ public interface INeo4emfObject extends EObject, Comparable <INeo4emfObject>{
 		 */
 		public long getNodeId();
 		
-		public long getTmpNodeId();
-		
 		/**
 		 * set the <b>ID</b> of the eObject once created from the 
 		 * 	backend node
 		 * @param id {@link long}
 		 */
 		void setNodeId(long id);
-		
-		void setTmpNodeId(long id);
-		
-		void resetTmpNodeId();
 		/**
 		 * @return ID {@link int}
 		 */

@@ -12,21 +12,36 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
-import java.lang.ref.ReferenceQueue;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.AbstractTreeIterator;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.Resource.Internal;
+import org.eclipse.emf.ecore.util.EContentsEList;
+import org.eclipse.osgi.util.NLS;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
+import fr.inria.atlanmod.neo4emf.change.IChangeLog;
+import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
+import fr.inria.atlanmod.neo4emf.change.impl.Entry;
+import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 
 
 
@@ -34,22 +49,16 @@ import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
 
 public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject {
 
+	protected volatile boolean loadingOnDemand = false; 
+	
 	/**
 	 * eObject ID 
 	 */
 	protected String id;
-	
-	protected String tmpId;
 	/**
 	 * isProxy flag
 	 */
 	protected boolean isProxy;
-	
-	/**
-	 * Local reference queue
-	 */
-	protected ReferenceQueue<Object> garbagedData;
-	
 	/**
 	 * hasProxy flag
 	 */
@@ -77,15 +86,6 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		}	
 		return Long.parseLong(this.id.substring(this.id.lastIndexOf("/") + 1));
 	}
-	
-	@Override
-	public long getTmpNodeId() {
-		if(this.tmpId == "") {
-			return -1;
-		}
-		return Long.parseLong(this.tmpId.substring(this.tmpId.lastIndexOf("/") + 1));
-	}
-	
 	/**
 	 * @see INeo4emfObject#setNodeId()
 	 */
@@ -97,22 +97,6 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 			this.id = this.id.substring(0, this.id.lastIndexOf("/")) + nodeId;
 		}
 	}
-	
-	@Override
-	public void setTmpNodeId(final long nodeId) {
-		if(this.tmpId == "") {
-			this.tmpId = "/" + nodeId;
-		}
-		else {
-			this.tmpId = this.tmpId.substring(0, this.tmpId.lastIndexOf("/")) + nodeId;
-		}
-	}
-	
-	@Override
-	public void resetTmpNodeId() {
-		this.tmpId = "";
-	}
-	
 	@Override
 	public int getPartitionId() {
 		if (this.id == "" || this.id.lastIndexOf("/") == 0) {
@@ -131,9 +115,7 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public Neo4emfObject() {
 		super();
 		this.id = "";
-		this.tmpId = "";
 		this.isProxy = false;
-		this.garbagedData = new ReferenceQueue<Object>();
 	}
 	
 	public Neo4emfObject(final EClass eClass) {
@@ -176,86 +158,101 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	}
 	@Override 
 	public Object eGet(final EStructuralFeature str, boolean resolve ){
-		return eGet(str, true, true);
+		return eGet(str, resolve, true);
 	}
 	
 	@Override
-	public Object eGet(final EStructuralFeature eFeature, final boolean resolve, final boolean coreType){ 
-		 int featureID = eDerivedStructuralFeatureID(eFeature);
-		 Assert.isTrue(featureID >= 0, "Invalid feature : "+ eFeature.getName()); 
-		 return eGet(featureID, resolve, coreType);
-	 }
+	public Object eGet(final EStructuralFeature eFeature, final boolean resolve, final boolean coreType) {
+		try {
+			loadingOnDemand = true;
+			int featureID = eDerivedStructuralFeatureID(eFeature);
+			Assert.isTrue(featureID >= 0, "Invalid feature : " + eFeature.getName());
+			return eGet(featureID, resolve, coreType);
+		} finally {
+			loadingOnDemand = false;
+		}
+	}
 	 
 	
-	@Override 
-	public Object eGet(final int featureID, final boolean resolve, final boolean coreType){
-		 EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
-		 Assert.isNotNull(eFeature, "Invalid feature : " + eFeature);
-		 Object result = simpleGet(featureID, resolve, coreType, true);	
-		 if (this.id == "") {
+	@Override
+	public Object eGet(final int featureID, final boolean resolve, final boolean coreType) {
+		EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
+		Assert.isNotNull(eFeature, "Invalid feature : " + eFeature);
+		// agomez - 2013-12-06: Disable notification of GET
+		// Object result = simpleGet(featureID, resolve, coreType, true);
+		Object result = simpleGet(featureID, resolve, coreType, false);
+		if (this.id == "" || eResource() == null) {
 			return result;
 		}
-		 if (!eFeature.isMany()) {		
-			 if (result != null) {
+		if (!eFeature.isMany()) {
+			if (result != null) {
 				return result;
 			}
-		 } else {
-			 if (!((List<?>) result).isEmpty()) {
-				return result;
-			}
-		 }
-		 
-		 Assert.isTrue(eResource() != null && eResource() instanceof INeo4emfResource, "The resource is either null or not of type INeo4emfResource");
-		 INeo4emfResource resource = (INeo4emfResource) eResource();
-		 if (eFeature instanceof EAttribute) {
-			resource.fetchAttributes(this);
 		} else {
+			if (!((List<?>) result).isEmpty()) {
+				return result;
+			}
+		}
+
+		Assert.isTrue(eResource() != null && eResource() instanceof INeo4emfResource, "The resource is either null or not of type INeo4emfResource");
+		INeo4emfResource resource = (INeo4emfResource) eResource();
+		if (eFeature instanceof EAttribute) {
+			resource.fetchAttributes(this);
+		} else if (resolve) {
 			resource.getOnDemand(this, featureID);
 		}
-		 return simpleGet(featureID, resolve, coreType, false);
-	
+		return simpleGet(featureID, resolve, coreType, false);
+
 	}
-	 protected Object eDynamicGet(final int dynamicFeatureID, final EStructuralFeature eFeature, final boolean resolve, final boolean coreType){
+
+	protected Object eDynamicGet(final int dynamicFeatureID, final EStructuralFeature eFeature, final boolean resolve, final boolean coreType) {
 		Assert.isTrue(dynamicFeatureID >= 0, "invalid Feature with " + eFeature);
 		Object result = eSettingDelegate(eFeature).dynamicGet(this, eSettings(), dynamicFeatureID, resolve, coreType);
 		if (result == null) {
-			INeo4emfResource resource = (INeo4emfResource) eResource();	 	
+			INeo4emfResource resource = (INeo4emfResource) eResource();
 			if (eFeature instanceof EAttribute) {
 				resource.fetchAttributes(this);
-			} else { 
-				 resource.getOnDemand(this, dynamicFeatureID + eStaticFeatureCount()); 
-			 	 }
+			} else {
+				resource.getOnDemand(this, dynamicFeatureID + eStaticFeatureCount());
+			}
 		}
-		return simpleGet(dynamicFeatureID + eStaticFeatureCount(), resolve, coreType, true);
-	 	
-	 }
+		// agomez - 2013-12-06: Disable notification of GET
+		// return simpleGet(dynamicFeatureID + eStaticFeatureCount(), resolve,
+		// coreType, true);
+		return simpleGet(dynamicFeatureID + eStaticFeatureCount(), resolve, coreType, false);
+
+	}
 		 
 		 
-		 protected Object simpleGet(final int featureID, final boolean resolve, final boolean coreType, final boolean notificationRequired){
+	protected Object simpleGet(final int featureID, final boolean resolve, final boolean coreType, final boolean notificationRequired) {
 		int dynamicFeatureID = featureID - eStaticFeatureCount();
-		 EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
-		 Assert.isTrue(eFeature != null , "Invalid featureID: " + featureID);
-		 Object result = eSettingDelegate(eFeature).dynamicGet(this, eSettings(), dynamicFeatureID, resolve, coreType);
-		 if (result != null && notificationRequired) {
-			 Notification msg = new ENotificationImpl(this, INeo4emfNotification.GET, eFeature, null, null);
-			 ChangeLog.getInstance().addNewEntry(msg);
-		 }
+		EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
+		Assert.isTrue(eFeature != null, "Invalid featureID: " + featureID);
+		Object result = eSettingDelegate(eFeature).dynamicGet(this, eSettings(), dynamicFeatureID, resolve, coreType);
+		if (result != null && notificationRequired) {
+			Notification msg = new ENotificationImpl(this, INeo4emfNotification.GET, eFeature, null, null);
+			if (getChangeLog() != null) {
+				getChangeLog().addNewEntry(msg);
+			}
+		}
 		return result;
+	}
+
+	private IChangeLog<Entry> getChangeLog() {
+		return eResource() != null && eResource() instanceof Neo4emfResource ? ((Neo4emfResource) eResource()).getChangeLog() : null;
 	}
 	
 	@Override
 	protected void eDynamicSet(final int dynamicFeatureID, final EStructuralFeature eFeature, Object newValue){
-		Object oldValue = simpleGet(dynamicFeatureID + eStaticFeatureCount(), true, true, false);
 		eSettingDelegate(eFeature).dynamicSet(this, eSettings(), dynamicFeatureID, newValue);
-		Notification msg = new ENotificationImpl(this, Notification.SET, eFeature, oldValue, newValue);
-		ChangeLog.getInstance().addNewEntry(msg);
 	}
 	
 	@Override 
-	public void eSet (EStructuralFeature eFeature, Object newValue){
+	public void eSet(EStructuralFeature eFeature, Object newValue){
 		int featureID = eDerivedStructuralFeatureID(eFeature); 
 		Assert.isTrue(featureID >= 0 , "Invalid Feature : "+ eFeature.getName());
-		eSet(featureID, newValue);	
+		eSet(featureID, newValue);
+		addChangelogEntry(newValue, eFeature);
 	}	
 	
 	@Override
@@ -265,6 +262,27 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		int dynamicFeatureID = featureID - eStaticFeatureCount();
 		Assert.isTrue(eFeature.isChangeable()," illegal argument feature Cannot be changed : " + eFeature);
 		eDynamicSet(dynamicFeatureID, eFeature, newValue);
+		addChangelogEntry(newValue, eFeature);
+	}
+	
+	protected void addChangelogEntry(Object newValue, int eStructuralFeatureId) {
+		addChangelogEntry(newValue,  eClass().getEStructuralFeature(eStructuralFeatureId));
+	}
+	
+	protected void addChangelogEntry(Object newValue, EStructuralFeature eFeature) {
+		if (!loadingOnDemand && getChangeLog() != null) {
+			if (eFeature instanceof EAttribute) {
+				getChangeLog().add(new SetAttribute(this, (EAttribute) eFeature, eGet(eFeature, false), newValue));
+			} else if (eFeature instanceof EReference){
+				@SuppressWarnings("unchecked")
+				Collection<EObject> c = (Collection<EObject>) newValue;
+				for (EObject elt : c) { 
+					getChangeLog().add(new AddLink(this, (EReference) eFeature, eGet(eFeature, false), elt));
+				}
+			} else {
+				throw new WrappedException(new Exception(NLS.bind("Unexpected EStructuralFeature {0}", eFeature.toString())));
+			}
+		}
 	}
 	
 	@Override 
@@ -285,8 +303,52 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public static class NeoObjectData {
 		
 	}
-
-
-
 	
+	@Override
+	public boolean eIsSet(EStructuralFeature eFeature) {
+		//return simpleGet(eFeature.getFeatureID(),true, true, false) != null;
+		return eGet(eFeature) != null;
+	}
+	
+	public EList<EObject> eResolvedContents() {
+		return new EContentsEList<EObject>(this) {
+			@Override
+			protected boolean resolve() {
+				return false;
+			}
+		};
+	}
+	
+	public TreeIterator<EObject> eAllResolvedContents() {
+		return new AbstractTreeIterator<EObject>(this, false) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Iterator<EObject> getChildren(Object object) {
+				return ((Neo4emfObject) object).eResolvedContents().iterator();
+			}
+		};
+	}
+	
+	@Override
+	public void eSetDirectResource(Internal resource) {
+		super.eSetDirectResource(resource);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+	            return true;
+		} else if (obj == null) {
+			return false;
+		} else if(obj.getClass() != this.getClass()) {
+			return false;
+		} else if (((Neo4emfObject) obj).getNodeId() == -1) {
+			return false;
+		} else if (this.getNodeId() == -1) {
+			return false;
+		} else {
+			return ((Neo4emfObject) obj).getNodeId() == this.getNodeId();
+		}
+	}
 }

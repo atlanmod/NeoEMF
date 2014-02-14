@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import fr.inria.atlanmod.neo4emf.impl.UnloadablePersistentObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -40,7 +41,7 @@ import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
  *
  * @generated
  */
-public class MGraphImpl extends Neo4emfObject implements MGraph {
+public class MGraphImpl extends UnloadablePersistentObject implements MGraph {
 
 	 
 	

@@ -25,6 +25,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
+import scala.Int;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
@@ -71,8 +72,6 @@ public interface IPersistenceManager {
 	 * @see {@link IPersistenceService#getNodeById(long)}
 	 */
 	public Node getNodeById(EObject eObj) throws NullPointerException ;
-	
-	public Node getTmpNodeByNodeId(EObject eObj) throws NullPointerException ;
 	/**
 	 * return the equivalent relationshipType from eObject
 	 * @param clsID {@link Int}
@@ -87,9 +86,6 @@ public interface IPersistenceManager {
 	 * @see IPersistenceService#createNodeFromEObject(EObject)
 	 */
 	public Node createNodefromEObject(EObject eObject);
-	
-	public Node createTmpNodeFromEObject(EObject eObject);
-	
 	/**
 	 * map an {@link EObject} that is loaded to its node Id
 	 * @param eObject
@@ -101,12 +97,6 @@ public interface IPersistenceManager {
 	 * @return {@link List}
 	 */
 	public ArrayList<Node> getAllRootNodes();
-	
-	public ArrayList<Node> getAllTmpNodes();
-	
-	public Node getBaseNodeFromTmp(Node n);
-	
-	public int deleteBaseNode(Node tmp, Node base);
 	/**
 	 * Add object to the resource contents
 	 * @param objects
@@ -243,6 +233,7 @@ public interface IPersistenceManager {
 	//public void deleteFromContents(EObject neoObj);
 	void setRelationshipsMap(
 			Map<String, Map<Point, RelationshipType>> map);
+	void putAllToProxy2(List<INeo4emfObject> objects);
 	
 
 	
