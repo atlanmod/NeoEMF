@@ -24,13 +24,20 @@ package <%=genPackage.getClassPackageName()%>;
 <%if (isImplementation) {%>
 <%genModel.addPseudoImport("org.eclipse.emf.ecore.impl.MinimalEObjectImpl.Container");%>
 <%genModel.addPseudoImport("org.eclipse.emf.ecore.impl.MinimalEObjectImpl.Container.Dynamic");%>
+<<<<<<< HEAD
+=======
+<%genModel.addImport("org.eclipse.emf.common.notify.Adaper");%>
+>>>>>>> 62e377f... more templates
 <%genModel.addImport("org.eclipse.emf.ecore.EClass");%>
 <%genModel.addImport("org.eclipse.emf.ecore.EObject");%>
 
 
 <% if (!genPackage.getAllSwitchGenClasses().isEmpty()){ 
 	genModel.addImport(genPackage.getUtilitiesPackageName()+"."+genPackage.getAdapterFactoryClassName());
+<<<<<<< HEAD
 	genModel.addImport("fr.inria.atlanmod.neo4emf.change.impl.ChangeLog");
+=======
+>>>>>>> 62e377f... more templates
 	genModel.addImport("fr.inria.atlanmod.neo4emf.change.impl.NewObject");}%>
 <%if (!genPackage.hasJavaLangConflict() && !genPackage.hasInterfaceImplConflict() && !genPackage.getClassPackageName().equals(genPackage.getInterfacePackageName())) genModel.addImport(genPackage.getInterfacePackageName() + ".*");%>
 <%}%>
@@ -230,8 +237,15 @@ public interface <%=genPackage.getFactoryInterfaceName()%><%if (!genModel.isSupp
 		<%=genClass.getImportedInterfaceName()%><%=genClass.getInterfaceTypeArguments()%> <%=genClass.getSafeUncapName()%> = <%=genClass.getCastFromEObject()%>super.create(<%=genClass.getQualifiedClassifierAccessor()%>);
     <%} else {%>
 		<%=genClass.getImportedClassName()%><%=genClass.getClassTypeArguments()%> <%=genClass.getSafeUncapName()%> = new <%=genClass.getImportedClassName()%><%=genClass.getClassTypeArguments()%>()<%if (genModel.isSuppressInterfaces() && !genPackage.getReflectionPackageName().equals(genPackage.getInterfacePackageName())) {%>{}<%}%>;
+<<<<<<< HEAD
 		<%=genClass.getSafeUncapName()%>.eAdapters().add(adapterFactory.create<%=genPackage.getClassUniqueName(genClass)%>Adapter());
 		ChangeLog.getInstance().add(new NewObject(<%=genClass.getSafeUncapName()%>));
+=======
+		Adapter adapter = adapterFactory.create<%=genPackage.getClassUniqueName(genClass)%>Adapter();
+		if (adapter != null) {
+			<%=genClass.getSafeUncapName()%>.eAdapters().add(adapter);
+		}
+>>>>>>> 62e377f... more templates
     <%}%>
 		return <%=genClass.getSafeUncapName()%>;
 	}

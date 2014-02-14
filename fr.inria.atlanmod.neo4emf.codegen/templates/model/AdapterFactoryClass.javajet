@@ -157,16 +157,7 @@ public class <%=genPackage.getAdapterFactoryClassName()%> extends AdapterFactory
 	 */
 	public Adapter create<%=genPackage.getClassUniqueName(genClass)%>Adapter()
 	{
-		return new AdapterImpl(){
-		@Override
-		public void notifyChanged(Notification msg){			
-				if (msg.getEventType()==INeo4emfNotification.GET){
-					EObject eObject = (EObject)msg.getNotifier();
-					((INeo4emfResource)eObject.eResource()).notifyGet(eObject,(EStructuralFeature)msg.getFeature());
-				}
-				ChangeLog.getInstance().addNewEntry(msg);
-			}
-		};
+		return null;
 	}
 <%}%>
 
