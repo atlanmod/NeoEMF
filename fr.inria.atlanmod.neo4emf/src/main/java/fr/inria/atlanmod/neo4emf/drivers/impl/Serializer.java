@@ -288,6 +288,5 @@ public class Serializer implements ISerializer {
 		}
 		manager.putNodeId(eObject, n.getId());
 		// TODO set the node id in the eObject
-
 	}
 }
