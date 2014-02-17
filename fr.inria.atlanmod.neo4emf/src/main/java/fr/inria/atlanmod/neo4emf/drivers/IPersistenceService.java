@@ -49,7 +49,6 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 * the Value of the node representing the resource in the backend 
 	 */
 	public final String RESOURCE_NODE = "resource";
-	public final String TMP_NODE = "tmp_node";
 	/**
 	 * INSTANCE_OF {@link RelationshipType}
 	 */
@@ -58,9 +57,6 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 * IS_ROOT {@link RelationshipType}
 	 */
 	public final RelationshipType IS_ROOT = MetaRelation.IS_ROOT;
-	
-	public final RelationshipType IS_TMP_OF = MetaRelation.IS_TMP_OF;
-	
 	/**
 	 * get the meta_elements' index
 	 * @return {@link Index}
@@ -84,19 +80,11 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 * @return {@link Node}
 	 */
 	Node createNodeFromEObject(EObject eObject);
-	
-	Node createTmpNodeFromEObject(EObject eObject);
-	
 	/**
 	 * Return a List of the root nodes
 	 * @return
 	 */
 	ArrayList<Node> getAllRootNodes();
-	
-	ArrayList<Node> getAllTmpNodes();
-	
-	int deleteBaseNode(Node tmp, Node base);
-	
 	/**
 	 * Return the nodeType of a Node
 	 * @param n {@link Node}
@@ -143,9 +131,7 @@ public interface IPersistenceService extends GraphDatabaseService {
 		/**
 		 * IS_ROOT relationship
 		 */
-		IS_ROOT,
-		
-		IS_TMP_OF
+		IS_ROOT
 	}
 	
 
