@@ -49,7 +49,7 @@ import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 
 public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject {
 
-	protected volatile boolean loadingOnDemand = false; 
+	protected volatile int loadingOnDemand = 0; 
 	
 	/**
 	 * eObject ID 
@@ -152,6 +152,16 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		this.isProxy = isProxy;
 	}
 	
+	@Override
+	public void setLoadingOnDemand() {
+		this.loadingOnDemand++;
+	}
+	
+	@Override
+	public void unsetLoadingOnDemand() {
+		this.loadingOnDemand--;
+	}
+	
 	@Override 
 	public Object eGet(final EStructuralFeature eFeature ) {
 		return eGet(eFeature, true);
@@ -164,12 +174,12 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	@Override
 	public Object eGet(final EStructuralFeature eFeature, final boolean resolve, final boolean coreType) {
 		try {
-			loadingOnDemand = true;
+			setLoadingOnDemand();
 			int featureID = eDerivedStructuralFeatureID(eFeature);
 			Assert.isTrue(featureID >= 0, "Invalid feature : " + eFeature.getName());
 			return eGet(featureID, resolve, coreType);
 		} finally {
-			loadingOnDemand = false;
+			unsetLoadingOnDemand();
 		}
 	}
 	 
@@ -270,14 +280,23 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	}
 	
 	protected void addChangelogEntry(Object newValue, EStructuralFeature eFeature) {
-		if (!loadingOnDemand && getChangeLog() != null) {
+		if(loadingOnDemand == 0 && getChangeLog() != null) {
+//		if (!loadingOnDemand && getChangeLog() != null) {
 			if (eFeature instanceof EAttribute) {
 				getChangeLog().add(new SetAttribute(this, (EAttribute) eFeature, eGet(eFeature, false), newValue));
 			} else if (eFeature instanceof EReference){
-				@SuppressWarnings("unchecked")
-				Collection<EObject> c = (Collection<EObject>) newValue;
-				for (EObject elt : c) { 
-					getChangeLog().add(new AddLink(this, (EReference) eFeature, eGet(eFeature, false), elt));
+				EReference ref = (EReference)eFeature;
+				if(ref.isMany()) {
+					if(newValue instanceof Collection) {
+						@SuppressWarnings("unchecked")
+						Collection<EObject> c = (Collection<EObject>) newValue;
+						for (EObject elt : c) { 
+							getChangeLog().add(new AddLink(this, (EReference) eFeature, eGet(eFeature, false), elt));
+						}
+					}
+					else {
+						getChangeLog().add(new AddLink(this,(EReference)eFeature, eGet(eFeature,false),newValue));
+					}
 				}
 			} else {
 				throw new WrappedException(new Exception(NLS.bind("Unexpected EStructuralFeature {0}", eFeature.toString())));

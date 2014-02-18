@@ -43,5 +43,9 @@ public interface INeo4emfObject extends EObject, Comparable <INeo4emfObject>{
 
 		void setProxy(boolean isProxy);
 		
+		void setLoadingOnDemand();
+		
+		void unsetLoadingOnDemand();
+		
 
 }

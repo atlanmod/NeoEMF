@@ -23,6 +23,8 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.neo4j.graphdb.RelationshipType;
 
+import fr.inria.atlanmod.neo4emf.change.IChangeLog;
+import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 
@@ -118,6 +120,9 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * @param map
 	 */
 	void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map);
+	
+	// debug
+	public IChangeLog<Entry> getChangeLog();
 	
 	
 }

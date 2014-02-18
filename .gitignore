@@ -223,4 +223,7 @@ pip-log.txt
 
 # Generated templates
 fr.inria.atlanmod.neo4emf.codegen/src/fr/inria/atlanmod/neo4emf/codegen/templates/model/*
-fr.inria.atlanmod.neo4emf.codegen/src/org/eclipse/emf/codegen/ecore/templates/model/*
+
+fr.inria.atlanmod.neo4emf.codegen/src/org
+
+.JETEmitters

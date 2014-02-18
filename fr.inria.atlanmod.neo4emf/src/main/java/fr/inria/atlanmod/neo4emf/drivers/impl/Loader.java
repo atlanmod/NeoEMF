@@ -27,10 +27,7 @@ import org.neo4j.graphdb.Node;
 import scala.Int;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeoFactory;
-import fr.inria.atlanmod.neo4emf.change.IChangeLog;
-import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
-import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 public class Loader implements ILoader {
@@ -290,6 +287,7 @@ public class Loader implements ILoader {
 	@Override	
 	public void getObjectsOnDemand(EObject obj, int featureId, Node node ,List<Node> nodes) throws FeatureNotFoundException {
 		try {
+			((INeo4emfObject)obj).setLoadingOnDemand();
 //			int size = getChangeLog().size();
 //			
 			EReference str = Loader.getFeatureFromID(obj, featureId);
@@ -313,6 +311,7 @@ public class Loader implements ILoader {
 			} else if (!objectList.isEmpty()) {
 				obj.eSet(str, objectList.get(0));
 			}
+			((INeo4emfObject)obj).unsetLoadingOnDemand();;
 //			getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		} catch (FeatureNotFoundException e) {
 			e.printStackTrace();
