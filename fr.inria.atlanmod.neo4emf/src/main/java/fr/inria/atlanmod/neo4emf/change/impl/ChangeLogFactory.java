@@ -17,7 +17,7 @@ public class ChangeLogFactory implements IChangeLogFactory {
 
 	@Override
 	public IChangeLog<Entry> createChangeLog() {
-		return new ChangeLog();	
+		return new ChangeLog(1);	
 		
 	}
 
