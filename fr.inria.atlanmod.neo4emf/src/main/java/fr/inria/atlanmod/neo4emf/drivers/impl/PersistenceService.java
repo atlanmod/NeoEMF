@@ -76,6 +76,12 @@ public class PersistenceService implements IPersistenceService {
 
 	@Override
 	public Node createWithIndexIfNotExists(EClass c) {
+		assert c != null : "Null ECLass";
+		assert c.getName() != null : "Null EClass name";
+		assert c.getEPackage() != null : "Null EPackage for EClass";
+		assert c.getEPackage().getNsURI() != null : "Null EPackage NsURI";
+		
+		
 		String value = getIdMetaValueFromClass(c);
 		if (getMetaIndex().get(ID_META, value).getSingle() != null)
 			return getMetaIndex().get(ID_META, value).getSingle();
