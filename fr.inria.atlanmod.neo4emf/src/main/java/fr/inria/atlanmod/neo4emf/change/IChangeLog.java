@@ -1,11 +1,9 @@
 package fr.inria.atlanmod.neo4emf.change;
 
-import java.util.List;
 import java.util.Iterator;
 
 import org.eclipse.emf.common.notify.Notification;
 
-import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 
 public interface IChangeLog<E> {
@@ -22,6 +20,10 @@ public interface IChangeLog<E> {
 	public void setSaver(ISerializer s);
 	
 	public Iterator<E> iterator();
+
+	public void removeLastChange();
+	
+	public void removeLastChanges(int count);
 	
 	public void clear();
 	

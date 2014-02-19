@@ -17,7 +17,6 @@ public class ChangeLog implements IChangeLog<Entry> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	private static ChangeLog INSTANCE = null;
 
 	private int stackSize;
@@ -87,5 +86,20 @@ public class ChangeLog implements IChangeLog<Entry> {
 
 	public void clear() {
 		changes.clear();
+	}
+	
+
+	@Override
+	public void removeLastChange() {
+		if (INSTANCE != null)
+			INSTANCE.changes.remove(INSTANCE.changes.size()-1);		
+	}
+
+	@Override
+	public void removeLastChanges(int count) {
+		if (INSTANCE != null)
+			for (int i =0; i< count; i++)
+				removeLastChange();
+		
 	}
 }
