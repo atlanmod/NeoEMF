@@ -331,10 +331,10 @@ public class ProxyManager implements IProxyManager {
 		}
 
 	@Override
-	public Map<Integer, ArrayList<INeo4emfObject>> getSideEffectsMap(
+	public Map<Integer, List<INeo4emfObject>> getSideEffectsMap(
 			INeo4emfObject neoObj, int key) {
 		List<UsageTrace> usedTraces = new ArrayList<UsageTrace>();
-		Map<Integer, ArrayList<INeo4emfObject>> map= new HashMap<Integer,ArrayList<INeo4emfObject>>();
+		Map<Integer, List<INeo4emfObject>> map= new HashMap<Integer,List<INeo4emfObject>>();
 		if (usageTraces.containsKey(key))
 			for (UsageTrace trace : usageTraces.get(key)){
 				if (trace.eObject.equals(neoObj)){

@@ -45,7 +45,7 @@ public class Neo4emfResourceUtil {
 	public static void importFromXMI(String xmiPath, String outputPath, String ecorePath){
 		// Init variables 
 		deleteFileOrDirectory(new File(outputPath));
-		IPersistenceService graphDB = new PersistenceService(outputPath,null);
+		IPersistenceService graphDB = new PersistenceService(outputPath);
 		// Serialize the resource in Neo4j DB
 		Resource metaResource = intiMetalmodel(ecorePath);
 		serializeResource(graphDB,xmiPath, metaResource);

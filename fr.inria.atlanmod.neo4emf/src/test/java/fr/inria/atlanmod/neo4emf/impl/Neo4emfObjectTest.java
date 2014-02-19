@@ -7,6 +7,7 @@ package fr.inria.atlanmod.neo4emf.impl;
 import org.junit.Test;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
+
 public class Neo4emfObjectTest {
     INeo4emfObject obj;
 
@@ -27,7 +28,7 @@ public class Neo4emfObjectTest {
         assert !obj.eIsProxy();
     }
 
-    @org.junit.Test
+    @Test
     public void testGetNodeId() throws Exception {
         obj.setNodeId(Long.MAX_VALUE);
         assert obj.getNodeId() == Long.MAX_VALUE;
@@ -53,6 +54,14 @@ public class Neo4emfObjectTest {
     @org.junit.Test
     public void testCompareTo() throws Exception {
 
+    }
+    
+    @Test
+    public void testEquals() throws Exception {
+    	assert obj.equals(obj);
+    	assert !obj.equals(null);
+    	assert !obj.equals(new Neo4emfObject());
+    	
     }
 
     @org.junit.Test

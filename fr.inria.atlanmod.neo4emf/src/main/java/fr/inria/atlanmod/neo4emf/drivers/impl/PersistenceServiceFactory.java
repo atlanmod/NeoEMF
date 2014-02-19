@@ -24,8 +24,8 @@ import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 public class PersistenceServiceFactory extends GraphDatabaseFactory implements IPersistenceServiceFactory {
 
 	@Override
-	public IPersistenceService createPersistenceService(String path, IPersistenceManager persistenceManager, Map<String, String> config) {
-		IPersistenceService service = new PersistenceService(path, persistenceManager);
+	public IPersistenceService createPersistenceService(String path, Map<String, String> config) {
+		IPersistenceService service = new PersistenceService(path);
 		registerShutdownHook(service);
 		return service;
 
@@ -73,8 +73,8 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 	}
 
 	@Override
-	public IPersistenceService createPersistenceService(String path, IPersistenceManager persistenceManager) {
-		IPersistenceService service = new PersistenceService(path, persistenceManager);
+	public IPersistenceService createPersistenceService(String path) {
+		IPersistenceService service = new PersistenceService(path);
 		registerShutdownHook(service);
 		return service;
 	}

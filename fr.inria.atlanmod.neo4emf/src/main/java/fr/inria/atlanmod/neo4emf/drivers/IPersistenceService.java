@@ -91,9 +91,9 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 * Return a List of the root nodes
 	 * @return
 	 */
-	ArrayList<Node> getAllRootNodes();
+	List<Node> getAllRootNodes();
 	
-	ArrayList<Node> getAllTmpNodes();
+	List<Node> getAllTmpNodes();
 	
 	int deleteBaseNode(Node tmp, Node base);
 	
