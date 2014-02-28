@@ -1,43 +1,58 @@
 package fr.inria.atlanmod.neo4emf.change.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.IChangeLogFactory;
 
+// TODO: The implementation of the ChangeLog as a ArrayList will fail if using adapers to track model changes
+// Re-implement and guarantee that synchronization is properly done!!!!! 
 
-public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
+public class ChangeLog implements IChangeLog<Entry> {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private static ChangeLog INSTANCE=null; 
+	private List<Entry> changes = new ArrayList<Entry>();
+
 	@Override
 	public void addNewEntry(Notification msg) {
-		INSTANCE.add(IChangeLogFactory.eINSTANCE.createEntry(msg));	
+		changes.add(IChangeLogFactory.eINSTANCE.createEntry(msg));
 	}
 
-	public static IChangeLog<Entry> getInstance() {
-		if (INSTANCE==null)
-				{ INSTANCE = (ChangeLog) IChangeLogFactory.eINSTANCE.createChangeLog();}
-		return INSTANCE ;
-	}
-
+	// TODO: Check if this is still needed!!!
 	@Override
 	public void removeLastChange() {
-		if (INSTANCE != null)
-			INSTANCE.remove(INSTANCE.size()-1);		
+		changes.remove(changes.size() - 1);
+	}
+
+	// TODO: Check if this is still needed!!!
+	@Override
+	public void removeLastChanges(int count) {
+		for (int i = 0; i < count; i++) {
+			removeLastChange();
+		}
 	}
 
 	@Override
-	public void removeLastChanges(int count) {
-		if (INSTANCE != null)
-			for (int i =0; i< count; i++)
-				removeLastChange();
+	public void add(Entry entry) {
+		changes.add(entry);
 		
 	}
 
+	@Override
+	public Iterator<Entry> iterator() {
+		return changes.iterator();
+	}
+
+	@Override
+	public void clear() {
+		changes.clear();
+	}
+
+	@Override
+	public int size() {
+		return changes.size();
+	}
 }

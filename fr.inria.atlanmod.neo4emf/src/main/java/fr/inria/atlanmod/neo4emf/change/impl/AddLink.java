@@ -5,6 +5,7 @@
 package fr.inria.atlanmod.neo4emf.change.impl;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
@@ -17,12 +18,15 @@ public class AddLink extends Entry {
 	private final EReference eReference;
     private final Object oldValue;
     private final Object newValue;
+    // TODO all is below ... Avoid gc of soft ref I guess ahah
+    private final Object trucDegueux;
     
 	public AddLink(EObject object, EReference eRef, Object oldV, Object newV ) {
 		super(object);
 		eReference= eRef;
 		oldValue=oldV;
 		newValue = newV;
+		trucDegueux = object.eGet(eRef);
 	}
     
 	public AddLink (Notification msg){

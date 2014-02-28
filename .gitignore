@@ -214,4 +214,16 @@ pip-log.txt
 
 *.class
 
-*.class
+/fr.inria.atlanmod.neo4emf.tests/data/output
+
+/fr.inria.atlanmod.neo4emf.tests/data/input/mgraph/Test/
+
+# IntelliJ IDEA file
+.idea/
+*.iml
+
+# Generated templates
+/fr.inria.atlanmod.neo4emf.codegen/src/fr/inria/atlanmod/neo4emf/codegen/templates/
+fr.inria.atlanmod.neo4emf.codegen/src/org/
+
+

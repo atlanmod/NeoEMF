@@ -23,9 +23,11 @@ import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.jboss.util.NullArgumentException;
 import org.jboss.util.collection.SoftValueTreeMap;
+import org.neo4j.graphdb.Node;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
@@ -39,12 +41,12 @@ public class ProxyManager implements IProxyManager {
 	/**
 	 * maps the objects to the appropriate nodes while saving the model
 	 */
-	private WeakHashMap<? extends EObject, Long> objects2nodes;
+	private HashMap<? extends EObject, Long> objects2nodes;
 	/**
 	 * maps the partitions ID to the physical partition 
 	 * A partitions a @see {@link TreeMap} mapping objects and their node ID.
 	 */
-	private SoftValueTreeMap<Integer,AbstractPartition> partitions;
+	private TreeMap<Integer,AbstractPartition> partitions;
 	/**
 	 * saves the usage count of a partition 
 	 */	
@@ -56,32 +58,37 @@ public class ProxyManager implements IProxyManager {
 	/**
 	 * 
 	 */
-	private WeakHashMap<INeo4emfObject, INeo4emfObject> object2proxy;
+	private HashMap<INeo4emfObject, INeo4emfObject> object2proxy;
 	/**
 	 * Maps each partition to the partitions using it  
 	 */
 	private HashMap<Integer, List<UsageTrace>> usageTraces;
 	
 	/**
+	 * Maps existant element in the Database
+	 */
+	private HashMap<EClass, TreeMap<Long, EObject>> nodes2objects;
+	/**
 	 * first Available partitionId
 	 */
 	int availablePartitionId;
 	@SuppressWarnings("unchecked")
 	@Override
-	public WeakHashMap<EObject, Long> getWeakNodeIds(){
-		return (WeakHashMap<EObject, Long>) objects2nodes;
+	public HashMap<EObject, Long> getWeakNodeIds(){
+		return (HashMap<EObject, Long>) objects2nodes;
 	}
 
 
 	public ProxyManager(){
-		objects2nodes = new WeakHashMap<INeo4emfObject, Long>();
-		partitions = new SoftValueTreeMap<Integer,AbstractPartition>();
+		objects2nodes = new HashMap<INeo4emfObject, Long>();
+		partitions = new TreeMap<Integer,AbstractPartition>();
 		partitionsUsageCount = new ArrayList<UsageCount>();
 		partitionsUsageHistory = new ArrayList<Integer>();
 		//partitionsWithinObjects = new ArrayList<PartitionsByObject>();
 		availablePartitionId = -1;
 		usageTraces = new HashMap<Integer,List<UsageTrace>>();
-		object2proxy =  new WeakHashMap<INeo4emfObject,INeo4emfObject>();
+		object2proxy =  new HashMap<INeo4emfObject,INeo4emfObject>();
+		nodes2objects = new HashMap<EClass, TreeMap<Long,EObject>>();
 	}
 	public boolean matchProxy(INeo4emfObject eObject, INeo4emfObject proxyEObject){
 		boolean result = object2proxy.containsKey(eObject);
@@ -103,7 +110,7 @@ public class ProxyManager implements IProxyManager {
 		usageTraces.get(usedPID).add(new UsageTrace(userPID, featureId, eObj));
 	}
 	@Override
-	public  SoftValueTreeMap<Integer,AbstractPartition> getWeakObjectsTree (){
+	public  TreeMap<Integer,AbstractPartition> getWeakObjectsTree (){
 		return partitions;
 	}
 	@Override
@@ -324,10 +331,10 @@ public class ProxyManager implements IProxyManager {
 		}
 
 	@Override
-	public Map<Integer, ArrayList<INeo4emfObject>> getSideEffectsMap(
+	public Map<Integer, List<INeo4emfObject>> getSideEffectsMap(
 			INeo4emfObject neoObj, int key) {
 		List<UsageTrace> usedTraces = new ArrayList<UsageTrace>();
-		Map<Integer, ArrayList<INeo4emfObject>> map= new HashMap<Integer,ArrayList<INeo4emfObject>>();
+		Map<Integer, List<INeo4emfObject>> map= new HashMap<Integer,List<INeo4emfObject>>();
 		if (usageTraces.containsKey(key))
 			for (UsageTrace trace : usageTraces.get(key)){
 				if (trace.eObject.equals(neoObj)){
@@ -344,4 +351,27 @@ public class ProxyManager implements IProxyManager {
 			usageTraces.get(key).removeAll(usedTraces);
 		return map;
 		}
+
+
+	@Override
+	public void putToProxy(INeo4emfObject obj) {
+		EClass eClass = obj.eClass();
+		
+		if (nodes2objects.containsKey(eClass)) {
+			nodes2objects.get(eClass).put(obj.getNodeId(), obj);
+		} else {
+				TreeMap<Long, EObject> treeMap  = new TreeMap<Long, EObject>();
+				treeMap.put (obj.getNodeId(), obj);
+				nodes2objects.put(eClass, treeMap);
+			}	
+		}
+
+
+	@Override
+	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
+		if (nodes2objects.containsKey(eClassifier)) {
+			return (INeo4emfObject) (nodes2objects.get(eClassifier).containsKey(n.getId()) ? nodes2objects.get(eClassifier).get(n.getId()) : null) ;
+		}
+		return null;
+	}
 	}

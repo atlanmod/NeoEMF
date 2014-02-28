@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -41,66 +40,72 @@ import org.neo4j.kernel.extension.KernelExtensionFactory;
 import org.neo4j.kernel.impl.cache.CacheProvider;
 import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 
-
 public class PersistenceService implements IPersistenceService {
-
-	String storeDir;
-	IPersistenceManager manager;
-	GraphDatabaseService db;
 	
-	public PersistenceService(String storeDir, IPersistenceManager persistenceManager) {
-		this.storeDir= storeDir;
+	/**
+	 * The Neo4j database service.
+	 */
+	GraphDatabaseService db;
+
+	public PersistenceService(String storeDir) {
+
+		// the cache providers
+		ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
+		cacheList.add(new SoftCacheProvider());
+
+		// the kernel extensions
+		LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
+		List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
+		extensions.add(lucene);
+
+		// the database setup
+		GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
+		gdbf.setKernelExtensions(extensions);
+		gdbf.setCacheProviders(cacheList);
+		db = gdbf.newEmbeddedDatabase(storeDir);
+	}
+
+	@Override
+	public Index<Node> getMetaIndex() {
+		return index().forNodes(META_ELEMENTS);
+	}
+
+	@Override
+	public Node createWithIndexIfNotExists(EClass c) {
+		assert c != null : "Null ECLass";
+		assert c.getName() != null : "Null EClass name";
+		assert c.getEPackage() != null : "Null EPackage for EClass";
+		assert c.getEPackage().getNsURI() != null : "Null EPackage NsURI";
 		
-        //the cache providers
-        ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-        cacheList.add( new SoftCacheProvider() );
- 
-        //the kernel extensions
-        LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
-        List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
-        extensions.add( lucene );
- 
-        //the database setup
-        GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
-        gdbf.setKernelExtensions( extensions );
-        gdbf.setCacheProviders( cacheList );
-        db = gdbf.newEmbeddedDatabase( storeDir );
-        
-		manager = persistenceManager;
-	}
-
-	@Override
-	public Index<Node> getMetaIndex(){
-		return index().forNodes(META_ELEMENTS);		
-	}
-
-	@Override
-	public Node createWithIndexIfNotExists(EClass c){	
+		
 		String value = getIdMetaValueFromClass(c);
-		if (getMetaIndex().get(ID_META,value).getSingle() != null)
-			return getMetaIndex().get(ID_META,value).getSingle();
+		if (getMetaIndex().get(ID_META, value).getSingle() != null)
+			return getMetaIndex().get(ID_META, value).getSingle();
 		Node n = createNode();
-		n.setProperty(ECLASS_NAME,c.getName() );
+		n.setProperty(ECLASS_NAME, c.getName());
 		n.setProperty(NS_URI, c.getEPackage().getNsURI());
 		getMetaIndex().putIfAbsent(n, ID_META, value);
-		return n;					
+		return n;
 	}
-	private String getIdMetaValueFromClass(EClass c){
-		return c.getEPackage().getName()+"_"+c.getClassifierID();
+
+	private String getIdMetaValueFromClass(EClass c) {
+		return c.getEPackage().getName() + "_" + c.getClassifierID();
 	}
+
 	public Node createResourceNodeIfAbsent() {
 		if (getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle() != null)
 			return getMetaIndex().get(ID_META, RESOURCE_NODE).getSingle();
 		Node n = createNode();
 		getMetaIndex().putIfAbsent(n, ID_META, RESOURCE_NODE);
-		return n;					
+		return n;
 	}
 
-	@Override 
-	public EObject createObjectProxyFromNode(Node n){
+	@Override
+	public EObject createObjectProxyFromNode(Node n) {
 		// TODO finish declaration
 		return null;
 	}
@@ -111,85 +116,101 @@ public class PersistenceService implements IPersistenceService {
 		Node typeNode = createWithIndexIfNotExists(eObject.eClass());
 		node.createRelationshipTo(typeNode, INSTANCE_OF);
 		if (isRoot(eObject))
-			createResourceNodeIfAbsent().createRelationshipTo(node, IS_ROOT);		
+			createResourceNodeIfAbsent().createRelationshipTo(node, IS_ROOT);
 		return node;
 	}
 
+
+
+
 	private boolean isRoot(EObject eObject) {		
-		EClass cls = eObject.eClass();
-		for(EReference ref : cls.getEAllReferences())
-			if(ref.isContainer()) return false;
-		 return true;
+		if (eObject.eContainer() == null && eObject.eResource() != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public ArrayList<Node> getAllRootNodes() {
+	public List<Node> getAllRootNodes() {
 		Index<Node> index = getMetaIndex();
 		Node resourceNode = index.get(ID_META, RESOURCE_NODE).getSingle();
+		
+		assert resourceNode != null : "Null resource node";
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
 	}
+
 	
-	private ArrayList<Node> fetchNodesByRT(long nodeId, RelationshipType relType, Direction direction) {
+	private List<Node> fetchNodesByRT(long nodeId, RelationshipType relType, Direction direction) {
 		Traverser tvr =  setUpTraversal(nodeId,relType,direction);
 		return traverseNodes(tvr);
 	}
-	private ArrayList<Node> fetchNodesByRT(long nodeId, RelationshipType relType) {
+
+	private List<Node> fetchNodesByRT(long nodeId, RelationshipType relType) {
 		return fetchNodesByRT(nodeId, relType, Direction.OUTGOING);
 	}
 
-	private ArrayList<Node> traverseNodes(Traverser tvr) {
-		ArrayList<Node > nodeList = new ArrayList<Node>();
+	private List<Node> traverseNodes(Traverser tvr) {
+		ArrayList<Node> nodeList = new ArrayList<Node>();
 		for (Path path : tvr)
 			nodeList.add(path.endNode());
 		return nodeList;
 	}
 
-	protected Traverser setUpTraversal(long nodeId, RelationshipType relType, Direction direction) {
+	protected Traverser setUpTraversal(long nodeId, RelationshipType relType,
+			Direction direction) {
 		Node startNode = getNodeById(nodeId);
-		TraversalDescription td =  Traversal.description().breadthFirst()
+		TraversalDescription td = Traversal.description().breadthFirst()
 				.relationships(relType, direction)
-				.evaluator(Evaluators.excludeStartPosition());
+				.evaluator(Evaluators.excludeStartPosition())
+				.evaluator(Evaluators.toDepth(1));
 		return td.traverse(startNode);
 
 	}
-	
-//	private Traverser setUpTraversal(long nodeId, RelationshipType relType) {
-//		return setUpTraversal(nodeId, relType, Direction.OUTGOING);
-//	}
-	
+
+	// private Traverser setUpTraversal(long nodeId, RelationshipType relType) {
+	// return setUpTraversal(nodeId, relType, Direction.OUTGOING);
+	// }
+
 	@Override
 	public String getNodeType(Node n) {
-		ArrayList<Node> list = fetchNodesByRT(n.getId(), INSTANCE_OF);
-		return (String) (list.size() == 1 ? list.get(0).getProperty(ECLASS_NAME) :null);
+		List<Node> list = fetchNodesByRT(n.getId(), INSTANCE_OF);
+		return (String) (list.size() == 1 ? list.get(0)
+				.getProperty(ECLASS_NAME) : null);
 	}
 
 	@Override
 	public String getContainingPackage(Node n) {
-		ArrayList<Node> list = fetchNodesByRT(n.getId(), INSTANCE_OF);
-		return (String) (list.size() == 1 ? list.get(0).getProperty(NS_URI) :null);
+		List<Node> list = fetchNodesByRT(n.getId(), INSTANCE_OF);
+		return (String) (list.size() == 1 ? list.get(0).getProperty(NS_URI)
+				: null);
 	}
 
 	@Override
 	public List<Node> getNodesOnDemand(long nodeid,
-			 RelationshipType relationshipType) {
+			RelationshipType relationshipType) {
 		return fetchNodesByRT(nodeid, relationshipType);
 	}
 
 	@Override
 	public boolean isRootNode(Node node) {
-		List<Node> nodes = fetchNodesByRT(node.getId(), IS_ROOT, Direction.INCOMING);
-		if(nodes.size() == 0)
+		List<Node> nodes = fetchNodesByRT(node.getId(), IS_ROOT,
+				Direction.INCOMING);
+		if (nodes.size() == 0)
 			return false;
-		if (nodes.size()==1 && nodes.get(0).equals(node))
-			return false ;
+		if (nodes.size() == 1 && nodes.get(0).equals(node))
+			return false;
 		return true;
-		}
+	}
 
 	@Override
 	public List<Node> getAllNodesOfType(EClass eClass) {
-		Node eClassNode = getMetaIndex().get(ID_META, getIdMetaValueFromClass(eClass)).getSingle();	
-		if (eClassNode == null) return Collections.emptyList();
-		return fetchNodesByRT(eClassNode.getId(), INSTANCE_OF, Direction.INCOMING);
+		Node eClassNode = getMetaIndex().get(ID_META,
+				getIdMetaValueFromClass(eClass)).getSingle();
+		if (eClassNode == null)
+			return Collections.emptyList();
+		return fetchNodesByRT(eClassNode.getId(), INSTANCE_OF,
+				Direction.INCOMING);
 	}
 
 	@Override
@@ -262,6 +283,4 @@ public class PersistenceService implements IPersistenceService {
 			TransactionEventHandler<T> arg0) {
 		return db.unregisterTransactionEventHandler(arg0);
 	}
-
-	
 }
