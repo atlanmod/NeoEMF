@@ -121,8 +121,9 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 */
 	void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map);
 	
-	// debug
+	/**
+	 * 
+	 * @return the change log
+	 */
 	public IChangeLog<Entry> getChangeLog();
-	
-	
 }

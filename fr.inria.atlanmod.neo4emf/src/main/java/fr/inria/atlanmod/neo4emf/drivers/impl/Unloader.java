@@ -38,8 +38,8 @@ public class Unloader implements IUnloader {
 
 	private void deleteObjectAndSideEffects(INeo4emfObject neoObj, int key) {
 		
-		Map <Integer, ArrayList<INeo4emfObject>> affectedElements = manager.getAffectedElement(neoObj, key);
-		for (Map.Entry<Integer, ArrayList<INeo4emfObject>> element : affectedElements.entrySet()){
+		Map <Integer, List<INeo4emfObject>> affectedElements = manager.getAffectedElement(neoObj, key);
+		for (Map.Entry<Integer, List<INeo4emfObject>> element : affectedElements.entrySet()){
 			for (INeo4emfObject object : element.getValue()){
 				unloadElement(object, element.getKey());
 			}

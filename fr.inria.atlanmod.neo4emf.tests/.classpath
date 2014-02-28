@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=fr.inria.atlanmod.neo4emf.tests&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fr.inria.atlanmod.neo4emf"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/mgraph"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/mteach"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -336,7 +336,6 @@ public class Loader implements ILoader {
 				objectList.add(object);
 				
 			}
-			// manager.putAllToProxy(objectList);
 			// TODO: Check this code! It causes movements of objects from their
 			// containers to the root of the resource...
 			// if (!str.isContainment())

@@ -1,18 +1,23 @@
 package fr.inria.atlanmod.neo4emf.change;
 
-import java.util.List;
+import java.util.Iterator;
 
 import org.eclipse.emf.common.notify.Notification;
 
-public interface IChangeLog<E> extends List<E> {
-	
+public interface IChangeLog<E> {
 
+	public void addNewEntry(Notification msg);
+
+//	public void removeLastChange();
+
+//	public void removeLastChanges(int count);
 	
-	public void addNewEntry (Notification msg);
+	public boolean add(E entry);
 	
-	public void removeLastChange();
+	public Iterator<E> iterator();
 	
-	public void removeLastChanges(int count);
+	public void clear();
 	
-	
+	public int size();
+
 }

@@ -20,11 +20,11 @@ package <%=genPackage.getReflectionPackageName()%>;
 <%} else {%>
 package <%=genPackage.getClassPackageName()%>;
 <%}%>
-
+ 
 <%if (isImplementation) {%>
 <%genModel.addPseudoImport("org.eclipse.emf.ecore.impl.MinimalEObjectImpl.Container");%>
 <%genModel.addPseudoImport("org.eclipse.emf.ecore.impl.MinimalEObjectImpl.Container.Dynamic");%>
-<%genModel.addImport("org.eclipse.emf.common.notify.Adaper");%>
+<%genModel.addImport("org.eclipse.emf.common.notify.Adapter");%>
 <%genModel.addImport("org.eclipse.emf.ecore.EClass");%>
 <%genModel.addImport("org.eclipse.emf.ecore.EObject");%>
 

@@ -1,4 +1,5 @@
 package fr.inria.atlanmod.neo4emf.drivers.impl;
+
 /**
  * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
@@ -33,6 +34,7 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
@@ -48,7 +50,6 @@ import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.logger.Logger;
 import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
-
 
 public class PersistenceManager implements IPersistenceManager {
 
@@ -71,7 +72,7 @@ public class PersistenceManager implements IPersistenceManager {
 	/**
 	 * The resource {@link Neo4emfResource}
 	 */
-	protected Neo4emfResource resource;
+	protected INeo4emfResource resource;
 	/**
 	 * The loaded elements manager {@link ProxyManager}
 	 */
@@ -79,18 +80,25 @@ public class PersistenceManager implements IPersistenceManager {
 	/**
 	 * {@link EReference} to {@link RelationshipType} mapping of the package
 	 */
-	protected Map<String,Map<Point,RelationshipType>> eRef2relType;	
+	protected Map<String, Map<Point, RelationshipType>> eRef2relType;
+
 	/**
 	 * Global constructor
-	 * @param neo4emfResource {@link Neo4emfResource}
-	 * @param storeDirectory {@link String}
-	 * @param eRef2relType {@link Map}
+	 * 
+	 * @param neo4emfResource
+	 *            {@link Neo4emfResource}
+	 * @param storeDirectory
+	 *            {@link String}
+	 * @param eRef2relType
+	 *            {@link Map}
 	 */
-	public PersistenceManager(Neo4emfResource neo4emfResource,
-				String storeDirectory, 
+	public PersistenceManager(INeo4emfResource neo4emfResource,
+			String storeDirectory,
 			Map<String, Map<Point, RelationshipType>> eRef2relType) {
+		
 		this.resource = neo4emfResource;
-		this.persistenceService = IPersistenceServiceFactory.eINSTANCE.createPersistenceService(storeDirectory,this);
+		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
+				.createPersistenceService(storeDirectory);
 		this.serializer = new Serializer(this);
 		this.eRef2relType = eRef2relType;
 		this.proxyManager = new ProxyManager();
@@ -102,8 +110,10 @@ public class PersistenceManager implements IPersistenceManager {
 			String storeDirectory,
 			Map<String, Map<Point, RelationshipType>> map,
 			Map<String, String> params) {
+		
 		this.resource = neo4emfResource;
-		this.persistenceService = IPersistenceServiceFactory.eINSTANCE.createPersistenceService(storeDirectory,this,params);
+		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
+				.createPersistenceService(storeDirectory, params);
 		this.serializer = new Serializer(this);
 		this.eRef2relType = eRef2relType;
 		this.proxyManager = new ProxyManager();
@@ -113,18 +123,20 @@ public class PersistenceManager implements IPersistenceManager {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void save(Map<?,?> options) {
+	public void save(Map<?, ?> options) {
 		try {
 			this.serializer.save((Map<String, Object>) options);
 		} catch (Exception e) {
 			shutdown();
 			e.printStackTrace();
 		}
-	}		
+	}
+
 	@Override
 	public void load() {
-		load (null);		
-	}	
+		load(null);
+	}
+
 	@Override
 	public void load(Map<?, ?> options) {
 		try {
@@ -134,23 +146,29 @@ public class PersistenceManager implements IPersistenceManager {
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public void save() {
-		serializer.save(null);	
+		serializer.save(null);
 	}
+
 	@Override
 	public Transaction beginTx() {
-		return persistenceService.beginTx();	 
+		return persistenceService.beginTx();
 	}
+
 	@Override
 	public void shutdown() {
-		persistenceService.shutdown();	
+		persistenceService.shutdown();
 	}
+
 	@Override
-	public Node getNodeById (EObject eObj)  {
-		Assert.isTrue(((INeo4emfObject)eObj).getNodeId() >= 0, "nodeId is > -1");
-		Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getNodeId());
-		if (result == null ) {
+	public Node getNodeById(EObject eObj) {
+		Assert.isTrue(((INeo4emfObject) eObj).getNodeId() >= 0,
+				"nodeId is > -1");
+		Node result = persistenceService.getNodeById(((INeo4emfObject) eObj)
+				.getNodeId());
+		if (result == null) {
 			throw new NullPointerException(" Cannot find the node ");
 		} else {
 			return result;
@@ -193,18 +211,18 @@ public class PersistenceManager implements IPersistenceManager {
 	
 	@Override
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
-		if (eRef2relType==null || eRef2relType.isEmpty())
+		if (eRef2relType == null || eRef2relType.isEmpty())
 			setupERelationshipTypesMap(key);
 		RelationshipType rel = eRef2relType.get(key).get(new Point (clsID,eRefID));
 		return rel;
-			
 
 	}
+
 	private void setupERelationshipTypesMap(String key) {
 		eRef2relType = Neo4emfResourceUtil.createRelationshipTypesMap(key);
 		resource.setRelationshipsMap(eRef2relType);
 	}
-	
+
 	@Override
 	public Node createNodefromEObject(EObject eObject) {
 		return persistenceService.createNodeFromEObject(eObject,false);
@@ -239,28 +257,33 @@ public class PersistenceManager implements IPersistenceManager {
 	public Relationship createDeleteRelationship(Node node) {
 		return persistenceService.createDeleteRelationship(node);
 	}
-	
+
 	@Override
 	public void putNodeId(EObject eObject, long id) {
-		if (! proxyManager.getWeakNodeIds().containsKey(eObject))
-			proxyManager.getWeakNodeIds().put(eObject, id);		
+		if (!proxyManager.getWeakNodeIds().containsKey(eObject))
+			proxyManager.getWeakNodeIds().put(eObject, id);
 	}
+
 	@Override
-	public ArrayList<Node> getAllRootNodes() {
-		return persistenceService.getAllRootNodes();	
+	public List<Node> getAllRootNodes() {
+		return persistenceService.getAllRootNodes();
 	}
+
 	@Override
 	public void addObjectsToContents(List<INeo4emfObject> objects) {
-		resource.getContents().addAll(objects);		
+		resource.getContents().addAll(objects);
 	}
+
 	@Override
 	public String getNodeType(Node n) {
-		return persistenceService.getNodeType(n);	
+		return persistenceService.getNodeType(n);
 	}
+
 	@Override
 	public String getNodeContainingPackage(Node n) {
-		return persistenceService.getContainingPackage(n);	
+		return persistenceService.getContainingPackage(n);
 	}
+
 	@Override
 	public void fetchAttributes(EObject obj) {
 		Node node = getNodeById(obj);
@@ -272,30 +295,38 @@ public class PersistenceManager implements IPersistenceManager {
 		}
 		loader.fetchAttributes(obj,node,attributeNode);	
 	}
+
 	@Override
-	public void putToProxy(INeo4emfObject object, EStructuralFeature str, int partitionID) throws NullPointerException{
-		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(partitionID);
+	public void putToProxy(INeo4emfObject object, EStructuralFeature str,
+			int partitionID) throws NullPointerException {
+		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(
+				partitionID);
 		if (partition == null) {
-			throw new NullPointerException();}
+			throw new NullPointerException();
+		}
 		if (partition instanceof Partition)
-		((Partition)partition).put(object.getNodeId(), object, str);
+			((Partition) partition).put(object.getNodeId(), object, str);
 		else
-			Logger.log(IStatus.WARNING, "//TODO : put flatened partitions to proxy");
-		
+			Logger.log(IStatus.WARNING,
+					"//TODO : put flatened partitions to proxy");
+
 	}
+
 	@Override
 	public void putAllToProxy(List<INeo4emfObject> objects) {
 		for (INeo4emfObject obj : objects)
 			proxyManager.putToProxy(obj);
 	}
+
 	@Override
 	public void putAllToProxy2(List<INeo4emfObject> objects) {
 		for (INeo4emfObject obj : objects)
 			proxyManager.putHeadToProxy(obj);
 	}
+
 	@Override
-	public void getOnDemand(EObject obj, int featureId) {	
-		try{
+	public void getOnDemand(EObject obj, int featureId) {
+		try {
 			EClass eClass = obj.eClass();
 			
 			EPackage ePackage = eClass.getEPackage();
@@ -318,80 +349,98 @@ public class PersistenceManager implements IPersistenceManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public EObject getContainerOnDemand(EObject eObject, int featureId)  {
+	public EObject getContainerOnDemand(EObject eObject, int featureId) {
 		EObject eResult = null;
-		try{
-			List<Node> singleNode = persistenceService.getNodesOnDemand(((INeo4emfObject)eObject).getNodeId(), 
-				getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(), eObject.eClass().getClassifierID(), featureId));		
-			eResult = loader.getContainerOnDemand(eObject, featureId, getNodeById(eObject),singleNode.get(0));
-			}catch(Exception e){ 
-				shutdown();
-				e.printStackTrace();
-			}
-		return  eResult;
+		try {
+			List<Node> singleNode = persistenceService.getNodesOnDemand(
+					((INeo4emfObject) eObject).getNodeId(),
+					getRelTypefromERef(eObject.eClass().getEPackage()
+							.getNsURI(), eObject.eClass().getClassifierID(),
+							featureId));
+			eResult = loader.getContainerOnDemand(eObject, featureId,
+					getNodeById(eObject), singleNode.get(0));
+		} catch (Exception e) {
+			shutdown();
+			e.printStackTrace();
+		}
+		return eResult;
 	}
 
-	
 	@Override
-	public int  proxyContainsLongKey(long id){
-		for (Entry<Integer, AbstractPartition> entry : proxyManager.getWeakObjectsTree().entrySet())
-			if (entry.getValue()!= null && entry.getValue().containsKey(id))
+	public int proxyContainsLongKey(long id) {
+		for (Entry<Integer, AbstractPartition> entry : proxyManager
+				.getWeakObjectsTree().entrySet())
+			if (entry.getValue() != null && entry.getValue().containsKey(id))
 				return entry.getKey();
-		return -1;	
+		return -1;
 	}
+
 	@Override
-	public boolean proxyContainsObjectKey(INeo4emfObject obj){
+	public boolean proxyContainsObjectKey(INeo4emfObject obj) {
 		return proxyManager.getWeakNodeIds().containsKey(obj);
 	}
+
 	@Override
 	public EObject getObjectFromProxy(long id) {
 		int i = proxyContainsLongKey(id);
-		return i == -1 ? null :proxyManager.getEObject(i, id);
+		return i == -1 ? null : proxyManager.getEObject(i, id);
 	}
+
 	@Override
-	public void updateProxyManager(INeo4emfObject eObject, EStructuralFeature feature) {
-		proxyManager.updatePartitionsHistory(eObject, feature.getFeatureID(), feature instanceof EReference);
+	public void updateProxyManager(INeo4emfObject eObject,
+			EStructuralFeature feature) {
+		proxyManager.updatePartitionsHistory(eObject, feature.getFeatureID(),
+				feature instanceof EReference);
 
 	}
+
 	@Override
 	public boolean isRootNode(Node node) {
 		return persistenceService.isRootNode(node);
 	}
+
 	@Override
 	public int getNewPartitionID() {
 		return proxyManager.newPartitionID();
 	}
+
 	@Override
 	public boolean isHead(EObject eObject) {
 		return this.proxyManager.isHead(eObject);
 	}
-	
+
 	@Override
 	public void delegate(EObject eObject) {
 		boolean isFound = false;
-		int newPID=-1;
+		int newPID = -1;
 		INeo4emfObject neoObject = (INeo4emfObject) eObject;
-		for (Entry<Integer, AbstractPartition> entry: proxyManager.getWeakObjectsTree().entrySet()){
-			if (entry.getKey() == neoObject.getPartitionId() || !entry.getValue().containsKey(neoObject.getNodeId())) {
+		for (Entry<Integer, AbstractPartition> entry : proxyManager
+				.getWeakObjectsTree().entrySet()) {
+			if (entry.getKey() == neoObject.getPartitionId()
+					|| !entry.getValue().containsKey(neoObject.getNodeId())) {
 				continue;
 			}
 			if (!isFound) {
-				INeo4emfObject object = entry.getValue().get(neoObject.getNodeId());
+				INeo4emfObject object = entry.getValue().get(
+						neoObject.getNodeId());
 				object.setProxy(false);
 				newPID = entry.getKey();
 				object.setPartitionId(newPID);
 			} else {
-				entry.getValue().get(neoObject.getNodeId()).setPartitionId(newPID);
+				entry.getValue().get(neoObject.getNodeId())
+						.setPartitionId(newPID);
 			}
 		}
 	}
+
 	@Override
 	public void unloadPartition(int PID) {
-		AbstractPartition partition = this.proxyManager.getWeakObjectsTree().get(PID);
+		AbstractPartition partition = this.proxyManager.getWeakObjectsTree()
+				.get(PID);
 		this.unloader.unloadPartition(partition, PID);
-		//proxyManager.getWeakObjectsTree().remove(PID);
+		// proxyManager.getWeakObjectsTree().remove(PID);
 		Runtime.getRuntime().gc();
 	}
 
@@ -408,33 +457,35 @@ public class PersistenceManager implements IPersistenceManager {
 		case IUnloader.LIFO:
 			partition = proxyManager.getLIFOPartition();
 			break;
-		case IUnloader.FIFO : 
+		case IUnloader.FIFO:
 			partition = proxyManager.getFIFOPartition();
 			break;
-		case IUnloader.LEAST_RECENTLY_USED : 
-			partition= proxyManager.getLeastRecentlyUsedPartition();
+		case IUnloader.LEAST_RECENTLY_USED:
+			partition = proxyManager.getLeastRecentlyUsedPartition();
 			break;
-		case IUnloader.LEAST_FREQUENTLY_USED : 
+		case IUnloader.LEAST_FREQUENTLY_USED:
 			partition = proxyManager.getLeastFrequentlyPartition();
 			break;
 		}
-		unloader.unloadPartition(proxyManager.getWeakObjectsTree().get(partition), partition);	
+		unloader.unloadPartition(
+				proxyManager.getWeakObjectsTree().get(partition), partition);
 	}
 
 	@Override
 	public EList<INeo4emfObject> getAllInstancesOfType(EClass eClass) {
-		EList<EClass> classesList = ((Loader)loader).subClassesOf(eClass);
+		EList<EClass> classesList = ((Loader) loader).subClassesOf(eClass);
 		EList<INeo4emfObject> allInstances = new BasicEList<INeo4emfObject>();
 		List<Node> nodeList = new ArrayList<Node>();
-		try{
-			for (EClass eCls : classesList){	
-				nodeList = this.persistenceService.getAllNodesOfType (eCls);
+		try {
+			for (EClass eCls : classesList) {
+				nodeList = this.persistenceService.getAllNodesOfType(eCls);
 				if (nodeList.isEmpty()) {
 					continue;
 				}
-				allInstances.addAll(this.loader.getAllInstances(eCls, nodeList));
+				allInstances
+						.addAll(this.loader.getAllInstances(eCls, nodeList));
 			}
-		}catch(Exception e){ 
+		} catch (Exception e) {
 			shutdown();
 			e.printStackTrace();
 		}
@@ -449,44 +500,52 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public FlatPartition createNewFlatPartition(int id) {
 		FlatPartition result = new FlatPartition();
-		this.proxyManager.getWeakObjectsTree().put(id,result );
+		this.proxyManager.getWeakObjectsTree().put(id, result);
 		return result;
 	}
+
 	@Override
-	public int  createNewPartition(EObject obj, int partitionID) {
+	public int createNewPartition(EObject obj, int partitionID) {
 
 		int newIndex = getNewPartitionID();
 		((INeo4emfObject) obj).setPartitionId(partitionID);
 		((INeo4emfObject) obj).setProxy(true);
-		this.proxyManager.getWeakObjectsTree().put(newIndex, new Partition(obj));
-		//proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex, oldIndex);
+		this.proxyManager.getWeakObjectsTree()
+				.put(newIndex, new Partition(obj));
+		// proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex,
+		// oldIndex);
 		return newIndex;
 	}
+
 	@Override
-	public void moveToPartition(EObject eObj, int fromPID, int toPID, int featureId) {
-		Assert.isNotNull(eObj,"eObject should not be null");
+	public void moveToPartition(EObject eObj, int fromPID, int toPID,
+			int featureId) {
+		Assert.isNotNull(eObj, "eObject should not be null");
 		this.proxyManager.moveToPartition(eObj, fromPID, toPID, featureId);
-		
+
 	}
 
 	@Override
-	public void setUsageTrace(int PID, int partitionId, int featureId, EObject eObject) {
-		((ProxyManager) this.proxyManager).addUsageTrace(PID, partitionId, featureId, eObject);
-		
+	public void setUsageTrace(int PID, int partitionId, int featureId,
+			EObject eObject) {
+		((ProxyManager) this.proxyManager).addUsageTrace(PID, partitionId,
+				featureId, eObject);
+
 	}
 
 	@Override
-	public Map<Integer, ArrayList<INeo4emfObject>> getAffectedElement(
+	public Map<Integer, List<INeo4emfObject>> getAffectedElement(
 			INeo4emfObject neoObj, int key) {
-		return this.proxyManager.getSideEffectsMap( neoObj, key);
+		return this.proxyManager.getSideEffectsMap(neoObj, key);
 	}
 
 	@Override
-	public void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map) {
-		this.eRef2relType = map;	
+	public void setRelationshipsMap(
+			Map<String, Map<Point, RelationshipType>> map) {
+		this.eRef2relType = map;
 	}
 
-	public Neo4emfResource getResource() {
+	public INeo4emfResource getResource() {
 		return resource;
 	}
 
