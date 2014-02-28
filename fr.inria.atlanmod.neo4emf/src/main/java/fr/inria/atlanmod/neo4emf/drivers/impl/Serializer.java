@@ -109,23 +109,6 @@ public class Serializer implements ISerializer {
 					}
 				}
 			}
-			// other updates...
-			it = changeLog.iterator();
-			while (it.hasNext()) {
-				Entry e = it.next();
-				if (!(e instanceof NewObject)) {
-					serializeEntrySwitch(e,isTmpSave);
-					counter++;
-					if (counter
-							% ((int) options
-									.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0) {
-						tx.success();
-						tx.finish();
-						tx = manager.beginTx();
-					}
-				}
-			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			manager.shutdown();
