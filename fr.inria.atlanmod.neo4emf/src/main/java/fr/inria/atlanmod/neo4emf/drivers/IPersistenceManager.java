@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
@@ -73,6 +74,22 @@ public interface IPersistenceManager {
 	 */
 	public Node getNodeById(EObject eObj) throws NullPointerException ;
 	/**
+	 * return the temporary attribute node from an eObject
+	 * @param eObj {@link EObject}
+	 * @return {@link Node}
+	 * @throws NullPointerException
+	 * @see {@link IPersistenceService#getNodeById(long)}
+	 */
+	public Node getAttributeNodeById(EObject eObj);
+	
+	public Node getAttributeNode(Node n);
+	
+	public List<Relationship> getTmpRelationships();
+	
+	public List<Node> getTmpNodes();
+	
+	public void processTemporaryRelationship(Relationship r);
+	/**
 	 * return the equivalent relationshipType from eObject
 	 * @param clsID {@link Int}
 	 * @param eRefID {@link Int}
@@ -86,6 +103,23 @@ public interface IPersistenceManager {
 	 * @see IPersistenceService#createNodeFromEObject(EObject)
 	 */
 	public Node createNodefromEObject(EObject eObject);
+	
+	public Node createNodefromEObject(EObject eObject, boolean isTemporary);
+	
+	public void deleteNodeFromEObject(EObject eObject);
+	/**
+	 * Create a dedicated node to store the temporary attributes of the EObject
+	 * @param eObject {@link EObject}
+	 * @return {@link Node}
+	 * @see IPersistenceService#createAttributeNodeForEObject(EObject)
+	 */
+	public Node createAttributeNodeForEObject(EObject eObject);
+	
+	public Relationship createAddLinkRelationship(Node from, Node to, RelationshipType relType);
+	
+	public Relationship createRemoveLinkRelationship(Node from, Node to, RelationshipType relType);
+	
+	public Relationship createDeleteRelationship(Node node);
 	/**
 	 * map an {@link EObject} that is loaded to its node Id
 	 * @param eObject

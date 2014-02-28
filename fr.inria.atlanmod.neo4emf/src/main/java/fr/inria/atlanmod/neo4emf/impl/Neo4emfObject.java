@@ -12,8 +12,8 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.lang.ref.ReferenceQueue;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +30,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.osgi.util.NLS;
@@ -41,6 +40,7 @@ import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
+import fr.inria.atlanmod.neo4emf.change.impl.RemoveLink;
 import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 
 
@@ -56,9 +56,15 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	 */
 	protected String id;
 	/**
+	 * eObject temporary attribute node ID
+	 */
+	protected long attributeId;
+	/**
 	 * isProxy flag
 	 */
 	protected boolean isProxy;
+	
+	protected ReferenceQueue<Object> garbagedData;
 	/**
 	 * hasProxy flag
 	 */
@@ -86,6 +92,11 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		}	
 		return Long.parseLong(this.id.substring(this.id.lastIndexOf("/") + 1));
 	}
+	
+	@Override
+	public long getAttributeNodeId() {
+		return this.attributeId;
+	}
 	/**
 	 * @see INeo4emfObject#setNodeId()
 	 */
@@ -97,6 +108,12 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 			this.id = this.id.substring(0, this.id.lastIndexOf("/")) + nodeId;
 		}
 	}
+	
+	@Override
+	public void setAttributeNodeId(final long nodeId) {
+		this.attributeId = nodeId;
+	}
+	
 	@Override
 	public int getPartitionId() {
 		if (this.id == "" || this.id.lastIndexOf("/") == 0) {
@@ -115,14 +132,18 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	public Neo4emfObject() {
 		super();
 		this.id = "";
+		this.attributeId = -1;
 		this.isProxy = false;
+		this.garbagedData = new ReferenceQueue<Object>();
 	}
 	
 	public Neo4emfObject(final EClass eClass) {
 		super();
 		eSetClass(eClass);
 		this.id = "";
+		this.attributeId = -1;
 		this.isProxy = false;
+		this.garbagedData = new ReferenceQueue<Object>();
 	}
 
 	/**
@@ -160,6 +181,11 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	@Override
 	public void unsetLoadingOnDemand() {
 		this.loadingOnDemand--;
+	}
+	
+	@Override
+	public boolean isLoadingOnDemand() {
+		return this.loadingOnDemand > 0;
 	}
 	
 	@Override 
@@ -275,17 +301,21 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		addChangelogEntry(newValue, eFeature);
 	}
 	
-	protected void addChangelogEntry(Object newValue, int eStructuralFeatureId) {
+	public void addChangelogEntry(Object newValue, int eStructuralFeatureId) {
 		addChangelogEntry(newValue,  eClass().getEStructuralFeature(eStructuralFeatureId));
 	}
 	
-	protected void addChangelogEntry(Object newValue, EStructuralFeature eFeature) {
+	public void addChangelogEntry(Object newValue, EStructuralFeature eFeature) {
 		if(loadingOnDemand == 0 && getChangeLog() != null) {
 //		if (!loadingOnDemand && getChangeLog() != null) {
 			if (eFeature instanceof EAttribute) {
 				getChangeLog().add(new SetAttribute(this, (EAttribute) eFeature, eGet(eFeature, false), newValue));
 			} else if (eFeature instanceof EReference){
 				EReference ref = (EReference)eFeature;
+//				if(newValue == null) {
+//					getChangeLog().add(new RemoveLink(this, ref, eGet(eFeature,false), null));
+//				}
+//				else {
 				if(ref.isMany()) {
 					if(newValue instanceof Collection) {
 						@SuppressWarnings("unchecked")
@@ -298,9 +328,20 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 						getChangeLog().add(new AddLink(this,(EReference)eFeature, eGet(eFeature,false),newValue));
 					}
 				}
+				else {
+					getChangeLog().add(new AddLink(this,(EReference)eFeature, eGet(eFeature,false),newValue));
+				}
+//				}
 			} else {
 				throw new WrappedException(new Exception(NLS.bind("Unexpected EStructuralFeature {0}", eFeature.toString())));
 			}
+		}
+	}
+	
+	public void addChangelogRemoveEntry(EObject removedObject, int featureId) {
+		if(loadingOnDemand == 0 && getChangeLog() != null) {
+			EStructuralFeature feature = eClass().getEStructuralFeature(featureId);
+			getChangeLog().add(new RemoveLink(this, (EReference)feature, removedObject, null));
 		}
 	}
 	
@@ -315,7 +356,8 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		//		}
 		throw new UnsupportedOperationException();		
 	}
-	protected boolean isLoaded() {
+	
+	public boolean isLoaded() {
 		return getNodeId() > -1 & eResource() instanceof INeo4emfResource;
 	}
 	

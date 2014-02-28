@@ -1,9 +1,13 @@
 package fr.inria.atlanmod.neo4emf.change.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.IChangeLogFactory;
 
@@ -14,10 +18,37 @@ public class ChangeLog extends ArrayList<Entry> implements IChangeLog<Entry> {
 //	private List<Entry> internalChangelog = Collections.synchronizedList(new ArrayList<Entry>()); 
 	
 	private static final long serialVersionUID = 1L;
+	private int flushSize;	
+	private INeo4emfResource resource;
+	
+	public ChangeLog(int flushSize, INeo4emfResource resource) {
+		this.flushSize = flushSize;
+		this.resource = resource;
+	}
 	
 	@Override
 	public void addNewEntry(Notification msg) {
 		add(IChangeLogFactory.eINSTANCE.createEntry(msg));	
+	}
+	
+	@Override
+	public boolean add(Entry entry) {
+		System.out.println("changelog add " + entry.toString());
+		boolean added = super.add(entry);
+		if(size() == flushSize) {
+			flushChangeLog();
+		}
+		return added;
+	}
+	
+	private void flushChangeLog() {
+		try {
+			Map<String,Object> options = new HashMap<String,Object>();
+			options.put("tmp_save", true);
+			this.resource.save(options);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// TODO: Check if this is still needed!!!

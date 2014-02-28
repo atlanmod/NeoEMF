@@ -20,10 +20,9 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.Index;
-
-import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
 
 public interface IPersistenceService extends GraphDatabaseService {
@@ -35,6 +34,8 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 * META_ELEMENTS Constant key to save add EClass types to the index {@link String}
 	 */
 	public final String META_ELEMENTS = "meta_elements";
+	
+	public final String META_RELATIONSHIPS = "meta_relationships";
 	/**
 	 * ROOT_ELEMENTS Constant to meta_elements index name {@link String}
 	 */
@@ -52,6 +53,12 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 */
 	public final String RESOURCE_NODE = "resource";
 	/**
+	 * the Value of the temporary nodes in the backend
+	 */
+	public final String TMP_NODE = "temporary_node";
+	
+	public final String TMP_RELATIONSHIP = "temporary_relationship";
+	/**
 	 * INSTANCE_OF {@link RelationshipType}
 	 */
 	public final RelationshipType INSTANCE_OF = MetaRelation.INSTANCE_OF;
@@ -60,10 +67,32 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 */
 	public final RelationshipType IS_ROOT = MetaRelation.IS_ROOT;
 	/**
+	 * ADD_LINK {@link RelationshipType}
+	 */
+	public final RelationshipType ADD_LINK = MetaRelation.ADD_LINK;
+	/**
+	 * REMOVE_LINK {@link RelationshipType}
+	 */
+	public final RelationshipType REMOVE_LINK = MetaRelation.REMOVE_LINK;
+	/**
+	 * DELETE {@link RelationshipType}
+	 */
+	public final RelationshipType DELETE = MetaRelation.DELETE;
+	/**
+	 * SET_ATTRIBUTE {@link RelationshipType}
+	 */
+	public final RelationshipType SET_ATTRIBUTE = MetaRelation.SET_ATTRIBUTE;
+	
+	
+	/**
 	 * get the meta_elements' index
 	 * @return {@link Index}
 	 */
 	Index<Node> getMetaIndex();
+	
+	Index<Relationship> getRelationshipIndex();
+	
+	Node getAttributeNode(Node n);
 	/**
 	 * Create the meta_element node and add it to index if not exists 
 	 * @param c {@link EClass}
@@ -81,7 +110,29 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 * @param eObject {@link EObject}
 	 * @return {@link Node}
 	 */
-	Node createNodeFromEObject(EObject eObject);
+	Node createNodeFromEObject(EObject eObject, boolean isTemporary);
+	/**
+	 * Create an Attribute node for eObject
+	 * @warning It doesn't check if an Attribute node is already
+	 * created.
+	 * @param eObject {@link EObject}
+	 * @return {@link Node}
+	 */
+	Node createAttributeNodeForEObject(EObject eObject);
+	
+	void deleteNodeFromEObject(EObject eObject);
+	
+	Relationship createAddLinkRelationship(Node from, Node to, RelationshipType relType);
+	
+	Relationship createRemoveLinkRelationship(Node from, Node to, RelationshipType relType);
+	
+	Relationship createDeleteRelationship(Node node);
+	
+	List<Relationship> getTmpRelationships();
+	
+	List<Node> getTmpNodes();
+	
+	void processTemporaryRelationship(Relationship r);
 	/**
 	 * Return a List of the root nodes
 	 * @return
@@ -107,6 +158,10 @@ public interface IPersistenceService extends GraphDatabaseService {
 	 * @return {@link List}
 	 */ 
 	List<Node> getNodesOnDemand(long nodeid, RelationshipType relationshipType);
+	
+	List<Node> getAddLinkNodesOnDemand(long nodeid, RelationshipType baseRelationshipType);
+	
+	List<Node> getRemoveLinkNodesOnDemand(long nodeid, RelationshipType baseRelationshipType);
 	/**
 	 * Return true if the node is root Node
 	 * @param node
@@ -133,7 +188,24 @@ public interface IPersistenceService extends GraphDatabaseService {
 		/**
 		 * IS_ROOT relationship
 		 */
-		IS_ROOT
+		IS_ROOT,
+		/**
+		 * ADD_LINK relationship
+		 */
+		ADD_LINK,
+		/**
+		 * REMOVE_LINK relationship
+		 */
+		REMOVE_LINK,
+		/**
+		 * DELETE relationship
+		 */
+		DELETE,
+		/**
+		 * SET_ATTRIBUTE relationship
+		 */
+		SET_ATTRIBUTE
+		
 	}
 
 	

@@ -2,6 +2,7 @@ package fr.inria.atlanmod.neo4emf.change;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
 import fr.inria.atlanmod.neo4emf.change.impl.ChangeLogFactory;
 import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
@@ -15,8 +16,8 @@ public interface IChangeLogFactory {
 	
 	IChangeLogFactory eINSTANCE = ChangeLogFactory.init();
 	
-	public IChangeLog<Entry> createChangeLog();
-	
+	public IChangeLog<Entry> createChangeLog(INeo4emfResource resource);
+		
 	public Entry createEntry(Notification msg);
 	
 	public NewObject createNewObject(Notification msg);

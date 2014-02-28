@@ -19,11 +19,15 @@ public interface ISerializer {
 	
 	String MAX_OPERATIONS_PER_TRANSACTION = "max_oper_per_trans";
 	
+	String TMP_SAVE = "tmp_save";
+	
 	int DEFAULT_TRANSACTIONS_COUNT = 10000;
 	
-	String [] saveOptions = {MAX_OPERATIONS_PER_TRANSACTION};
+	boolean DEFAULT_TMP_SAVE = false;
 	
-	Object [] saveDefaultValues={DEFAULT_TRANSACTIONS_COUNT};
+	String [] saveOptions = {MAX_OPERATIONS_PER_TRANSACTION, TMP_SAVE};
+	
+	Object [] saveDefaultValues={DEFAULT_TRANSACTIONS_COUNT, DEFAULT_TMP_SAVE};
 	
 	/**
 	 * @see IPersistenceManager#save(Map)

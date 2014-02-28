@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +22,11 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.FeatureNotFoundException;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Transaction;
 
 import scala.Int;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -56,6 +60,10 @@ public class Loader implements ILoader {
 		if (options == null)
 			options = new HashMap<String, Object>();
 		options= mergeWithDefaultOptions(options);
+		// Remove the tmp stuff
+		
+		removeTmpSave();
+		
 		// TODO introduce the load strategies
 		if (((String)options.get(LOADING_STRATEGY)).equals(DYNAMIC_LOADING)){
 			dynamicLoad(options);
@@ -144,6 +152,7 @@ public class Loader implements ILoader {
 	 */
 	protected INeo4emfObject getObjectsFromNode(Node n) {
 		String eClassName = manager.getNodeType(n);
+		Node attributeNode = manager.getAttributeNode(n);
 		String ns_uri = manager.getNodeContainingPackage(n);
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
 //		int size = getChangeLog().size();
@@ -161,6 +170,9 @@ public class Loader implements ILoader {
 		}
 		INeo4emfObject obj = (INeo4emfObject) factory.create(getEClassFromNodeName(eClassName, ePck));
 		obj.setNodeId(n.getId());
+		if(attributeNode != null) {
+			obj.setAttributeNodeId(attributeNode.getId());
+		}
 		manager.putAllToProxy(ECollections.singletonEList(obj));
 //		getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		return obj;
@@ -214,6 +226,23 @@ public class Loader implements ILoader {
 		}
 		return metamodel;
 	}
+	
+	private void removeTmpSave() {
+		List<Relationship> relationships = manager.getTmpRelationships();
+		Iterator<Relationship> itRel = relationships.iterator();
+		List<Node> nodes = manager.getTmpNodes();
+		Iterator<Node> itNode = nodes.iterator();
+		Transaction tx = manager.beginTx();
+		while(itRel.hasNext()) {
+			itRel.next().delete();
+		}
+		while(itNode.hasNext()) {
+			itNode.next().delete();
+		}
+		tx.success();
+		tx.finish();
+	}
+	
 	/**
 	 * register a subPackage if not exists 
 	 * @param metamodel
@@ -230,7 +259,7 @@ public class Loader implements ILoader {
 	 * fetches attributes of an {@link EObject} from the Node
 	 */
 	@Override
-	public void fetchAttributes(EObject obj, Node n) {
+	public void fetchAttributes(EObject obj, Node n, Node attributeNode) {
 		try{
 			
 			Object attributeValue = null;
@@ -238,9 +267,14 @@ public class Loader implements ILoader {
 //			int size = getChangeLog().size();
 
 			for (EAttribute attr : obj.eClass().getEAllAttributes()) {
-				if (n.hasProperty(attr.getName())) {
+				if(attributeNode != null && attributeNode.hasProperty(attr.getName())) {
+					attributeValue = attributeNode.getProperty(attr.getName());
+				}
+				else if (n.hasProperty(attr.getName())) {
 
 					attributeValue = n.getProperty(attr.getName());
+				}
+				if(attributeValue != null) {
 					Class<?> cls = attributeValue.getClass();
 
 					if (attributeValue.toString().equals("")) {
@@ -298,6 +332,7 @@ public class Loader implements ILoader {
 			List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
 			for (Node n : nodes) {
 				INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, featureId);
+				System.out.println("test res : " + object.eResource());
 				objectList.add(object);
 				
 			}
@@ -310,6 +345,16 @@ public class Loader implements ILoader {
 				obj.eSet(str, objectList);
 			} else if (!objectList.isEmpty()) {
 				obj.eSet(str, objectList.get(0));
+			}
+			// Set the resource if still null after eSet
+			Iterator<INeo4emfObject> it = objectList.iterator();
+			while(it.hasNext()) {
+				INeo4emfObject neoObj = it.next();
+				if(neoObj.eResource() == null) {
+					// work but not realy beautiful
+					((Neo4emfObject)neoObj).eSetDirectResource((Resource.Internal)obj.eResource());
+					System.out.println(neoObj.eResource());
+				}
 			}
 			((INeo4emfObject)obj).unsetLoadingOnDemand();;
 //			getChangeLog().removeLastChanges(getChangeLog().size() - size);

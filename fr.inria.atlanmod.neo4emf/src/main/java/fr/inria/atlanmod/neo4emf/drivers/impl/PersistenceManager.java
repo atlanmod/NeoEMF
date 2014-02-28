@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
@@ -42,6 +43,7 @@ import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.drivers.IUnloader;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.logger.Logger;
@@ -154,6 +156,41 @@ public class PersistenceManager implements IPersistenceManager {
 			return result;
 		}
 	}
+	
+	@Override
+	public Node getAttributeNodeById(EObject eObj) {
+		Assert.isTrue(((INeo4emfObject)eObj).getAttributeNodeId() > -1, "attribute node id is > -1");
+		Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getAttributeNodeId());
+		if(result == null) {
+			//throw new NullPointerException(" Cannot find the attribute node ");
+			return null;
+		}
+		else {
+			return result;
+		}
+	}
+	
+	@Override
+	public Node getAttributeNode(Node n) {
+		Node result = persistenceService.getAttributeNode(n);
+		return result;
+	}
+	
+	@Override
+	public List<Relationship> getTmpRelationships() {
+		return persistenceService.getTmpRelationships();
+	}
+	
+	@Override
+	public List<Node> getTmpNodes() {
+		return persistenceService.getTmpNodes();
+	}
+	
+	@Override
+	public void processTemporaryRelationship(Relationship r) {
+		persistenceService.processTemporaryRelationship(r);	
+	}
+	
 	@Override
 	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
 		if (eRef2relType==null || eRef2relType.isEmpty())
@@ -170,7 +207,37 @@ public class PersistenceManager implements IPersistenceManager {
 	
 	@Override
 	public Node createNodefromEObject(EObject eObject) {
-		return persistenceService.createNodeFromEObject(eObject);
+		return persistenceService.createNodeFromEObject(eObject,false);
+	}
+	
+	@Override
+	public Node createNodefromEObject(EObject eObject, boolean isTemporary) {
+		return persistenceService.createNodeFromEObject(eObject,isTemporary);
+	}
+	
+	@Override
+	public void deleteNodeFromEObject(EObject eObject) {
+		persistenceService.deleteNodeFromEObject(eObject);
+	}
+	
+	@Override
+	public Node createAttributeNodeForEObject(EObject eObject) {
+		return persistenceService.createAttributeNodeForEObject(eObject);
+	}
+	
+	@Override
+	public Relationship createAddLinkRelationship(Node from, Node to, RelationshipType relType) {
+		return persistenceService.createAddLinkRelationship(from, to, relType);
+	}
+	
+	@Override
+	public Relationship createRemoveLinkRelationship(Node from, Node to, RelationshipType relType) {
+		return persistenceService.createRemoveLinkRelationship(from, to, relType);
+	}
+	
+	@Override
+	public Relationship createDeleteRelationship(Node node) {
+		return persistenceService.createDeleteRelationship(node);
 	}
 	
 	@Override
@@ -197,7 +264,13 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void fetchAttributes(EObject obj) {
 		Node node = getNodeById(obj);
-		loader.fetchAttributes(obj,node);	
+		// TODO find a way to avoid that call when appropriate (maybe
+		// if there is a non changed changelog)
+		Node attributeNode = null;
+		if(((Neo4emfObject)obj).getAttributeNodeId() > -1) {
+			attributeNode = getAttributeNodeById(obj);
+		}
+		loader.fetchAttributes(obj,node,attributeNode);	
 	}
 	@Override
 	public void putToProxy(INeo4emfObject object, EStructuralFeature str, int partitionID) throws NullPointerException{
@@ -235,6 +308,10 @@ public class PersistenceManager implements IPersistenceManager {
 			}
 			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),
 						relationship);
+			List<Node> addLinkNodes = persistenceService.getAddLinkNodesOnDemand(((INeo4emfObject)obj).getNodeId(), relationship);
+			List<Node> removeLinkNodes = persistenceService.getRemoveLinkNodesOnDemand(((INeo4emfObject)obj).getNodeId(), relationship);
+			nodes.addAll(addLinkNodes);
+			nodes.removeAll(removeLinkNodes);
 			loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
 		}catch(Exception e){ 
 			shutdown();

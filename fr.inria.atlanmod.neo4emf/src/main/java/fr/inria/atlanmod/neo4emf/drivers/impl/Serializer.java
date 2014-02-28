@@ -62,6 +62,10 @@ public class Serializer implements ISerializer {
 		if (options == null)
 			options = new HashMap();
 		options= mergeWithDefaultOptions(options);
+		boolean isTmpSave = (boolean)options.get("tmp_save");
+		if(!isTmpSave) {
+			flushTmpSave(options);
+		}
 		int counter=0;
 		Transaction tx = manager.beginTx();
 		IChangeLog<Entry> changeLog = manager.getResource().getChangeLog();
@@ -72,7 +76,7 @@ public class Serializer implements ISerializer {
 			while (it.hasNext()) {
 				Entry e = it.next();
 				if (e instanceof NewObject) {
-					serializeEntrySwitch(e);
+					serializeEntrySwitch(e,isTmpSave);
 					counter++;
 					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
 					{	
@@ -87,7 +91,7 @@ public class Serializer implements ISerializer {
 			while (it.hasNext()) {
 				Entry e = it.next();
 				if (!(e instanceof NewObject)) {
-					serializeEntrySwitch(e);
+					serializeEntrySwitch(e,isTmpSave);
 					counter++;
 					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
 					{	
@@ -109,6 +113,27 @@ public class Serializer implements ISerializer {
 		// the changelog is cleared after an exception is raised
 		// TODO look for a way to manage this 
 	}
+	
+	private void flushTmpSave(Map<String,Object> options) {
+		List<Relationship> tmpRelationships = manager.getTmpRelationships();
+		Iterator<Relationship> it = tmpRelationships.iterator();
+		int counter = 0;
+		Transaction tx = manager.beginTx();
+		while(it.hasNext()) {
+			Relationship rel = it.next();
+			manager.processTemporaryRelationship(rel);
+			counter++;
+			if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
+			{	
+				tx.success();
+				tx.finish();
+				tx= manager.beginTx();
+			}
+		}
+		tx.success();
+		tx.finish();
+	}
+	
 	/**
 	 * init the default options of 
 	 * @return  {@link Map} default Options 
@@ -140,27 +165,33 @@ public class Serializer implements ISerializer {
 	 * action within transactions  
 	 * @param e {@link Entry}
 	 */
-	private void serializeEntrySwitch(Entry e) {
+	private void serializeEntrySwitch(Entry e, boolean isTmp) {
 
 
 
 		if ( e instanceof NewObject)
-			createNewObject(e.geteObject());
+			createNewObject(e.geteObject(), isTmp);
 		else if ( e instanceof AddLink )	
-			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
+			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue(), isTmp);
 		else if ( e instanceof RemoveLink)
-			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue());
+			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue(), isTmp);
 		else if ( e instanceof SetAttribute )
-			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
+			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue(), isTmp);
 		else if ( e instanceof DeleteObject)
-			deleteExistingObject(e.geteObject());
+			deleteExistingObject(e.geteObject(),isTmp);
 
 	}
 
-	private void deleteExistingObject(EObject geteObject) {
-
-
+	private void deleteExistingObject(EObject geteObject, boolean isTmp) {
+		if(isTmp) {
+			Node n = this.manager.getNodeById(geteObject);
+			this.manager.createDeleteRelationship(n);
+		}
+		else {
+			this.manager.deleteNodeFromEObject(geteObject);
+		}
 	}
+	
 	private boolean isPrimitive(String str){
 		if (str.equals("Boolean") 
 				|| str.equals("Integer") 
@@ -178,8 +209,16 @@ public class Serializer implements ISerializer {
 
 	@SuppressWarnings("unchecked")
 	private void setAttributeValue(EObject eObject,
-			EAttribute at, Object newValue) {
+			EAttribute at, Object newValue, boolean isTmp) {
 		Node n = manager.getNodeById(eObject);
+		if(isTmp) {
+			if(((Neo4emfObject)eObject).getAttributeNodeId() < 0) {
+				n = manager.createAttributeNodeForEObject(eObject);
+			}
+			else {
+				n = manager.getAttributeNodeById(eObject);
+			}
+		}
 		
 		if (newValue!= null && !at.isMany()){
 		
@@ -210,19 +249,24 @@ public class Serializer implements ISerializer {
 		else {n.setProperty(at.getName(), new Object[1]);}
 	}
 
-	private void removeExistingLink(EObject eObject, EReference eRef, Object object) {
+	private void removeExistingLink(EObject eObject, EReference eRef, Object object, boolean isTmp) {
 		Node n = manager.getNodeById(eObject);
 		Node n2 = manager.getNodeById((EObject)object);
 		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
-		Iterator<Relationship> it = n.getRelationships(rel).iterator();
-		while (it.hasNext()){
-			Relationship relship = it.next();
-			if (relship.getEndNode().getId() == n2.getId())
-				relship.delete();
+		if(isTmp) {
+			this.manager.createRemoveLinkRelationship(n,n2,rel);
+		}
+		else {
+			Iterator<Relationship> it = n.getRelationships(rel).iterator();
+			while (it.hasNext()){
+				Relationship relship = it.next();
+				if (relship.getEndNode().getId() == n2.getId())
+					relship.delete();
+			}
 		}
 	}
 
-	private void addNewLink(EObject eObject, EReference eRef, Object object) throws NullPointerException{
+	private void addNewLink(EObject eObject, EReference eRef, Object object, boolean isTmp) throws NullPointerException{
 		Node n = this.manager.getNodeById(eObject);
 		Node n2 = this.manager.getNodeById((EObject)object);
 		if(n == null || n2 == null) {
@@ -232,13 +276,18 @@ public class Serializer implements ISerializer {
 		RelationshipType rel = this.manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
 		if (rel == null) {
 			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil.formatRelationshipName(eObject.eClass(), eRef));}
-		n.createRelationshipTo(n2, rel);
+		if(isTmp) {
+			this.manager.createAddLinkRelationship(n,n2,rel);
+		}
+		else {
+			n.createRelationshipTo(n2, rel);
+		}
 	}
 
-	private void createNewObject(EObject eObject) {
+	private void createNewObject(EObject eObject,boolean isTmp) {
 		Node n = null;
 		if (((INeo4emfObject)eObject).getNodeId() == -1) {
-			n = this.manager.createNodefromEObject(eObject);
+			n = this.manager.createNodefromEObject(eObject,isTmp);
 			((Neo4emfObject) eObject).setNodeId(n.getId());
 		} else {
 			n = this.manager.getNodeById(eObject);
@@ -249,7 +298,7 @@ public class Serializer implements ISerializer {
 			while (itAtt.hasNext()) {
 				EAttribute at = itAtt.next();
 				if (eObject.eIsSet(at)) {
-					setAttributeValue(eObject, at, eObject.eGet(at));
+					setAttributeValue(eObject, at, eObject.eGet(at),false); // false ?
 				} else {
 					n.setProperty(at.getName(), "");
 				}
@@ -273,7 +322,7 @@ public class Serializer implements ISerializer {
 								Node childNode = this.manager.createNodefromEObject(referencedEObject);
 								referencedNeo4emfObject.setNodeId(childNode.getId());
 							}
-							addNewLink(eObject, ref, referencedEObject);
+							addNewLink(eObject, ref, referencedEObject,isTmp);
 						}
 					} else {
 						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject.eGet(ref);
@@ -281,7 +330,7 @@ public class Serializer implements ISerializer {
 							Node childNode = this.manager.createNodefromEObject(referencedNeo4emfObject);
 							referencedNeo4emfObject.setNodeId(childNode.getId());
 						}
-						addNewLink(eObject, ref, referencedNeo4emfObject);
+						addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
 					}
 				}
 			}

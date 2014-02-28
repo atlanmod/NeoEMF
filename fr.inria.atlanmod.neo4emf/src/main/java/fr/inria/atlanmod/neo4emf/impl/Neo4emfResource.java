@@ -69,7 +69,7 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 		} else {
 			this.persistenceManager = new PersistenceManager(this, storeDirectory, map, params);
 		}
-		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
+		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog(this);
 	}
 	public Neo4emfResource(final URI uri, Map<String,Map<Point,RelationshipType>> map,  Map<String, String> params){
 		this(neo4emfURItoString(uri), map, params);
@@ -89,7 +89,6 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	@Override
 	public void getOnDemand(final EObject obj, final int featureId) {
 		this.persistenceManager.getOnDemand(obj, featureId);
-
 	}
 	/**
 	 * {@link INeo4emfResource#save()}
@@ -204,25 +203,25 @@ public   class Neo4emfResource extends ResourceImpl implements INeo4emfResource 
 	@Override
 	public void detached(EObject eObject) {
 		super.detached(eObject);
-//		Neo4emfObject neoObject = (Neo4emfObject) eObject;
-//		addChangeLogCreateEntry(neoObject);
-//		Iterator<EObject> it = neoObject.eAllResolvedContents();
-//		while (it.hasNext()) {
-//			Neo4emfObject itEObject = (Neo4emfObject) it.next();
-//			addChangeLogDeleteEntry(itEObject);
-//		}
+		Neo4emfObject neoObject = (Neo4emfObject) eObject;
+		addChangeLogDeleteEntry(neoObject);
+		Iterator<EObject> it = neoObject.eAllResolvedContents();
+		while (it.hasNext()) {
+			Neo4emfObject itEObject = (Neo4emfObject) it.next();
+			addChangeLogDeleteEntry(itEObject);
+		}
 	}
 
 	private void addChangeLogCreateEntry(INeo4emfObject neoObject) {
-		if (neoObject.getNodeId() == -1) {
+//		if (neoObject.getNodeId() == -1) {
 			getChangeLog().add(new NewObject(neoObject));
-		}
+//		}
 	}
 	
 	private void addChangeLogDeleteEntry(INeo4emfObject neoObject) {
-		if (neoObject.getNodeId() == -1) {
+		//if (neoObject.getNodeId() == -1) {
 			getChangeLog().add(new DeleteObject(neoObject));
-		}
+		//}
 	}
 
 	public IChangeLog<Entry> getChangeLog() {
