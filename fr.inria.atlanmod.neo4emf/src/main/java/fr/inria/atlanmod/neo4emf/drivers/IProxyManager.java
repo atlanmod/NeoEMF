@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neo4emf.drivers;
  * @author Amine BENELALLAM
  * */
 
+
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,13 +32,9 @@ public interface IProxyManager {
 	long getNode(EObject eObj);
 
 	HashMap<EObject, Long> getWeakNodeIds();
-
-	INeo4emfObject getEObject(int id, long id1);
-
-	TreeMap<Integer, AbstractPartition> getWeakObjectsTree();
-
-	void updatePartitionsHistory(INeo4emfObject eObject, int feature,
-			boolean isReference);
+	INeo4emfObject getEObject(int id,long id1);
+	TreeMap<Integer, AbstractPartition> getWeakObjectsTree ();
+	void updatePartitionsHistory(INeo4emfObject eObject  , int feature, boolean  isReference);
 
 	int newPartitionID();
 
@@ -57,12 +54,10 @@ public interface IProxyManager {
 
 	int getFIFOPartition();
 
-	void moveToPartition(EObject eObj, int fromPID, int toPID, int featureId);
-
-	Map<Integer, List<INeo4emfObject>> getSideEffectsMap(INeo4emfObject neoObj,
-			int key);
-
+	void moveToPartition(EObject eObj,int fromPID, int toPID, int featureId);
+	Map<Integer, List<INeo4emfObject>> getSideEffectsMap(
+			INeo4emfObject neoObj, int key);
 	void putToProxy(INeo4emfObject obj);
+	INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n);	
 
-	INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n);
 }

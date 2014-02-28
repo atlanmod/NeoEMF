@@ -20,7 +20,7 @@ package <%=genPackage.getReflectionPackageName()%>;
 <%} else {%>
 package <%=genPackage.getClassPackageName()%>;
 <%}%>
-
+ 
 <%if (isImplementation) {%>
 <%genModel.addPseudoImport("org.eclipse.emf.ecore.impl.MinimalEObjectImpl.Container");%>
 <%genModel.addPseudoImport("org.eclipse.emf.ecore.impl.MinimalEObjectImpl.Container.Dynamic");%>

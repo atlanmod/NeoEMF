@@ -103,7 +103,7 @@ public class LoadTest {
 	@Test
 	public void testLoadNode() {
 		resource.getContents().clear();
-		ChangeLog.getInstance().clear();
+		resource.getChangeLog().clear();
 		try {
 			resource.load(null);
 			EList<EObject> resourceContents = resource.getContents();
@@ -152,7 +152,7 @@ public class LoadTest {
 	@Test
 	public void testLoadGraphReflective() {
 		resource.getContents().clear();
-		ChangeLog.getInstance().clear();
+		resource.getChangeLog().clear();
 		try {
 			resource.load(null);
 			EList<EObject> resourceContents = resource.getContents();

@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -41,6 +40,7 @@ import org.neo4j.kernel.extension.KernelExtensionFactory;
 import org.neo4j.kernel.impl.cache.CacheProvider;
 import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 
@@ -122,18 +122,21 @@ public class PersistenceService implements IPersistenceService {
 
 
 
-	private boolean isRoot(EObject eObject) {
-		EClass cls = eObject.eClass();
-		for (EReference ref : cls.getEAllReferences())
-			if (ref.isContainer())
-				return false;
-		return true;
+
+	private boolean isRoot(EObject eObject) {		
+		if (eObject.eContainer() == null && eObject.eResource() != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public List<Node> getAllRootNodes() {
 		Index<Node> index = getMetaIndex();
 		Node resourceNode = index.get(ID_META, RESOURCE_NODE).getSingle();
+		
+		assert resourceNode != null : "Null resource node";
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
 	}
 
@@ -159,7 +162,8 @@ public class PersistenceService implements IPersistenceService {
 		Node startNode = getNodeById(nodeId);
 		TraversalDescription td = Traversal.description().breadthFirst()
 				.relationships(relType, direction)
-				.evaluator(Evaluators.excludeStartPosition());
+				.evaluator(Evaluators.excludeStartPosition())
+				.evaluator(Evaluators.toDepth(1));
 		return td.traverse(startNode);
 
 	}
@@ -279,5 +283,4 @@ public class PersistenceService implements IPersistenceService {
 			TransactionEventHandler<T> arg0) {
 		return db.unregisterTransactionEventHandler(arg0);
 	}
-
 }

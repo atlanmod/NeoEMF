@@ -55,8 +55,9 @@ public class Serializer implements ISerializer {
 	 */
 	Map<String, Object> defaultOptions;
 
-	// INodeBuilder nodeBuilder;
-	public Serializer(PersistenceManager manager) {
+
+	//INodeBuilder nodeBuilder;
+	public Serializer (PersistenceManager manager){
 		this.manager = manager;
 	}
 
@@ -81,12 +82,26 @@ public class Serializer implements ISerializer {
 				if (e instanceof NewObject) {
 					serializeEntrySwitch(e);
 					counter++;
-					if (counter
-							% ((int) options
-									.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0) {
+					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
+					{	
 						tx.success();
 						tx.finish();
-						tx = manager.beginTx();
+						tx= manager.beginTx();
+					}
+				}
+			}
+			// other updates...
+			it = changeLog.iterator();
+			while (it.hasNext()) {
+				Entry e = it.next();
+				if (!(e instanceof NewObject)) {
+					serializeEntrySwitch(e);
+					counter++;
+					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
+					{	
+						tx.success();
+						tx.finish();
+						tx= manager.beginTx();
 					}
 				}
 			}
@@ -113,7 +128,7 @@ public class Serializer implements ISerializer {
 		} finally {
 			tx.success();
 			tx.finish();
-		}
+		}	
 		changeLog.clear();
 		// the changelog is cleared after an exception is raised
 		// TODO look for a way to manage this
@@ -160,18 +175,13 @@ public class Serializer implements ISerializer {
 
 		if (e instanceof NewObject)
 			createNewObject(e.geteObject());
-		else if (e instanceof AddLink)
-			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),
-					((AddLink) e).getNewValue());
-		else if (e instanceof RemoveLink)
-			removeExistingLink(e.geteObject(),
-					((RemoveLink) e).geteReference(),
-					((RemoveLink) e).getOldValue());
-		else if (e instanceof SetAttribute)
-			setAttributeValue(e.geteObject(),
-					((SetAttribute) e).geteAttribute(),
-					((SetAttribute) e).getNewValue());
-		else if (e instanceof DeleteObject)
+		else if ( e instanceof AddLink )	
+			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue());
+		else if ( e instanceof RemoveLink)
+			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue());
+		else if ( e instanceof SetAttribute )
+			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue());
+		else if ( e instanceof DeleteObject)
 			deleteExistingObject(e.geteObject());
 
 	}
@@ -263,7 +273,7 @@ public class Serializer implements ISerializer {
 
 	private void createNewObject(EObject eObject) {
 		Node n = null;
-		if (((INeo4emfObject) eObject).getNodeId() == -1) {
+		if (((INeo4emfObject)eObject).getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject);
 			((Neo4emfObject) eObject).setNodeId(n.getId());
 		} else {
@@ -289,31 +299,23 @@ public class Serializer implements ISerializer {
 				boolean isSet = false;
 				try {
 					isSet = eObject.eIsSet(ref);
-				} catch (ClassCastException e) {
-				}
-				;
+				} catch (ClassCastException e) {};
 				if (isSet) {
 					if (ref.getUpperBound() == -1) {
-						List<EObject> eObjects = (List<EObject>) eObject
-								.eGet(ref);
+						List<EObject> eObjects = (List<EObject>) eObject.eGet(ref);
 						for (EObject referencedEObject : eObjects) {
 							Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) referencedEObject;
 							if (referencedNeo4emfObject.getNodeId() == -1) {
-								Node childNode = this.manager
-										.createNodefromEObject(referencedEObject);
-								referencedNeo4emfObject.setNodeId(childNode
-										.getId());
+								Node childNode = this.manager.createNodefromEObject(referencedEObject);
+								referencedNeo4emfObject.setNodeId(childNode.getId());
 							}
 							addNewLink(eObject, ref, referencedEObject);
 						}
 					} else {
-						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject
-								.eGet(ref);
+						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject.eGet(ref);
 						if (referencedNeo4emfObject.getNodeId() == -1) {
-							Node childNode = this.manager
-									.createNodefromEObject(referencedNeo4emfObject);
-							referencedNeo4emfObject
-									.setNodeId(childNode.getId());
+							Node childNode = this.manager.createNodefromEObject(referencedNeo4emfObject);
+							referencedNeo4emfObject.setNodeId(childNode.getId());
 						}
 						addNewLink(eObject, ref, referencedNeo4emfObject);
 					}

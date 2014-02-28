@@ -17,10 +17,10 @@ import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
 public class Partition extends AbstractPartition {
 
-	private WeakReference<EObject> eObjet;
+	private EObject eObjet;
 	private List<Tail> tails;
 	public EObject geteObjet() {
-		return eObjet.get();
+		return eObjet;
 	}
 	
 	public List<Tail> getTails(){
@@ -33,7 +33,7 @@ public class Partition extends AbstractPartition {
 	}
 	public Partition (EObject eObject){
 		Assert.isNotNull(eObject, " eObject should not be null");
-		this.eObjet=new WeakReference<EObject>(eObject);
+		this.eObjet=eObject;
 		tails = new ArrayList<Tail>();
 	}
 	
@@ -59,15 +59,13 @@ public class Partition extends AbstractPartition {
 	}
 	
 	public boolean containsKey(long nodeId) throws NullPointerException {
-		if (eObjet.get()==null){			
-			throw new NullPointerException();}
-		if (((INeo4emfObject)eObjet.get()).getNodeId() ==  nodeId) return true;
+		if (((INeo4emfObject)eObjet).getNodeId() ==  nodeId) return true;
 		for (Tail tail : tails)
 			if (tail.containsKey(nodeId)) return true;
 		return false;
 	}
 	public INeo4emfObject get(long nodeId) {
-		if ( (((INeo4emfObject)eObjet.get()).getNodeId() ==  nodeId)) return (INeo4emfObject) eObjet.get();
+		if ( (((INeo4emfObject)eObjet).getNodeId() ==  nodeId)) return (INeo4emfObject) eObjet;
 		for (Tail tail : tails)
 			if (tail.containsKey(nodeId))
 				return tail.get(nodeId);
@@ -130,7 +128,7 @@ public class Partition extends AbstractPartition {
 		List <INeo4emfObject> flattenedList = new ArrayList<INeo4emfObject>();
 			for (Tail tail : tails)
 				flattenedList.addAll(tail.flattenedObjects());
-			flattenedList.add((INeo4emfObject) eObjet.get());
+			flattenedList.add((INeo4emfObject) eObjet);
 		return flattenedList;
 	}
 

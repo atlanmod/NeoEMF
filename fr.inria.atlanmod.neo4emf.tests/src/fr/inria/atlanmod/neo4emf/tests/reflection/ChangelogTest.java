@@ -58,13 +58,12 @@ public class ChangelogTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		ChangeLog.getInstance().clear();
+		neo4emfRoot.getChangeLog().clear();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		ChangeLog.getInstance().clear();
-		//neo4emfRoot.shutdown();
+		neo4emfRoot.getChangeLog().clear();
 	}
 	
 	@Test
@@ -85,7 +84,7 @@ public class ChangelogTest {
 			}
 		}
 		// Iterate in the Changelog to find all the NewObject entries
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
+		Iterator<Entry> it = neo4emfRoot.getChangeLog().iterator();
 		while(it.hasNext()) {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof NewObject)  {
@@ -142,7 +141,7 @@ public class ChangelogTest {
 			}
 		}
 		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
+		Iterator<Entry> it = neo4emfRoot.getChangeLog().iterator();
 		while(it.hasNext()) {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof SetAttribute) {
@@ -198,7 +197,7 @@ public class ChangelogTest {
 			}
 		}
 		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
+		Iterator<Entry> it = neo4emfRoot.getChangeLog().iterator();
 		while(it.hasNext()) {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof SetAttribute) {
@@ -255,7 +254,7 @@ public class ChangelogTest {
 			}
 		}
 		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
+		Iterator<Entry> it = neo4emfRoot.getChangeLog().iterator();
 		while(it.hasNext()) {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof SetAttribute) {
@@ -312,7 +311,7 @@ public class ChangelogTest {
 			}
 		}
 		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
+		Iterator<Entry> it = neo4emfRoot.getChangeLog().iterator();
 		while(it.hasNext()) {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof AddLink) {
@@ -371,7 +370,7 @@ public class ChangelogTest {
 			}
 		}
 		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
+		Iterator<Entry> it = neo4emfRoot.getChangeLog().iterator();
 		while(it.hasNext()) {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof AddLink) {
@@ -431,7 +430,7 @@ public class ChangelogTest {
 			}
 		}
 		
-		Iterator<Entry> it = ChangeLog.getInstance().iterator();
+		Iterator<Entry> it = neo4emfRoot.getChangeLog().iterator();
 		while(it.hasNext()) {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof AddLink) {

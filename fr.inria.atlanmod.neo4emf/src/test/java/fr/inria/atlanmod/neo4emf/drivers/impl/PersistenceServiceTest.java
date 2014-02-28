@@ -17,18 +17,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
+import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
+import fr.inria.atlanmod.neo4emf.testdata.Vertex;
 
 /**
  * @author sunye
- *
+ * 
  */
 public class PersistenceServiceTest {
-	private static final File DB_FOLDER = new File("/tmp/PersistentManagerTest");
-	
+	private static final File DB_FOLDER = new File(
+			"/tmp/PersistentServiceTest/");
+
 	private PersistenceService ps;
 
 	/**
@@ -64,7 +68,9 @@ public class PersistenceServiceTest {
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#PersistenceService(java.lang.String, fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#PersistenceService(java.lang.String, fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager)}
+	 * .
 	 */
 	@Test
 	public void testPersistenceService() {
@@ -72,18 +78,22 @@ public class PersistenceServiceTest {
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getMetaIndex()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getMetaIndex()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetMetaIndex() {
 		Index<Node> index = ps.getMetaIndex();
-		
+
 		assert index != null;
-		
+
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createWithIndexIfNotExists(org.eclipse.emf.ecore.EClass)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createWithIndexIfNotExists(org.eclipse.emf.ecore.EClass)}
+	 * .
 	 */
 	@Test
 	public void testCreateWithIndexIfNotExists() {
@@ -94,246 +104,330 @@ public class PersistenceServiceTest {
 		EPackage pac = EcoreFactory.eINSTANCE.createEPackage();
 		pac.getEClassifiers().add(klass);
 		pac.setNsURI(uri);
-		
+
 		Transaction t = ps.beginTx();
 		Node n = ps.createWithIndexIfNotExists(klass);
-		
+
 		assert n != null;
 		assert className.equals(n.getProperty(IPersistenceService.ECLASS_NAME));
 		assert uri.equals(n.getProperty(IPersistenceService.NS_URI));
 		t.finish();
-	
+
 	}
 
 	/*
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createResourceNodeIfAbsent()}.
+	 * Test method for {@link
+	 * fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService
+	 * #createResourceNodeIfAbsent()}.
 	 */
-	@Test
+	// @Test
 	public void testCreateResourceNodeIfAbsent() {
 		Transaction t = ps.beginTx();
 		Node n = ps.createResourceNodeIfAbsent();
-		
+		t.success();
 		assert n != null;
-		assert n.equals(ps.getMetaIndex().get(IPersistenceService.ID_META, IPersistenceService.RESOURCE_NODE).getSingle());
+		assert n.equals(ps
+				.getMetaIndex()
+				.get(IPersistenceService.ID_META,
+						IPersistenceService.RESOURCE_NODE).getSingle());
 		t.finish();
-		////fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createObjectProxyFromNode(org.neo4j.graphdb.Node)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createObjectProxyFromNode(org.neo4j.graphdb.Node)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testCreateObjectProxyFromNode() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createNodeFromEObject(org.eclipse.emf.ecore.EObject)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createNodeFromEObject(org.eclipse.emf.ecore.EObject)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testCreateNodeFromEObject() {
-		EObject obj = EcoreFactory.eINSTANCE.createEObject();
+		Vertex vertex = TestFactory.eINSTANCE.createVertex();
 		Transaction t = ps.beginTx();
-		Node n = ps.createNodeFromEObject(obj);
+		Node n = ps.createNodeFromEObject(vertex);
+		n.setProperty("Name", "My first node");
 		t.finish();
-		
+
 		assert n != null;
 		assert n.getId() > 0;
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createTmpNodeFromEObject(org.eclipse.emf.ecore.EObject)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createTmpNodeFromEObject(org.eclipse.emf.ecore.EObject)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testCreateTmpNodeFromEObject() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllRootNodes()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllRootNodes()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetAllRootNodes() {
 		Transaction t = ps.beginTx();
 		ps.createResourceNodeIfAbsent();
 		List<Node> nodes = ps.getAllRootNodes();
-		
+
 		assert nodes.isEmpty();
 		t.finish();
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllTmpNodes()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllTmpNodes()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetAllTmpNodes() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#deleteBaseNode(org.neo4j.graphdb.Node, org.neo4j.graphdb.Node)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#deleteBaseNode(org.neo4j.graphdb.Node, org.neo4j.graphdb.Node)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testDeleteBaseNode() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#setUpTraversal(long, org.neo4j.graphdb.RelationshipType, org.neo4j.graphdb.Direction)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#setUpTraversal(long, org.neo4j.graphdb.RelationshipType, org.neo4j.graphdb.Direction)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testSetUpTraversal() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getNodeType(org.neo4j.graphdb.Node)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getNodeType(org.neo4j.graphdb.Node)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetNodeType() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getContainingPackage(org.neo4j.graphdb.Node)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getContainingPackage(org.neo4j.graphdb.Node)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetContainingPackage() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getNodesOnDemand(long, org.neo4j.graphdb.RelationshipType)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getNodesOnDemand(long, org.neo4j.graphdb.RelationshipType)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetNodesOnDemand() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#isRootNode(org.neo4j.graphdb.Node)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#isRootNode(org.neo4j.graphdb.Node)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testIsRootNode() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllNodesOfType(org.eclipse.emf.ecore.EClass)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllNodesOfType(org.eclipse.emf.ecore.EClass)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetAllNodesOfType() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#beginTx()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#beginTx()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testBeginTx() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createNode()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createNode()}
+	 * .
 	 */
 	@Test
 	public void testCreateNode() {
-		////fail("Not yet implemented");
+		Transaction t = ps.beginTx();
+		Node root = ps.createResourceNodeIfAbsent();
+		root.setProperty("name", "ROOT");
+		try {
+			for (int i = 0; i < 100; i++) {
+				Node n = ps.createNode();
+				n.setProperty("ID", i);
+				root.createRelationshipTo(n, RelTypes.LINK);
+			}
+			t.success();
+		}
+
+		finally {
+			t.finish();
+		}
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllNodes()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getAllNodes()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetAllNodes() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getNodeById(long)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getNodeById(long)}
+	 * .
 	 */
 	@Test
 	public void testGetNodeById() {
-		EObject obj = EcoreFactory.eINSTANCE.createEObject();
-		Transaction t = ps.beginTx();
-		Node n = ps.createNodeFromEObject(obj);
+		Transaction tx;
+		int times = 100;
+		Node[] nodes = new Node[times];
+		tx = ps.beginTx();
+		try {
+			for (int i = 0; i < nodes.length; i++) {
+				nodes[i] = ps.createNode();
+			}
+			tx.success();
+		} finally {
+			tx.finish();
+		}
 		
-		Node other = ps.getNodeById(n.getId());
-		
-		assert n.equals(other);
+		tx = ps.beginTx();
+		for (int i = 0; i < nodes.length; i++) {
+			Node n = ps.getNodeById(nodes[i].getId());
+			assert n.equals(nodes[i]);
+		}
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getReferenceNode()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getReferenceNode()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetReferenceNode() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getRelationshipById(long)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getRelationshipById(long)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetRelationshipById() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getRelationshipTypes()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getRelationshipTypes()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testGetRelationshipTypes() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#index()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#index()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testIndex() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#registerKernelEventHandler(org.neo4j.graphdb.event.KernelEventHandler)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#registerKernelEventHandler(org.neo4j.graphdb.event.KernelEventHandler)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testRegisterKernelEventHandler() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#registerTransactionEventHandler(org.neo4j.graphdb.event.TransactionEventHandler)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#registerTransactionEventHandler(org.neo4j.graphdb.event.TransactionEventHandler)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testRegisterTransactionEventHandler() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#shutdown()}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#shutdown()}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testShutdown() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#unregisterKernelEventHandler(org.neo4j.graphdb.event.KernelEventHandler)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#unregisterKernelEventHandler(org.neo4j.graphdb.event.KernelEventHandler)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testUnregisterKernelEventHandler() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#unregisterTransactionEventHandler(org.neo4j.graphdb.event.TransactionEventHandler)}.
+	 * Test method for
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#unregisterTransactionEventHandler(org.neo4j.graphdb.event.TransactionEventHandler)}
+	 * .
 	 */
-	@Test
+	// @Test
 	public void testUnregisterTransactionEventHandler() {
-		////fail("Not yet implemented");
+		// //fail("Not yet implemented");
+	}
+
+	private static enum RelTypes implements RelationshipType {
+		LINK
 	}
 
 }
