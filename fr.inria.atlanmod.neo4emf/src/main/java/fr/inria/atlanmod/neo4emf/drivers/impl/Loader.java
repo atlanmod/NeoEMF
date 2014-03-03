@@ -340,12 +340,7 @@ public class Loader implements ILoader {
 			// containers to the root of the resource...
 			// if (!str.isContainment())
 			// manager.addObjectsToContents(objectList);
-			if (str.isMany()) {
-				obj.eSet(str, objectList);
-			} else if (!objectList.isEmpty()) {
-				obj.eSet(str, objectList.get(0));
-			}
-			// Set the resource if still null after eSet
+			// Set the resource in case it won't be done in eSet
 			Iterator<INeo4emfObject> it = objectList.iterator();
 			while(it.hasNext()) {
 				INeo4emfObject neoObj = it.next();
@@ -354,6 +349,11 @@ public class Loader implements ILoader {
 					((Neo4emfObject)neoObj).eSetDirectResource((Resource.Internal)obj.eResource());
 					System.out.println(neoObj.eResource());
 				}
+			}
+			if (str.isMany()) {
+				obj.eSet(str, objectList);
+			} else if (!objectList.isEmpty()) {
+				obj.eSet(str, objectList.get(0));
 			}
 			((INeo4emfObject)obj).unsetLoadingOnDemand();;
 //			getChangeLog().removeLastChanges(getChangeLog().size() - size);
