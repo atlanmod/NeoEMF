@@ -1,5 +1,6 @@
 package fr.inria.atlanmod.neo4emf.tests.reflection;
 
+import java.io.File;
 import java.io.IOException;
 
 import mgraph.MEdge;
@@ -7,6 +8,7 @@ import mgraph.MGraph;
 import mgraph.MNode;
 import mgraph.MgraphPackage;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -14,15 +16,26 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
 import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
+import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
 
 public class LoadTest {
 
 	private INeo4emfResource resource;
+	
+	private static final File DB_FOLDER = new File("/tmp/LoadTest/output/ResourceSave");
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		FileUtils.forceMkdir(DB_FOLDER);
+	}
+	
+	
 	
 	@Before
 	public void setUp() {
@@ -30,7 +43,7 @@ public class LoadTest {
 		// Create the resourceSet
 		ResourceSet resourceSet = new ResourceSetImpl();
 		// Create an URI with neo4emf as protocol 
-		URI uri = URI.createURI("neo4emf:/./data/output/ResourceSave");
+		URI uri = URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath());
 		// attach this protocol to INeo4emfResourceFactory 
 		resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("neo4emf", 
 				INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mgraph.reltypes

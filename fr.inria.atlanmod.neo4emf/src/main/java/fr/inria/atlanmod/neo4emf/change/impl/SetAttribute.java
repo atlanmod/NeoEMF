@@ -37,5 +37,10 @@ public class SetAttribute extends Entry {
 		serializer.setAttributeValue(eObject, eAttribute,newValue);
 
 	}
+	
+	@Deprecated
+	public EAttribute geteAttribute() {
+		return eAttribute;
+	}
 
 }

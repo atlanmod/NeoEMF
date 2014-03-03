@@ -49,24 +49,10 @@ public class PersistenceService implements IPersistenceService {
 	/**
 	 * The Neo4j database service.
 	 */
-	GraphDatabaseService db;
+	private final GraphDatabaseService service;
 
-	public PersistenceService(String storeDir) {
-
-		// the cache providers
-		ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-		cacheList.add(new SoftCacheProvider());
-
-		// the kernel extensions
-		LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
-		List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
-		extensions.add(lucene);
-
-		// the database setup
-		GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
-		gdbf.setKernelExtensions(extensions);
-		gdbf.setCacheProviders(cacheList);
-		db = gdbf.newEmbeddedDatabase(storeDir);
+	protected PersistenceService(GraphDatabaseService service) {
+		this.service = service;
 	}
 
 	@Override
@@ -212,34 +198,34 @@ public class PersistenceService implements IPersistenceService {
 
 
 	public Transaction beginTx() {
-		return db.beginTx();
+		return service.beginTx();
 	}
 
 
 	public Node createNode() {
-		return db.createNode();
+		return service.createNode();
 	}
 
 
 
 	
 	public Node getNodeById(long arg0) {
-		return db.getNodeById(arg0);
+		return service.getNodeById(arg0);
 	}
 
 
 	public Relationship getRelationshipById(long arg0) {
-		return db.getRelationshipById(arg0);
+		return service.getRelationshipById(arg0);
 	}
 
 
 	public IndexManager index() {
-		return db.index();
+		return service.index();
 	}
 
 	@Override
 	public void shutdown() {
-		db.shutdown();
+		service.shutdown();
 	}
 
 }

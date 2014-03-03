@@ -13,11 +13,17 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.index.lucene.LuceneKernelExtensionFactory;
+import org.neo4j.kernel.extension.KernelExtensionFactory;
+import org.neo4j.kernel.impl.cache.CacheProvider;
+import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
-import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 
@@ -25,7 +31,23 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 
 	@Override
 	public IPersistenceService createPersistenceService(String path, Map<String, String> config) {
-		IPersistenceService service = new PersistenceService(path);
+
+		// the cache providers
+		ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
+		cacheList.add(new SoftCacheProvider());
+
+		// the kernel extensions
+		LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
+		List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
+		extensions.add(lucene);
+
+		// the database setup
+		GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
+		gdbf.setKernelExtensions(extensions);
+		gdbf.setCacheProviders(cacheList);
+		GraphDatabaseService db = gdbf.newEmbeddedDatabase(path);
+		
+		IPersistenceService service = new PersistenceService(db);
 		registerShutdownHook(service);
 		return service;
 
@@ -37,21 +59,6 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 		}
 		return eINSTANCE;
 	}
-
-	// public PersistenceServiceFactory (){
-	// //the cache providers
-	// ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-	// // cacheList.add( new GCResistantCacheProvider() );
-	//
-	// //the index providers
-	// IndexProvider lucene = new LuceneIndexProvider();
-	// ArrayList<IndexProvider> provs = new ArrayList<IndexProvider>();
-	// provs.add( lucene );
-	// ListIndexIterable providers = new ListIndexIterable();
-	// providers.setIndexProviders( provs );
-	// this.setIndexProviders( providers );
-	// this.setCacheProviders( cacheList );
-	// }
 
 	/**
 	 * Register a shutdown so the database shuts clearly when an exception is
@@ -70,12 +77,5 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 				graphDb.shutdown();
 			}
 		});
-	}
-
-	@Override
-	public IPersistenceService createPersistenceService(String path) {
-		IPersistenceService service = new PersistenceService(path);
-		registerShutdownHook(service);
-		return service;
 	}
 }

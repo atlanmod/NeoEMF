@@ -31,8 +31,7 @@ public interface IPersistenceServiceFactory {
 	 * @param persistenceManager {@link IPersistenceManager}
 	 * @return {@link IPersistenceService}
 	 */
-	IPersistenceService createPersistenceService(String path);
-
+	
 	IPersistenceService createPersistenceService(String path,
 			Map<String, String> config);
 	

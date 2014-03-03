@@ -25,4 +25,9 @@ abstract public class Entry {
 	}
 
 	public abstract void process(Serializer serializer);
+	
+	@Deprecated
+	public EObject geteObject() {
+		return eObject;
+	}
 }

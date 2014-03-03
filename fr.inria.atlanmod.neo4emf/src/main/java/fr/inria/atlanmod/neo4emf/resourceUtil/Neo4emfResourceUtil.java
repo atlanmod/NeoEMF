@@ -1,6 +1,7 @@
 package fr.inria.atlanmod.neo4emf.resourceUtil;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import org.neo4j.graphdb.index.Index;
 
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService;
 
@@ -49,7 +51,8 @@ public class Neo4emfResourceUtil {
 	public static void importFromXMI(URI xmiUri, String outputPath){
 		// Init variables 
 		deleteFileOrDirectory(new File(outputPath));
-		IPersistenceService graphDB = new PersistenceService(outputPath);
+		IPersistenceService graphDB = IPersistenceServiceFactory.eINSTANCE
+				.createPersistenceService(outputPath, Collections.<String,String>emptyMap());
 		// Serialize the resource in Neo4j DB
 		serializeResource(graphDB, xmiUri, null);
 		
@@ -58,7 +61,8 @@ public class Neo4emfResourceUtil {
 	public static void importFromXMI(String xmiPath, String outputPath, String ecorePath){
 		// Init variables 
 		deleteFileOrDirectory(new File(outputPath));
-		IPersistenceService graphDB = new PersistenceService(outputPath);
+		IPersistenceService graphDB = IPersistenceServiceFactory.eINSTANCE
+				.createPersistenceService(outputPath, Collections.<String,String>emptyMap());
 		// Serialize the resource in Neo4j DB
 		Resource metaResource = initMetalmodel(ecorePath);
 		serializeResource(graphDB,URI.createFileURI(xmiPath), metaResource);

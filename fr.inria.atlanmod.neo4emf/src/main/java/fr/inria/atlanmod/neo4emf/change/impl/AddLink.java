@@ -37,4 +37,9 @@ public class AddLink extends Entry {
 	public void process(Serializer serializer) {
 		serializer.addNewLink(eObject, eReference, newValue);
 	}
+	
+	@Deprecated
+	public EReference geteReference() {
+		return eReference;
+	}
 }

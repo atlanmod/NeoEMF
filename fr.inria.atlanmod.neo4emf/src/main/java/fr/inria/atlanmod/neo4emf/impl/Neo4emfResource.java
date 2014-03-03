@@ -63,7 +63,7 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 		super();
 		
 		assert storeDirectory != null : "Null storage directory";
-		assert new File(storeDirectory).isDirectory() : "Invalid directory";
+		assert new File(storeDirectory).isDirectory() : "Invalid directory: " + storeDirectory;
 		
 
 		//this.storeDirectory = storeDirectory;

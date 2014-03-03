@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -96,7 +97,7 @@ public class PersistenceManager implements IPersistenceManager {
 		
 		this.resource = neo4emfResource;
 		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
-				.createPersistenceService(storeDirectory);
+				.createPersistenceService(storeDirectory, Collections.<String,String>emptyMap());
 		this.serializer = new Serializer(this);
 		this.eRef2relType = eRef2relType;
 		this.proxyManager = new ProxyManager();
