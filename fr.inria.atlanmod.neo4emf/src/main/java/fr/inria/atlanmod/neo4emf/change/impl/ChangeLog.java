@@ -55,4 +55,9 @@ public class ChangeLog implements IChangeLog<Entry> {
 	public int size() {
 		return changes.size();
 	}
+
+	@Override
+	public List<Entry> changes() {
+		return changes;
+	}
 }

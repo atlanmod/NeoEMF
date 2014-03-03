@@ -1,6 +1,7 @@
 package fr.inria.atlanmod.neo4emf.change;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -19,5 +20,7 @@ public interface IChangeLog<E> {
 	public void clear();
 	
 	public int size();
+	
+	public List<E> changes();
 
 }

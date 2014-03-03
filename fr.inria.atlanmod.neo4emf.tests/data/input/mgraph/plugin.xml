@@ -10,7 +10,8 @@
       <!-- @generated MGraph -->
       <package
             uri="http://mgraph/1.1"
-            class="mgraph.MgraphPackage"/>
+            class="mgraph.MgraphPackage"
+            genModel="model/MGraph.genmodel"/>
    </extension>
 
 </plugin>

@@ -9,39 +9,32 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
+import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
+
 /**
- *
+ * 
  * @author sunye
  */
 public class AddLink extends Entry {
-	
+
 	private final EReference eReference;
-    private final Object oldValue;
-    private final Object newValue;
-    // TODO all is below ... Avoid gc of soft ref I guess ahah
-    private final Object trucDegueux;
-    
-	public AddLink(EObject object, EReference eRef, Object oldV, Object newV ) {
+	private final Object oldValue;
+	private final Object newValue;
+
+	public AddLink(EObject object, EReference eRef, Object oldV, Object newV) {
 		super(object);
-		eReference= eRef;
-		oldValue=oldV;
+		eReference = eRef;
+		oldValue = oldV;
 		newValue = newV;
-		trucDegueux = object.eGet(eRef);
-	}
-    
-	public AddLink (Notification msg){
-	this ((EObject)msg.getNotifier(),(EReference)msg.getFeature(),msg.getOldValue(),msg.getNewValue());
 	}
 
-	public EReference geteReference() {
-		return eReference;
+	public AddLink(Notification msg) {
+		this((EObject) msg.getNotifier(), (EReference) msg.getFeature(), msg
+				.getOldValue(), msg.getNewValue());
 	}
 
-	public Object getOldValue() {
-		return oldValue;
-	}
-
-	public Object getNewValue() {
-		return newValue;
+	@Override
+	public void process(Serializer serializer) {
+		serializer.addNewLink(eObject, eReference, newValue);
 	}
 }
