@@ -22,9 +22,10 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 
-public interface IPersistenceService extends GraphDatabaseService {
+public interface IPersistenceService {
 	/**
 	 * NS_URI Constant key to save NS_URI {@link String}
 	 */
@@ -208,12 +209,36 @@ public interface IPersistenceService extends GraphDatabaseService {
 	List<Node> getAllNodesOfType(EClass eClass);
 
 	/**
+	 * Stops the database service.
+	 */
+	void shutdown();
+
+	/**
+	 * Creates and starts a transaction
+	 * 
+	 * @return
+	 */
+	Transaction beginTx();
+	
+	/**
+	 * Returns database node for id
+	 * @param l the id
+	 * @return the database node
+	 */
+	Node getNodeById(long l);
+	
+	/**
+	 * Creates a database node.
+	 * @return
+	 */
+	Node createNode();
+	
+	/**
 	 * Enum class for the meta_relations
 	 * 
 	 * @author Amine BENELALLAM
 	 * 
 	 */
-
 	public enum MetaRelation implements RelationshipType {
 		/**
 		 * Instance of relationship

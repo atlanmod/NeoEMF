@@ -1,10 +1,12 @@
 package fr.inria.atlanmod.neo4emf.tests.reflection;
 
+import java.io.File;
 import java.io.IOException;
 
 import mgraph.MEdge;
 import mgraph.MGraph;
 import mgraph.MNode;
+import mgraph.MgraphFactory;
 import mgraph.MgraphPackage;
 
 import org.eclipse.emf.common.util.EList;
@@ -14,33 +16,43 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
 
 public class LoadTest {
 
 	private INeo4emfResource resource;
 	
-	@Before
-	public void setUp() {
-		//Neo4emfResourceUtil.deleteDirectoryIfExists(new File("./MyFirstneo4emfDB"));
-		// Create the resourceSet
+	private static void deleteDirectoryIfExists(final File file)
+	{ 
+		if (! file.exists()) return;
+		if (file.isDirectory()) {
+			for (File child : file.listFiles())
+				deleteDirectoryIfExists(child);
+		}
+		else file.delete();
+	}
+	
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		deleteDirectoryIfExists(new File("./data/output/LoadTest"));
 		ResourceSet resourceSet = new ResourceSetImpl();
 		// Create an URI with neo4emf as protocol 
-		URI uri = URI.createURI("neo4emf:/./data/output/ResourceSave");
+		URI uri = URI.createURI("neo4emf:/./data/output/LoadTest");
 		// attach this protocol to INeo4emfResourceFactory 
 		resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("neo4emf", 
 				INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mgraph.reltypes
 						.ReltypesMappings.getInstance().getMap()));
 		// Create the resource
-		resource = (INeo4emfResource) resourceSet.createResource(uri);
+		INeo4emfResource resource = (INeo4emfResource) resourceSet.createResource(uri);
 		// Register the package
 		EPackage.Registry.INSTANCE.put(MgraphPackage.eINSTANCE.getNsURI(), MgraphPackage.eINSTANCE);
+		MgraphFactory factory = MgraphFactory.eINSTANCE;
 		
-		/*MGraph mg = MgraphFactory.eINSTANCE.createMGraph();
+		MGraph mg = MgraphFactory.eINSTANCE.createMGraph();
 		mg.setName("myGraph");
 		MNode n1 = MgraphFactory.eINSTANCE.createMNode();
 		MNode n2 = MgraphFactory.eINSTANCE.createMNode();
@@ -53,7 +65,24 @@ public class LoadTest {
 		edge.setGraph(mg);
 		n1.getTo().add(edge);
 		n2.getFrom().add(edge);
-		resource.save();*/
+		resource.getContents().add(mg);
+		resource.save();
+		resource.shutdown();
+	}
+	
+	@Before
+	public void setUp() {
+		ResourceSet resourceSet = new ResourceSetImpl();
+		// Create an URI with neo4emf as protocol 
+		URI uri = URI.createURI("neo4emf:/./data/output/LoadTest");
+		// attach this protocol to INeo4emfResourceFactory 
+		resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("neo4emf", 
+				INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mgraph.reltypes
+						.ReltypesMappings.getInstance().getMap()));
+		// Create the resource
+		resource = (INeo4emfResource) resourceSet.createResource(uri);
+		// Register the package
+		EPackage.Registry.INSTANCE.put(MgraphPackage.eINSTANCE.getNsURI(), MgraphPackage.eINSTANCE);
 	}
 	
 	@Test
@@ -102,8 +131,6 @@ public class LoadTest {
 	
 	@Test
 	public void testLoadNode() {
-		resource.getContents().clear();
-		resource.getChangeLog().clear();
 		try {
 			resource.load(null);
 			EList<EObject> resourceContents = resource.getContents();
@@ -151,8 +178,6 @@ public class LoadTest {
 	
 	@Test
 	public void testLoadGraphReflective() {
-		resource.getContents().clear();
-		resource.getChangeLog().clear();
 		try {
 			resource.load(null);
 			EList<EObject> resourceContents = resource.getContents();

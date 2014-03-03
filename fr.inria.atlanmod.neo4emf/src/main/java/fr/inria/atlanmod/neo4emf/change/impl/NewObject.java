@@ -10,6 +10,8 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
+
 /**
  *
  * @author sunye
@@ -35,6 +37,11 @@ public class NewObject extends Entry {
 
 	public NewObject(Notification msg) {
 		this ((EObject) msg.getNotifier());
+	}
+
+	@Override
+	public void process(Serializer serializer, boolean isTmp) {
+		serializer.createNewObject(eObject,isTmp);
 	}
     
 }

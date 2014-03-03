@@ -20,6 +20,7 @@ import org.neo4j.graphdb.RelationshipType;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
 import fr.inria.atlanmod.neo4emf.Point;
+import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.testdata.Container;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
@@ -61,14 +62,14 @@ public class Neo4emfResourceTest {
 
 	@Test
 	public void testCreateAndSave() throws Exception {
+		int times = 10000;
 		TestPackage pack = TestPackage.eINSTANCE;
 		TestFactory factory = pack.getTestFactory();
 		
 		Container container = factory.createContainer();
 		container.setName("My Container");
 		
-		
-		for (int i = 1; i < 100; i++) {
+		for (int i = 1; i < times ; i++) {
 			Vertex vertex = factory.createVertex();
 			vertex.setName("Vertex name ["+i+"]");
 			vertex.setContainer(container);
@@ -77,18 +78,16 @@ public class Neo4emfResourceTest {
 		resource.attached(container);
 		System.out.println("Changelog size: " + resource.getChangeLog().size());
 		
-		
-		
 		resource.save(null);
 		resource.shutdown();
 
 
-		INeo4emfResource loaded = (INeo4emfResource) rSet.createResource(uri);
-		loaded.load(null);
-		EList<EObject> contents = loaded.getContents();
+		//INeo4emfResource loaded = (INeo4emfResource) rSet.createResource(uri);
+		//loaded.load(null);
+		//EList<EObject> contents = loaded.getContents();
 		
 		//assert contents.contains(container);
-		loaded.shutdown();
+		//loaded.shutdown();
 		
 	}
 
@@ -101,8 +100,33 @@ public class Neo4emfResourceTest {
 		//assert "/a/b/c/".equals(result);
 	}
 	
-	
 	@Test
+	public void testReferences() throws Exception {
+		int times = 10;
+		TestPackage pack = TestPackage.eINSTANCE;
+		TestFactory factory = pack.getTestFactory();
+		
+		Container container = factory.createContainer();
+		container.setName("My Container");
+		
+		for (int i = 1; i < times ; i++) {
+			Vertex vertex = factory.createVertex();
+			vertex.setName("Vertex name ["+i+"]");
+			vertex.setContainer(container);
+		}
+
+		resource.attached(container);
+		System.out.println("Changelog size: " + resource.getChangeLog().size());
+		for (Entry each : resource.getChangeLog().changes()) {
+			System.out.println(each);
+		}
+		
+		resource.save(null);
+		resource.shutdown();
+	}
+	
+	
+	//@Test
 	public void testAttached() {
 		EObject obj = new Neo4emfObject();
 		//resource.attached(obj);
@@ -113,84 +137,6 @@ public class Neo4emfResourceTest {
 	public void testDetached() {
 		EObject obj = EcoreFactory.eINSTANCE.createEObject();
 		//resource.detached(obj);
-	}
-
-	@Test
-	public void testSaveMapOfQQ() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testLoadMapOfQQ() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testNeo4emfResourceStringMapOfStringMapOfPointRelationshipTypeMapOfStringString() {
-		//Neo4emfResource resource = new Neo4emfResource(DB_DIR, null, null);
-		
-		
-		//assert resource != null;
-	}
-
-	@Test
-	public void testNeo4emfResourceURIMapOfStringMapOfPointRelationshipTypeMapOfStringString() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testFetchAttributes() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetOnDemand() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSave() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testShutdown() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testNotifyGet() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testUnloadInt() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetAllInstancesEClass() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetAllInstancesInt() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetContainerOnDemand() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetRelationshipsMap() {
-		//fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetChangeLog() {
-		//fail("Not yet implemented");
 	}
 	
 }

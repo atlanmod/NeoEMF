@@ -48,7 +48,7 @@ public class PersistenceServiceTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		FileUtils.forceDelete(DB_FOLDER);
+		//FileUtils.forceDelete(DB_FOLDER);
 	}
 
 	/**
@@ -82,12 +82,11 @@ public class PersistenceServiceTest {
 	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getMetaIndex()}
 	 * .
 	 */
-	// @Test
+	@Test
 	public void testGetMetaIndex() {
 		Index<Node> index = ps.getMetaIndex();
 
 		assert index != null;
-
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class PersistenceServiceTest {
 	 * fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService
 	 * #createResourceNodeIfAbsent()}.
 	 */
-	// @Test
+	@Test
 	public void testCreateResourceNodeIfAbsent() {
 		Transaction t = ps.beginTx();
 		Node n = ps.createResourceNodeIfAbsent();

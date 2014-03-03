@@ -352,7 +352,8 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		return objectsList;
 	}
 
-	public static Node createWithIndexIfNotExists(EClass c, 
+	
+	private static Node createWithIndexIfNotExists(EClass c, 
 			IPersistenceService graphDB ){		
 		if (getMetaIndex(graphDB).get(IPersistenceService.ID_META, c.getEPackage().getName()+"_"+c.getClassifierID()).getSingle() != null)
 			return getMetaIndex(graphDB).get(IPersistenceService.ID_META, c.getEPackage().getName()+"_"+c.getClassifierID()).getSingle();

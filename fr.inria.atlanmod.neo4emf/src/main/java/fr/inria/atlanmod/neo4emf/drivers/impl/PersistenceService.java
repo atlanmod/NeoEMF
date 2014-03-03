@@ -328,8 +328,7 @@ public class PersistenceService implements IPersistenceService {
 	@Override
 	public List<Node> getAllRootNodes() {
 		Index<Node> index = getMetaIndex();
-		Node resourceNode = index.get(ID_META, RESOURCE_NODE).getSingle();
-		
+		Node resourceNode = this.createResourceNodeIfAbsent();
 		assert resourceNode != null : "Null resource node";
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
 	}
@@ -503,58 +502,31 @@ public class PersistenceService implements IPersistenceService {
 				Direction.INCOMING);
 	}
 
-	@Override
+
 	public Transaction beginTx() {
 		return db.beginTx();
 	}
 
-	@Override
+
 	public Node createNode() {
 		return db.createNode();
 	}
 
-	@Override
-	@Deprecated
-	public Iterable<Node> getAllNodes() {
-		return db.getAllNodes();
-	}
 
-	@Override
+
+	
 	public Node getNodeById(long arg0) {
 		return db.getNodeById(arg0);
 	}
 
-	@Override
-	@Deprecated
-	public Node getReferenceNode() {
-		return db.getReferenceNode();
-	}
 
-	@Override
 	public Relationship getRelationshipById(long arg0) {
 		return db.getRelationshipById(arg0);
 	}
 
-	@Override
-	@Deprecated
-	public Iterable<RelationshipType> getRelationshipTypes() {
-		return db.getRelationshipTypes();
-	}
 
-	@Override
 	public IndexManager index() {
 		return db.index();
-	}
-
-	@Override
-	public KernelEventHandler registerKernelEventHandler(KernelEventHandler arg0) {
-		return db.registerKernelEventHandler(arg0);
-	}
-
-	@Override
-	public <T> TransactionEventHandler<T> registerTransactionEventHandler(
-			TransactionEventHandler<T> arg0) {
-		return db.registerTransactionEventHandler(arg0);
 	}
 
 	@Override
@@ -562,15 +534,4 @@ public class PersistenceService implements IPersistenceService {
 		db.shutdown();
 	}
 
-	@Override
-	public KernelEventHandler unregisterKernelEventHandler(
-			KernelEventHandler arg0) {
-		return db.unregisterKernelEventHandler(arg0);
-	}
-
-	@Override
-	public <T> TransactionEventHandler<T> unregisterTransactionEventHandler(
-			TransactionEventHandler<T> arg0) {
-		return db.unregisterTransactionEventHandler(arg0);
-	}
 }

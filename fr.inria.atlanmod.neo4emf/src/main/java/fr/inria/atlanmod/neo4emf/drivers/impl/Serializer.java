@@ -31,94 +31,65 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.change.IChangeLog;
-import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
-import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
-import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
-import fr.inria.atlanmod.neo4emf.change.impl.RemoveLink;
-import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.logger.Logger;
 import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 public class Serializer implements ISerializer {
-	
+
 	/**
 	 * TODO: Comment this
 	 */
 	PersistenceManager manager;
-	
+
 	/**
 	 * TODO: Comment this
 	 */
-	Map<String, Object> defaultOptions;
+	Map<String, Object> defaultOptions = new HashMap<String, Object>();
 
-
-	//INodeBuilder nodeBuilder;
-	public Serializer (PersistenceManager manager){
+	// INodeBuilder nodeBuilder;
+	public Serializer(PersistenceManager manager) {
 		this.manager = manager;
+		for (int i = 0; i < saveOptions.length; i++)
+			defaultOptions.put(saveOptions[i], saveDefaultValues[i]);
 	}
 
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	/**
 	 *  @see {@link INeo4emfResource#save()}
 	 */
 	public void save(Map<String, Object> options) {
-		if (options == null)
-			options = new HashMap();
-		options= mergeWithDefaultOptions(options);
+		/*
+		 * The number of database operations within a transaction is bounded,
+		 * that's why changes may be processed in several transactions.
+		 */
+		if (options != null){
+			defaultOptions.putAll(options);
+		}
+		int max = (int) defaultOptions.get(MAX_OPERATIONS_PER_TRANSACTION);
 		boolean isTmpSave = (boolean)options.get("tmp_save");
 		if(!isTmpSave) {
 			flushTmpSave(options);
 		}
-		int counter=0;
-		Transaction tx = manager.beginTx();
-		IChangeLog<Entry> changeLog = manager.getResource().getChangeLog();
-		try {
-			// TODO: Fix with a more efficient implementation
-			// First execute only for create objects
-			Iterator<Entry> it = changeLog.iterator();
-			while (it.hasNext()) {
-				Entry e = it.next();
-				if (e instanceof NewObject) {
-					serializeEntrySwitch(e,isTmpSave);
-					counter++;
-					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
-					{	
-						tx.success();
-						tx.finish();
-						tx= manager.beginTx();
-					}
+		List<Entry> changes = manager.getResource().getChangeLog().changes();
+		while (!changes.isEmpty()) {
+			int times = Math.min(max, changes.size());
+			List<Entry> subset = changes.subList(0, times);
+			Transaction tx = manager.beginTx();
+			try {
+				for(Entry each : subset) {
+					each.process(this,isTmpSave);
 				}
+				tx.success();
+				subset.clear();
+			} catch (Exception e) {
+				tx.failure();
+			} finally {
+				tx.finish();
 			}
-			// other updates...
-			it = changeLog.iterator();
-			while (it.hasNext()) {
-				Entry e = it.next();
-				if (!(e instanceof NewObject)) {
-					serializeEntrySwitch(e,isTmpSave);
-					counter++;
-					if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
-					{	
-						tx.success();
-						tx.finish();
-						tx= manager.beginTx();
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			manager.shutdown();
-		} finally {
-			tx.success();
-			tx.finish();
-		}	
-		changeLog.clear();
-		// the changelog is cleared after an exception is raised
-		// TODO look for a way to manage this
+		}
 	}
 	
 	private void flushTmpSave(Map<String,Object> options) {
@@ -140,59 +111,8 @@ public class Serializer implements ISerializer {
 		tx.success();
 		tx.finish();
 	}
-	
-	/**
-	 * init the default options of
-	 * 
-	 * @return {@link Map} default Options
-	 */
-	private void initOptions() {
-		defaultOptions = new HashMap<String, Object>();
-		for (int i = 0; i < saveOptions.length; i++)
-			defaultOptions.put(saveOptions[i], saveDefaultValues[i]);
 
-	}
-
-	/**
-	 * merges the options in the save method's parameters with the default
-	 * options
-	 * 
-	 * @param options
-	 * @return {@link Map} merged options
-	 */
-	private Map<String, Object> mergeWithDefaultOptions(
-			Map<String, Object> options) {
-		initOptions();
-		for (int i = 0; i < saveOptions.length; i++)
-			if (options.containsKey(saveOptions[i])) {
-				defaultOptions.remove(saveOptions[i]);
-				defaultOptions.put(saveOptions[i], options.get(saveOptions[i]));
-			}
-		return defaultOptions;
-	}
-
-	/**
-	 * casts the ChangeLog entry to the appropriate atomic persistence action
-	 * within transactions
-	 * 
-	 * @param e
-	 *            {@link Entry}
-	 */
-	private void serializeEntrySwitch(Entry e, boolean isTmp) {
-		if ( e instanceof NewObject)
-			createNewObject(e.geteObject(), isTmp);
-		else if ( e instanceof AddLink )	
-			addNewLink(e.geteObject(), ((AddLink) e).geteReference(),((AddLink) e).getNewValue(), isTmp);
-		else if ( e instanceof RemoveLink)
-			removeExistingLink(e.geteObject(), ((RemoveLink) e).geteReference(), ((RemoveLink) e).getOldValue(), isTmp);
-		else if ( e instanceof SetAttribute )
-			setAttributeValue(e.geteObject(),((SetAttribute) e).geteAttribute(),((SetAttribute) e).getNewValue(), isTmp);
-		else if ( e instanceof DeleteObject)
-			deleteExistingObject(e.geteObject(),isTmp);
-
-	}
-
-	private void deleteExistingObject(EObject geteObject, boolean isTmp) {
+	public void deleteExistingObject(EObject geteObject, boolean isTmp) {
 		if(isTmp) {
 			Node n = this.manager.getNodeById(geteObject);
 			this.manager.createDeleteRelationship(n);
@@ -201,7 +121,7 @@ public class Serializer implements ISerializer {
 			this.manager.deleteNodeFromEObject(geteObject);
 		}
 	}
-	
+
 	private boolean isPrimitive(String str){
 		if (str.equals("Boolean") 
 				|| str.equals("Integer") 
@@ -218,7 +138,7 @@ public class Serializer implements ISerializer {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setAttributeValue(EObject eObject,
+	public void setAttributeValue(EObject eObject,
 			EAttribute at, Object newValue, boolean isTmp) {
 		Node n = manager.getNodeById(eObject);
 		if(isTmp) {
@@ -263,7 +183,7 @@ public class Serializer implements ISerializer {
 		}
 	}
 
-	private void removeExistingLink(EObject eObject, EReference eRef, Object object, boolean isTmp) {
+	public void removeExistingLink(EObject eObject, EReference eRef, Object object, boolean isTmp) {
 		Node n = manager.getNodeById(eObject);
 		Node n2 = manager.getNodeById((EObject)object);
 		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
@@ -280,7 +200,7 @@ public class Serializer implements ISerializer {
 		}
 	}
 
-	private void addNewLink(EObject eObject, EReference eRef, Object object, boolean isTmp) throws NullPointerException{
+	public void addNewLink(EObject eObject, EReference eRef, Object object, boolean isTmp) {
 		Node n = this.manager.getNodeById(eObject);
 		Node n2 = this.manager.getNodeById((EObject) object);
 		if (n == null || n2 == null) {
@@ -300,7 +220,7 @@ public class Serializer implements ISerializer {
 		}
 	}
 
-	private void createNewObject(EObject eObject,boolean isTmp) {
+	public void createNewObject(EObject eObject, boolean isTmp) {
 		Node n = null;
 		if (((INeo4emfObject)eObject).getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject,isTmp);
@@ -328,23 +248,31 @@ public class Serializer implements ISerializer {
 				boolean isSet = false;
 				try {
 					isSet = eObject.eIsSet(ref);
-				} catch (ClassCastException e) {};
+				} catch (ClassCastException e) {
+				}
+				;
 				if (isSet) {
 					if (ref.getUpperBound() == -1) {
-						List<EObject> eObjects = (List<EObject>) eObject.eGet(ref);
+						List<EObject> eObjects = (List<EObject>) eObject
+								.eGet(ref);
 						for (EObject referencedEObject : eObjects) {
 							Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) referencedEObject;
 							if (referencedNeo4emfObject.getNodeId() == -1) {
-								Node childNode = this.manager.createNodefromEObject(referencedEObject);
-								referencedNeo4emfObject.setNodeId(childNode.getId());
+								Node childNode = this.manager
+										.createNodefromEObject(referencedEObject);
+								referencedNeo4emfObject.setNodeId(childNode
+										.getId());
 							}
 							addNewLink(eObject, ref, referencedEObject,isTmp);
 						}
 					} else {
-						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject.eGet(ref);
+						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject
+								.eGet(ref);
 						if (referencedNeo4emfObject.getNodeId() == -1) {
-							Node childNode = this.manager.createNodefromEObject(referencedNeo4emfObject);
-							referencedNeo4emfObject.setNodeId(childNode.getId());
+							Node childNode = this.manager
+									.createNodefromEObject(referencedNeo4emfObject);
+							referencedNeo4emfObject
+									.setNodeId(childNode.getId());
 						}
 						addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
 					}
