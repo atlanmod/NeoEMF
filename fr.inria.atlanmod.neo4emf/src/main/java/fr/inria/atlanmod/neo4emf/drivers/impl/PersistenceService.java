@@ -25,57 +25,33 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.event.KernelEventHandler;
-import org.neo4j.graphdb.event.TransactionEventHandler;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
-import org.neo4j.index.lucene.LuceneKernelExtensionFactory;
 import org.neo4j.kernel.Traversal;
-import org.neo4j.kernel.extension.KernelExtensionFactory;
-import org.neo4j.kernel.impl.cache.CacheProvider;
-import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 
 public class PersistenceService implements IPersistenceService {
 	
 	/**
-	 * The Neo4j database service.
+	 * The database service connection.
 	 */
-	private final GraphDatabaseService service;
+	private final NEConnection connection;
 
-	protected PersistenceService(GraphDatabaseService service) {
-		this.service = service;
+	protected PersistenceService(GraphDatabaseService service, NEConfiguration configuration) {
+		this.connection = new NEConnection(service, configuration);
+		connection.open();
 	}
 
 	@Override
 	public Index<Node> getMetaIndex() {
 		return index().forNodes(META_ELEMENTS);
-	}
-
-	@Override
-	public Node createWithIndexIfNotExists(EClass c) {
-		assert c != null : "Null ECLass";
-		assert c.getName() != null : "Null EClass name";
-		assert c.getEPackage() != null : "Null EPackage for EClass";
-		assert c.getEPackage().getNsURI() != null : "Null EPackage NsURI";
-		
-		
-		String value = getIdMetaValueFromClass(c);
-		if (getMetaIndex().get(ID_META, value).getSingle() != null)
-			return getMetaIndex().get(ID_META, value).getSingle();
-		Node n = createNode();
-		n.setProperty(ECLASS_NAME, c.getName());
-		n.setProperty(NS_URI, c.getEPackage().getNsURI());
-		getMetaIndex().putIfAbsent(n, ID_META, value);
-		return n;
 	}
 
 	private String getIdMetaValueFromClass(EClass c) {
@@ -91,28 +67,8 @@ public class PersistenceService implements IPersistenceService {
 	}
 
 	@Override
-	public EObject createObjectProxyFromNode(Node n) {
-		// TODO finish declaration
-		return null;
-	}
-
-	@Override
-	public Node createNodeFromEObject(EObject eObject) {
-		Node node = createNode();
-		Node typeNode = createWithIndexIfNotExists(eObject.eClass());
-		node.createRelationshipTo(typeNode, INSTANCE_OF);
-		if (isRoot(eObject))
-			createResourceNodeIfAbsent().createRelationshipTo(node, IS_ROOT);
-		return node;
-	}
-
-
-	private boolean isRoot(EObject eObject) {		
-		if (eObject.eContainer() == null && eObject.eResource() != null) {
-			return true;
-		} else {
-			return false;
-		}
+	public Node createNodeFromEObject(INeo4emfObject eObject) {
+		return connection.addObject(eObject);
 	}
 
 	@Override
@@ -197,35 +153,32 @@ public class PersistenceService implements IPersistenceService {
 	}
 
 
-	public Transaction beginTx() {
-		return service.beginTx();
+	public NETransaction createTransaction() {
+		return connection.createTransaction();
 	}
 
 
 	public Node createNode() {
-		return service.createNode();
+		return connection.createNode();
+	}
+
+	public Node getNodeById(long id) {
+		return connection.getNodeById(id);
 	}
 
 
-
-	
-	public Node getNodeById(long arg0) {
-		return service.getNodeById(arg0);
-	}
-
-
-	public Relationship getRelationshipById(long arg0) {
-		return service.getRelationshipById(arg0);
+	public Relationship getRelationshipById(long id) {
+		return connection.getRelationshipById(id);
 	}
 
 
 	public IndexManager index() {
-		return service.index();
+		return connection.index();
 	}
 
 	@Override
 	public void shutdown() {
-		service.shutdown();
+		connection.close();
 	}
 
 }

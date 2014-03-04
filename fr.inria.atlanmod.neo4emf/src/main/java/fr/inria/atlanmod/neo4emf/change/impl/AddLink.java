@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
 
 /**
@@ -21,7 +22,7 @@ public class AddLink extends Entry {
 	private final Object oldValue;
 	private final Object newValue;
 
-	public AddLink(EObject object, EReference eRef, Object oldV, Object newV) {
+	public AddLink(INeo4emfObject object, EReference eRef, Object oldV, Object newV) {
 		super(object);
 		eReference = eRef;
 		oldValue = oldV;
@@ -29,7 +30,7 @@ public class AddLink extends Entry {
 	}
 
 	public AddLink(Notification msg) {
-		this((EObject) msg.getNotifier(), (EReference) msg.getFeature(), msg
+		this((INeo4emfObject) msg.getNotifier(), (EReference) msg.getFeature(), msg
 				.getOldValue(), msg.getNewValue());
 	}
 

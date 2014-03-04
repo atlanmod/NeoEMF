@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
+import fr.inria.atlanmod.neo4emf.drivers.NESession;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.testdata.Container;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
@@ -31,8 +32,8 @@ import fr.inria.atlanmod.neo4emf.testdata.reltypes.ReltypesMappings;
 public class Neo4emfResourceTest {
 	
 	private static final File DB_FOLDER = new File("/tmp/Neo4emfResourceTest");
-	private static final URI uri = URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath());
-	private static ResourceSet rSet = new ResourceSetImpl(); 
+	private static final URI uri = URI.createURI("neo4emf:"+DB_FOLDER.getAbsolutePath());
+	private static NESession session;
 	
 	
 	private INeo4emfResource resource;
@@ -40,9 +41,10 @@ public class Neo4emfResourceTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		FileUtils.forceMkdir(DB_FOLDER);
-		Map<String, Map<Point, RelationshipType>> mapping = ReltypesMappings.getInstance().getMap(); 
-		rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("neo4emf", INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mapping));
-
+		
+		INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(fr.inria.atlanmod.neo4emf.testdata.reltypes.ReltypesMappings.getInstance().getMap());
+		session = new NESession(TestPackage.eINSTANCE);
+		
 	}
 
 	@AfterClass
@@ -52,7 +54,7 @@ public class Neo4emfResourceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		resource = (INeo4emfResource) rSet.createResource(uri);
+		resource = session.createResource(uri);
 	}
 
 	@After
@@ -79,7 +81,7 @@ public class Neo4emfResourceTest {
 		System.out.println("Changelog size: " + resource.getChangeLog().size());
 		
 		resource.save(null);
-		resource.shutdown();
+		//resource.shutdown();
 
 
 		//INeo4emfResource loaded = (INeo4emfResource) rSet.createResource(uri);
@@ -122,7 +124,7 @@ public class Neo4emfResourceTest {
 		}
 		
 		resource.save(null);
-		resource.shutdown();
+		//resource.shutdown();
 	}
 	
 	

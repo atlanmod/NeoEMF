@@ -43,6 +43,8 @@ import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.drivers.IUnloader;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
@@ -91,30 +93,17 @@ public class PersistenceManager implements IPersistenceManager {
 	 * @param eRef2relType
 	 *            {@link Map}
 	 */
-	public PersistenceManager(INeo4emfResource neo4emfResource,
-			String storeDirectory,
-			Map<String, Map<Point, RelationshipType>> eRef2relType) {
-		
-		this.resource = neo4emfResource;
-		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
-				.createPersistenceService(storeDirectory, Collections.<String,String>emptyMap());
-		this.serializer = new Serializer(this);
-		this.eRef2relType = eRef2relType;
-		this.proxyManager = new ProxyManager();
-		this.loader = new Loader(this);
-		this.unloader = new Unloader(this, null);
-	}
 
-	public PersistenceManager(Neo4emfResource neo4emfResource,
-			String storeDirectory,
-			Map<String, Map<Point, RelationshipType>> map,
-			Map<String, String> params) {
+	
+	public PersistenceManager(INeo4emfResource neo4emfResource,
+			NEConfiguration configuration,
+			Map<String, Map<Point, RelationshipType>> map) {
 		
 		this.resource = neo4emfResource;
 		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
-				.createPersistenceService(storeDirectory, params);
+				.createPersistenceService(configuration);
 		this.serializer = new Serializer(this);
-		this.eRef2relType = eRef2relType;
+		this.eRef2relType = map;
 		this.proxyManager = new ProxyManager();
 		this.loader = new Loader(this);
 		this.unloader = new Unloader(this, null);
@@ -152,8 +141,8 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 
 	@Override
-	public Transaction beginTx() {
-		return persistenceService.beginTx();
+	public NETransaction createTransaction() {
+		return persistenceService.createTransaction();
 	}
 
 	@Override
@@ -189,7 +178,7 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 
 	@Override
-	public Node createNodefromEObject(EObject eObject) {
+	public Node createNodefromEObject(INeo4emfObject eObject) {
 		return persistenceService.createNodeFromEObject(eObject);
 	}
 
@@ -209,6 +198,7 @@ public class PersistenceManager implements IPersistenceManager {
 		resource.getContents().addAll(objects);
 	}
 
+	
 	@Override
 	public String getNodeType(Node n) {
 		return persistenceService.getNodeType(n);

@@ -18,11 +18,12 @@ import java.util.List;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.neo4j.cypher.internal.parser.v1_8.ParserPattern.No;
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
+
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
 
 public interface IPersistenceService {
 	/**
@@ -66,23 +67,6 @@ public interface IPersistenceService {
 	 */
 	Index<Node> getMetaIndex();
 
-	/**
-	 * Create the meta_element node and add it to index if not exists
-	 * 
-	 * @param c
-	 *            {@link EClass}
-	 * @return {@link Node}
-	 */
-	Node createWithIndexIfNotExists(EClass c);
-
-	/**
-	 * Create an eObject from node if not exist
-	 * 
-	 * @param n
-	 *            {@link No}
-	 * @return {@link EObject}
-	 */
-	EObject createObjectProxyFromNode(Node n);
 
 	/**
 	 * Create Node from eObject
@@ -91,7 +75,7 @@ public interface IPersistenceService {
 	 *            {@link EObject}
 	 * @return {@link Node}
 	 */
-	Node createNodeFromEObject(EObject eObject);
+	Node createNodeFromEObject(INeo4emfObject eObject);
 
 	/**
 	 * Return a List of the root nodes
@@ -158,21 +142,24 @@ public interface IPersistenceService {
 	 * 
 	 * @return
 	 */
-	Transaction beginTx();
-	
+	NETransaction createTransaction();
+
 	/**
 	 * Returns database node for id
-	 * @param l the id
+	 * 
+	 * @param l
+	 *            the id
 	 * @return the database node
 	 */
 	Node getNodeById(long l);
-	
+
 	/**
 	 * Creates a database node.
+	 * 
 	 * @return
 	 */
 	Node createNode();
-	
+
 	/**
 	 * Enum class for the meta_relations
 	 * 

@@ -28,6 +28,7 @@ import scala.Int;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
+import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 
@@ -66,7 +67,7 @@ public interface IPersistenceManager {
 	 * 
 	 * @return {@link Transaction}
 	 */
-	public Transaction beginTx();
+	public NETransaction createTransaction();
 
 	/**
 	 * Shutdown the backend
@@ -105,7 +106,7 @@ public interface IPersistenceManager {
 	 * @return {@link Node}
 	 * @see IPersistenceService#createNodeFromEObject(EObject)
 	 */
-	public Node createNodefromEObject(EObject eObject);
+	public Node createNodefromEObject(INeo4emfObject eObject);
 
 	/**
 	 * map an {@link EObject} that is loaded to its node Id

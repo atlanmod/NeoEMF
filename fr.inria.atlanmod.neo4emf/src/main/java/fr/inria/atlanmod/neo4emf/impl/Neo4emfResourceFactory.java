@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
@@ -22,41 +23,51 @@ import org.neo4j.graphdb.RelationshipType;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
 import fr.inria.atlanmod.neo4emf.Point;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 
 public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 		INeo4emfResourceFactory {
-	
-	
-	Map<String, Map<Point, RelationshipType>> relationshipsMap; 
-	
-	public Neo4emfResourceFactory(final Map<String, Map<Point, RelationshipType>> map) {
+
+	private Map<String, Map<Point, RelationshipType>> relationshipsMap;
+	private NEConfiguration configuration;
+
+	public Neo4emfResourceFactory(
+			final Map<String, Map<Point, RelationshipType>> map) {
 		super();
 		this.relationshipsMap = map;
 	}
+
 	public Neo4emfResourceFactory() {
 		// TODO Auto-generated constructor stub
 	}
+
 	@Override
 	/**
 	 * creates the resource 
 	 */
-	public INeo4emfResource createResource(final URI uri) {
+	public INeo4emfResource createResource(URI uri) {
+		assert relationshipsMap != null : "RelationshipType map is null";
+		assert configuration != null : "Configuration is null";
 		
-		// Assert.isNotNull(relationshipsMap, "RelationshipType map is null");
-		//Assert.isNotNull(uri, "URI is Null");
-		
-		return new Neo4emfResource(uri, this.relationshipsMap, null);	
+		return new Neo4emfResource(configuration, 
+				this.relationshipsMap);
 	}
+
 	/**
 	 * @ see {@link INeo4emfResourceFactory#createResource(String, Map)}
 	 */
-	@Override
-	public INeo4emfResource createResource(final String storeDirectory, final Map< String, Map <Point, RelationshipType>> map) {
-		return new Neo4emfResource(storeDirectory, map, null);
-	}
+
+	/*
+	 * @Override public INeo4emfResource createResource(final String
+	 * storeDirectory, final Map< String, Map <Point, RelationshipType>> map) {
+	 * return new Neo4emfResource(storeDirectory, map, null); }
+	 */
+
 	/**
 	 * init the singleton instance
-	 * @return singleton instance 
+	 * 
+	 * @return singleton instance
 	 */
 	public static INeo4emfResourceFactory init() {
 		if (eINSTANCE == null) {
@@ -64,11 +75,17 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 		}
 		return eINSTANCE;
 	}
-	
+
 	@Override
-	public INeo4emfResourceFactory setRelationshipsMap(final Map<String, Map<Point, RelationshipType>> map){
+	public INeo4emfResourceFactory setRelationshipsMap(
+			final Map<String, Map<Point, RelationshipType>> map) {
 		this.relationshipsMap = map;
-		return (INeo4emfResourceFactory) this;
+		return this;
 	}
-	
+
+	@Override
+	public void setConfiguration(NEConfiguration nec) {
+		configuration = nec;
+	}
+
 }

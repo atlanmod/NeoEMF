@@ -74,7 +74,7 @@ public class Serializer implements ISerializer {
 		while (!changes.isEmpty()) {
 			int times = Math.min(max, changes.size());
 			List<Entry> subset = changes.subList(0, times);
-			Transaction tx = manager.beginTx();
+			NETransaction tx = manager.createTransaction();
 			try {
 				for(Entry each : subset) {
 					each.process(this);
@@ -82,9 +82,9 @@ public class Serializer implements ISerializer {
 				tx.success();
 				subset.clear();
 			} catch (Exception e) {
-				tx.failure();
+				tx.abort();;
 			} finally {
-				tx.finish();
+				tx.commit();
 			}
 		}
 	}
@@ -174,7 +174,7 @@ public class Serializer implements ISerializer {
 		n.createRelationshipTo(n2, rel);
 	}
 
-	public void createNewObject(EObject eObject) {
+	public void createNewObject(INeo4emfObject eObject) {
 		Node n = null;
 		if (((INeo4emfObject) eObject).getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject);
@@ -207,10 +207,10 @@ public class Serializer implements ISerializer {
 				;
 				if (isSet) {
 					if (ref.getUpperBound() == -1) {
-						List<EObject> eObjects = (List<EObject>) eObject
+						List<INeo4emfObject> eObjects = (List<INeo4emfObject>) eObject
 								.eGet(ref);
-						for (EObject referencedEObject : eObjects) {
-							Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) referencedEObject;
+						for (INeo4emfObject referencedEObject : eObjects) {
+							INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) referencedEObject;
 							if (referencedNeo4emfObject.getNodeId() == -1) {
 								Node childNode = this.manager
 										.createNodefromEObject(referencedEObject);
