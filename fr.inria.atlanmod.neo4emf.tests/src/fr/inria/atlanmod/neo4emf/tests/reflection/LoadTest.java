@@ -6,6 +6,7 @@ import java.io.IOException;
 import mgraph.MEdge;
 import mgraph.MGraph;
 import mgraph.MNode;
+import mgraph.MgraphFactory;
 import mgraph.MgraphPackage;
 
 import org.apache.commons.io.FileUtils;
@@ -15,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +24,9 @@ import org.junit.Test;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
 import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
+import fr.inria.atlanmod.neo4emf.drivers.NESession;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
+
 
 public class LoadTest {
 
@@ -30,17 +34,46 @@ public class LoadTest {
 	
 	private static final File DB_FOLDER = new File("/tmp/LoadTest/output/ResourceSave");
 	
+	
+	
+	
+
+
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUpBeforeClass() throws Exception{
 		FileUtils.forceMkdir(DB_FOLDER);
+		INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mgraph.reltypes.ReltypesMappings.getInstance().getMap());
+		
+		NESession session = new NESession(MgraphPackage.eINSTANCE);
+		INeo4emfResource resource = session.createResource(URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath()));
+
+		MgraphFactory factory = MgraphFactory.eINSTANCE;
+		
+		MGraph mg = factory.createMGraph();
+		mg.setName("myGraph");
+		MNode n1 = factory.createMNode();
+		MNode n2 = factory.createMNode();
+		n1.setName("N1");
+		n1.setGraph(mg);
+		n2.setName("N2");
+		n2.setGraph(mg);
+		MEdge edge = factory.createMEdge();
+		edge.setName("E1");
+		edge.setGraph(mg);
+		n1.getTo().add(edge);
+		n2.getFrom().add(edge);
+		resource.getContents().add(mg);
+		resource.save();
+		resource.shutdown();
 	}
 	
-	
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		FileUtils.forceDelete(DB_FOLDER);
+	}
 	
 	@Before
 	public void setUp() {
-		//Neo4emfResourceUtil.deleteDirectoryIfExists(new File("./MyFirstneo4emfDB"));
-		// Create the resourceSet
 		ResourceSet resourceSet = new ResourceSetImpl();
 		// Create an URI with neo4emf as protocol 
 		URI uri = URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath());
@@ -52,21 +85,6 @@ public class LoadTest {
 		resource = (INeo4emfResource) resourceSet.createResource(uri);
 		// Register the package
 		EPackage.Registry.INSTANCE.put(MgraphPackage.eINSTANCE.getNsURI(), MgraphPackage.eINSTANCE);
-		
-		/*MGraph mg = MgraphFactory.eINSTANCE.createMGraph();
-		mg.setName("myGraph");
-		MNode n1 = MgraphFactory.eINSTANCE.createMNode();
-		MNode n2 = MgraphFactory.eINSTANCE.createMNode();
-		n1.setName("N1");
-		n1.setGraph(mg);
-		n2.setName("N2");
-		n2.setGraph(mg);
-		MEdge edge = MgraphFactory.eINSTANCE.createMEdge();
-		edge.setName("E1");
-		edge.setGraph(mg);
-		n1.getTo().add(edge);
-		n2.getFrom().add(edge);
-		resource.save();*/
 	}
 	
 	@Test
@@ -115,8 +133,6 @@ public class LoadTest {
 	
 	@Test
 	public void testLoadNode() {
-		resource.getContents().clear();
-		resource.getChangeLog().clear();
 		try {
 			resource.load(null);
 			EList<EObject> resourceContents = resource.getContents();
@@ -164,8 +180,6 @@ public class LoadTest {
 	
 	@Test
 	public void testLoadGraphReflective() {
-		resource.getContents().clear();
-		resource.getChangeLog().clear();
 		try {
 			resource.load(null);
 			EList<EObject> resourceContents = resource.getContents();

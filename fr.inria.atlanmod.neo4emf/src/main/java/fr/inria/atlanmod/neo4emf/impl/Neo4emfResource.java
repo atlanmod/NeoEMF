@@ -35,6 +35,8 @@ import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
 
 public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
@@ -49,7 +51,6 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	 */
 	private IPersistenceManager persistenceManager;
 
-
 	/**
 	 * Neo4emfResource Constructor
 	 * 
@@ -57,27 +58,12 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	 * @param relationship
 	 *            map
 	 */
-	public Neo4emfResource(final String storeDirectory,
-			final Map<String, Map<Point, RelationshipType>> map,
-			Map<String, String> params) {
-		super();
+	public Neo4emfResource(NEConfiguration configuration, Map<String, Map<Point, RelationshipType>> map) {
 		
-		assert storeDirectory != null : "Null storage directory";
-		assert new File(storeDirectory).isDirectory() : "Invalid directory: " + storeDirectory;
+		assert configuration != null : "Null configuration";
 		
-
-		//this.storeDirectory = storeDirectory;
-		if (params == null) {
-			this.persistenceManager = new PersistenceManager(this, storeDirectory, map);
-		} else {
-			this.persistenceManager = new PersistenceManager(this, storeDirectory, map, params);
-		}
+		this.persistenceManager = new PersistenceManager(this, configuration, map);
 		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
-	}
-	
-	public Neo4emfResource(final URI uri, Map<String,Map<Point,RelationshipType>> map,  Map<String, String> params){
-		this(neo4emfURItoString(uri), map, params);
-		setURI(uri);
 	}
 
 	/**
@@ -166,8 +152,9 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 
 	@Override
 	public EList<INeo4emfObject> getAllInstances(EClass eClass) {
-		EList<INeo4emfObject> result =  this.persistenceManager.getAllInstancesOfType(eClass);
-//		getContents().addAll(result);
+		EList<INeo4emfObject> result = this.persistenceManager
+				.getAllInstancesOfType(eClass);
+		// getContents().addAll(result);
 		return result;
 	}
 
@@ -243,7 +230,6 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 			getChangeLog().add(new NewObject(neoObject));
 		}
 	}
-
 
 	private void addChangeLogDeleteEntry(INeo4emfObject neoObject) {
 		if (neoObject.getNodeId() == -1) {
