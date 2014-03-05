@@ -410,4 +410,15 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 			return ((Neo4emfObject) obj).getNodeId() == this.getNodeId();
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+		if(id == -1) {
+			return super.hashCode();
+		}
+		int prime = 17;
+		int result = 1;
+		result = prime * result + (int)(id ^ (id >>> 32));
+		return result;
+	}
 }
