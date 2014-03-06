@@ -29,13 +29,10 @@ import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 		INeo4emfResourceFactory {
 
-	private Map<String, Map<Point, RelationshipType>> relationshipsMap;
 	private NEConfiguration configuration;
 
-	public Neo4emfResourceFactory(
-			final Map<String, Map<Point, RelationshipType>> map) {
-		super();
-		this.relationshipsMap = map;
+	public Neo4emfResourceFactory(NEConfiguration nec) {
+		configuration = nec;
 	}
 
 	public Neo4emfResourceFactory() {
@@ -47,11 +44,9 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 	 * creates the resource 
 	 */
 	public INeo4emfResource createResource(URI uri) {
-		assert relationshipsMap != null : "RelationshipType map is null";
 		assert configuration != null : "Configuration is null";
 		
-		return new Neo4emfResource(configuration, 
-				this.relationshipsMap);
+		return new Neo4emfResource(configuration);
 	}
 
 	/**
@@ -74,13 +69,6 @@ public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 			return new Neo4emfResourceFactory();
 		}
 		return eINSTANCE;
-	}
-
-	@Override
-	public INeo4emfResourceFactory setRelationshipsMap(
-			final Map<String, Map<Point, RelationshipType>> map) {
-		this.relationshipsMap = map;
-		return this;
 	}
 
 	@Override

@@ -145,8 +145,7 @@ public class Serializer implements ISerializer {
 			Object object) {
 		Node n = manager.getNodeById(eObject);
 		Node n2 = manager.getNodeById((EObject) object);
-		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass()
-				.getEPackage().getNsURI(), eObject.eClass().getClassifierID(),
+		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getClassifierID(),
 				eRef.getFeatureID());
 		Iterator<Relationship> it = n.getRelationships(rel).iterator();
 		while (it.hasNext()) {
@@ -164,8 +163,7 @@ public class Serializer implements ISerializer {
 			Logger.log(IStatus.WARNING, "Dummy objects");
 			return;
 		}
-		RelationshipType rel = this.manager.getRelTypefromERef(eObject.eClass()
-				.getEPackage().getNsURI(), eObject.eClass().getClassifierID(),
+		RelationshipType rel = this.manager.getRelTypefromERef(eObject.eClass().getClassifierID(),
 				eRef.getFeatureID());
 		if (rel == null) {
 			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil

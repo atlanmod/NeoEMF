@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -33,6 +32,8 @@ import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.Traversal;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.Point;
+import fr.inria.atlanmod.neo4emf.RelationshipMapping;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
 import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
@@ -43,9 +44,12 @@ public class PersistenceService implements IPersistenceService {
 	 * The database service connection.
 	 */
 	private final NEConnection connection;
+	
+	private final RelationshipMapping mapping;
 
 	protected PersistenceService(GraphDatabaseService service, NEConfiguration configuration) {
 		this.connection = new NEConnection(service, configuration);
+		this.mapping = configuration.ePackage().getRelationshipMapping();
 		connection.open();
 	}
 
@@ -73,7 +77,7 @@ public class PersistenceService implements IPersistenceService {
 
 	@Override
 	public List<Node> getAllRootNodes() {
-		Index<Node> index = getMetaIndex();
+		//Index<Node> index = getMetaIndex();
 		Node resourceNode = this.createResourceNodeIfAbsent();
 		assert resourceNode != null : "Null resource node";
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
@@ -157,6 +161,10 @@ public class PersistenceService implements IPersistenceService {
 		return connection.createTransaction();
 	}
 
+	
+	public RelationshipType getRelationshipFor(int classID, int referenceID) {
+		return mapping.relationshipAt(classID, referenceID);
+	}
 
 	public Node createNode() {
 		return connection.createNode();

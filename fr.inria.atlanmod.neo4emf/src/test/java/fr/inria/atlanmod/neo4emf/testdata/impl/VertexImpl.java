@@ -20,7 +20,10 @@ import fr.inria.atlanmod.neo4emf.testdata.Link;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
 
+import java.math.BigInteger;
+
 import java.util.Collection;
+import java.util.Date;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -33,6 +36,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -45,6 +49,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#getName <em>Name</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#getAnInteger <em>An Integer</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#getDate <em>Date</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#isABoolean <em>ABoolean</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#getAStringArray <em>AString Array</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#getContainer <em>Container</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#getFrom <em>From</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.impl.VertexImpl#getTo <em>To</em>}</li>
@@ -134,6 +142,136 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 			TestPackage.VERTEX__NAME,
 			oldName, getData().name));
 	    addChangelogEntry(newName, TestPackage.VERTEX__NAME);
+	} 
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * <!-- begin-user-doc -->
+	 *XX7
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public BigInteger getAnInteger() {
+		try {
+			loadingOnDemand = true;	
+	  		
+		return getData().anInteger;
+		
+	} finally {
+	loadingOnDemand = false;
+}
+	}
+ /**
+ * <!-- begin-user-doc -->
+ *YY2
+ * <!-- end-user-doc -->
+ * @generated
+ */
+	public void setAnInteger(BigInteger newAnInteger) {
+	
+		
+		BigInteger oldAnInteger = getData().anInteger;
+		getData().anInteger = newAnInteger;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(
+			this, Notification.SET,
+			TestPackage.VERTEX__AN_INTEGER,
+			oldAnInteger, getData().anInteger));
+	    addChangelogEntry(newAnInteger, TestPackage.VERTEX__AN_INTEGER);
+	} 
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * <!-- begin-user-doc -->
+	 *XX7
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Date getDate() {
+		try {
+			loadingOnDemand = true;	
+	  		
+		return getData().date;
+		
+	} finally {
+	loadingOnDemand = false;
+}
+	}
+ /**
+ * <!-- begin-user-doc -->
+ *YY2
+ * <!-- end-user-doc -->
+ * @generated
+ */
+	public void setDate(Date newDate) {
+	
+		
+		Date oldDate = getData().date;
+		getData().date = newDate;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(
+			this, Notification.SET,
+			TestPackage.VERTEX__DATE,
+			oldDate, getData().date));
+	    addChangelogEntry(newDate, TestPackage.VERTEX__DATE);
+	} 
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * <!-- begin-user-doc -->
+	 *XX7
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isABoolean() {
+		try {
+			loadingOnDemand = true;	
+	  		
+		return getData().aBoolean;
+		
+	} finally {
+	loadingOnDemand = false;
+}
+	}
+ /**
+ * <!-- begin-user-doc -->
+ *YY2
+ * <!-- end-user-doc -->
+ * @generated
+ */
+	public void setABoolean(boolean newABoolean) {
+	
+		
+		boolean oldABoolean = getData().aBoolean;
+		getData().aBoolean = newABoolean;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(
+			this, Notification.SET,
+			TestPackage.VERTEX__ABOOLEAN,
+			oldABoolean, getData().aBoolean));
+	    addChangelogEntry(newABoolean, TestPackage.VERTEX__ABOOLEAN);
+	} 
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * <!-- begin-user-doc -->
+	 *XX7
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<String> getAStringArray() {
+		try {
+			loadingOnDemand = true;	
+	   
+		
+		if (getData().aStringArray == null){
+		getData().aStringArray = new EDataTypeUniqueEList<String>(String.class, this, TestPackage.VERTEX__ASTRING_ARRAY);
+			if (isLoaded()) 
+			((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__ASTRING_ARRAY);			}
+		return getData().aStringArray;
+	} finally {
+	loadingOnDemand = false;
+}
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -303,6 +441,14 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 		switch (featureID) {
 			case TestPackage.VERTEX__NAME:
 				return getName();
+			case TestPackage.VERTEX__AN_INTEGER:
+				return getAnInteger();
+			case TestPackage.VERTEX__DATE:
+				return getDate();
+			case TestPackage.VERTEX__ABOOLEAN:
+				return isABoolean();
+			case TestPackage.VERTEX__ASTRING_ARRAY:
+				return getAStringArray();
 			case TestPackage.VERTEX__CONTAINER:
 				return getContainer();
 			case TestPackage.VERTEX__FROM:
@@ -325,6 +471,19 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 		switch (featureID) {
 			case TestPackage.VERTEX__NAME:
 				setName((String)newValue);
+				return;
+			case TestPackage.VERTEX__AN_INTEGER:
+				setAnInteger((BigInteger)newValue);
+				return;
+			case TestPackage.VERTEX__DATE:
+				setDate((Date)newValue);
+				return;
+			case TestPackage.VERTEX__ABOOLEAN:
+				setABoolean((Boolean)newValue);
+				return;
+			case TestPackage.VERTEX__ASTRING_ARRAY:
+				getAStringArray().clear();
+				getAStringArray().addAll((Collection<? extends String>)newValue);
 				return;
 			case TestPackage.VERTEX__CONTAINER:
 				setContainer((fr.inria.atlanmod.neo4emf.testdata.Container)newValue);
@@ -353,6 +512,18 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 			case TestPackage.VERTEX__NAME:
 				setName(DataVertex.NAME_EDEFAULT);
 				return;
+			case TestPackage.VERTEX__AN_INTEGER:
+				setAnInteger(DataVertex.AN_INTEGER_EDEFAULT);
+				return;
+			case TestPackage.VERTEX__DATE:
+				setDate(DataVertex.DATE_EDEFAULT);
+				return;
+			case TestPackage.VERTEX__ABOOLEAN:
+				setABoolean(DataVertex.ABOOLEAN_EDEFAULT);
+				return;
+			case TestPackage.VERTEX__ASTRING_ARRAY:
+				getAStringArray().clear();
+				return;
 			case TestPackage.VERTEX__CONTAINER:
 				setContainer((fr.inria.atlanmod.neo4emf.testdata.Container)null);
 				return;
@@ -377,6 +548,14 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 		switch (featureID) {
 			case TestPackage.VERTEX__NAME:
 				return DataVertex.NAME_EDEFAULT == null ? getName() != null : !DataVertex.NAME_EDEFAULT.equals(getName());
+			case TestPackage.VERTEX__AN_INTEGER:
+				return DataVertex.AN_INTEGER_EDEFAULT == null ? getAnInteger() != null : !DataVertex.AN_INTEGER_EDEFAULT.equals(getAnInteger());
+			case TestPackage.VERTEX__DATE:
+				return DataVertex.DATE_EDEFAULT == null ? getDate() != null : !DataVertex.DATE_EDEFAULT.equals(getDate());
+			case TestPackage.VERTEX__ABOOLEAN:
+				return isABoolean() != DataVertex.ABOOLEAN_EDEFAULT;
+			case TestPackage.VERTEX__ASTRING_ARRAY:
+				return getAStringArray() != null && !getAStringArray().isEmpty();
 			case TestPackage.VERTEX__CONTAINER:
 				return getContainer() != null;
 			case TestPackage.VERTEX__FROM:
@@ -433,6 +612,84 @@ protected static  class DataVertex {
 
 // The goal of this template is to BLAH, BLAH, BLAH
 
+	/**
+	 * The default value of the '{@link #getAnInteger() <em>An Integer</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAnInteger()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final BigInteger AN_INTEGER_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getAnInteger() <em>An Integer</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAnInteger()
+	 * @generated
+	 * @ordered
+	 */
+	protected BigInteger anInteger = AN_INTEGER_EDEFAULT;
+
+// The goal of this template is to BLAH, BLAH, BLAH
+
+	/**
+	 * The default value of the '{@link #getDate() <em>Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDate()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final Date DATE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDate() <em>Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDate()
+	 * @generated
+	 * @ordered
+	 */
+	protected Date date = DATE_EDEFAULT;
+
+// The goal of this template is to BLAH, BLAH, BLAH
+
+	/**
+	 * The default value of the '{@link #isABoolean() <em>ABoolean</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isABoolean()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean ABOOLEAN_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isABoolean() <em>ABoolean</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isABoolean()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean aBoolean = ABOOLEAN_EDEFAULT;
+
+// The goal of this template is to BLAH, BLAH, BLAH
+
+	/**
+	 * The cached value of the '{@link #getAStringArray() <em>AString Array</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAStringArray()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> aStringArray;
+
+// The goal of this template is to BLAH, BLAH, BLAH
+
 // The goal of this template is to BLAH, BLAH, BLAH
 
 	/**
@@ -478,6 +735,14 @@ protected static  class DataVertex {
 		StringBuffer result = new StringBuffer(super.toString());		
 		result.append(" (name: ");
 		result.append(name);
+		result.append(", anInteger: ");
+		result.append(anInteger);
+		result.append(", Date: ");
+		result.append(date);
+		result.append(", aBoolean: ");
+		result.append(aBoolean);
+		result.append(", aStringArray: ");
+		result.append(aStringArray);
 		result.append(')');
 		return result.toString();
 	}

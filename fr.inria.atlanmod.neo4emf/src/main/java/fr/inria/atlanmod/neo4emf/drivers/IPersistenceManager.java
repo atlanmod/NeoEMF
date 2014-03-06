@@ -1,5 +1,3 @@
-package fr.inria.atlanmod.neo4emf.drivers;
-
 /**
  * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
@@ -13,6 +11,8 @@ package fr.inria.atlanmod.neo4emf.drivers;
  * @author Amine BENELALLAM
  * */
 
+package fr.inria.atlanmod.neo4emf.drivers;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +20,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
 
-import scala.Int;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.Point;
@@ -85,7 +82,7 @@ public interface IPersistenceManager {
 	 * @throws NullPointerException
 	 * @see {@link IPersistenceService#getNodeById(long)}
 	 */
-	public Node getNodeById(EObject eObj) throws NullPointerException;
+	//public Node getNodeById(EObject eObj) throws NullPointerException;
 
 	/**
 	 * return the equivalent relationshipType from eObject
@@ -96,7 +93,7 @@ public interface IPersistenceManager {
 	 *            {@link Int}
 	 * @return {@link RelationshipType}
 	 */
-	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID);
+	//public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID);
 
 	/**
 	 * Create a node from an EObject
@@ -106,7 +103,7 @@ public interface IPersistenceManager {
 	 * @return {@link Node}
 	 * @see IPersistenceService#createNodeFromEObject(EObject)
 	 */
-	public Node createNodefromEObject(INeo4emfObject eObject);
+	//public Node createNodefromEObject(INeo4emfObject eObject);
 
 	/**
 	 * map an {@link EObject} that is loaded to its node Id
@@ -121,7 +118,7 @@ public interface IPersistenceManager {
 	 * 
 	 * @return {@link List}
 	 */
-	public List<Node> getAllRootNodes();
+	//public List<Node> getAllRootNodes();
 
 	/**
 	 * Add object to the resource contents
@@ -137,7 +134,7 @@ public interface IPersistenceManager {
 	 *            {@link Node}
 	 * @return {@link String}
 	 */
-	public String getNodeType(Node n);
+	//public String getNodeType(Node n);
 
 	/**
 	 * Return the Ns_Uri of the the node's containing package
@@ -146,7 +143,7 @@ public interface IPersistenceManager {
 	 *            {@link Node}
 	 * @return {@link String}
 	 */
-	public String getNodeContainingPackage(Node n);
+	//public String getNodeContainingPackage(Node n);
 
 	/**
 	 * Fetch Object's attributes from the backend
@@ -227,13 +224,6 @@ public interface IPersistenceManager {
 	public void updateProxyManager(INeo4emfObject eObject,
 			EStructuralFeature feature);
 
-	/**
-	 * return true if <b>node</b> is a root node
-	 * 
-	 * @param node
-	 * @return {@link Boolean}
-	 */
-	public boolean isRootNode(Node node);
 
 	/**
 	 * return available index to create a new {@link Partition}
@@ -320,9 +310,6 @@ public interface IPersistenceManager {
 
 	public Map<Integer, List<INeo4emfObject>> getAffectedElement(
 			INeo4emfObject neoObj, int key);
-
-	// public void deleteFromContents(EObject neoObj);
-	void setRelationshipsMap(Map<String, Map<Point, RelationshipType>> map);
 
 	void putAllToProxy2(List<INeo4emfObject> objects);
 

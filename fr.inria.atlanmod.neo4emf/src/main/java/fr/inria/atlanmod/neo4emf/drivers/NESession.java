@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
+import fr.inria.atlanmod.neo4emf.PersistentPackage;
 
 /**
  * 
@@ -31,7 +32,7 @@ public class NESession {
 	
 	private ResourceSet resourceSet = new ResourceSetImpl();
 	
-	private EPackage ePackage;
+	private PersistentPackage ePackage;
 	
 	private NEConfiguration configuration;
 	
@@ -42,7 +43,7 @@ public class NESession {
 	 * 
 	 * @param ep The EPackage used to initialize the session. 
 	 */
-	public NESession(EPackage ep) {
+	public NESession(PersistentPackage ep) {
 		assert ep != null : "Null EPackage";
 		
 		ePackage = ep;

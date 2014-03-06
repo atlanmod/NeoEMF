@@ -48,7 +48,7 @@ public class PersistenceManagerTest {
 		URI uri = URI.createURI("neo4emf:/./MyFirstNeo4emfResource");
 		NEConfiguration conf = new NEConfiguration(TestPackage.eINSTANCE, uri, Collections.<String,String>emptyMap());
 		INeo4emfResource resource = (INeo4emfResource) INeo4emfResourceFactory.eINSTANCE.createResource(uri);
-		PersistenceManager pm = new PersistenceManager(resource, conf, null);
+		PersistenceManager pm = new PersistenceManager(resource, conf);
 		
 		assert pm != null;
 	}

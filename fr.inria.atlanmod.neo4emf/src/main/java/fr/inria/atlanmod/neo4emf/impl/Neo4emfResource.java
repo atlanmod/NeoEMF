@@ -13,22 +13,18 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
-import org.neo4j.graphdb.RelationshipType;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.IChangeLogFactory;
 import fr.inria.atlanmod.neo4emf.change.impl.DeleteObject;
@@ -36,7 +32,6 @@ import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
-import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
 
 public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
@@ -54,15 +49,13 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	/**
 	 * Neo4emfResource Constructor
 	 * 
-	 * @param storeDirectory
-	 * @param relationship
-	 *            map
+	 * @param configuration
 	 */
-	public Neo4emfResource(NEConfiguration configuration, Map<String, Map<Point, RelationshipType>> map) {
+	public Neo4emfResource(NEConfiguration configuration) {
 		
 		assert configuration != null : "Null configuration";
 		
-		this.persistenceManager = new PersistenceManager(this, configuration, map);
+		this.persistenceManager = new PersistenceManager(this, configuration);
 		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
 	}
 
@@ -168,25 +161,6 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	public EObject getContainerOnDemand(EObject eObject, int featureId) {
 		// TODO Auto-generated method stub
 		return this.persistenceManager.getContainerOnDemand(eObject, featureId);
-
-	}
-
-	@Override
-	public void setRelationshipsMap(
-			Map<String, Map<Point, RelationshipType>> map) {
-		this.persistenceManager.setRelationshipsMap(map);
-
-	}
-
-	private static String neo4emfURItoString(URI uri) {
-		Assert.isTrue(uri.scheme().equals("neo4emf"),
-				"protocol should be neo4emf !!");
-		StringBuffer buff = new StringBuffer();
-		if (uri.hasDevice())
-			buff.append(uri.device()).append("/");
-		for (int i = 0; uri.segmentCount() > 0 && i < uri.segmentCount(); i++)
-			buff.append(uri.segment(i)).append("/");
-		return buff.toString();
 
 	}
 

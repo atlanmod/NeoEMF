@@ -1,25 +1,18 @@
 package fr.inria.atlanmod.neo4emf.impl.tests;
 
 import java.io.File;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.neo4j.graphdb.RelationshipType;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
-import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.NESession;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
@@ -27,7 +20,6 @@ import fr.inria.atlanmod.neo4emf.testdata.Container;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
-import fr.inria.atlanmod.neo4emf.testdata.reltypes.ReltypesMappings;
 
 public class Neo4emfResourceTest {
 	
@@ -42,7 +34,6 @@ public class Neo4emfResourceTest {
 	public static void setUpBeforeClass() throws Exception {
 		FileUtils.forceMkdir(DB_FOLDER);
 		
-		INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(fr.inria.atlanmod.neo4emf.testdata.reltypes.ReltypesMappings.getInstance().getMap());
 		session = new NESession(TestPackage.eINSTANCE);
 		
 	}

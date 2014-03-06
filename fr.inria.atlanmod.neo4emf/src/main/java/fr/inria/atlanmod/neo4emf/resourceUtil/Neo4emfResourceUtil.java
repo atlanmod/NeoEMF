@@ -36,6 +36,7 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 
+import fr.inria.atlanmod.neo4emf.PersistentPackage;
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
@@ -47,13 +48,13 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService;
 public class Neo4emfResourceUtil {
 	
 	
-	public static void importFromXMI(EPackage ep, String xmiPath, String outputPath){
+	public static void importFromXMI(PersistentPackage ep, String xmiPath, String outputPath){
 		importFromXMI(ep, URI.createFileURI(xmiPath), outputPath);		
 	}
 	
 	
 	
-	public static void importFromXMI(EPackage ep, URI xmiUri, String outputPath){
+	public static void importFromXMI(PersistentPackage ep, URI xmiUri, String outputPath){
 		// Init variables 
 		URI uri = URI.createURI("neo4emf:///"+outputPath);
 		NEConfiguration conf = new NEConfiguration(ep, uri, Collections.<String,String>emptyMap());
@@ -65,7 +66,7 @@ public class Neo4emfResourceUtil {
 		
 	}
 	
-	public static void importFromXMI(EPackage ep, String xmiPath, String outputPath, String ecorePath){
+	public static void importFromXMI(PersistentPackage ep, String xmiPath, String outputPath, String ecorePath){
 		// Init variables 
 		URI uri = URI.createURI("neo4emf:///"+outputPath);
 		NEConfiguration conf = new NEConfiguration(ep, uri, Collections.<String,String>emptyMap());

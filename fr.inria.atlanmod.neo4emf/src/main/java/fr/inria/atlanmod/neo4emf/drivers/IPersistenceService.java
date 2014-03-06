@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.neo4j.cypher.internal.parser.v1_8.ParserPattern.No;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.Index;
@@ -159,6 +158,14 @@ public interface IPersistenceService {
 	 * @return
 	 */
 	Node createNode();
+	
+	/**
+	 * Returns a relationship type for a pair Class ID x Reference ID.
+	 * @param classID
+	 * @param referenceID
+	 * @return
+	 */
+	RelationshipType getRelationshipFor(int classID, int referenceID);
 
 	/**
 	 * Enum class for the meta_relations

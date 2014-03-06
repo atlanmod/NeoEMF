@@ -18,9 +18,11 @@ import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 
+import fr.inria.atlanmod.neo4emf.PersistentPackage;
+
 public class NEConfiguration {
 	
-	private final EPackage ePackage;
+	private final PersistentPackage ePackage;
 	
 	private final URI uri;
 	
@@ -29,7 +31,7 @@ public class NEConfiguration {
 	private final File path;
 	
 	
-	public NEConfiguration(EPackage ep, URI uri, Map<String,String> map) {
+	public NEConfiguration(PersistentPackage ep, URI uri, Map<String,String> map) {
 		this.ePackage = ep;
 		this.uri = uri;
 		this.options = map;
@@ -38,7 +40,7 @@ public class NEConfiguration {
 		path = new File(name);
 	}
 	
-	public EPackage ePackage() {
+	public PersistentPackage ePackage() {
 		return ePackage;
 	}
 	

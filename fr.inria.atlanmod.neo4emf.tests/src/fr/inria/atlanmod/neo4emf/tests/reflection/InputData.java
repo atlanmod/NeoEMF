@@ -1,10 +1,8 @@
 package fr.inria.atlanmod.neo4emf.tests.reflection;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import mgraph.MgraphFactory;
 import mgraph.MgraphPackage;
@@ -17,6 +15,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
+import fr.inria.atlanmod.neo4emf.drivers.NESession;
 
 public class InputData {
 	
@@ -24,7 +23,7 @@ public class InputData {
 	 * Generate the whole testing data set
 	 * @param token avoid resource access issues (especially for lock releases)
 	 * @return the list containing all the data
-	 * @note If new metmodels are needed for testing, ensure their data method
+	 * @note If new metamodels are needed for testing, ensure their data method
 	 * is added to this one.
 	 */
 	public static List<Object[]> allData(String token) {
@@ -39,15 +38,14 @@ public class InputData {
 	 * @return
 	 */
 	public static List<Object[]> dataGraph(String token) {
-		Object[][] parameters = new Object[1][4];
+		Object[][] parameters = new Object[1][3];
 		parameters[0][0] = MgraphPackage.eINSTANCE;
 		parameters[0][1] = MgraphFactory.eINSTANCE;
-		@SuppressWarnings("rawtypes") Map mapping = mgraph.reltypes.ReltypesMappings.getInstance().getMap();
-		parameters[0][2] = mapping;
-		ResourceSet rSet = new ResourceSetImpl();
-		URI uri = URI.createURI("neo4emf:/./data/output/R"+token+"Graph");
-		rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("neo4emf", INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mapping));
-		parameters[0][3] = (INeo4emfResource) rSet.createResource(uri);
+		URI uri = URI.createURI("neo4emf:./data/output/R"+token+"Graph");
+		
+		NESession session = new NESession(MgraphPackage.eINSTANCE);
+		INeo4emfResource resource = session.createResource(uri);
+		parameters[0][2] = resource;
 		return Arrays.asList(parameters);
 	}
 	
@@ -57,15 +55,16 @@ public class InputData {
 	 * @return
 	 */
 	public static List<Object[]> dataTeach(String token) {
-		Object[][] parameters = new Object[1][4];
+		Object[][] parameters = new Object[1][3];
 		parameters[0][0] = MteachPackage.eINSTANCE;
 		parameters[0][1] = MteachFactory.eINSTANCE;
-		@SuppressWarnings("rawtypes") Map mapping = mteach.reltypes.ReltypesMappings.getInstance().getMap();
-		parameters[0][2] = mapping;
-		ResourceSet rSet = new ResourceSetImpl();
-		URI uri = URI.createURI("neo4emf:/./data/output/R"+token+"Teach");
-		rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("neo4emf", INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mapping));
-		parameters[0][3] = (INeo4emfResource) rSet.createResource(uri);
+		
+		URI uri = URI.createURI("neo4emf:./data/output/R"+token+"Teach");
+		
+		NESession session = new NESession(MteachPackage.eINSTANCE);
+		INeo4emfResource resource = session.createResource(uri);
+
+		parameters[0][2] = resource;
 		return Arrays.asList(parameters);
 	}
 	

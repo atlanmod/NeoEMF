@@ -42,8 +42,7 @@ public class LoadTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception{
 		FileUtils.forceMkdir(DB_FOLDER);
-		INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mgraph.reltypes.ReltypesMappings.getInstance().getMap());
-		
+
 		NESession session = new NESession(MgraphPackage.eINSTANCE);
 		INeo4emfResource resource = session.createResource(URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath()));
 
@@ -79,8 +78,7 @@ public class LoadTest {
 		URI uri = URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath());
 		// attach this protocol to INeo4emfResourceFactory 
 		resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("neo4emf", 
-				INeo4emfResourceFactory.eINSTANCE.setRelationshipsMap(mgraph.reltypes
-						.ReltypesMappings.getInstance().getMap()));
+				INeo4emfResourceFactory.eINSTANCE);
 		// Create the resource
 		resource = (INeo4emfResource) resourceSet.createResource(uri);
 		// Register the package

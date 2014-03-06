@@ -14,6 +14,10 @@ package fr.inria.atlanmod.neo4emf.testdata;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 
+import java.math.BigInteger;
+
+import java.util.Date;
+
 import org.eclipse.emf.common.util.EList;
 
 /**
@@ -25,6 +29,10 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getName <em>Name</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getAnInteger <em>An Integer</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getDate <em>Date</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#isABoolean <em>ABoolean</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getAStringArray <em>AString Array</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getContainer <em>Container</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getFrom <em>From</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getTo <em>To</em>}</li>
@@ -66,6 +74,111 @@ public interface Vertex extends INeo4emfObject {
 	 */
 	void setName(String value);
  
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * Returns the value of the '<em><b>An Integer</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 *XX6a
+	 * <p>
+	 * If the meaning of the '<em>An Integer</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>An Integer</em>' attribute.
+	 * @see #setAnInteger(BigInteger)
+	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getVertex_AnInteger()
+	 * @model required="true"
+	 * @generated
+	 */
+	BigInteger getAnInteger();
+	/**
+	 * Sets the value of the '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getAnInteger <em>An Integer</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 *YY1-BIS
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>An Integer</em>' attribute.
+	 * @see #getAnInteger()
+	 * @generated
+	 */
+	void setAnInteger(BigInteger value);
+ 
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * Returns the value of the '<em><b>Date</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 *XX6a
+	 * <p>
+	 * If the meaning of the '<em>Date</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Date</em>' attribute.
+	 * @see #setDate(Date)
+	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getVertex_Date()
+	 * @model required="true"
+	 * @generated
+	 */
+	Date getDate();
+	/**
+	 * Sets the value of the '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getDate <em>Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 *YY1-BIS
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Date</em>' attribute.
+	 * @see #getDate()
+	 * @generated
+	 */
+	void setDate(Date value);
+ 
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * Returns the value of the '<em><b>ABoolean</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 *XX6a
+	 * <p>
+	 * If the meaning of the '<em>ABoolean</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>ABoolean</em>' attribute.
+	 * @see #setABoolean(boolean)
+	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getVertex_ABoolean()
+	 * @model required="true"
+	 * @generated
+	 */
+	boolean isABoolean();
+	/**
+	 * Sets the value of the '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#isABoolean <em>ABoolean</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 *YY1-BIS
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>ABoolean</em>' attribute.
+	 * @see #isABoolean()
+	 * @generated
+	 */
+	void setABoolean(boolean value);
+ 
+
+/** genFeaure.override.javajetinc **/
+	/**
+	 * Returns the value of the '<em><b>AString Array</b></em>' attribute list.
+	 * The list contents are of type {@link java.lang.String}.
+	 * <!-- begin-user-doc -->
+	 *XX6a
+	 * <p>
+	 * If the meaning of the '<em>AString Array</em>' attribute list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>AString Array</em>' attribute list.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getVertex_AStringArray()
+	 * @model ordered="false"
+	 * @generated
+	 */
+	EList<String> getAStringArray(); 
 
 /** genFeaure.override.javajetinc **/
 	/**

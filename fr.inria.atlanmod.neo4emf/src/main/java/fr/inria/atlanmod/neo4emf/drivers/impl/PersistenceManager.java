@@ -78,10 +78,6 @@ public class PersistenceManager implements IPersistenceManager {
 	 * The loaded elements manager {@link ProxyManager}
 	 */
 	protected IProxyManager proxyManager;
-	/**
-	 * {@link EReference} to {@link RelationshipType} mapping of the package
-	 */
-	protected Map<String, Map<Point, RelationshipType>> eRef2relType;
 
 	/**
 	 * Global constructor
@@ -96,14 +92,12 @@ public class PersistenceManager implements IPersistenceManager {
 
 	
 	public PersistenceManager(INeo4emfResource neo4emfResource,
-			NEConfiguration configuration,
-			Map<String, Map<Point, RelationshipType>> map) {
+			NEConfiguration configuration) {
 		
 		this.resource = neo4emfResource;
 		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
 				.createPersistenceService(configuration);
 		this.serializer = new Serializer(this);
-		this.eRef2relType = map;
 		this.proxyManager = new ProxyManager();
 		this.loader = new Loader(this);
 		this.unloader = new Unloader(this, null);
@@ -150,7 +144,7 @@ public class PersistenceManager implements IPersistenceManager {
 		persistenceService.shutdown();
 	}
 
-	@Override
+	//@Override
 	public Node getNodeById(EObject eObj) {
 		Assert.isTrue(((INeo4emfObject) eObj).getNodeId() >= 0,
 				"nodeId is > -1");
@@ -163,21 +157,13 @@ public class PersistenceManager implements IPersistenceManager {
 		}
 	}
 
-	@Override
-	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
-		if (eRef2relType == null || eRef2relType.isEmpty())
-			setupERelationshipTypesMap(key);
-		RelationshipType rel = eRef2relType.get(key).get(new Point (clsID,eRefID));
-		return rel;
-
+	//@Override
+	public RelationshipType getRelTypefromERef(int classID, int referenceID) {
+		
+		return persistenceService.getRelationshipFor(classID, referenceID);
 	}
 
-	private void setupERelationshipTypesMap(String key) {
-		eRef2relType = Neo4emfResourceUtil.createRelationshipTypesMap(key);
-		resource.setRelationshipsMap(eRef2relType);
-	}
-
-	@Override
+	//@Override
 	public Node createNodefromEObject(INeo4emfObject eObject) {
 		return persistenceService.createNodeFromEObject(eObject);
 	}
@@ -188,7 +174,7 @@ public class PersistenceManager implements IPersistenceManager {
 			proxyManager.getWeakNodeIds().put(eObject, id);
 	}
 
-	@Override
+	//@Override
 	public List<Node> getAllRootNodes() {
 		return persistenceService.getAllRootNodes();
 	}
@@ -199,12 +185,12 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 
 	
-	@Override
+	//@Override
 	public String getNodeType(Node n) {
 		return persistenceService.getNodeType(n);
 	}
 
-	@Override
+	//@Override
 	public String getNodeContainingPackage(Node n) {
 		return persistenceService.getContainingPackage(n);
 	}
@@ -271,8 +257,7 @@ public class PersistenceManager implements IPersistenceManager {
 		try {
 			List<Node> singleNode = persistenceService.getNodesOnDemand(
 					((INeo4emfObject) eObject).getNodeId(),
-					getRelTypefromERef(eObject.eClass().getEPackage()
-							.getNsURI(), eObject.eClass().getClassifierID(),
+					getRelTypefromERef(eObject.eClass().getClassifierID(),
 							featureId));
 			eResult = loader.getContainerOnDemand(eObject, featureId,
 					getNodeById(eObject), singleNode.get(0));
@@ -311,7 +296,6 @@ public class PersistenceManager implements IPersistenceManager {
 
 	}
 
-	@Override
 	public boolean isRootNode(Node node) {
 		return persistenceService.isRootNode(node);
 	}
@@ -452,12 +436,6 @@ public class PersistenceManager implements IPersistenceManager {
 	public Map<Integer, List<INeo4emfObject>> getAffectedElement(
 			INeo4emfObject neoObj, int key) {
 		return this.proxyManager.getSideEffectsMap(neoObj, key);
-	}
-
-	@Override
-	public void setRelationshipsMap(
-			Map<String, Map<Point, RelationshipType>> map) {
-		this.eRef2relType = map;
 	}
 
 	public INeo4emfResource getResource() {
