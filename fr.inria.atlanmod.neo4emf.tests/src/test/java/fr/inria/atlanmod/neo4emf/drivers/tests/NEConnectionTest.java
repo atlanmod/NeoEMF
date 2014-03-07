@@ -1,7 +1,5 @@
 package fr.inria.atlanmod.neo4emf.drivers.tests;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,57 +31,59 @@ import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
 
-public class NESessionTest {
+public class NEConnectionTest {
 	
 	private GraphDatabaseService db;
-	private NEConnection session;
-	private static final File DB_FOLDER = new File(
-			"/tmp/NESessionTest/");
+	private NEConnection connection;
+	private static final File DB_FOLDER = new File("/tmp/NEConnectionTest/");
+    private static final URI uri = URI.createURI("neo4emf:"+DB_FOLDER.getAbsolutePath());
+    private static GraphDatabaseFactory gdbf;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		FileUtils.forceMkdir(DB_FOLDER);
+
+        // the cache providers
+        List<CacheProvider> cacheList = new ArrayList<CacheProvider>();
+        cacheList.add(new SoftCacheProvider());
+
+        // the kernel extensions
+        LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
+        List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
+        extensions.add(lucene);
+
+        // the database setup
+        gdbf = new GraphDatabaseFactory();
+        gdbf.setKernelExtensions(extensions);
+        gdbf.setCacheProviders(cacheList);
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		//FileUtils.forceDelete(DB_FOLDER);
+        FileUtils.forceDelete(DB_FOLDER);
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		URI uri = URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath());
-		
-		// the cache providers
-		ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-		cacheList.add(new SoftCacheProvider());
 
-		// the kernel extensions
-		LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
-		List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
-		extensions.add(lucene);
 
-		// the database setup
-		GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
-		gdbf.setKernelExtensions(extensions);
-		gdbf.setCacheProviders(cacheList);
 		db = gdbf.newEmbeddedDatabase(DB_FOLDER.getAbsolutePath());
+        registerShutdownHook(db);
 		
 		NEConfiguration conf = new NEConfiguration(TestPackage.eINSTANCE, uri, Collections.<String,String>emptyMap());
-		session = new NEConnection(db, conf);
+		connection = new NEConnection(db, conf);
+        connection.open();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		db.shutdown();
+        connection.close();
 	}
 
 
 	@Test
 	public void testOpen() {
-		session.open();
-		session.close();
-		
+
 		IndexManager im = db.index();
 		
 		assert im.existsForNodes(IPersistenceService.META_ELEMENTS) : "Meta index not created";
@@ -102,16 +102,16 @@ public class NESessionTest {
 	public void testAddNode() {
 		TestFactory factory = TestFactory.eINSTANCE;
 		Vertex v = factory.createVertex();
-		session.open();
-		NETransaction tx = session.createTransaction();
+		connection.open();
+		NETransaction tx = connection.createTransaction();
 		try {
-			session.addObject(v);
+			connection.addObject(v);
 			tx.success();
 		} catch(Exception e) {
 			tx.abort();
 		} finally {
 			tx.commit();
-			session.close();
+			connection.close();
 		}
 		
 		
@@ -122,5 +122,17 @@ public class NESessionTest {
 		//fail("Not yet implemented");
 	}
 
+
+    private static void registerShutdownHook(final GraphDatabaseService graphDb) {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                // At this point the plugin "Neo4emfPlugin" has been already stopped
+                // Don't use the shared instance!
+                // Shutdown the DB
+                graphDb.shutdown();
+            }
+        });
+    }
 
 }

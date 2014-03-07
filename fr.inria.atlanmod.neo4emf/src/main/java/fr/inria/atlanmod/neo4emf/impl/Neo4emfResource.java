@@ -212,6 +212,11 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	}
 
 	public IChangeLog<Entry> getChangeLog() {
-		return changeLog;
+
+        return changeLog;
 	}
+
+    public IPersistenceManager getPersistenceManager() {
+        return persistenceManager;
+    }
 }

@@ -35,6 +35,8 @@ public class NESession {
 	private PersistentPackage ePackage;
 	
 	private NEConfiguration configuration;
+
+    private INeo4emfResource resource;
 	
 	
 	/**
@@ -59,8 +61,7 @@ public class NESession {
 	 * @return The resource.
 	 */
 	public INeo4emfResource createResource(URI uri) {
-		INeo4emfResource resource;
-		
+
 		configuration = new NEConfiguration(ePackage, uri, Collections.<String,String>emptyMap());
 		INeo4emfResourceFactory.eINSTANCE.setConfiguration(configuration);
 		resource = (INeo4emfResource) resourceSet.createResource(uri);
@@ -72,7 +73,7 @@ public class NESession {
 	 * Closes the current section.
 	 */
 	public void close() {
-		
+		  resource.shutdown();
 	}
 
 }

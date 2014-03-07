@@ -16,6 +16,7 @@ package fr.inria.atlanmod.neo4emf;
 import java.util.List;
 import java.util.Map;
 
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -121,4 +122,12 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * @return the change log
 	 */
 	public IChangeLog<Entry> getChangeLog();
+
+    /**
+     * Allow access to the persistence manager attached to this resource.
+     * Needed for testing proposes.
+     *
+     * @return The Persistent Manager
+     */
+    public IPersistenceManager getPersistenceManager();
 }
