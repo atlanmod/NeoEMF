@@ -230,7 +230,10 @@ public class PersistenceManager implements IPersistenceManager {
 	
 	@Override
 	public Node createNodefromEObject(EObject eObject, boolean isTemporary) {
-		return persistenceService.createNodeFromEObject(eObject,isTemporary);
+		Node n = persistenceService.createNodeFromEObject(eObject,isTemporary);
+		((INeo4emfObject)eObject).setNodeId(n.getId());
+		proxyManager.putToProxy((INeo4emfObject)eObject);
+		return n;
 	}
 	
 	@Override

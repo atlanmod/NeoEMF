@@ -15,6 +15,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,8 +27,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.jboss.util.NullArgumentException;
-import org.jboss.util.collection.SoftValueTreeMap;
 import org.neo4j.graphdb.Node;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
@@ -41,7 +44,8 @@ public class ProxyManager implements IProxyManager {
 	/**
 	 * maps the objects to the appropriate nodes while saving the model
 	 */
-	private HashMap<? extends EObject, Long> objects2nodes;
+//	private HashMap<? extends EObject, Long> objects2nodes;
+	private Map<? extends EObject, Long> objects2nodes;
 	/**
 	 * maps the partitions ID to the physical partition 
 	 * A partitions a @see {@link TreeMap} mapping objects and their node ID.
@@ -67,20 +71,23 @@ public class ProxyManager implements IProxyManager {
 	/**
 	 * Maps existant element in the Database
 	 */
-	private HashMap<EClass, TreeMap<Long, EObject>> nodes2objects;
+//	private HashMap<EClass, TreeMap<Long, EObject>> nodes2objects;
+	private Map<EClass, Cache<Long, EObject>> nodes2objects;
 	/**
 	 * first Available partitionId
 	 */
 	int availablePartitionId;
 	@SuppressWarnings("unchecked")
 	@Override
-	public HashMap<EObject, Long> getWeakNodeIds(){
-		return (HashMap<EObject, Long>) objects2nodes;
+	public Map<EObject, Long> getWeakNodeIds(){
+//		return (HashMap<EObject, Long>) objects2nodes;
+		return (Map<EObject,Long>)objects2nodes;
 	}
 
 
 	public ProxyManager(){
-		objects2nodes = new HashMap<INeo4emfObject, Long>();
+//		objects2nodes = new HashMap<INeo4emfObject, Long>();
+		objects2nodes = new WeakHashMap<INeo4emfObject,Long>();
 		partitions = new TreeMap<Integer,AbstractPartition>();
 		partitionsUsageCount = new ArrayList<UsageCount>();
 		partitionsUsageHistory = new ArrayList<Integer>();
@@ -88,7 +95,8 @@ public class ProxyManager implements IProxyManager {
 		availablePartitionId = -1;
 		usageTraces = new HashMap<Integer,List<UsageTrace>>();
 		object2proxy =  new HashMap<INeo4emfObject,INeo4emfObject>();
-		nodes2objects = new HashMap<EClass, TreeMap<Long,EObject>>();
+		nodes2objects = new HashMap<EClass, Cache<Long, EObject>>();
+//		nodes2objects = new HashMap<EClass, TreeMap<Long,EObject>>();
 	}
 	public boolean matchProxy(INeo4emfObject eObject, INeo4emfObject proxyEObject){
 		boolean result = object2proxy.containsKey(eObject);
@@ -359,19 +367,48 @@ public class ProxyManager implements IProxyManager {
 		
 		if (nodes2objects.containsKey(eClass)) {
 			nodes2objects.get(eClass).put(obj.getNodeId(), obj);
-		} else {
-				TreeMap<Long, EObject> treeMap  = new TreeMap<Long, EObject>();
-				treeMap.put (obj.getNodeId(), obj);
-				nodes2objects.put(eClass, treeMap);
-			}	
-		}
+		} 
+		else {
+//			TreeMap<Long, EObject> treeMap  = new TreeMap<Long, EObject>();
+//			treeMap.put (obj.getNodeId(), obj);
+//			nodes2objects.put(eClass, treeMap);
+//			TODO put the map maker in a class member.
+			Cache<Long,EObject> cache = CacheBuilder.newBuilder().softValues().build();
+			cache.put(obj.getNodeId(), obj);
+			nodes2objects.put(eClass, cache);
+//			ConcurrentMap<Long, EObject> map = new MapMaker().softValues().makeMap();
+//			map.put(obj.getNodeId(), obj);
+//			nodes2objects.put(eClass, map);
+		}	
+		printMap(nodes2objects);
+	}
 
+	private void printMap(Map<EClass,Cache<Long,EObject>> map) {
+		System.out.println("=== Proxy n2o Content ===");
+		Iterator<EClass> eClassIterator = map.keySet().iterator();
+		while(eClassIterator.hasNext()) {
+			EClass clazz = eClassIterator.next();
+			System.out.println("key : " + clazz.getName());
+			Cache<Long,EObject> objectCache = map.get(clazz);
+			Iterator<Long> idIterator = objectCache.asMap().keySet().iterator();
+			while(idIterator.hasNext()) {
+				Long nodeId = idIterator.next();
+				System.out.println("\tkey : " + nodeId);
+				System.out.println("\tvalue : " + objectCache.getIfPresent(nodeId));
+			}
+		}
+		System.out.println("=== End Proxy n2o Content ===");
+	}
 
 	@Override
 	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
-		if (nodes2objects.containsKey(eClassifier)) {
-			return (INeo4emfObject) (nodes2objects.get(eClassifier).containsKey(n.getId()) ? nodes2objects.get(eClassifier).get(n.getId()) : null) ;
+//		if (nodes2objects.containsKey(eClassifier)) {
+//			return (INeo4emfObject) (nodes2objects.get(eClassifier).containsKey(n.getId()) ? nodes2objects.get(eClassifier).get(n.getId()) : null) ;
+//		}
+//		return null;
+		if(nodes2objects.containsKey(eClassifier)) {
+			return (INeo4emfObject) (nodes2objects.get(eClassifier).getIfPresent(n.getId()));
 		}
 		return null;
 	}
-	}
+}

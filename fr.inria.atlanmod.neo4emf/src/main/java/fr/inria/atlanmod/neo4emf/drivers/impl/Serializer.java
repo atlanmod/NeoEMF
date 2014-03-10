@@ -224,7 +224,7 @@ public class Serializer implements ISerializer {
 		Node n = null;
 		if (((INeo4emfObject)eObject).getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject,isTmp);
-			((Neo4emfObject) eObject).setNodeId(n.getId());
+//			((Neo4emfObject) eObject).setNodeId(n.getId());
 		} else {
 			n = this.manager.getNodeById(eObject);
 		}

@@ -31,7 +31,7 @@ import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 public interface IProxyManager {
 	long getNode(EObject eObj);
 
-	HashMap<EObject, Long> getWeakNodeIds();
+	Map<EObject, Long> getWeakNodeIds();
 	INeo4emfObject getEObject(int id,long id1);
 	TreeMap<Integer, AbstractPartition> getWeakObjectsTree ();
 	void updatePartitionsHistory(INeo4emfObject eObject  , int feature, boolean  isReference);
