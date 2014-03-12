@@ -77,7 +77,7 @@ public class Serializer implements ISerializer {
 		while (!changes.isEmpty()) {
 			int times = Math.min(max, changes.size());
 			List<Entry> subset = changes.subList(0, times);
-			Transaction tx = manager.beginTx();
+			NETransaction tx = manager.createTransaction();
 			try {
 				for(Entry each : subset) {
 					each.process(this,isTmpSave);
@@ -85,40 +85,44 @@ public class Serializer implements ISerializer {
 				tx.success();
 				subset.clear();
 			} catch (Exception e) {
-				tx.failure();
+				tx.abort();;
 			} finally {
-				tx.finish();
+				tx.commit();
 			}
 		}
 	}
 	
 	private void flushTmpSave(Map<String,Object> options) {
+		// Ugly way to get it 
 		List<Relationship> tmpRelationships = manager.getTmpRelationships();
 		Iterator<Relationship> it = tmpRelationships.iterator();
-		int counter = 0;
-		Transaction tx = manager.beginTx();
+//		int counter = 0;
+//		Transaction tx = manager.beginTx();
+		NETransaction tx = manager.createTransaction();
 		while(it.hasNext()) {
 			Relationship rel = it.next();
 			manager.processTemporaryRelationship(rel);
-			counter++;
-			if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
-			{	
-				tx.success();
-				tx.finish();
-				tx= manager.beginTx();
-			}
+//			counter++;
+			// check that
+//			if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
+//			{	
+//				tx.success();
+//				tx.finish();
+//				tx= manager.beginTx();
+//			}
 		}
 		tx.success();
-		tx.finish();
+//		tx.finish();
+		tx.commit();
 	}
 
-	public void deleteExistingObject(EObject geteObject, boolean isTmp) {
+	public void deleteExistingObject(INeo4emfObject eObject, boolean isTmp) {
 		if(isTmp) {
-			Node n = this.manager.getNodeById(geteObject);
-			this.manager.createDeleteRelationship(n);
+//			Node n = this.manager.getNodeById(geteObject);
+			this.manager.createDeleteRelationship(eObject);
 		}
 		else {
-			this.manager.deleteNodeFromEObject(geteObject);
+			this.manager.deleteNodeFromEObject(eObject);
 		}
 	}
 
@@ -138,7 +142,7 @@ public class Serializer implements ISerializer {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setAttributeValue(EObject eObject,
+	public void setAttributeValue(INeo4emfObject eObject,
 			EAttribute at, Object newValue, boolean isTmp) {
 		Node n = manager.getNodeById(eObject);
 		if(isTmp) {
@@ -183,46 +187,29 @@ public class Serializer implements ISerializer {
 		}
 	}
 
-	public void removeExistingLink(EObject eObject, EReference eRef, Object object, boolean isTmp) {
-		Node n = manager.getNodeById(eObject);
-		Node n2 = manager.getNodeById((EObject)object);
-		RelationshipType rel = manager.getRelTypefromERef(eObject.eClass().getEPackage().getNsURI(),eObject.eClass().getClassifierID(),eRef.getFeatureID());
+	public void removeExistingLink(INeo4emfObject eObject, EReference eRef, Object object, boolean isTmp) {
 		if(isTmp) {
-			this.manager.createRemoveLinkRelationship(n,n2,rel);
+			this.manager.createRemoveLinkRelationship(eObject, (INeo4emfObject)object,eRef);
 		}
 		else {
-			Iterator<Relationship> it = n.getRelationships(rel).iterator();
-			while (it.hasNext()){
-				Relationship relship = it.next();
-				if (relship.getEndNode().getId() == n2.getId())
-					relship.delete();
-			}
+			this.manager.removeLink(eObject, (INeo4emfObject)object, eRef);
 		}
 	}
 
-	public void addNewLink(EObject eObject, EReference eRef, Object object, boolean isTmp) {
-		Node n = this.manager.getNodeById(eObject);
-		Node n2 = this.manager.getNodeById((EObject) object);
-		if (n == null || n2 == null) {
-			Logger.log(IStatus.WARNING, "Dummy objects");
-			return;
-		}
-		RelationshipType rel = this.manager.getRelTypefromERef(eObject.eClass()
-				.getEPackage().getNsURI(), eObject.eClass().getClassifierID(),
-				eRef.getFeatureID());
-		if (rel == null) {
-			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil.formatRelationshipName(eObject.eClass(), eRef));}
+	public void addNewLink(INeo4emfObject eObject, EReference eRef, Object object, boolean isTmp) {
+//		if (rel == null) {
+//			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil.formatRelationshipName(eObject.eClass(), eRef));}
 		if(isTmp) {
-			this.manager.createAddLinkRelationship(n,n2,rel);
+			this.manager.createAddLinkRelationship(eObject,(INeo4emfObject)object,eRef);
 		}
 		else {
-			n.createRelationshipTo(n2, rel);
+			this.manager.createLink(eObject, (INeo4emfObject)object, eRef);
 		}
 	}
 
-	public void createNewObject(EObject eObject, boolean isTmp) {
+	public void createNewObject(INeo4emfObject eObject, boolean isTmp) {
 		Node n = null;
-		if (((INeo4emfObject)eObject).getNodeId() == -1) {
+		if (eObject.getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject,isTmp);
 //			((Neo4emfObject) eObject).setNodeId(n.getId());
 		} else {
@@ -253,10 +240,10 @@ public class Serializer implements ISerializer {
 				;
 				if (isSet) {
 					if (ref.getUpperBound() == -1) {
-						List<EObject> eObjects = (List<EObject>) eObject
+						List<INeo4emfObject> eObjects = (List<INeo4emfObject>) eObject
 								.eGet(ref);
-						for (EObject referencedEObject : eObjects) {
-							Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) referencedEObject;
+						for (INeo4emfObject referencedEObject : eObjects) {
+							INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) referencedEObject;
 							if (referencedNeo4emfObject.getNodeId() == -1) {
 								Node childNode = this.manager
 										.createNodefromEObject(referencedEObject);

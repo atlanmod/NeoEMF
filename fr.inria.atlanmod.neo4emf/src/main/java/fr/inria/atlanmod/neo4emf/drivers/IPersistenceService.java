@@ -17,13 +17,15 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.neo4j.cypher.internal.parser.v1_8.ParserPattern.No;
-import org.neo4j.graphdb.GraphDatabaseService;
+import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
+
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 public interface IPersistenceService {
 	/**
@@ -97,23 +99,6 @@ public interface IPersistenceService {
 	
 	Node getAttributeNode(Node n);
 
-	/**
-	 * Create the meta_element node and add it to index if not exists
-	 * 
-	 * @param c
-	 *            {@link EClass}
-	 * @return {@link Node}
-	 */
-	Node createWithIndexIfNotExists(EClass c);
-
-	/**
-	 * Create an eObject from node if not exist
-	 * 
-	 * @param n
-	 *            {@link No}
-	 * @return {@link EObject}
-	 */
-	EObject createObjectProxyFromNode(Node n);
 
 	/**
 	 * Create Node from eObject
@@ -123,9 +108,14 @@ public interface IPersistenceService {
 	 * @return {@link Node}
 	 */
 
-	Node createNodeFromEObject(EObject eObject);
+	Node createNodeFromEObject(INeo4emfObject eObject);
 	
-	Node createNodeFromEObject(EObject eObject, boolean isTemporary);
+	Node createNodeFromEObject(INeo4emfObject eObject, boolean isTemporary);
+	
+	// TODO check if EReference is appropriate here
+	void createLink(INeo4emfObject from, INeo4emfObject to, EReference ref);
+	// TODO check if EReference is appropriate here
+	void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref);
 	/**
 	 * Create an Attribute node for eObject
 	 * @warning It doesn't check if an Attribute node is already
@@ -133,15 +123,14 @@ public interface IPersistenceService {
 	 * @param eObject {@link EObject}
 	 * @return {@link Node}
 	 */
-	Node createAttributeNodeForEObject(EObject eObject);
+	Node createAttributeNodeForEObject(INeo4emfObject eObject);
 	
-	void deleteNodeFromEObject(EObject eObject);
+	void deleteNodeFromEObject(INeo4emfObject eObject);
 	
-	Relationship createAddLinkRelationship(Node from, Node to, RelationshipType relType);
+	Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref);
+	Relationship createRemoveLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref);
 	
-	Relationship createRemoveLinkRelationship(Node from, Node to, RelationshipType relType);
-	
-	Relationship createDeleteRelationship(Node node);
+	Relationship createDeleteRelationship(INeo4emfObject obj);
 	
 	List<Relationship> getTmpRelationships();
 	
@@ -218,20 +207,33 @@ public interface IPersistenceService {
 	 * 
 	 * @return
 	 */
-	Transaction beginTx();
+	NETransaction createTransaction();
+	
+	void cleanIndexes();
 	
 	/**
 	 * Returns database node for id
-	 * @param l the id
+	 * 
+	 * @param l
+	 *            the id
 	 * @return the database node
 	 */
 	Node getNodeById(long l);
-	
+
 	/**
 	 * Creates a database node.
+	 * 
 	 * @return
 	 */
 	Node createNode();
+	
+	/**
+	 * Returns a relationship type for a pair Class ID x Reference ID.
+	 * @param classID
+	 * @param referenceID
+	 * @return
+	 */
+	RelationshipType getRelationshipFor(int classID, int referenceID);
 	
 	/**
 	 * Enum class for the meta_relations

@@ -5,8 +5,8 @@
 package fr.inria.atlanmod.neo4emf.change.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EObject;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
 
 /**
@@ -14,15 +14,20 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
  * @author sunye
  */
 abstract public class Entry {
-	protected final EObject eObject;
+	protected final INeo4emfObject eObject;
 
 	public Entry(Notification notif) {
-		eObject = (EObject) notif.getNotifier();
+		eObject = (INeo4emfObject) notif.getNotifier();
 	}
 
-	public Entry(EObject value) {
+	public Entry(INeo4emfObject value) {
 		eObject = value;
 	}
 
 	public abstract void process(Serializer serializer, boolean isTmp);
+	
+	@Deprecated
+	public INeo4emfObject geteObject() {
+		return eObject;
+	}
 }

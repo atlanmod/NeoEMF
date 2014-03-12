@@ -12,10 +12,14 @@
 **/
 package fr.inria.atlanmod.neo4emf.testdata.impl;
 
+import fr.inria.atlanmod.neo4emf.RelationshipMapping;
+
 import fr.inria.atlanmod.neo4emf.testdata.Link;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
+
+import fr.inria.atlanmod.neo4emf.testdata.reltypes.Reltypes;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -23,6 +27,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+
+import org.neo4j.graphdb.RelationshipType;
 
 /**
  * <!-- begin-user-doc -->
@@ -217,8 +223,44 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getVertex_AnInteger() {
+		return (EAttribute)vertexEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getVertex_Date() {
+		return (EAttribute)vertexEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getVertex_ABoolean() {
+		return (EAttribute)vertexEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getVertex_AStringArray() {
+		return (EAttribute)vertexEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getVertex_Container() {
-		return (EReference)vertexEClass.getEStructuralFeatures().get(1);
+		return (EReference)vertexEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -227,7 +269,7 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * @generated
 	 */
 	public EReference getVertex_From() {
-		return (EReference)vertexEClass.getEStructuralFeatures().get(2);
+		return (EReference)vertexEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -236,7 +278,7 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * @generated
 	 */
 	public EReference getVertex_To() {
-		return (EReference)vertexEClass.getEStructuralFeatures().get(3);
+		return (EReference)vertexEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -280,6 +322,10 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 
 		vertexEClass = createEClass(VERTEX);
 		createEAttribute(vertexEClass, VERTEX__NAME);
+		createEAttribute(vertexEClass, VERTEX__AN_INTEGER);
+		createEAttribute(vertexEClass, VERTEX__DATE);
+		createEAttribute(vertexEClass, VERTEX__ABOOLEAN);
+		createEAttribute(vertexEClass, VERTEX__ASTRING_ARRAY);
 		createEReference(vertexEClass, VERTEX__CONTAINER);
 		createEReference(vertexEClass, VERTEX__FROM);
 		createEReference(vertexEClass, VERTEX__TO);
@@ -328,12 +374,72 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 
 		initEClass(vertexEClass, Vertex.class, "Vertex", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getVertex_Name(), ecorePackage.getEString(), "name", null, 1, 1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVertex_AnInteger(), ecorePackage.getEBigInteger(), "anInteger", null, 1, 1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVertex_Date(), ecorePackage.getEDate(), "Date", null, 1, 1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVertex_ABoolean(), ecorePackage.getEBoolean(), "aBoolean", null, 1, 1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getVertex_AStringArray(), ecorePackage.getEString(), "aStringArray", null, 0, -1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getVertex_Container(), this.getContainer(), this.getContainer_Nodes(), "container", null, 1, 1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVertex_From(), this.getLink(), this.getLink_OutGoing(), "from", null, 0, -1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVertex_To(), this.getLink(), this.getLink_InComing(), "to", null, 0, -1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);
+
+		// Create annotations
+		// http://www.eclipse.org/OCL/Import
+		createImportAnnotations();
 	}
 
+	/**
+	 * Initializes the annotations for <b>http://www.eclipse.org/OCL/Import</b>.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void createImportAnnotations() {
+		String source = "http://www.eclipse.org/OCL/Import";	
+		addAnnotation
+		  (this, 
+		   source, 
+		   new String[] {
+			 "ecore", "http://www.eclipse.org/emf/2002/Ecore#/"
+		   });
+	}
+
+/* Neo4EMF Inserted Code -- Begin*/
+
+private RelationshipMapping relationshipMapping = new TestPackageRelationshipMapping();
+
+@Override
+public RelationshipMapping getRelationshipMapping() {
+	return relationshipMapping;
+}
+
+class TestPackageRelationshipMapping implements RelationshipMapping {
+
+	private RelationshipType[][] mapping = new RelationshipType[3][];
+
+	public TestPackageRelationshipMapping() {
+	
+		mapping[CONTAINER] = new RelationshipType[3];
+		mapping[CONTAINER][CONTAINER__NODES] = Reltypes.CONTAINER__NODES;
+		mapping[CONTAINER][CONTAINER__LINKS] = Reltypes.CONTAINER__LINKS;
+		mapping[LINK] = new RelationshipType[4];
+		mapping[LINK][LINK__OUT_GOING] = Reltypes.LINK__OUT_GOING;
+		mapping[LINK][LINK__CONTAINER] = Reltypes.LINK__CONTAINER;
+		mapping[LINK][LINK__IN_COMING] = Reltypes.LINK__IN_COMING;
+		mapping[VERTEX] = new RelationshipType[8];
+		mapping[VERTEX][VERTEX__CONTAINER] = Reltypes.VERTEX__CONTAINER;
+		mapping[VERTEX][VERTEX__FROM] = Reltypes.VERTEX__FROM;
+		mapping[VERTEX][VERTEX__TO] = Reltypes.VERTEX__TO;
+	} // TestPackageRelationshipMapping()
+	
+	public RelationshipType relationshipAt(int classID, int referenceID) {
+		assert classID >= 0 && classID < mapping.length : "Invalid Class ID";
+		assert referenceID >= 0 : "Invalid Reference ID";
+		
+		return mapping[classID][referenceID];
+	}
+}// class TestPackageRelationshipMapping
+/* Neo4EMF Inserted Code -- End*/
 } //TestPackageImpl

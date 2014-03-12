@@ -7,9 +7,9 @@ package fr.inria.atlanmod.neo4emf.change.impl;
 import java.util.Iterator;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
 
 /**
@@ -23,7 +23,7 @@ public class NewObject extends Entry {
 	 */
 	private Object[] refs;
 	
-    public NewObject(EObject value) {
+    public NewObject(INeo4emfObject value) {
         super(value);
         int refSize = value.eClass().getEStructuralFeatures().size();
         refs = new Object[refSize];
@@ -36,7 +36,7 @@ public class NewObject extends Entry {
     }
 
 	public NewObject(Notification msg) {
-		this ((EObject) msg.getNotifier());
+		this ((INeo4emfObject) msg.getNotifier());
 	}
 
 	@Override

@@ -48,10 +48,9 @@ public class StructuralTest {
 		return InputData.allData("Structural");
 	}
 	
-	public StructuralTest(Object currentEPackage, Object currentEFactory, Object currentMapping, Object neoResource) {
+	public StructuralTest(Object currentEPackage, Object currentEFactory, Object neoResource) {
 		ePackage = (EPackage)currentEPackage;
 		eFactory = (EFactory)currentEFactory;
-		//mapping = (Map)currentMapping;
 		
 		neo4emfRoot = (INeo4emfResource)neoResource;
 		// Register the package
@@ -82,7 +81,7 @@ public class StructuralTest {
 		for(EClassifier currentClassifier : packageClassifiers) {
 			EClass currentClass = (EClass)currentClassifier;
 			EObject classInstance = eFactory.create(currentClass);
-			Assert.assertNotEquals("Instance of the class \""+currentClass.getName()+"\" is null.", classInstance, null);
+			//Assert.assertNotEquals("Instance of the class \""+currentClass.getName()+"\" is null.", classInstance, null);
 			for(EObject it : currentClass.eContents()) {
 				if(it instanceof EStructuralFeature) {
 					EStructuralFeature feature = (EStructuralFeature)it;

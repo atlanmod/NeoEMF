@@ -3,6 +3,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -14,6 +15,8 @@ import org.junit.Test;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 
 public class PersistenceManagerTest {
 
@@ -24,7 +27,7 @@ public class PersistenceManagerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		FileUtils.forceMkdir(DB_FOLDER);
-		pm = new PersistenceManager(null, DB_FOLDER.getAbsolutePath(), null);
+		//pm = new PersistenceManager(null, DB_FOLDER.getAbsolutePath(), null);
 	}
 
 	@AfterClass
@@ -43,8 +46,9 @@ public class PersistenceManagerTest {
 	@Test
 	public void testPersistenceManagerNeo4emfResourceStringMapOfStringMapOfPointRelationshipType() {
 		URI uri = URI.createURI("neo4emf:/./MyFirstNeo4emfResource");
-		INeo4emfResource resource = INeo4emfResourceFactory.eINSTANCE.createResource(uri);
-		PersistenceManager pm = new PersistenceManager(resource, DB_FOLDER.getAbsolutePath(), null);
+		NEConfiguration conf = new NEConfiguration(TestPackage.eINSTANCE, uri, Collections.<String,String>emptyMap());
+		INeo4emfResource resource = (INeo4emfResource) INeo4emfResourceFactory.eINSTANCE.createResource(uri);
+		PersistenceManager pm = new PersistenceManager(resource, conf);
 		assert pm != null;
 	}
 

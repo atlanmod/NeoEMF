@@ -5,8 +5,8 @@
 package fr.inria.atlanmod.neo4emf.change.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EObject;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
 
 /**
@@ -15,12 +15,12 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
  */
 public class DeleteObject extends Entry {
 
-	public DeleteObject(EObject value) {
+	public DeleteObject(INeo4emfObject value) {
 		super(value);
 	}
 
 	public DeleteObject(Notification msg) {
-		this((EObject) msg.getNotifier());
+		this((INeo4emfObject) msg.getNotifier());
 	}
 
 	@Override

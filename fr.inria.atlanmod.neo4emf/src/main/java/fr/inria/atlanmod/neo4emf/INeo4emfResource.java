@@ -116,12 +116,6 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 */
 	public EList<INeo4emfObject>  getAllInstances (int eClassID);
 	/**
-	 * Sets the relationships Map in the persistenceManager
-	 * @param map
-	 */
-	void setRelationshipsMap(Map<String,Map<Point,RelationshipType>> map);
-	
-	/**
 	 * 
 	 * @return the change log
 	 */

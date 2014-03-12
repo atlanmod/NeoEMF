@@ -1,6 +1,7 @@
 package fr.inria.atlanmod.neo4emf.resourceUtil;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,30 +36,43 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 
+import fr.inria.atlanmod.neo4emf.PersistentPackage;
 import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService;
 
 public class Neo4emfResourceUtil {
 	
-	public static void importFromXMI(String xmiPath, String outputPath){
-		importFromXMI(URI.createFileURI(xmiPath), outputPath);		
+	
+	public static void importFromXMI(PersistentPackage ep, String xmiPath, String outputPath){
+		importFromXMI(ep, URI.createFileURI(xmiPath), outputPath);		
 	}
 	
-	public static void importFromXMI(URI xmiUri, String outputPath){
+	
+	
+	public static void importFromXMI(PersistentPackage ep, URI xmiUri, String outputPath){
 		// Init variables 
+		URI uri = URI.createURI("neo4emf:///"+outputPath);
+		NEConfiguration conf = new NEConfiguration(ep, uri, Collections.<String,String>emptyMap());
 		deleteFileOrDirectory(new File(outputPath));
-		IPersistenceService graphDB = new PersistenceService(outputPath);
+		IPersistenceService graphDB = IPersistenceServiceFactory.eINSTANCE
+				.createPersistenceService(conf);
 		// Serialize the resource in Neo4j DB
 		serializeResource(graphDB, xmiUri, null);
 		
 	}
 	
-	public static void importFromXMI(String xmiPath, String outputPath, String ecorePath){
+	public static void importFromXMI(PersistentPackage ep, String xmiPath, String outputPath, String ecorePath){
 		// Init variables 
+		URI uri = URI.createURI("neo4emf:///"+outputPath);
+		NEConfiguration conf = new NEConfiguration(ep, uri, Collections.<String,String>emptyMap());
 		deleteFileOrDirectory(new File(outputPath));
-		IPersistenceService graphDB = new PersistenceService(outputPath);
+		IPersistenceService graphDB = IPersistenceServiceFactory.eINSTANCE
+				.createPersistenceService(conf);
 		// Serialize the resource in Neo4j DB
 		Resource metaResource = initMetalmodel(ecorePath);
 		serializeResource(graphDB,URI.createFileURI(xmiPath), metaResource);
@@ -280,7 +294,7 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		
 		
 		int i=0;
-		Transaction tx = graphDB.beginTx();
+		NETransaction tx = graphDB.createTransaction();
 		try {
 			
 		for (EObject eObject : objectsList) {
@@ -308,8 +322,8 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 				i++;
 				if (i==ISerializer.DEFAULT_TRANSACTIONS_COUNT){
 					tx.success();
-					tx.finish();
-					tx=graphDB.beginTx();
+					tx.commit();
+					tx=graphDB.createTransaction();
 					i=0;
 						}				
 			}
@@ -317,7 +331,7 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		}
 		}finally{
 			tx.success();
-			tx.finish();
+			tx.commit();
 			
 		}
 	}
@@ -352,7 +366,6 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		return objectsList;
 	}
 
-	
 	private static Node createWithIndexIfNotExists(EClass c, 
 			IPersistenceService graphDB ){		
 		if (getMetaIndex(graphDB).get(IPersistenceService.ID_META, c.getEPackage().getName()+"_"+c.getClassifierID()).getSingle() != null)
@@ -364,6 +377,7 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		return n;					
 	}
 
+	
 	public static Node createResourceNodeIfAbsent(IPersistenceService graphDB){
 		if (getMetaIndex(graphDB).get(IPersistenceService.ID_META, IPersistenceService.RESOURCE_NODE).getSingle() != null)
 			return getMetaIndex(graphDB).get(IPersistenceService.ID_META, IPersistenceService.RESOURCE_NODE).getSingle();
@@ -372,10 +386,12 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 		return n;					
 	}
 
+	
 	public static Index<Node> getMetaIndex(IPersistenceService graphDB){		
 		return  graphDB.getMetaIndex();		
 	}
 
+	
 	public static Node createNodeFromEObject(EObject eObject,IPersistenceService graphDB) {
 		Node node = graphDB.createNode();
 		Node typeNode = createWithIndexIfNotExists(eObject.eClass(), graphDB);
@@ -391,12 +407,14 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 			return true;
 		return false;
 	}
+	
+	
 
 	private static Map<EObject, Long> persistNodes(IPersistenceService graphDB,		
 							EList<EObject> objectsList){
 		
 		Map<EObject, Long>  eObjectsToNodes= new HashMap<EObject,Long>();
-		Transaction tx = graphDB.beginTx();
+		NETransaction tx = graphDB.createTransaction();
 		try{
 			int i = 0;
 			for (EObject eObject : objectsList){
@@ -407,13 +425,13 @@ private static EList<EPackage> getResourcePackages(Resource resource){
 				if (i> ISerializer.DEFAULT_TRANSACTIONS_COUNT){			
 					i=0;
 					tx.success();
-					tx.finish();
-					tx= graphDB.beginTx();
+					tx.commit();
+					tx= graphDB.createTransaction();
 				}
 			}
 		}finally{
 			tx.success();
-			tx.finish();
+			tx.commit();
 		}
 		return eObjectsToNodes;
 	}

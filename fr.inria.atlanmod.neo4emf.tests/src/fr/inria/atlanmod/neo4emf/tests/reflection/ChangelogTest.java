@@ -33,7 +33,6 @@ public class ChangelogTest {
 
 	private EPackage ePackage;
 	private EFactory eFactory;
-	//private Map mapping;
 	private EList<EClassifier> packageClassifiers;
 	private INeo4emfResource neo4emfRoot;
 	
@@ -44,10 +43,9 @@ public class ChangelogTest {
 		return InputData.allData("Changelog");
 	}
 	
-	public ChangelogTest(Object currentEPackage, Object currentEFactory, Object currentMapping, Object neoResource) {
+	public ChangelogTest(Object currentEPackage, Object currentEFactory, Object neoResource) {
 		ePackage = (EPackage)currentEPackage;
 		eFactory = (EFactory)currentEFactory;
-		//mapping = (Map)currentMapping;
 		neo4emfRoot = (INeo4emfResource)neoResource;
 		// Register the package
 		EPackage.Registry.INSTANCE.put(ePackage.getName().toLowerCase(), ePackage);

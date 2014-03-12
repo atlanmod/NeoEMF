@@ -31,11 +31,9 @@ import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
@@ -43,6 +41,7 @@ import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.drivers.IUnloader;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
@@ -77,10 +76,6 @@ public class PersistenceManager implements IPersistenceManager {
 	 * The loaded elements manager {@link ProxyManager}
 	 */
 	protected IProxyManager proxyManager;
-	/**
-	 * {@link EReference} to {@link RelationshipType} mapping of the package
-	 */
-	protected Map<String, Map<Point, RelationshipType>> eRef2relType;
 
 	/**
 	 * Global constructor
@@ -92,30 +87,15 @@ public class PersistenceManager implements IPersistenceManager {
 	 * @param eRef2relType
 	 *            {@link Map}
 	 */
-	public PersistenceManager(INeo4emfResource neo4emfResource,
-			String storeDirectory,
-			Map<String, Map<Point, RelationshipType>> eRef2relType) {
-		
-		this.resource = neo4emfResource;
-		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
-				.createPersistenceService(storeDirectory);
-		this.serializer = new Serializer(this);
-		this.eRef2relType = eRef2relType;
-		this.proxyManager = new ProxyManager();
-		this.loader = new Loader(this);
-		this.unloader = new Unloader(this, null);
-	}
 
-	public PersistenceManager(Neo4emfResource neo4emfResource,
-			String storeDirectory,
-			Map<String, Map<Point, RelationshipType>> map,
-			Map<String, String> params) {
+	
+	public PersistenceManager(INeo4emfResource neo4emfResource,
+			NEConfiguration configuration) {
 		
 		this.resource = neo4emfResource;
 		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
-				.createPersistenceService(storeDirectory, params);
+				.createPersistenceService(configuration);
 		this.serializer = new Serializer(this);
-		this.eRef2relType = eRef2relType;
 		this.proxyManager = new ProxyManager();
 		this.loader = new Loader(this);
 		this.unloader = new Unloader(this, null);
@@ -153,16 +133,21 @@ public class PersistenceManager implements IPersistenceManager {
 	}
 
 	@Override
-	public Transaction beginTx() {
-		return persistenceService.beginTx();
+	public NETransaction createTransaction() {
+		return persistenceService.createTransaction();
 	}
-
+	
+	@Override
+	public void cleanIndexes() {
+		persistenceService.cleanIndexes();
+	}
+	
 	@Override
 	public void shutdown() {
 		persistenceService.shutdown();
 	}
 
-	@Override
+	//@Override
 	public Node getNodeById(EObject eObj) {
 		Assert.isTrue(((INeo4emfObject) eObj).getNodeId() >= 0,
 				"nodeId is > -1");
@@ -175,8 +160,9 @@ public class PersistenceManager implements IPersistenceManager {
 		}
 	}
 	
-	@Override
+//	@Override
 	public Node getAttributeNodeById(EObject eObj) {
+		// Strange to have node here
 		Assert.isTrue(((INeo4emfObject)eObj).getAttributeNodeId() > -1, "attribute node id is > -1");
 		Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getAttributeNodeId());
 		if(result == null) {
@@ -188,77 +174,90 @@ public class PersistenceManager implements IPersistenceManager {
 		}
 	}
 	
-	@Override
+//	@Override
 	public Node getAttributeNode(Node n) {
+		// Strange to have node here
 		Node result = persistenceService.getAttributeNode(n);
 		return result;
 	}
 	
-	@Override
+//	@Override
 	public List<Relationship> getTmpRelationships() {
 		return persistenceService.getTmpRelationships();
 	}
 	
-	@Override
-	public List<Node> getTmpNodes() {
-		return persistenceService.getTmpNodes();
-	}
-	
-	@Override
+//	@Override
+//	public List<Node> getTmpNodes() {
+//		return persistenceService.getTmpNodes();
+//	}
+//	
+//	@Override
 	public void processTemporaryRelationship(Relationship r) {
 		persistenceService.processTemporaryRelationship(r);	
 	}
+
+//	@Override
+//	public Node createNodefromEObject(EObject eObject) {
+//		return persistenceService.createNodeFromEObject(eObject,false);
+//	}
 	
-	@Override
-	public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID) {
-		if (eRef2relType == null || eRef2relType.isEmpty())
-			setupERelationshipTypesMap(key);
-		RelationshipType rel = eRef2relType.get(key).get(new Point (clsID,eRefID));
-		return rel;
-
-	}
-
-	private void setupERelationshipTypesMap(String key) {
-		eRef2relType = Neo4emfResourceUtil.createRelationshipTypesMap(key);
-		resource.setRelationshipsMap(eRef2relType);
-	}
-
-	@Override
-	public Node createNodefromEObject(EObject eObject) {
-		return persistenceService.createNodeFromEObject(eObject,false);
+//	@Override
+//	public Node createNodefromEObject(EObject eObject, boolean isTemporary) {
+//		Node n = persistenceService.createNodeFromEObject(eObject,isTemporary);
+//		((INeo4emfObject)eObject).setNodeId(n.getId());
+//		proxyManager.putToProxy((INeo4emfObject)eObject);
+//		return n;
+//	}
+	
+//	@Override
+	public void deleteNodeFromEObject(INeo4emfObject eObject) {
+		persistenceService.deleteNodeFromEObject(eObject);
 	}
 	
-	@Override
-	public Node createNodefromEObject(EObject eObject, boolean isTemporary) {
+//	@Override
+	public Node createAttributeNodeForEObject(INeo4emfObject eObject) {
+		return persistenceService.createAttributeNodeForEObject(eObject);
+	}
+	
+//	@Override
+	public Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		return persistenceService.createAddLinkRelationship(from, to, ref);
+	}
+	
+//	@Override
+	public Relationship createRemoveLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		return persistenceService.createRemoveLinkRelationship(from, to, ref);
+	}
+	
+//	@Override
+	public Relationship createDeleteRelationship(INeo4emfObject obj) {
+		return persistenceService.createDeleteRelationship(obj);
+	}
+
+	//@Override
+	public RelationshipType getRelTypefromERef(int classID, int referenceID) {
+		return persistenceService.getRelationshipFor(classID, referenceID);
+	}
+
+	//@Override
+	public Node createNodefromEObject(INeo4emfObject eObject) {
+		return persistenceService.createNodeFromEObject(eObject);
+	}
+	
+//	@Override
+	public Node createNodefromEObject(INeo4emfObject eObject, boolean isTemporary) {
 		Node n = persistenceService.createNodeFromEObject(eObject,isTemporary);
 		((INeo4emfObject)eObject).setNodeId(n.getId());
 		proxyManager.putToProxy((INeo4emfObject)eObject);
 		return n;
 	}
 	
-	@Override
-	public void deleteNodeFromEObject(EObject eObject) {
-		persistenceService.deleteNodeFromEObject(eObject);
+	public void createLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		persistenceService.createLink(from,to,ref);
 	}
 	
-	@Override
-	public Node createAttributeNodeForEObject(EObject eObject) {
-		return persistenceService.createAttributeNodeForEObject(eObject);
-	}
-	
-	@Override
-	public Relationship createAddLinkRelationship(Node from, Node to, RelationshipType relType) {
-		return persistenceService.createAddLinkRelationship(from, to, relType);
-	}
-	
-	@Override
-	public Relationship createRemoveLinkRelationship(Node from, Node to, RelationshipType relType) {
-		return persistenceService.createRemoveLinkRelationship(from, to, relType);
-	}
-	
-	@Override
-	public Relationship createDeleteRelationship(Node node) {
-		return persistenceService.createDeleteRelationship(node);
+	public void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		persistenceService.removeLink(from,to,ref);
 	}
 
 	@Override
@@ -267,7 +266,7 @@ public class PersistenceManager implements IPersistenceManager {
 			proxyManager.getWeakNodeIds().put(eObject, id);
 	}
 
-	@Override
+	//@Override
 	public List<Node> getAllRootNodes() {
 		return persistenceService.getAllRootNodes();
 	}
@@ -277,12 +276,13 @@ public class PersistenceManager implements IPersistenceManager {
 		resource.getContents().addAll(objects);
 	}
 
-	@Override
+	
+	//@Override
 	public String getNodeType(Node n) {
 		return persistenceService.getNodeType(n);
 	}
 
-	@Override
+	//@Override
 	public String getNodeContainingPackage(Node n) {
 		return persistenceService.getContainingPackage(n);
 	}
@@ -359,8 +359,7 @@ public class PersistenceManager implements IPersistenceManager {
 		try {
 			List<Node> singleNode = persistenceService.getNodesOnDemand(
 					((INeo4emfObject) eObject).getNodeId(),
-					getRelTypefromERef(eObject.eClass().getEPackage()
-							.getNsURI(), eObject.eClass().getClassifierID(),
+					getRelTypefromERef(eObject.eClass().getClassifierID(),
 							featureId));
 			eResult = loader.getContainerOnDemand(eObject, featureId,
 					getNodeById(eObject), singleNode.get(0));
@@ -399,7 +398,6 @@ public class PersistenceManager implements IPersistenceManager {
 
 	}
 
-	@Override
 	public boolean isRootNode(Node node) {
 		return persistenceService.isRootNode(node);
 	}
@@ -542,12 +540,6 @@ public class PersistenceManager implements IPersistenceManager {
 		return this.proxyManager.getSideEffectsMap(neoObj, key);
 	}
 
-	@Override
-	public void setRelationshipsMap(
-			Map<String, Map<Point, RelationshipType>> map) {
-		this.eRef2relType = map;
-	}
-
 	public INeo4emfResource getResource() {
 		return resource;
 	}
@@ -555,5 +547,5 @@ public class PersistenceManager implements IPersistenceManager {
 	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
 		return proxyManager.getObjectFromProxy(eClassifier, n);
 	}
-
+	
 }

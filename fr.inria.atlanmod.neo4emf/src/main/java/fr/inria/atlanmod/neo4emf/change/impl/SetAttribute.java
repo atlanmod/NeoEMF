@@ -8,6 +8,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
 
 /**
@@ -19,7 +20,7 @@ public class SetAttribute extends Entry {
 	private final Object oldValue;
 	private final Object newValue;
 
-	public SetAttribute(EObject obj, EAttribute attr, Object oldValue,
+	public SetAttribute(INeo4emfObject obj, EAttribute attr, Object oldValue,
 			Object newValue) {
 		super(obj);
 		eAttribute = attr;
@@ -28,7 +29,7 @@ public class SetAttribute extends Entry {
 	}
 
 	public SetAttribute(Notification msg) {
-		this((EObject) msg.getNotifier(), (EAttribute) msg.getFeature(), msg
+		this((INeo4emfObject) msg.getNotifier(), (EAttribute) msg.getFeature(), msg
 				.getOldValue(), msg.getNewValue());
 	}
 
@@ -36,6 +37,11 @@ public class SetAttribute extends Entry {
 	public void process(Serializer serializer, boolean isTmp) {
 		serializer.setAttributeValue(eObject, eAttribute,newValue, isTmp);
 
+	}
+	
+	@Deprecated
+	public EAttribute geteAttribute() {
+		return eAttribute;
 	}
 
 }

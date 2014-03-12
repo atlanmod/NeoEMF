@@ -228,19 +228,22 @@ public class Loader implements ILoader {
 	}
 	
 	private void removeTmpSave() {
-		List<Relationship> relationships = manager.getTmpRelationships();
-		Iterator<Relationship> itRel = relationships.iterator();
-		List<Node> nodes = manager.getTmpNodes();
-		Iterator<Node> itNode = nodes.iterator();
-		Transaction tx = manager.beginTx();
-		while(itRel.hasNext()) {
-			itRel.next().delete();
-		}
-		while(itNode.hasNext()) {
-			itNode.next().delete();
-		}
+//		List<Relationship> relationships = manager.getTmpRelationships();
+//		Iterator<Relationship> itRel = relationships.iterator();
+//		List<Node> nodes = manager.getTmpNodes();
+//		Iterator<Node> itNode = nodes.iterator();
+//		Transaction tx = manager.beginTx();
+		NETransaction tx = manager.createTransaction();
+		manager.cleanIndexes();
+//		while(itRel.hasNext()) {
+//			itRel.next().delete();
+//		}
+//		while(itNode.hasNext()) {
+//			itNode.next().delete();
+//		}
 		tx.success();
-		tx.finish();
+//		tx.finish();
+		tx.commit();
 	}
 	
 	/**

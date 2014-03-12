@@ -12,15 +12,17 @@
 **/
 package fr.inria.atlanmod.neo4emf.testdata;
 
+import fr.inria.atlanmod.neo4emf.PersistentPackage;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 /**
  * <!-- begin-user-doc -->
  * The <b>Package</b> for the model.
  * It contains accessors for the meta objects to represent
+ * NEO4EMF WAS HERE
  * <ul>
  *   <li>each class,</li>
  *   <li>each feature of each class,</li>
@@ -31,9 +33,10 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see fr.inria.atlanmod.neo4emf.testdata.TestFactory
  * @model kind="package"
+ *        annotation="http://www.eclipse.org/OCL/Import ecore='http://www.eclipse.org/emf/2002/Ecore#/'"
  * @generated
  */
-public interface TestPackage extends EPackage {
+public interface TestPackage extends PersistentPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -205,13 +208,49 @@ public interface TestPackage extends EPackage {
 	int VERTEX__NAME = 0;
 
 	/**
+	 * The feature id for the '<em><b>An Integer</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VERTEX__AN_INTEGER = 1;
+
+	/**
+	 * The feature id for the '<em><b>Date</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VERTEX__DATE = 2;
+
+	/**
+	 * The feature id for the '<em><b>ABoolean</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VERTEX__ABOOLEAN = 3;
+
+	/**
+	 * The feature id for the '<em><b>AString Array</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VERTEX__ASTRING_ARRAY = 4;
+
+	/**
 	 * The feature id for the '<em><b>Container</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int VERTEX__CONTAINER = 1;
+	int VERTEX__CONTAINER = 5;
 
 	/**
 	 * The feature id for the '<em><b>From</b></em>' reference list.
@@ -220,7 +259,7 @@ public interface TestPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VERTEX__FROM = 2;
+	int VERTEX__FROM = 6;
 
 	/**
 	 * The feature id for the '<em><b>To</b></em>' reference list.
@@ -229,7 +268,7 @@ public interface TestPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VERTEX__TO = 3;
+	int VERTEX__TO = 7;
 
 	/**
 	 * The number of structural features of the '<em>Vertex</em>' class.
@@ -238,7 +277,7 @@ public interface TestPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int VERTEX_FEATURE_COUNT = 4;
+	int VERTEX_FEATURE_COUNT = 8;
 
 	/**
 	 * The number of operations of the '<em>Vertex</em>' class.
@@ -367,6 +406,50 @@ public interface TestPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getVertex_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getAnInteger <em>An Integer</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>An Integer</em>'.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.Vertex#getAnInteger()
+	 * @see #getVertex()
+	 * @generated
+	 */
+	EAttribute getVertex_AnInteger();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getDate <em>Date</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Date</em>'.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.Vertex#getDate()
+	 * @see #getVertex()
+	 * @generated
+	 */
+	EAttribute getVertex_Date();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#isABoolean <em>ABoolean</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>ABoolean</em>'.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.Vertex#isABoolean()
+	 * @see #getVertex()
+	 * @generated
+	 */
+	EAttribute getVertex_ABoolean();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getAStringArray <em>AString Array</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>AString Array</em>'.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.Vertex#getAStringArray()
+	 * @see #getVertex()
+	 * @generated
+	 */
+	EAttribute getVertex_AStringArray();
 
 	/**
 	 * Returns the meta object for the container reference '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getContainer <em>Container</em>}'.
@@ -517,6 +600,38 @@ public interface TestPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute VERTEX__NAME = eINSTANCE.getVertex_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>An Integer</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute VERTEX__AN_INTEGER = eINSTANCE.getVertex_AnInteger();
+
+		/**
+		 * The meta object literal for the '<em><b>Date</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute VERTEX__DATE = eINSTANCE.getVertex_Date();
+
+		/**
+		 * The meta object literal for the '<em><b>ABoolean</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute VERTEX__ABOOLEAN = eINSTANCE.getVertex_ABoolean();
+
+		/**
+		 * The meta object literal for the '<em><b>AString Array</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute VERTEX__ASTRING_ARRAY = eINSTANCE.getVertex_AStringArray();
 
 		/**
 		 * The meta object literal for the '<em><b>Container</b></em>' container reference feature.

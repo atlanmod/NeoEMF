@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -27,50 +27,35 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.event.KernelEventHandler;
-import org.neo4j.graphdb.event.TransactionEventHandler;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.graphdb.traversal.Evaluator;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
-import org.neo4j.index.lucene.LuceneKernelExtensionFactory;
 import org.neo4j.kernel.Traversal;
-import org.neo4j.kernel.extension.KernelExtensionFactory;
-import org.neo4j.kernel.impl.cache.CacheProvider;
-import org.neo4j.kernel.impl.cache.SoftCacheProvider;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
+import fr.inria.atlanmod.neo4emf.Point;
+import fr.inria.atlanmod.neo4emf.RelationshipMapping;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 
 public class PersistenceService implements IPersistenceService {
 	
 	/**
-	 * The Neo4j database service.
+	 * The database service connection.
 	 */
-	GraphDatabaseService db;
+	private final NEConnection connection;
+	
+	private final RelationshipMapping mapping;
 
-	public PersistenceService(String storeDir) {
-
-		// the cache providers
-		ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-		cacheList.add(new SoftCacheProvider());
-
-		// the kernel extensions
-		LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
-		List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
-		extensions.add(lucene);
-
-		// the database setup
-		GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
-		gdbf.setKernelExtensions(extensions);
-		gdbf.setCacheProviders(cacheList);
-		db = gdbf.newEmbeddedDatabase(storeDir);
+	protected PersistenceService(GraphDatabaseService service, NEConfiguration configuration) {
+		this.connection = new NEConnection(service, configuration);
+		this.mapping = configuration.ePackage().getRelationshipMapping();
+		connection.open();
 	}
 
 	@Override
@@ -92,24 +77,6 @@ public class PersistenceService implements IPersistenceService {
 		return null;
 	}
 
-	@Override
-	public Node createWithIndexIfNotExists(EClass c) {
-		assert c != null : "Null ECLass";
-		assert c.getName() != null : "Null EClass name";
-		assert c.getEPackage() != null : "Null EPackage for EClass";
-		assert c.getEPackage().getNsURI() != null : "Null EPackage NsURI";
-		
-		
-		String value = getIdMetaValueFromClass(c);
-		if (getMetaIndex().get(ID_META, value).getSingle() != null)
-			return getMetaIndex().get(ID_META, value).getSingle();
-		Node n = createNode();
-		n.setProperty(ECLASS_NAME, c.getName());
-		n.setProperty(NS_URI, c.getEPackage().getNsURI());
-		getMetaIndex().putIfAbsent(n, ID_META, value);
-		return n;
-	}
-
 	private String getIdMetaValueFromClass(EClass c) {
 		return c.getEPackage().getName() + "_" + c.getClassifierID();
 	}
@@ -123,116 +90,48 @@ public class PersistenceService implements IPersistenceService {
 	}
 
 	@Override
-	public EObject createObjectProxyFromNode(Node n) {
-		// TODO finish declaration
-		return null;
-	}
-	
-	@Override
-	public Node createNodeFromEObject(EObject eObject) {
+	public Node createNodeFromEObject(INeo4emfObject eObject) {
 		return createNodeFromEObject(eObject, false);
 	}
 
 	@Override
-	public Node createNodeFromEObject(EObject eObject, boolean isTemporary) {
-		Node node = createNode();
-		Node typeNode = createWithIndexIfNotExists(eObject.eClass());
-		Relationship instanceOfRel = node.createRelationshipTo(typeNode, INSTANCE_OF);
-		Relationship isRootRel = null;
-		if (isRoot(eObject))
-			isRootRel = createResourceNodeIfAbsent().createRelationshipTo(node, IS_ROOT);		
-		if(isTemporary) {
-			getMetaIndex().add(node, ID_META, TMP_NODE);
-			getRelationshipIndex().add(instanceOfRel, ID_META, TMP_RELATIONSHIP);
-			if(isRootRel != null) {
-				getRelationshipIndex().add(isRootRel, ID_META, TMP_RELATIONSHIP);
-			}
-		}
-		return node;
+	public Node createNodeFromEObject(INeo4emfObject eObject, boolean isTemporary) {
+		return connection.addObject(eObject,isTemporary);
 	}
 	
 	@Override
-	public Node createAttributeNodeForEObject(EObject eObject) {
-		Node base = getNodeById(((INeo4emfObject)eObject).getNodeId());
-		Node node = createNode();
-		((Neo4emfObject)eObject).setAttributeNodeId(node.getId());
-		Relationship r = base.createRelationshipTo(node, SET_ATTRIBUTE);
-		getMetaIndex().add(node, ID_META, TMP_NODE);
-		getRelationshipIndex().add(r, ID_META, TMP_RELATIONSHIP);
-		return node;
+	public void createLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		connection.createRelationship(from,to,getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
 	}
 	
 	@Override
-	public void deleteNodeFromEObject(EObject eObject) {
-		Node n = getNodeById(((INeo4emfObject)eObject).getNodeId());
-		Iterator<Relationship> it = n.getRelationships().iterator();
-		while(it.hasNext()) {
-			Relationship rel = it.next();
-			rel.delete();
-		}
-		n.delete();
+	public void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		connection.removeRelationship(from,to,getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
 	}
 	
 	@Override
-	public Relationship createAddLinkRelationship(Node from, Node to, RelationshipType relType) {
-		/*
-		 * If there already is a REMOVE_LINK relation ship with the same
-		 * property just removes it
-		 */
-		boolean changeThatAmazingBoolean= false;
-		Iterator<Relationship> it = from.getRelationships(REMOVE_LINK).iterator();
-		while(it.hasNext()) {
-			Relationship r = it.next();
-			if(r.getProperty("gen_rel").equals(relType.toString()) && r.getOtherNode(from).equals(to)) {
-				r.delete();
-				changeThatAmazingBoolean = true;
-			}
-		}
-		/*
-		 * Also remove the "delete" relations generated
-		 */
-		it = from.getRelationships(DELETE).iterator();
-		while(it.hasNext()) {
-			it.next().delete();
-		}
-		if(changeThatAmazingBoolean) {
-			return null;
-		}
-		Relationship rel = from.createRelationshipTo(to, ADD_LINK);
-		rel.setProperty("gen_rel", relType.toString());
-		getRelationshipIndex().add(rel, ID_META, TMP_RELATIONSHIP);
-		return rel;
+	public Node createAttributeNodeForEObject(INeo4emfObject eObject) {
+		return connection.addAttribute(eObject);
 	}
 	
 	@Override
-	public Relationship createRemoveLinkRelationship(Node from, Node to, RelationshipType relType) {
-		/*
-		 * If there already is an ADD_LINK relation ship with the same
-		 * property just removes it
-		 */
-		boolean changeThatAmazingBoolean= false;
-		Iterator<Relationship> it = from.getRelationships(ADD_LINK).iterator();
-		while(it.hasNext()) {
-			Relationship r = it.next();
-			if(r.getProperty("gen_rel").equals(relType.toString()) && r.getOtherNode(from).equals(to)) {
-				r.delete();
-				changeThatAmazingBoolean = true;
-			}
-		}
-		if(changeThatAmazingBoolean) {
-			return null;
-		}
-		Relationship rel = from.createRelationshipTo(to, REMOVE_LINK);
-		rel.setProperty("gen_rel", relType.toString());
-		getRelationshipIndex().add(rel, ID_META, TMP_RELATIONSHIP);
-		return rel;
+	public void deleteNodeFromEObject(INeo4emfObject eObject) {
+		connection.removeObject(eObject);
 	}
 	
 	@Override
-	public Relationship createDeleteRelationship(Node node) {
-		Relationship rel = node.createRelationshipTo(node, DELETE);
-		getRelationshipIndex().add(rel, ID_META, TMP_RELATIONSHIP);
-		return rel;
+	public Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		return connection.addTmpRelationshipBetween(from, to, getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
+	}
+	
+	@Override
+	public Relationship createRemoveLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		return connection.removeTmpRelationshipBetween(from, to, getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
+	}
+	
+	@Override
+	public Relationship createDeleteRelationship(INeo4emfObject obj) {
+		return connection.addDeleteRelationship(obj);
 	}
 	
 	@Override
@@ -317,7 +216,8 @@ public class PersistenceService implements IPersistenceService {
 		}
 	}
 
-	private boolean isRoot(EObject eObject) {		
+	// TODO, check if it is still needed
+	private boolean isRoot(Neo4emfObject eObject) {		
 		if (eObject.eContainer() == null && eObject.eResource() != null) {
 			return true;
 		} else {
@@ -327,7 +227,7 @@ public class PersistenceService implements IPersistenceService {
 
 	@Override
 	public List<Node> getAllRootNodes() {
-		Index<Node> index = getMetaIndex();
+		//Index<Node> index = getMetaIndex();
 		Node resourceNode = this.createResourceNodeIfAbsent();
 		assert resourceNode != null : "Null resource node";
 		return fetchNodesByRT(resourceNode.getId(), IS_ROOT);
@@ -379,24 +279,24 @@ public class PersistenceService implements IPersistenceService {
 		return nodeList;
 	}
 	
-	private ArrayList<Node> traverseNodesAddLink(Traverser tvr, String baseRelTypeName) {
-		ArrayList<Node> nodeList = new ArrayList<Node>();
-		for(Path path : tvr) {
-			Relationship lastRelationship = path.lastRelationship();
-			System.out.println(baseRelTypeName);
-			System.out.println(lastRelationship);
-			if(lastRelationship.hasProperty("gen_rel")) {
-				System.out.println(lastRelationship.getProperty("gen_rel"));
-			}
-			else {
-				System.out.println("no gen rel");
-			}
-			if(lastRelationship.hasProperty("gen_rel") && lastRelationship.getProperty("gen_rel").equals(baseRelTypeName)) {
-				nodeList.add(path.endNode());
-			}
-		}
-		return nodeList;
-	}
+//	private ArrayList<Node> traverseNodesAddLink(Traverser tvr, String baseRelTypeName) {
+//		ArrayList<Node> nodeList = new ArrayList<Node>();
+//		for(Path path : tvr) {
+//			Relationship lastRelationship = path.lastRelationship();
+//			System.out.println(baseRelTypeName);
+//			System.out.println(lastRelationship);
+//			if(lastRelationship.hasProperty("gen_rel")) {
+//				System.out.println(lastRelationship.getProperty("gen_rel"));
+//			}
+//			else {
+//				System.out.println("no gen rel");
+//			}
+//			if(lastRelationship.hasProperty("gen_rel") && lastRelationship.getProperty("gen_rel").equals(baseRelTypeName)) {
+//				nodeList.add(path.endNode());
+//			}
+//		}
+//		return nodeList;
+//	}
 	
 	private ArrayList<Node> traverseNodesRemoveLink(Traverser tvr, String baseRelTypeName) {
 		ArrayList<Node> nodeList = new ArrayList<Node>();
@@ -503,35 +403,40 @@ public class PersistenceService implements IPersistenceService {
 	}
 
 
-	public Transaction beginTx() {
-		return db.beginTx();
+	public NETransaction createTransaction() {
+		return connection.createTransaction();
 	}
-
+	
+	public void cleanIndexes() {
+		connection.cleanIndexes();
+	}
+	
+	public RelationshipType getRelationshipFor(int classID, int referenceID) {
+		return mapping.relationshipAt(classID, referenceID);
+	}
 
 	public Node createNode() {
-		return db.createNode();
+		return connection.createNode();
+	}
+
+	public Node getNodeById(long id) {
+		return connection.getNodeById(id);
 	}
 
 
-
-	
-	public Node getNodeById(long arg0) {
-		return db.getNodeById(arg0);
-	}
-
-
-	public Relationship getRelationshipById(long arg0) {
-		return db.getRelationshipById(arg0);
+	public Relationship getRelationshipById(long id) {
+		return connection.getRelationshipById(id);
 	}
 
 
 	public IndexManager index() {
-		return db.index();
+		return connection.index();
 	}
 
 	@Override
 	public void shutdown() {
-		db.shutdown();
+		connection.close();
 	}
+	
 
 }

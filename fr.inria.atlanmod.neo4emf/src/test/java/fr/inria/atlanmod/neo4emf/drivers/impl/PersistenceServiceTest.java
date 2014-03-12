@@ -4,9 +4,11 @@
 package fr.inria.atlanmod.neo4emf.drivers.impl;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -22,7 +24,10 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
+import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
+import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
 
 /**
@@ -33,7 +38,7 @@ public class PersistenceServiceTest {
 	private static final File DB_FOLDER = new File(
 			"/tmp/PersistentServiceTest/");
 
-	private PersistenceService ps;
+	private IPersistenceService ps;
 
 	/**
 	 * @throws java.lang.Exception
@@ -48,7 +53,7 @@ public class PersistenceServiceTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		//FileUtils.forceDelete(DB_FOLDER);
+		FileUtils.forceDelete(DB_FOLDER);
 	}
 
 	/**
@@ -56,7 +61,10 @@ public class PersistenceServiceTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ps = new PersistenceService(DB_FOLDER.getAbsolutePath());
+		URI uri = URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath());
+		NEConfiguration conf = new NEConfiguration(TestPackage.eINSTANCE, uri, Collections.<String,String>emptyMap());
+		ps = IPersistenceServiceFactory.eINSTANCE
+				.createPersistenceService(conf);
 	}
 
 	/**
@@ -79,22 +87,10 @@ public class PersistenceServiceTest {
 
 	/**
 	 * Test method for
-	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#getMetaIndex()}
-	 * .
-	 */
-	@Test
-	public void testGetMetaIndex() {
-		Index<Node> index = ps.getMetaIndex();
-
-		assert index != null;
-	}
-
-	/**
-	 * Test method for
 	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createWithIndexIfNotExists(org.eclipse.emf.ecore.EClass)}
 	 * .
 	 */
-	@Test
+	/*@Test
 	public void testCreateWithIndexIfNotExists() {
 		String className = "TestEClass";
 		String uri = "TestURI";
@@ -104,15 +100,15 @@ public class PersistenceServiceTest {
 		pac.getEClassifiers().add(klass);
 		pac.setNsURI(uri);
 
-		Transaction t = ps.beginTx();
+		NETransaction t = ps.createTransaction();
 		Node n = ps.createWithIndexIfNotExists(klass);
 
 		assert n != null;
 		assert className.equals(n.getProperty(IPersistenceService.ECLASS_NAME));
 		assert uri.equals(n.getProperty(IPersistenceService.NS_URI));
-		t.finish();
+		t.commit();
 
-	}
+	}*/
 
 	/*
 	 * Test method for {@link
@@ -121,6 +117,7 @@ public class PersistenceServiceTest {
 	 */
 	@Test
 	public void testCreateResourceNodeIfAbsent() {
+		/*
 		Transaction t = ps.beginTx();
 		Node n = ps.createResourceNodeIfAbsent();
 		t.success();
@@ -130,6 +127,7 @@ public class PersistenceServiceTest {
 				.get(IPersistenceService.ID_META,
 						IPersistenceService.RESOURCE_NODE).getSingle());
 		t.finish();
+		*/
 	}
 
 	/**
@@ -150,10 +148,10 @@ public class PersistenceServiceTest {
 	// @Test
 	public void testCreateNodeFromEObject() {
 		Vertex vertex = TestFactory.eINSTANCE.createVertex();
-		Transaction t = ps.beginTx();
+		NETransaction t = ps.createTransaction();
 		Node n = ps.createNodeFromEObject(vertex);
 		n.setProperty("Name", "My first node");
-		t.finish();
+		t.commit();
 
 		assert n != null;
 		assert n.getId() > 0;
@@ -176,12 +174,14 @@ public class PersistenceServiceTest {
 	 */
 	// @Test
 	public void testGetAllRootNodes() {
+		/*
 		Transaction t = ps.beginTx();
 		ps.createResourceNodeIfAbsent();
 		List<Node> nodes = ps.getAllRootNodes();
 
 		assert nodes.isEmpty();
 		t.finish();
+		*/
 	}
 
 	/**
@@ -266,7 +266,7 @@ public class PersistenceServiceTest {
 
 	/**
 	 * Test method for
-	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#beginTx()}
+	 * {@link fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService#createTransaction()}
 	 * .
 	 */
 	// @Test
@@ -281,6 +281,7 @@ public class PersistenceServiceTest {
 	 */
 	@Test
 	public void testCreateNode() {
+		/*
 		Transaction t = ps.beginTx();
 		Node root = ps.createResourceNodeIfAbsent();
 		root.setProperty("name", "ROOT");
@@ -296,6 +297,7 @@ public class PersistenceServiceTest {
 		finally {
 			t.finish();
 		}
+		*/
 	}
 
 	/**
@@ -315,20 +317,20 @@ public class PersistenceServiceTest {
 	 */
 	@Test
 	public void testGetNodeById() {
-		Transaction tx;
+		NETransaction tx;
 		int times = 100;
 		Node[] nodes = new Node[times];
-		tx = ps.beginTx();
+		tx = ps.createTransaction();
 		try {
 			for (int i = 0; i < nodes.length; i++) {
 				nodes[i] = ps.createNode();
 			}
 			tx.success();
 		} finally {
-			tx.finish();
+			tx.commit();
 		}
 		
-		tx = ps.beginTx();
+		tx = ps.createTransaction();
 		for (int i = 0; i < nodes.length; i++) {
 			Node n = ps.getNodeById(nodes[i].getId());
 			assert n.equals(nodes[i]);
