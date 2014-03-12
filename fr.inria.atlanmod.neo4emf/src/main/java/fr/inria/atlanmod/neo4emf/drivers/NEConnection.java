@@ -213,15 +213,15 @@ public class NEConnection {
 				.iterator();
 		while (it.hasNext()) {
 			Relationship rel = it.next();
-			if (rel.getProperty("gen_rel").equals(relType.toString())
-					&& rel.getOtherNode(fromNode).equals(to)) {
+			if (rel.getProperty("gen_rel").equals(relType.name())
+					&& rel.getOtherNode(fromNode).getId() == toNode.getId()) {
 				rel.delete();
 				return null;
 			}
 		}
 		Relationship addLinkRel = fromNode.createRelationshipTo(toNode,
 				IPersistenceService.ADD_LINK);
-		addLinkRel.setProperty("gen_rel", relType.toString());
+		addLinkRel.setProperty("gen_rel", relType.name());
 		relationshipIndex.add(addLinkRel, IPersistenceService.ID_META,
 				IPersistenceService.TMP_RELATIONSHIP);
 		return addLinkRel;
@@ -251,19 +251,24 @@ public class NEConnection {
 		 * create a REMOVE_LINK relationship because the base graph doesn't have
 		 * a RelationshipType relationship between from and to.
 		 */
+		System.out.println("try to remove " + relType.name() + " ADD_LINK");
+		System.out.println("\tBetween " + fromNode.getId() + " and " + toNode.getId());
 		Iterator<Relationship> it = fromNode.getRelationships(
 				IPersistenceService.ADD_LINK).iterator();
 		while (it.hasNext()) {
 			Relationship rel = it.next();
-			if (rel.getProperty("gen_rel").equals(relType.toString())
-					&& rel.getOtherNode(fromNode).equals(to)) {
+			System.out.println(rel.getProperty("gen_rel"));
+			System.out.println(fromNode.getId() + " -> " + rel.getOtherNode(fromNode).getId());
+			if(rel.getProperty("gen_rel").equals(relType.name())
+					&& rel.getOtherNode(fromNode).getId() == toNode.getId()) {
+				System.out.println("found lol");
 				rel.delete();
 				return null;
 			}
 		}
 		Relationship removeLinkRel = fromNode.createRelationshipTo(toNode,
 				IPersistenceService.REMOVE_LINK);
-		removeLinkRel.setProperty("gen_rel", relType.toString());
+		removeLinkRel.setProperty("gen_rel", relType.name());
 		relationshipIndex.add(removeLinkRel, IPersistenceService.ID_META,
 				IPersistenceService.TMP_RELATIONSHIP);
 		return removeLinkRel;
