@@ -65,11 +65,9 @@ public class Serializer implements ISerializer {
 		 * The number of database operations within a transaction is bounded,
 		 * that's why changes may be processed in several transactions.
 		 */
-		if (options != null){
-			defaultOptions.putAll(options);
-		}
-		int max = (int) defaultOptions.get(MAX_OPERATIONS_PER_TRANSACTION);
-		boolean isTmpSave = (boolean)defaultOptions.get(TMP_SAVE);
+		options = mergeOptions(options);
+		int max = (int) options.get(MAX_OPERATIONS_PER_TRANSACTION);
+		boolean isTmpSave = (boolean)options.get(TMP_SAVE);
 		if(!isTmpSave) {
 			flushTmpSave(options);
 		}
@@ -90,6 +88,20 @@ public class Serializer implements ISerializer {
 				tx.commit();
 			}
 		}
+	}
+	
+	private Map<String,Object> mergeOptions(Map<String,Object> options) {
+		if(options == null) {
+			return defaultOptions;
+		}
+		Iterator<String> it = defaultOptions.keySet().iterator();
+		while(it.hasNext()) {
+			String key = it.next();
+			if(!options.containsKey(key)) {
+				options.put(key, defaultOptions.get(key));
+			}
+		}
+		return options;
 	}
 	
 	private void flushTmpSave(Map<String,Object> options) {
