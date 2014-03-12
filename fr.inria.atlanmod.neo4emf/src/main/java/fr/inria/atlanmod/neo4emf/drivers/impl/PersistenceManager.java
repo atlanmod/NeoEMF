@@ -192,8 +192,8 @@ public class PersistenceManager implements IPersistenceManager {
 //	}
 //	
 //	@Override
-	public void processTemporaryRelationship(Relationship r) {
-		persistenceService.processTemporaryRelationship(r);	
+	public void flushTmpRelationships() {
+		persistenceService.flushTmpRelationships();	
 	}
 
 //	@Override

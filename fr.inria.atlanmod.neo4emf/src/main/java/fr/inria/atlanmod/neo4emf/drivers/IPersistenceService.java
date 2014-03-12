@@ -136,7 +136,7 @@ public interface IPersistenceService {
 	
 	List<Node> getTmpNodes();
 	
-	void processTemporaryRelationship(Relationship r);
+	void flushTmpRelationships();
 
 	/**
 	 * Return a List of the root nodes

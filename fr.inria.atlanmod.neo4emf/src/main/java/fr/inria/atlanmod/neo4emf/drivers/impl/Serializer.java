@@ -93,26 +93,9 @@ public class Serializer implements ISerializer {
 	}
 	
 	private void flushTmpSave(Map<String,Object> options) {
-		// Ugly way to get it 
-		List<Relationship> tmpRelationships = manager.getTmpRelationships();
-		Iterator<Relationship> it = tmpRelationships.iterator();
-//		int counter = 0;
-//		Transaction tx = manager.beginTx();
 		NETransaction tx = manager.createTransaction();
-		while(it.hasNext()) {
-			Relationship rel = it.next();
-			manager.processTemporaryRelationship(rel);
-//			counter++;
-			// check that
-//			if (counter % ((int)options.get(MAX_OPERATIONS_PER_TRANSACTION)) == 0)
-//			{	
-//				tx.success();
-//				tx.finish();
-//				tx= manager.beginTx();
-//			}
-		}
+		manager.flushTmpRelationships();
 		tx.success();
-//		tx.finish();
 		tx.commit();
 	}
 
@@ -211,7 +194,6 @@ public class Serializer implements ISerializer {
 		Node n = null;
 		if (eObject.getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject,isTmp);
-//			((Neo4emfObject) eObject).setNodeId(n.getId());
 		} else {
 			n = this.manager.getNodeById(eObject);
 		}
@@ -267,6 +249,5 @@ public class Serializer implements ISerializer {
 			}
 		}
 		manager.putNodeId(eObject, n.getId());
-		// TODO set the node id in the eObject
 	}
 }

@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
+import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -289,6 +290,71 @@ public class NEConnection {
 		Iterator<Node> nodesIt = metaIndex.get(IPersistenceService.ID_META, IPersistenceService.TMP_NODE).iterator();
 		while(nodesIt.hasNext()) {
 			nodesIt.next().delete();
+		}
+	}
+	
+	public void flushTmpRelationships() {
+		Iterator<Relationship> it = relationshipIndex.get(IPersistenceService.ID_META, IPersistenceService.TMP_RELATIONSHIP).iterator();
+		while(it.hasNext()) {
+			Relationship r = it.next();
+			if(r.getType().equals(IPersistenceService.SET_ATTRIBUTE)) {
+				Node baseNode = r.getStartNode();
+				Node attributeNode = r.getEndNode();
+				Iterator<String> updatedProperties = attributeNode.getPropertyKeys().iterator();
+				while(updatedProperties.hasNext()) {
+					String propKey = updatedProperties.next();
+					baseNode.setProperty(propKey, attributeNode.getProperty(propKey));
+				}
+				r.delete();
+				attributeNode.delete();
+			}
+			else if(r.getType().equals(IPersistenceService.ADD_LINK)) {
+				String baseRelationName = (String) r.getProperty("gen_rel");
+				Node from = r.getStartNode();
+				Node to = r.getEndNode();
+				// also fix that
+				from.createRelationshipTo(to, DynamicRelationshipType.withName(baseRelationName));
+				r.delete();
+				metaIndex.remove(from, IPersistenceService.ID_META);
+				metaIndex.remove(to, IPersistenceService.ID_META);
+				// fix that, ugly
+				Iterator<Relationship> fromIO = from.getRelationships(IPersistenceService.INSTANCE_OF).iterator();
+				Iterator<Relationship> toIO = to.getRelationships(IPersistenceService.INSTANCE_OF).iterator();
+				while(fromIO.hasNext()) {
+					relationshipIndex.remove(fromIO.next(),IPersistenceService.ID_META);
+				}
+				while(toIO.hasNext()) {
+					relationshipIndex.remove(toIO.next(),IPersistenceService.ID_META);
+				}
+			}
+			else if(r.getType().equals(IPersistenceService.REMOVE_LINK)) {
+				/*
+				 * Find a more efficient implementation (maybe with RelationShipType directly
+				 * as a relationship property
+				 */
+				String baseRelationName = (String) r.getProperty("gen_rel");
+				Node from = r.getStartNode();
+				Node to = r.getEndNode();
+				Iterator<Relationship> relationships = from.getRelationships().iterator();
+				while(relationships.hasNext()) {
+					Relationship rel = relationships.next();
+					if(rel.getType().toString().equals(baseRelationName) &&
+							rel.getEndNode().equals(to)) {
+						rel.delete();
+						break;
+					}
+				}
+				r.delete();
+			}
+			else if(r.getType().equals(IPersistenceService.DELETE)) {
+				Node n = r.getStartNode();
+				r.delete();
+				Iterator<Relationship> instanceOfRels = n.getRelationships(IPersistenceService.INSTANCE_OF).iterator();
+				while(instanceOfRels.hasNext()) {
+					instanceOfRels.next().delete();
+				}
+				n.delete();
+			}
 		}
 	}
 

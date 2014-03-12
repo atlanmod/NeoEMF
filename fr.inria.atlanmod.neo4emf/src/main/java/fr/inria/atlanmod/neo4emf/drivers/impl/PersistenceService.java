@@ -155,65 +155,8 @@ public class PersistenceService implements IPersistenceService {
 	}
 	
 	@Override
-	public void processTemporaryRelationship(Relationship r) {
-		if(r.getType().equals(SET_ATTRIBUTE)) {
-			Node baseNode = r.getStartNode();
-			Node attributeNode = r.getEndNode();
-			Iterator<String> updatedProperties = attributeNode.getPropertyKeys().iterator();
-			while(updatedProperties.hasNext()) {
-				String propKey = updatedProperties.next();
-				baseNode.setProperty(propKey, attributeNode.getProperty(propKey));
-			}
-			r.delete();
-			attributeNode.delete();
-		}
-		else if(r.getType().equals(ADD_LINK)) {
-			String baseRelationName = (String) r.getProperty("gen_rel");
-			Node from = r.getStartNode();
-			Node to = r.getEndNode();
-			// also fix that
-			from.createRelationshipTo(to, DynamicRelationshipType.withName(baseRelationName));
-			r.delete();
-			getMetaIndex().remove(from, ID_META);
-			getMetaIndex().remove(to, ID_META);
-			// fix that, ugly
-			Iterator<Relationship> fromIO = from.getRelationships(INSTANCE_OF).iterator();
-			Iterator<Relationship> toIO = to.getRelationships(INSTANCE_OF).iterator();
-			while(fromIO.hasNext()) {
-				getRelationshipIndex().remove(fromIO.next(),ID_META);
-			}
-			while(toIO.hasNext()) {
-				getRelationshipIndex().remove(toIO.next(),ID_META);
-			}
-		}
-		else if(r.getType().equals(REMOVE_LINK)) {
-			/*
-			 * Find a more efficient implementation (maybe with RelationShipType directly
-			 * as a relationship property
-			 */
-			String baseRelationName = (String) r.getProperty("gen_rel");
-			Node from = r.getStartNode();
-			Node to = r.getEndNode();
-			Iterator<Relationship> relationships = from.getRelationships().iterator();
-			while(relationships.hasNext()) {
-				Relationship rel = relationships.next();
-				if(rel.getType().toString().equals(baseRelationName) &&
-						rel.getEndNode().equals(to)) {
-					rel.delete();
-					break;
-				}
-			}
-			r.delete();
-		}
-		else if(r.getType().equals(DELETE)) {
-			Node n = r.getStartNode();
-			r.delete();
-			Iterator<Relationship> instanceOfRels = n.getRelationships(INSTANCE_OF).iterator();
-			while(instanceOfRels.hasNext()) {
-				instanceOfRels.next().delete();
-			}
-			n.delete();
-		}
+	public void flushTmpRelationships() {
+		connection.flushTmpRelationships();
 	}
 
 	// TODO, check if it is still needed
