@@ -69,7 +69,7 @@ public class Serializer implements ISerializer {
 			defaultOptions.putAll(options);
 		}
 		int max = (int) defaultOptions.get(MAX_OPERATIONS_PER_TRANSACTION);
-		boolean isTmpSave = (boolean)options.get("tmp_save");
+		boolean isTmpSave = (boolean)defaultOptions.get(TMP_SAVE);
 		if(!isTmpSave) {
 			flushTmpSave(options);
 		}
