@@ -44,7 +44,7 @@ public class InputData {
 		URI uri = URI.createURI("neo4emf:./data/output/R"+token+"Graph");
 		
 		NESession session = new NESession(MgraphPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(uri);
+		INeo4emfResource resource = session.createResource(uri,1000000);
 		parameters[0][2] = resource;
 		return Arrays.asList(parameters);
 	}

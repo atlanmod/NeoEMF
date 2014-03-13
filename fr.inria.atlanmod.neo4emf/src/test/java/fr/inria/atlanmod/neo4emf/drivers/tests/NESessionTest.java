@@ -105,7 +105,7 @@ public class NESessionTest {
 		session.open();
 		NETransaction tx = session.createTransaction();
 		try {
-			session.addObject(v);
+			session.addObject(v,true);
 			tx.success();
 		} catch(Exception e) {
 			tx.abort();
