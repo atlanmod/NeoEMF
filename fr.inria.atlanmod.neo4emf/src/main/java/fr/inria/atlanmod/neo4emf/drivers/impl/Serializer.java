@@ -90,6 +90,11 @@ public class Serializer implements ISerializer {
 		}
 	}
 	
+	// TODO check if it is a good implementation.
+	// The previous version was to put all the given options in the defaultOptions
+	// Map. This behavior is not compatible with the TMP_SAVE option, which is one time
+	// false and one time true, and should be always false by default for convenience (the user
+	// never call save for a temporary save).
 	private Map<String,Object> mergeOptions(Map<String,Object> options) {
 		if(options == null) {
 			return defaultOptions;
@@ -113,7 +118,6 @@ public class Serializer implements ISerializer {
 
 	public void deleteExistingObject(INeo4emfObject eObject, boolean isTmp) {
 		if(isTmp) {
-//			Node n = this.manager.getNodeById(geteObject);
 			this.manager.createDeleteRelationship(eObject);
 		}
 		else {
@@ -192,8 +196,6 @@ public class Serializer implements ISerializer {
 	}
 
 	public void addNewLink(INeo4emfObject eObject, EReference eRef, Object object, boolean isTmp) {
-//		if (rel == null) {
-//			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil.formatRelationshipName(eObject.eClass(), eRef));}
 		if(isTmp) {
 			this.manager.createAddLinkRelationship(eObject,(INeo4emfObject)object,eRef);
 		}
