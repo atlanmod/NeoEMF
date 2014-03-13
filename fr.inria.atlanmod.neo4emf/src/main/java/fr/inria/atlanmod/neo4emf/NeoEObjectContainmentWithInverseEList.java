@@ -41,6 +41,7 @@ public class NeoEObjectContainmentWithInverseEList<E> extends
 	
 	@Override
 	protected boolean useEquals() {
+		// TODO check if its still needed (may impact perfs)
 		return true;
 	}
 	
