@@ -230,3 +230,8 @@ fr.inria.atlanmod.neo4emf.codegen/src/org/
 # Maven files
 ##
 */target/**
+models/testdata-project/target/testdata-1.0.jar
+
+models/testdata-project/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+
+models/testdata-project/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
