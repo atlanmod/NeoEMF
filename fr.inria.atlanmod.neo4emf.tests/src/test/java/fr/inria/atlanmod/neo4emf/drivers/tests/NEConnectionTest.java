@@ -102,7 +102,7 @@ public class NEConnectionTest {
 	public void testAddNode() {
 		TestFactory factory = TestFactory.eINSTANCE;
 		Vertex v = factory.createVertex();
-		connection.open();
+
 		NETransaction tx = connection.createTransaction();
 		try {
 			connection.addObject(v);
@@ -111,7 +111,7 @@ public class NEConnectionTest {
 			tx.abort();
 		} finally {
 			tx.commit();
-			connection.close();
+			//connection.close();
 		}
 		
 		
