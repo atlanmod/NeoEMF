@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.AbstractTreeIterator;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -29,13 +28,11 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.osgi.util.NLS;
 
-import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
@@ -256,13 +253,14 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 		EStructuralFeature eFeature = eClass().getEStructuralFeature(featureID);
 		Assert.isTrue(eFeature != null, "Invalid featureID: " + featureID);
 		Object result = eSettingDelegate(eFeature).dynamicGet(this, eSettings(), dynamicFeatureID, resolve, coreType);
-		if (result != null && notificationRequired) {
+		// TODO check if it can be removed
+		/*if (result != null && notificationRequired) {
 			Notification msg = new ENotificationImpl(this, INeo4emfNotification.GET, eFeature, null, null);
 			if (getChangeLog() != null) {
 				// TODO Check if it is still needed
 				getChangeLog().addNewEntry(msg);
 			}
-		}
+		}*/
 		return result;
 	}
 
