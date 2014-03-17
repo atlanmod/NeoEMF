@@ -83,7 +83,8 @@ public class Serializer implements ISerializer {
 				tx.success();
 				subset.clear();
 			} catch (Exception e) {
-				tx.abort();;
+				tx.abort();
+				e.printStackTrace();
 			} finally {
 				tx.commit();
 			}

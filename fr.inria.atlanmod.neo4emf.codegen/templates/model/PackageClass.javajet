@@ -41,7 +41,6 @@ package <%=genPackage.getReflectionPackageName()%>;
  * <!-- begin-user-doc -->
  * The <b>Package</b> for the model.
  * It contains accessors for the meta objects to represent
- * NEO4EMF WAS HERE
  * <ul>
  *   <li>each class,</li>
  *   <li>each feature of each class,</li>
@@ -985,25 +984,25 @@ int maxGenericTypeAssignment = 0;
             <%}%>
 		   });
           <%}%>
-          <%for (EAnnotation nestedEAnnotation : genPackage.getAllNestedAnnotations(eAnnotation)) {String nestedAnnotationSource = nestedEAnnotation.getSource();  int depth = 0; boolean nonContentAnnotation = false; StringBuilder path = new StringBuilder();  for (EObject eContainer = nestedEAnnotation.eContainer(), child = nestedEAnnotation; child != eAnnotation; child = eContainer, eContainer = eContainer.eContainer())  {  boolean nonContentChild = child.eContainmentFeature() != EcorePackage.Literals.EANNOTATION__CONTENTS; if (path.length() != 0) { path.insert(0, ", ");  } path.insert(0, nonContentChild); if (nonContentChild) { nonContentAnnotation = true; } ++depth;  } List<GenPackage.AnnotationReferenceData> nestedAnnotationReferenceDataList = genPackage.getReferenceData(nestedEAnnotation);%>
+        <%}%>
+        <%for (EAnnotation nestedEAnnotation : genPackage.getAllNestedAnnotations(eAnnotation)) {String nestedAnnotationSource = nestedEAnnotation.getSource(); int depth = 1; for (EObject eContainer = nestedEAnnotation.eContainer(); eContainer != eAnnotation; eContainer = eContainer.eContainer()) { ++depth; } List<GenPackage.AnnotationReferenceData> nestedAnnotationReferenceDataList = genPackage.getReferenceData(nestedEAnnotation);%>
 		addAnnotation
 		  (<%=genPackage.getAnnotatedModelElementAccessor(eAnnotation)%>, 
-		   <%if (nonContentAnnotation && genModel.getRuntimeVersion().getValue() >= GenRuntimeVersion.EMF210_VALUE) {%>new boolean[] { <%=path.toString()%> }<%} else {%><%=depth%><%}%>,
+		   <%=depth%>,
 		   <%if (nestedAnnotationSource == null) {%>null,<%} else {%>"<%=nestedAnnotationSource%>",<%=genModel.getNonNLS()%><%}%>
 		   new String[] 
 		   {
-            <%for (Iterator<Map.Entry<String, String>> l = nestedEAnnotation.getDetails().iterator(); l.hasNext();) { Map.Entry<String, String> detail = l.next(); String key = Literals.toStringLiteral(detail.getKey(), genModel); String value = Literals.toStringLiteral(detail.getValue(), genModel);%>
+          <%for (Iterator<Map.Entry<String, String>> l = nestedEAnnotation.getDetails().iterator(); l.hasNext();) { Map.Entry<String, String> detail = l.next(); String key = Literals.toStringLiteral(detail.getKey(), genModel); String value = Literals.toStringLiteral(detail.getValue(), genModel);%>
 			 <%=key%>, <%=value%><%=l.hasNext() ? "," : ""%><%=genModel.getNonNLS(key + value)%>
-            <%}%>
+          <%}%>
 		   }<%if (nestedAnnotationReferenceDataList.isEmpty()) {%>);<%} else {%>,<%}%>
-            <%if (!nestedAnnotationReferenceDataList.isEmpty()) {%>
+          <%if (!nestedAnnotationReferenceDataList.isEmpty()) {%>
 		   new <%=genModel.getImportedName("org.eclipse.emf.common.util.URI")%>[] 
 		   {
             <%for (Iterator<GenPackage.AnnotationReferenceData> l = nestedAnnotationReferenceDataList.iterator(); l.hasNext();) { GenPackage.AnnotationReferenceData annotationReferenceData = l.next();%>
 			 <%=genModel.getImportedName("org.eclipse.emf.common.util.URI")%>.createURI(<%if (annotationReferenceData.containingGenPackage != genPackage) {%><%=annotationReferenceData.containingGenPackage.getImportedPackageInterfaceName()%>.<%}%>eNS_URI).appendFragment("<%=annotationReferenceData.uriFragment%>")<%if (l.hasNext()) {%>,<%}%><%=genModel.getNonNLS()%>
             <%}%>
 		   });
-            <%}%>
           <%}%>
         <%}%>
       <%}%>
