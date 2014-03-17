@@ -153,12 +153,12 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 	 */
 	public BigInteger getAnInteger() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();	
 	  		
 		return getData().anInteger;
 		
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
  /**
@@ -189,12 +189,12 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 	 */
 	public Date getDate() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	  		
 		return getData().date;
 		
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
  /**
@@ -225,12 +225,12 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 	 */
 	public boolean isABoolean() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();	
 	  		
 		return getData().aBoolean;
 		
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
  /**
@@ -261,7 +261,7 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 	 */
 	public EList<String> getAStringArray() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();	
 	   
 		
 		if (getData().aStringArray == null){
@@ -270,7 +270,7 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 			((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__ASTRING_ARRAY);			}
 		return getData().aStringArray;
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	} 
 
