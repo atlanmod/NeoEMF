@@ -1,12 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.inria.atlanmod.neo4emf.change.impl;
 
 import java.util.Iterator;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -19,7 +14,7 @@ import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
 public class NewObject extends Entry {
 	
 	/**
-	 * ToFix
+	 * TODO ToFix
 	 */
 	private Object[] refs;
 	
@@ -34,10 +29,6 @@ public class NewObject extends Entry {
         	i++;
         }
     }
-
-	public NewObject(Notification msg) {
-		this ((INeo4emfObject) msg.getNotifier());
-	}
 
 	@Override
 	public void process(Serializer serializer, boolean isTmp) {

@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.inria.atlanmod.neo4emf.change.impl;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EReference;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -25,11 +20,6 @@ public class RemoveLink extends Entry {
 		eReference = eRef;
 		oldValue = oldV;
 		newValue = newV;
-	}
-
-	public RemoveLink(Notification msg) {
-		this((INeo4emfObject) msg.getNotifier(), (EReference) msg.getFeature(), msg
-				.getOldValue(), msg.getNewValue());
 	}
 
 	@Override

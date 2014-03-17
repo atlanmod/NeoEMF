@@ -1,12 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.inria.atlanmod.neo4emf.change.impl;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EObject;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
@@ -26,11 +20,6 @@ public class SetAttribute extends Entry {
 		eAttribute = attr;
 		this.oldValue = oldValue;
 		this.newValue = newValue;
-	}
-
-	public SetAttribute(Notification msg) {
-		this((INeo4emfObject) msg.getNotifier(), (EAttribute) msg.getFeature(), msg
-				.getOldValue(), msg.getNewValue());
 	}
 
 	@Override
