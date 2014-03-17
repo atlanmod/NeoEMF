@@ -25,6 +25,7 @@ public class RemoveLink extends Entry {
 	@Override
 	public void process(Serializer serializer, boolean isTmp) {
 		serializer.removeExistingLink(eObject, eReference, oldValue, isTmp);
+		super.release();
 
 	}
 

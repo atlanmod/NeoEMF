@@ -47,6 +47,8 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 
 	protected volatile int loadingOnDemand = 0; 
 	
+	protected volatile int memoryLock = 0;
+	
 	/**
 	 * eObject ID
 	 */
@@ -161,6 +163,32 @@ public class Neo4emfObject  extends MinimalEObjectImpl implements INeo4emfObject
 	@Override
 	public void unsetLoadingOnDemand() {
 		this.loadingOnDemand--;
+	}
+	
+	@Override
+	public void setMemoryLock() {
+		this.memoryLock++;
+		if(memoryLock == 1) {
+			setDataStrongReferences();
+		}
+	}
+	
+	@Override
+	public void unsetMemoryLock() {
+		this.memoryLock--;
+		if(memoryLock == 0) {
+			releaseDataStrongReferences();
+		}
+	}
+	
+	@Override
+	public void setDataStrongReferences() {
+		// Do nothing, needs to be overridden in subclasses
+	}
+	
+	@Override
+	public void releaseDataStrongReferences() {
+		// Do nothing, needs to be overridden in subclasses.
 	}
 	
 	@Override

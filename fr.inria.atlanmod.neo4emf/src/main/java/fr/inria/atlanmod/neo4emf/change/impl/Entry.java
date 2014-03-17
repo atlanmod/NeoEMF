@@ -12,9 +12,14 @@ abstract public class Entry {
 
 	public Entry(INeo4emfObject value) {
 		eObject = value;
+		eObject.setMemoryLock();
 	}
 
 	public abstract void process(Serializer serializer, boolean isTmp);
+	
+	protected final void release() {
+		eObject.unsetMemoryLock();
+	}
 	
 	@Deprecated
 	public INeo4emfObject geteObject() {

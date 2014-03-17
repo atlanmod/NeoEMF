@@ -25,6 +25,7 @@ public class AddLink extends Entry {
 	@Override
 	public void process(Serializer serializer, boolean isTmp) {
 		serializer.addNewLink(eObject, eReference, newValue,isTmp);
+		super.release();
 	}
 	
 	@Deprecated

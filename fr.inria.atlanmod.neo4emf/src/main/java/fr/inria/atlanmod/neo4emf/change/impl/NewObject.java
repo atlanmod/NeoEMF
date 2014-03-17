@@ -23,23 +23,24 @@ public class NewObject extends Entry {
 	 * object and allow the changelog to remove those references when the objects are
 	 * saved (accessible from the member values of the entries).
 	 */
-	private Object[] refs;
+	//private Object[] refs;
 	
     public NewObject(INeo4emfObject value) {
         super(value);
-        int refSize = value.eClass().getEStructuralFeatures().size();
-        refs = new Object[refSize];
+        //int refSize = value.eClass().getEStructuralFeatures().size();
+       /* refs = new Object[refSize];
         Iterator<EStructuralFeature> it = value.eClass().getEStructuralFeatures().iterator();
         int i = 0;
         while(it.hasNext()) {
         	refs[i] = value.eGet(it.next());
         	i++;
-        }
+        }*/
     }
 
 	@Override
 	public void process(Serializer serializer, boolean isTmp) {
 		serializer.createNewObject(eObject,isTmp);
+		super.release();
 	}
     
 }

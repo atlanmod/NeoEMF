@@ -61,6 +61,14 @@ public interface INeo4emfObject extends EObject, Comparable <INeo4emfObject>{
 		
 		void unsetLoadingOnDemand();
 		
+		void setMemoryLock();
+		
+		void unsetMemoryLock();
+		
+		public void setDataStrongReferences();
+		
+		public void releaseDataStrongReferences();
+		
 		boolean isLoadingOnDemand();
 		
 		public void addChangelogEntry(Object newValue, int eStructuralFeatureId);
