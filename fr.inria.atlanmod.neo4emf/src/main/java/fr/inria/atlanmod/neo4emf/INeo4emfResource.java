@@ -26,6 +26,7 @@ import org.neo4j.graphdb.RelationshipType;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 
 
@@ -120,4 +121,12 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * @return the change log
 	 */
 	public IChangeLog<Entry> getChangeLog();
+	
+	/**
+	 * <p>
+	 * Warning : This method is public only for test purpose.
+	 * </p>
+	 * @return the persistence manager associated to the resource
+	 */
+	public IPersistenceManager getPersistenceManager();
 }

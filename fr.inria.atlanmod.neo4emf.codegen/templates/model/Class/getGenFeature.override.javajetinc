@@ -93,7 +93,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 	public <%=genFeature.getImportedType(genClass)%> <%=genFeature.getGetAccessor()%><%if (genClass.hasCollidingGetAccessorOperation(genFeature)) {%>_<%}%>()
 	{
 		try {
-			loadingOnDemand = true;
+			setLoadingOnDemand();
 <%@ include file="Class/getGenFeature.pre.insert.javajetinc" fail="silent" %>
     <%if (genModel.isDynamicDelegation()) {%>
 		return <%if (!isJDK50 && genFeature.isPrimitiveType()) {%>(<%}%>(<%=genFeature.getObjectType(genClass)%>)eDynamicGet(<%=genClass.getQualifiedFeatureID(genFeature)%>, <%=genFeature.getQualifiedFeatureAccessor()%>, true, <%=!genFeature.isEffectiveSuppressEMFTypes()%>)<%if (!isJDK50 && genFeature.isPrimitiveType()) {%>).<%=genFeature.getPrimitiveValueFunction()%>()<%}%>;
@@ -196,7 +196,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
       <%}%>
     <%}%>
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
 <%}%>

@@ -346,5 +346,13 @@ public interface IPersistenceManager {
 			INeo4emfObject neoObj, int key);
 
 	void putAllToProxy2(List<INeo4emfObject> objects);
+	
+	/**
+	 * <p>
+	 * Warning : This method is public only for test purpose.
+	 * </p>
+	 * @return the proxy manager
+	 */
+	public IProxyManager getProxyManager();
 
 }

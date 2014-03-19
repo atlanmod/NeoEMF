@@ -61,7 +61,7 @@ public class GarbageTest {
 		URI uri = URI.createURI("neo4emf:./TestGarbage");
 		// NESession initialization (simpler than previous one)
 		NESession session = new NESession(MgraphPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(uri,1);
+		INeo4emfResource resource = session.createResource(uri,1000);
 		
 		factory = MgraphFactory.eINSTANCE;
 		

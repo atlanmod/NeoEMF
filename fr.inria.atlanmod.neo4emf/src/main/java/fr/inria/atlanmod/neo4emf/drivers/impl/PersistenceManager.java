@@ -548,4 +548,12 @@ public class PersistenceManager implements IPersistenceManager {
 		return proxyManager.getObjectFromProxy(eClassifier, n);
 	}
 	
+	/**
+	 * {@link IPersistenceManager#getProxyManager()}
+	 */
+	@Override
+	public IProxyManager getProxyManager() {
+		return proxyManager;
+	}
+	
 }
