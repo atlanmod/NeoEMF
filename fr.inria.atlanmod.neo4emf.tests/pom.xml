@@ -139,14 +139,14 @@
 
 
         <dependency>
-            <groupId>fr.inria.atlanmod</groupId>
+            <groupId>fr.inria.atlanmod.models</groupId>
             <artifactId>MTeach</artifactId>
             <version>1.0</version>
             <scope>test</scope>
         </dependency>
      
         <dependency>
-            <groupId>fr.inria.atlanmod</groupId>
+            <groupId>fr.inria.atlanmod.models</groupId>
             <artifactId>MGraph</artifactId>
             <version>1.0</version>
             <scope>test</scope>

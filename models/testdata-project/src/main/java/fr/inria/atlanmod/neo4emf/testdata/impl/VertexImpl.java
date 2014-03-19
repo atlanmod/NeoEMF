@@ -200,7 +200,7 @@ public class VertexImpl extends Neo4emfObject implements Vertex {
 		// TODO: implement this method to set the 'AVolatile Date' attribute
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
-	    addChangelogEntry(newAVolatileDate, TestPackage.VERTEX__AVOLATILE_DATE);
+	    //addChangelogEntry(newAVolatileDate, TestPackage.VERTEX__AVOLATILE_DATE);
 	} 
 
 /** genFeaure.override.javajetinc **/
