@@ -13,13 +13,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.cache.Cache;
+
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
 import fr.inria.atlanmod.neo4emf.drivers.NESession;
 import fr.inria.atlanmod.neo4emf.testdata.Container;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
-import fr.inria.atlanmod.neo4emf.testdata.Vertex;
 
 public class ProxyManagerTest {
 	
@@ -54,65 +56,14 @@ public class ProxyManagerTest {
 		resource.shutdown();
 		FileUtils.forceDeleteOnExit(DB_FOLDER);
 	}
-
-	@Test
-	public void testCreateElementNoSave() {
-		Container c = factory.createContainer();
-		resource.getContents().add(c);
-		assert proxy.getNode(c) == -1;
-	}
 	
 	@Test
-	public void testCreateElementTmpSave() {
+	public void testPutToProxy() {
 		Container c = factory.createContainer();
-		Vertex v1 = factory.createVertex();
-		c.getNodes().add(v1);
-		// Don't add this one to check if it has been put in the proxy
-		Vertex v2 = factory.createVertex();
-		resource.getContents().add(c);
-		tmpSave();
-		assert c.getNodeId() > -1;
-		assert proxy.getNode(c) == c.getNodeId();
-		assert v1.getNodeId() > -1;
-		assert proxy.getNode(v1) == v1.getNodeId();
-		assert v2.getNodeId() == -1;
-		assert proxy.getNode(v2) == -1;
+		proxy.putToProxy(c);
+		assert proxy.getInternalProxy().containsKey(c.eClass()) : "The EClass is not an entry of the proxy";
+		Cache<Long,INeo4emfObject> cache = proxy.getInternalProxy().get(c.eClass());
+		assert cache.getIfPresent(c.getNodeId()) != null : "The cached value for id " + c.getNodeId() + " is null";
+		assert cache.getIfPresent(c.getNodeId()) == c : "Wrong cached value for id " + c.getNodeId();
 	}
-	
-	@Test
-	public void testCreateElementSave() {
-		Container c = factory.createContainer();
-		c.setName("container");
-		Vertex v1 = factory.createVertex();
-		c.getNodes().add(v1);
-		// Don't add this one to check if it has been put in the proxy
-		Vertex v2 = factory.createVertex();
-		resource.getContents().add(c);
-		save();
-		assert c.getNodeId() > -1;
-		assert proxy.getNode(c) == c.getNodeId();
-		assert v1.getNodeId() > -1;
-		assert proxy.getNode(v1) == v1.getNodeId();
-		assert v2.getNodeId() == -1;
-		assert proxy.getNode(v2) == -1;
-	}
-	
-	private void tmpSave() {
-		Map<String,Object> tmpOptions = new HashMap<String,Object>();
-		tmpOptions.put("tmp_save", true);
-		try {
-			resource.save(tmpOptions);
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void save() {
-		try {
-			resource.save(null);
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 }

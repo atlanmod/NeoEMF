@@ -14,14 +14,11 @@ package fr.inria.atlanmod.neo4emf;
 
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.neo4j.graphdb.RelationshipType;
 
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
@@ -84,26 +81,6 @@ public interface INeo4emfResource extends Resource, Resource.Internal {
 	 * @param options {@link Map} 
 	 */
 
-//	/**
-//	 * load the model roots and save them in the resource contents
-//	 */
-//	public void load ();
-//	/**
-//	 * load the model roots and save them in the resource contents
-//	 * @param options  {@link Map}
-//	 */
-//	public void load (Map options);
-	/**
-	 * Notify the proxy manager when a element is accessed
-	 * @param eObject {@link EObject}
-	 * @param feature {@link EStructuralFeature}
-	 */
-	public void notifyGet(EObject eObject, EStructuralFeature feature);
-	/**
-	 * unload the partition holding the <b>ID</b> {@codePID}
-	 * @param PID {@link Integer}
-	 */
-	void unload(int PID);
 	/**
 	 * return all the instances of type <b>eClass</b>
 	 * @param eClass {@link EClass}

@@ -173,7 +173,7 @@ public class Loader implements ILoader {
 		if(attributeNode != null) {
 			obj.setAttributeNodeId(attributeNode.getId());
 		}
-		manager.putAllToProxy(ECollections.singletonEList(obj));
+	//	manager.putAllToProxy(ECollections.singletonEList(obj));
 //		getChangeLog().removeLastChanges(getChangeLog().size() - size);
 		return obj;
 	}
@@ -370,23 +370,23 @@ public class Loader implements ILoader {
 	}
 
 
-	public EObject getContainerOnDemand2 (EObject eObject, int featureId, Node node, Node containerNode)  {
-		EObject result = null;
+	//public EObject getContainerOnDemand2 (EObject eObject, int featureId, Node node, Node containerNode)  {
+		//EObject result = null;
 //		int size = getChangeLog().size();
 		//result = getObjectsFromNodeIfNotExists(eObject, containerNode, ((INeo4emfObject)eObject).getPartitionId(),true);
-		int newId=((INeo4emfObject)eObject).getPartitionId();
-		if (!manager.isHead(eObject)){
-			newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)eObject).getPartitionId());
-			manager.createNewPartitionHistory(newId);
-			}
-		result = getObjectsFromNodeIfNotExists(eObject, containerNode, newId, false, featureId);
-		ArrayList<INeo4emfObject> arrayResult =new ArrayList<INeo4emfObject>();
-		arrayResult.add((INeo4emfObject)result);
-		manager.addObjectsToContents(arrayResult);
-		manager.putToProxy((INeo4emfObject)result, Loader.getFeatureFromID(eObject, featureId), newId);
+		//int newId=((INeo4emfObject)eObject).getPartitionId();
+		//if (!manager.isHead(eObject)){
+		//	newId = manager.createNewPartition(getObjectsFromNode(node),((INeo4emfObject)eObject).getPartitionId());
+		//	manager.createNewPartitionHistory(newId);
+		//	}
+		//result = getObjectsFromNodeIfNotExists(eObject, containerNode, newId, false, featureId);
+		//ArrayList<INeo4emfObject> arrayResult =new ArrayList<INeo4emfObject>();
+		//arrayResult.add((INeo4emfObject)result);
+		//manager.addObjectsToContents(arrayResult);
+		//manager.putToProxy((INeo4emfObject)result, Loader.getFeatureFromID(eObject, featureId), newId);
 //		getChangeLog().removeLastChanges(getChangeLog().size() - size);
-		return result;
-	}
+		//return result;
+	//}
 	
 	@Override
 	public EObject getContainerOnDemand (EObject eObject, int featureId, Node node, Node containerNode)  {
@@ -438,26 +438,26 @@ public class Loader implements ILoader {
 	 * @param featureId 
 	 * @return {@link EObject}
 	 */
-	private INeo4emfObject getObjectsFromNodeIfNotExists(EObject eObject, Node node, int newID, boolean forceMove, int featureId) {
-		
-		INeo4emfObject eObj = (INeo4emfObject) manager.getObjectFromProxy(node.getId());
-		if (eObj == null ) {
-			eObj = getObjectsFromNode(node);
-			((INeo4emfObject)eObj).setPartitionId(newID);}
-		else {
-			int PID = forceMove ? newID :((INeo4emfObject)eObject).getPartitionId();
-			((INeo4emfObject)eObj).setPartitionId(PID);
-			if (forceMove){
-				manager.moveToPartition(eObj,((INeo4emfObject)eObject).getPartitionId(),PID, featureId);
-				manager.setUsageTrace(PID,((INeo4emfObject)eObject).getPartitionId(), featureId, eObject);
-			}
-			else
-				manager.setUsageTrace(((INeo4emfObject)eObject).getPartitionId(),PID, featureId, eObject);
-			
-		}
-
-		return eObj;
-	}
+//	private INeo4emfObject getObjectsFromNodeIfNotExists(EObject eObject, Node node, int newID, boolean forceMove, int featureId) {
+//		
+//		INeo4emfObject eObj = (INeo4emfObject) manager.getObjectFromProxy(node.getId());
+//		if (eObj == null ) {
+//			eObj = getObjectsFromNode(node);
+//			((INeo4emfObject)eObj).setPartitionId(newID);}
+//		else {
+//			int PID = forceMove ? newID :((INeo4emfObject)eObject).getPartitionId();
+//			((INeo4emfObject)eObj).setPartitionId(PID);
+//			if (forceMove){
+//				manager.moveToPartition(eObj,((INeo4emfObject)eObject).getPartitionId(),PID, featureId);
+//				manager.setUsageTrace(PID,((INeo4emfObject)eObject).getPartitionId(), featureId, eObject);
+//			}
+//			else
+//				manager.setUsageTrace(((INeo4emfObject)eObject).getPartitionId(),PID, featureId, eObject);
+//			
+//		}
+//
+//		return eObj;
+//	}
 	
 	public EList<EClass> subClassesOf(EClass eClass) {
 		EList<EClass> classesList = new BasicEList<EClass>();

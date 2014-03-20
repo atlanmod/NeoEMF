@@ -263,6 +263,6 @@ public class Serializer implements ISerializer {
 				}
 			}
 		}
-		manager.putNodeId(eObject, n.getId());
+//		manager.putNodeId(eObject, n.getId());
 	}
 }

@@ -16,17 +16,14 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -40,14 +37,9 @@ import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
-import fr.inria.atlanmod.neo4emf.drivers.IUnloader;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
-import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
-import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
-import fr.inria.atlanmod.neo4emf.impl.Partition;
-import fr.inria.atlanmod.neo4emf.logger.Logger;
 import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 public class PersistenceManager implements IPersistenceManager {
@@ -64,10 +56,6 @@ public class PersistenceManager implements IPersistenceManager {
 	 * Serializer and nodes converter {@link Serializer}
 	 */
 	protected ISerializer serializer;
-	/**
-	 * Unloader {@link Unloader}
-	 */
-	protected IUnloader unloader;
 	/**
 	 * The resource {@link Neo4emfResource}
 	 */
@@ -98,7 +86,6 @@ public class PersistenceManager implements IPersistenceManager {
 		this.serializer = new Serializer(this);
 		this.proxyManager = new ProxyManager();
 		this.loader = new Loader(this);
-		this.unloader = new Unloader(this, null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -259,13 +246,7 @@ public class PersistenceManager implements IPersistenceManager {
 	public void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
 		persistenceService.removeLink(from,to,ref);
 	}
-
-	@Override
-	public void putNodeId(EObject eObject, long id) {
-		if (!proxyManager.getWeakNodeIds().containsKey(eObject))
-			proxyManager.getWeakNodeIds().put(eObject, id);
-	}
-
+	
 	//@Override
 	public List<Node> getAllRootNodes() {
 		return persistenceService.getAllRootNodes();
@@ -297,34 +278,6 @@ public class PersistenceManager implements IPersistenceManager {
 			attributeNode = getAttributeNodeById(obj);
 		}
 		loader.fetchAttributes(obj,node,attributeNode);	
-	}
-
-	@Override
-	public void putToProxy(INeo4emfObject object, EStructuralFeature str,
-			int partitionID) throws NullPointerException {
-		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(
-				partitionID);
-		if (partition == null) {
-			throw new NullPointerException();
-		}
-		if (partition instanceof Partition)
-			((Partition) partition).put(object.getNodeId(), object, str);
-		else
-			Logger.log(IStatus.WARNING,
-					"//TODO : put flatened partitions to proxy");
-
-	}
-
-	@Override
-	public void putAllToProxy(List<INeo4emfObject> objects) {
-		for (INeo4emfObject obj : objects)
-			proxyManager.putToProxy(obj);
-	}
-
-	@Override
-	public void putAllToProxy2(List<INeo4emfObject> objects) {
-		for (INeo4emfObject obj : objects)
-			proxyManager.putHeadToProxy(obj);
 	}
 
 	@Override
@@ -370,106 +323,8 @@ public class PersistenceManager implements IPersistenceManager {
 		return eResult;
 	}
 
-	@Override
-	public int proxyContainsLongKey(long id) {
-		for (Entry<Integer, AbstractPartition> entry : proxyManager
-				.getWeakObjectsTree().entrySet())
-			if (entry.getValue() != null && entry.getValue().containsKey(id))
-				return entry.getKey();
-		return -1;
-	}
-
-	@Override
-	public boolean proxyContainsObjectKey(INeo4emfObject obj) {
-		return proxyManager.getWeakNodeIds().containsKey(obj);
-	}
-
-	@Override
-	public EObject getObjectFromProxy(long id) {
-		int i = proxyContainsLongKey(id);
-		return i == -1 ? null : proxyManager.getEObject(i, id);
-	}
-
-	@Override
-	public void updateProxyManager(INeo4emfObject eObject,
-			EStructuralFeature feature) {
-		proxyManager.updatePartitionsHistory(eObject, feature.getFeatureID(),
-				feature instanceof EReference);
-
-	}
-
 	public boolean isRootNode(Node node) {
 		return persistenceService.isRootNode(node);
-	}
-
-	@Override
-	public int getNewPartitionID() {
-		return proxyManager.newPartitionID();
-	}
-
-	@Override
-	public boolean isHead(EObject eObject) {
-		return this.proxyManager.isHead(eObject);
-	}
-
-	@Override
-	public void delegate(EObject eObject) {
-		boolean isFound = false;
-		int newPID = -1;
-		INeo4emfObject neoObject = (INeo4emfObject) eObject;
-		for (Entry<Integer, AbstractPartition> entry : proxyManager
-				.getWeakObjectsTree().entrySet()) {
-			if (entry.getKey() == neoObject.getPartitionId()
-					|| !entry.getValue().containsKey(neoObject.getNodeId())) {
-				continue;
-			}
-			if (!isFound) {
-				INeo4emfObject object = entry.getValue().get(
-						neoObject.getNodeId());
-				object.setProxy(false);
-				newPID = entry.getKey();
-				object.setPartitionId(newPID);
-			} else {
-				entry.getValue().get(neoObject.getNodeId())
-						.setPartitionId(newPID);
-			}
-		}
-	}
-
-	@Override
-	public void unloadPartition(int PID) {
-		AbstractPartition partition = this.proxyManager.getWeakObjectsTree()
-				.get(PID);
-		this.unloader.unloadPartition(partition, PID);
-		// proxyManager.getWeakObjectsTree().remove(PID);
-		Runtime.getRuntime().gc();
-	}
-
-	@Override
-	public boolean doUnload() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void unload(int unloadStrategyId) {
-		int partition = -1;
-		switch (unloadStrategyId) {
-		case IUnloader.LIFO:
-			partition = proxyManager.getLIFOPartition();
-			break;
-		case IUnloader.FIFO:
-			partition = proxyManager.getFIFOPartition();
-			break;
-		case IUnloader.LEAST_RECENTLY_USED:
-			partition = proxyManager.getLeastRecentlyUsedPartition();
-			break;
-		case IUnloader.LEAST_FREQUENTLY_USED:
-			partition = proxyManager.getLeastFrequentlyPartition();
-			break;
-		}
-		unloader.unloadPartition(
-				proxyManager.getWeakObjectsTree().get(partition), partition);
 	}
 
 	@Override
@@ -493,59 +348,13 @@ public class PersistenceManager implements IPersistenceManager {
 		return allInstances;
 	}
 
-	@Override
-	public void createNewPartitionHistory(int newId) {
-		this.proxyManager.addNewHistory(newId);
-	}
-
-	@Override
-	public FlatPartition createNewFlatPartition(int id) {
-		FlatPartition result = new FlatPartition();
-		this.proxyManager.getWeakObjectsTree().put(id, result);
-		return result;
-	}
-
-	@Override
-	public int createNewPartition(EObject obj, int partitionID) {
-
-		int newIndex = getNewPartitionID();
-		((INeo4emfObject) obj).setPartitionId(partitionID);
-		((INeo4emfObject) obj).setProxy(true);
-		this.proxyManager.getWeakObjectsTree()
-				.put(newIndex, new Partition(obj));
-		// proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex,
-		// oldIndex);
-		return newIndex;
-	}
-
-	@Override
-	public void moveToPartition(EObject eObj, int fromPID, int toPID,
-			int featureId) {
-		Assert.isNotNull(eObj, "eObject should not be null");
-		this.proxyManager.moveToPartition(eObj, fromPID, toPID, featureId);
-
-	}
-
-	@Override
-	public void setUsageTrace(int PID, int partitionId, int featureId,
-			EObject eObject) {
-		((ProxyManager) this.proxyManager).addUsageTrace(PID, partitionId,
-				featureId, eObject);
-
-	}
-
-	@Override
-	public Map<Integer, List<INeo4emfObject>> getAffectedElement(
-			INeo4emfObject neoObj, int key) {
-		return this.proxyManager.getSideEffectsMap(neoObj, key);
-	}
-
 	public INeo4emfResource getResource() {
 		return resource;
 	}
 
+	@Override
 	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
-		return proxyManager.getObjectFromProxy(eClassifier, n);
+		return proxyManager.getObjectFromProxy(eClassifier, n.getId());
 	}
 	
 	/**

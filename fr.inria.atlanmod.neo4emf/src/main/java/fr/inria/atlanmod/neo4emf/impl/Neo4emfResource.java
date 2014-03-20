@@ -16,11 +16,9 @@ package fr.inria.atlanmod.neo4emf.impl;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -119,27 +117,6 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 				isLoading = false;
 			}
 		}
-	}
-
-	/**
-	 * {@link INeo4emfResource#notifyGet(EObject, EStructuralFeature)}
-	 */
-	@Override
-	public void notifyGet(EObject eObject, EStructuralFeature feature) {
-		try {
-			Assert.isNotNull(eObject, "eObject should not be null ");
-			this.persistenceManager.updateProxyManager(
-					(INeo4emfObject) eObject, feature);
-		} catch (Exception e) {
-			this.persistenceManager.shutdown();
-			e.printStackTrace();
-		}
-
-	}
-
-	@Override
-	public void unload(int PID) {
-		this.persistenceManager.unloadPartition(PID);
 	}
 
 	@Override

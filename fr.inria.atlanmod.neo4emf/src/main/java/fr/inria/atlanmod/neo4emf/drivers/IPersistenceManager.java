@@ -75,17 +75,6 @@ public interface IPersistenceManager {
 	public void shutdown();
 
 	/**
-	 * return the equivalent node from an eObject
-	 * 
-	 * @param eObj
-	 *            {@link EObject}
-	 * @return {@link Node}
-	 * @throws NullPointerException
-	 * @see {@link IPersistenceService#getNodeById(long)}
-	 */
-	//public Node getNodeById(EObject eObj) throws NullPointerException;
-
-	/**
 	 * return the temporary attribute node from an eObject
 	 * @param eObj {@link EObject}
 	 * @return {@link Node}
@@ -96,64 +85,6 @@ public interface IPersistenceManager {
 	
 	public Node getAttributeNode(Node n);
 	
-//	public List<Relationship> getTmpRelationships();
-	
-//	public List<Node> getTmpNodes();
-	
-//	public void processTemporaryRelationship(Relationship r);
-	/**
-	 * return the equivalent relationshipType from eObject
-	 * 
-	 * @param clsID
-	 *            {@link Int}
-	 * @param eRefID
-	 *            {@link Int}
-	 * @return {@link RelationshipType}
-	 */
-	//public RelationshipType getRelTypefromERef(String key, int clsID, int eRefID);
-
-	/**
-	 * Create a node from an EObject
-	 * 
-	 * @param eObject
-	 *            {@link EObject}
-	 * @return {@link Node}
-	 * @see IPersistenceService#createNodeFromEObject(EObject)
-	 */
-//	public Node createNodefromEObject(EObject eObject);
-	
-//	public Node createNodefromEObject(EObject eObject, boolean isTemporary);
-	
-//	public void deleteNodeFromEObject(EObject eObject);
-	/**
-	 * Create a dedicated node to store the temporary attributes of the EObject
-	 * @param eObject {@link EObject}
-	 * @return {@link Node}
-	 * @see IPersistenceService#createAttributeNodeForEObject(EObject)
-	 */
-//	public Node createAttributeNodeForEObject(EObject eObject);
-	
-//	public Relationship createAddLinkRelationship(Node from, Node to, RelationshipType relType);
-	
-//	public Relationship createRemoveLinkRelationship(Node from, Node to, RelationshipType relType);
-	
-//	public Relationship createDeleteRelationship(Node node);
-
-	/**
-	 * map an {@link EObject} that is loaded to its node Id
-	 * 
-	 * @param eObject
-	 * @param id
-	 */
-	public void putNodeId(EObject eObject, long id);
-
-	/**
-	 * get the rootNodes first time we load a resource
-	 * 
-	 * @return {@link List}
-	 */
-	//public List<Node> getAllRootNodes();
-
 	/**
 	 * Add object to the resource contents
 	 * 
@@ -161,23 +92,6 @@ public interface IPersistenceManager {
 	 */
 	public void addObjectsToContents(List<INeo4emfObject> objects);
 
-	/**
-	 * return node's type as String
-	 * 
-	 * @param n
-	 *            {@link Node}
-	 * @return {@link String}
-	 */
-	//public String getNodeType(Node n);
-
-	/**
-	 * Return the Ns_Uri of the the node's containing package
-	 * 
-	 * @param n
-	 *            {@link Node}
-	 * @return {@link String}
-	 */
-	//public String getNodeContainingPackage(Node n);
 
 	/**
 	 * Fetch Object's attributes from the backend
@@ -188,14 +102,6 @@ public interface IPersistenceManager {
 	public void fetchAttributes(EObject obj);
 
 	/**
-	 * Create the correct maps of the root nodes first time we load the resource
-	 * 
-	 * @param objects
-	 *            {@link List}
-	 */
-	public void putAllToProxy(List<INeo4emfObject> objects);
-
-	/**
 	 * get links in demand
 	 * 
 	 * @param obj
@@ -204,117 +110,6 @@ public interface IPersistenceManager {
 	 *            {@link Int}
 	 */
 	public void getOnDemand(EObject obj, int featureId);
-
-	/**
-	 * create the correct map in the proxy manager
-	 * 
-	 * @param object
-	 *            {@link EObject}
-	 * @param str
-	 *            {@link EStructuralFeature}
-	 * @param partitionID
-	 *            {@link Int}
-	 * @throws NullPointerException
-	 */
-	void putToProxy(INeo4emfObject object, EStructuralFeature str,
-			int partitionID) throws NullPointerException;
-
-	/**
-	 * return the partition ID containing the nodeId <b>id</b>
-	 * 
-	 * @param id
-	 *            {@link Long}
-	 * @return {@link Int}
-	 */
-	int proxyContainsLongKey(long id);
-
-	/**
-	 * return true if the proxy contains the element
-	 * 
-	 * @param obj
-	 *            {@link INeo4emfObject}
-	 * @return
-	 */
-	boolean proxyContainsObjectKey(INeo4emfObject obj);
-
-	/**
-	 * get an eObject from the proxy using the nodeId
-	 * 
-	 * @param id
-	 *            {@link Long}
-	 * @return {@link EObject}
-	 */
-	public EObject getObjectFromProxy(long id);
-
-	/**
-	 * update the proxy manager while a {@code GET} or {@code SET} notification
-	 * is captured
-	 * 
-	 * @param eObject
-	 *            {@link EObject}
-	 * @param feature
-	 *            {@link EStructuralFeature}
-	 */
-	public void updateProxyManager(INeo4emfObject eObject,
-			EStructuralFeature feature);
-
-
-	/**
-	 * return available index to create a new {@link Partition}
-	 * 
-	 * @return
-	 */
-	public int getNewPartitionID();
-
-	/**
-	 * return true if the eObject is a head of a partition
-	 * 
-	 * @param eObject
-	 *            {@link EObject}
-	 * @return {@link Boolean}
-	 */
-	public boolean isHead(EObject eObject);
-
-	/**
-	 * Create a new {@link Partition} and set the partition ID and the Head
-	 * 
-	 * @param obj
-	 * @param partitionID
-	 * @return
-	 */
-	public int createNewPartition(EObject obj, int partitionID);
-
-	/**
-	 * Set up a history field to maintain the partition usage
-	 * 
-	 * @param newId
-	 */
-	public void createNewPartitionHistory(int newId);
-
-	/**
-	 * delegate to another eObject proxy to be the eObject delagator
-	 * 
-	 * @param eObject
-	 *            {@link EObject}
-	 */
-	public void delegate(EObject eObject);
-
-	/**
-	 * Unload a partition by its ID
-	 * 
-	 * @param PID
-	 *            {@link Int}
-	 */
-	void unloadPartition(int PID);
-
-	public boolean doUnload();
-
-	/**
-	 * unload a partition regarding the
-	 * 
-	 * @param unloadStrategyId
-	 */
-	public void unload(int unloadStrategyId);
 
 	/**
 	 * return all the instanecs of type eClass
@@ -333,23 +128,12 @@ public interface IPersistenceManager {
 	 * @throws Exception
 	 */
 	public EObject getContainerOnDemand(EObject eObject, int featureId);
-
-	public FlatPartition createNewFlatPartition(int id);
-
-	public void moveToPartition(EObject eObject, int fromPID, int toPID,
-			int featureId);
-
-	public void setUsageTrace(int pID, int partitionId, int featureId,
-			EObject eObject);
-
-	public Map<Integer, List<INeo4emfObject>> getAffectedElement(
-			INeo4emfObject neoObj, int key);
-
-	void putAllToProxy2(List<INeo4emfObject> objects);
+	
+	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n);
 	
 	/**
 	 * <p>
-	 * Warning : This method is public only for test purpose.
+	 * Warning : This method is public only for test purpose
 	 * </p>
 	 * @return the proxy manager
 	 */
