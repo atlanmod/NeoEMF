@@ -48,8 +48,6 @@ public class ProxyManager implements IProxyManager {
 			cache.put(obj.getNodeId(), obj);
 			nodes2objects.put(eClass, cache);
 		}
-		// TODO remove that (debug)
-		printMap(nodes2objects);
 	}
 
 	@Override
@@ -65,21 +63,4 @@ public class ProxyManager implements IProxyManager {
 		return nodes2objects;
 	}
 	
-	// TODO remove this function (used for debug the unload strategy)
-	private void printMap(Map<EClass,Cache<Long,INeo4emfObject>> map) {
-		System.out.println("=== Proxy n2o Content ===");
-		Iterator<EClass> eClassIterator = map.keySet().iterator();
-		while(eClassIterator.hasNext()) {
-			EClass clazz = eClassIterator.next();
-			System.out.println("key : " + clazz.getName());
-			Cache<Long,INeo4emfObject> objectCache = map.get(clazz);
-			Iterator<Long> idIterator = objectCache.asMap().keySet().iterator();
-			while(idIterator.hasNext()) {
-				Long nodeId = idIterator.next();
-				System.out.println("\tkey : " + nodeId);
-				System.out.println("\tvalue : " + objectCache.getIfPresent(nodeId));
-			}
-		}
-		System.out.println("=== End Proxy n2o Content ===");
-	}
 }

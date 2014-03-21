@@ -70,7 +70,7 @@ public class ProxyManagerTest {
 	
 	@Test
 	public void testPutManyToProxy() {
-		int count = 1;
+		int count = 10;
 		Container[] containers = new Container[count];
 		Vertex[] vertices = new Vertex[count];
 		Link[] links = new Link[count];
@@ -136,6 +136,97 @@ public class ProxyManagerTest {
 		assert proxy.getInternalProxy().containsKey(TestPackage.eINSTANCE.getContainer()) : "The EClass is not an entry of the proxy";
 		Cache<Long,INeo4emfObject> cache = proxy.getInternalProxy().get(TestPackage.eINSTANCE.getContainer());
 		assert cache.getIfPresent(id) == null : "The entry hasn't been removed";
+	}
+	
+	@Test
+	public void testGetObjectFromProxyExistingElement() {
+		long id = 5;
+		Container c = factory.createContainer();
+		c.setNodeId(id);
+		proxy.putToProxy(c);
+		assert proxy.getObjectFromProxy(c.eClass(), id) != null : "Cannot retrieve the added object";
+		assert proxy.getObjectFromProxy(c.eClass(), id) == c : "Wrong object returned by the proxy";
+	}
+	
+	@Test
+	public void testGetObjectFromProxyNotExistingElement() {
+		long cId = 5;
+		long vId = 10;
+		Container c = factory.createContainer();
+		c.setNodeId(cId);
+		proxy.putToProxy(c);
+		Vertex v = factory.createVertex();
+		v.setNodeId(vId);
+		assert proxy.getObjectFromProxy(v.eClass(), vId) == null : "The Vertex is in the proxy";
+	}
+	
+	@Test
+	public void testGetObjectFromProxyManyExistingElements() {
+		int count = 10;
+		Container[] containers = new Container[count];
+		Vertex[] vertices = new Vertex[count];
+		Link[] links = new Link[count];
+		// Add some EObjects to the proxy
+		for(int i = 0; i < count; i++) {
+			containers[i] = factory.createContainer();
+			vertices[i] = factory.createVertex();
+			links[i] = factory.createLink();
+			containers[i].setNodeId(i);
+			vertices[i].setNodeId(i);
+			links[i].setNodeId(i);
+			proxy.putToProxy(containers[i]);
+			proxy.putToProxy(vertices[i]);
+			proxy.putToProxy(links[i]);
+		}
+		// Check if they all are in the proxy
+		for(int i = 0; i < count; i++) {
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainer(), (long)i) != null : "Container object with id " + i + " is null";
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getVertex(), (long)i) != null : "Vertex object with id " + i + " is null";
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getLink(), (long)i) !=null : "Link object with id " + i + " is null";
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainer(), (long)i) == containers[i] : "Wrong Container object with id " + i;
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getVertex(), (long)i) == vertices[i] : "Wrong Vertex object with id " + i;
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getLink(), (long)i) == links[i] : "Wrong Link object with id " + i;
+		}
+	}
+	
+	/**
+	 * The idea is to check that the result of the method is not
+	 * modified after a useless soft reference cleaning (useless because
+	 * there are some strong references on the object and the should not
+	 * be released)
+	 */
+	@Test
+	public void testGetObjectFromProxyAfterUselessClear() {
+		long cId = 5;
+		long vId = 10;
+		Container c = factory.createContainer();
+		Vertex v = factory.createVertex();
+		c.setNodeId(cId);
+		v.setNodeId(vId);
+		proxy.putToProxy(c);
+		proxy.putToProxy(v);
+		clearSoftReferences();
+		assert proxy.getObjectFromProxy(c.eClass(), cId) != null : "Container in proxy has been released";
+		assert proxy.getObjectFromProxy(v.eClass(),vId) != null : "Vertex in proxy has been released";
+		assert proxy.getObjectFromProxy(c.eClass(), cId) == c : "Wrong Container object in proxy";
+		assert proxy.getObjectFromProxy(v.eClass(), vId) == v : "Wrong Vertex object in proxy";
+	}
+	
+	@Test
+	public void testGetObjectFromProxyAfterClear() {
+		long cId = 5;
+		long vId = 10;
+		Container c = factory.createContainer();
+		Vertex v = factory.createVertex();
+		c.setNodeId(cId);
+		v.setNodeId(vId);
+		proxy.putToProxy(c);
+		proxy.putToProxy(v);
+		c = null;
+		v = null;
+		clearSoftReferences();
+		assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainer(), cId) == null : "Container in proxy hasn't been released";
+		assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getVertex(), vId) == null : "Vertex in proxy hasn't been released";
 	}
 	
 	private void clearSoftReferences() {
