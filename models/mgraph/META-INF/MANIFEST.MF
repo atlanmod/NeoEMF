@@ -13,7 +13,6 @@ Export-Package: mgraph,
  mgraph.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
- fr.inria.atlanmod.neo4emf.neo4j-1.9.4;visibility:=reexport,
  fr.inria.atlanmod.neo4emf;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;bundle-version="2.9.1",
  org.junit

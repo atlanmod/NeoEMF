@@ -65,7 +65,7 @@ public class Neo4emfResourceTest {
 		for (int i = 1; i < times ; i++) {
 			Vertex vertex = factory.createVertex();
 			//vertex.setName("Vertex name ["+i+"]");
-			//vertex.setContainer(container);
+			vertex.setVcontainer(container);
 		}
 
 		resource.attached(container);
@@ -105,7 +105,7 @@ public class Neo4emfResourceTest {
 		for (int i = 1; i < times ; i++) {
 			Vertex vertex = factory.createVertex();
 			//vertex.setName("Vertex name ["+i+"]");
-			//vertex.setContainer(container);
+			vertex.setVcontainer(container);
 		}
 
 		resource.attached(container);

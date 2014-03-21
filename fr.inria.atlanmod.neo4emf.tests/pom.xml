@@ -149,6 +149,7 @@
             <groupId>fr.inria.atlanmod.models</groupId>
             <artifactId>mgraph</artifactId>
             <version>1.0-SNAPSHOT</version>
+
             <scope>test</scope>
         </dependency>
         

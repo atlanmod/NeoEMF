@@ -15,12 +15,16 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/sunye/Work/Maven/repository/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1.1/geronimo-jta_1.1_spec-1.1.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-lucene-index/1.9.4/neo4j-lucene-index-1.9.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/3.6.2/lucene-core-3.6.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-graph-algo/1.9.4/neo4j-graph-algo-1.9.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-udc/1.9.4/neo4j-udc-1.9.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-graph-matching/1.9.4/neo4j-graph-matching-1.9.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-cypher/1.9.4/neo4j-cypher-1.9.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-lucene-index/1.9.M04/neo4j-lucene-index-1.9.M04.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/3.5.0/lucene-core-3.5.0.jar" sourcepath="M2_REPO/org/apache/lucene/lucene-core/3.5.0/lucene-core-3.5.0-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/sunye/Work/Maven/repository/org/apache/lucene/lucene-core/3.5.0/lucene-core-3.5.0-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-graph-algo/1.9.M04/neo4j-graph-algo-1.9.M04.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-udc/1.9.M04/neo4j-udc-1.9.M04.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-graph-matching/1.9.M04/neo4j-graph-matching-1.9.M04.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/neo4j/neo4j-cypher/1.9.M04/neo4j-cypher-1.9.M04.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/scala-lang/scala-library/2.10.0/scala-library-2.10.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/googlecode/concurrentlinkedhashmap/concurrentlinkedhashmap-lru/1.3.1/concurrentlinkedhashmap-lru-1.3.1.jar" sourcepath="M2_REPO/com/googlecode/concurrentlinkedhashmap/concurrentlinkedhashmap-lru/1.3.1/concurrentlinkedhashmap-lru-1.3.1-sources.jar">
 		<attributes>
@@ -61,5 +65,6 @@
 	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/models/mgraph/1.0-SNAPSHOT/mgraph-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/models/testdata/1.0-SNAPSHOT/testdata-1.0-SNAPSHOT.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fr.inria.atlanmod.neo4emf"/>
+
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
