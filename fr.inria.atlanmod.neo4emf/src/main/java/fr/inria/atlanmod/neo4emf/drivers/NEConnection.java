@@ -252,17 +252,12 @@ public class NEConnection {
 		 * create a REMOVE_LINK relationship because the base graph doesn't have
 		 * a RelationshipType relationship between from and to.
 		 */
-		System.out.println("try to remove " + relType.name() + " ADD_LINK");
-		System.out.println("\tBetween " + fromNode.getId() + " and " + toNode.getId());
 		Iterator<Relationship> it = fromNode.getRelationships(
 				IPersistenceService.ADD_LINK).iterator();
 		while (it.hasNext()) {
 			Relationship rel = it.next();
-			System.out.println(rel.getProperty("gen_rel"));
-			System.out.println(fromNode.getId() + " -> " + rel.getOtherNode(fromNode).getId());
 			if(rel.getProperty("gen_rel").equals(relType.name())
 					&& rel.getOtherNode(fromNode).getId() == toNode.getId()) {
-				System.out.println("found lol");
 				rel.delete();
 				return null;
 			}

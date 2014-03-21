@@ -114,7 +114,6 @@ public class GarbageTest {
 		
 		// Create a new element to show the weak proxy map. The map should not contain
 		// node4 (previously removed by gc).
-		System.out.println("test");
 		MEdge showProxyEdge = factory.createMEdge();
 		showProxyEdge.setName("showProxyMap");
 		showProxyEdge.setGraph(graph);

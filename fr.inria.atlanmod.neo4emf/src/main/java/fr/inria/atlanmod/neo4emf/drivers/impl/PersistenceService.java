@@ -183,8 +183,6 @@ public class PersistenceService implements IPersistenceService {
 	}
 	
 	private ArrayList<Node> fetchNodesWithAddLink(long nodeId, RelationshipType baseRelType, Direction direction) {
-//		Traverser tvr = setUpTraversalAddLink(nodeId,  direction);
-//		return traverseNodesAddLink(tvr, baseRelType.name());*/
 		ArrayList<Node> nodes = new ArrayList<Node>();
 		Node startNode = getNodeById(nodeId);
 		Iterator<Relationship> it = startNode.getRelationships(ADD_LINK,Direction.OUTGOING).iterator();
@@ -192,7 +190,6 @@ public class PersistenceService implements IPersistenceService {
 			Relationship r = it.next();
 			if(r.hasProperty("gen_rel") && r.getProperty("gen_rel").equals(baseRelType.name())) {
 				nodes.add(r.getEndNode());
-				System.out.println(r.getEndNode());
 			}
 		}
 		return nodes;
@@ -222,25 +219,6 @@ public class PersistenceService implements IPersistenceService {
 		return nodeList;
 	}
 	
-//	private ArrayList<Node> traverseNodesAddLink(Traverser tvr, String baseRelTypeName) {
-//		ArrayList<Node> nodeList = new ArrayList<Node>();
-//		for(Path path : tvr) {
-//			Relationship lastRelationship = path.lastRelationship();
-//			System.out.println(baseRelTypeName);
-//			System.out.println(lastRelationship);
-//			if(lastRelationship.hasProperty("gen_rel")) {
-//				System.out.println(lastRelationship.getProperty("gen_rel"));
-//			}
-//			else {
-//				System.out.println("no gen rel");
-//			}
-//			if(lastRelationship.hasProperty("gen_rel") && lastRelationship.getProperty("gen_rel").equals(baseRelTypeName)) {
-//				nodeList.add(path.endNode());
-//			}
-//		}
-//		return nodeList;
-//	}
-	
 	private ArrayList<Node> traverseNodesRemoveLink(Traverser tvr, String baseRelTypeName) {
 		ArrayList<Node> nodeList = new ArrayList<Node>();
 		for(Path path : tvr) {
@@ -265,13 +243,6 @@ public class PersistenceService implements IPersistenceService {
 	
 	protected Traverser setUpTraversalAddLink(long nodeId, Direction direction) {
 		Node startNode = getNodeById(nodeId);
-		Iterator<Relationship> it = startNode.getRelationships(ADD_LINK).iterator();
-		while(it.hasNext()) {
-			Relationship r = it.next();
-			if(r.hasProperty("gen_rel")) {
-				System.out.println(r.getProperty("gen_rel"));
-			}
-		}
 		TraversalDescription td = Traversal.description().breadthFirst()
 				.relationships(ADD_LINK,direction)
 				.evaluator(Evaluators.excludeStartPosition())

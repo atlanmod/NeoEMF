@@ -335,7 +335,6 @@ public class Loader implements ILoader {
 			List<INeo4emfObject> objectList = new ArrayList<INeo4emfObject>();
 			for (Node n : nodes) {
 				INeo4emfObject object = getObjectsFromNodeIfNotExists(obj, n, featureId);
-				System.out.println("test res : " + object.eResource());
 				objectList.add(object);
 				
 			}
@@ -348,9 +347,7 @@ public class Loader implements ILoader {
 			while(it.hasNext()) {
 				INeo4emfObject neoObj = it.next();
 				if(neoObj.eResource() == null) {
-					// work but not realy beautiful
 					((Neo4emfObject)neoObj).eSetDirectResource((Resource.Internal)obj.eResource());
-					System.out.println(neoObj.eResource());
 				}
 			}
 			if (str.isMany()) {
