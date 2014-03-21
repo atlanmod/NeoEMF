@@ -19,6 +19,11 @@ import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.Monitor;
 
+/**
+ * TODO : Comment this code
+ * @author 
+ *
+ */
 public class GenReltypesGeneratorAdapter extends GenBaseGeneratorAdapter {
 	/**
 	 * 

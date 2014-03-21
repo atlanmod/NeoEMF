@@ -4,7 +4,7 @@
 
     <groupId>fr.inria.atlanmod.models</groupId>
     <artifactId>testdata</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>TestData</name>
@@ -35,22 +35,29 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.2</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
   
     <reporting>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
-                    <linkXref>true</linkXref>
                     <sourceEncoding>UTF-8</sourceEncoding>     
                     <targetJdk>1.6</targetJdk>
                     <rulesets>

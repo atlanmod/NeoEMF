@@ -11,8 +11,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="links" upperBound="-1"
         eType="#//Link" containment="true" eOpposite="#//Link/container"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Link">
+  <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Link" eSuperTypes="#//NamedElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="outGoing" lowerBound="1"
         eType="#//Vertex" eOpposite="#//Vertex/from"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="container" lowerBound="1"
@@ -20,22 +22,28 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="inComing" lowerBound="1"
         eType="#//Vertex" eOpposite="#//Vertex/to"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Vertex">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vname" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        changeable="false"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Vertex" eSuperTypes="#//NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vString" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" changeable="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aTransientInteger" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"
         transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aDate" lowerBound="1" eType="#//Date"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aVolatileDate" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate" volatile="true"/>
+        eType="#//Date" volatile="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aBoolean" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aReal" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="anIntegerArray" ordered="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aRealArray" ordered="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aStringArray" ordered="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aNonUniqueArray" ordered="false"
         unique="false" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aNonOrderedArray" ordered="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+        unique="false" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aTenStringArray" ordered="false"
         lowerBound="10" upperBound="10" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="temperature" lowerBound="1"
@@ -55,7 +63,12 @@
         eType="#//Vertex"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="Temperature" serializable="false">
-    <eLiterals name="HOT"/>
-    <eLiterals name="COLD"/>
+    <eLiterals name="HOT" value="1"/>
+    <eLiterals name="COLD" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Date" instanceClassName="java.util.Date"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ColoredVertex" eSuperTypes="#//Vertex">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aNatural" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
   </eClassifiers>
 </ecore:EPackage>

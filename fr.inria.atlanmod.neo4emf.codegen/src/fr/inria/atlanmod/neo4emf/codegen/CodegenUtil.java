@@ -18,14 +18,75 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenFeature;
 
 public class CodegenUtil {
 
-	public static String  getDataClassExtends (GenClass cls){
-		if (cls.getClassExtends().contains("Neo4emfObject"))
+	/**
+	 * Getter to the attribute inner class name.
+	 * @param genClass a GenClass instance.
+	 * @return the inner class name.
+	 */
+	public static String getAttributeClassName(GenClass genClass) {
+		return "Data"+genClass.getInterfaceName();
+	}
+	
+	/**
+	 * Getter to the reference inner class name.
+	 * @param genClass a GenClass instance.
+	 * @return the inner class name.
+	 */
+	public static String getReferenceClassName(GenClass genClass) {
+		return genClass.getInterfaceName()+"References";
+	}
+	
+	/**
+	 * Creates and returns a string containing "extends", followed by the name of the super
+	 * classof the attribute class, or an empty string.
+	 * 
+	 * @param cls a GenClass instance, the context
+	 * @return the "extends <superclass" string
+	 */
+	public static String  getAttributeClassExtends (GenClass cls){
+		boolean hasSuperClass = !cls.getEcoreClass().getESuperTypes().isEmpty();
+		
+		if (hasSuperClass) {
+			return " extends "+ getAttributeClassName(cls.getBaseGenClass());
+		} else {
 			return "";
-		StringBuffer str = new StringBuffer(" extends Data");
-		return str.append(cls.getClassExtends().substring(9, cls.getClassExtends().length()-4)).toString();
+		}
 	}
 
+	/**
+	 * Creates and returns a string containing "extends", followed by the name of the super
+	 * class of the reference class, or an empty string.
+	 * 
+	 * @param cls a GenClass instance, the context
+	 * @return the "extends <superclass" string
+	 */
+	public static String  getReferenceClassExtends (GenClass cls){
+		boolean hasSuperClass = !cls.getEcoreClass().getESuperTypes().isEmpty();
+		
+		if (hasSuperClass) {
+			return " extends "+ getAttributeClassName(cls.getBaseGenClass());
+		} else {
+			return "";
+		}
+	}
 	
+	/**
+	 * Returns the AttributeClass getter method name.
+	 * @return
+	 */
+	public static String getAttributeClassGetter() {
+		return "getData()";
+	}
+	
+	
+	/**
+	 * TODO Comment this code.
+	 * FIXME This method may have a side effect: we are adding elements to an existing collection,
+	 * the one returned from getAllGenFeatures(). 
+	 * 
+	 * @param genCls
+	 * @return
+	 */
 	public static List<GenFeature> getEAllGenFeatures(final GenClass genCls){
 		List<GenFeature> result = genCls.getAllGenFeatures();
 		List<GenFeature> declaredFeatures = genCls.getDeclaredFieldGenFeatures();

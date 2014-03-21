@@ -42,7 +42,7 @@
 	{
 <%@ include file="Class/setGenFeature.pre.insert.javajetinc" fail="silent" %>
 	<% if (!genModel.isDynamicDelegation() && !genModel.isReflectiveDelegation() && !genFeature.hasSettingDelegate() && !genModel.isVirtualDelegation()){%>
-		<%if (CodegenUtil.getDataClassExtends(genClass) != ""){%>
+		<%if (CodegenUtil.getAttributeClassExtends(genClass) != ""){%>
 	<%}}%>
     <%if (genModel.isDynamicDelegation()) {%>
 		eDynamicSet(<%=genClass.getQualifiedFeatureID(genFeature)%>, <%=genFeature.getQualifiedFeatureAccessor()%>, <%if (!isJDK50 && genFeature.isPrimitiveType()) {%>new <%=genFeature.getObjectType(genClass)%>(<%}%>new<%=genFeature.getCapName()%><%if (!isJDK50 && genFeature.isPrimitiveType()) {%>)<%}%>);
@@ -140,7 +140,7 @@
             <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? Data<%=genClass.getInterfaceName()%>.<%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
             <%} else {%>
-		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
+		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"Data"+genClass.getInterfaceName()+"."%><%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
             <%}%>
           <%} else {%>
             <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
@@ -203,6 +203,7 @@
 		throw new UnsupportedOperationException();
 <%@ end %><%//Class/setGenFeature.todo.override.javajetinc%>
     <%}%>
-	    addChangelogEntry(new<%=genFeature.getCapName()%>, <%=genClass.getQualifiedFeatureID(genFeature)%>);
+<% if (!genFeature.isVolatile()) {%>
+		this.addChangelogEntry(new<%=genFeature.getCapName()%>, <%=genClass.getQualifiedFeatureID(genFeature)%>);<%}%>
 	}
 <%}%>

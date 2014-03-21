@@ -3,6 +3,7 @@
 	<name>fr.inria.atlanmod.neo4emf.ui</name>
 	<comment></comment>
 	<projects>
+		<project>fr.inria.atlanmod.neo4emf.neo4j</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -20,7 +20,7 @@ package <%=genPackage.getClassPackageName()%>;
 <%}%>
 
 <%genModel.markImportLocation(stringBuffer, genPackage);%>
-<%if (isImplementation) { 
+<%if (isImplementation) {  
  genClass.addClassPsuedoImports();}%>
 
 <%if (isInterface) {%>
@@ -178,22 +178,7 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 		<%=genClass.getFlagsField(genFeature)%> |= <%=genFeature.getUpperName()%>_EFLAG<%if (!genFeature.isBooleanType()) {%>_DEFAULT<%}%>;
   <%}%>
 	}
-	<%if (!genModel.isReflectiveDelegation()){%>
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	 <%if (! genModel.getRootExtendsClass().contains(genClass.getClassExtends().substring(9)) ){%>@Override<%}%>
-	protected Data<%=genClass.getInterfaceName()%> getData(){
-		if ( data == null || !(data instanceof Data<%=genClass.getInterfaceName()%>)){
-			data = new Data<%=genClass.getInterfaceName()%>();
-			if (isLoaded())
-			((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
-			}
-		return (Data<%=genClass.getInterfaceName()%>) data;
-	}
-	<%}%>
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

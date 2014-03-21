@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * */
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,19 +23,20 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
@@ -44,9 +45,9 @@ import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.drivers.IUnloader;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
-import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
 import fr.inria.atlanmod.neo4emf.impl.Partition;
 import fr.inria.atlanmod.neo4emf.logger.Logger;
@@ -144,8 +145,8 @@ public class PersistenceManager implements IPersistenceManager {
 		persistenceService.shutdown();
 	}
 
-	//@Override
-	public Node getNodeById(EObject eObj) {
+	
+	private Node getNodeById(EObject eObj) {
 		Assert.isTrue(((INeo4emfObject) eObj).getNodeId() >= 0,
 				"nodeId is > -1");
 		Node result = persistenceService.getNodeById(((INeo4emfObject) eObj)
@@ -157,14 +158,14 @@ public class PersistenceManager implements IPersistenceManager {
 		}
 	}
 
-	//@Override
-	public RelationshipType getRelTypefromERef(int classID, int referenceID) {
+	
+	private RelationshipType getRelTypefromERef(int classID, int referenceID) {
 		
 		return persistenceService.getRelationshipFor(classID, referenceID);
 	}
 
-	//@Override
-	public Node createNodefromEObject(INeo4emfObject eObject) {
+	
+	private Node createNodefromEObject(INeo4emfObject eObject) {
 		return persistenceService.createNodeFromEObject(eObject);
 	}
 
@@ -174,7 +175,6 @@ public class PersistenceManager implements IPersistenceManager {
 			proxyManager.getWeakNodeIds().put(eObject, id);
 	}
 
-	//@Override
 	public List<Node> getAllRootNodes() {
 		return persistenceService.getAllRootNodes();
 	}
@@ -446,4 +446,142 @@ public class PersistenceManager implements IPersistenceManager {
 		return proxyManager.getObjectFromProxy(eClassifier, n);
 	}
 
+	public void removeExistingLink(EObject eObject, EReference eRef, Object object) {
+		Node n = getNodeById(eObject);
+		Node n2 = getNodeById((EObject) object);
+		RelationshipType rel = getRelTypefromERef(eObject.eClass().getClassifierID(),
+				eRef.getFeatureID());
+		Iterator<Relationship> it = n.getRelationships(rel).iterator();
+		while (it.hasNext()) {
+			Relationship relship = it.next();
+			if (relship.getEndNode().getId() == n2.getId())
+				relship.delete();
+		}
+	}
+
+	public void addNewLink(EObject eObject, EReference eRef, Object object)
+			throws NullPointerException {
+		Node n = getNodeById(eObject);
+		Node n2 = getNodeById((EObject) object);
+		if (n == null || n2 == null) {
+			Logger.log(IStatus.WARNING, "Dummy objects");
+			return;
+		}
+		RelationshipType rel = getRelTypefromERef(eObject.eClass().getClassifierID(),
+				eRef.getFeatureID());
+		if (rel == null) {
+			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil
+					.formatRelationshipName(eObject.eClass(), eRef));
+		}
+		n.createRelationshipTo(n2, rel);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setAttributeValue(INeo4emfObject eObject, EAttribute at, Object newValue) {
+		Node n = getNodeById(eObject);
+	
+		if (newValue != null && !at.isMany()) {
+	
+			if (at.getEType() instanceof EEnum)
+				n.setProperty(at.getName(), newValue.toString());
+	
+			else if (this.isPrimitive(at.getName()))
+				n.setProperty(at.getName(), newValue);
+	
+			else
+				n.setProperty(at.getName(), newValue.toString());
+		}
+	
+		else if (newValue != null && at.isMany()) {
+			n.setProperty(at.getName(), ((EList<EObject>) newValue).toArray());
+		}
+	
+		else if (!at.isMany()) {
+	
+			if (at.getEType().getName().equals("Boolean")
+					|| at.getEType().getName().equals("EBoolean"))
+				n.setProperty(at.getName(), false);
+	
+			else if (at.getEType().getName().equals("String")
+					|| at.getEType().getName().equals("EString"))
+				n.setProperty(at.getName(), "");
+	
+			else
+				n.setProperty(at.getName(), 0);
+		} else {
+			n.setProperty(at.getName(), new Object[1]);
+		}
+	}
+
+	
+	private 	boolean isPrimitive(String str) {
+		if (str.equals("Boolean") || str.equals("Integer")
+				|| str.equals("Short") || str.equals("Long")
+				|| str.equals("Float") || str.equals("String")
+				|| str.equals("Double") || str.equals("Byte"))
+			return false;
+		return true;
+		// TODO debug this instruction
+	}
+
+	public void createNewObject(INeo4emfObject eObject) {
+		Node n = null;
+		if (((INeo4emfObject) eObject).getNodeId() == -1) {
+			n = createNodefromEObject(eObject);
+			((Neo4emfObject) eObject).setNodeId(n.getId());
+		} else {
+			n = getNodeById(eObject);
+		}
+		{
+			EList<EAttribute> atrList = eObject.eClass().getEAllAttributes();
+			Iterator<EAttribute> itAtt = atrList.iterator();
+			while (itAtt.hasNext()) {
+				EAttribute at = itAtt.next();
+				if (eObject.eIsSet(at)) {
+					this.setAttributeValue(eObject, at, eObject.eGet(at));
+				} else {
+					n.setProperty(at.getName(), "");
+				}
+			}
+		}
+		{
+			EList<EReference> refList = eObject.eClass().getEAllReferences();
+			Iterator<EReference> itRef = refList.iterator();
+			while (itRef.hasNext()) {
+				EReference ref = itRef.next();
+				boolean isSet = false;
+				try {
+					isSet = eObject.eIsSet(ref);
+				} catch (ClassCastException e) {
+				}
+				;
+				if (isSet) {
+					if (ref.getUpperBound() == -1) {
+						List<INeo4emfObject> eObjects = (List<INeo4emfObject>) eObject
+								.eGet(ref);
+						for (INeo4emfObject referencedEObject : eObjects) {
+							INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) referencedEObject;
+							if (referencedNeo4emfObject.getNodeId() == -1) {
+								Node childNode = createNodefromEObject(referencedEObject);
+								referencedNeo4emfObject.setNodeId(childNode
+										.getId());
+							}
+							this.addNewLink(eObject, ref, referencedEObject);
+						}
+					} else {
+						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject
+								.eGet(ref);
+						if (referencedNeo4emfObject.getNodeId() == -1) {
+							Node childNode = createNodefromEObject(referencedNeo4emfObject);
+							referencedNeo4emfObject
+									.setNodeId(childNode.getId());
+						}
+						this.addNewLink(eObject, ref, referencedNeo4emfObject);
+					}
+				}
+			}
+		}
+		putNodeId(eObject, n.getId());
+		// TODO set the node id in the eObject
+	}
 }

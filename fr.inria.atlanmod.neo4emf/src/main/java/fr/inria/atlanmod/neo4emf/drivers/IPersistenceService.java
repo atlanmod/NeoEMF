@@ -43,6 +43,10 @@ public interface IPersistenceService {
 	 */
 	public final String ECLASS_NAME = "eClass_name";
 	/**
+	 * ECLASS_ID Constant to root_elements id {@link String}
+	 */
+	public final String ECLASS_ID = "eClass_id";
+	/**
 	 * ID_META Constant {@link String}
 	 */
 	public final String ID_META = "id_meta";

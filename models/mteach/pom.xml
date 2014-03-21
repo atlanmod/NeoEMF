@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.inria.atlanmod.models</groupId>
-    <artifactId>MTeach</artifactId>
-    <version>1.0</version>
+    <artifactId>mteach</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Mteach</name>

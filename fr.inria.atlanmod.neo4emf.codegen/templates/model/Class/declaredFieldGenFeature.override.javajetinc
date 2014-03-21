@@ -1,5 +1,3 @@
-// The goal of this template is to BLAH, BLAH, BLAH
-
     <%if (genFeature.hasSettingDelegate()) {%>
 	/**
 	 * The cached setting delegate for the '{@link #<%=genFeature.getGetAccessor()%>() <em><%=genFeature.getFormattedName()%></em>}' <%=genFeature.getFeatureKind()%>.

@@ -64,8 +64,8 @@ public class Neo4emfResourceTest {
 		
 		for (int i = 1; i < times ; i++) {
 			Vertex vertex = factory.createVertex();
-			vertex.setName("Vertex name ["+i+"]");
-			vertex.setContainer(container);
+			//vertex.setName("Vertex name ["+i+"]");
+			//vertex.setContainer(container);
 		}
 
 		resource.attached(container);
@@ -104,12 +104,12 @@ public class Neo4emfResourceTest {
 		
 		for (int i = 1; i < times ; i++) {
 			Vertex vertex = factory.createVertex();
-			vertex.setName("Vertex name ["+i+"]");
-			vertex.setContainer(container);
+			//vertex.setName("Vertex name ["+i+"]");
+			//vertex.setContainer(container);
 		}
 
 		resource.attached(container);
-		System.out.println("Changelog size: " + resource.getChangeLog().size());
+		//System.out.println("Changelog size: " + resource.getChangeLog().size());
 		for (Entry each : resource.getChangeLog().changes()) {
 			System.out.println(each);
 		}

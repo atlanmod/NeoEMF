@@ -1,4 +1,5 @@
 package fr.inria.atlanmod.neo4emf;
+
 /**
  * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
@@ -12,36 +13,62 @@ package fr.inria.atlanmod.neo4emf;
  * @author Amine BENELALLAM
  * */
 import org.eclipse.emf.ecore.EObject;
+import org.neo4j.graphdb.Node;
 
-public interface INeo4emfObject extends EObject, Comparable <INeo4emfObject>{
-	
-	
-		/**
-		 * returns the <b>ID</b> of the node that represents the 
-		 * 		element in the backend and <b>-1</b> if the element 
-		 * 		have not been persisted yet
-		 * @return ID {@link long }			
-		 */
-		public long getNodeId();
-		
-		/**
-		 * set the <b>ID</b> of the eObject once created from the 
-		 * 	backend node
-		 * @param id {@link long}
-		 */
-		void setNodeId(long id);
-		/**
-		 * @return ID {@link int}
-		 */
-		public int getPartitionId();
-		
-		/**
-		 * set the partition Id 
-		 * @param id
-		 */
-		public void setPartitionId(int id);
+public interface INeo4emfObject extends EObject, Comparable<INeo4emfObject> {
 
-		void setProxy(boolean isProxy);
-		
+	/**
+	 * returns the <b>ID</b> of the node that represents the element in the
+	 * backend and <b>-1</b> if the element have not been persisted yet
+	 * 
+	 * @return ID {@link long }
+	 */
+	public long getNodeId();
+
+	/**
+	 * set the <b>ID</b> of the eObject once created from the backend node
+	 * 
+	 * @param id
+	 *            {@link long}
+	 */
+	void setNodeId(long id);
+	
+	/**
+	 * Saves all attributes to the Node
+	 * @param n the database node
+	 */
+	public void saveAllAttributesTo(Node n);
+	
+	/**
+	 * Loads attributes from Node.
+	 * @param n the database node
+	 */
+	public void loadAllAttributesFrom(Node n);
+
+	/**
+	 * Saves all references to the Node
+	 * @param n the database node
+	 */
+	public void saveAllReferencesTo(Node n);
+	
+	/**
+	 * Loads references from Node.
+	 * @param n the database node
+	 */
+	public void loadAllReferencesFrom(Node n);	
+	
+	/**
+	 * @return ID {@link int}
+	 */
+	public int getPartitionId();
+
+	/**
+	 * set the partition Id
+	 * 
+	 * @param id
+	 */
+	public void setPartitionId(int id);
+
+	void setProxy(boolean isProxy);
 
 }

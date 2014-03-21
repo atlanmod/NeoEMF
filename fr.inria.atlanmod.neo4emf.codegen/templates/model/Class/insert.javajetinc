@@ -1,133 +1,88 @@
-
 /*
 * Neo4EMF inserted code -- begin
 */
-
+<%
+List<GenFeature> singlevaluedAttributes = new ArrayList<GenFeature>();
+List<GenFeature> multivaluedAttributes = new ArrayList<GenFeature>();
+List<GenFeature> enumerationAttributes = new ArrayList<GenFeature>();
+List<GenFeature> allAttributes = new ArrayList<GenFeature>();
+List<GenFeature> allReferences = new ArrayList<GenFeature>();
+for (GenFeature each : genClass.getESetGenFeatures()) {
+	  if (each.isVolatile()) continue; // Volatile features are also ignored
+	  if (each.isMapType()) continue; // TODO Manage map types
+	  if (each.isFeatureMapType()) continue; // TODO Manage feature map types
+	  if (each.isWrappedFeatureMapType()) continue; // TODO WTH?
+	  if (each.isReferenceType()) {
+		  allReferences.add(each);
+	  }
+	  else if (each.isListType()) {
+		  multivaluedAttributes.add(each);
+	  } else if (each.isEnumType()){
+		  enumerationAttributes.add(each);
+	  } else {
+		  singlevaluedAttributes.add(each);
+	  }
+  }
+allAttributes.addAll(singlevaluedAttributes);
+allAttributes.addAll(multivaluedAttributes);
+allAttributes.addAll(enumerationAttributes);
+if (!multivaluedAttributes.isEmpty()) {
+  	genModel.addImport("java.util.Arrays");
+  	genModel.addImport("java.util.List");
+}
+%>
 <%if (isImplementation && (!(genModel.isReflectiveDelegation()))) {%>
-// data Class generation 
-protected static  class Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%><%=CodegenUtil.getDataClassExtends(genClass)%>
-
-{
-
-<% if (genModel.hasCopyrightField()) {%>
+	
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	<%=publicStaticFinalFlag%><%=genModel.getImportedName("java.lang.String")%> copyright = <%=genModel.getCopyrightFieldLiteral()%>;<%=genModel.getNonNLS()%>
-
-<%}%>
-
-  <%for (GenFeature genFeature : genClass.getDeclaredFieldGenFeatures()) {%>
-<%@ include file="declaredFieldGenFeature.override.javajetinc" fail="silent" %>
-  <%}%>
-<%if (genModel.isOperationReflection() && isImplementation && genClass.hasOffsetCorrection() && !genClass.getImplementedGenOperations().isEmpty()) {%>
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private static final int "EOPERATION_OFFSET_CORRECTION" = <%=genClass.getQualifiedClassifierAccessor()%>.getOperationID(<%=genClass.getImplementedGenOperations().get(0).getQualifiedOperationAccessor()%>) - <%=genClass.getQualifiedOperationID(genClass.getImplementedGenOperations().get(0))%>;
-
-<%}%>
-<%if (isImplementation ) {%>
-	/**
-	 *Constructor of Data<%=genClass.getInterfaceName()%>
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Data<%=genClass.getInterfaceName()%>()
-	{
-		<%if ( CodegenUtil.getDataClassExtends(genClass) !=""){%> super(); <%}%>
-  <%for (GenFeature genFeature : genClass.getFlagGenFeaturesWithDefault()) {%>
-		<%=genClass.getFlagsField(genFeature)%> |= <%=genFeature.getUpperName()%>_EFLAG<%if (!genFeature.isBooleanType()) {%>_DEFAULT<%}%>;
-  <%}%>
+	 <%if (! genModel.getRootExtendsClass().contains(genClass.getClassExtends().substring(9)) ){%>@Override<%}%>
+	protected <%=CodegenUtil.getAttributeClassName(genClass)%> <%=CodegenUtil.getAttributeClassGetter()%> {
+		if ( data == null || !(data instanceof <%=CodegenUtil.getAttributeClassName(genClass)%>)){
+			data = new <%=CodegenUtil.getAttributeClassName(genClass)%>();
+			if (isLoaded())
+			((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
+			}
+		return (<%=CodegenUtil.getAttributeClassName(genClass)%>) data;
 	}
 	
-		<%if ( CodegenUtil.getDataClassExtends(genClass) !=""){%>
 	/**
-	 *Constructor of Data<%=genClass.getInterfaceName()%>
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param {@link <%=genClass.getClassExtendsGenClass().getInterfaceName()%> }
-	 * @generated
-	 */
-	//public Data<%=genClass.getInterfaceName()%>(Data<%=genClass.getClassExtendsGenClass().getInterfaceName()%> data)
-	//{
-	//	this();		
-	//	<% for (GenFeature genFeat : genClass.getClassExtendsGenClass().getDeclaredFieldGenFeatures()){%>
-	//	<%=genFeat.getSafeName()%> = data.<%=genFeat.getSafeName()%>;<%}%>
-	//	}
-	<%}%>
-	
-    <%if (!genModel.isDynamicDelegation() && !genModel.isVirtualDelegation()){%>
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String toString(){	
-		StringBuffer result = new StringBuffer(super.toString());
-  <%{ boolean first = true;%>		
-    <%for (GenFeature genFeature : genClass.getToStringGenFeatures()) {%>
-      <%if (first) { first = false;%>
-		result.append(" (<%=genFeature.getName()%>: ");<%=genModel.getNonNLS()%>
-      <%} else {%>
-		result.append(", <%=genFeature.getName()%>: ");<%=genModel.getNonNLS()%>
-      <%}%>
-      <%if (genFeature.isUnsettable() && !genFeature.isListType()) {%>
-        <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
-		if (eVirtualIsSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>)) result.append(eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>)); else result.append("<unset>");<%=genModel.getNonNLS()%>
-        <%} else {%>
-          <%if (genClass.isFlag(genFeature)) {%>
-            <%if (genFeature.isBooleanType()) {%>
-		if (<%if (genClass.isESetFlag(genFeature)) {%>(<%=genClass.getESetFlagsField(genFeature)%> & <%=genFeature.getUpperName()%>_ESETFLAG) != 0<%} else {%><%=genFeature.getUncapName()%>ESet<%}%>) result.append((<%=genClass.getFlagsField(genFeature)%> & <%=genFeature.getUpperName()%>_EFLAG) != 0); else result.append("<unset>");<%=genModel.getNonNLS()%>
-            <%} else {%>
-		if (<%if (genClass.isESetFlag(genFeature)) {%>(<%=genClass.getESetFlagsField(genFeature)%> & <%=genFeature.getUpperName()%>_ESETFLAG) != 0<%} else {%><%=genFeature.getUncapName()%>ESet<%}%>) result.append(<%=genFeature.getUpperName()%>_EFLAG_VALUES[(<%=genClass.getFlagsField(genFeature)%> & <%=genFeature.getUpperName()%>_EFLAG) >>> <%=genFeature.getUpperName()%>_EFLAG_OFFSET]); else result.append("<unset>");<%=genModel.getNonNLS()%>
-            <%}%>
-          <%} else {%>
-		if (<%if (genClass.isESetFlag(genFeature)) {%>(<%=genClass.getESetFlagsField(genFeature)%> & <%=genFeature.getUpperName()%>_ESETFLAG) != 0<%} else {%><%=genFeature.getUncapName()%>ESet<%}%>) result.append(<%=genFeature.getSafeName()%>); else result.append("<unset>");<%=genModel.getNonNLS()%>
-          <%}%>
-        <%}%>
-      <%} else {%>
-        <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
-		result.append(eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%><%if (!genFeature.isListType() && !genFeature.isReferenceType()){%>, <%=genFeature.getEDefault()%><%}%>));
-        <%} else {%>
-          <%if (genClass.isFlag(genFeature)) {%>
-          <%if (genFeature.isBooleanType()) {%>
-		result.append((<%=genClass.getFlagsField(genFeature)%> & <%=genFeature.getUpperName()%>_EFLAG) != 0);
-          <%} else {%>
-		result.append(<%=genFeature.getUpperName()%>_EFLAG_VALUES[(<%=genClass.getFlagsField(genFeature)%> & <%=genFeature.getUpperName()%>_EFLAG) >>> <%=genFeature.getUpperName()%>_EFLAG_OFFSET]);
-          <%}%>
-          <%} else {%>
-		result.append(<%=genFeature.getSafeName()%>);
-          <%}%>
-        <%}%>
-      <%}%>
-    <%}%>
-  <%}%>
-		result.append(')');
-		return result.toString();
+	*
+	* @generated
+	**/
+	public void loadAllAttributesFrom(Node n) {
+		this.data = new <%=CodegenUtil.getAttributeClassName(genClass)%>(this);
+		data.loadAllAttributesFrom(n);
 	}
-	<%}%>	
+	
+	/**
+	*
+	* @generated
+	**/
+	public void saveAllAttributesTo(Node n) {
+		if (data != null) {
+			data.saveAllAttributesTo(n);
+		}
+	}
+	
+	/**
+	*
+	* @generated
+	**/
+	public void saveAttributeTo(int featureID, Node n) {
+		if (data != null) {
+			data.saveAttributeTo(featureID, n);
+		}
+	}
+	<%@ include file="attributesInnerClass.javajetinc" fail="silent" %>
+	<%@ include file="referencesInnerClass.javajetinc" fail="silent" %>
+<%} // if isImplementation
+%>
+<%for(GenFeature each : allReferences) {%>
+// <%=each.getSafeName()%> : <%=each.getImportedType(genClass)%>, bi:<%=each.isBidirectional()%>, chan:<%=each.isChangeable()%>, list:<%=each.isListType()%>, change:<%=each.isChangeable()%>, kind:<%=each.getFeatureKind()%>
 <%}%>
-
-<%genModel.addImport("org.neo4j.graphdb.Node");%>
-	public void loadFrom(Node n) {
-<%for (GenFeature genFeature : genClass.getToStringGenFeatures()) {%>
-	// <%=genFeature.getSafeName()%>:<%=genFeature.getImportedInternalType(genClass)%> isField: <%=genClass.isField(genFeature)%> isPrimitiveType: <%=genFeature.isPrimitiveType()%> isListType: <%=genFeature.isListType()%>
-		<%=genFeature.getSafeName()%> = (<%=genFeature.getImportedInternalType(genClass)%>) n.getProperty("<%=genFeature.getSafeName()%>");
-<%}//for%>
-	}
-	
-	public void saveTo(Node n) {
-	}
-}//end data class
-<%} %>
-
-
 /*
 * Neo4EMF inserted code -- end
 */
