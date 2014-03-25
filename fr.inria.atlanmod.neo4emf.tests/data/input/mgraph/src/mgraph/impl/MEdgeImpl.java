@@ -383,7 +383,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 			int featureID, NotificationChain msgs) {
 		switch (featureID) {
 		case MgraphPackage.MEDGE__IN_COMING:
-			if (getData().inComing != null)
+			if (getData().inComing != null && !getData().inComing.get().equals(otherEnd))
 				msgs = ((InternalEObject) getData().inComing.get()).eInverseRemove(
 						this, MgraphPackage.MNODE__TO, MNode.class, msgs);
 			return basicSetInComing((MNode) otherEnd, msgs);

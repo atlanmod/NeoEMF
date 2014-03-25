@@ -21,7 +21,10 @@
       <%if (genModel.isVirtualDelegation()) {%>
 		return (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
       <%} else {%>
-		return data != null ? <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> : null;
+      	if(data != null) {
+			return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> == null ? null : <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>.get();
+      	}
+      	return null;
       <%}%>
     <%} else if (genFeature.hasDelegateFeature()) { GenFeature delegateFeature = genFeature.getDelegateFeature();%>
       <%if (delegateFeature.isWrappedFeatureMapType()) {%>

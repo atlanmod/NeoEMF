@@ -448,7 +448,9 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 
 	@Override
 	public void releaseDataStrongReferences() {
-		assert isLoaded();
+		// Check if the release is needed in delete (a delete may
+		// imply isLoaded = false if there is a createElement un CL before)
+		//assert isLoaded();
 		getData().strongFrom = null;
 		getData().strongTo = null;
 	}

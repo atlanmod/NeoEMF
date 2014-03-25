@@ -187,10 +187,14 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 	 <%if (! genModel.getRootExtendsClass().contains(genClass.getClassExtends().substring(9)) ){%>@Override<%}%>
 	protected Data<%=genClass.getInterfaceName()%> getData(){
 		if ( data == null || !(data instanceof Data<%=genClass.getInterfaceName()%>)){
+			// TODO check that
+			setLoadingOnDemand();
 			data = new Data<%=genClass.getInterfaceName()%>();
-			if (isLoaded())
-			((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
+			if (isLoaded()) {
+				((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
 			}
+			unsetLoadingOnDemand();
+		}
 		return (Data<%=genClass.getInterfaceName()%>) data;
 	}
 	<%}%>
@@ -245,11 +249,27 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
     <%if (genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes()) {%>
 				return ((<%=cast%>(<%=genModel.getImportedName("org.eclipse.emf.common.util.EMap")%>.InternalMapView<%=genFeature.getImportedMapTemplateArguments(genClass)%>)<%=genFeature.getGetAccessor()%>()).eMap()).basicAdd(otherEnd, msgs);
     <%} else {%>
-				return (<%=cast%><%=genFeature.getGetAccessor()%>()).basicAdd(otherEnd, msgs);
+    			if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
+    				setLoadingOnDemand();
+    			}
+    			if(isLoaded() && !isLoadingOnDemand()) {
+    				addChangelogEntry(otherEnd, <%=genClass.getQualifiedFeatureID(genFeature)%>);
+    				return (<%=cast%><%=genFeature.getGetAccessor()%>()).basicAdd(otherEnd, msgs);
+    			}
+    			if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
+    				unsetLoadingOnDemand();
+    			}
+    			return null;
     <%}%>
   <%} else if (genFeature.isContainer()) {%>
-				if (eInternalContainer() != null)
+				if (eInternalContainer() != null && !eInternalContainer().equals(otherEnd)) {
 					msgs = eBasicRemoveFromContainer(msgs);
+				}
+				// Should be done before basicSet, otherwise the ChangeLog may be flushed and the 
+				// isLoaded method would return true, and duplicate the AddLink entry
+				if(isLoaded() && !isLoadingOnDemand() && !((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
+					addChangelogEntry(otherEnd, <%=genClass.getQualifiedFeatureID(genFeature)%>);
+				}
     <%if (genFeature.isBasicSet()) {%>
 				return basicSet<%=genFeature.getAccessorName()%>((<%=genFeature.getImportedType(genClass)%>)otherEnd, msgs);
     <%} else {%>
@@ -261,11 +281,11 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
     <%} else if (genFeature.isVolatile() || genClass.getImplementingGenModel(genFeature).isDynamicDelegation()) {%>
 				<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = <%if (genFeature.isResolveProxies()) {%>basicGet<%=genFeature.getAccessorName()%><%} else {%><%=genFeature.getGetAccessor()%><%}%>();
     <%}%>
-				if (<%= (genModel.isVirtualDelegation()|| genModel.isReflectiveDelegation())==true ? "":"getData()."%><%=genFeature.getSafeName()%> != null)
+				if (<%= (genModel.isVirtualDelegation()|| genModel.isReflectiveDelegation())==true ? "":"getData()."%><%=genFeature.getSafeName()%> != null && !<%= (genModel.isVirtualDelegation()|| genModel.isReflectiveDelegation())==true ? "":"getData()."%><%=genFeature.getSafeName()%>.get().equals(otherEnd))
     <%if (genFeature.isEffectiveContains()) {%>
 					msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)<%= (genModel.isVirtualDelegation() || genModel.isReflectiveDelegation())==true ? "":"getData()."%><%=genFeature.getSafeName()%>).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - <%=genClass.getQualifiedFeatureID(genFeature)%><%=negativeOffsetCorrection%>, null, msgs);
     <%} else { GenFeature reverseFeature = genFeature.getReverse(); GenClass targetClass = reverseFeature.getGenClass(); String reverseOffsetCorrection = targetClass.hasOffsetCorrection() ? " + " + genClass.getOffsetCorrectionField(genFeature) : "";%>
-					msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)<%= (genModel.isVirtualDelegation()|| genModel.isReflectiveDelegation())==true ? "":"getData()."%><%=genFeature.getSafeName()%>).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
+					msgs = ((<%=genModel.getImportedName("org.eclipse.emf.ecore.InternalEObject")%>)<%= (genModel.isVirtualDelegation()|| genModel.isReflectiveDelegation())==true ? "":"getData()."%><%=genFeature.getSafeName()%>.get()).eInverseRemove(this, <%=targetClass.getQualifiedFeatureID(reverseFeature)%><%=reverseOffsetCorrection%>, <%=targetClass.getRawImportedInterfaceName()%>.class, msgs);
     <%}%>
 				return basicSet<%=genFeature.getAccessorName()%>((<%=genFeature.getImportedType(genClass)%>)otherEnd, msgs);
   <%}%>
@@ -301,6 +321,7 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
     <%} else if (genFeature.isWrappedFeatureMapType()) {%>
 				return ((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.InternalEList")%><%=singleWildcard%>)((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.FeatureMap")%>.Internal.Wrapper)<%=genFeature.getGetAccessor()%>()).featureMap()).basicRemove(otherEnd, msgs);
     <%} else {%>
+    			addChangelogRemoveEntry(otherEnd, <%=genClass.getQualifiedFeatureID(genFeature)%>);
 				return ((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.InternalEList")%><%=singleWildcard%>)<%=genFeature.getGetAccessor()%>()).basicRemove(otherEnd, msgs);
     <%}%>
   <%} else if (genFeature.isContainer() && !genFeature.isBasicSet()) {%>
@@ -308,6 +329,9 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
   <%} else if (genFeature.isUnsettable()) {%>
 				return basicUnset<%=genFeature.getAccessorName()%>(msgs);
   <%} else {%>
+  				if(isLoaded()) {
+  					addChangelogRemoveEntry(otherEnd,featureID);
+  				}
 				return basicSet<%=genFeature.getAccessorName()%>(null, msgs);
   <%}%>
 <%}%>
@@ -725,6 +749,32 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 		
 		return result.toString();
 		}
+
+	/**
+	 * @generated
+	 */
+	public void setDataStrongReferences() {
+		if(data != null) {
+			<%for (GenFeature f : genClass.getGenFeatures()) {%>
+				<%if (f.isListType()) {%>
+			if(getData().strong<%=f.getCapName()%> != null) {
+				getData().strong<%=f.getCapName()%> = getData().<%=f.getSafeName()%>.get();
+			}
+				<%}%>
+			<%}%>
+		}
+	}
+
+	/**
+	 * @generated
+	 */
+	public void releaseDataStrongReferences() {
+		<%for (GenFeature f : genClass.getGenFeatures()) {%>
+			<%if (f.isListType()) {%>
+		getData().strong<%=f.getCapName()%> = null;
+			<%}%>
+		<%}%>
+	}
 <%}%>
 <%if (isImplementation && genClass.isMapEntry()) { GenFeature keyFeature = genClass.getMapEntryKeyFeature(); GenFeature valueFeature = genClass.getMapEntryValueFeature();%>
 <%String objectType = genModel.getImportedName("java.lang.Object");%>

@@ -61,7 +61,7 @@ public class GarbageTest {
 		URI uri = URI.createURI("neo4emf:./TestGarbage");
 		// NESession initialization (simpler than previous one)
 		NESession session = new NESession(MgraphPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(uri,1);
+		INeo4emfResource resource = session.createResource(uri,5);
 		
 		factory = MgraphFactory.eINSTANCE;
 		
@@ -97,7 +97,7 @@ public class GarbageTest {
 		assert graph.getEdges().get(0).getInComing() == edge1.getInComing();
 		
 		EcoreUtil.delete(edge1);
-		
+				
 		clearSoftReferences();
 		
 		
