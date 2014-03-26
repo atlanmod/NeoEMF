@@ -7,7 +7,7 @@
 
 private RelationshipMapping relationshipMapping = new <%=mappingClassName%>();
 
-@Override
+//@Override
 public RelationshipMapping getRelationshipMapping() {
 	return relationshipMapping;
 }

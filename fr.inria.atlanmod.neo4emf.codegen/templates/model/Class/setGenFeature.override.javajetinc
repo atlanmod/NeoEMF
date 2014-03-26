@@ -247,8 +247,5 @@
 		throw new UnsupportedOperationException();
 <%@ end %><%//Class/setGenFeature.todo.override.javajetinc%>
     <%}%>
-    	if(isLoaded() && !isLoadingOnDemand()) {
-	    	addChangelogEntry(new<%=genFeature.getCapName()%>, <%=genClass.getQualifiedFeatureID(genFeature)%>);
-		}
 	}
 <%}%>

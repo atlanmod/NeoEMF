@@ -1,7 +1,15 @@
 /**
- *
- * $Id$
- */
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * Descritpion ! To come
+ * @author Amine BENELALLAM
+**/
 package mgraph;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -28,6 +36,7 @@ import fr.inria.atlanmod.neo4emf.INeo4emfObject;
  */
 public interface MEdge extends INeo4emfObject {
 
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -47,14 +56,16 @@ public interface MEdge extends INeo4emfObject {
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 *YY1
+	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Name</em>' attribute.
 	 * @see #getName()
 	 * @generated
 	 */
 	void setName(String value);
+ 
 
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>In Coming</b></em>' reference.
 	 * It is bidirectional and its opposite is '{@link mgraph.MNode#getTo <em>To</em>}'.
@@ -76,14 +87,16 @@ public interface MEdge extends INeo4emfObject {
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getInComing <em>In Coming</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 *YY1
+	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>In Coming</em>' reference.
 	 * @see #getInComing()
 	 * @generated
 	 */
 	void setInComing(MNode value);
+ 
 
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Out Going</b></em>' reference.
 	 * It is bidirectional and its opposite is '{@link mgraph.MNode#getFrom <em>From</em>}'.
@@ -105,14 +118,16 @@ public interface MEdge extends INeo4emfObject {
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getOutGoing <em>Out Going</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 *YY1
+	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Out Going</em>' reference.
 	 * @see #getOutGoing()
 	 * @generated
 	 */
 	void setOutGoing(MNode value);
+ 
 
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Graph</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link mgraph.MGraph#getEdges <em>Edges</em>}'.
@@ -134,13 +149,14 @@ public interface MEdge extends INeo4emfObject {
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getGraph <em>Graph</em>}' container reference.
 	 * <!-- begin-user-doc -->
-	 *YY1
+	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Graph</em>' container reference.
 	 * @see #getGraph()
 	 * @generated
 	 */
 	void setGraph(MGraph value);
+ 
 
 
 

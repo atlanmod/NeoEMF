@@ -249,17 +249,17 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
     <%if (genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes()) {%>
 				return ((<%=cast%>(<%=genModel.getImportedName("org.eclipse.emf.common.util.EMap")%>.InternalMapView<%=genFeature.getImportedMapTemplateArguments(genClass)%>)<%=genFeature.getGetAccessor()%>()).eMap()).basicAdd(otherEnd, msgs);
     <%} else {%>
-    			if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
-    				setLoadingOnDemand();
-    			}
+    			//if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
+    			//	setLoadingOnDemand();
+    			//}
     			if(isLoaded() && !isLoadingOnDemand()) {
     				addChangelogEntry(otherEnd, <%=genClass.getQualifiedFeatureID(genFeature)%>);
-    				return (<%=cast%><%=genFeature.getGetAccessor()%>()).basicAdd(otherEnd, msgs);
     			}
-    			if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
-    				unsetLoadingOnDemand();
-    			}
-    			return null;
+    			return (<%=cast%><%=genFeature.getGetAccessor()%>()).basicAdd(otherEnd, msgs);
+    			//if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
+    			//	unsetLoadingOnDemand();
+    			//}
+    			//return null;
     <%}%>
   <%} else if (genFeature.isContainer()) {%>
 				if (eInternalContainer() != null && !eInternalContainer().equals(otherEnd)) {

@@ -61,7 +61,7 @@ public class GarbageTest {
 		URI uri = URI.createURI("neo4emf:./TestGarbage");
 		// NESession initialization (simpler than previous one)
 		NESession session = new NESession(MgraphPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(uri,5);
+		INeo4emfResource resource = session.createResource(uri,1);
 		
 		factory = MgraphFactory.eINSTANCE;
 		
@@ -111,12 +111,6 @@ public class GarbageTest {
 		// collect all the SoftReferences.
 		node4 = null;
 		clearSoftReferences();
-		
-		// Create a new element to show the weak proxy map. The map should not contain
-		// node4 (previously removed by gc).
-		MEdge showProxyEdge = factory.createMEdge();
-		showProxyEdge.setName("showProxyMap");
-		showProxyEdge.setGraph(graph);
 		
 		save(resource);
 	}

@@ -1,23 +1,33 @@
 /**
- *
- * $Id$
- */
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * Descritpion ! To come
+ * @author Amine BENELALLAM
+**/
 package mgraph.impl;
+ 
 
 
+import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 
-import mgraph.MEdge;
-import mgraph.MGraph;
-import mgraph.MNode;
-import mgraph.MgraphFactory;
-import mgraph.MgraphPackage;
+import mgraph.*;
+
 import mgraph.util.MgraphAdapterFactory;
 
 import org.eclipse.emf.common.notify.Adapter;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

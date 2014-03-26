@@ -1,7 +1,15 @@
 /**
- *
- * $Id$
- */
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * Descritpion ! To come
+ * @author Amine BENELALLAM
+**/
 package mgraph;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -30,6 +38,7 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface MNode extends INeo4emfObject {
 
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -49,14 +58,16 @@ public interface MNode extends INeo4emfObject {
 	/**
 	 * Sets the value of the '{@link mgraph.MNode#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 *YY1
+	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Name</em>' attribute.
 	 * @see #getName()
 	 * @generated
 	 */
 	void setName(String value);
+ 
 
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Graph</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link mgraph.MGraph#getNodes <em>Nodes</em>}'.
@@ -78,14 +89,16 @@ public interface MNode extends INeo4emfObject {
 	/**
 	 * Sets the value of the '{@link mgraph.MNode#getGraph <em>Graph</em>}' container reference.
 	 * <!-- begin-user-doc -->
-	 *YY1
+	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Graph</em>' container reference.
 	 * @see #getGraph()
 	 * @generated
 	 */
 	void setGraph(MGraph value);
+ 
 
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>From</b></em>' reference list.
 	 * The list contents are of type {@link mgraph.MEdge}.
@@ -103,7 +116,9 @@ public interface MNode extends INeo4emfObject {
 	 * @model opposite="outGoing"
 	 * @generated
 	 */
-	EList<MEdge> getFrom();
+	EList<MEdge> getFrom(); 
+
+/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>To</b></em>' reference list.
 	 * The list contents are of type {@link mgraph.MEdge}.
@@ -121,7 +136,8 @@ public interface MNode extends INeo4emfObject {
 	 * @model opposite="inComing"
 	 * @generated
 	 */
-	EList<MEdge> getTo();
+	EList<MEdge> getTo(); 
+
 
 
 

@@ -243,7 +243,7 @@ public class Serializer implements ISerializer {
 							INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) referencedEObject;
 							if (referencedNeo4emfObject.getNodeId() == -1) {
 								Node childNode = this.manager
-										.createNodefromEObject(referencedEObject);
+										.createNodefromEObject(referencedEObject,isTmp);
 								referencedNeo4emfObject.setNodeId(childNode
 										.getId());
 							}
