@@ -228,10 +228,6 @@ public class NEConnectionTest {
 		}
 	}	
 	
-	@Test
-	public void testFactory() {
-		connection.invariant();
-	}
 	
 	@Test
 	public void testRetrieveObject() {

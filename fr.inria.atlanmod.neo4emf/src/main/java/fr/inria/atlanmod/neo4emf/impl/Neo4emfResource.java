@@ -50,10 +50,10 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	 * @param configuration
 	 */
 	public Neo4emfResource(NEConfiguration configuration) {
-		
+
 		assert configuration != null : "Null configuration";
 		this.persistenceManager = new PersistenceManager(this, configuration);
-//		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
+		// this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
 		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog(this);
 	}
 
@@ -176,28 +176,22 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	}
 
 	private void addChangeLogCreateEntry(INeo4emfObject neoObject) {
-//		if (neoObject.getNodeId() == -1) {
-			getChangeLog().add(new NewObject(neoObject));
-//		}
+		// if (neoObject.getNodeId() == -1) {
+		getChangeLog().add(new NewObject(neoObject));
+		// }
 	}
 
 	private void addChangeLogDeleteEntry(INeo4emfObject neoObject) {
-		//if (neoObject.getNodeId() == -1) {
-			getChangeLog().add(new DeleteObject(neoObject));
-		//}
+		// if (neoObject.getNodeId() == -1) {
+		getChangeLog().add(new DeleteObject(neoObject));
+		// }
 	}
 
 	public IChangeLog<Entry> getChangeLog() {
 
-        return changeLog;
+		return changeLog;
 	}
-<<<<<<< HEAD
 
-    public IPersistenceManager getPersistenceManager() {
-        return persistenceManager;
-    }
-=======
-	
 	/**
 	 * {@link INeo4emfResource#getPersistenceManager()}
 	 */
@@ -205,5 +199,4 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	public IPersistenceManager getPersistenceManager() {
 		return persistenceManager;
 	}
->>>>>>> changelog-refactoring
 }

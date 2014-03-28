@@ -180,24 +180,7 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 	}
 
 	<%if (!genModel.isReflectiveDelegation()){%>
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	 <%if (! genModel.getRootExtendsClass().contains(genClass.getClassExtends().substring(9)) ){%>@Override<%}%>
-	protected Data<%=genClass.getInterfaceName()%> getData(){
-		if ( data == null || !(data instanceof Data<%=genClass.getInterfaceName()%>)){
-			// TODO check that
-			setLoadingOnDemand();
-			data = new Data<%=genClass.getInterfaceName()%>();
-			if (isLoaded()) {
-				((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
-			}
-			unsetLoadingOnDemand();
-		}
-		return (Data<%=genClass.getInterfaceName()%>) data;
-	}
+	
 	<%}%>
 	/**
 	 * <!-- begin-user-doc -->

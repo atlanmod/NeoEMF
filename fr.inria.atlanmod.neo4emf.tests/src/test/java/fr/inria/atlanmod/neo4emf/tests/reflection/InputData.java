@@ -62,7 +62,7 @@ public class InputData {
 		URI uri = URI.createURI("neo4emf:./data/output/R"+token+"Teach");
 		
 		NESession session = new NESession(MteachPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(uri);
+		INeo4emfResource resource = session.createResource(uri, 10);
 
 		parameters[0][2] = resource;
 		return Arrays.asList(parameters);

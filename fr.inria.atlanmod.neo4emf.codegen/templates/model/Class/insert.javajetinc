@@ -41,13 +41,17 @@ if (!multivaluedAttributes.isEmpty()) {
 	 <%if (! genModel.getRootExtendsClass().contains(genClass.getClassExtends().substring(9)) ){%>@Override<%}%>
 	protected <%=CodegenUtil.getAttributeClassName(genClass)%> <%=CodegenUtil.getAttributeClassGetter()%> {
 		if ( data == null || !(data instanceof <%=CodegenUtil.getAttributeClassName(genClass)%>)){
+			// TODO check that
+			setLoadingOnDemand();
 			data = new <%=CodegenUtil.getAttributeClassName(genClass)%>();
-			if (isLoaded())
-			((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
+			if (isLoaded()) {
+				((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
+			}
+			unsetLoadingOnDemand();
 			}
 		return (<%=CodegenUtil.getAttributeClassName(genClass)%>) data;
 	}
-	
+
 	/**
 	*
 	* @generated

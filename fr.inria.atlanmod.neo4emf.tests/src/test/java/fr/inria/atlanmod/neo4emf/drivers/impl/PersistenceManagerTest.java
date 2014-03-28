@@ -46,7 +46,7 @@ public class PersistenceManagerTest {
 
 	@Before
 	public void setUp() throws Exception {
-        resource = session.createResource(uri);
+        resource = session.createResource(uri,10);
 
         IPersistenceManager pm = resource.getPersistenceManager();
 	}
