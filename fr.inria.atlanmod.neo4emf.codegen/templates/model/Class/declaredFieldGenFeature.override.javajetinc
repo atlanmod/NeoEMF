@@ -25,8 +25,10 @@
       <%if (isGWT) {%>
 	@<%=genModel.getImportedName("com.google.gwt.user.client.rpc.GwtTransient")%>
       <%}%>
-	protected <%=genFeature.getImportedInternalType(genClass)%> <%=genFeature.getSafeName()%>;
-
+      <%if (genFeature.isListType()) {%>
+    protected <%=genFeature.getImportedInternalType(genClass)%> strong<%=genFeature.getCapName()%>;
+      <%}%>
+	protected <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getImportedInternalType(genClass)%>> <%=genFeature.getSafeName()%>;
       <%}%>
       <%if (genModel.isArrayAccessors() && genFeature.isListType() && !genFeature.isFeatureMapType() && !genFeature.isMapType()) { String rawListItemType = genFeature.getRawListItemType(); int index = rawListItemType.indexOf('['); String head = rawListItemType; String tail = ""; if (index != -1) { head = rawListItemType.substring(0, index); tail = rawListItemType.substring(index); } %>
 	/**

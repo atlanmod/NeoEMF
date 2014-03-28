@@ -13,9 +13,43 @@ package fr.inria.atlanmod.neo4emf;
  * @author Amine BENELALLAM
  * */
 import org.eclipse.emf.ecore.EObject;
+
 import org.neo4j.graphdb.Node;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 public interface INeo4emfObject extends EObject, Comparable<INeo4emfObject> {
+
+	/**
+	 * Saves all attributes to the Node
+	 * 
+	 * @param n
+	 *            the database node
+	 */
+	public void saveAllAttributesTo(Node n);
+
+	/**
+	 * Loads attributes from Node.
+	 * 
+	 * @param n
+	 *            the database node
+	 */
+	public void loadAllAttributesFrom(Node n);
+
+	/**
+	 * Saves all references to the Node
+	 * 
+	 * @param n
+	 *            the database node
+	 */
+	public void saveAllReferencesTo(Node n);
+
+	/**
+	 * Loads references from Node.
+	 * 
+	 * @param n
+	 *            the database node
+	 */
+	public void loadAllReferencesFrom(Node n);
 
 	/**
 	 * returns the <b>ID</b> of the node that represents the element in the
@@ -26,37 +60,31 @@ public interface INeo4emfObject extends EObject, Comparable<INeo4emfObject> {
 	public long getNodeId();
 
 	/**
+	 * returns the <b>ID</b> of the node that represents the temporary
+	 * attributes of the object in the backend and <b>-1</b> if the element is
+	 * not in a temporary state.
+	 * 
+	 * @return AttributeNodeID {@link long}
+	 */
+	public long getAttributeNodeId();
+
+	/**
 	 * set the <b>ID</b> of the eObject once created from the backend node
 	 * 
 	 * @param id
 	 *            {@link long}
 	 */
 	void setNodeId(long id);
-	
-	/**
-	 * Saves all attributes to the Node
-	 * @param n the database node
-	 */
-	public void saveAllAttributesTo(Node n);
-	
-	/**
-	 * Loads attributes from Node.
-	 * @param n the database node
-	 */
-	public void loadAllAttributesFrom(Node n);
 
 	/**
-	 * Saves all references to the Node
-	 * @param n the database node
+	 * set the <b>attribute ID</b> of the eObject once created from the
+	 * temporary backend node.
+	 * 
+	 * @param id
+	 *            {@link long}
 	 */
-	public void saveAllReferencesTo(Node n);
-	
-	/**
-	 * Loads references from Node.
-	 * @param n the database node
-	 */
-	public void loadAllReferencesFrom(Node n);	
-	
+	void setAttributeNodeId(long id);
+
 	/**
 	 * @return ID {@link int}
 	 */
@@ -70,5 +98,27 @@ public interface INeo4emfObject extends EObject, Comparable<INeo4emfObject> {
 	public void setPartitionId(int id);
 
 	void setProxy(boolean isProxy);
+
+	void setLoadingOnDemand();
+
+	void unsetLoadingOnDemand();
+
+	void setMemoryLock();
+
+	void unsetMemoryLock();
+
+	public void setDataStrongReferences();
+
+	public void releaseDataStrongReferences();
+
+	boolean isLoadingOnDemand();
+
+	public void addChangelogEntry(Object newValue, int eStructuralFeatureId);
+
+	public void addChangelogEntry(Object newValue, EStructuralFeature eFeature);
+
+	public void addChangelogRemoveEntry(EObject removedObject, int featureId);
+
+	boolean isLoaded();
 
 }

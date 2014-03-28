@@ -1,44 +1,46 @@
 package fr.inria.atlanmod.neo4emf.change.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.emf.common.notify.Notification;
-
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
-import fr.inria.atlanmod.neo4emf.change.IChangeLogFactory;
-
-// TODO: The implementation of the ChangeLog as a ArrayList will fail if using adapers to track model changes
-// Re-implement and guarantee that synchronization is properly done!!!!! 
 
 public class ChangeLog implements IChangeLog<Entry> {
 	
 	private List<Entry> changes = new ArrayList<Entry>();
-
-	@Override
-	public void addNewEntry(Notification msg) {
-		changes.add(IChangeLogFactory.eINSTANCE.createEntry(msg));
+	private int flushSize;
+	private INeo4emfResource resource;
+	
+	private Map<String,Object> tmpOptions;
+	
+	public ChangeLog(int flushSize, INeo4emfResource resource) {
+		this.flushSize = flushSize;
+		this.resource = resource;
+		// TODO check if this could be a static variable
+		this.tmpOptions = new HashMap<String,Object>();
+		this.tmpOptions.put("tmp_save", true);
 	}
 
-	// TODO: Check if this is still needed!!!
 	@Override
-	public void removeLastChange() {
-		changes.remove(changes.size() - 1);
-	}
-
-	// TODO: Check if this is still needed!!!
-	@Override
-	public void removeLastChanges(int count) {
-		for (int i = 0; i < count; i++) {
-			removeLastChange();
+	public boolean add(Entry entry) {
+		boolean added = changes.add(entry);
+		if(size() == flushSize) {
+			flushChangeLog();
 		}
+		return added;
 	}
-
-	@Override
-	public void add(Entry entry) {
-		changes.add(entry);
-		
+	
+	private void flushChangeLog() {
+		try {
+			this.resource.save(this.tmpOptions);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public interface ILoader {
 	 * @param object {@link EObject}
 	 * @param node {@link Node}
 	 */
-	public void fetchAttributes(EObject object, Node node);
+	public void fetchAttributes(EObject object, Node node, Node attributeNode);
 	/**
 	 * gets the eReference of an eObject on demand
 	 * 

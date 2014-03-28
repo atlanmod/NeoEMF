@@ -28,6 +28,7 @@
 	<dependency org="org.neo4j" name="neo4j" rev="1.9.4"/>
 		<dependency org="org.eclipse.emf" name="org.eclipse.emf.ecore" rev="2.9.1-v20130827-0309"/>
 		<dependency org="org.eclipse.emf" name="org.eclipse.emf.common" rev="2.9.1-v20130827-0309"/>
-            
+		<dependency org="org.eclipse.emf" name="codegen" rev="2.2.3" />
+        <dependency org="com.google.guava" name="guava" rev="16.0.1" />
 	</dependencies>
 </ivy-module>

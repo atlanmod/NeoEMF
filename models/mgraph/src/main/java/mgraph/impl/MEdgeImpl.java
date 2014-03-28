@@ -104,12 +104,12 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 */
 	public String getName() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	  		
 		return getData().name;
 		
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
  /**
@@ -140,7 +140,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 */
 	public MNode getInComing() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	  
 		if (getData().inComing == null && isLoaded()) {
 			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__IN_COMING);
@@ -148,7 +148,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		return getData().inComing;
 		
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
 	/**
@@ -211,7 +211,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 */
 	public MNode getOutGoing() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	  
 		if (getData().outGoing == null && isLoaded()) {
 			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MEDGE__OUT_GOING);
@@ -219,7 +219,7 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		return getData().outGoing;
 		
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
 	/**
@@ -282,14 +282,14 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	 */
 	public MGraph getGraph() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	  
 		if (isLoaded() && eContainer() == null) {
 			MGraph graph = (MGraph) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, MgraphPackage.MEDGE__GRAPH);
 			basicSetGraph(graph,null);}
 		return (MGraph)eContainer();
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
 	/**

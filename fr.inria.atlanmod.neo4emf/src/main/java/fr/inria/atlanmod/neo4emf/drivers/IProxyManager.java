@@ -14,50 +14,39 @@ package fr.inria.atlanmod.neo4emf.drivers;
  * */
 
 
-import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.WeakHashMap;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.jboss.util.collection.SoftValueTreeMap;
-import org.neo4j.graphdb.Node;
+
+import com.google.common.cache.Cache;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
 
 public interface IProxyManager {
-	long getNode(EObject eObj);
-
-	HashMap<EObject, Long> getWeakNodeIds();
-	INeo4emfObject getEObject(int id,long id1);
-	TreeMap<Integer, AbstractPartition> getWeakObjectsTree ();
-	void updatePartitionsHistory(INeo4emfObject eObject  , int feature, boolean  isReference);
-
-	int newPartitionID();
-
-	boolean isHead(EObject eObject);
-
-	void movePartitionTo(INeo4emfObject obj, int newIndex, int oldIndex);
-
-	void putHeadToProxy(INeo4emfObject obj);
-
-	void addNewHistory(int newId);
-
-	int getLeastRecentlyUsedPartition();
-
-	int getLIFOPartition();
-
-	int getLeastFrequentlyPartition();
-
-	int getFIFOPartition();
-
-	void moveToPartition(EObject eObj,int fromPID, int toPID, int featureId);
-	Map<Integer, List<INeo4emfObject>> getSideEffectsMap(
-			INeo4emfObject neoObj, int key);
+	
+	/**
+	 * Put an EObject into the proxy
+	 * @param obj the INeo4emfObject to cache
+	 */
 	void putToProxy(INeo4emfObject obj);
-	INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n);	
-
+	
+	/**
+	 * Search in the cache if there is an INeo4emfObject corresponding to the
+	 * given EClass and database node ID
+	 * <p>
+	 * Note : The EClass is used to optimize the cache research
+	 * </p>
+	 * @param eClassifier the EClass of the INeo4emfObject
+	 * @param nodeId the database node ID
+	 * @return the INeo4emfObject if it is cached, null otherwise
+	 */
+	INeo4emfObject getObjectFromProxy(EClass eClassifier, long nodeId);	
+	
+	/**
+	 * <p>
+	 * Warning : This method is public only for test purpose
+	 * </p>
+	 * @return the internal cache mapping
+	 */
+	Map<EClass,Cache<Long,INeo4emfObject>> getInternalProxy();
 }

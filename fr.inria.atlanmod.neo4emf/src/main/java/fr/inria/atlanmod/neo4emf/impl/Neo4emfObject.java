@@ -13,13 +13,12 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
+import java.lang.ref.ReferenceQueue;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.AbstractTreeIterator;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -29,28 +28,25 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.osgi.util.NLS;
 import org.neo4j.graphdb.Node;
 
-import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
+import fr.inria.atlanmod.neo4emf.change.impl.RemoveLink;
 import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 
 public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject {
 
-	/**
-	 * TODO: Comment this field
-	 */
-	protected volatile boolean loadingOnDemand = false;
+	protected volatile int loadingOnDemand = 0;
+
+	protected volatile int memoryLock = 0;
 
 	/**
 	 * eObject ID
@@ -61,25 +57,16 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	 */
 	private int partition = -1;
 	/**
+	 * eObject temporary attribute node ID
+	 */
+	protected long attributeId = -1;
+	/**
 	 * isProxy flag
 	 */
 	protected boolean isProxy = false;
 
-	/**
-	 * Constructor
-	 */
-	public Neo4emfObject() {
-		super();
-	}
+	protected ReferenceQueue<Object> garbagedData;
 
-	public Neo4emfObject(final EClass eClass) {
-		this();
-		this.eSetClass(eClass);
-	}
-
-	/**
-	 * hasProxy flag
-	 */
 	protected NeoObjectData getObjectData() {
 		return null;
 	}
@@ -92,12 +79,22 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 		return this.id;
 	}
 
+	@Override
+	public long getAttributeNodeId() {
+		return this.attributeId;
+	}
+
 	/**
 	 * @see INeo4emfObject#setNodeId()
 	 */
 	@Override
 	public void setNodeId(final long nodeId) {
 		this.id = nodeId;
+	}
+
+	@Override
+	public void setAttributeNodeId(final long nodeId) {
+		this.attributeId = nodeId;
 	}
 
 	@Override
@@ -108,6 +105,20 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	@Override
 	public void setPartitionId(final int partId) {
 		this.partition = partId;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public Neo4emfObject() {
+		super();
+		this.garbagedData = new ReferenceQueue<Object>();
+	}
+
+	public Neo4emfObject(final EClass eClass) {
+		super();
+		eSetClass(eClass);
+		this.garbagedData = new ReferenceQueue<Object>();
 	}
 
 	/**
@@ -141,6 +152,47 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	}
 
 	@Override
+	public void setLoadingOnDemand() {
+		this.loadingOnDemand++;
+	}
+
+	@Override
+	public void unsetLoadingOnDemand() {
+		this.loadingOnDemand--;
+	}
+
+	@Override
+	public void setMemoryLock() {
+		this.memoryLock++;
+		if (memoryLock == 1) {
+			setDataStrongReferences();
+		}
+	}
+
+	@Override
+	public void unsetMemoryLock() {
+		this.memoryLock--;
+		if (memoryLock == 0) {
+			releaseDataStrongReferences();
+		}
+	}
+
+	@Override
+	public void setDataStrongReferences() {
+		// Do nothing, needs to be overridden in subclasses
+	}
+
+	@Override
+	public void releaseDataStrongReferences() {
+		// Do nothing, needs to be overridden in subclasses.
+	}
+
+	@Override
+	public boolean isLoadingOnDemand() {
+		return this.loadingOnDemand > 0;
+	}
+
+	@Override
 	public Object eGet(final EStructuralFeature eFeature) {
 		return eGet(eFeature, true);
 	}
@@ -154,13 +206,13 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	public Object eGet(final EStructuralFeature eFeature,
 			final boolean resolve, final boolean coreType) {
 		try {
-			loadingOnDemand = true;
+			setLoadingOnDemand();
 			int featureID = eDerivedStructuralFeatureID(eFeature);
 			Assert.isTrue(featureID >= 0,
 					"Invalid feature : " + eFeature.getName());
 			return eGet(featureID, resolve, coreType);
 		} finally {
-			loadingOnDemand = false;
+			unsetLoadingOnDemand();
 		}
 	}
 
@@ -230,13 +282,13 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 		Assert.isTrue(eFeature != null, "Invalid featureID: " + featureID);
 		Object result = eSettingDelegate(eFeature).dynamicGet(this,
 				eSettings(), dynamicFeatureID, resolve, coreType);
-		if (result != null && notificationRequired) {
-			Notification msg = new ENotificationImpl(this,
-					INeo4emfNotification.GET, eFeature, null, null);
-			if (getChangeLog() != null) {
-				getChangeLog().addNewEntry(msg);
-			}
-		}
+		// TODO check if it can be removed
+		/*
+		 * if (result != null && notificationRequired) { Notification msg = new
+		 * ENotificationImpl(this, INeo4emfNotification.GET, eFeature, null,
+		 * null); if (getChangeLog() != null) { // TODO Check if it is still
+		 * needed getChangeLog().addNewEntry(msg); } }
+		 */
 		return result;
 	}
 
@@ -272,31 +324,60 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 
 	}
 
-	protected void addChangelogEntry(Object newValue, int eStructuralFeatureId) {
+	public void addChangelogEntry(Object newValue, int eStructuralFeatureId) {
 		addChangelogEntry(newValue,
 				eClass().getEStructuralFeature(eStructuralFeatureId));
 	}
 
-	protected void addChangelogEntry(Object newValue,
-			EStructuralFeature eFeature) {
-		if (!loadingOnDemand && getChangeLog() != null) {
+	public void addChangelogEntry(Object newValue, EStructuralFeature eFeature) {
+		if (loadingOnDemand == 0 && getChangeLog() != null) {
+			// if (!loadingOnDemand && getChangeLog() != null) {
 			if (eFeature instanceof EAttribute) {
 				getChangeLog().add(
 						new SetAttribute(this, (EAttribute) eFeature, eGet(
 								eFeature, false), newValue));
 			} else if (eFeature instanceof EReference) {
-				@SuppressWarnings("unchecked")
-				Collection<EObject> c = (Collection<EObject>) newValue;
-				for (EObject elt : c) {
+				EReference ref = (EReference) eFeature;
+				// if(newValue == null) {
+				// getChangeLog().add(new RemoveLink(this, ref,
+				// eGet(eFeature,false), null));
+				// }
+				// else {
+				if (ref.isMany()) {
+					if (newValue instanceof Collection) {
+						@SuppressWarnings("unchecked")
+						Collection<EObject> c = (Collection<EObject>) newValue;
+						for (EObject elt : c) {
+							getChangeLog().add(
+									new AddLink(this, (EReference) eFeature,
+											eGet(eFeature, false), elt));
+						}
+					} else {
+						getChangeLog().add(
+								new AddLink(this, (EReference) eFeature, eGet(
+										eFeature, false), newValue));
+					}
+				} else {
 					getChangeLog().add(
 							new AddLink(this, (EReference) eFeature, eGet(
-									eFeature, false), elt));
+									eFeature, false), newValue));
 				}
+				// }
 			} else {
 				throw new WrappedException(new Exception(NLS.bind(
 						"Unexpected EStructuralFeature {0}",
 						eFeature.toString())));
 			}
+		}
+	}
+
+	public void addChangelogRemoveEntry(EObject removedObject, int featureId) {
+		if (loadingOnDemand == 0 && getChangeLog() != null) {
+			EStructuralFeature feature = eClass().getEStructuralFeature(
+					featureId);
+			getChangeLog().add(
+					new RemoveLink(this, (EReference) feature, removedObject,
+							null));
 		}
 	}
 
@@ -312,7 +393,7 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 		throw new UnsupportedOperationException();
 	}
 
-	protected boolean isLoaded() {
+	public boolean isLoaded() {
 		return getNodeId() > -1 & eResource() instanceof INeo4emfResource;
 	}
 
@@ -377,6 +458,7 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	public void loadAllAttributesFrom(Node n) {
 		throw new UnsupportedOperationException("Unsupported Method.");
 	}
+
 	@Override
 	public void saveAllReferencesTo(Node n) {
 		throw new UnsupportedOperationException("Unsupported Method.");
@@ -385,5 +467,20 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	@Override
 	public void loadAllReferencesFrom(Node n) {
 		throw new UnsupportedOperationException("Unsupported Method.");
+
+	}
+
+	/**
+	 * TODO is it still needed ?
+	 */
+	@Override
+	public int hashCode() {
+		if (id == -1) {
+			return super.hashCode();
+		}
+		int prime = 17;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
 	}
 }

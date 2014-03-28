@@ -107,12 +107,12 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 */
 	public String getName() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	  		
 		return getData().name;
 		
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	}
  /**
@@ -143,7 +143,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 */
 	public EList<MNode> getNodes() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	   
 		
 		if (getData().nodes == null){
@@ -152,7 +152,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__NODES);			}
 		return getData().nodes;
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	} 
 
@@ -165,7 +165,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 */
 	public EList<MEdge> getEdges() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();
 	   
 		
 		if (getData().edges == null){
@@ -174,7 +174,7 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__EDGES);			}
 		return getData().edges;
 	} finally {
-	loadingOnDemand = false;
+	unsetLoadingOnDemand();
 }
 	} 
 

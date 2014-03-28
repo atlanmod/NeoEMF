@@ -14,22 +14,16 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -43,14 +37,9 @@ import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
-import fr.inria.atlanmod.neo4emf.drivers.IUnloader;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
-import fr.inria.atlanmod.neo4emf.impl.AbstractPartition;
-import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfResource;
-import fr.inria.atlanmod.neo4emf.impl.Partition;
-import fr.inria.atlanmod.neo4emf.logger.Logger;
 import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 public class PersistenceManager implements IPersistenceManager {
@@ -67,10 +56,6 @@ public class PersistenceManager implements IPersistenceManager {
 	 * Serializer and nodes converter {@link Serializer}
 	 */
 	protected ISerializer serializer;
-	/**
-	 * Unloader {@link Unloader}
-	 */
-	protected IUnloader unloader;
 	/**
 	 * The resource {@link Neo4emfResource}
 	 */
@@ -101,7 +86,6 @@ public class PersistenceManager implements IPersistenceManager {
 		this.serializer = new Serializer(this);
 		this.proxyManager = new ProxyManager();
 		this.loader = new Loader(this);
-		this.unloader = new Unloader(this, null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -139,14 +123,19 @@ public class PersistenceManager implements IPersistenceManager {
 	public NETransaction createTransaction() {
 		return persistenceService.createTransaction();
 	}
-
+	
+	@Override
+	public void cleanIndexes() {
+		persistenceService.cleanIndexes();
+	}
+	
 	@Override
 	public void shutdown() {
 		persistenceService.shutdown();
 	}
 
-	
-	private Node getNodeById(EObject eObj) {
+	//@Override
+	public Node getNodeById(EObject eObj) {
 		Assert.isTrue(((INeo4emfObject) eObj).getNodeId() >= 0,
 				"nodeId is > -1");
 		Node result = persistenceService.getNodeById(((INeo4emfObject) eObj)
@@ -157,24 +146,108 @@ public class PersistenceManager implements IPersistenceManager {
 			return result;
 		}
 	}
-
 	
-	private RelationshipType getRelTypefromERef(int classID, int referenceID) {
-		
+//	@Override
+	public Node getAttributeNodeById(EObject eObj) {
+		// Strange to have node here
+		Assert.isTrue(((INeo4emfObject)eObj).getAttributeNodeId() > -1, "attribute node id is > -1");
+		Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getAttributeNodeId());
+		if(result == null) {
+			//throw new NullPointerException(" Cannot find the attribute node ");
+			return null;
+		}
+		else {
+			return result;
+		}
+	}
+	
+//	@Override
+	public Node getAttributeNode(Node n) {
+		// Strange to have node here
+		Node result = persistenceService.getAttributeNode(n);
+		return result;
+	}
+	
+//	@Override
+	public List<Relationship> getTmpRelationships() {
+		return persistenceService.getTmpRelationships();
+	}
+	
+//	@Override
+//	public List<Node> getTmpNodes() {
+//		return persistenceService.getTmpNodes();
+//	}
+//	
+//	@Override
+	public void flushTmpRelationships() {
+		persistenceService.flushTmpRelationships();	
+	}
+
+//	@Override
+//	public Node createNodefromEObject(EObject eObject) {
+//		return persistenceService.createNodeFromEObject(eObject,false);
+//	}
+	
+//	@Override
+//	public Node createNodefromEObject(EObject eObject, boolean isTemporary) {
+//		Node n = persistenceService.createNodeFromEObject(eObject,isTemporary);
+//		((INeo4emfObject)eObject).setNodeId(n.getId());
+//		proxyManager.putToProxy((INeo4emfObject)eObject);
+//		return n;
+//	}
+	
+//	@Override
+	public void deleteNodeFromEObject(INeo4emfObject eObject) {
+		persistenceService.deleteNodeFromEObject(eObject);
+	}
+	
+//	@Override
+	public Node createAttributeNodeForEObject(INeo4emfObject eObject) {
+		return persistenceService.createAttributeNodeForEObject(eObject);
+	}
+	
+//	@Override
+	public Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		return persistenceService.createAddLinkRelationship(from, to, ref);
+	}
+	
+//	@Override
+	public Relationship createRemoveLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		return persistenceService.createRemoveLinkRelationship(from, to, ref);
+	}
+	
+//	@Override
+	public Relationship createDeleteRelationship(INeo4emfObject obj) {
+		return persistenceService.createDeleteRelationship(obj);
+	}
+
+	//@Override
+	public RelationshipType getRelTypefromERef(int classID, int referenceID) {
 		return persistenceService.getRelationshipFor(classID, referenceID);
 	}
 
-	
-	private Node createNodefromEObject(INeo4emfObject eObject) {
+	//@Override
+	public Node createNodefromEObject(INeo4emfObject eObject) {
 		return persistenceService.createNodeFromEObject(eObject);
 	}
-
-	@Override
-	public void putNodeId(EObject eObject, long id) {
-		if (!proxyManager.getWeakNodeIds().containsKey(eObject))
-			proxyManager.getWeakNodeIds().put(eObject, id);
+	
+//	@Override
+	public Node createNodefromEObject(INeo4emfObject eObject, boolean isTemporary) {
+		Node n = persistenceService.createNodeFromEObject(eObject,isTemporary);
+		((INeo4emfObject)eObject).setNodeId(n.getId());
+		proxyManager.putToProxy((INeo4emfObject)eObject);
+		return n;
 	}
-
+	
+	public void createLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		persistenceService.createLink(from,to,ref);
+	}
+	
+	public void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
+		persistenceService.removeLink(from,to,ref);
+	}
+	
+	//@Override
 	public List<Node> getAllRootNodes() {
 		return persistenceService.getAllRootNodes();
 	}
@@ -198,35 +271,13 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public void fetchAttributes(EObject obj) {
 		Node node = getNodeById(obj);
-		loader.fetchAttributes(obj, node);
-	}
-
-	@Override
-	public void putToProxy(INeo4emfObject object, EStructuralFeature str,
-			int partitionID) throws NullPointerException {
-		AbstractPartition partition = proxyManager.getWeakObjectsTree().get(
-				partitionID);
-		if (partition == null) {
-			throw new NullPointerException();
+		// TODO find a way to avoid that call when appropriate (maybe
+		// if there is a non changed changelog)
+		Node attributeNode = null;
+		if(((Neo4emfObject)obj).getAttributeNodeId() > -1) {
+			attributeNode = getAttributeNodeById(obj);
 		}
-		if (partition instanceof Partition)
-			((Partition) partition).put(object.getNodeId(), object, str);
-		else
-			Logger.log(IStatus.WARNING,
-					"//TODO : put flatened partitions to proxy");
-
-	}
-
-	@Override
-	public void putAllToProxy(List<INeo4emfObject> objects) {
-		for (INeo4emfObject obj : objects)
-			proxyManager.putToProxy(obj);
-	}
-
-	@Override
-	public void putAllToProxy2(List<INeo4emfObject> objects) {
-		for (INeo4emfObject obj : objects)
-			proxyManager.putHeadToProxy(obj);
+		loader.fetchAttributes(obj,node,attributeNode);	
 	}
 
 	@Override
@@ -244,6 +295,10 @@ public class PersistenceManager implements IPersistenceManager {
 			}
 			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),
 						relationship);
+			List<Node> addLinkNodes = persistenceService.getAddLinkNodesOnDemand(((INeo4emfObject)obj).getNodeId(), relationship);
+			List<Node> removeLinkNodes = persistenceService.getRemoveLinkNodesOnDemand(((INeo4emfObject)obj).getNodeId(), relationship);
+			nodes.addAll(addLinkNodes);
+			nodes.removeAll(removeLinkNodes);
 			loader.getObjectsOnDemand(obj, featureId,getNodeById(obj), nodes);
 		}catch(Exception e){ 
 			shutdown();
@@ -268,106 +323,8 @@ public class PersistenceManager implements IPersistenceManager {
 		return eResult;
 	}
 
-	@Override
-	public int proxyContainsLongKey(long id) {
-		for (Entry<Integer, AbstractPartition> entry : proxyManager
-				.getWeakObjectsTree().entrySet())
-			if (entry.getValue() != null && entry.getValue().containsKey(id))
-				return entry.getKey();
-		return -1;
-	}
-
-	@Override
-	public boolean proxyContainsObjectKey(INeo4emfObject obj) {
-		return proxyManager.getWeakNodeIds().containsKey(obj);
-	}
-
-	@Override
-	public EObject getObjectFromProxy(long id) {
-		int i = proxyContainsLongKey(id);
-		return i == -1 ? null : proxyManager.getEObject(i, id);
-	}
-
-	@Override
-	public void updateProxyManager(INeo4emfObject eObject,
-			EStructuralFeature feature) {
-		proxyManager.updatePartitionsHistory(eObject, feature.getFeatureID(),
-				feature instanceof EReference);
-
-	}
-
 	public boolean isRootNode(Node node) {
 		return persistenceService.isRootNode(node);
-	}
-
-	@Override
-	public int getNewPartitionID() {
-		return proxyManager.newPartitionID();
-	}
-
-	@Override
-	public boolean isHead(EObject eObject) {
-		return this.proxyManager.isHead(eObject);
-	}
-
-	@Override
-	public void delegate(EObject eObject) {
-		boolean isFound = false;
-		int newPID = -1;
-		INeo4emfObject neoObject = (INeo4emfObject) eObject;
-		for (Entry<Integer, AbstractPartition> entry : proxyManager
-				.getWeakObjectsTree().entrySet()) {
-			if (entry.getKey() == neoObject.getPartitionId()
-					|| !entry.getValue().containsKey(neoObject.getNodeId())) {
-				continue;
-			}
-			if (!isFound) {
-				INeo4emfObject object = entry.getValue().get(
-						neoObject.getNodeId());
-				object.setProxy(false);
-				newPID = entry.getKey();
-				object.setPartitionId(newPID);
-			} else {
-				entry.getValue().get(neoObject.getNodeId())
-						.setPartitionId(newPID);
-			}
-		}
-	}
-
-	@Override
-	public void unloadPartition(int PID) {
-		AbstractPartition partition = this.proxyManager.getWeakObjectsTree()
-				.get(PID);
-		this.unloader.unloadPartition(partition, PID);
-		// proxyManager.getWeakObjectsTree().remove(PID);
-		Runtime.getRuntime().gc();
-	}
-
-	@Override
-	public boolean doUnload() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void unload(int unloadStrategyId) {
-		int partition = -1;
-		switch (unloadStrategyId) {
-		case IUnloader.LIFO:
-			partition = proxyManager.getLIFOPartition();
-			break;
-		case IUnloader.FIFO:
-			partition = proxyManager.getFIFOPartition();
-			break;
-		case IUnloader.LEAST_RECENTLY_USED:
-			partition = proxyManager.getLeastRecentlyUsedPartition();
-			break;
-		case IUnloader.LEAST_FREQUENTLY_USED:
-			partition = proxyManager.getLeastFrequentlyPartition();
-			break;
-		}
-		unloader.unloadPartition(
-				proxyManager.getWeakObjectsTree().get(partition), partition);
 	}
 
 	@Override
@@ -391,197 +348,21 @@ public class PersistenceManager implements IPersistenceManager {
 		return allInstances;
 	}
 
-	@Override
-	public void createNewPartitionHistory(int newId) {
-		this.proxyManager.addNewHistory(newId);
-	}
-
-	@Override
-	public FlatPartition createNewFlatPartition(int id) {
-		FlatPartition result = new FlatPartition();
-		this.proxyManager.getWeakObjectsTree().put(id, result);
-		return result;
-	}
-
-	@Override
-	public int createNewPartition(EObject obj, int partitionID) {
-
-		int newIndex = getNewPartitionID();
-		((INeo4emfObject) obj).setPartitionId(partitionID);
-		((INeo4emfObject) obj).setProxy(true);
-		this.proxyManager.getWeakObjectsTree()
-				.put(newIndex, new Partition(obj));
-		// proxyManager.movePartitionTo(((INeo4emfObject) obj),newIndex,
-		// oldIndex);
-		return newIndex;
-	}
-
-	@Override
-	public void moveToPartition(EObject eObj, int fromPID, int toPID,
-			int featureId) {
-		Assert.isNotNull(eObj, "eObject should not be null");
-		this.proxyManager.moveToPartition(eObj, fromPID, toPID, featureId);
-
-	}
-
-	@Override
-	public void setUsageTrace(int PID, int partitionId, int featureId,
-			EObject eObject) {
-		((ProxyManager) this.proxyManager).addUsageTrace(PID, partitionId,
-				featureId, eObject);
-
-	}
-
-	@Override
-	public Map<Integer, List<INeo4emfObject>> getAffectedElement(
-			INeo4emfObject neoObj, int key) {
-		return this.proxyManager.getSideEffectsMap(neoObj, key);
-	}
-
 	public INeo4emfResource getResource() {
 		return resource;
 	}
 
+	@Override
 	public INeo4emfObject getObjectFromProxy(EClass eClassifier, Node n) {
-		return proxyManager.getObjectFromProxy(eClassifier, n);
+		return proxyManager.getObjectFromProxy(eClassifier, n.getId());
 	}
-
-	public void removeExistingLink(EObject eObject, EReference eRef, Object object) {
-		Node n = getNodeById(eObject);
-		Node n2 = getNodeById((EObject) object);
-		RelationshipType rel = getRelTypefromERef(eObject.eClass().getClassifierID(),
-				eRef.getFeatureID());
-		Iterator<Relationship> it = n.getRelationships(rel).iterator();
-		while (it.hasNext()) {
-			Relationship relship = it.next();
-			if (relship.getEndNode().getId() == n2.getId())
-				relship.delete();
-		}
+	
+	/**
+	 * {@link IPersistenceManager#getProxyManager()}
+	 */
+	@Override
+	public IProxyManager getProxyManager() {
+		return proxyManager;
 	}
-
-	public void addNewLink(EObject eObject, EReference eRef, Object object)
-			throws NullPointerException {
-		Node n = getNodeById(eObject);
-		Node n2 = getNodeById((EObject) object);
-		if (n == null || n2 == null) {
-			Logger.log(IStatus.WARNING, "Dummy objects");
-			return;
-		}
-		RelationshipType rel = getRelTypefromERef(eObject.eClass().getClassifierID(),
-				eRef.getFeatureID());
-		if (rel == null) {
-			rel = DynamicRelationshipType.withName(Neo4emfResourceUtil
-					.formatRelationshipName(eObject.eClass(), eRef));
-		}
-		n.createRelationshipTo(n2, rel);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void setAttributeValue(INeo4emfObject eObject, EAttribute at, Object newValue) {
-		Node n = getNodeById(eObject);
 	
-		if (newValue != null && !at.isMany()) {
-	
-			if (at.getEType() instanceof EEnum)
-				n.setProperty(at.getName(), newValue.toString());
-	
-			else if (this.isPrimitive(at.getName()))
-				n.setProperty(at.getName(), newValue);
-	
-			else
-				n.setProperty(at.getName(), newValue.toString());
-		}
-	
-		else if (newValue != null && at.isMany()) {
-			n.setProperty(at.getName(), ((EList<EObject>) newValue).toArray());
-		}
-	
-		else if (!at.isMany()) {
-	
-			if (at.getEType().getName().equals("Boolean")
-					|| at.getEType().getName().equals("EBoolean"))
-				n.setProperty(at.getName(), false);
-	
-			else if (at.getEType().getName().equals("String")
-					|| at.getEType().getName().equals("EString"))
-				n.setProperty(at.getName(), "");
-	
-			else
-				n.setProperty(at.getName(), 0);
-		} else {
-			n.setProperty(at.getName(), new Object[1]);
-		}
-	}
-
-	
-	private 	boolean isPrimitive(String str) {
-		if (str.equals("Boolean") || str.equals("Integer")
-				|| str.equals("Short") || str.equals("Long")
-				|| str.equals("Float") || str.equals("String")
-				|| str.equals("Double") || str.equals("Byte"))
-			return false;
-		return true;
-		// TODO debug this instruction
-	}
-
-	public void createNewObject(INeo4emfObject eObject) {
-		Node n = null;
-		if (((INeo4emfObject) eObject).getNodeId() == -1) {
-			n = createNodefromEObject(eObject);
-			((Neo4emfObject) eObject).setNodeId(n.getId());
-		} else {
-			n = getNodeById(eObject);
-		}
-		{
-			EList<EAttribute> atrList = eObject.eClass().getEAllAttributes();
-			Iterator<EAttribute> itAtt = atrList.iterator();
-			while (itAtt.hasNext()) {
-				EAttribute at = itAtt.next();
-				if (eObject.eIsSet(at)) {
-					this.setAttributeValue(eObject, at, eObject.eGet(at));
-				} else {
-					n.setProperty(at.getName(), "");
-				}
-			}
-		}
-		{
-			EList<EReference> refList = eObject.eClass().getEAllReferences();
-			Iterator<EReference> itRef = refList.iterator();
-			while (itRef.hasNext()) {
-				EReference ref = itRef.next();
-				boolean isSet = false;
-				try {
-					isSet = eObject.eIsSet(ref);
-				} catch (ClassCastException e) {
-				}
-				;
-				if (isSet) {
-					if (ref.getUpperBound() == -1) {
-						List<INeo4emfObject> eObjects = (List<INeo4emfObject>) eObject
-								.eGet(ref);
-						for (INeo4emfObject referencedEObject : eObjects) {
-							INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) referencedEObject;
-							if (referencedNeo4emfObject.getNodeId() == -1) {
-								Node childNode = createNodefromEObject(referencedEObject);
-								referencedNeo4emfObject.setNodeId(childNode
-										.getId());
-							}
-							this.addNewLink(eObject, ref, referencedEObject);
-						}
-					} else {
-						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject
-								.eGet(ref);
-						if (referencedNeo4emfObject.getNodeId() == -1) {
-							Node childNode = createNodefromEObject(referencedNeo4emfObject);
-							referencedNeo4emfObject
-									.setNodeId(childNode.getId());
-						}
-						this.addNewLink(eObject, ref, referencedNeo4emfObject);
-					}
-				}
-			}
-		}
-		putNodeId(eObject, n.getId());
-		// TODO set the node id in the eObject
-	}
 }

@@ -16,11 +16,9 @@ package fr.inria.atlanmod.neo4emf.impl;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -54,9 +52,9 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	public Neo4emfResource(NEConfiguration configuration) {
 		
 		assert configuration != null : "Null configuration";
-		
 		this.persistenceManager = new PersistenceManager(this, configuration);
-		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
+//		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog();
+		this.changeLog = IChangeLogFactory.eINSTANCE.createChangeLog(this);
 	}
 
 	/**
@@ -74,7 +72,6 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	@Override
 	public void getOnDemand(final EObject obj, final int featureId) {
 		this.persistenceManager.getOnDemand(obj, featureId);
-
 	}
 
 	/**
@@ -120,27 +117,6 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 				isLoading = false;
 			}
 		}
-	}
-
-	/**
-	 * {@link INeo4emfResource#notifyGet(EObject, EStructuralFeature)}
-	 */
-	@Override
-	public void notifyGet(EObject eObject, EStructuralFeature feature) {
-		try {
-			Assert.isNotNull(eObject, "eObject should not be null ");
-			this.persistenceManager.updateProxyManager(
-					(INeo4emfObject) eObject, feature);
-		} catch (Exception e) {
-			this.persistenceManager.shutdown();
-			e.printStackTrace();
-		}
-
-	}
-
-	@Override
-	public void unload(int PID) {
-		this.persistenceManager.unloadPartition(PID);
 	}
 
 	@Override
@@ -190,33 +166,44 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	@Override
 	public void detached(EObject eObject) {
 		super.detached(eObject);
-		// Neo4emfObject neoObject = (Neo4emfObject) eObject;
-		// addChangeLogCreateEntry(neoObject);
-		// Iterator<EObject> it = neoObject.eAllResolvedContents();
-		// while (it.hasNext()) {
-		// Neo4emfObject itEObject = (Neo4emfObject) it.next();
-		// addChangeLogDeleteEntry(itEObject);
-		// }
+		Neo4emfObject neoObject = (Neo4emfObject) eObject;
+		addChangeLogDeleteEntry(neoObject);
+		Iterator<EObject> it = neoObject.eAllResolvedContents();
+		while (it.hasNext()) {
+			Neo4emfObject itEObject = (Neo4emfObject) it.next();
+			addChangeLogDeleteEntry(itEObject);
+		}
 	}
 
 	private void addChangeLogCreateEntry(INeo4emfObject neoObject) {
-		if (neoObject.getNodeId() == -1) {
+//		if (neoObject.getNodeId() == -1) {
 			getChangeLog().add(new NewObject(neoObject));
-		}
+//		}
 	}
 
 	private void addChangeLogDeleteEntry(INeo4emfObject neoObject) {
-		if (neoObject.getNodeId() == -1) {
+		//if (neoObject.getNodeId() == -1) {
 			getChangeLog().add(new DeleteObject(neoObject));
-		}
+		//}
 	}
 
 	public IChangeLog<Entry> getChangeLog() {
 
         return changeLog;
 	}
+<<<<<<< HEAD
 
     public IPersistenceManager getPersistenceManager() {
         return persistenceManager;
     }
+=======
+	
+	/**
+	 * {@link INeo4emfResource#getPersistenceManager()}
+	 */
+	@Override
+	public IPersistenceManager getPersistenceManager() {
+		return persistenceManager;
+	}
+>>>>>>> changelog-refactoring
 }

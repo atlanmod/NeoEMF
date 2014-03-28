@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/mgraph/src/main/java" modelPluginID="mgraph" templateDirectory="platform:/plugin/fr.inria.atlanmod.neo4emf.codegen/templates"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/mgraph/src" modelPluginID="mgraph" templateDirectory="platform:/plugin/fr.inria.atlanmod.neo4emf.codegen/templates"
     dynamicTemplates="true" modelName="MGraph" rootExtendsInterface="fr.inria.atlanmod.neo4emf.INeo4emfObject"
     rootExtendsClass="fr.inria.atlanmod.neo4emf.impl.Neo4emfObject" importerID="fr.inria.atlanmod.neo4emf.importer"
     complianceLevel="5.0" copyrightFields="false" operationReflection="true" importOrganizing="true">

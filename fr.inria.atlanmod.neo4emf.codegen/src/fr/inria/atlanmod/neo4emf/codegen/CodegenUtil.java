@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass;
 import org.eclipse.emf.codegen.ecore.genmodel.GenFeature;
+import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 
 
 public class CodegenUtil {
@@ -96,5 +97,11 @@ public class CodegenUtil {
 			}
 		}
 		return result;
+	}
+	
+	public static String getListConstructorAndNeoImport(GenModel model, String listConstructor) {
+		String listType = listConstructor.substring(0,listConstructor.indexOf('<'));
+		model.getImportedName("fr.inria.atlanmod.neo4emf.Neo"+listType);
+		return "Neo"+listConstructor;
 	}
 }

@@ -17,12 +17,15 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.Index;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 public interface IPersistenceService {
 	/**
@@ -34,6 +37,8 @@ public interface IPersistenceService {
 	 * {@link String}
 	 */
 	public final String META_ELEMENTS = "meta_elements";
+	
+	public final String META_RELATIONSHIPS = "meta_relationships";
 	/**
 	 * ROOT_ELEMENTS Constant to meta_elements index name {@link String}
 	 */
@@ -55,6 +60,12 @@ public interface IPersistenceService {
 	 */
 	public final String RESOURCE_NODE = "resource";
 	/**
+	 * the Value of the temporary nodes in the backend
+	 */
+	public final String TMP_NODE = "temporary_node";
+	
+	public final String TMP_RELATIONSHIP = "temporary_relationship";
+	/**
 	 * INSTANCE_OF {@link RelationshipType}
 	 */
 	public final RelationshipType INSTANCE_OF = MetaRelation.INSTANCE_OF;
@@ -64,11 +75,33 @@ public interface IPersistenceService {
 	public final RelationshipType IS_ROOT = MetaRelation.IS_ROOT;
 
 	/**
+	 * ADD_LINK {@link RelationshipType}
+	 */
+	public final RelationshipType ADD_LINK = MetaRelation.ADD_LINK;
+	/**
+	 * REMOVE_LINK {@link RelationshipType}
+	 */
+	public final RelationshipType REMOVE_LINK = MetaRelation.REMOVE_LINK;
+	/**
+	 * DELETE {@link RelationshipType}
+	 */
+	public final RelationshipType DELETE = MetaRelation.DELETE;
+	/**
+	 * SET_ATTRIBUTE {@link RelationshipType}
+	 */
+	public final RelationshipType SET_ATTRIBUTE = MetaRelation.SET_ATTRIBUTE;
+	
+	
+	/**
 	 * get the meta_elements' index
 	 * 
 	 * @return {@link Index}
 	 */
 	Index<Node> getMetaIndex();
+	
+	Index<Relationship> getRelationshipIndex();
+	
+	Node getAttributeNode(Node n);
 
 
 	/**
@@ -78,7 +111,36 @@ public interface IPersistenceService {
 	 *            {@link EObject}
 	 * @return {@link Node}
 	 */
+
 	Node createNodeFromEObject(INeo4emfObject eObject);
+	
+	Node createNodeFromEObject(INeo4emfObject eObject, boolean isTemporary);
+	
+	// TODO check if EReference is appropriate here
+	void createLink(INeo4emfObject from, INeo4emfObject to, EReference ref);
+	// TODO check if EReference is appropriate here
+	void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref);
+	/**
+	 * Create an Attribute node for eObject
+	 * @warning It doesn't check if an Attribute node is already
+	 * created.
+	 * @param eObject {@link EObject}
+	 * @return {@link Node}
+	 */
+	Node createAttributeNodeForEObject(INeo4emfObject eObject);
+	
+	void deleteNodeFromEObject(INeo4emfObject eObject);
+	
+	Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref);
+	Relationship createRemoveLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref);
+	
+	Relationship createDeleteRelationship(INeo4emfObject obj);
+	
+	List<Relationship> getTmpRelationships();
+	
+	List<Node> getTmpNodes();
+	
+	void flushTmpRelationships();
 
 	/**
 	 * Return a List of the root nodes
@@ -117,6 +179,10 @@ public interface IPersistenceService {
 	 * @return {@link List}
 	 */
 	List<Node> getNodesOnDemand(long nodeid, RelationshipType relationshipType);
+	
+	List<Node> getAddLinkNodesOnDemand(long nodeid, RelationshipType baseRelationshipType);
+	
+	List<Node> getRemoveLinkNodesOnDemand(long nodeid, RelationshipType baseRelationshipType);
 
 	/**
 	 * Return true if the node is root Node
@@ -146,7 +212,9 @@ public interface IPersistenceService {
 	 * @return
 	 */
 	NETransaction createTransaction();
-
+	
+	void cleanIndexes();
+	
 	/**
 	 * Returns database node for id
 	 * 
@@ -170,7 +238,7 @@ public interface IPersistenceService {
 	 * @return
 	 */
 	RelationshipType getRelationshipFor(int classID, int referenceID);
-
+	
 	/**
 	 * Enum class for the meta_relations
 	 * 
@@ -185,7 +253,22 @@ public interface IPersistenceService {
 		/**
 		 * IS_ROOT relationship
 		 */
-		IS_ROOT
-	}
-
+		IS_ROOT,
+		/**
+		 * ADD_LINK relationship
+		 */
+		ADD_LINK,
+		/**
+		 * REMOVE_LINK relationship
+		 */
+		REMOVE_LINK,
+		/**
+		 * DELETE relationship
+		 */
+		DELETE,
+		/**
+		 * SET_ATTRIBUTE relationship
+		 */
+		SET_ATTRIBUTE	
+	}	
 }

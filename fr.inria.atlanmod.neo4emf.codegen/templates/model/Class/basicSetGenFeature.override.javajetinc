@@ -29,8 +29,11 @@
       <%if (genModel.isVirtualDelegation()) {%>
 		Object old<%=genFeature.getCapName()%> = eVirtualSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, new<%=genFeature.getCapName()%>);
       <%} else {%>
-		<%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
-		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%>;
+      	<%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = null;
+      	if(<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> != null) {
+      		old<%=genFeature.getCapName()%> = <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>.get();
+      	}
+      	<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getImportedType(genClass)%>>(new<%=genFeature.getCapName()%>, garbagedData);
       <%}%>
       <%if (genFeature.isUnsettable()) {%>
         <%if (genModel.isVirtualDelegation()) {%>
