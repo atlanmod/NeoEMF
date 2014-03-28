@@ -311,18 +311,18 @@ public class NEConnection {
 		}
 	}
 
-	public List<Long> somethingVeryComplicate(INeo4emfObject source,
+	public void loadReferences(INeo4emfObject source,
 			EReference eRef) {
-		List<Long> result = new LinkedList<Long>();
+		List<INeo4emfObject> result = new LinkedList<INeo4emfObject>();
 		RelationshipType rel = mapping.relationshipAt(source.eClass()
 				.getClassifierID(), eRef.getFeatureID());
 		Node sourceNode = service.getNodeById(source.getNodeId());
 
 		for (Relationship each : sourceNode.getRelationships(rel,
 				Direction.OUTGOING)) {
-			result.add(each.getEndNode().getId());
+            long id  = each.getEndNode().getId();
+			result.add(this.retrieveObject(id));
 		}
-		return result;
 	}
 
 	/**
@@ -556,6 +556,9 @@ public class NEConnection {
 		}
 	}
 
+    /*
+     * Creates indexes for Meta-classes (ECLass), if absent.
+     */
 	private void initializeIndexes() {
 		assert state == ConnectionState.OPEN : "Connection closed";
 
@@ -566,6 +569,10 @@ public class NEConnection {
 		// /[Unload add]
 	}
 
+    /*
+     * Creates a node corresponding to a resource and adds it to the
+     * meta-classes index, if absent.
+     */
 	private void initializeResource() {
 		assert metaIndex != null : "Null meta index";
 
@@ -579,6 +586,10 @@ public class NEConnection {
 		}
 	}
 
+    /*
+     * Creates nodes corresponding to all meta-classes of the associated package, if needed
+     * and adds these nodes to the nodeTypes array.
+     */
 	private void initializePackage() {
 		assert epackage != null;
 		assert metaIndex != null;
@@ -595,6 +606,9 @@ public class NEConnection {
 		}
 	}
 
+    /*
+     * creates a node corresponding to a meta-class and adds it to the meta-classes index.
+     */
 	private Node createTypeNode(String id, EClassifier type) {
 		Node n = service.createNode();
 		n.setProperty(IPersistenceService.ECLASS_NAME, type.getName());
