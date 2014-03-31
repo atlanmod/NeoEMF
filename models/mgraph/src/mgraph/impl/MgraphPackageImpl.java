@@ -12,24 +12,21 @@
 **/
 package mgraph.impl;
 
-import fr.inria.atlanmod.neo4emf.RelationshipMapping;
-
-import mgraph.MEdge;
-import mgraph.MGraph;
-import mgraph.MNode;
 import mgraph.MgraphFactory;
 import mgraph.MgraphPackage;
-
 import mgraph.reltypes.Reltypes;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.neo4j.graphdb.RelationshipType;
+
+import fr.inria.atlanmod.neo4emf.RelationshipMapping;
+import fr.inria.mgraph.MEdge;
+import fr.inria.mgraph.MGraph;
+import fr.inria.mgraph.MNode;
 
 /**
  * <!-- begin-user-doc -->
@@ -347,7 +344,7 @@ public class MgraphPackageImpl extends EPackageImpl implements MgraphPackage {
 
 private RelationshipMapping relationshipMapping = new MgraphPackageRelationshipMapping();
 
-@Override
+//@Override
 public RelationshipMapping getRelationshipMapping() {
 	return relationshipMapping;
 }
@@ -373,7 +370,7 @@ class MgraphPackageRelationshipMapping implements RelationshipMapping {
 	
 	public RelationshipType relationshipAt(int classID, int referenceID) {
 		assert classID >= 0 && classID < mapping.length : "Invalid Class ID";
-		assert referenceID >= 0 : "Invalid Reference ID";
+		assert referenceID >= 0 && referenceID < mapping[classID].length: "Invalid Reference ID";
 		
 		return mapping[classID][referenceID];
 	}

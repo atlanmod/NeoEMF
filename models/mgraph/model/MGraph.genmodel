@@ -3,7 +3,7 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/mgraph/src" modelPluginID="mgraph" templateDirectory="platform:/plugin/fr.inria.atlanmod.neo4emf.codegen/templates"
     dynamicTemplates="true" modelName="MGraph" rootExtendsInterface="fr.inria.atlanmod.neo4emf.INeo4emfObject"
     rootExtendsClass="fr.inria.atlanmod.neo4emf.impl.Neo4emfObject" importerID="fr.inria.atlanmod.neo4emf.importer"
-    complianceLevel="5.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
+    complianceLevel="7.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
   <foreignModel>MGraph.ecore</foreignModel>
   <modelPluginVariables>NEO4J=fr.inria.atlanmod.neo4emf.neo4j-1.9.4</modelPluginVariables>
   <modelPluginVariables>NEO4EMF=fr.inria.atlanmod.neo4emf</modelPluginVariables>

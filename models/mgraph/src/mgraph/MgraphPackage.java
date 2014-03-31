@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- begin-user-doc -->
  * The <b>Package</b> for the model.
  * It contains accessors for the meta objects to represent
- * NEO4EMF WAS HERE
  * <ul>
  *   <li>each class,</li>
  *   <li>each feature of each class,</li>
@@ -35,7 +34,7 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package"
  * @generated
  */
-public interface MgraphPackage extends PersistentPackage {
+public interface MgraphPackage extends fr.inria.mgraph.emf.MgraphPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->

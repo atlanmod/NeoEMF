@@ -12,29 +12,26 @@
 **/
 package mgraph.impl;
 
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-
+import java.lang.ref.SoftReference;
 import java.util.Collection;
 
-import mgraph.MEdge;
-import mgraph.MGraph;
-import mgraph.MNode;
 import mgraph.MgraphPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.neo4j.graphdb.Node;
+
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.NeoEObjectContainmentWithInverseEList;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+import fr.inria.mgraph.MEdge;
+import fr.inria.mgraph.MGraph;
+import fr.inria.mgraph.MNode;
 
 /**
  * <!-- begin-user-doc -->
@@ -72,21 +69,9 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 		super();
 		
 	}
+
 	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	 
-	protected DataMGraph getData(){
-		if ( data == null || !(data instanceof DataMGraph)){
-			data = new DataMGraph();
-			if (isLoaded())
-			((INeo4emfResource) this.eResource()).fetchAttributes(this);
-			}
-		return (DataMGraph) data;
-	}
+	
 	
 	/**
 	 * <!-- begin-user-doc -->
@@ -107,13 +92,13 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 */
 	public String getName() {
 		try {
-			setLoadingOnDemand();
+			setLoadingOnDemand();	
 	  		
-		return getData().name;
+			return getData().name;
 		
-	} finally {
-	unsetLoadingOnDemand();
-}
+		} finally {
+			unsetLoadingOnDemand();
+		}
 	}
  /**
  * <!-- begin-user-doc -->
@@ -126,12 +111,13 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 		
 		String oldName = getData().name;
 		getData().name = newName;
-		if (eNotificationRequired())
+		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			MgraphPackage.MGRAPH__NAME,
 			oldName, getData().name));
-	    addChangelogEntry(newName, MgraphPackage.MGRAPH__NAME);
+        }  
+		this.addChangelogEntry(newName, MgraphPackage.MGRAPH__NAME);
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -143,17 +129,27 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 */
 	public EList<MNode> getNodes() {
 		try {
-			setLoadingOnDemand();
+			setLoadingOnDemand();	
 	   
 		
-		if (getData().nodes == null){
-		getData().nodes = new EObjectContainmentWithInverseEList<MNode>(MNode.class, this, MgraphPackage.MGRAPH__NODES, MgraphPackage.MNODE__GRAPH);
-			if (isLoaded()) 
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__NODES);			}
-		return getData().nodes;
-	} finally {
-	unsetLoadingOnDemand();
-}
+			if (getData().nodes == null || getData().nodes.isEnqueued()){
+			
+	        
+	        	EList<MNode> newList = new NeoEObjectContainmentWithInverseEList<MNode>(MNode.class, this, MgraphPackage.MGRAPH__NODES, MgraphPackage.MNODE__GRAPH);
+	        	getData().nodes = new SoftReference<EList<MNode>>(newList, garbagedData);
+				if (isLoaded()) {
+					((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__NODES);			
+	        	}
+	        	else {
+	        		// TODO find a better implementation
+	        		getData().strongNodes = newList;
+	        	}
+	        
+	    	}
+			return getData().nodes.get();
+		} finally {
+			unsetLoadingOnDemand();
+		}
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -165,17 +161,27 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	 */
 	public EList<MEdge> getEdges() {
 		try {
-			setLoadingOnDemand();
+			setLoadingOnDemand();	
 	   
 		
-		if (getData().edges == null){
-		getData().edges = new EObjectContainmentWithInverseEList<MEdge>(MEdge.class, this, MgraphPackage.MGRAPH__EDGES, MgraphPackage.MEDGE__GRAPH);
-			if (isLoaded()) 
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__EDGES);			}
-		return getData().edges;
-	} finally {
-	unsetLoadingOnDemand();
-}
+			if (getData().edges == null || getData().edges.isEnqueued()){
+			
+	        
+	        	EList<MEdge> newList = new NeoEObjectContainmentWithInverseEList<MEdge>(MEdge.class, this, MgraphPackage.MGRAPH__EDGES, MgraphPackage.MEDGE__GRAPH);
+	        	getData().edges = new SoftReference<EList<MEdge>>(newList, garbagedData);
+				if (isLoaded()) {
+					((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MGRAPH__EDGES);			
+	        	}
+	        	else {
+	        		// TODO find a better implementation
+	        		getData().strongEdges = newList;
+	        	}
+	        
+	    	}
+			return getData().edges.get();
+		} finally {
+			unsetLoadingOnDemand();
+		}
 	} 
 
 /**
@@ -189,9 +195,29 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case MgraphPackage.MGRAPH__NODES:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getNodes()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	setLoadingOnDemand();
+    			//}
+    			if(isLoaded() && !isLoadingOnDemand()) {
+    				addChangelogEntry(otherEnd, MgraphPackage.MGRAPH__NODES);
+    			}
+    			return ((InternalEList<InternalEObject>)(InternalEList<?>)getNodes()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	unsetLoadingOnDemand();
+    			//}
+    			//return null;
 			case MgraphPackage.MGRAPH__EDGES:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getEdges()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	setLoadingOnDemand();
+    			//}
+    			if(isLoaded() && !isLoadingOnDemand()) {
+    				addChangelogEntry(otherEnd, MgraphPackage.MGRAPH__EDGES);
+    			}
+    			return ((InternalEList<InternalEObject>)(InternalEList<?>)getEdges()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	unsetLoadingOnDemand();
+    			//}
+    			//return null;
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -206,8 +232,10 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case MgraphPackage.MGRAPH__NODES:
+    			addChangelogRemoveEntry(otherEnd, MgraphPackage.MGRAPH__NODES);
 				return ((InternalEList<?>)getNodes()).basicRemove(otherEnd, msgs);
 			case MgraphPackage.MGRAPH__EDGES:
+    			addChangelogRemoveEntry(otherEnd, MgraphPackage.MGRAPH__EDGES);
 				return ((InternalEList<?>)getEdges()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -313,23 +341,129 @@ public class MGraphImpl extends Neo4emfObject implements MGraph {
 		return result.toString();
 		}
 
+	/**
+	 * @generated
+	 */
+	public void setDataStrongReferences() {
+		if(data != null) {
+			
+				
+			
+				
+			if(getData().strongNodes != null) {
+				getData().strongNodes = getData().nodes.get();
+			}
+				
+			
+				
+			if(getData().strongEdges != null) {
+				getData().strongEdges = getData().edges.get();
+			}
+				
+			
+		}
+	}
+
+	/**
+	 * @generated
+	 */
+	public void releaseDataStrongReferences() {
+		
+			
+		
+			
+		getData().strongNodes = null;
+			
+		
+			
+		getData().strongEdges = null;
+			
+		
+	}
 /*
 * Neo4EMF inserted code -- begin
 */
+	
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	 
+	protected DataMGraph getData() {
+		if ( data == null || !(data instanceof DataMGraph)){
+			// TODO check that
+			setLoadingOnDemand();
+			data = new DataMGraph();
+			if (isLoaded()) {
+				((INeo4emfResource) this.eResource()).fetchAttributes(this);
+			}
+			unsetLoadingOnDemand();
+			}
+		return (DataMGraph) data;
+	}
 
-/*
-* Neo4EMF inserted code -- end
+	/**
+	*
+	* @generated
+	**/
+	public void loadAllAttributesFrom(Node n) {
+		this.data = new DataMGraph(this);
+		data.loadAllAttributesFrom(n);
+	}
+	
+	/**
+	*
+	* @generated
+	**/
+	public void saveAllAttributesTo(Node n) {
+		if (data != null) {
+			data.saveAllAttributesTo(n);
+		}
+	}
+	
+	/**
+	*
+	* @generated
+	**/
+	public void saveAttributeTo(int featureID, Node n) {
+		if (data != null) {
+			data.saveAttributeTo(featureID, n);
+		}
+	}
+	
+/**
+*   extends Neo4emfObject
+*  0
+*
 */
+protected static class DataMGraph{
 
 
+	/**
+	 *Constructor of DataMGraph
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DataMGraph() {
+	}
 
 
-// data Class generation 
-protected static  class DataMGraph {
+	/**
+	 * Constructor of DataMGraph
+	 * Initializes multi-valued fields, if any.
+	 *
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DataMGraph(MGraphImpl outer) {
+		
+	}
 
 
-// The goal of this template is to BLAH, BLAH, BLAH
-
+    
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -350,8 +484,7 @@ protected static  class DataMGraph {
 	 */
 	protected String name = NAME_EDEFAULT;
 
-// The goal of this template is to BLAH, BLAH, BLAH
-
+    
 	/**
 	 * The cached value of the '{@link #getNodes() <em>Nodes</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -360,10 +493,9 @@ protected static  class DataMGraph {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<MNode> nodes;
-
-// The goal of this template is to BLAH, BLAH, BLAH
-
+    protected EList<MNode> strongNodes;
+	protected SoftReference<EList<MNode>> nodes;
+    
 	/**
 	 * The cached value of the '{@link #getEdges() <em>Edges</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -372,17 +504,9 @@ protected static  class DataMGraph {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<MEdge> edges;
+    protected EList<MEdge> strongEdges;
+	protected SoftReference<EList<MEdge>> edges;
 
-	/**
-	 *Constructor of DataMGraph
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DataMGraph() {
-		
-	}
 	
 		
 	
@@ -400,12 +524,90 @@ protected static  class DataMGraph {
 	}
 		
 
-/*
-* Neo4EMF inserted code -- begin
-*/
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void loadAllAttributesFrom(Node n) {
+		Object aux;
+		aux = n.getProperty("name", null);
+		if (aux != null) {
+			name = (String) aux;
+		} 
+	}
 
+
+	/**
+ 	* <!-- begin-user-doc -->
+ 	* <!-- end-user-doc -->
+ 	* @generated
+ 	*/
+	public void saveAllAttributesTo(Node n) {
+		
+		
+		this.savenameTo(n);
+	} // saveTo()
+	
+	/**
+ 	* <!-- begin-user-doc -->
+ 	* <!-- end-user-doc -->
+ 	* @generated
+ 	*/
+	public void saveAttributeTo(int featureID, Node n) {
+		switch (featureID) {
+			
+			case MgraphPackage.MGRAPH__NAME:
+				this.savenameTo(n);
+				return;
+		} // switch
+	} // saveAttributeTo()
+	
+
+	/*
+	*
+	*/
+	private void savenameTo(Node n) {
+	
+		if (name != null) n.setProperty("name", name);
+	} 
+	
+
+
+
+}//end attribute class
+	
+protected static class MGraphReferences  {
+    
+	/**
+	 * The cached value of the '{@link #getNodes() <em>Nodes</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNodes()
+	 * @generated
+	 * @ordered
+	 */
+    protected EList<MNode> strongNodes;
+	protected SoftReference<EList<MNode>> nodes;
+    
+	/**
+	 * The cached value of the '{@link #getEdges() <em>Edges</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getEdges()
+	 * @generated
+	 * @ordered
+	 */
+    protected EList<MEdge> strongEdges;
+	protected SoftReference<EList<MEdge>> edges;
+}
+// nodes : EList<MNode>, bi:true, chan:true, list:true, change:true, kind:containment reference list
+// edges : EList<MEdge>, bi:true, chan:true, list:true, change:true, kind:containment reference list
 /*
 * Neo4EMF inserted code -- end
 */
-}//end data class
+
+
+
+
 } //MGraphImpl

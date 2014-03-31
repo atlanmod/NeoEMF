@@ -10,7 +10,7 @@
  * Descritpion ! To come
  * @author Amine BENELALLAM
 **/
-package mgraph.util;
+package fr.inria.atlanmod.neo4emf.testdata.util;
 
 
 import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 
 import fr.inria.atlanmod.neo4emf.change.impl.*;
 
-import mgraph.*;
+import fr.inria.atlanmod.neo4emf.testdata.*;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
@@ -34,17 +34,17 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see mgraph.MgraphPackage
+ * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage
  * @generated
  */
-public class MgraphAdapterFactory extends AdapterFactoryImpl {
+public class TestAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static MgraphPackage modelPackage;
+	protected static TestPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -52,9 +52,9 @@ public class MgraphAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MgraphAdapterFactory() {
+	public TestAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = MgraphPackage.eINSTANCE;
+			modelPackage = TestPackage.eINSTANCE;
 		}
 	}
 
@@ -83,19 +83,31 @@ public class MgraphAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected MgraphSwitch<Adapter> modelSwitch =
-		new MgraphSwitch<Adapter>() {
+	protected TestSwitch<Adapter> modelSwitch =
+		new TestSwitch<Adapter>() {
 			@Override
-			public Adapter caseMGraph(MGraph object) {
-				return createMGraphAdapter();
+			public Adapter caseContainer(Container object) {
+				return createContainerAdapter();
 			}
 			@Override
-			public Adapter caseMEdge(MEdge object) {
-				return createMEdgeAdapter();
+			public Adapter caseNamedElement(NamedElement object) {
+				return createNamedElementAdapter();
 			}
 			@Override
-			public Adapter caseMNode(MNode object) {
-				return createMNodeAdapter();
+			public Adapter caseLink(Link object) {
+				return createLinkAdapter();
+			}
+			@Override
+			public Adapter caseVertex(Vertex object) {
+				return createVertexAdapter();
+			}
+			@Override
+			public Adapter caseLinkVertex(LinkVertex object) {
+				return createLinkVertexAdapter();
+			}
+			@Override
+			public Adapter caseColoredVertex(ColoredVertex object) {
+				return createColoredVertexAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -118,44 +130,86 @@ public class MgraphAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link mgraph.MGraph <em>MGraph</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.Container <em>Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see mgraph.MGraph
+	 * @see fr.inria.atlanmod.neo4emf.testdata.Container
 	 * @generated
 	 */
-	public Adapter createMGraphAdapter() {
+	public Adapter createContainerAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link mgraph.MEdge <em>MEdge</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.NamedElement <em>Named Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see mgraph.MEdge
+	 * @see fr.inria.atlanmod.neo4emf.testdata.NamedElement
 	 * @generated
 	 */
-	public Adapter createMEdgeAdapter() {
+	public Adapter createNamedElementAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link mgraph.MNode <em>MNode</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.Link <em>Link</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see mgraph.MNode
+	 * @see fr.inria.atlanmod.neo4emf.testdata.Link
 	 * @generated
 	 */
-	public Adapter createMNodeAdapter() {
+	public Adapter createLinkAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex <em>Vertex</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.Vertex
+	 * @generated
+	 */
+	public Adapter createVertexAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.LinkVertex <em>Link Vertex</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.LinkVertex
+	 * @generated
+	 */
+	public Adapter createLinkVertexAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.ColoredVertex <em>Colored Vertex</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ColoredVertex
+	 * @generated
+	 */
+	public Adapter createColoredVertexAdapter() {
 		return null;
 	}
 
@@ -172,4 +226,4 @@ public class MgraphAdapterFactory extends AdapterFactoryImpl {
 	}
  	
 }	
-//MgraphAdapterFactory
+//TestAdapterFactory

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
+	<classpathentry excluding="main/java/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/4.8.1/junit-4.8.1.jar" sourcepath="M2_REPO/junit/junit/4.8.1/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5.jar"/>
@@ -65,5 +66,6 @@
 	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/neo4emf/common/1.0-SNAPSHOT/common-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=mgraph&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="var" path="M2_REPO"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fr.inria.mgraph"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
