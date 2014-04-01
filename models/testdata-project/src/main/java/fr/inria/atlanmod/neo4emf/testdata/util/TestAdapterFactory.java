@@ -13,22 +13,11 @@
 package fr.inria.atlanmod.neo4emf.testdata.util;
 
 
-import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
-import fr.inria.atlanmod.neo4emf.change.impl.*;
-
 import fr.inria.atlanmod.neo4emf.testdata.*;
-
 import org.eclipse.emf.common.notify.Adapter;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-import org.eclipse.emf.common.notify.impl.AdapterImpl;
-
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.
@@ -86,8 +75,8 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 	protected TestSwitch<Adapter> modelSwitch =
 		new TestSwitch<Adapter>() {
 			@Override
-			public Adapter caseContainer(Container object) {
-				return createContainerAdapter();
+			public Adapter caseContainerType(ContainerType object) {
+				return createContainerTypeAdapter();
 			}
 			@Override
 			public Adapter caseNamedElement(NamedElement object) {
@@ -130,16 +119,16 @@ public class TestAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.Container <em>Container</em>}'.
+	 * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType <em>Container Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see fr.inria.atlanmod.neo4emf.testdata.Container
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ContainerType
 	 * @generated
 	 */
-	public Adapter createContainerAdapter() {
+	public Adapter createContainerTypeAdapter() {
 		return null;
 	}
 

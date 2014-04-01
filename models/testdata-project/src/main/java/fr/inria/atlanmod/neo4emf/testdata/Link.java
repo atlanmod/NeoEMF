@@ -12,7 +12,6 @@
 **/
 package fr.inria.atlanmod.neo4emf.testdata;
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Link</b></em>'.
@@ -67,7 +66,7 @@ public interface Link extends NamedElement {
 /** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Container</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link fr.inria.atlanmod.neo4emf.testdata.Container#getLinks <em>Links</em>}'.
+	 * It is bidirectional and its opposite is '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getLinks <em>Links</em>}'.
 	 * <!-- begin-user-doc -->
 	 *XX6a
 	 * <p>
@@ -76,13 +75,13 @@ public interface Link extends NamedElement {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Container</em>' container reference.
-	 * @see #setContainer(Container)
+	 * @see #setContainer(ContainerType)
 	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getLink_Container()
-	 * @see fr.inria.atlanmod.neo4emf.testdata.Container#getLinks
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ContainerType#getLinks
 	 * @model opposite="links" required="true" transient="false"
 	 * @generated
 	 */
-	Container getContainer();
+	ContainerType getContainer();
 	/**
 	 * Sets the value of the '{@link fr.inria.atlanmod.neo4emf.testdata.Link#getContainer <em>Container</em>}' container reference.
 	 * <!-- begin-user-doc -->
@@ -92,7 +91,7 @@ public interface Link extends NamedElement {
 	 * @see #getContainer()
 	 * @generated
 	 */
-	void setContainer(Container value);
+	void setContainer(ContainerType value);
  
 
 /** genFeaure.override.javajetinc **/
@@ -130,7 +129,7 @@ public interface Link extends NamedElement {
 * Neo4EMF inserted code -- begin
 */
 // outGoing : Vertex, bi:true, chan:true, list:false, change:true, kind:reference
-// container : Container, bi:true, chan:true, list:false, change:true, kind:container reference
+// container : ContainerType, bi:true, chan:true, list:false, change:true, kind:container reference
 // inComing : Vertex, bi:true, chan:true, list:false, change:true, kind:reference
 /*
 * Neo4EMF inserted code -- end

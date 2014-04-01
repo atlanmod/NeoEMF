@@ -14,25 +14,18 @@ package fr.inria.atlanmod.neo4emf.testdata.impl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
-import fr.inria.atlanmod.neo4emf.testdata.Container;
+import fr.inria.atlanmod.neo4emf.testdata.ContainerType;
 import fr.inria.atlanmod.neo4emf.testdata.Link;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
-
 import java.lang.ref.SoftReference;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.neo4j.graphdb.Node;
 
 /**
@@ -194,7 +187,9 @@ public class LinkImpl extends NamedElementImpl implements Link {
 		else if (eNotificationRequired()) {
 				eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.LINK__OUT_GOING, newOutGoing, newOutGoing));
           	}
-		this.addChangelogEntry(newOutGoing, TestPackage.LINK__OUT_GOING);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newOutGoing, TestPackage.LINK__OUT_GOING);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -204,14 +199,14 @@ public class LinkImpl extends NamedElementImpl implements Link {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Container getContainer() {
+	public ContainerType getContainer() {
 		try {
 			setLoadingOnDemand();	
 	  
 		if (isLoaded() && eContainer() == null) {
-			Container container = (Container) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, TestPackage.LINK__CONTAINER);
+			ContainerType container = (ContainerType) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, TestPackage.LINK__CONTAINER);
 			basicSetContainer(container,null);}
-			return (Container)eContainer();
+			return (ContainerType)eContainer();
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -222,7 +217,7 @@ public class LinkImpl extends NamedElementImpl implements Link {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetContainer(Container newContainer, NotificationChain msgs) {
+	public NotificationChain basicSetContainer(ContainerType newContainer, NotificationChain msgs) {
 	
 		msgs = eBasicSetContainer((InternalEObject)newContainer, TestPackage.LINK__CONTAINER, msgs);
 		return msgs;
@@ -234,7 +229,7 @@ public class LinkImpl extends NamedElementImpl implements Link {
  * <!-- end-user-doc -->
  * @generated
  */
-	public void setContainer(Container newContainer) {
+	public void setContainer(ContainerType newContainer) {
 	
 		
 	
@@ -255,7 +250,7 @@ public class LinkImpl extends NamedElementImpl implements Link {
 			}
 			msgs = basicSetContainer(newContainer, msgs);
 			if(newContainer != null) {
-				msgs = ((InternalEObject)newContainer).eInverseAdd(this, TestPackage.CONTAINER__LINKS, Container.class, msgs);
+				msgs = ((InternalEObject)newContainer).eInverseAdd(this, TestPackage.CONTAINER_TYPE__LINKS, ContainerType.class, msgs);
 			}
 			if(msgs != null) {
 				msgs.dispatch();
@@ -264,7 +259,9 @@ public class LinkImpl extends NamedElementImpl implements Link {
 		else if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.LINK__CONTAINER, newContainer, newContainer));
 		}
-		this.addChangelogEntry(newContainer, TestPackage.LINK__CONTAINER);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newContainer, TestPackage.LINK__CONTAINER);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -382,7 +379,9 @@ public class LinkImpl extends NamedElementImpl implements Link {
 		else if (eNotificationRequired()) {
 				eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.LINK__IN_COMING, newInComing, newInComing));
           	}
-		this.addChangelogEntry(newInComing, TestPackage.LINK__IN_COMING);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newInComing, TestPackage.LINK__IN_COMING);
+    }
 	} 
 
 /**
@@ -407,7 +406,7 @@ public class LinkImpl extends NamedElementImpl implements Link {
 				if(isLoaded() && !isLoadingOnDemand() && !((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
 					addChangelogEntry(otherEnd, TestPackage.LINK__CONTAINER);
 				}
-				return basicSetContainer((Container)otherEnd, msgs);
+				return basicSetContainer((ContainerType)otherEnd, msgs);
 			case TestPackage.LINK__IN_COMING:
 				if (getData().inComing != null && !getData().inComing.get().equals(otherEnd))
 					msgs = ((InternalEObject)getData().inComing.get()).eInverseRemove(this, TestPackage.VERTEX__TO, Vertex.class, msgs);
@@ -454,7 +453,7 @@ public class LinkImpl extends NamedElementImpl implements Link {
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
 			case TestPackage.LINK__CONTAINER:
-				return eInternalContainer().eInverseRemove(this, TestPackage.CONTAINER__LINKS, Container.class, msgs);
+				return eInternalContainer().eInverseRemove(this, TestPackage.CONTAINER_TYPE__LINKS, ContainerType.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -493,7 +492,7 @@ public class LinkImpl extends NamedElementImpl implements Link {
 				setOutGoing((Vertex)newValue);
 				return;
 			case TestPackage.LINK__CONTAINER:
-				setContainer((Container)newValue);
+				setContainer((ContainerType)newValue);
 				return;
 			case TestPackage.LINK__IN_COMING:
 				setInComing((Vertex)newValue);
@@ -515,7 +514,7 @@ public class LinkImpl extends NamedElementImpl implements Link {
 				setOutGoing((Vertex)null);
 				return;
 			case TestPackage.LINK__CONTAINER:
-				setContainer((Container)null);
+				setContainer((ContainerType)null);
 				return;
 			case TestPackage.LINK__IN_COMING:
 				setInComing((Vertex)null);
@@ -634,6 +633,7 @@ protected static class DataLink extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<Vertex> outGoing;
     
     
@@ -645,6 +645,7 @@ protected static class DataLink extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<Vertex> inComing;
 
 	
@@ -719,6 +720,7 @@ protected static class LinkReferences  extends DataNamedElement {
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<Vertex> outGoing;
     
     
@@ -730,10 +732,11 @@ protected static class LinkReferences  extends DataNamedElement {
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<Vertex> inComing;
 }
 // outGoing : Vertex, bi:true, chan:true, list:false, change:true, kind:reference
-// container : Container, bi:true, chan:true, list:false, change:true, kind:container reference
+// container : ContainerType, bi:true, chan:true, list:false, change:true, kind:container reference
 // inComing : Vertex, bi:true, chan:true, list:false, change:true, kind:reference
 /*
 * Neo4EMF inserted code -- end
@@ -743,3 +746,8 @@ protected static class LinkReferences  extends DataNamedElement {
 
 
 } //LinkImpl
+
+
+
+
+

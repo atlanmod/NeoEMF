@@ -14,43 +14,30 @@ package fr.inria.atlanmod.neo4emf.testdata.impl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.NeoEDataTypeEList;
-import fr.inria.atlanmod.neo4emf.NeoEDataTypeUniqueEList;
 import fr.inria.atlanmod.neo4emf.NeoEObjectWithInverseResolvingEList;
-
-import fr.inria.atlanmod.neo4emf.testdata.Container;
+import fr.inria.atlanmod.neo4emf.testdata.ContainerType;
 import fr.inria.atlanmod.neo4emf.testdata.Link;
 import fr.inria.atlanmod.neo4emf.testdata.Temperature;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
-
 import java.lang.ref.SoftReference;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
-import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.neo4j.graphdb.Node;
 
 /**
@@ -155,15 +142,17 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	
 		
 	
-		BigInteger oldATransientInteger = getData().aTransientInteger;
-		getData().aTransientInteger = newATransientInteger;
+    BigInteger oldATransientInteger = getData().aTransientInteger;
+    getData().aTransientInteger = newATransientInteger;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			TestPackage.VERTEX__ATRANSIENT_INTEGER,
 			oldATransientInteger, getData().aTransientInteger));
         }  
-		this.addChangelogEntry(newATransientInteger, TestPackage.VERTEX__ATRANSIENT_INTEGER);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newATransientInteger, TestPackage.VERTEX__ATRANSIENT_INTEGER);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -193,15 +182,17 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	
 		
 	
-		Date oldADate = getData().aDate;
-		getData().aDate = newADate;
+    Date oldADate = getData().aDate;
+    getData().aDate = newADate;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			TestPackage.VERTEX__ADATE,
 			oldADate, getData().aDate));
         }  
-		this.addChangelogEntry(newADate, TestPackage.VERTEX__ADATE);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newADate, TestPackage.VERTEX__ADATE);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -263,15 +254,17 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	
 		
 	
-		boolean oldABoolean = getData().aBoolean;
-		getData().aBoolean = newABoolean;
+    boolean oldABoolean = getData().aBoolean;
+    getData().aBoolean = newABoolean;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			TestPackage.VERTEX__ABOOLEAN,
 			oldABoolean, getData().aBoolean));
         }  
-		this.addChangelogEntry(newABoolean, TestPackage.VERTEX__ABOOLEAN);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newABoolean, TestPackage.VERTEX__ABOOLEAN);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -301,15 +294,17 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	
 		
 	
-		BigDecimal oldAReal = getData().aReal;
-		getData().aReal = newAReal;
+    BigDecimal oldAReal = getData().aReal;
+    getData().aReal = newAReal;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			TestPackage.VERTEX__AREAL,
 			oldAReal, getData().aReal));
         }  
-		this.addChangelogEntry(newAReal, TestPackage.VERTEX__AREAL);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newAReal, TestPackage.VERTEX__AREAL);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -323,22 +318,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().anIntegerArray == null || getData().anIntegerArray.isEnqueued()){
-			
-	        
-	        	EList<BigInteger> newList = new NeoEDataTypeUniqueEList<BigInteger>(BigInteger.class, this, TestPackage.VERTEX__AN_INTEGER_ARRAY);
-	        	getData().anIntegerArray = new SoftReference<EList<BigInteger>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__AN_INTEGER_ARRAY);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongAnIntegerArray = newList;
-	        	}
-	        
-	    	}
-			return getData().anIntegerArray.get();
+	  	
+      			return getData().anIntegerArray;
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -355,22 +337,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().aRealArray == null || getData().aRealArray.isEnqueued()){
-			
-	        
-	        	EList<BigDecimal> newList = new NeoEDataTypeUniqueEList<BigDecimal>(BigDecimal.class, this, TestPackage.VERTEX__AREAL_ARRAY);
-	        	getData().aRealArray = new SoftReference<EList<BigDecimal>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__AREAL_ARRAY);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongARealArray = newList;
-	        	}
-	        
-	    	}
-			return getData().aRealArray.get();
+	  	
+      			return getData().aRealArray;
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -387,22 +356,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().aStringArray == null || getData().aStringArray.isEnqueued()){
-			
-	        
-	        	EList<String> newList = new NeoEDataTypeUniqueEList<String>(String.class, this, TestPackage.VERTEX__ASTRING_ARRAY);
-	        	getData().aStringArray = new SoftReference<EList<String>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__ASTRING_ARRAY);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongAStringArray = newList;
-	        	}
-	        
-	    	}
-			return getData().aStringArray.get();
+	  	
+      			return getData().aStringArray;
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -419,22 +375,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().aNonUniqueArray == null || getData().aNonUniqueArray.isEnqueued()){
-			
-	        
-	        	EList<BigDecimal> newList = new NeoEDataTypeEList<BigDecimal>(BigDecimal.class, this, TestPackage.VERTEX__ANON_UNIQUE_ARRAY);
-	        	getData().aNonUniqueArray = new SoftReference<EList<BigDecimal>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__ANON_UNIQUE_ARRAY);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongANonUniqueArray = newList;
-	        	}
-	        
-	    	}
-			return getData().aNonUniqueArray.get();
+	  	
+      			return getData().aNonUniqueArray;
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -451,22 +394,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().aNonOrderedArray == null || getData().aNonOrderedArray.isEnqueued()){
-			
-	        
-	        	EList<Boolean> newList = new NeoEDataTypeEList<Boolean>(Boolean.class, this, TestPackage.VERTEX__ANON_ORDERED_ARRAY);
-	        	getData().aNonOrderedArray = new SoftReference<EList<Boolean>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__ANON_ORDERED_ARRAY);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongANonOrderedArray = newList;
-	        	}
-	        
-	    	}
-			return getData().aNonOrderedArray.get();
+	  	
+      			return getData().aNonOrderedArray;
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -483,22 +413,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().aTenStringArray == null || getData().aTenStringArray.isEnqueued()){
-			
-	        
-	        	EList<String> newList = new NeoEDataTypeUniqueEList<String>(String.class, this, TestPackage.VERTEX__ATEN_STRING_ARRAY);
-	        	getData().aTenStringArray = new SoftReference<EList<String>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__ATEN_STRING_ARRAY);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongATenStringArray = newList;
-	        	}
-	        
-	    	}
-			return getData().aTenStringArray.get();
+	  	
+      			return getData().aTenStringArray;
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -531,7 +448,8 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	
 		
 	
-		Temperature oldTemperature = getData().temperature;
+    Temperature oldTemperature = getData().temperature;
+              // TEST POUET
 		getData().temperature = newTemperature == null ? DataVertex.TEMPERATURE_EDEFAULT : newTemperature;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
@@ -539,7 +457,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 			TestPackage.VERTEX__TEMPERATURE,
 			oldTemperature, getData().temperature));
         }  
-		this.addChangelogEntry(newTemperature, TestPackage.VERTEX__TEMPERATURE);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newTemperature, TestPackage.VERTEX__TEMPERATURE);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -549,14 +469,14 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Container getVcontainer() {
+	public ContainerType getVcontainer() {
 		try {
 			setLoadingOnDemand();	
 	  
 		if (isLoaded() && eContainer() == null) {
-			Container vcontainer = (Container) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, TestPackage.VERTEX__VCONTAINER);
+			ContainerType vcontainer = (ContainerType) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, TestPackage.VERTEX__VCONTAINER);
 			basicSetVcontainer(vcontainer,null);}
-			return (Container)eContainer();
+			return (ContainerType)eContainer();
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -567,7 +487,7 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetVcontainer(Container newVcontainer, NotificationChain msgs) {
+	public NotificationChain basicSetVcontainer(ContainerType newVcontainer, NotificationChain msgs) {
 	
 		msgs = eBasicSetContainer((InternalEObject)newVcontainer, TestPackage.VERTEX__VCONTAINER, msgs);
 		return msgs;
@@ -579,7 +499,7 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
  * <!-- end-user-doc -->
  * @generated
  */
-	public void setVcontainer(Container newVcontainer) {
+	public void setVcontainer(ContainerType newVcontainer) {
 	
 		
 	
@@ -600,7 +520,7 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 			}
 			msgs = basicSetVcontainer(newVcontainer, msgs);
 			if(newVcontainer != null) {
-				msgs = ((InternalEObject)newVcontainer).eInverseAdd(this, TestPackage.CONTAINER__NODES, Container.class, msgs);
+				msgs = ((InternalEObject)newVcontainer).eInverseAdd(this, TestPackage.CONTAINER_TYPE__NODES, ContainerType.class, msgs);
 			}
 			if(msgs != null) {
 				msgs.dispatch();
@@ -609,7 +529,9 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		else if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(this, Notification.SET, TestPackage.VERTEX__VCONTAINER, newVcontainer, newVcontainer));
 		}
-		this.addChangelogEntry(newVcontainer, TestPackage.VERTEX__VCONTAINER);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newVcontainer, TestPackage.VERTEX__VCONTAINER);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -623,22 +545,24 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().from == null || getData().from.isEnqueued()){
+	  	
 			
-	        
-	        	EList<Link> newList = new NeoEObjectWithInverseResolvingEList<Link>(Link.class, this, TestPackage.VERTEX__FROM, TestPackage.LINK__OUT_GOING);
-	        	getData().from = new SoftReference<EList<Link>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__FROM);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongFrom = newList;
-	        	}
-	        
-	    	}
-			return getData().from.get();
+				if (getData().from == null || getData().from.isEnqueued()){
+				
+		        
+		        	EList<Link> newList = new NeoEObjectWithInverseResolvingEList<Link>(Link.class, this, TestPackage.VERTEX__FROM, TestPackage.LINK__OUT_GOING);
+		        	getData().from = new SoftReference<EList<Link>>(newList, garbagedData);
+					if (isLoaded()) {
+						((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__FROM);			
+		        	}
+		        	else {
+		        		// TODO find a better implementation
+		        		getData().strongFrom = newList;
+		        	}
+		        
+		    	}
+				return getData().from.get();
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -655,22 +579,24 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().to == null || getData().to.isEnqueued()){
+	  	
 			
-	        
-	        	EList<Link> newList = new NeoEObjectWithInverseResolvingEList<Link>(Link.class, this, TestPackage.VERTEX__TO, TestPackage.LINK__IN_COMING);
-	        	getData().to = new SoftReference<EList<Link>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__TO);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongTo = newList;
-	        	}
-	        
-	    	}
-			return getData().to.get();
+				if (getData().to == null || getData().to.isEnqueued()){
+				
+		        
+		        	EList<Link> newList = new NeoEObjectWithInverseResolvingEList<Link>(Link.class, this, TestPackage.VERTEX__TO, TestPackage.LINK__IN_COMING);
+		        	getData().to = new SoftReference<EList<Link>>(newList, garbagedData);
+					if (isLoaded()) {
+						((INeo4emfResource) this.eResource()).getOnDemand(this, TestPackage.VERTEX__TO);			
+		        	}
+		        	else {
+		        		// TODO find a better implementation
+		        		getData().strongTo = newList;
+		        	}
+		        
+		    	}
+				return getData().to.get();
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -695,7 +621,7 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 				if(isLoaded() && !isLoadingOnDemand() && !((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
 					addChangelogEntry(otherEnd, TestPackage.VERTEX__VCONTAINER);
 				}
-				return basicSetVcontainer((Container)otherEnd, msgs);
+				return basicSetVcontainer((ContainerType)otherEnd, msgs);
 			case TestPackage.VERTEX__FROM:
     			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
     			//	setLoadingOnDemand();
@@ -758,7 +684,7 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
 			case TestPackage.VERTEX__VCONTAINER:
-				return eInternalContainer().eInverseRemove(this, TestPackage.CONTAINER__NODES, Container.class, msgs);
+				return eInternalContainer().eInverseRemove(this, TestPackage.CONTAINER_TYPE__NODES, ContainerType.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -861,7 +787,7 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 				setTemperature((Temperature)newValue);
 				return;
 			case TestPackage.VERTEX__VCONTAINER:
-				setVcontainer((Container)newValue);
+				setVcontainer((ContainerType)newValue);
 				return;
 			case TestPackage.VERTEX__FROM:
 				getFrom().clear();
@@ -921,7 +847,7 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 				setTemperature(DataVertex.TEMPERATURE_EDEFAULT);
 				return;
 			case TestPackage.VERTEX__VCONTAINER:
-				setVcontainer((Container)null);
+				setVcontainer((ContainerType)null);
 				return;
 			case TestPackage.VERTEX__FROM:
 				getFrom().clear();
@@ -1012,39 +938,15 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 				
 			
 				
-			if(getData().strongAnIntegerArray != null) {
-				getData().strongAnIntegerArray = getData().anIntegerArray.get();
-			}
+			
 				
 			
 				
-			if(getData().strongARealArray != null) {
-				getData().strongARealArray = getData().aRealArray.get();
-			}
+			
 				
 			
 				
-			if(getData().strongAStringArray != null) {
-				getData().strongAStringArray = getData().aStringArray.get();
-			}
-				
 			
-				
-			if(getData().strongANonUniqueArray != null) {
-				getData().strongANonUniqueArray = getData().aNonUniqueArray.get();
-			}
-				
-			
-				
-			if(getData().strongANonOrderedArray != null) {
-				getData().strongANonOrderedArray = getData().aNonOrderedArray.get();
-			}
-				
-			
-				
-			if(getData().strongATenStringArray != null) {
-				getData().strongATenStringArray = getData().aTenStringArray.get();
-			}
 				
 			
 				
@@ -1084,27 +986,15 @@ public class VertexImpl extends NamedElementImpl implements Vertex {
 			
 		
 			
-		getData().strongAnIntegerArray = null;
+		
 			
 		
 			
-		getData().strongARealArray = null;
+		
 			
 		
 			
-		getData().strongAStringArray = null;
-			
 		
-			
-		getData().strongANonUniqueArray = null;
-			
-		
-			
-		getData().strongANonOrderedArray = null;
-			
-		
-			
-		getData().strongATenStringArray = null;
 			
 		
 			
@@ -1334,8 +1224,67 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
-    protected EList<BigInteger> strongAnIntegerArray;
-	protected SoftReference<EList<BigInteger>> anIntegerArray;
+    protected EList<BigInteger> anIntegerArray;
+
+	/**
+	 * The cached value of the '{@link #getARealArray() <em>AReal Array</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getARealArray()
+	 * @generated
+	 * @ordered
+	 */
+    protected EList<BigDecimal> aRealArray;
+
+	/**
+	 * The cached value of the '{@link #getAStringArray() <em>AString Array</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAStringArray()
+	 * @generated
+	 * @ordered
+	 */
+    protected EList<String> aStringArray;
+
+	/**
+	 * The cached value of the '{@link #getANonUniqueArray() <em>ANon Unique Array</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getANonUniqueArray()
+	 * @generated
+	 * @ordered
+	 */
+    protected EList<BigDecimal> aNonUniqueArray;
+
+	/**
+	 * The cached value of the '{@link #getANonOrderedArray() <em>ANon Ordered Array</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getANonOrderedArray()
+	 * @generated
+	 * @ordered
+	 */
+    protected EList<Boolean> aNonOrderedArray;
+
+	/**
+	 * The cached value of the '{@link #getATenStringArray() <em>ATen String Array</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getATenStringArray()
+	 * @generated
+	 * @ordered
+	 */
+    protected EList<String> aTenStringArray;
+
+	/**
+	 * The cached value of the '{@link #getAnIntegerArray() <em>An Integer Array</em>}' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAnIntegerArray()
+	 * @generated
+	 * @ordered
+	 */
+   
     
 	/**
 	 * The cached value of the '{@link #getARealArray() <em>AReal Array</em>}' attribute list.
@@ -1345,8 +1294,7 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
-    protected EList<BigDecimal> strongARealArray;
-	protected SoftReference<EList<BigDecimal>> aRealArray;
+   
     
 	/**
 	 * The cached value of the '{@link #getAStringArray() <em>AString Array</em>}' attribute list.
@@ -1356,8 +1304,7 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
-    protected EList<String> strongAStringArray;
-	protected SoftReference<EList<String>> aStringArray;
+   
     
 	/**
 	 * The cached value of the '{@link #getANonUniqueArray() <em>ANon Unique Array</em>}' attribute list.
@@ -1367,8 +1314,7 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
-    protected EList<BigDecimal> strongANonUniqueArray;
-	protected SoftReference<EList<BigDecimal>> aNonUniqueArray;
+   
     
 	/**
 	 * The cached value of the '{@link #getANonOrderedArray() <em>ANon Ordered Array</em>}' attribute list.
@@ -1378,8 +1324,7 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
-    protected EList<Boolean> strongANonOrderedArray;
-	protected SoftReference<EList<Boolean>> aNonOrderedArray;
+   
     
 	/**
 	 * The cached value of the '{@link #getATenStringArray() <em>ATen String Array</em>}' attribute list.
@@ -1389,8 +1334,7 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
-    protected EList<String> strongATenStringArray;
-	protected SoftReference<EList<String>> aTenStringArray;
+   
     
 	/**
 	 * The default value of the '{@link #getTemperature() <em>Temperature</em>}' attribute.
@@ -1422,7 +1366,9 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<Link> strongFrom;
+      	
 	protected SoftReference<EList<Link>> from;
     
 	/**
@@ -1433,7 +1379,9 @@ protected static class DataVertex extends DataNamedElement{
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<Link> strongTo;
+      	
 	protected SoftReference<EList<Link>> to;
 
 	
@@ -1743,7 +1691,9 @@ protected static class VertexReferences  extends DataNamedElement {
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<Link> strongFrom;
+      	
 	protected SoftReference<EList<Link>> from;
     
 	/**
@@ -1754,10 +1704,12 @@ protected static class VertexReferences  extends DataNamedElement {
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<Link> strongTo;
+      	
 	protected SoftReference<EList<Link>> to;
 }
-// vcontainer : Container, bi:true, chan:true, list:false, change:true, kind:container reference
+// vcontainer : ContainerType, bi:true, chan:true, list:false, change:true, kind:container reference
 // from : EList<Link>, bi:true, chan:true, list:true, change:true, kind:reference list
 // to : EList<Link>, bi:true, chan:true, list:true, change:true, kind:reference list
 /*
@@ -1768,3 +1720,8 @@ protected static class VertexReferences  extends DataNamedElement {
 
 
 } //VertexImpl
+
+
+
+
+

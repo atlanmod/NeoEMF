@@ -23,9 +23,9 @@ import org.neo4j.graphdb.RelationshipType;
  */
 public enum Reltypes implements RelationshipType {
 	
-    		CONTAINER__NODES,
+    		CONTAINER_TYPE__NODES,
     		
-    		CONTAINER__LINKS,
+    		CONTAINER_TYPE__LINKS,
     		
     		LINK__OUT_GOING,
     		

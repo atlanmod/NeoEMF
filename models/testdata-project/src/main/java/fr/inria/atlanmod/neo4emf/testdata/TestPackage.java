@@ -71,14 +71,14 @@ public interface TestPackage extends PersistentPackage {
 	TestPackage eINSTANCE = fr.inria.atlanmod.neo4emf.testdata.impl.TestPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link fr.inria.atlanmod.neo4emf.testdata.impl.ContainerImpl <em>Container</em>}' class.
+	 * The meta object id for the '{@link fr.inria.atlanmod.neo4emf.testdata.impl.ContainerTypeImpl <em>Container Type</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.inria.atlanmod.neo4emf.testdata.impl.ContainerImpl
-	 * @see fr.inria.atlanmod.neo4emf.testdata.impl.TestPackageImpl#getContainer()
+	 * @see fr.inria.atlanmod.neo4emf.testdata.impl.ContainerTypeImpl
+	 * @see fr.inria.atlanmod.neo4emf.testdata.impl.TestPackageImpl#getContainerType()
 	 * @generated
 	 */
-	int CONTAINER = 0;
+	int CONTAINER_TYPE = 0;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -87,7 +87,7 @@ public interface TestPackage extends PersistentPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONTAINER__NAME = 0;
+	int CONTAINER_TYPE__NAME = 0;
 
 	/**
 	 * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
@@ -96,7 +96,7 @@ public interface TestPackage extends PersistentPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONTAINER__NODES = 1;
+	int CONTAINER_TYPE__NODES = 1;
 
 	/**
 	 * The feature id for the '<em><b>Links</b></em>' containment reference list.
@@ -105,25 +105,25 @@ public interface TestPackage extends PersistentPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONTAINER__LINKS = 2;
+	int CONTAINER_TYPE__LINKS = 2;
 
 	/**
-	 * The number of structural features of the '<em>Container</em>' class.
+	 * The number of structural features of the '<em>Container Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONTAINER_FEATURE_COUNT = 3;
+	int CONTAINER_TYPE_FEATURE_COUNT = 3;
 
 	/**
-	 * The number of operations of the '<em>Container</em>' class.
+	 * The number of operations of the '<em>Container Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONTAINER_OPERATION_COUNT = 0;
+	int CONTAINER_TYPE_OPERATION_COUNT = 0;
 
 	/**
 	 * The meta object id for the '{@link fr.inria.atlanmod.neo4emf.testdata.impl.NamedElementImpl <em>Named Element</em>}' class.
@@ -854,47 +854,47 @@ public interface TestPackage extends PersistentPackage {
 
 
 	/**
-	 * Returns the meta object for class '{@link fr.inria.atlanmod.neo4emf.testdata.Container <em>Container</em>}'.
+	 * Returns the meta object for class '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType <em>Container Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Container</em>'.
-	 * @see fr.inria.atlanmod.neo4emf.testdata.Container
+	 * @return the meta object for class '<em>Container Type</em>'.
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ContainerType
 	 * @generated
 	 */
-	EClass getContainer();
+	EClass getContainerType();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neo4emf.testdata.Container#getName <em>Name</em>}'.
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see fr.inria.atlanmod.neo4emf.testdata.Container#getName()
-	 * @see #getContainer()
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ContainerType#getName()
+	 * @see #getContainerType()
 	 * @generated
 	 */
-	EAttribute getContainer_Name();
+	EAttribute getContainerType_Name();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neo4emf.testdata.Container#getNodes <em>Nodes</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getNodes <em>Nodes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Nodes</em>'.
-	 * @see fr.inria.atlanmod.neo4emf.testdata.Container#getNodes()
-	 * @see #getContainer()
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ContainerType#getNodes()
+	 * @see #getContainerType()
 	 * @generated
 	 */
-	EReference getContainer_Nodes();
+	EReference getContainerType_Nodes();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neo4emf.testdata.Container#getLinks <em>Links</em>}'.
+	 * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getLinks <em>Links</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Links</em>'.
-	 * @see fr.inria.atlanmod.neo4emf.testdata.Container#getLinks()
-	 * @see #getContainer()
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ContainerType#getLinks()
+	 * @see #getContainerType()
 	 * @generated
 	 */
-	EReference getContainer_Links();
+	EReference getContainerType_Links();
 
 	/**
 	 * Returns the meta object for class '{@link fr.inria.atlanmod.neo4emf.testdata.NamedElement <em>Named Element</em>}'.
@@ -1255,14 +1255,14 @@ public interface TestPackage extends PersistentPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link fr.inria.atlanmod.neo4emf.testdata.impl.ContainerImpl <em>Container</em>}' class.
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neo4emf.testdata.impl.ContainerTypeImpl <em>Container Type</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.inria.atlanmod.neo4emf.testdata.impl.ContainerImpl
-		 * @see fr.inria.atlanmod.neo4emf.testdata.impl.TestPackageImpl#getContainer()
+		 * @see fr.inria.atlanmod.neo4emf.testdata.impl.ContainerTypeImpl
+		 * @see fr.inria.atlanmod.neo4emf.testdata.impl.TestPackageImpl#getContainerType()
 		 * @generated
 		 */
-		EClass CONTAINER = eINSTANCE.getContainer();
+		EClass CONTAINER_TYPE = eINSTANCE.getContainerType();
 
 		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -1270,7 +1270,7 @@ public interface TestPackage extends PersistentPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute CONTAINER__NAME = eINSTANCE.getContainer_Name();
+		EAttribute CONTAINER_TYPE__NAME = eINSTANCE.getContainerType_Name();
 
 		/**
 		 * The meta object literal for the '<em><b>Nodes</b></em>' containment reference list feature.
@@ -1278,7 +1278,7 @@ public interface TestPackage extends PersistentPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CONTAINER__NODES = eINSTANCE.getContainer_Nodes();
+		EReference CONTAINER_TYPE__NODES = eINSTANCE.getContainerType_Nodes();
 
 		/**
 		 * The meta object literal for the '<em><b>Links</b></em>' containment reference list feature.
@@ -1286,7 +1286,7 @@ public interface TestPackage extends PersistentPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CONTAINER__LINKS = eINSTANCE.getContainer_Links();
+		EReference CONTAINER_TYPE__LINKS = eINSTANCE.getContainerType_Links();
 
 		/**
 		 * The meta object literal for the '{@link fr.inria.atlanmod.neo4emf.testdata.impl.NamedElementImpl <em>Named Element</em>}' class.

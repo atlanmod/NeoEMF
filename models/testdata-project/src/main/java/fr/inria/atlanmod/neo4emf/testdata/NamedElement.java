@@ -73,3 +73,8 @@ public interface NamedElement extends INeo4emfObject {
 
 
 } // NamedElement
+
+
+
+
+

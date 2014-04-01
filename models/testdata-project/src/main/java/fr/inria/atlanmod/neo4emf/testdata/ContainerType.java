@@ -13,29 +13,28 @@
 package fr.inria.atlanmod.neo4emf.testdata;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-
 import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Container</b></em>'.
+ * A representation of the model object '<em><b>Container Type</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Container#getName <em>Name</em>}</li>
- *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Container#getNodes <em>Nodes</em>}</li>
- *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.Container#getLinks <em>Links</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getName <em>Name</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getNodes <em>Nodes</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getLinks <em>Links</em>}</li>
  * </ul>
  * </p>
  *
- * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainer()
+ * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainerType()
  * @model
  * @extends INeo4emfObject
  * @generated
  */
-public interface Container extends INeo4emfObject {
+public interface ContainerType extends INeo4emfObject {
 
 /** genFeaure.override.javajetinc **/
 	/**
@@ -49,13 +48,13 @@ public interface Container extends INeo4emfObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainer_Name()
+	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainerType_Name()
 	 * @model required="true"
 	 * @generated
 	 */
 	String getName();
 	/**
-	 * Sets the value of the '{@link fr.inria.atlanmod.neo4emf.testdata.Container#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 *YY1-BIS
 	 * <!-- end-user-doc -->
@@ -79,7 +78,7 @@ public interface Container extends INeo4emfObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Nodes</em>' containment reference list.
-	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainer_Nodes()
+	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainerType_Nodes()
 	 * @see fr.inria.atlanmod.neo4emf.testdata.Vertex#getVcontainer
 	 * @model opposite="vcontainer" containment="true"
 	 * @generated
@@ -99,7 +98,7 @@ public interface Container extends INeo4emfObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Links</em>' containment reference list.
-	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainer_Links()
+	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getContainerType_Links()
 	 * @see fr.inria.atlanmod.neo4emf.testdata.Link#getContainer
 	 * @model opposite="container" containment="true"
 	 * @generated
@@ -118,4 +117,9 @@ public interface Container extends INeo4emfObject {
 
 
 
-} // Container
+} // ContainerType
+
+
+
+
+

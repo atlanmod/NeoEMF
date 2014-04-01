@@ -12,10 +12,13 @@
 **/
 package fr.inria.atlanmod.neo4emf.testdata;
 
-import java.util.Arrays;
-import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
+
+
+
+
+
+
 
 /**
  * <!-- begin-user-doc -->
@@ -127,7 +130,7 @@ public interface LinkVertex extends Link, Vertex {
 /*
 * Neo4EMF inserted code -- begin
 */
-// vcontainer : Container, bi:true, chan:true, list:false, change:true, kind:container reference
+// vcontainer : ContainerType, bi:true, chan:true, list:false, change:true, kind:container reference
 // from : EList<Link>, bi:true, chan:true, list:true, change:true, kind:reference list
 // to : EList<Link>, bi:true, chan:true, list:true, change:true, kind:reference list
 // link : Link, bi:false, chan:true, list:false, change:true, kind:reference

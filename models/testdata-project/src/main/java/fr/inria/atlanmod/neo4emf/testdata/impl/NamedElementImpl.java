@@ -13,18 +13,12 @@
 package fr.inria.atlanmod.neo4emf.testdata.impl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-
 import fr.inria.atlanmod.neo4emf.testdata.NamedElement;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.neo4j.graphdb.Node;
 
 /**
@@ -101,15 +95,17 @@ public abstract class NamedElementImpl extends Neo4emfObject implements NamedEle
 	public void setName(String newName) {
 	
 		
-		String oldName = getData().name;
-		getData().name = newName;
+    String oldName = getData().name;
+    getData().name = newName;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			TestPackage.NAMED_ELEMENT__NAME,
 			oldName, getData().name));
         }  
-		this.addChangelogEntry(newName, TestPackage.NAMED_ELEMENT__NAME);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newName, TestPackage.NAMED_ELEMENT__NAME);
+    }
 	} 
 
 	/**
@@ -393,3 +389,8 @@ protected static class NamedElementReferences  {
 
 
 } //NamedElementImpl
+
+
+
+
+

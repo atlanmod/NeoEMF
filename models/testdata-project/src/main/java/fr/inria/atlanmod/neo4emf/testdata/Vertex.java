@@ -14,11 +14,7 @@ package fr.inria.atlanmod.neo4emf.testdata;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
 import org.eclipse.emf.common.util.EList;
 
 /**
@@ -359,7 +355,7 @@ public interface Vertex extends NamedElement {
 /** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Vcontainer</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link fr.inria.atlanmod.neo4emf.testdata.Container#getNodes <em>Nodes</em>}'.
+	 * It is bidirectional and its opposite is '{@link fr.inria.atlanmod.neo4emf.testdata.ContainerType#getNodes <em>Nodes</em>}'.
 	 * <!-- begin-user-doc -->
 	 *XX6a
 	 * <p>
@@ -368,13 +364,13 @@ public interface Vertex extends NamedElement {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Vcontainer</em>' container reference.
-	 * @see #setVcontainer(Container)
+	 * @see #setVcontainer(ContainerType)
 	 * @see fr.inria.atlanmod.neo4emf.testdata.TestPackage#getVertex_Vcontainer()
-	 * @see fr.inria.atlanmod.neo4emf.testdata.Container#getNodes
+	 * @see fr.inria.atlanmod.neo4emf.testdata.ContainerType#getNodes
 	 * @model opposite="nodes" required="true" transient="false"
 	 * @generated
 	 */
-	Container getVcontainer();
+	ContainerType getVcontainer();
 	/**
 	 * Sets the value of the '{@link fr.inria.atlanmod.neo4emf.testdata.Vertex#getVcontainer <em>Vcontainer</em>}' container reference.
 	 * <!-- begin-user-doc -->
@@ -384,7 +380,7 @@ public interface Vertex extends NamedElement {
 	 * @see #getVcontainer()
 	 * @generated
 	 */
-	void setVcontainer(Container value);
+	void setVcontainer(ContainerType value);
  
 
 /** genFeaure.override.javajetinc **/
@@ -430,7 +426,7 @@ public interface Vertex extends NamedElement {
 /*
 * Neo4EMF inserted code -- begin
 */
-// vcontainer : Container, bi:true, chan:true, list:false, change:true, kind:container reference
+// vcontainer : ContainerType, bi:true, chan:true, list:false, change:true, kind:container reference
 // from : EList<Link>, bi:true, chan:true, list:true, change:true, kind:reference list
 // to : EList<Link>, bi:true, chan:true, list:true, change:true, kind:reference list
 /*
@@ -441,3 +437,8 @@ public interface Vertex extends NamedElement {
 
 
 } // Vertex
+
+
+
+
+

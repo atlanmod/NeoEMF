@@ -13,18 +13,12 @@
 package fr.inria.atlanmod.neo4emf.testdata.impl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
 import fr.inria.atlanmod.neo4emf.testdata.ColoredVertex;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
-
 import java.math.BigInteger;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.neo4j.graphdb.Node;
 
 /**
@@ -96,15 +90,17 @@ public class ColoredVertexImpl extends VertexImpl implements ColoredVertex {
 	
 		
 	
-		BigInteger oldANatural = getData().aNatural;
-		getData().aNatural = newANatural;
+    BigInteger oldANatural = getData().aNatural;
+    getData().aNatural = newANatural;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			TestPackage.COLORED_VERTEX__ANATURAL,
 			oldANatural, getData().aNatural));
         }  
-		this.addChangelogEntry(newANatural, TestPackage.COLORED_VERTEX__ANATURAL);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newANatural, TestPackage.COLORED_VERTEX__ANATURAL);
+    }
 	} 
 
 	/**
@@ -399,3 +395,8 @@ protected static class ColoredVertexReferences  extends DataVertex {
 
 
 } //ColoredVertexImpl
+
+
+
+
+

@@ -15,6 +15,7 @@ package fr.inria.atlanmod.neo4emf.testdata.impl;
 import fr.inria.atlanmod.neo4emf.RelationshipMapping;
 
 import fr.inria.atlanmod.neo4emf.testdata.ColoredVertex;
+import fr.inria.atlanmod.neo4emf.testdata.ContainerType;
 import fr.inria.atlanmod.neo4emf.testdata.Link;
 import fr.inria.atlanmod.neo4emf.testdata.LinkVertex;
 import fr.inria.atlanmod.neo4emf.testdata.NamedElement;
@@ -50,7 +51,7 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass containerEClass = null;
+	private EClass containerTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -167,8 +168,8 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getContainer() {
-		return containerEClass;
+	public EClass getContainerType() {
+		return containerTypeEClass;
 	}
 
 	/**
@@ -176,8 +177,8 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getContainer_Name() {
-		return (EAttribute)containerEClass.getEStructuralFeatures().get(0);
+	public EAttribute getContainerType_Name() {
+		return (EAttribute)containerTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -185,8 +186,8 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getContainer_Nodes() {
-		return (EReference)containerEClass.getEStructuralFeatures().get(1);
+	public EReference getContainerType_Nodes() {
+		return (EReference)containerTypeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -194,8 +195,8 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getContainer_Links() {
-		return (EReference)containerEClass.getEStructuralFeatures().get(2);
+	public EReference getContainerType_Links() {
+		return (EReference)containerTypeEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -505,10 +506,10 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		isCreated = true;
 
 		// Create classes and their features
-		containerEClass = createEClass(CONTAINER);
-		createEAttribute(containerEClass, CONTAINER__NAME);
-		createEReference(containerEClass, CONTAINER__NODES);
-		createEReference(containerEClass, CONTAINER__LINKS);
+		containerTypeEClass = createEClass(CONTAINER_TYPE);
+		createEAttribute(containerTypeEClass, CONTAINER_TYPE__NAME);
+		createEReference(containerTypeEClass, CONTAINER_TYPE__NODES);
+		createEReference(containerTypeEClass, CONTAINER_TYPE__LINKS);
 
 		namedElementEClass = createEClass(NAMED_ELEMENT);
 		createEAttribute(namedElementEClass, NAMED_ELEMENT__NAME);
@@ -586,17 +587,17 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		coloredVertexEClass.getESuperTypes().add(this.getVertex());
 
 		// Initialize classes, features, and operations; add parameters
-		initEClass(containerEClass, fr.inria.atlanmod.neo4emf.testdata.Container.class, "Container", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getContainer_Name(), ecorePackage.getEString(), "name", null, 1, 1, fr.inria.atlanmod.neo4emf.testdata.Container.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getContainer_Nodes(), this.getVertex(), this.getVertex_Vcontainer(), "nodes", null, 0, -1, fr.inria.atlanmod.neo4emf.testdata.Container.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getContainer_Links(), this.getLink(), this.getLink_Container(), "links", null, 0, -1, fr.inria.atlanmod.neo4emf.testdata.Container.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(containerTypeEClass, ContainerType.class, "ContainerType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getContainerType_Name(), ecorePackage.getEString(), "name", null, 1, 1, ContainerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getContainerType_Nodes(), this.getVertex(), this.getVertex_Vcontainer(), "nodes", null, 0, -1, ContainerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getContainerType_Links(), this.getLink(), this.getLink_Container(), "links", null, 0, -1, ContainerType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(namedElementEClass, NamedElement.class, "NamedElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getNamedElement_Name(), ecorePackage.getEString(), "name", null, 1, 1, NamedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(linkEClass, Link.class, "Link", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLink_OutGoing(), this.getVertex(), this.getVertex_From(), "outGoing", null, 1, 1, Link.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getLink_Container(), this.getContainer(), this.getContainer_Links(), "container", null, 1, 1, Link.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLink_Container(), this.getContainerType(), this.getContainerType_Links(), "container", null, 1, 1, Link.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getLink_InComing(), this.getVertex(), this.getVertex_To(), "inComing", null, 1, 1, Link.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(vertexEClass, Vertex.class, "Vertex", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -613,7 +614,7 @@ public class TestPackageImpl extends EPackageImpl implements TestPackage {
 		initEAttribute(getVertex_ANonOrderedArray(), ecorePackage.getEBoolean(), "aNonOrderedArray", null, 0, -1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getVertex_ATenStringArray(), ecorePackage.getEString(), "aTenStringArray", null, 10, 10, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getVertex_Temperature(), this.getTemperature(), "temperature", null, 1, 1, Vertex.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getVertex_Vcontainer(), this.getContainer(), this.getContainer_Nodes(), "vcontainer", null, 1, 1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getVertex_Vcontainer(), this.getContainerType(), this.getContainerType_Nodes(), "vcontainer", null, 1, 1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVertex_From(), this.getLink(), this.getLink_OutGoing(), "from", null, 0, -1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getVertex_To(), this.getLink(), this.getLink_InComing(), "to", null, 0, -1, Vertex.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -672,9 +673,9 @@ class TestPackageRelationshipMapping implements RelationshipMapping {
 
 	public TestPackageRelationshipMapping() {
 	
-		mapping[CONTAINER] = new RelationshipType[3];
-		mapping[CONTAINER][CONTAINER__NODES] = Reltypes.CONTAINER__NODES;
-		mapping[CONTAINER][CONTAINER__LINKS] = Reltypes.CONTAINER__LINKS;
+		mapping[CONTAINER_TYPE] = new RelationshipType[3];
+		mapping[CONTAINER_TYPE][CONTAINER_TYPE__NODES] = Reltypes.CONTAINER_TYPE__NODES;
+		mapping[CONTAINER_TYPE][CONTAINER_TYPE__LINKS] = Reltypes.CONTAINER_TYPE__LINKS;
 		mapping[NAMED_ELEMENT] = new RelationshipType[1];
 		mapping[LINK] = new RelationshipType[4];
 		mapping[LINK][LINK__OUT_GOING] = Reltypes.LINK__OUT_GOING;

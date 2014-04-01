@@ -14,23 +14,15 @@ package fr.inria.atlanmod.neo4emf.testdata.impl;
  
 
 
-import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
-
 import fr.inria.atlanmod.neo4emf.testdata.*;
-
 import fr.inria.atlanmod.neo4emf.testdata.util.TestAdapterFactory;
-
 import java.util.Date;
-
 import org.eclipse.emf.common.notify.Adapter;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
@@ -89,7 +81,7 @@ public class TestFactoryImpl extends EFactoryImpl implements TestFactory {
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case TestPackage.CONTAINER: return (EObject)createContainer();
+			case TestPackage.CONTAINER_TYPE: return (EObject)createContainerType();
 			case TestPackage.LINK: return (EObject)createLink();
 			case TestPackage.VERTEX: return (EObject)createVertex();
 			case TestPackage.LINK_VERTEX: return (EObject)createLinkVertex();
@@ -138,13 +130,13 @@ public class TestFactoryImpl extends EFactoryImpl implements TestFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public fr.inria.atlanmod.neo4emf.testdata.Container createContainer() {
-		ContainerImpl container = new ContainerImpl();
-		Adapter adapter = adapterFactory.createContainerAdapter();
+	public ContainerType createContainerType() {
+		ContainerTypeImpl containerType = new ContainerTypeImpl();
+		Adapter adapter = adapterFactory.createContainerTypeAdapter();
 		if (adapter != null) {
-			container.eAdapters().add(adapter);
+			containerType.eAdapters().add(adapter);
 		}
-		return container;
+		return containerType;
 	}
 
 	/**

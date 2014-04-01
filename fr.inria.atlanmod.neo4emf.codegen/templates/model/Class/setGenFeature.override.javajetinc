@@ -175,20 +175,32 @@
         <%} else {%>
           <%if (!genModel.isVirtualDelegation() || genFeature.isPrimitiveType()) {%>
             <%if (!genModel.isSuppressNotification()) {%>
-		<%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
+              <%if (genFeature.isReferenceType()) {%>
+    <%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = null;
+    if(<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> != null) {
+		  old<%=genFeature.getCapName()%> = <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>.get();
+    }       
+              <%} else {%>
+    <%=genFeature.getImportedType(genClass)%> old<%=genFeature.getCapName()%> = <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
+              <%}%>
             <%}%>
           <%}%>
           <%if (genFeature.isEnumType()) {%>
             <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? Data<%=genClass.getInterfaceName()%>.<%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
             <%} else {%>
+              // TEST POUET
 		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%> == null ? <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"Data"+genClass.getInterfaceName()+"."%><%=genFeature.getEDefault()%> : new<%=genFeature.getCapName()%>;
             <%}%>
           <%} else {%>
             <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = <%=genFeature.getInternalTypeCast()%>new<%=genFeature.getCapName()%>;
             <%} else {%>
-		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = <%=genFeature.getInternalTypeCast()%>new<%=genFeature.getCapName()%>;
+              <%if (genFeature.isReferenceType()) {%>
+		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getObjectType()%>>(new<%=genFeature.getCapName()%>,garbagedData);
+              <%} else {%>
+    <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new<%=genFeature.getCapName()%>;
+              <%}%>
             <%}%>
           <%}%>
           <%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
@@ -248,6 +260,9 @@
 <%@ end %><%//Class/setGenFeature.todo.override.javajetinc%>
     <%}%>
 <% if (!genFeature.isVolatile()) {%>
-		this.addChangelogEntry(new<%=genFeature.getCapName()%>, <%=genClass.getQualifiedFeatureID(genFeature)%>);<%}%>
+  if(isLoaded()) {
+		  this.addChangelogEntry(new<%=genFeature.getCapName()%>, <%=genClass.getQualifiedFeatureID(genFeature)%>);
+    }
+<%}%>
 	}
 <%}%>

@@ -32,13 +32,13 @@ public interface TestFactory extends EFactory {
 	TestFactory eINSTANCE = fr.inria.atlanmod.neo4emf.testdata.impl.TestFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Container</em>'.
+	 * Returns a new object of class '<em>Container Type</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Container</em>'.
+	 * @return a new object of class '<em>Container Type</em>'.
 	 * @generated
 	 */
-	Container createContainer();
+	ContainerType createContainerType();
 
 	/**
 	 * Returns a new object of class '<em>Link</em>'.

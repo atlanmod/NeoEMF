@@ -65,9 +65,9 @@ public class ReltypesMappings {
 		
 					Map<Point,RelationshipType> mapTestPackage = new HashMap<Point,RelationshipType>();
 				
-			mapTestPackage.put(new Point(TestPackage.CONTAINER,TestPackage.CONTAINER__NODES),Reltypes.CONTAINER__NODES);
+			mapTestPackage.put(new Point(TestPackage.CONTAINER_TYPE,TestPackage.CONTAINER_TYPE__NODES),Reltypes.CONTAINER_TYPE__NODES);
 					
-			mapTestPackage.put(new Point(TestPackage.CONTAINER,TestPackage.CONTAINER__LINKS),Reltypes.CONTAINER__LINKS);
+			mapTestPackage.put(new Point(TestPackage.CONTAINER_TYPE,TestPackage.CONTAINER_TYPE__LINKS),Reltypes.CONTAINER_TYPE__LINKS);
 					
 			mapTestPackage.put(new Point(TestPackage.LINK,TestPackage.LINK__OUT_GOING),Reltypes.LINK__OUT_GOING);
 					
