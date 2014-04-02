@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Kyanos EMF Plug-in
+Bundle-SymbolicName: fr.inria.atlanmod.kyanos;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Activator: fr.inria.atlanmod.kyanos.KyanosPlugin
+Bundle-Vendor: Atlanmod - Inria
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ com.tinkerpop.blueprints
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Export-Package: fr.inria.atlanmod.kyanos,
+ fr.inria.atlanmod.kyanos.core,
+ fr.inria.atlanmod.kyanos.core.impl,
+ fr.inria.atlanmod.kyanos.util
+Bundle-ClassPath: .,
+ lib/jars/commons-lang-2.6.jar,
+ lib/jars/commons-io-2.4.jar,
+ lib/jars/commons-collections4-4.0.jar,
+ lib/jars/ant-1.6.2.jar,
+ lib/jars/cglib-nodep-3.1.jar
+DynamicImport-Package: *
