@@ -71,6 +71,7 @@ public class KyanosGraphFactory {
 			// Calculate the graph name, it is needed for the directory
 			// property
 			String[] segments = graphType.split("\\.");
+			// TODO: Add sanity check for array access
 			String graphName = segments[segments.length - 2];
 			directoryProperty = MessageFormat.format("blueprints.{0}.directory", graphName);
 			configuration.setProperty(directoryProperty, file.getAbsolutePath());
