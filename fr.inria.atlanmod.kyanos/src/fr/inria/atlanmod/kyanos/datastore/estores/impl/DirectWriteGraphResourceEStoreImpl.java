@@ -506,7 +506,7 @@ public class DirectWriteGraphResourceEStoreImpl implements SearcheableResourceES
 	protected InternalEObject reifyVertex(Vertex vertex) {
 		KyanosInternalEObject internalEObject = graph.reifyVertex(vertex);
 		if (internalEObject.eResource() != getResource()) {
-			internalEObject.eSetResource(getResource(), null);
+			internalEObject.eSetDirectResource(getResource());
 		}
 		return internalEObject;
 	}
