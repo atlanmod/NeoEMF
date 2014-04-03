@@ -380,8 +380,44 @@ public class NEConnection {
 	}
 	
 	public Relationship addTmpRelationshipBetween(INeo4emfObject from, INeo4emfObject to, RelationshipType relType) {
-		Node fromNode = service.getNodeById(from.getNodeId());
-		Node toNode = service.getNodeById(to.getNodeId());
+		Node fromNode;
+		Node toNode;
+		if(from.getNodeId() == -1) {
+			if(from.eResource() != null) {
+				/*
+				 * Happen when a user first add a non containment link then
+				 * add the referenced object to its container.
+				 */
+				fromNode = this.addObject(from, true);
+			}
+			else {
+				/*
+				 * Else do nothing, there is no reason to save the object
+				 */
+				return null;
+			}
+		}
+		else {
+			fromNode = service.getNodeById(from.getNodeId());
+		}
+		if(to.getNodeId() == -1) {
+			if(to.eResource() != null) {
+				/*
+				 * Happen when a user first add a non containment link then
+				 * add the referenced object to its container.
+				 */
+				toNode = this.addObject(to, true);
+			}
+			else {
+				/*
+				 * Else do nothing, there is no reason to save the object
+				 */
+				return null;
+			}
+		}
+		else {
+			toNode = service.getNodeById(to.getNodeId());
+		}
 		/*
 		 * Remove the DELETE relationship that may have been generated. (This
 		 * happens when the EObject has been removed from its container).
