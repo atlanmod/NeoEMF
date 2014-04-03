@@ -12,29 +12,37 @@
 **/
 package mgraph.impl;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.NeoEObjectWithInverseResolvingEList;
+
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+
 import java.lang.ref.SoftReference;
+
 import java.util.Collection;
 
+import mgraph.MEdge;
+import mgraph.MGraph;
+import mgraph.MNode;
 import mgraph.MgraphPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.neo4j.graphdb.Node;
 
-import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.NeoEObjectWithInverseResolvingEList;
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-import fr.inria.mgraph.MEdge;
-import fr.inria.mgraph.MGraph;
-import fr.inria.mgraph.MNode;
+import org.neo4j.graphdb.Node;
 
 /**
  * <!-- begin-user-doc -->
@@ -113,15 +121,17 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	public void setName(String newName) {
 	
 		
-		String oldName = getData().name;
-		getData().name = newName;
+    String oldName = getData().name;
+    getData().name = newName;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			MgraphPackage.MNODE__NAME,
 			oldName, getData().name));
         }  
-		this.addChangelogEntry(newName, MgraphPackage.MNODE__NAME);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newName, MgraphPackage.MNODE__NAME);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -190,7 +200,9 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 		else if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(this, Notification.SET, MgraphPackage.MNODE__GRAPH, newGraph, newGraph));
 		}
-		this.addChangelogEntry(newGraph, MgraphPackage.MNODE__GRAPH);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newGraph, MgraphPackage.MNODE__GRAPH);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -204,22 +216,24 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().from == null || getData().from.isEnqueued()){
+	  	
 			
-	        
-	        	EList<MEdge> newList = new NeoEObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__FROM, MgraphPackage.MEDGE__OUT_GOING);
-	        	getData().from = new SoftReference<EList<MEdge>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongFrom = newList;
-	        	}
-	        
-	    	}
-			return getData().from.get();
+				if (getData().from == null || getData().from.isEnqueued()){
+				
+		        
+		        	EList<MEdge> newList = new NeoEObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__FROM, MgraphPackage.MEDGE__OUT_GOING);
+		        	getData().from = new SoftReference<EList<MEdge>>(newList, garbagedData);
+					if (isLoaded()) {
+						((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);			
+		        	}
+		        	else {
+		        		// TODO find a better implementation
+		        		getData().strongFrom = newList;
+		        	}
+		        
+		    	}
+				return getData().from.get();
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -236,22 +250,24 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 		try {
 			setLoadingOnDemand();	
 	   
-		
-			if (getData().to == null || getData().to.isEnqueued()){
+	  	
 			
-	        
-	        	EList<MEdge> newList = new NeoEObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__TO, MgraphPackage.MEDGE__IN_COMING);
-	        	getData().to = new SoftReference<EList<MEdge>>(newList, garbagedData);
-				if (isLoaded()) {
-					((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		getData().strongTo = newList;
-	        	}
-	        
-	    	}
-			return getData().to.get();
+				if (getData().to == null || getData().to.isEnqueued()){
+				
+		        
+		        	EList<MEdge> newList = new NeoEObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__TO, MgraphPackage.MEDGE__IN_COMING);
+		        	getData().to = new SoftReference<EList<MEdge>>(newList, garbagedData);
+					if (isLoaded()) {
+						((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);			
+		        	}
+		        	else {
+		        		// TODO find a better implementation
+		        		getData().strongTo = newList;
+		        	}
+		        
+		    	}
+				return getData().to.get();
+      	
 		} finally {
 			unsetLoadingOnDemand();
 		}
@@ -611,7 +627,9 @@ protected static class DataMNode{
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<MEdge> strongFrom;
+      	
 	protected SoftReference<EList<MEdge>> from;
     
 	/**
@@ -622,7 +640,9 @@ protected static class DataMNode{
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<MEdge> strongTo;
+      	
 	protected SoftReference<EList<MEdge>> to;
 
 	
@@ -706,7 +726,9 @@ protected static class MNodeReferences  {
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<MEdge> strongFrom;
+      	
 	protected SoftReference<EList<MEdge>> from;
     
 	/**
@@ -717,7 +739,9 @@ protected static class MNodeReferences  {
 	 * @generated
 	 * @ordered
 	 */
+      	
     protected EList<MEdge> strongTo;
+      	
 	protected SoftReference<EList<MEdge>> to;
 }
 // graph : MGraph, bi:true, chan:true, list:false, change:true, kind:container reference

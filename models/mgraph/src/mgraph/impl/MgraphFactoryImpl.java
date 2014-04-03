@@ -14,20 +14,21 @@ package mgraph.impl;
  
 
 
-import mgraph.MgraphFactory;
-import mgraph.MgraphPackage;
+import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
+
+import mgraph.*;
+
 import mgraph.util.MgraphAdapterFactory;
 
 import org.eclipse.emf.common.notify.Adapter;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.impl.EFactoryImpl;
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
-import fr.inria.mgraph.MEdge;
-import fr.inria.mgraph.MGraph;
-import fr.inria.mgraph.MNode;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
  * <!-- begin-user-doc -->

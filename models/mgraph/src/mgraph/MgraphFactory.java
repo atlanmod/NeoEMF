@@ -14,9 +14,6 @@ package mgraph;
  
 import org.eclipse.emf.ecore.EFactory;
 
-import fr.inria.mgraph.MGraph;
-import fr.inria.mgraph.MNode;
-import fr.inria.mgraph.MEdge;
 /**
  * <!-- begin-user-doc -->
  * The <b>Factory</b> for the model.
@@ -25,7 +22,7 @@ import fr.inria.mgraph.MEdge;
  * @see mgraph.MgraphPackage
  * @generated
  */
-public interface MgraphFactory extends fr.inria.mgraph.emf.MgraphFactory {
+public interface MgraphFactory extends EFactory {
 	/**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->

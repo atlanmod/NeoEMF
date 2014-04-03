@@ -13,16 +13,22 @@
 package mgraph.util;
 
 
-import mgraph.MgraphPackage;
+import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+
+import fr.inria.atlanmod.neo4emf.change.impl.*;
+
+import mgraph.*;
 
 import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-import org.eclipse.emf.ecore.EObject;
 
-import fr.inria.mgraph.MEdge;
-import fr.inria.mgraph.MGraph;
-import fr.inria.mgraph.MNode;
+import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
+import org.eclipse.emf.common.notify.impl.AdapterImpl;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.

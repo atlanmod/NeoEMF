@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package"
  * @generated
  */
-public interface MgraphPackage extends fr.inria.mgraph.emf.MgraphPackage {
+public interface MgraphPackage extends PersistentPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->

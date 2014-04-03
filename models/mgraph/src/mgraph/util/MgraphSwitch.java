@@ -12,15 +12,12 @@
 **/
 package mgraph.util;
 
-import mgraph.MgraphPackage;
+import mgraph.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.util.Switch;
 
-import fr.inria.mgraph.MEdge;
-import fr.inria.mgraph.MGraph;
-import fr.inria.mgraph.MNode;
+import org.eclipse.emf.ecore.util.Switch;
 
 /**
  * <!-- begin-user-doc -->

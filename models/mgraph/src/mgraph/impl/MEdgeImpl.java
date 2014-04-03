@@ -12,27 +12,30 @@
 **/
 package mgraph.impl;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
+import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+
 import java.lang.ref.SoftReference;
 
+import mgraph.MEdge;
+import mgraph.MGraph;
+import mgraph.MNode;
 import mgraph.MgraphPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import org.neo4j.graphdb.Node;
-
-import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-import fr.inria.mgraph.MEdge;
-import fr.inria.mgraph.MGraph;
-import fr.inria.mgraph.MNode;
-
-
 
 /**
  * <!-- begin-user-doc -->
@@ -111,15 +114,17 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 	public void setName(String newName) {
 	
 		
-		String oldName = getData().name;
-		getData().name = newName;
+    String oldName = getData().name;
+    getData().name = newName;
 		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			MgraphPackage.MEDGE__NAME,
 			oldName, getData().name));
         }  
-		this.addChangelogEntry(newName, MgraphPackage.MEDGE__NAME);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newName, MgraphPackage.MEDGE__NAME);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -193,11 +198,13 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		
         // setGenFeature.override.javajetinc (bidirectionnal handling)
         // TEST
-        if(newInComing.eResource() == null) {
+		// [2-04]
+//        if(newInComing.eResource() == null) {
         	// Reproduce the error in standard EMF (when trying to add a non-containment reference
         	// on an EObject which is not in a resource)
-        	throw new RuntimeException("The object '" + newInComing.toString() + "' is not container in a resource");
-        }
+//        	throw new RuntimeException("The object '" + newInComing.toString() + "' is not container in a resource");
+//        }
+		// [2-04]
         // TODO Check that (always true ? compare EObject with SoftReference)
         if(newInComing != getData().inComing) {
         	NotificationChain msgs = null;
@@ -236,7 +243,9 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		else if (eNotificationRequired()) {
 				eNotify(new ENotificationImpl(this, Notification.SET, MgraphPackage.MEDGE__IN_COMING, newInComing, newInComing));
           	}
-		this.addChangelogEntry(newInComing, MgraphPackage.MEDGE__IN_COMING);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newInComing, MgraphPackage.MEDGE__IN_COMING);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -310,11 +319,13 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		
         // setGenFeature.override.javajetinc (bidirectionnal handling)
         // TEST
-        if(newOutGoing.eResource() == null) {
+		// [2-04]
+//        if(newOutGoing.eResource() == null) {
         	// Reproduce the error in standard EMF (when trying to add a non-containment reference
         	// on an EObject which is not in a resource)
-        	throw new RuntimeException("The object '" + newOutGoing.toString() + "' is not container in a resource");
-        }
+//        	throw new RuntimeException("The object '" + newOutGoing.toString() + "' is not container in a resource");
+//        }
+		// [2-04]
         // TODO Check that (always true ? compare EObject with SoftReference)
         if(newOutGoing != getData().outGoing) {
         	NotificationChain msgs = null;
@@ -353,7 +364,9 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		else if (eNotificationRequired()) {
 				eNotify(new ENotificationImpl(this, Notification.SET, MgraphPackage.MEDGE__OUT_GOING, newOutGoing, newOutGoing));
           	}
-		this.addChangelogEntry(newOutGoing, MgraphPackage.MEDGE__OUT_GOING);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newOutGoing, MgraphPackage.MEDGE__OUT_GOING);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -422,7 +435,9 @@ public class MEdgeImpl extends Neo4emfObject implements MEdge {
 		else if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(this, Notification.SET, MgraphPackage.MEDGE__GRAPH, newGraph, newGraph));
 		}
-		this.addChangelogEntry(newGraph, MgraphPackage.MEDGE__GRAPH);
+  if(isLoaded()) {
+		  this.addChangelogEntry(newGraph, MgraphPackage.MEDGE__GRAPH);
+    }
 	} 
 
 /**
@@ -752,6 +767,7 @@ protected static class DataMEdge{
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<MNode> inComing;
     
 	/**
@@ -762,6 +778,7 @@ protected static class DataMEdge{
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<MNode> outGoing;
     
 
@@ -845,6 +862,7 @@ protected static class MEdgeReferences  {
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<MNode> inComing;
     
 	/**
@@ -855,6 +873,7 @@ protected static class MEdgeReferences  {
 	 * @generated
 	 * @ordered
 	 */
+      	
 	protected SoftReference<MNode> outGoing;
     
 }

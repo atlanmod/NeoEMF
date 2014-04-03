@@ -97,7 +97,7 @@ public class Serializer implements ISerializer {
 	// false and one time true, and should be always false by default for convenience (the user
 	// never call save for a temporary save).
 	private Map<String,Object> mergeOptions(Map<String,Object> options) {
-		if(options == null) {
+		if(options == null || options.isEmpty()) {
 			return defaultOptions;
 		}
 		Iterator<String> it = defaultOptions.keySet().iterator();
@@ -241,24 +241,28 @@ public class Serializer implements ISerializer {
 								.eGet(ref);
 						for (INeo4emfObject referencedEObject : eObjects) {
 							INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) referencedEObject;
-							if (referencedNeo4emfObject.getNodeId() == -1) {
+							if (referencedNeo4emfObject.getNodeId() == -1 && referencedNeo4emfObject.eResource() != null) {
 								Node childNode = this.manager
 										.createNodefromEObject(referencedEObject,isTmp);
 								referencedNeo4emfObject.setNodeId(childNode
 										.getId());
 							}
-							addNewLink(eObject, ref, referencedEObject,isTmp);
+							if(referencedNeo4emfObject.eResource() != null) {
+								addNewLink(eObject, ref, referencedEObject,isTmp);
+							}
 						}
 					} else {
 						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject
 								.eGet(ref);
-						if (referencedNeo4emfObject.getNodeId() == -1) {
+						if (referencedNeo4emfObject.getNodeId() == -1 && referencedNeo4emfObject.eResource() != null) {
 							Node childNode = this.manager
 									.createNodefromEObject(referencedNeo4emfObject);
 							referencedNeo4emfObject
 									.setNodeId(childNode.getId());
 						}
-						addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
+						if(referencedNeo4emfObject.eResource() != null) {
+							addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
+						}
 					}
 				}
 			}
