@@ -24,13 +24,6 @@ import fr.inria.atlanmod.kyanos.core.impl.KyanosEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.kyanos.logger.Logger;
 import fr.inria.atlanmod.kyanos.util.collections.WeakValueHashMap;
 
-/**
- * WrappedGraph serves as a template for writing a wrapper graph. The intention
- * is that the code in this template is copied and adjusted accordingly.
- * 
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- * @author agomez - Modifications to Kyanos
- */
 
 public class KyanosGraph extends IdGraph<KeyIndexableGraph> {
 	
