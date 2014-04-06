@@ -7,6 +7,9 @@ public interface KyanosInternalEObject extends KyanosEObject, InternalEObject {
 
 	public abstract void kyanosSetId(String id);
 	
-	public void eSetDirectResource(Resource.Internal resource);
+	public Resource.Internal kyanosResource();
+
+	public void kyanosSetResource(Resource.Internal resource);
+	
 	
 }

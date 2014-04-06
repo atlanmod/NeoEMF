@@ -32,6 +32,7 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.kyanos.core.KyanosEObject;
+import fr.inria.atlanmod.kyanos.core.KyanosInternalEObject;
 import fr.inria.atlanmod.kyanos.core.KyanosResource;
 import fr.inria.atlanmod.kyanos.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.kyanos.datastore.estores.impl.AutocommitGraphResourceEStoreImpl;
@@ -307,19 +308,20 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 			// referenced from a saved object may be garbage collected before
 			// they have been completely stored in the DB
 			List<EObject> hardLinksList = new ArrayList<>();
-			InternalEObject eObject = (InternalEObject) object;
+			KyanosInternalEObject eObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosInternalEObject.class);
 			// Collect all contents
 			hardLinksList.add(object);
 			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
 			// Start moving objects to the resource
 			notifications = eObject.eSetResource(KyanosResourceImpl.this, notifications);
+			eObject.kyanosSetResource(KyanosResourceImpl.this);
 			KyanosResourceImpl.this.attached(eObject);
 			// Iterate using the hard links list instead the getAllContents
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler
 			for (EObject element : hardLinksList) {
-				InternalEObject internalElement = (InternalEObject) element;
-				notifications = internalElement.eSetResource(KyanosResourceImpl.this, notifications);
+				KyanosInternalEObject internalElement = KyanosEObjectAdapterFactoryImpl.getAdapter(element, KyanosInternalEObject.class);
+				internalElement.kyanosSetResource(KyanosResourceImpl.this);
 			}
 			// END
 			return notifications;
@@ -329,15 +331,15 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		public NotificationChain inverseRemove(EObject object, NotificationChain notifications) {
 			// See initial implementation for this method in:
 			// org.eclipse.emf.ecore.resource.impl.ResourceImpl.ContentsEList.inverseRemove(E object, NotificationChain notifications)
-			InternalEObject eObject = (InternalEObject) object;
+			KyanosInternalEObject eObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosInternalEObject.class);;
 			if (KyanosResourceImpl.this.isLoaded || unloadingContents != null) {
 				KyanosResourceImpl.this.detached(eObject);
 			}
 			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext();) {
-				InternalEObject internal = (InternalEObject) it.next();
-				notifications = internal.eSetResource(null, notifications);
+				KyanosInternalEObject internal = KyanosEObjectAdapterFactoryImpl.getAdapter(it.next(), KyanosInternalEObject.class);
+				internal.kyanosSetResource(null);
 			}
-
+			eObject.kyanosSetResource(null);
 			return eObject.eSetResource(null, notifications);
 		}
 

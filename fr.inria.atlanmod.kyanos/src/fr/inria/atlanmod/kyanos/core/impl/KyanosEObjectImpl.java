@@ -1,6 +1,5 @@
 package fr.inria.atlanmod.kyanos.core.impl;
 
-import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -24,7 +23,7 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	
 	protected String id;
 	
-	protected KyanosResource kyanosResource;
+	protected Resource.Internal kyanosResource;
 	
 	/**
 	 * The internal cached value of the eContainer. This information should be
@@ -57,7 +56,7 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	
 	@Override
 	public EObject eContainer() {
-		if (eDirectResource() instanceof KyanosResource) {
+		if (kyanosResource instanceof KyanosResource) {
 			InternalEObject container = eStore().getContainer(this);
 			eBasicSetContainer(container);
 			eBasicSetContainerFeatureID(eContainerFeatureID());
@@ -70,8 +69,8 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	@Override
 	protected void eBasicSetContainer(InternalEObject newContainer) {
 		eContainer = newContainer;
-		if (newContainer != null && newContainer.eResource() != this.eDirectResource()) {
-			eSetDirectResource((Resource.Internal) eContainer.eResource());
+		if (newContainer != null && newContainer.eResource() != kyanosResource) {
+			kyanosSetResource((Resource.Internal) eContainer.eResource());
 		}
 	}
 	
@@ -101,24 +100,27 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	}
 	
 	@Override
-	public NotificationChain eSetResource(Internal resource, NotificationChain notifications) {
-		if (resource != eDirectResource()) {
-			// Set the resource only if the new resource is different
-			// If not, the EObject will be detached from its current resource!
-			return super.eSetResource(resource, notifications);
-		} else {
-			return notifications;
-		}
-	}
-	
-	@Override
 	public EList<EObject> eContents() {
 		return EContentsEList.createEContentsEList(this);
 	}
 	
 	@Override
-	public void eSetDirectResource(Internal resource) {
-		super.eSetDirectResource(resource);
+	public Resource eResource() {
+		if (kyanosResource != null) {
+			return kyanosResource;
+		} else {
+			return super.eResource();
+		}
+	}
+	
+	@Override
+	public Internal kyanosResource() {
+		return kyanosResource;
+	}
+	
+	@Override
+	public void kyanosSetResource(Internal resource) {
+		this.kyanosResource = resource;
 		EStore oldStore = eStore;
 		// Set the new EStore
 		if (resource instanceof KyanosResource) {
@@ -181,7 +183,7 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	public Object dynamicGet(int dynamicFeatureID) {
 		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
 		if (feature.isMany()) {
-			return new EStoreEObjectImpl.EStoreEList<>(this, feature, eStore());
+			return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
 		} else {
 			return eStore().get(this, feature, EStore.NO_INDEX);
 		}
