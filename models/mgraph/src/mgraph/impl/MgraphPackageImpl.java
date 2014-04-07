@@ -347,7 +347,7 @@ public class MgraphPackageImpl extends EPackageImpl implements MgraphPackage {
 
 private RelationshipMapping relationshipMapping = new MgraphPackageRelationshipMapping();
 
-@Override
+//@Override
 public RelationshipMapping getRelationshipMapping() {
 	return relationshipMapping;
 }
@@ -373,7 +373,7 @@ class MgraphPackageRelationshipMapping implements RelationshipMapping {
 	
 	public RelationshipType relationshipAt(int classID, int referenceID) {
 		assert classID >= 0 && classID < mapping.length : "Invalid Class ID";
-		assert referenceID >= 0 : "Invalid Reference ID";
+		assert referenceID >= 0 && referenceID < mapping[classID].length: "Invalid Reference ID";
 		
 		return mapping[classID][referenceID];
 	}

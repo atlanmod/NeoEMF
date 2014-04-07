@@ -11,7 +11,7 @@
       <package
             uri="http://mgraph/1.1"
             class="mgraph.MgraphPackage"
-            genModel="src/main/model/MGraph.genmodel"/>
+            genModel="model/MGraph.genmodel"/>
    </extension>
 
 </plugin>

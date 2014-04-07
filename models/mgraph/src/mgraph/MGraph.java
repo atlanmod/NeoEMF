@@ -106,11 +106,11 @@ public interface MGraph extends INeo4emfObject {
 	 */
 	EList<MEdge> getEdges(); 
 
-
 /*
 * Neo4EMF inserted code -- begin
 */
-
+// nodes : EList<MNode>, bi:true, chan:true, list:true, change:true, kind:containment reference list
+// edges : EList<MEdge>, bi:true, chan:true, list:true, change:true, kind:containment reference list
 /*
 * Neo4EMF inserted code -- end
 */

@@ -104,4 +104,11 @@ public class CodegenUtil {
 		model.getImportedName("fr.inria.atlanmod.neo4emf.Neo"+listType);
 		return "Neo"+listConstructor;
 	}
+	
+	public static String getDataClassExtends (GenClass cls){
+		if (cls.getClassExtends().contains("Neo4emfObject"))
+			return "";
+		StringBuffer str = new StringBuffer(" extends Data");
+		return str.append(cls.getClassExtends().substring(9, cls.getClassExtends().length()-4)).toString();
+	}
 }

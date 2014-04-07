@@ -12,9 +12,13 @@
 **/
 package mgraph.impl;
 
+import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
+import fr.inria.atlanmod.neo4emf.NeoEObjectWithInverseResolvingEList;
 
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
+
+import java.lang.ref.SoftReference;
 
 import java.util.Collection;
 
@@ -37,6 +41,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import org.neo4j.graphdb.Node;
 
 /**
  * <!-- begin-user-doc -->
@@ -75,21 +81,9 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 		super();
 		
 	}
+
 	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	 
-	protected DataMNode getData(){
-		if ( data == null || !(data instanceof DataMNode)){
-			data = new DataMNode();
-			if (isLoaded())
-			((INeo4emfResource) this.eResource()).fetchAttributes(this);
-			}
-		return (DataMNode) data;
-	}
+	
 	
 	/**
 	 * <!-- begin-user-doc -->
@@ -110,13 +104,13 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 */
 	public String getName() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();	
 	  		
-		return getData().name;
+			return getData().name;
 		
-	} finally {
-	loadingOnDemand = false;
-}
+		} finally {
+			unsetLoadingOnDemand();
+		}
 	}
  /**
  * <!-- begin-user-doc -->
@@ -127,14 +121,17 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	public void setName(String newName) {
 	
 		
-		String oldName = getData().name;
-		getData().name = newName;
-		if (eNotificationRequired())
+    String oldName = getData().name;
+    getData().name = newName;
+		if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(
 			this, Notification.SET,
 			MgraphPackage.MNODE__NAME,
 			oldName, getData().name));
-	    addChangelogEntry(newName, MgraphPackage.MNODE__NAME);
+        }  
+  if(isLoaded()) {
+		  this.addChangelogEntry(newName, MgraphPackage.MNODE__NAME);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -146,15 +143,15 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 */
 	public MGraph getGraph() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();	
 	  
 		if (isLoaded() && eContainer() == null) {
 			MGraph graph = (MGraph) ((INeo4emfResource) this.eResource()).getContainerOnDemand(this, MgraphPackage.MNODE__GRAPH);
 			basicSetGraph(graph,null);}
-		return (MGraph)eContainer();
-	} finally {
-	loadingOnDemand = false;
-}
+			return (MGraph)eContainer();
+		} finally {
+			unsetLoadingOnDemand();
+		}
 	}
 	/**
 	 * <!-- begin-user-doc -->
@@ -177,20 +174,35 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	public void setGraph(MGraph newGraph) {
 	
 		
-		if (newGraph != eInternalContainer() || (eContainerFeatureID() != MgraphPackage.MNODE__GRAPH && newGraph != null)) {
-			if (EcoreUtil.isAncestor(this, (EObject)newGraph))
+		// TEST
+      	if (newGraph != eInternalContainer() || (eContainerFeatureID() != MgraphPackage.MNODE__GRAPH && newGraph != null)) {
+			if (EcoreUtil.isAncestor(this, (EObject)newGraph)) {
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			}
 			NotificationChain msgs = null;
-			if (eInternalContainer() != null)
+			if(eInternalContainer() != null) {
+				if(newGraph == null && isLoaded()) {
+					addChangelogRemoveEntry(eInternalContainer(), MgraphPackage.MNODE__GRAPH);
+				}
 				msgs = eBasicRemoveFromContainer(msgs);
-			if (newGraph != null)
-				msgs = ((InternalEObject)newGraph).eInverseAdd(this, MgraphPackage.MGRAPH__NODES, MGraph.class, msgs);
+			}
+			if(isLoaded()) {
+				addChangelogEntry(newGraph, MgraphPackage.MNODE__GRAPH);
+			}
 			msgs = basicSetGraph(newGraph, msgs);
-			if (msgs != null) msgs.dispatch();
+			if(newGraph != null) {
+				msgs = ((InternalEObject)newGraph).eInverseAdd(this, MgraphPackage.MGRAPH__NODES, MGraph.class, msgs);
+			}
+			if(msgs != null) {
+				msgs.dispatch();
+			}	
 		}
-		else if (eNotificationRequired())
+		else if (eNotificationRequired()) {
 			eNotify(new ENotificationImpl(this, Notification.SET, MgraphPackage.MNODE__GRAPH, newGraph, newGraph));
-	    addChangelogEntry(newGraph, MgraphPackage.MNODE__GRAPH);
+		}
+  if(isLoaded()) {
+		  this.addChangelogEntry(newGraph, MgraphPackage.MNODE__GRAPH);
+    }
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -202,17 +214,29 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 */
 	public EList<MEdge> getFrom() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();	
 	   
-		
-		if (getData().from == null){
-		getData().from = new EObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__FROM, MgraphPackage.MEDGE__OUT_GOING);
-			if (isLoaded()) 
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);			}
-		return getData().from;
-	} finally {
-	loadingOnDemand = false;
-}
+	  	
+			
+				if (getData().from == null || getData().from.isEnqueued()){
+				
+		        
+		        	EList<MEdge> newList = new NeoEObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__FROM, MgraphPackage.MEDGE__OUT_GOING);
+		        	getData().from = new SoftReference<EList<MEdge>>(newList, garbagedData);
+					if (isLoaded()) {
+						((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__FROM);			
+		        	}
+		        	else {
+		        		// TODO find a better implementation
+		        		getData().strongFrom = newList;
+		        	}
+		        
+		    	}
+				return getData().from.get();
+      	
+		} finally {
+			unsetLoadingOnDemand();
+		}
 	} 
 
 /** genFeaure.override.javajetinc **/
@@ -224,17 +248,29 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	 */
 	public EList<MEdge> getTo() {
 		try {
-			loadingOnDemand = true;	
+			setLoadingOnDemand();	
 	   
-		
-		if (getData().to == null){
-		getData().to = new EObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__TO, MgraphPackage.MEDGE__IN_COMING);
-			if (isLoaded()) 
-			((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);			}
-		return getData().to;
-	} finally {
-	loadingOnDemand = false;
-}
+	  	
+			
+				if (getData().to == null || getData().to.isEnqueued()){
+				
+		        
+		        	EList<MEdge> newList = new NeoEObjectWithInverseResolvingEList<MEdge>(MEdge.class, this, MgraphPackage.MNODE__TO, MgraphPackage.MEDGE__IN_COMING);
+		        	getData().to = new SoftReference<EList<MEdge>>(newList, garbagedData);
+					if (isLoaded()) {
+						((INeo4emfResource) this.eResource()).getOnDemand(this, MgraphPackage.MNODE__TO);			
+		        	}
+		        	else {
+		        		// TODO find a better implementation
+		        		getData().strongTo = newList;
+		        	}
+		        
+		    	}
+				return getData().to.get();
+      	
+		} finally {
+			unsetLoadingOnDemand();
+		}
 	} 
 
 /**
@@ -248,13 +284,39 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case MgraphPackage.MNODE__GRAPH:
-				if (eInternalContainer() != null)
+				if (eInternalContainer() != null && !eInternalContainer().equals(otherEnd)) {
 					msgs = eBasicRemoveFromContainer(msgs);
+				}
+				// Should be done before basicSet, otherwise the ChangeLog may be flushed and the 
+				// isLoaded method would return true, and duplicate the AddLink entry
+				if(isLoaded() && !isLoadingOnDemand() && !((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+					addChangelogEntry(otherEnd, MgraphPackage.MNODE__GRAPH);
+				}
 				return basicSetGraph((MGraph)otherEnd, msgs);
 			case MgraphPackage.MNODE__FROM:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getFrom()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	setLoadingOnDemand();
+    			//}
+    			if(isLoaded() && !isLoadingOnDemand()) {
+    				addChangelogEntry(otherEnd, MgraphPackage.MNODE__FROM);
+    			}
+    			return ((InternalEList<InternalEObject>)(InternalEList<?>)getFrom()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	unsetLoadingOnDemand();
+    			//}
+    			//return null;
 			case MgraphPackage.MNODE__TO:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getTo()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	setLoadingOnDemand();
+    			//}
+    			if(isLoaded() && !isLoadingOnDemand()) {
+    				addChangelogEntry(otherEnd, MgraphPackage.MNODE__TO);
+    			}
+    			return ((InternalEList<InternalEObject>)(InternalEList<?>)getTo()).basicAdd(otherEnd, msgs);
+    			//if(((INeo4emfObject)otherEnd).isLoadingOnDemand()) {
+    			//	unsetLoadingOnDemand();
+    			//}
+    			//return null;
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -269,10 +331,15 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case MgraphPackage.MNODE__GRAPH:
+  				if(isLoaded()) {
+  					addChangelogRemoveEntry(otherEnd,featureID);
+  				}
 				return basicSetGraph(null, msgs);
 			case MgraphPackage.MNODE__FROM:
+    			addChangelogRemoveEntry(otherEnd, MgraphPackage.MNODE__FROM);
 				return ((InternalEList<?>)getFrom()).basicRemove(otherEnd, msgs);
 			case MgraphPackage.MNODE__TO:
+    			addChangelogRemoveEntry(otherEnd, MgraphPackage.MNODE__TO);
 				return ((InternalEList<?>)getTo()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -403,23 +470,133 @@ public class MNodeImpl extends Neo4emfObject implements MNode {
 		return result.toString();
 		}
 
+	/**
+	 * @generated
+	 */
+	public void setDataStrongReferences() {
+		if(data != null) {
+			
+				
+			
+				
+			
+				
+			if(getData().strongFrom != null) {
+				getData().strongFrom = getData().from.get();
+			}
+				
+			
+				
+			if(getData().strongTo != null) {
+				getData().strongTo = getData().to.get();
+			}
+				
+			
+		}
+	}
+
+	/**
+	 * @generated
+	 */
+	public void releaseDataStrongReferences() {
+		
+			
+		
+			
+		
+			
+		getData().strongFrom = null;
+			
+		
+			
+		getData().strongTo = null;
+			
+		
+	}
 /*
 * Neo4EMF inserted code -- begin
 */
+	
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	 
+	protected DataMNode getData() {
+		if ( data == null || !(data instanceof DataMNode)){
+			// TODO check that
+			setLoadingOnDemand();
+			data = new DataMNode();
+			if (isLoaded()) {
+				((INeo4emfResource) this.eResource()).fetchAttributes(this);
+			}
+			unsetLoadingOnDemand();
+			}
+		return (DataMNode) data;
+	}
 
-/*
-* Neo4EMF inserted code -- end
+	/**
+	*
+	* @generated
+	**/
+	public void loadAllAttributesFrom(Node n) {
+		this.data = new DataMNode(this);
+		data.loadAllAttributesFrom(n);
+	}
+	
+	/**
+	*
+	* @generated
+	**/
+	public void saveAllAttributesTo(Node n) {
+		if (data != null) {
+			data.saveAllAttributesTo(n);
+		}
+	}
+	
+	/**
+	*
+	* @generated
+	**/
+	public void saveAttributeTo(int featureID, Node n) {
+		if (data != null) {
+			data.saveAttributeTo(featureID, n);
+		}
+	}
+	
+/**
+*   extends Neo4emfObject
+*  0
+*
 */
+protected static class DataMNode{
 
 
+	/**
+	 *Constructor of DataMNode
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DataMNode() {
+	}
 
 
-// data Class generation 
-protected static  class DataMNode {
+	/**
+	 * Constructor of DataMNode
+	 * Initializes multi-valued fields, if any.
+	 *
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DataMNode(MNodeImpl outer) {
+		
+	}
 
 
-// The goal of this template is to BLAH, BLAH, BLAH
-
+    
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -440,10 +617,8 @@ protected static  class DataMNode {
 	 */
 	protected String name = NAME_EDEFAULT;
 
-// The goal of this template is to BLAH, BLAH, BLAH
-
-// The goal of this template is to BLAH, BLAH, BLAH
-
+    
+    
 	/**
 	 * The cached value of the '{@link #getFrom() <em>From</em>}' reference list.
 	 * <!-- begin-user-doc -->
@@ -452,10 +627,11 @@ protected static  class DataMNode {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<MEdge> from;
-
-// The goal of this template is to BLAH, BLAH, BLAH
-
+      	
+    protected EList<MEdge> strongFrom;
+      	
+	protected SoftReference<EList<MEdge>> from;
+    
 	/**
 	 * The cached value of the '{@link #getTo() <em>To</em>}' reference list.
 	 * <!-- begin-user-doc -->
@@ -464,17 +640,11 @@ protected static  class DataMNode {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<MEdge> to;
+      	
+    protected EList<MEdge> strongTo;
+      	
+	protected SoftReference<EList<MEdge>> to;
 
-	/**
-	 *Constructor of DataMNode
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DataMNode() {
-		
-	}
 	
 		
 	
@@ -492,12 +662,96 @@ protected static  class DataMNode {
 	}
 		
 
-/*
-* Neo4EMF inserted code -- begin
-*/
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void loadAllAttributesFrom(Node n) {
+		Object aux;
+		aux = n.getProperty("name", null);
+		if (aux != null) {
+			name = (String) aux;
+		} 
+	}
 
+
+	/**
+ 	* <!-- begin-user-doc -->
+ 	* <!-- end-user-doc -->
+ 	* @generated
+ 	*/
+	public void saveAllAttributesTo(Node n) {
+		
+		
+		this.savenameTo(n);
+	} // saveTo()
+	
+	/**
+ 	* <!-- begin-user-doc -->
+ 	* <!-- end-user-doc -->
+ 	* @generated
+ 	*/
+	public void saveAttributeTo(int featureID, Node n) {
+		switch (featureID) {
+			
+			case MgraphPackage.MNODE__NAME:
+				this.savenameTo(n);
+				return;
+		} // switch
+	} // saveAttributeTo()
+	
+
+	/*
+	*
+	*/
+	private void savenameTo(Node n) {
+	
+		if (name != null) n.setProperty("name", name);
+	} 
+	
+
+
+
+}//end attribute class
+	
+protected static class MNodeReferences  {
+    
+    
+	/**
+	 * The cached value of the '{@link #getFrom() <em>From</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFrom()
+	 * @generated
+	 * @ordered
+	 */
+      	
+    protected EList<MEdge> strongFrom;
+      	
+	protected SoftReference<EList<MEdge>> from;
+    
+	/**
+	 * The cached value of the '{@link #getTo() <em>To</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTo()
+	 * @generated
+	 * @ordered
+	 */
+      	
+    protected EList<MEdge> strongTo;
+      	
+	protected SoftReference<EList<MEdge>> to;
+}
+// graph : MGraph, bi:true, chan:true, list:false, change:true, kind:container reference
+// from : EList<MEdge>, bi:true, chan:true, list:true, change:true, kind:reference list
+// to : EList<MEdge>, bi:true, chan:true, list:true, change:true, kind:reference list
 /*
 * Neo4EMF inserted code -- end
 */
-}//end data class
+
+
+
+
 } //MNodeImpl

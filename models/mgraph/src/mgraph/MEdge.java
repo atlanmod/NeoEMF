@@ -158,11 +158,12 @@ public interface MEdge extends INeo4emfObject {
 	void setGraph(MGraph value);
  
 
-
 /*
 * Neo4EMF inserted code -- begin
 */
-
+// inComing : MNode, bi:true, chan:true, list:false, change:true, kind:reference
+// outGoing : MNode, bi:true, chan:true, list:false, change:true, kind:reference
+// graph : MGraph, bi:true, chan:true, list:false, change:true, kind:container reference
 /*
 * Neo4EMF inserted code -- end
 */

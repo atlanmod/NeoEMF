@@ -148,41 +148,18 @@ public class NEConnection {
 	 * @param obj
 	 */
 	public Node addObject(INeo4emfObject obj, boolean isTmp) {
-		int typeID = obj.eClass().getClassifierID();
 		Node newNode;
-		Relationship isRootRel = null;
-		Relationship instanceOfRel = null;
-		
 		try {
-			
-			newNode = this.basicAddNode(obj);
-			instanceOfRel = newNode.createRelationshipTo(nodeTypes[typeID], IPersistenceService.INSTANCE_OF);
-			
-			if (obj.eContainer() == null && obj.eResource() != null) {
-				// ROOT Object
-				isRootRel = resourceNode.createRelationshipTo(newNode,
-						IPersistenceService.IS_ROOT);
+			if(obj.eContainer() == null && obj.eResource() != null) {
+				// Root object
+				newNode = this.addRootObject(obj, isTmp);
 			}
-		} catch (Exception e) {
+			else {
+				newNode = this.basicAddNode(obj, isTmp);
+			}
+		}catch(Exception e) {
 			newNode = null;
 		}
-
-
-
-		
-		// [Unload add]
-		if (isTmp) {
-			metaIndex.add(newNode, IPersistenceService.ID_META,
-					IPersistenceService.TMP_NODE);
-			relationshipIndex.add(instanceOfRel, IPersistenceService.ID_META,
-					IPersistenceService.TMP_RELATIONSHIP);
-			if (isRootRel != null) {
-				relationshipIndex.add(isRootRel, IPersistenceService.ID_META,
-						IPersistenceService.TMP_RELATIONSHIP);
-			}
-		}
-		// /[Unload add]
-		
 		return newNode;
 	}
 	
@@ -334,16 +311,19 @@ public class NEConnection {
 	 * @param obj
 	 * @return
 	 */
-	public boolean addRootObject(INeo4emfObject obj) {
+	public Node addRootObject(INeo4emfObject obj, boolean isTmp) {
 		assert obj.eContainer() == null : "Container not null (not a root node)";
 
 		try {
-			Node newNode = this.basicAddNode(obj);
-			resourceNode.createRelationshipTo(newNode,
+			Node newNode = this.basicAddNode(obj, isTmp);
+			Relationship isRootRel = resourceNode.createRelationshipTo(newNode,
 					IPersistenceService.IS_ROOT);
-			return true;
+			if(isTmp) {
+				relationshipIndex.add(isRootRel, IPersistenceService.ID_META, IPersistenceService.TMP_RELATIONSHIP);
+			}
+			return newNode;
 		} catch (Exception e) {
-			return false;
+			return null;
 		}
 	}
 
@@ -356,14 +336,18 @@ public class NEConnection {
 	 * @return
 	 * @throws Exception
 	 */
-	private Node basicAddNode(INeo4emfObject obj) throws Exception {
+	private Node basicAddNode(INeo4emfObject obj, boolean isTmp) throws Exception {
 		assert obj.eClass().getClassifierID() < nodeTypes.length : "Invalid type ID";
 
 		int typeID = obj.eClass().getClassifierID();
 		Node newNode = service.createNode();
 		obj.setNodeId(newNode.getId());
-		newNode.createRelationshipTo(nodeTypes[typeID],
+		Relationship instanceOfRel = newNode.createRelationshipTo(nodeTypes[typeID],
 				IPersistenceService.INSTANCE_OF);
+		if(isTmp) {
+			metaIndex.add(newNode,IPersistenceService.ID_META,IPersistenceService.TMP_NODE);
+			relationshipIndex.add(instanceOfRel, IPersistenceService.ID_META, IPersistenceService.TMP_RELATIONSHIP);
+		}
 		return newNode;
 	}
 	
@@ -396,8 +380,44 @@ public class NEConnection {
 	}
 	
 	public Relationship addTmpRelationshipBetween(INeo4emfObject from, INeo4emfObject to, RelationshipType relType) {
-		Node fromNode = service.getNodeById(from.getNodeId());
-		Node toNode = service.getNodeById(to.getNodeId());
+		Node fromNode;
+		Node toNode;
+		if(from.getNodeId() == -1) {
+			if(from.eResource() != null) {
+				/*
+				 * Happen when a user first add a non containment link then
+				 * add the referenced object to its container.
+				 */
+				fromNode = this.addObject(from, true);
+			}
+			else {
+				/*
+				 * Else do nothing, there is no reason to save the object
+				 */
+				return null;
+			}
+		}
+		else {
+			fromNode = service.getNodeById(from.getNodeId());
+		}
+		if(to.getNodeId() == -1) {
+			if(to.eResource() != null) {
+				/*
+				 * Happen when a user first add a non containment link then
+				 * add the referenced object to its container.
+				 */
+				toNode = this.addObject(to, true);
+			}
+			else {
+				/*
+				 * Else do nothing, there is no reason to save the object
+				 */
+				return null;
+			}
+		}
+		else {
+			toNode = service.getNodeById(to.getNodeId());
+		}
 		/*
 		 * Remove the DELETE relationship that may have been generated. (This
 		 * happens when the EObject has been removed from its container).

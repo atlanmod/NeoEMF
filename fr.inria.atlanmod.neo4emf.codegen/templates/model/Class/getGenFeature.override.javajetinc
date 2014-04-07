@@ -107,25 +107,29 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
 	  <%}%>	
 	  <%if (genFeature.isListType()) {%> 
-		<%if (!genModel.isVirtualDelegation()) {%>
-			if (<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> == null || <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>.isEnqueued()){
-			<%}else{%>
-			if (<%=genFeature.getSafeName()%> == null){<%}%>
-	        <%if (genModel.isVirtualDelegation()) {%>
-				eVirtualSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, <%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>);
-	        <%} else {%>
-	        	<%=genFeature.getImportedType(genClass)%> newList = new <%=CodegenUtil.getListConstructorAndNeoImport(genModel,genClass.getListConstructor(genFeature))%>;
-	        	<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getImportedType(genClass)%>>(newList, garbagedData);
-				if (isLoaded()) {
-					((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);			
-	        	}
-	        	else {
-	        		// TODO find a better implementation
-	        		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%>strong<%=genFeature.getCapName()%> = newList;
-	        	}
-	        <%}%>
-	    	}
-			return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%><%=genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes() ? ".map()" : ""%>.get();
+	  	<%if(genFeature.isReferenceType()) {%>
+			<%if (!genModel.isVirtualDelegation()) {%>
+				if (<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> == null || <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>.isEnqueued()){
+				<%}else{%>
+				if (<%=genFeature.getSafeName()%> == null){<%}%>
+		        <%if (genModel.isVirtualDelegation()) {%>
+					eVirtualSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, <%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>);
+		        <%} else {%>
+		        	<%=genFeature.getImportedType(genClass)%> newList = new <%=CodegenUtil.getListConstructorAndNeoImport(genModel,genClass.getListConstructor(genFeature))%>;
+		        	<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getImportedType(genClass)%>>(newList, garbagedData);
+					if (isLoaded()) {
+						((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);			
+		        	}
+		        	else {
+		        		// TODO find a better implementation
+		        		<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%>strong<%=genFeature.getCapName()%> = newList;
+		        	}
+		        <%}%>
+		    	}
+				return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%><%=genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes() ? ".map()" : ""%>.get();
+      	<%} else {%>
+      			return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
+      	<%}%>
       <%} 	  	  
 	  else if (genFeature.isContainer()) {%>
 		if (isLoaded() && eContainer() == null) {

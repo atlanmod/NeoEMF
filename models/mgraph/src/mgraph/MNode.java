@@ -138,11 +138,12 @@ public interface MNode extends INeo4emfObject {
 	 */
 	EList<MEdge> getTo(); 
 
-
 /*
 * Neo4EMF inserted code -- begin
 */
-
+// graph : MGraph, bi:true, chan:true, list:false, change:true, kind:container reference
+// from : EList<MEdge>, bi:true, chan:true, list:true, change:true, kind:reference list
+// to : EList<MEdge>, bi:true, chan:true, list:true, change:true, kind:reference list
 /*
 * Neo4EMF inserted code -- end
 */

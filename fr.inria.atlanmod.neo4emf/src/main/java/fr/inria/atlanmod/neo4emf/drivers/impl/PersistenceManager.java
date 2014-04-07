@@ -228,6 +228,7 @@ public class PersistenceManager implements IPersistenceManager {
 
 	//@Override
 	public Node createNodefromEObject(INeo4emfObject eObject) {
+		// TODO duplicate with below
 		return persistenceService.createNodeFromEObject(eObject);
 	}
 	
