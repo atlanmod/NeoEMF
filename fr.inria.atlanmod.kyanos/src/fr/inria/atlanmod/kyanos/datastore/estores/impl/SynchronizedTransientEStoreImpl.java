@@ -2,6 +2,7 @@ package fr.inria.atlanmod.kyanos.datastore.estores.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,10 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
  * @author agomez
  * 
  */
-public class TransientEStoreImpl implements InternalEObject.EStore {
+public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {
 
-	protected Map<EStoreEntryKey, Object> singleMap = new HashMap<EStoreEntryKey, Object>();
-	protected Map<EStoreEntryKey, List<Object>> manyMap = new HashMap<EStoreEntryKey, List<Object>>();
+	protected Map<EStoreEntryKey, Object> singleMap = Collections.synchronizedMap(new HashMap<EStoreEntryKey, Object>());
+	protected Map<EStoreEntryKey, List<Object>> manyMap = Collections.synchronizedMap(new HashMap<EStoreEntryKey, List<Object>>());
 
 	public class EStoreEntryKey {
 
@@ -68,8 +69,8 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 			return true;
 		}
 
-		private TransientEStoreImpl getOuterType() {
-			return TransientEStoreImpl.this;
+		private SynchronizedTransientEStoreImpl getOuterType() {
+			return SynchronizedTransientEStoreImpl.this;
 		}
 
 		public InternalEObject getEObject() {
@@ -113,7 +114,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		if (saved != null) {
 			saved.add(index, value);
 		} else {
-			List<Object> list = new ArrayList<Object>();
+			List<Object> list = Collections.synchronizedList(new ArrayList<Object>());
 			list.add(value);
 			manyMap.put(entry, list);
 		}
