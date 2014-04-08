@@ -299,9 +299,23 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 
 		@Override
 		public NotificationChain inverseAdd(EObject object, NotificationChain notifications) {
-			// See initial implementation for this method in:
-			// org.eclipse.emf.ecore.resource.impl.ResourceImpl.ContentsEList.inverseAdd(E object, NotificationChain notifications)
-			
+			InternalEObject eObject = (InternalEObject) object;
+			notifications = eObject.eSetResource(KyanosResourceImpl.this, notifications);
+			KyanosResourceImpl.this.attached(eObject);
+			return notifications;
+		}
+
+		@Override
+		public NotificationChain inverseRemove(EObject object, NotificationChain notifications) {
+			InternalEObject eObject = (InternalEObject) object;
+			if (KyanosResourceImpl.this.isLoaded || unloadingContents != null) {
+				KyanosResourceImpl.this.detached(eObject);
+			}
+			return eObject.eSetResource(null, notifications);
+		}
+		
+		@Override
+		protected void delegateAdd(int index, EObject object) {
 			// FIXME? Maintain a list of hard links to the elements while moving
 			// them to the new resource. If a garbage collection happens while
 			// traversing the children elements, some unsaved objects that are
@@ -312,10 +326,6 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 			// Collect all contents
 			hardLinksList.add(object);
 			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
-			// Start moving objects to the resource
-			notifications = eObject.eSetResource(KyanosResourceImpl.this, notifications);
-			eObject.kyanosSetResource(KyanosResourceImpl.this);
-			KyanosResourceImpl.this.attached(eObject);
 			// Iterate using the hard links list instead the getAllContents
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler
@@ -323,26 +333,27 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 				KyanosInternalEObject internalElement = KyanosEObjectAdapterFactoryImpl.getAdapter(element, KyanosInternalEObject.class);
 				internalElement.kyanosSetResource(KyanosResourceImpl.this);
 			}
-			// END
-			return notifications;
+			super.delegateAdd(index, object);
 		}
 
 		@Override
-		public NotificationChain inverseRemove(EObject object, NotificationChain notifications) {
-			// See initial implementation for this method in:
-			// org.eclipse.emf.ecore.resource.impl.ResourceImpl.ContentsEList.inverseRemove(E object, NotificationChain notifications)
-			KyanosInternalEObject eObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosInternalEObject.class);;
-			if (KyanosResourceImpl.this.isLoaded || unloadingContents != null) {
-				KyanosResourceImpl.this.detached(eObject);
+		protected EObject delegateRemove(int index) {
+			EObject object = super.delegateRemove(index);
+			List<EObject> hardLinksList = new ArrayList<>();
+			KyanosInternalEObject eObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosInternalEObject.class);
+			// Collect all contents
+			hardLinksList.add(object);
+			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
+			// Iterate using the hard links list instead the getAllContents
+			// We ensure that using the hardLinksList it is not taken out by JIT
+			// compiler
+			for (EObject element : hardLinksList) {
+				KyanosInternalEObject internalElement = KyanosEObjectAdapterFactoryImpl.getAdapter(element, KyanosInternalEObject.class);
+				internalElement.kyanosSetResource(null);
 			}
-			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext();) {
-				KyanosInternalEObject internal = KyanosEObjectAdapterFactoryImpl.getAdapter(it.next(), KyanosInternalEObject.class);
-				internal.kyanosSetResource(null);
-			}
-			eObject.kyanosSetResource(null);
-			return eObject.eSetResource(null, notifications);
+			return object;			
 		}
-
+		
 		@Override
 		protected void didAdd(int index, EObject object) {
 			super.didAdd(index, object);
