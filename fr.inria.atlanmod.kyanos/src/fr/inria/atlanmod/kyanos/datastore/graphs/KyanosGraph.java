@@ -9,6 +9,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.jboss.util.collection.SoftValueHashMap;
+import org.jboss.util.collection.WeakValueHashMap;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
@@ -22,7 +24,6 @@ import fr.inria.atlanmod.kyanos.core.KyanosEObject;
 import fr.inria.atlanmod.kyanos.core.KyanosInternalEObject;
 import fr.inria.atlanmod.kyanos.core.impl.KyanosEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.kyanos.logger.Logger;
-import fr.inria.atlanmod.kyanos.util.collections.WeakValueHashMap;
 
 
 public class KyanosGraph extends IdGraph<KeyIndexableGraph> {
@@ -63,7 +64,8 @@ public class KyanosGraph extends IdGraph<KeyIndexableGraph> {
 	 * {@link EObject} is no longer referenced and can be garbage collected it
 	 * is removed from the {@link Map}.
 	 */
-	protected Map<Object, KyanosInternalEObject> loadedEObjects = new WeakValueHashMap<Object, KyanosInternalEObject>();
+	@SuppressWarnings("unchecked")
+	protected Map<Object, KyanosInternalEObject> loadedEObjects = new SoftValueHashMap();
 	
 	public KyanosGraph(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
