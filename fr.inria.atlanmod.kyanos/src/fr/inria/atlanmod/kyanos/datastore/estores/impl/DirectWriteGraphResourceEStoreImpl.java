@@ -391,8 +391,9 @@ public class DirectWriteGraphResourceEStoreImpl implements SearcheableResourceES
 
 	@Override
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-		Object movingElement = remove(object, feature, sourceIndex);
-		return set(object, feature, targetIndex, movingElement);
+		Object movedElement = remove(object, feature, sourceIndex);
+		add(object, feature, targetIndex, movedElement);
+		return movedElement;
 	}
 
 	@Override
