@@ -6,7 +6,7 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="fr.inria.atlanmod.kyanos">
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="../../../"/>
-    <property name="fr.inria.atlanmod.kyanos.benchmarks.location" value="../../../workspace/fr.inria.atlanmod.kyanos.benchmarks"/>
+    <property name="fr.inria.atlanmod.kyanos.benchmarks.location" value="../../kyanos.benchmarks/fr.inria.atlanmod.kyanos.benchmarks"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
