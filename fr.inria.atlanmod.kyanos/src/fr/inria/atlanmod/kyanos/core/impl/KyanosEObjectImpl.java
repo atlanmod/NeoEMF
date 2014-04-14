@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
-import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import fr.inria.atlanmod.kyanos.core.KyanosEObject;
@@ -97,11 +96,6 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	@Override
 	protected void eBasicSetContainerFeatureID(int newContainerFeatureID) {
 		eContainerFeatureID = newContainerFeatureID;
-	}
-	
-	@Override
-	public EList<EObject> eContents() {
-		return EContentsEList.createEContentsEList(this);
 	}
 	
 	@Override
