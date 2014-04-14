@@ -5,13 +5,13 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="fr.inria.atlanmod.kyanos.benchmarks">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../"/>
-    <property name="com.tinkerpop.blueprints.location" value="../../git/eclipse.blueprints/com.tinkerpop.blueprints"/>
-    <property name="com.tinkerpop.blueprints.neo4j.location" value="../../git/eclipse.blueprints.neo4j/com.tinkerpop.blueprints.neo4j"/>
+    <property name="ECLIPSE_HOME" value="../../../"/>
+    <property name="com.tinkerpop.blueprints.location" value="../../eclipse.blueprints/com.tinkerpop.blueprints"/>
+    <property name="com.tinkerpop.blueprints.neo4j.location" value="../../eclipse.blueprints.neo4j/com.tinkerpop.blueprints.neo4j"/>
     <property name="org.eclipse.gmt.modisco.java.location" value="../org.eclipse.gmt.modisco.java"/>
     <property name="org.eclipse.gmt.modisco.java.cdo.location" value="../org.eclipse.gmt.modisco.java.cdo"/>
-    <property name="org.mapdb.location" value="../../git/eclipse.mapdb/org.mapdb"/>
-    <property name="fr.inria.atlanmod.kyanos.location" value="../../git/kyanos/fr.inria.atlanmod.kyanos"/>
+    <property name="org.mapdb.location" value="../../eclipse.mapdb/org.mapdb"/>
+    <property name="fr.inria.atlanmod.kyanos.location" value="../../kyanos/fr.inria.atlanmod.kyanos"/>
     <property name="org.eclipse.gmt.modisco.java.kyanos.location" value="../org.eclipse.gmt.modisco.java.kyanos"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
@@ -80,30 +80,30 @@
         <path refid="Plug-in Dependencies.libraryclasspath"/>
     </path>
     <path id="KYANOS_ECLIPSE_DEPS.userclasspath">
-        <pathelement location="../../plugins/org.eclipse.core.jobs_3.5.300.v20130429-1813.jar"/>
-        <pathelement location="../../plugins/org.eclipse.core.runtime_3.9.0.v20130326-1255.jar"/>
-        <pathelement location="../../plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
-        <pathelement location="../../plugins/org.eclipse.osgi_3.9.1.v20130814-1242.jar"/>
-        <pathelement location="../../plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar"/>
-        <pathelement location="../../plugins/org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar"/>
-        <pathelement location="../../plugins/org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar"/>
-        <pathelement location="../../plugins/org.eclipse.equinox.app_1.3.100.v20130327-1442.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.cdo.common_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.cdo.net4j_4.1.101.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.cdo.server.db_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.cdo.server.net4j_4.1.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.cdo.server_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.cdo_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.common_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.ecore_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="../../plugins/org.eclipse.net4j.db.h2_4.2.1.v20140218-1830.jar"/>
-        <pathelement location="../../plugins/org.eclipse.net4j.db_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.net4j.jvm_4.1.101.v20140218-1830.jar"/>
-        <pathelement location="../../plugins/org.eclipse.net4j.util_3.3.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.eclipse.net4j_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../plugins/org.h2_1.3.168.v201212121212.jar"/>
-        <pathelement location="../../plugins/org.eclipse.emf.ecore.change_2.9.0.v20130827-0309.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.core.jobs_3.5.300.v20130429-1813.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.core.runtime_3.9.0.v20130326-1255.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.osgi_3.9.1.v20130814-1242.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.equinox.app_1.3.100.v20130327-1442.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.cdo.common_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.cdo.net4j_4.1.101.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.cdo.server.db_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.cdo.server.net4j_4.1.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.cdo.server_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.cdo_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.common_2.9.1.v20130827-0309.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20130827-0309.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.ecore_2.9.1.v20130827-0309.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.net4j.db.h2_4.2.1.v20140218-1830.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.net4j.db_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.net4j.jvm_4.1.101.v20140218-1830.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.net4j.util_3.3.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.net4j_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="../../../plugins/org.h2_1.3.168.v201212121212.jar"/>
+        <pathelement location="../../../plugins/org.eclipse.emf.ecore.change_2.9.0.v20130827-0309.jar"/>
     </path>
     <path id="fr.inria.atlanmod.kyanos.classpath">
         <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/ant-1.6.2.jar"/>

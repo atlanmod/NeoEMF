@@ -5,7 +5,7 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="org.eclipse.gmt.modisco.java">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../"/>
+    <property name="ECLIPSE_HOME" value="../../../"/>
     <property name="fr.inria.atlanmod.kyanos.benchmarks.location" value="../fr.inria.atlanmod.kyanos.benchmarks"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.5"/>
