@@ -34,7 +34,6 @@ import fr.inria.atlanmod.kyanos.core.KyanosEObject;
 import fr.inria.atlanmod.kyanos.core.KyanosInternalEObject;
 import fr.inria.atlanmod.kyanos.core.KyanosResource;
 import fr.inria.atlanmod.kyanos.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.kyanos.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.kyanos.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.kyanos.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.kyanos.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
@@ -234,7 +233,7 @@ public class KyanosMapResourceImpl extends ResourceImpl implements KyanosResourc
 	 * @return
 	 */
 	protected SearcheableResourceEStore createResourceEStore(DB db) {
-		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new CachedManyDirectWriteMapResourceEStoreImpl(this, db)));
+		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteMapResourceEStoreImpl(this, db)));
 	}
 
 	/**
