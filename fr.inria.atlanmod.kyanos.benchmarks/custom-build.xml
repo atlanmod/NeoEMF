@@ -45,7 +45,7 @@
 				<available file="${resources.dir}" type="dir"/>
 			</not>
 			<then>
-				<unzip src="${basedir}/resources.zip" dest="${resources.dir}"/>
+				<unzip src="${basedir}/resources.zip" dest="${basedir}"/>
 			</then>
 		</if>
 	</target>
