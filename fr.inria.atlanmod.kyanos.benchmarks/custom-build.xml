@@ -458,7 +458,7 @@
 				<include name="*.cdoresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.resource.cdo" param="cdoresource.dir">
+		<foreach inheritall="true" target="query.list.resource.cdo" param="cdoresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.cdoresource"/>
@@ -475,7 +475,7 @@
 				<include name="*.kyanosresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.resource.kyanos" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.list.resource.kyanos" param="kyanosresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.kyanosresource"/>
@@ -491,7 +491,7 @@
 				<include name="*.kyanosmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.list.resource.kyanos.map" param="kyanosresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.kyanosmapresource"/>
@@ -567,7 +567,7 @@
 				<include name="*.cdoresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.resource.cdo" param="cdoresource.dir">
+		<foreach inheritall="true" target="query.loop.resource.cdo" param="cdoresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.cdoresource"/>
@@ -584,7 +584,7 @@
 				<include name="*.kyanosresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.resource.kyanos" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.loop.resource.kyanos" param="kyanosresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.kyanosresource"/>
@@ -600,7 +600,7 @@
 				<include name="*.kyanosmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.loop.resource.kyanos.map" param="kyanosresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.kyanosmapresource"/>
