@@ -207,6 +207,7 @@
 			<%if (genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
 				old<%=genFeature.getCapName()%> == EVIRTUAL_NO_VALUE ? <%= genFeature.getEDefault().equals("null") ? "" : "Data"+genClass.getInterfaceName()+"."%><%=genFeature.getEDefault()%> : old<%=genFeature.getCapName()%><%}else {%>old<%=genFeature.getCapName()%><%}%>, <%if (genClass.isFlag(genFeature)) {%>new<%=genFeature.getCapName()%><%} else {%><%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%><%}%>));
         }  
+        addChangelogEntry(new<%=genFeature.getCapName()%>,<%=genClass.getQualifiedFeatureID(genFeature)%>);
           <%}%>
         <%}%>
       <%}%>
@@ -228,8 +229,5 @@
 		throw new UnsupportedOperationException();
 <%@ end %><%//Class/setGenFeature.todo.override.javajetinc%>
     <%}%>
-<%if(!genFeature.isReferenceType()) {%>
-		addChangelogEntry(new<%=genFeature.getCapName()%>,<%=genClass.getQualifiedFeatureID(genFeature)%>);
-<%}%>
 	}
 <%}%>
