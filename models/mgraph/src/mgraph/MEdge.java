@@ -1,15 +1,5 @@
 /**
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors:
- *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- * Descritpion ! To come
- * @author Amine BENELALLAM
-**/
+ */
 package mgraph;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
@@ -35,12 +25,9 @@ import fr.inria.atlanmod.neo4emf.INeo4emfObject;
  * @generated
  */
 public interface MEdge extends INeo4emfObject {
-
-/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 *XX6a
 	 * <p>
 	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
 	 * there really should be more of a description here...
@@ -53,24 +40,21 @@ public interface MEdge extends INeo4emfObject {
 	 * @generated
 	 */
 	String getName();
+
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Name</em>' attribute.
 	 * @see #getName()
 	 * @generated
 	 */
 	void setName(String value);
- 
 
-/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>In Coming</b></em>' reference.
 	 * It is bidirectional and its opposite is '{@link mgraph.MNode#getTo <em>To</em>}'.
 	 * <!-- begin-user-doc -->
-	 *XX6a
 	 * <p>
 	 * If the meaning of the '<em>In Coming</em>' reference isn't clear,
 	 * there really should be more of a description here...
@@ -84,24 +68,21 @@ public interface MEdge extends INeo4emfObject {
 	 * @generated
 	 */
 	MNode getInComing();
+
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getInComing <em>In Coming</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>In Coming</em>' reference.
 	 * @see #getInComing()
 	 * @generated
 	 */
 	void setInComing(MNode value);
- 
 
-/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Out Going</b></em>' reference.
 	 * It is bidirectional and its opposite is '{@link mgraph.MNode#getFrom <em>From</em>}'.
 	 * <!-- begin-user-doc -->
-	 *XX6a
 	 * <p>
 	 * If the meaning of the '<em>Out Going</em>' reference isn't clear,
 	 * there really should be more of a description here...
@@ -115,24 +96,21 @@ public interface MEdge extends INeo4emfObject {
 	 * @generated
 	 */
 	MNode getOutGoing();
+
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getOutGoing <em>Out Going</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Out Going</em>' reference.
 	 * @see #getOutGoing()
 	 * @generated
 	 */
 	void setOutGoing(MNode value);
- 
 
-/** genFeaure.override.javajetinc **/
 	/**
 	 * Returns the value of the '<em><b>Graph</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link mgraph.MGraph#getEdges <em>Edges</em>}'.
 	 * <!-- begin-user-doc -->
-	 *XX6a
 	 * <p>
 	 * If the meaning of the '<em>Graph</em>' container reference isn't clear,
 	 * there really should be more of a description here...
@@ -146,29 +124,15 @@ public interface MEdge extends INeo4emfObject {
 	 * @generated
 	 */
 	MGraph getGraph();
+
 	/**
 	 * Sets the value of the '{@link mgraph.MEdge#getGraph <em>Graph</em>}' container reference.
 	 * <!-- begin-user-doc -->
-	 *YY1-BIS
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Graph</em>' container reference.
 	 * @see #getGraph()
 	 * @generated
 	 */
 	void setGraph(MGraph value);
- 
-
-/*
-* Neo4EMF inserted code -- begin
-*/
-// inComing : MNode, bi:true, chan:true, list:false, change:true, kind:reference
-// outGoing : MNode, bi:true, chan:true, list:false, change:true, kind:reference
-// graph : MGraph, bi:true, chan:true, list:false, change:true, kind:container reference
-/*
-* Neo4EMF inserted code -- end
-*/
-
-
-
 
 } // MEdge

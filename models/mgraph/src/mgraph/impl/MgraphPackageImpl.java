@@ -1,18 +1,6 @@
 /**
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors:
- *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- * Descritpion ! To come
- * @author Amine BENELALLAM
-**/
+ */
 package mgraph.impl;
-
-import fr.inria.atlanmod.neo4emf.RelationshipMapping;
 
 import mgraph.MEdge;
 import mgraph.MGraph;
@@ -20,16 +8,12 @@ import mgraph.MNode;
 import mgraph.MgraphFactory;
 import mgraph.MgraphPackage;
 
-import mgraph.reltypes.Reltypes;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
-import org.neo4j.graphdb.RelationshipType;
 
 /**
  * <!-- begin-user-doc -->
@@ -343,40 +327,4 @@ public class MgraphPackageImpl extends EPackageImpl implements MgraphPackage {
 		createResource(eNS_URI);
 	}
 
-/* Neo4EMF Inserted Code -- Begin*/
-
-private RelationshipMapping relationshipMapping = new MgraphPackageRelationshipMapping();
-
-//@Override
-public RelationshipMapping getRelationshipMapping() {
-	return relationshipMapping;
-}
-
-class MgraphPackageRelationshipMapping implements RelationshipMapping {
-
-	private RelationshipType[][] mapping = new RelationshipType[3][];
-
-	public MgraphPackageRelationshipMapping() {
-	
-		mapping[MGRAPH] = new RelationshipType[3];
-		mapping[MGRAPH][MGRAPH__NODES] = Reltypes.MGRAPH__NODES;
-		mapping[MGRAPH][MGRAPH__EDGES] = Reltypes.MGRAPH__EDGES;
-		mapping[MEDGE] = new RelationshipType[4];
-		mapping[MEDGE][MEDGE__IN_COMING] = Reltypes.MEDGE__IN_COMING;
-		mapping[MEDGE][MEDGE__OUT_GOING] = Reltypes.MEDGE__OUT_GOING;
-		mapping[MEDGE][MEDGE__GRAPH] = Reltypes.MEDGE__GRAPH;
-		mapping[MNODE] = new RelationshipType[4];
-		mapping[MNODE][MNODE__GRAPH] = Reltypes.MNODE__GRAPH;
-		mapping[MNODE][MNODE__FROM] = Reltypes.MNODE__FROM;
-		mapping[MNODE][MNODE__TO] = Reltypes.MNODE__TO;
-	} // MgraphPackageRelationshipMapping()
-	
-	public RelationshipType relationshipAt(int classID, int referenceID) {
-		assert classID >= 0 && classID < mapping.length : "Invalid Class ID";
-		assert referenceID >= 0 && referenceID < mapping[classID].length: "Invalid Reference ID";
-		
-		return mapping[classID][referenceID];
-	}
-}// class MgraphPackageRelationshipMapping
-/* Neo4EMF Inserted Code -- End*/
 } //MgraphPackageImpl

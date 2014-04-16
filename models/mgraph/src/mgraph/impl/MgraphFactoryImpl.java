@@ -1,26 +1,8 @@
 /**
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors:
- *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- * Descritpion ! To come
- * @author Amine BENELALLAM
-**/
+ */
 package mgraph.impl;
- 
-
-
-import fr.inria.atlanmod.neo4emf.change.impl.NewObject;
 
 import mgraph.*;
-
-import mgraph.util.MgraphAdapterFactory;
-
-import org.eclipse.emf.common.notify.Adapter;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -37,18 +19,6 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * @generated
  */
 public class MgraphFactoryImpl extends EFactoryImpl implements MgraphFactory {
-
-	
-	/**
-	 * AdapterFactory instance
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	protected MgraphAdapterFactory adapterFactory = new MgraphAdapterFactory();
-	
-	
 	/**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
@@ -57,7 +27,7 @@ public class MgraphFactoryImpl extends EFactoryImpl implements MgraphFactory {
 	 */
 	public static MgraphFactory init() {
 		try {
-			MgraphFactory theMgraphFactory = (MgraphFactory)EPackage.Registry.INSTANCE.getEFactory("http://mgraph/1.1"); 
+			MgraphFactory theMgraphFactory = (MgraphFactory)EPackage.Registry.INSTANCE.getEFactory(MgraphPackage.eNS_URI);
 			if (theMgraphFactory != null) {
 				return theMgraphFactory;
 			}
@@ -101,10 +71,6 @@ public class MgraphFactoryImpl extends EFactoryImpl implements MgraphFactory {
 	 */
 	public MGraph createMGraph() {
 		MGraphImpl mGraph = new MGraphImpl();
-		Adapter adapter = adapterFactory.createMGraphAdapter();
-		if (adapter != null) {
-			mGraph.eAdapters().add(adapter);
-		}
 		return mGraph;
 	}
 
@@ -115,10 +81,6 @@ public class MgraphFactoryImpl extends EFactoryImpl implements MgraphFactory {
 	 */
 	public MEdge createMEdge() {
 		MEdgeImpl mEdge = new MEdgeImpl();
-		Adapter adapter = adapterFactory.createMEdgeAdapter();
-		if (adapter != null) {
-			mEdge.eAdapters().add(adapter);
-		}
 		return mEdge;
 	}
 
@@ -129,10 +91,6 @@ public class MgraphFactoryImpl extends EFactoryImpl implements MgraphFactory {
 	 */
 	public MNode createMNode() {
 		MNodeImpl mNode = new MNodeImpl();
-		Adapter adapter = adapterFactory.createMNodeAdapter();
-		if (adapter != null) {
-			mNode.eAdapters().add(adapter);
-		}
 		return mNode;
 	}
 

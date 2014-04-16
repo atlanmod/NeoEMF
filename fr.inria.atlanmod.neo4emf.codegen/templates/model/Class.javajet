@@ -233,26 +233,11 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
     <%if (genFeature.isMapType() && genFeature.isEffectiveSuppressEMFTypes()) {%>
 				return ((<%=cast%>(<%=genModel.getImportedName("org.eclipse.emf.common.util.EMap")%>.InternalMapView<%=genFeature.getImportedMapTemplateArguments(genClass)%>)<%=genFeature.getGetAccessor()%>()).eMap()).basicAdd(otherEnd, msgs);
     <%} else {%>
-    			//if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
-    			//	setLoadingOnDemand();
-    			//}
-    			if(isLoaded() && !isLoadingOnDemand()) {
-    				addChangelogEntry(otherEnd, <%=genClass.getQualifiedFeatureID(genFeature)%>);
-    			}
     			return (<%=cast%><%=genFeature.getGetAccessor()%>()).basicAdd(otherEnd, msgs);
-    			//if(((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
-    			//	unsetLoadingOnDemand();
-    			//}
-    			//return null;
     <%}%>
   <%} else if (genFeature.isContainer()) {%>
 				if (eInternalContainer() != null && !eInternalContainer().equals(otherEnd)) {
 					msgs = eBasicRemoveFromContainer(msgs);
-				}
-				// Should be done before basicSet, otherwise the ChangeLog may be flushed and the 
-				// isLoaded method would return true, and duplicate the AddLink entry
-				if(isLoaded() && !isLoadingOnDemand() && !((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfObject")%>)otherEnd).isLoadingOnDemand()) {
-					addChangelogEntry(otherEnd, <%=genClass.getQualifiedFeatureID(genFeature)%>);
 				}
     <%if (genFeature.isBasicSet()) {%>
 				return basicSet<%=genFeature.getAccessorName()%>((<%=genFeature.getImportedType(genClass)%>)otherEnd, msgs);
@@ -305,7 +290,6 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
     <%} else if (genFeature.isWrappedFeatureMapType()) {%>
 				return ((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.InternalEList")%><%=singleWildcard%>)((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.FeatureMap")%>.Internal.Wrapper)<%=genFeature.getGetAccessor()%>()).featureMap()).basicRemove(otherEnd, msgs);
     <%} else {%>
-    			addChangelogRemoveEntry(otherEnd, <%=genClass.getQualifiedFeatureID(genFeature)%>);
 				return ((<%=genModel.getImportedName("org.eclipse.emf.ecore.util.InternalEList")%><%=singleWildcard%>)<%=genFeature.getGetAccessor()%>()).basicRemove(otherEnd, msgs);
     <%}%>
   <%} else if (genFeature.isContainer() && !genFeature.isBasicSet()) {%>
@@ -313,9 +297,7 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
   <%} else if (genFeature.isUnsettable()) {%>
 				return basicUnset<%=genFeature.getAccessorName()%>(msgs);
   <%} else {%>
-  				if(isLoaded()) {
-  					addChangelogRemoveEntry(otherEnd,featureID);
-  				}
+  				addChangelogRemoveEntry(otherEnd,featureID);
 				return basicSet<%=genFeature.getAccessorName()%>(null, msgs);
   <%}%>
 <%}%>

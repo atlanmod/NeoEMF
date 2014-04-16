@@ -1,34 +1,16 @@
 /**
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors:
- *    Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- * Descritpion ! To come
- * @author Amine BENELALLAM
-**/
+ */
 package mgraph.util;
-
-
-import fr.inria.atlanmod.neo4emf.INeo4emfNotification;
-import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-
-import fr.inria.atlanmod.neo4emf.change.impl.*;
 
 import mgraph.*;
 
 import org.eclipse.emf.common.notify.Adapter;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-import org.eclipse.emf.common.notify.impl.AdapterImpl;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
+
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.
@@ -170,6 +152,5 @@ public class MgraphAdapterFactory extends AdapterFactoryImpl {
 	public Adapter createEObjectAdapter() {
 		return null;
 	}
- 	
-}	
-//MgraphAdapterFactory
+
+} //MgraphAdapterFactory

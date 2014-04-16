@@ -40,7 +40,7 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 	 * The persistence manager holds the communication between the resource and
 	 * the different persistence units
 	 * 
-	 * @see #IPersistenceManager
+	 * @see #IPersistenceManagerl
 	 */
 	private IPersistenceManager persistenceManager;
 

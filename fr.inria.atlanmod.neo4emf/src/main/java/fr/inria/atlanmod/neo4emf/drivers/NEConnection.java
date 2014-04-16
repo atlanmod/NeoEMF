@@ -523,6 +523,7 @@ public class NEConnection {
 					String propKey = updatedProperties.next();
 					baseNode.setProperty(propKey, attributeNode.getProperty(propKey));
 				}
+				relationshipIndex.remove(r);
 				r.delete();
 				attributeNode.delete();
 			}
@@ -532,6 +533,7 @@ public class NEConnection {
 				Node to = r.getEndNode();
 				// also fix that
 				from.createRelationshipTo(to, DynamicRelationshipType.withName(baseRelationName));
+				relationshipIndex.remove(r);
 				r.delete();
 				metaIndex.remove(from, IPersistenceService.ID_META);
 				metaIndex.remove(to, IPersistenceService.ID_META);
@@ -562,16 +564,21 @@ public class NEConnection {
 						break;
 					}
 				}
+				relationshipIndex.remove(r);
 				r.delete();
 			}
 			else if(r.getType().equals(IPersistenceService.DELETE)) {
 				Node n = r.getStartNode();
+				relationshipIndex.remove(r);
 				r.delete();
 				Iterator<Relationship> instanceOfRels = n.getRelationships(IPersistenceService.INSTANCE_OF).iterator();
 				while(instanceOfRels.hasNext()) {
 					instanceOfRels.next().delete();
 				}
 				n.delete();
+			}
+			else if(r.getType().equals(IPersistenceService.IS_ROOT)) {
+				relationshipIndex.remove(r);
 			}
 		}
 	}

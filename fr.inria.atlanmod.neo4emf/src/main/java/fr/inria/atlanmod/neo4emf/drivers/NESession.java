@@ -69,6 +69,7 @@ public class NESession {
 		configuration = new NEConfiguration(ePackage, uri, Collections.<String,String>emptyMap());
 		INeo4emfResourceFactory.eINSTANCE.setConfiguration(configuration);
 		resource = (INeo4emfResource) resourceSet.createResource(uri);
+		resource.setURI(uri);
 		return resource;
 	}
 	

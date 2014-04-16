@@ -64,6 +64,8 @@ public class PersistenceManager implements IPersistenceManager {
 	 * The loaded elements manager {@link ProxyManager}
 	 */
 	protected IProxyManager proxyManager;
+	
+	private int sessionId = 0;
 
 	/**
 	 * Global constructor
@@ -208,7 +210,10 @@ public class PersistenceManager implements IPersistenceManager {
 	
 //	@Override
 	public Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
-		return persistenceService.createAddLinkRelationship(from, to, ref);
+		if(from.getSessionId() >= 0 && to.getSessionId() >= 0) {
+			return persistenceService.createAddLinkRelationship(from, to, ref);
+		}
+		return null;
 	}
 	
 //	@Override
@@ -225,17 +230,11 @@ public class PersistenceManager implements IPersistenceManager {
 	public RelationshipType getRelTypefromERef(int classID, int referenceID) {
 		return persistenceService.getRelationshipFor(classID, referenceID);
 	}
-
-	//@Override
-	public Node createNodefromEObject(INeo4emfObject eObject) {
-		// TODO duplicate with below
-		return persistenceService.createNodeFromEObject(eObject);
-	}
 	
-//	@Override
 	public Node createNodefromEObject(INeo4emfObject eObject, boolean isTemporary) {
 		Node n = persistenceService.createNodeFromEObject(eObject,isTemporary);
-		((INeo4emfObject)eObject).setNodeId(n.getId());
+		eObject.setNodeId(n.getId());
+		eObject.setSessionId(sessionId);
 		proxyManager.putToProxy((INeo4emfObject)eObject);
 		return n;
 	}
@@ -364,6 +363,10 @@ public class PersistenceManager implements IPersistenceManager {
 	@Override
 	public IProxyManager getProxyManager() {
 		return proxyManager;
+	}
+	
+	public void startNewSession() {
+		sessionId++;
 	}
 	
 }
