@@ -61,10 +61,10 @@
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/swt/carbon/macosx/3.3.0-v3346/macosx-3.3.0-v3346.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.3.2/commons-io-1.3.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/neo4emf/common/1.0-SNAPSHOT/common-1.0-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/models/mgraph/1.0-SNAPSHOT/mgraph-1.0-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/models/testdata/1.0-SNAPSHOT/testdata-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/neo4emf/common/1.0-SNAPSHOT/common-1.0-SNAPSHOT.jar" sourcepath="/NeoCommon"/>
+	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/models/mgraph/1.0-SNAPSHOT/mgraph-1.0-SNAPSHOT.jar" sourcepath="/MGraph"/>
+	<classpathentry kind="var" path="M2_REPO/fr/inria/atlanmod/models/testdata/1.0-SNAPSHOT/testdata-1.0-SNAPSHOT.jar" sourcepath="/TestData"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fr.inria.atlanmod.neo4emf"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=fr.inria.atlanmod.neo4emf.tests&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="output" path="target/test-classes"/>
 </classpath>

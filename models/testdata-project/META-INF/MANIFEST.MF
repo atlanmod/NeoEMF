@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName 
+Bundle-Name: %pluginName
 Bundle-SymbolicName: fr.inria.atlanmod.neo4emf.testdata;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
@@ -13,5 +13,6 @@ Export-Package: fr.inria.atlanmod.neo4emf.testdata,
  fr.inria.atlanmod.neo4emf.testdata.reltypes
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
+ fr.inria.atlanmod.neo4emf.neo4j-1.9.4;visibility:=reexport,
  fr.inria.atlanmod.neo4emf;visibility:=reexport
 Bundle-ActivationPolicy: lazy

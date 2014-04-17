@@ -276,8 +276,11 @@ public class PersistenceManager implements IPersistenceManager {
 		Node attributeNode = null;
 		if(((Neo4emfObject)obj).getAttributeNodeId() > -1) {
 			attributeNode = getAttributeNodeById(obj);
+			((INeo4emfObject)obj).loadAllAttributesFrom(attributeNode);
+			return;
 		}
-		loader.fetchAttributes(obj,node,attributeNode);	
+		((INeo4emfObject)obj).loadAllAttributesFrom(node);
+//		loader.fetchAttributes(obj,node,attributeNode);	
 	}
 
 	@Override

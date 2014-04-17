@@ -84,6 +84,7 @@ public class Serializer implements ISerializer {
 			currentTx = manager.createTransaction();
 //			long begin = System.currentTimeMillis();
 //			long end = 0;
+			boolean error = false;
 			try {
 				for(Entry each : subset) {
 					each.process(this,isTmpSave);
@@ -97,12 +98,14 @@ public class Serializer implements ISerializer {
 			} catch (Exception e) {
 				currentTx.abort();
 				e.printStackTrace();
+				error = true;
 			} finally {
 				long a = System.currentTimeMillis();
 				currentTx.commit();
 //				System.out.println("number of entry before loop commit : " + test);
 //				System.out.println("loop commit txCount : " + txCount);
 				txCount = 0;
+				if(error) return;
 //				long b = System.currentTimeMillis();
 //				System.out.println("time for loop : " + (end-begin) + " ms");
 //				System.out.println("time for loop commit : " + (b-a) + " ms");

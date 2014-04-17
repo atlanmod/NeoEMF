@@ -64,7 +64,7 @@ public class NESession {
 	 */
 
 	public INeo4emfResource createResource(URI uri, int changeLogSize) {
-		INeo4emfResource resource;
+//		INeo4emfResource resource;
 		ChangeLogFactory.setChangeLogSize(changeLogSize);
 		configuration = new NEConfiguration(ePackage, uri, Collections.<String,String>emptyMap());
 		INeo4emfResourceFactory.eINSTANCE.setConfiguration(configuration);

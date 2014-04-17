@@ -13,5 +13,6 @@ Export-Package: fr.inria.atlanmod.neo4emf.mteach.reltypes,
  fr.inria.atlanmod.neo4emf.mteach.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore,
+ fr.inria.atlanmod.neo4emf.neo4j-1.9.4;visibility:=reexport,
  fr.inria.atlanmod.neo4emf;visibility:=reexport
 Bundle-ActivationPolicy: lazy
