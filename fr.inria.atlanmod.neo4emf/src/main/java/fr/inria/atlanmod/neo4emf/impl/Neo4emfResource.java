@@ -113,6 +113,8 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 				isLoading = true;
 				this.persistenceManager.load(options);
 				isLoaded = true;
+			} catch(Throwable e) {
+				e.printStackTrace();
 			} finally {
 				isLoading = false;
 			}

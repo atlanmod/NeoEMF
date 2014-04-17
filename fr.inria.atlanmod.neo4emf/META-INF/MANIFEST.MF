@@ -22,5 +22,6 @@ Export-Package: fr.inria.atlanmod.neo4emf,
  fr.inria.atlanmod.neo4emf.partition.impl,
  fr.inria.atlanmod.neo4emf.resourceUtil
 Bundle-ClassPath: .,
- libs/jboss-common-core-2.2.22.GA.jar
+ libs/jboss-common-core-2.2.22.GA.jar,
+ libs/guava-16.0.jar
 DynamicImport-Package: org.neo4j.*
