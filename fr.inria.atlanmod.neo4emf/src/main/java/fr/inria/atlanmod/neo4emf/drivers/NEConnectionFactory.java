@@ -12,11 +12,9 @@
  */
 package fr.inria.atlanmod.neo4emf.drivers;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.index.lucene.LuceneKernelExtensionFactory;

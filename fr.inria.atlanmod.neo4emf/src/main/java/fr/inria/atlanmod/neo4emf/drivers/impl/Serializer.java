@@ -18,24 +18,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-import fr.inria.atlanmod.neo4emf.logger.Logger;
-import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 public class Serializer implements ISerializer {
 

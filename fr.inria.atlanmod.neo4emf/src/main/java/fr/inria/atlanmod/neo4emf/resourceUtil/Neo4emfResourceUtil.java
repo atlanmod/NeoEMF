@@ -33,7 +33,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 
 import fr.inria.atlanmod.neo4emf.PersistentPackage;
@@ -43,7 +42,6 @@ import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
 import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
-import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceService;
 
 public class Neo4emfResourceUtil {
 	

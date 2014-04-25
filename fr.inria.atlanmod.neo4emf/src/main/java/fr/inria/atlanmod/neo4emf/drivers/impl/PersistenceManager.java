@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -138,8 +137,8 @@ public class PersistenceManager implements IPersistenceManager {
 
 	//@Override
 	public Node getNodeById(EObject eObj) {
-		Assert.isTrue(((INeo4emfObject) eObj).getNodeId() >= 0,
-				"nodeId is > -1");
+		assert ((INeo4emfObject) eObj).getNodeId() >= 0 : "nodeId is > -1";
+		
 		Node result = persistenceService.getNodeById(((INeo4emfObject) eObj)
 				.getNodeId());
 		if (result == null) {
@@ -151,16 +150,10 @@ public class PersistenceManager implements IPersistenceManager {
 	
 //	@Override
 	public Node getAttributeNodeById(EObject eObj) {
-		// Strange to have node here
-		Assert.isTrue(((INeo4emfObject)eObj).getAttributeNodeId() > -1, "attribute node id is > -1");
+		assert ((INeo4emfObject)eObj).getAttributeNodeId() > -1 : "attribute node id is > -1";
+
 		Node result = persistenceService.getNodeById(((INeo4emfObject)eObj).getAttributeNodeId());
-		if(result == null) {
-			//throw new NullPointerException(" Cannot find the attribute node ");
-			return null;
-		}
-		else {
-			return result;
-		}
+		return result;
 	}
 	
 //	@Override

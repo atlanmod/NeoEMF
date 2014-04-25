@@ -19,15 +19,13 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
-import fr.inria.atlanmod.neo4emf.impl.FlatPartition;
-import fr.inria.atlanmod.neo4emf.impl.Partition;
+
 
 public interface IPersistenceManager {
 
@@ -107,7 +105,7 @@ public interface IPersistenceManager {
 	 * @param obj
 	 *            {@link EObject}
 	 * @param featureId
-	 *            {@link Int}
+	 *            {@link int}
 	 */
 	public void getOnDemand(EObject obj, int featureId);
 

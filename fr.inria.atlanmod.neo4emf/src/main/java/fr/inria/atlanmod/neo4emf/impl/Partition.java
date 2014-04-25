@@ -1,6 +1,5 @@
 package fr.inria.atlanmod.neo4emf.impl;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

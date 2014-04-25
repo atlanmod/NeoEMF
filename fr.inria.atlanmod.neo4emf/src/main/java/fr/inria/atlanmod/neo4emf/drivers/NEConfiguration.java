@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 
 import fr.inria.atlanmod.neo4emf.PersistentPackage;
 
