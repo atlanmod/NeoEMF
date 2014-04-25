@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.drivers.NESession;
 import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
-import fr.inria.atlanmod.neo4emf.testdata.Container;
+import fr.inria.atlanmod.neo4emf.testdata.ContainerType;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 import fr.inria.atlanmod.neo4emf.testdata.Vertex;
@@ -59,7 +59,7 @@ public class Neo4emfResourceTest {
 		TestPackage pack = TestPackage.eINSTANCE;
 		TestFactory factory = pack.getTestFactory();
 		
-		Container container = factory.createContainer();
+		ContainerType container = factory.createContainerType();
 		container.setName("My Container");
 		
 		for (int i = 1; i < times ; i++) {
@@ -99,7 +99,7 @@ public class Neo4emfResourceTest {
 		TestPackage pack = TestPackage.eINSTANCE;
 		TestFactory factory = pack.getTestFactory();
 		
-		Container container = factory.createContainer();
+		ContainerType container = factory.createContainerType();
 		container.setName("My Container");
 		
 		for (int i = 1; i < times ; i++) {

@@ -134,7 +134,7 @@ public class NEConnectionTest {
 
 		NETransaction tx = connection.createTransaction();
 		try {
-			assert connection.addRootObject(v) : "Root object not added.";
+			connection.addRootObject(v, true);
 			Iterable<Relationship> rels = this.resourceNode().getRelationships(IPersistenceService.IS_ROOT);
 			
 			Node newNode = db.getNodeById(v.getNodeId());

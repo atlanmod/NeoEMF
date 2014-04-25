@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.drivers.IProxyManager;
 import fr.inria.atlanmod.neo4emf.drivers.NESession;
-import fr.inria.atlanmod.neo4emf.testdata.Container;
+import fr.inria.atlanmod.neo4emf.testdata.ContainerType;
 import fr.inria.atlanmod.neo4emf.testdata.Link;
 import fr.inria.atlanmod.neo4emf.testdata.TestFactory;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
@@ -60,7 +60,7 @@ public class ProxyManagerTest {
 	
 	@Test
 	public void testPutToProxy() {
-		Container c = factory.createContainer();
+		ContainerType c = factory.createContainerType();
 		proxy.putToProxy(c);
 		assert proxy.getInternalProxy().containsKey(c.eClass()) : "The EClass is not an entry of the proxy";
 		Cache<Long,INeo4emfObject> cache = proxy.getInternalProxy().get(c.eClass());
@@ -71,11 +71,11 @@ public class ProxyManagerTest {
 	@Test
 	public void testPutManyToProxy() {
 		int count = 10;
-		Container[] containers = new Container[count];
+		ContainerType[] containers = new ContainerType[count];
 		Vertex[] vertices = new Vertex[count];
 		Link[] links = new Link[count];
 		for(int i = 0; i < count; i++) {
-			containers[i] = factory.createContainer();
+			containers[i] = factory.createContainerType();
 			vertices[i] = factory.createVertex();
 			links[i] = factory.createLink();
 			containers[i].setNodeId(i);
@@ -86,7 +86,7 @@ public class ProxyManagerTest {
 			proxy.putToProxy(links[i]);
 		}
 		Map<EClass,Cache<Long,INeo4emfObject>> internalProxy = proxy.getInternalProxy();
-		Cache<Long,INeo4emfObject> containerCache = internalProxy.get(TestPackage.eINSTANCE.getContainer());
+		Cache<Long,INeo4emfObject> containerCache = internalProxy.get(TestPackage.eINSTANCE.getContainerType());
 		Cache<Long,INeo4emfObject> vertexCache = internalProxy.get(TestPackage.eINSTANCE.getVertex());
 		Cache<Long,INeo4emfObject> linkCache = internalProxy.get(TestPackage.eINSTANCE.getLink());
 		assert containerCache != null : "The Container EClass is not an entry of the proxy";
@@ -110,7 +110,7 @@ public class ProxyManagerTest {
 	 */
 	@Test
 	public void testPutToProxyAndUselessClear() {
-		Container c = factory.createContainer();
+		ContainerType c = factory.createContainerType();
 		proxy.putToProxy(c);
 		clearSoftReferences();
 		assert proxy.getInternalProxy().containsKey(c.eClass()) : "The EClass is not an entry of the proxy";
@@ -127,21 +127,21 @@ public class ProxyManagerTest {
 	@Test
 	public void testPutToProxyAndClear() {
 		long id = 5;
-		Container c = factory.createContainer();
+		ContainerType c = factory.createContainerType();
 		c.setNodeId(id);
 		proxy.putToProxy(c);
 		c = null;
 		clearSoftReferences();
 		// There is no way to remove the EClass from the proxy (because EClasses are not cached)
-		assert proxy.getInternalProxy().containsKey(TestPackage.eINSTANCE.getContainer()) : "The EClass is not an entry of the proxy";
-		Cache<Long,INeo4emfObject> cache = proxy.getInternalProxy().get(TestPackage.eINSTANCE.getContainer());
+		assert proxy.getInternalProxy().containsKey(TestPackage.eINSTANCE.getContainerType()) : "The EClass is not an entry of the proxy";
+		Cache<Long,INeo4emfObject> cache = proxy.getInternalProxy().get(TestPackage.eINSTANCE.getContainerType());
 		assert cache.getIfPresent(id) == null : "The entry hasn't been removed";
 	}
 	
 	@Test
 	public void testGetObjectFromProxyExistingElement() {
 		long id = 5;
-		Container c = factory.createContainer();
+		ContainerType c = factory.createContainerType();
 		c.setNodeId(id);
 		proxy.putToProxy(c);
 		assert proxy.getObjectFromProxy(c.eClass(), id) != null : "Cannot retrieve the added object";
@@ -152,7 +152,7 @@ public class ProxyManagerTest {
 	public void testGetObjectFromProxyNotExistingElement() {
 		long cId = 5;
 		long vId = 10;
-		Container c = factory.createContainer();
+		ContainerType c = factory.createContainerType();
 		c.setNodeId(cId);
 		proxy.putToProxy(c);
 		Vertex v = factory.createVertex();
@@ -163,12 +163,12 @@ public class ProxyManagerTest {
 	@Test
 	public void testGetObjectFromProxyManyExistingElements() {
 		int count = 10;
-		Container[] containers = new Container[count];
+		ContainerType[] containers = new ContainerType[count];
 		Vertex[] vertices = new Vertex[count];
 		Link[] links = new Link[count];
 		// Add some EObjects to the proxy
 		for(int i = 0; i < count; i++) {
-			containers[i] = factory.createContainer();
+			containers[i] = factory.createContainerType();
 			vertices[i] = factory.createVertex();
 			links[i] = factory.createLink();
 			containers[i].setNodeId(i);
@@ -180,10 +180,10 @@ public class ProxyManagerTest {
 		}
 		// Check if they all are in the proxy
 		for(int i = 0; i < count; i++) {
-			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainer(), (long)i) != null : "Container object with id " + i + " is null";
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainerType(), (long)i) != null : "Container object with id " + i + " is null";
 			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getVertex(), (long)i) != null : "Vertex object with id " + i + " is null";
 			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getLink(), (long)i) !=null : "Link object with id " + i + " is null";
-			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainer(), (long)i) == containers[i] : "Wrong Container object with id " + i;
+			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainerType(), (long)i) == containers[i] : "Wrong Container object with id " + i;
 			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getVertex(), (long)i) == vertices[i] : "Wrong Vertex object with id " + i;
 			assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getLink(), (long)i) == links[i] : "Wrong Link object with id " + i;
 		}
@@ -199,7 +199,7 @@ public class ProxyManagerTest {
 	public void testGetObjectFromProxyAfterUselessClear() {
 		long cId = 5;
 		long vId = 10;
-		Container c = factory.createContainer();
+		ContainerType c = factory.createContainerType();
 		Vertex v = factory.createVertex();
 		c.setNodeId(cId);
 		v.setNodeId(vId);
@@ -216,7 +216,7 @@ public class ProxyManagerTest {
 	public void testGetObjectFromProxyAfterClear() {
 		long cId = 5;
 		long vId = 10;
-		Container c = factory.createContainer();
+		ContainerType c = factory.createContainerType();
 		Vertex v = factory.createVertex();
 		c.setNodeId(cId);
 		v.setNodeId(vId);
@@ -225,7 +225,7 @@ public class ProxyManagerTest {
 		c = null;
 		v = null;
 		clearSoftReferences();
-		assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainer(), cId) == null : "Container in proxy hasn't been released";
+		assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getContainerType(), cId) == null : "Container in proxy hasn't been released";
 		assert proxy.getObjectFromProxy(TestPackage.eINSTANCE.getVertex(), vId) == null : "Vertex in proxy hasn't been released";
 	}
 	
