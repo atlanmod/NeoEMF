@@ -155,7 +155,6 @@ public class Loader implements ILoader {
 		Node attributeNode = manager.getAttributeNode(n);
 		String ns_uri = manager.getNodeContainingPackage(n);
 		EPackage ePck = loadMetamodelFromURI(ns_uri);
-//		int size = getChangeLog().size();
 		EFactory factory =null;
 
 		if (ePck.getEFactoryInstance() == null) {
@@ -173,8 +172,9 @@ public class Loader implements ILoader {
 		if(attributeNode != null) {
 			obj.setAttributeNodeId(attributeNode.getId());
 		}
-	//	manager.putAllToProxy(ECollections.singletonEList(obj));
-//		getChangeLog().removeLastChanges(getChangeLog().size() - size);
+		// FIXME the content of this method should be in PersistenceManager (avoid access
+		// of proxy in other classes)
+		manager.getProxyManager().putToProxy(obj);
 		return obj;
 	}
 	/**

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/mteach/src/main/java" modelPluginID="mteach" modelName="MTeach"
-    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/mteach/src/main/java" modelPluginID="fr.inria.atlanmod.neo4emf.mteach"
+    templateDirectory="platform:/plugin/fr.inria.atlanmod.neo4emf.codegen/templates"
+    dynamicTemplates="true" modelName="MTeach" rootExtendsInterface="fr.inria.atlanmod.neo4emf.INeo4emfObject"
+    rootExtendsClass="fr.inria.atlanmod.neo4emf.impl.Neo4emfObject" importerID="fr.inria.atlanmod.neo4emf.importer"
     complianceLevel="7.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
   <foreignModel>MTeach.ecore</foreignModel>
-  <genPackages prefix="Mteach" disposableProviderFactory="true" ecorePackage="MTeach.ecore#/">
+  <modelPluginVariables>NEO4J=fr.inria.atlanmod.neo4emf.neo4j-1.9.4</modelPluginVariables>
+  <modelPluginVariables>NEO4EMF=fr.inria.atlanmod.neo4emf</modelPluginVariables>
+  <templatePluginVariables>NEO4EMF_GENERATOR=fr.inria.atlanmod.neo4emf.codegen</templatePluginVariables>
+  <genPackages prefix="Mteach" basePackage="fr.inria.atlanmod.neo4emf" disposableProviderFactory="true"
+      ecorePackage="MTeach.ecore#/">
     <genClasses ecoreClass="MTeach.ecore#//Professor">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MTeach.ecore#//Professor/lastName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MTeach.ecore#//Professor/firstName"/>

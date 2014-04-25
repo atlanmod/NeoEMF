@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mgraph.MgraphFactory;
-import mgraph.MgraphPackage;
-import mteach.MteachFactory;
-import mteach.MteachPackage;
-
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
 import fr.inria.atlanmod.neo4emf.drivers.NESession;
+import fr.inria.atlanmod.neo4emf.mgraph.MgraphFactory;
+import fr.inria.atlanmod.neo4emf.mgraph.MgraphPackage;
+import fr.inria.atlanmod.neo4emf.mteach.MteachFactory;
+import fr.inria.atlanmod.neo4emf.mteach.MteachPackage;
 
 public class InputData {
 	

@@ -258,7 +258,11 @@ protected static class <%=attributeClassName%><%=genClass.getTypeParameters().tr
 		%>
 		if (<%=fName%> != null) n.setProperty("<%=fName%>", <%=fName%>.doubleValue());<%
 	}
-	else { // Probably a primitive type 
+	else if (each.isPrimitiveType()){ // TODO Check that, maybe not good
+		%>
+		n.setProperty("<%=fName%>", <%=fName%>); <%
+	}
+	else { // Probably an object type
 		%>
 		if (<%=fName%> != null) n.setProperty("<%=fName%>", <%=fName%>);<%
 	}%>

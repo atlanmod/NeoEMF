@@ -115,7 +115,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 		        <%if (genModel.isVirtualDelegation()) {%>
 					eVirtualSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, <%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>);
 		        <%} else {%>
-		        	<%=genFeature.getImportedType(genClass)%> newList = new <%=CodegenUtil.getListConstructorAndNeoImport(genModel,genClass.getListConstructor(genFeature))%>;
+		        	<%=genFeature.getImportedType(genClass)%> newList = new <%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.NeoListDecorator")%>(new <%=genClass.getListConstructor(genFeature)%>);
 		        	<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getImportedType(genClass)%>>(newList, garbagedData);
 					if (isLoaded()) {
 						((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);			
@@ -138,7 +138,9 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 			return (<%=genFeature.getImportedType(genClass)%>)eContainer();
       <%} 	  
 	  else {%>
-        <%if (genFeature.isResolveProxies()) {%>
+	  	//<%=genFeature.getCapName()%>
+        <%if (genFeature.isResolveProxies() || genFeature.isContains()) {%>
+        	// testtest
           <%if (genModel.isVirtualDelegation()) {%>
 		<%=genFeature.getImportedType(genClass)%> <%=genFeature.getSafeName()%> = (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%><%if (genFeature.hasEDefault()) {%>, Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>.<%=genFeature.getEDefault()%><%}%>);
           <%}%>
@@ -151,7 +153,9 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 			if(<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> == null) {
 				return null; // avoid a get() call on a null pointer, maybe not enough
 			}
+			// tagada
         <%}%>		
+        // ouh
         <%if (!genFeature.isResolveProxies() && genModel.isVirtualDelegation() && !genFeature.isPrimitiveType()) {%>
 			return (<%=genFeature.getImportedType(genClass)%>)eVirtualGet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%><%if (genFeature.hasEDefault()) {%>, Data<%=genClass.getInterfaceName()%><%=genClass.getTypeParameters().trim()%>.<%=genFeature.getEDefault()%><%}%>);
         <%} else if (genClass.isFlag(genFeature)) {%>
@@ -160,12 +164,9 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
           <%} else {%>
 			return Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_VALUES[(<%=genClass.getFlagsField(genFeature)%> & Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG) >>> Data<%=genClass.getInterfaceName()%>.<%=genFeature.getUpperName()%>_EFLAG_OFFSET];
           <%}%>
-        <%} else if (!genFeature.isProperty()) {%>
-		if (isLoaded()) {
-			((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);
-		}
-			return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;
-        <%} else if(genFeature.isReferenceType()) {%>
+        
+        <%} else if(genFeature.isReferenceType() || !genFeature.isProperty()) {%>
+        	// choimp
 			return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>.get();
 		<%} else {%>
 			return <%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%>;

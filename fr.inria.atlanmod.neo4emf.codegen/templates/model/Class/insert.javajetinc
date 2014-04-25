@@ -43,7 +43,7 @@ if (!multivaluedAttributes.isEmpty()) {
 		if ( data == null || !(data instanceof <%=CodegenUtil.getAttributeClassName(genClass)%>)){
 			// TODO check that
 			setLoadingOnDemand();
-			data = new <%=CodegenUtil.getAttributeClassName(genClass)%>();
+			data = new <%=CodegenUtil.getAttributeClassName(genClass)%>(this);
 			if (isLoaded()) {
 				((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).fetchAttributes(this);
 			}

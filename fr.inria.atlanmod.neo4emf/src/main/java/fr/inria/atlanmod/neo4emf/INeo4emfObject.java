@@ -120,5 +120,9 @@ public interface INeo4emfObject extends EObject, Comparable<INeo4emfObject> {
 	public void addChangelogRemoveEntry(EObject removedObject, int featureId);
 
 	boolean isLoaded();
+	
+	int getSessionId();
+	
+	void setSessionId(int sessionId);
 
 }

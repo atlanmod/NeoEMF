@@ -48,6 +48,9 @@ public class Serializer implements ISerializer {
 	 * TODO: Comment this
 	 */
 	Map<String, Object> defaultOptions = new HashMap<String, Object>();
+	
+	private NETransaction currentTx = null;
+	private int txCount = 0;
 
 	// INodeBuilder nodeBuilder;
 	public Serializer(PersistenceManager manager) {
@@ -61,6 +64,7 @@ public class Serializer implements ISerializer {
 	 *  @see {@link INeo4emfResource#save()}
 	 */
 	public void save(Map<String, Object> options) {
+		manager.startNewSession();
 		/*
 		 * The number of database operations within a transaction is bounded,
 		 * that's why changes may be processed in several transactions.
@@ -71,22 +75,40 @@ public class Serializer implements ISerializer {
 		if(!isTmpSave) {
 			flushTmpSave(options);
 		}
+		int test = 0;
 		List<Entry> changes = manager.getResource().getChangeLog().changes();
 		while (!changes.isEmpty()) {
-			int times = Math.min(max, changes.size());
-			List<Entry> subset = changes.subList(0, times);
-			NETransaction tx = manager.createTransaction();
+//			int times = Math.min(max, changes.size());
+//			List<Entry> subset = changes.subList(0, times);
+			List<Entry> subset = changes;
+			currentTx = manager.createTransaction();
+//			long begin = System.currentTimeMillis();
+//			long end = 0;
+			boolean error = false;
 			try {
 				for(Entry each : subset) {
 					each.process(this,isTmpSave);
+					test++;
 				}
-				tx.success();
+//				end = System.currentTimeMillis();
+//				System.out.println("available before commit");
+//				System.out.println((Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory())/1000000);
+				currentTx.success();
 				subset.clear();
 			} catch (Exception e) {
-				tx.abort();
+				currentTx.abort();
 				e.printStackTrace();
+				error = true;
 			} finally {
-				tx.commit();
+				long a = System.currentTimeMillis();
+				currentTx.commit();
+//				System.out.println("number of entry before loop commit : " + test);
+//				System.out.println("loop commit txCount : " + txCount);
+				txCount = 0;
+				if(error) return;
+//				long b = System.currentTimeMillis();
+//				System.out.println("time for loop : " + (end-begin) + " ms");
+//				System.out.println("time for loop commit : " + (b-a) + " ms");
 			}
 		}
 	}
@@ -148,6 +170,7 @@ public class Serializer implements ISerializer {
 		if(isTmp) {
 			if(((Neo4emfObject)eObject).getAttributeNodeId() < 0) {
 				n = manager.createAttributeNodeForEObject(eObject);
+				txCount += 2;
 			}
 			else {
 				n = manager.getAttributeNodeById(eObject);
@@ -156,18 +179,25 @@ public class Serializer implements ISerializer {
 		
 		if (newValue!= null && !at.isMany()){
 		
-			if (at.getEType() instanceof EEnum)
+			if (at.getEType() instanceof EEnum) {
 				n.setProperty(at.getName(), newValue.toString());
+				txCount++;
+			}
 
-			else if (isPrimitive(at.getName()))
+			else if (isPrimitive(at.getName())) {
 				n.setProperty(at.getName(), newValue);
+				txCount++;
+			}
 
-			else
+			else {
 				n.setProperty(at.getName(), newValue.toString());
+				txCount++;
+			}
 		}
 
 		else if (newValue != null && at.isMany()) {
 			n.setProperty(at.getName(), ((EList<EObject>) newValue).toArray());
+			txCount++;
 		}
 
 		else if (!at.isMany()) {
@@ -182,8 +212,11 @@ public class Serializer implements ISerializer {
 
 			else
 				n.setProperty(at.getName(), 0);
+			
+			txCount++;
 		} else {
 			n.setProperty(at.getName(), new Object[1]);
+			txCount++;
 		}
 	}
 
@@ -196,9 +229,9 @@ public class Serializer implements ISerializer {
 		}
 	}
 
-	public void addNewLink(INeo4emfObject eObject, EReference eRef, Object object, boolean isTmp) {
+	public void addNewLink(INeo4emfObject eObject, EReference eRef, INeo4emfObject object, boolean isTmp) {
 		if(isTmp) {
-			this.manager.createAddLinkRelationship(eObject,(INeo4emfObject)object,eRef);
+			this.manager.createAddLinkRelationship(eObject,object,eRef);
 		}
 		else {
 			this.manager.createLink(eObject, (INeo4emfObject)object, eRef);
@@ -209,6 +242,7 @@ public class Serializer implements ISerializer {
 		Node n = null;
 		if (eObject.getNodeId() == -1) {
 			n = this.manager.createNodefromEObject(eObject,isTmp);
+			txCount += 2;
 		} else {
 			n = this.manager.getNodeById(eObject);
 		}
@@ -221,11 +255,13 @@ public class Serializer implements ISerializer {
 					setAttributeValue(eObject, at, eObject.eGet(at),false); // false ?
 				} else {
 					n.setProperty(at.getName(), "");
+					txCount++;
 				}
 			}
 		}
 		{
 			EList<EReference> refList = eObject.eClass().getEAllReferences();
+			
 			Iterator<EReference> itRef = refList.iterator();
 			while (itRef.hasNext()) {
 				EReference ref = itRef.next();
@@ -239,34 +275,71 @@ public class Serializer implements ISerializer {
 					if (ref.getUpperBound() == -1) {
 						List<INeo4emfObject> eObjects = (List<INeo4emfObject>) eObject
 								.eGet(ref);
-						for (INeo4emfObject referencedEObject : eObjects) {
-							INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) referencedEObject;
-							if (referencedNeo4emfObject.getNodeId() == -1 && referencedNeo4emfObject.eResource() != null) {
-								Node childNode = this.manager
-										.createNodefromEObject(referencedEObject,isTmp);
-								referencedNeo4emfObject.setNodeId(childNode
-										.getId());
+						int idx = 0;
+						Iterator<INeo4emfObject> it = eObjects.iterator();
+						while(idx < eObjects.size()) {
+							// Loop for all the elements contained in the list
+							while(txCount < 200000 && it.hasNext()) {
+								INeo4emfObject referencedNeo4emfObject = it.next();
+								idx++;
+								if (referencedNeo4emfObject.getNodeId() == -1 && referencedNeo4emfObject.eResource() != null) {
+									Node childNode = this.manager
+											.createNodefromEObject(referencedNeo4emfObject,isTmp);
+									txCount+=2;
+									referencedNeo4emfObject.setNodeId(childNode
+											.getId());
+								}
+								if(referencedNeo4emfObject.eResource() != null) {
+									addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
+									txCount++;
+									if(ref.getEOpposite() != null && referencedNeo4emfObject.getSessionId() < eObject.getSessionId()) {
+										addNewLink(referencedNeo4emfObject, ref.getEOpposite(), eObject, isTmp);
+										txCount++;
+									}
+								}
 							}
-							if(referencedNeo4emfObject.eResource() != null) {
-								addNewLink(eObject, ref, referencedEObject,isTmp);
+							if(txCount >= 200000) {
+//								long a = System.currentTimeMillis();
+								currentTx.success();
+//								System.out.println("flush");
+								currentTx.commit();
+//								long b = System.currentTimeMillis();
+//								System.out.println("time to commit : " + (b-a) + " ms");
+								currentTx = manager.createTransaction();
+								txCount = 0;
 							}
 						}
 					} else {
-						Neo4emfObject referencedNeo4emfObject = (Neo4emfObject) eObject
+						INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) eObject
 								.eGet(ref);
 						if (referencedNeo4emfObject.getNodeId() == -1 && referencedNeo4emfObject.eResource() != null) {
 							Node childNode = this.manager
-									.createNodefromEObject(referencedNeo4emfObject);
+									.createNodefromEObject(referencedNeo4emfObject,isTmp);
+							txCount += 2;
 							referencedNeo4emfObject
 									.setNodeId(childNode.getId());
 						}
 						if(referencedNeo4emfObject.eResource() != null) {
 							addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
+							txCount++;
+							if(ref.getEOpposite() != null && referencedNeo4emfObject.getSessionId() < eObject.getSessionId()) {
+								addNewLink(referencedNeo4emfObject, ref.getEOpposite(), eObject, isTmp);
+								txCount++;
+							}
+						}
+						if(txCount >= 200000) {
+//							long a = System.currentTimeMillis();
+							currentTx.success();
+//							System.out.println("flush");
+							currentTx.commit();
+//							long b = System.currentTimeMillis();
+//							System.out.println("time to commit : " + (b-a) + " ms");
+							currentTx = manager.createTransaction();
+							txCount = 0;
 						}
 					}
 				}
 			}
 		}
-//		manager.putNodeId(eObject, n.getId());
 	}
 }

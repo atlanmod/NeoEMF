@@ -37,9 +37,8 @@ import org.neo4j.graphdb.Node;
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.change.IChangeLog;
-import fr.inria.atlanmod.neo4emf.change.impl.AddLink;
+import fr.inria.atlanmod.neo4emf.change.impl.ChangeLogFactory;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
-import fr.inria.atlanmod.neo4emf.change.impl.RemoveLink;
 import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
 
 public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject {
@@ -60,6 +59,8 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	 * eObject temporary attribute node ID
 	 */
 	protected long attributeId = -1;
+	
+	private int sessionId = -1;
 	/**
 	 * isProxy flag
 	 */
@@ -330,39 +331,33 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	}
 
 	public void addChangelogEntry(Object newValue, EStructuralFeature eFeature) {
-		if (loadingOnDemand == 0 && getChangeLog() != null) {
-			// if (!loadingOnDemand && getChangeLog() != null) {
+		if (!isLoadingOnDemand() && getChangeLog() != null) {
 			if (eFeature instanceof EAttribute) {
 				getChangeLog().add(
 						new SetAttribute(this, (EAttribute) eFeature, eGet(
 								eFeature, false), newValue));
 			} else if (eFeature instanceof EReference) {
 				EReference ref = (EReference) eFeature;
-				// if(newValue == null) {
-				// getChangeLog().add(new RemoveLink(this, ref,
-				// eGet(eFeature,false), null));
-				// }
-				// else {
-				if (ref.isMany()) {
-					if (newValue instanceof Collection) {
-						@SuppressWarnings("unchecked")
-						Collection<EObject> c = (Collection<EObject>) newValue;
-						for (EObject elt : c) {
-							getChangeLog().add(
-									new AddLink(this, (EReference) eFeature,
-											eGet(eFeature, false), elt));
+				if(!isLoadingOnDemand() && isLoaded()) { 
+	        		if (ref.getEOpposite() == null
+	        				|| getSessionId() < ((INeo4emfObject)newValue).getSessionId()
+	        				|| (getSessionId() == ((INeo4emfObject)newValue).getSessionId()
+	        						&& getNodeId() < ((INeo4emfObject)newValue).getNodeId())) {
+						if (ref.isMany()) {
+							if (newValue instanceof Collection) {
+								@SuppressWarnings("unchecked")
+								Collection<EObject> c = (Collection<EObject>) newValue;
+								for (EObject elt : c) {
+									getChangeLog().add(ChangeLogFactory.eINSTANCE.createAddLink(this, (EReference)eFeature, (INeo4emfObject)elt));
+								}
+							} else {
+								getChangeLog().add(ChangeLogFactory.eINSTANCE.createAddLink(this, (EReference)eFeature, (INeo4emfObject)newValue));
+							}
+						} else {
+							getChangeLog().add(ChangeLogFactory.eINSTANCE.createAddLink(this, (EReference)eFeature,(INeo4emfObject)newValue));
 						}
-					} else {
-						getChangeLog().add(
-								new AddLink(this, (EReference) eFeature, eGet(
-										eFeature, false), newValue));
-					}
-				} else {
-					getChangeLog().add(
-							new AddLink(this, (EReference) eFeature, eGet(
-									eFeature, false), newValue));
+	        		}
 				}
-				// }
 			} else {
 				throw new WrappedException(new Exception(NLS.bind(
 						"Unexpected EStructuralFeature {0}",
@@ -371,13 +366,18 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 		}
 	}
 
-	public void addChangelogRemoveEntry(EObject removedObject, int featureId) {
-		if (loadingOnDemand == 0 && getChangeLog() != null) {
-			EStructuralFeature feature = eClass().getEStructuralFeature(
-					featureId);
-			getChangeLog().add(
-					new RemoveLink(this, (EReference) feature, removedObject,
-							null));
+	public void addChangelogRemoveEntry(EObject obj, int featureId) {
+		INeo4emfObject removedObject = (INeo4emfObject)obj;
+		if (!isLoadingOnDemand() && getChangeLog() != null) {
+			EReference ref = (EReference)eClass().getEStructuralFeature(featureId);
+			if(!isLoadingOnDemand() && isLoaded()) { 
+        		if (ref.getEOpposite() == null
+        				|| getSessionId() < removedObject.getSessionId()
+        				|| (getSessionId() == removedObject.getSessionId()
+        						&& getNodeId() < removedObject.getNodeId())) {
+        			getChangeLog().add(ChangeLogFactory.eINSTANCE.createRemoveLink(this, ref, removedObject));
+        		}
+			}
 		}
 	}
 
@@ -482,5 +482,15 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 		int result = 1;
 		result = prime * result + (int) (id ^ (id >>> 32));
 		return result;
+	}
+	
+	@Override
+	public int getSessionId() {
+		return sessionId;
+	}
+	
+	@Override
+	public void setSessionId(int sessionId) {
+		this.sessionId = sessionId;
 	}
 }

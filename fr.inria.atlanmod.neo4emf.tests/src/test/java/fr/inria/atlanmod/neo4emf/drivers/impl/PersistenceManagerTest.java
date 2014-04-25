@@ -1,18 +1,9 @@
 package fr.inria.atlanmod.neo4emf.drivers.impl;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
-import java.util.Collections;
 
-import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
-import fr.inria.atlanmod.neo4emf.drivers.NESession;
-import mgraph.MgraphPackage;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -20,8 +11,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
-import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
-import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
+import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
+import fr.inria.atlanmod.neo4emf.drivers.NESession;
 import fr.inria.atlanmod.neo4emf.testdata.TestPackage;
 
 public class PersistenceManagerTest {

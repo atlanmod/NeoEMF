@@ -3,33 +3,15 @@ package fr.inria.atlanmod.neo4emf.change.impl;
 import org.eclipse.emf.ecore.EReference;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.drivers.impl.Serializer;
 
-/**
- * 
- * @author sunye
- */
-public class AddLink extends Entry {
-
-	private final EReference eReference;
-	private final Object oldValue;
-	private final Object newValue;
-
-	public AddLink(INeo4emfObject object, EReference eRef, Object oldV, Object newV) {
-		super(object);
-		eReference = eRef;
-		oldValue = oldV;
-		newValue = newV;
-	}
-
-	@Override
-	public void process(Serializer serializer, boolean isTmp) {
-		serializer.addNewLink(eObject, eReference, newValue,isTmp);
-		super.release();
-	}
+public abstract class AddLink extends Entry {
 	
-	@Deprecated
-	public EReference geteReference() {
-		return eReference;
+	protected final EReference eReference;
+	protected final INeo4emfObject referencedEObject;
+	
+	public AddLink(INeo4emfObject from, EReference eRef, INeo4emfObject to) {
+		super(from);
+		eReference = eRef;
+		referencedEObject = to;
 	}
 }

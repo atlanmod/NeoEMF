@@ -15,6 +15,7 @@ public class ChangeLog implements IChangeLog<Entry> {
 	private List<Entry> changes = new ArrayList<Entry>();
 	private int flushSize;
 	private INeo4emfResource resource;
+	private long maxMemory;
 	
 	private Map<String,Object> tmpOptions;
 	
@@ -24,13 +25,19 @@ public class ChangeLog implements IChangeLog<Entry> {
 		// TODO check if this could be a static variable
 		this.tmpOptions = new HashMap<String,Object>();
 		this.tmpOptions.put("tmp_save", true);
+		this.maxMemory = Runtime.getRuntime().maxMemory();
 	}
 
 	@Override
 	public boolean add(Entry entry) {
 		boolean added = changes.add(entry);
-		if(size() == flushSize) {
+//		System.out.println(entry);
+		long usedMemory = Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory();
+		if(usedMemory/maxMemory > 0.8) {
+//		if(size() == flushSize) {
+			System.out.println("max mem, flushing");
 			flushChangeLog();
+//		}
 		}
 		return added;
 	}

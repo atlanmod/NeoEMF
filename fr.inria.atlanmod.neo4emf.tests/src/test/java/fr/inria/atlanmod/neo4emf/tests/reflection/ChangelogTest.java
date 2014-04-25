@@ -314,7 +314,8 @@ public class ChangelogTest {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof AddLink) {
 				AddLink addReferenceEntry = (AddLink)currentEntry;
-				setReference.add(addReferenceEntry.geteReference());
+				// FIXME geteReference has been removed
+//				setReference.add(addReferenceEntry.geteReference());
 			}
 		}
 		// Check that all the SetAttribute entries are consistent with the generated
@@ -373,7 +374,8 @@ public class ChangelogTest {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof AddLink) {
 				AddLink addReferenceEntry = (AddLink)currentEntry;
-				setReference.add(addReferenceEntry.geteReference());
+				// FIXME geteReference has been removed
+				//setReference.add(addReferenceEntry.geteReference());
 			}
 		}
 		// Check that all the SetAttribute entries are consistent with the generated
@@ -433,7 +435,8 @@ public class ChangelogTest {
 			Entry currentEntry = it.next();
 			if(currentEntry instanceof AddLink) {
 				AddLink setReferenceEntry = (AddLink)currentEntry;
-				setReference.add(setReferenceEntry.geteReference());
+				// FIXME geteReference has been removed
+//				setReference.add(setReferenceEntry.geteReference());
 			}
 		}
 		

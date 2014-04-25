@@ -3,12 +3,6 @@ package fr.inria.atlanmod.neo4emf.tests.reflection;
 import java.io.File;
 import java.io.IOException;
 
-import mgraph.MEdge;
-import mgraph.MGraph;
-import mgraph.MNode;
-import mgraph.MgraphFactory;
-import mgraph.MgraphPackage;
-
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -23,9 +17,12 @@ import org.junit.Test;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
-import fr.inria.atlanmod.neo4emf.change.impl.ChangeLog;
 import fr.inria.atlanmod.neo4emf.drivers.NESession;
-import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceManager;
+import fr.inria.atlanmod.neo4emf.mgraph.MEdge;
+import fr.inria.atlanmod.neo4emf.mgraph.MGraph;
+import fr.inria.atlanmod.neo4emf.mgraph.MNode;
+import fr.inria.atlanmod.neo4emf.mgraph.MgraphFactory;
+import fr.inria.atlanmod.neo4emf.mgraph.MgraphPackage;
 
 
 public class LoadTest {
