@@ -13,18 +13,12 @@ package fr.inria.atlanmod.neo4emf.impl;
  * @author Amine BENELALLAM
  * */
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
-import org.neo4j.graphdb.RelationshipType;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfResource;
 import fr.inria.atlanmod.neo4emf.INeo4emfResourceFactory;
-import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
-import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
 
 public class Neo4emfResourceFactory extends ResourceFactoryImpl implements
 		INeo4emfResourceFactory {

@@ -2,12 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>fr.inria.atlanmod.neo4emf</groupId>
+    <parent>
+        <artifactId>fr.inria.atlanmod.neo4emf.root</artifactId>
+        <groupId>fr.inria.atlanmod.neo4emf</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
     <artifactId>tests</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Neo4EMF-Tests</name>
+    <name>Neo4EMF :: Tests</name>
     <url>http://maven.apache.org</url>
     <inceptionYear>2013</inceptionYear>
     <organization>
@@ -93,48 +98,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-            <version>2.9.1-v20130827-0309</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-            <version>2.9.1-v20130827-0309</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.codegen</artifactId>
-            <version>2.9.0-v20130902-0605</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
-            <version>2.9.1-v20130902-0605</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-            <version>2.9.1-v20130827-0309</version>
-        </dependency>
-
-
-        <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
-            <version>1.9.4</version>
+            <version>${neo4j.version}</version>
         </dependency>
 
 
@@ -149,7 +115,6 @@
             <groupId>fr.inria.atlanmod.models</groupId>
             <artifactId>mgraph</artifactId>
             <version>1.0-SNAPSHOT</version>
-
             <scope>test</scope>
         </dependency>
         

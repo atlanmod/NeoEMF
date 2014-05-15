@@ -1,9 +1,5 @@
 package fr.inria.atlanmod.neo4emf.drivers;
 
-import java.util.Map;
-
-import org.eclipse.emf.ecore.EPackage;
-
 import fr.inria.atlanmod.neo4emf.drivers.impl.PersistenceServiceFactory;
 
 /**

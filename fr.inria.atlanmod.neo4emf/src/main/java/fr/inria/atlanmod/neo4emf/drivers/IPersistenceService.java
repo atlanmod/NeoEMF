@@ -25,7 +25,6 @@ import org.neo4j.graphdb.index.Index;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.impl.NETransaction;
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 public interface IPersistenceService {
 	/**
@@ -37,7 +36,7 @@ public interface IPersistenceService {
 	 * {@link String}
 	 */
 	public final String META_ELEMENTS = "meta_elements";
-	
+
 	public final String META_RELATIONSHIPS = "meta_relationships";
 	/**
 	 * ROOT_ELEMENTS Constant to meta_elements index name {@link String}
@@ -63,7 +62,7 @@ public interface IPersistenceService {
 	 * the Value of the temporary nodes in the backend
 	 */
 	public final String TMP_NODE = "temporary_node";
-	
+
 	public final String TMP_RELATIONSHIP = "temporary_relationship";
 	/**
 	 * INSTANCE_OF {@link RelationshipType}
@@ -90,19 +89,17 @@ public interface IPersistenceService {
 	 * SET_ATTRIBUTE {@link RelationshipType}
 	 */
 	public final RelationshipType SET_ATTRIBUTE = MetaRelation.SET_ATTRIBUTE;
-	
-	
+
 	/**
 	 * get the meta_elements' index
 	 * 
 	 * @return {@link Index}
 	 */
 	Index<Node> getMetaIndex();
-	
-	Index<Relationship> getRelationshipIndex();
-	
-	Node getAttributeNode(Node n);
 
+	Index<Relationship> getRelationshipIndex();
+
+	Node getAttributeNode(Node n);
 
 	/**
 	 * Create Node from eObject
@@ -113,31 +110,37 @@ public interface IPersistenceService {
 	 */
 
 	Node createNodeFromEObject(INeo4emfObject eObject);
-	
+
 	Node createNodeFromEObject(INeo4emfObject eObject, boolean isTemporary);
-	
+
 	// TODO check if EReference is appropriate here
 	void createLink(INeo4emfObject from, INeo4emfObject to, EReference ref);
+
 	// TODO check if EReference is appropriate here
 	void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref);
+
 	/**
 	 * Create an Attribute node for eObject
-	 * @warning It doesn't check if an Attribute node is already
-	 * created.
-	 * @param eObject {@link EObject}
+	 * 
+	 * @warning It doesn't check if an Attribute node is already created.
+	 * @param eObject
+	 *            {@link EObject}
 	 * @return {@link Node}
 	 */
 	Node createAttributeNodeForEObject(INeo4emfObject eObject);
-	
+
 	void deleteNodeFromEObject(INeo4emfObject eObject);
-	
-	Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref);
-	Relationship createRemoveLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref);
-	
+
+	Relationship createAddLinkRelationship(INeo4emfObject from,
+			INeo4emfObject to, EReference ref);
+
+	Relationship createRemoveLinkRelationship(INeo4emfObject from,
+			INeo4emfObject to, EReference ref);
+
 	Relationship createDeleteRelationship(INeo4emfObject obj);
-	
+
 	List<Relationship> getTmpRelationships();
-	
+
 	List<Node> getTmpNodes();
 	
 	void flushTmpRelationships(List<Relationship> rels);
@@ -179,10 +182,12 @@ public interface IPersistenceService {
 	 * @return {@link List}
 	 */
 	List<Node> getNodesOnDemand(long nodeid, RelationshipType relationshipType);
-	
-	List<Node> getAddLinkNodesOnDemand(long nodeid, RelationshipType baseRelationshipType);
-	
-	List<Node> getRemoveLinkNodesOnDemand(long nodeid, RelationshipType baseRelationshipType);
+
+	List<Node> getAddLinkNodesOnDemand(long nodeid,
+			RelationshipType baseRelationshipType);
+
+	List<Node> getRemoveLinkNodesOnDemand(long nodeid,
+			RelationshipType baseRelationshipType);
 
 	/**
 	 * Return true if the node is root Node
@@ -212,9 +217,9 @@ public interface IPersistenceService {
 	 * @return
 	 */
 	NETransaction createTransaction();
-	
+
 	void cleanIndexes();
-	
+
 	/**
 	 * Returns database node for id
 	 * 
@@ -230,15 +235,16 @@ public interface IPersistenceService {
 	 * @return
 	 */
 	Node createNode();
-	
+
 	/**
 	 * Returns a relationship type for a pair Class ID x Reference ID.
+	 * 
 	 * @param classID
 	 * @param referenceID
 	 * @return
 	 */
 	RelationshipType getRelationshipFor(int classID, int referenceID);
-	
+
 	/**
 	 * Enum class for the meta_relations
 	 * 
@@ -269,6 +275,6 @@ public interface IPersistenceService {
 		/**
 		 * SET_ATTRIBUTE relationship
 		 */
-		SET_ATTRIBUTE	
-	}	
+		SET_ATTRIBUTE
+	}
 }
