@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
+import org.neo4j.cypher.internal.pipes.matching.Relationships;
 import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -29,19 +29,17 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
-import org.neo4j.graphdb.traversal.Evaluator;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.Traversal;
 
 import fr.inria.atlanmod.neo4emf.INeo4emfObject;
-import fr.inria.atlanmod.neo4emf.Point;
 import fr.inria.atlanmod.neo4emf.RelationshipMapping;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
-import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 import fr.inria.atlanmod.neo4emf.drivers.NEConfiguration;
 import fr.inria.atlanmod.neo4emf.drivers.NEConnection;
+import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 public class PersistenceService implements IPersistenceService {
 	
@@ -101,12 +99,14 @@ public class PersistenceService implements IPersistenceService {
 	
 	@Override
 	public void createLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
-		connection.createRelationship(from,to,getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
+		//connection.createRelationship(from,to,getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
+		connection.createRelationship(from, to, getRelationshipFor(ref.getEContainingClass().getClassifierID(), ref.getFeatureID()));
 	}
 	
 	@Override
 	public void removeLink(INeo4emfObject from, INeo4emfObject to, EReference ref) {
-		connection.removeRelationship(from,to,getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
+//		connection.removeRelationship(from,to,getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
+		connection.createRelationship(from, to, getRelationshipFor(ref.getEContainingClass().getClassifierID(), ref.getFeatureID()));
 	}
 	
 	@Override
@@ -121,7 +121,7 @@ public class PersistenceService implements IPersistenceService {
 	
 	@Override
 	public Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
-		return connection.addTmpRelationshipBetween(from, to, getRelationshipFor(from.eClass().getClassifierID(), ref.getFeatureID()));
+		return connection.addTmpRelationshipBetween(from, to, getRelationshipFor(ref.getEContainingClass().getClassifierID(), ref.getFeatureID()));
 	}
 	
 	@Override
@@ -155,8 +155,8 @@ public class PersistenceService implements IPersistenceService {
 	}
 	
 	@Override
-	public void flushTmpRelationships() {
-		connection.flushTmpRelationships();
+	public void flushTmpRelationships(List<Relationship> rels) {
+		connection.flushTmpRelationships(rels);
 	}
 
 	// TODO, check if it is still needed

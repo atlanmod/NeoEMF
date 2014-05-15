@@ -43,7 +43,8 @@ public class ProxyManager implements IProxyManager {
 			nodes2objects.get(eClass).put(obj.getNodeId(), obj);
 		} 
 		else {
-			Cache<Long,INeo4emfObject> cache = CacheBuilder.newBuilder().softValues().build();
+//			Cache<Long,INeo4emfObject> cache = CacheBuilder.newBuilder().softValues().build();
+			Cache<Long,INeo4emfObject> cache = CacheBuilder.newBuilder().weakValues().build();
 			cache.put(obj.getNodeId(), obj);
 			nodes2objects.put(eClass, cache);
 		}

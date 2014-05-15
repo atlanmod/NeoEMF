@@ -124,5 +124,5 @@ public interface INeo4emfObject extends EObject, Comparable<INeo4emfObject> {
 	int getSessionId();
 	
 	void setSessionId(int sessionId);
-
+	
 }

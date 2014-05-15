@@ -160,6 +160,9 @@ public class Neo4emfResource extends ResourceImpl implements INeo4emfResource {
 				while (it.hasNext()) {
 					Neo4emfObject itEObject = (Neo4emfObject) it.next();
 					addChangeLogCreateEntry(itEObject);
+//					if(itEObject.eResource() == null) {
+//						itEObject.eSetDirectResource(this);
+//					}
 				}
 			}
 		}

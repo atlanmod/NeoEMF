@@ -116,7 +116,7 @@ if (index != -1) { head = typeName.substring(0, index); tail = typeName.substrin
 					eVirtualSet(<%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>, <%=genFeature.getSafeName()%> = new <%=genClass.getListConstructor(genFeature)%>);
 		        <%} else {%>
 		        	<%=genFeature.getImportedType(genClass)%> newList = new <%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.NeoListDecorator")%>(new <%=genClass.getListConstructor(genFeature)%>);
-		        	<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getImportedType(genClass)%>>(newList, garbagedData);
+		        	<%=(genModel.isVirtualDelegation() && !genFeature.isPrimitiveType() )== true ? "":"getData()."%><%=genFeature.getSafeName()%> = new <%=genModel.getImportedName("java.lang.ref.WeakReference")%><<%=genFeature.getImportedType(genClass)%>>(newList, garbagedData);
 					if (isLoaded()) {
 						((<%=genModel.getImportedName("fr.inria.atlanmod.neo4emf.INeo4emfResource")%>) this.eResource()).getOnDemand(this, <%=genClass.getQualifiedFeatureID(genFeature)%><%=positiveOffsetCorrection%>);			
 		        	}

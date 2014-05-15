@@ -39,6 +39,8 @@ import fr.inria.atlanmod.neo4emf.resourceUtil.Neo4emfResourceUtil;
 
 public class Serializer implements ISerializer {
 
+	private int maxCount;
+	
 	/**
 	 * TODO: Comment this
 	 */
@@ -65,6 +67,9 @@ public class Serializer implements ISerializer {
 	 */
 	public void save(Map<String, Object> options) {
 		manager.startNewSession();
+//		System.out.println(Runtime.getRuntime().totalMemory() / 1000000);
+//		maxCount = (int)(Runtime.getRuntime().totalMemory() / 100000);
+		maxCount = 50000;
 		/*
 		 * The number of database operations within a transaction is bounded,
 		 * that's why changes may be processed in several transactions.
@@ -74,28 +79,37 @@ public class Serializer implements ISerializer {
 		boolean isTmpSave = (boolean)options.get(TMP_SAVE);
 		if(!isTmpSave) {
 			flushTmpSave(options);
+			System.out.println("flushed");
 		}
 		int test = 0;
 		List<Entry> changes = manager.getResource().getChangeLog().changes();
 		while (!changes.isEmpty()) {
-//			int times = Math.min(max, changes.size());
-//			List<Entry> subset = changes.subList(0, times);
-			List<Entry> subset = changes;
+			int times = Math.min(maxCount, changes.size());
+			List<Entry> subset = changes.subList(0, times);
+//			List<Entry> subset = changes;
 			currentTx = manager.createTransaction();
 //			long begin = System.currentTimeMillis();
 //			long end = 0;
+			System.out.println("test");
+			Entry currentEntry = null;
 			boolean error = false;
 			try {
 				for(Entry each : subset) {
+					currentEntry = each;
+					if(test == 4290) {
+						System.out.println("test");
+					}
 					each.process(this,isTmpSave);
 					test++;
 				}
+				System.out.println("end test");
 //				end = System.currentTimeMillis();
 //				System.out.println("available before commit");
 //				System.out.println((Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory())/1000000);
 				currentTx.success();
 				subset.clear();
 			} catch (Exception e) {
+				System.out.println(currentEntry);
 				currentTx.abort();
 				e.printStackTrace();
 				error = true;
@@ -133,10 +147,17 @@ public class Serializer implements ISerializer {
 	}
 	
 	private void flushTmpSave(Map<String,Object> options) {
-		NETransaction tx = manager.createTransaction();
-		manager.flushTmpRelationships();
-		tx.success();
-		tx.commit();
+		List<Relationship> rels = manager.getTmpRelationships();
+		while(!rels.isEmpty()) {
+			int times = Math.min(maxCount, rels.size());
+			List<Relationship> subset = rels.subList(0, times);
+			NETransaction tx = manager.createTransaction();
+			// TODO give a collection (to handle subset and don't take all the memory by processing the index)
+			manager.flushTmpRelationships(subset);
+			subset.clear();
+			tx.success();
+			tx.commit();
+		}
 	}
 
 	public void deleteExistingObject(INeo4emfObject eObject, boolean isTmp) {
@@ -279,26 +300,27 @@ public class Serializer implements ISerializer {
 						Iterator<INeo4emfObject> it = eObjects.iterator();
 						while(idx < eObjects.size()) {
 							// Loop for all the elements contained in the list
-							while(txCount < 200000 && it.hasNext()) {
+							while(txCount < maxCount && it.hasNext()) {
 								INeo4emfObject referencedNeo4emfObject = it.next();
 								idx++;
-								if (referencedNeo4emfObject.getNodeId() == -1 && referencedNeo4emfObject.eResource() != null) {
+								if (referencedNeo4emfObject.getNodeId() == -1) {// && referencedNeo4emfObject.eResource() != null) {
 									Node childNode = this.manager
 											.createNodefromEObject(referencedNeo4emfObject,isTmp);
 									txCount+=2;
 									referencedNeo4emfObject.setNodeId(childNode
 											.getId());
 								}
-								if(referencedNeo4emfObject.eResource() != null) {
+//								if(referencedNeo4emfObject.eResource() != null) {
 									addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
 									txCount++;
 									if(ref.getEOpposite() != null && referencedNeo4emfObject.getSessionId() < eObject.getSessionId()) {
 										addNewLink(referencedNeo4emfObject, ref.getEOpposite(), eObject, isTmp);
 										txCount++;
 									}
-								}
+//								}
 							}
-							if(txCount >= 200000) {
+							if(txCount >= maxCount) {
+//								System.out.println("commit");
 //								long a = System.currentTimeMillis();
 								currentTx.success();
 //								System.out.println("flush");
@@ -312,22 +334,23 @@ public class Serializer implements ISerializer {
 					} else {
 						INeo4emfObject referencedNeo4emfObject = (INeo4emfObject) eObject
 								.eGet(ref);
-						if (referencedNeo4emfObject.getNodeId() == -1 && referencedNeo4emfObject.eResource() != null) {
+						if (referencedNeo4emfObject.getNodeId() == -1) { // && referencedNeo4emfObject.eResource() != null) {
 							Node childNode = this.manager
 									.createNodefromEObject(referencedNeo4emfObject,isTmp);
 							txCount += 2;
 							referencedNeo4emfObject
 									.setNodeId(childNode.getId());
 						}
-						if(referencedNeo4emfObject.eResource() != null) {
+//						if(referencedNeo4emfObject.eResource() != null) {
 							addNewLink(eObject, ref, referencedNeo4emfObject,isTmp);
 							txCount++;
 							if(ref.getEOpposite() != null && referencedNeo4emfObject.getSessionId() < eObject.getSessionId()) {
 								addNewLink(referencedNeo4emfObject, ref.getEOpposite(), eObject, isTmp);
 								txCount++;
 							}
-						}
-						if(txCount >= 200000) {
+//						}
+						if(txCount >= maxCount) {
+//							System.out.println("commit");
 //							long a = System.currentTimeMillis();
 							currentTx.success();
 //							System.out.println("flush");

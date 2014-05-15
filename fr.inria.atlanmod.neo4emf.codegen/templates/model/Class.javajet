@@ -722,7 +722,7 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 	public void setDataStrongReferences() {
 		if(data != null) {
 			<%for (GenFeature f : genClass.getGenFeatures()) {%>
-				<%if (f.isListType() && f.isReferenceType()) {%>
+				<%if (f.isReferenceType() && !f.isContainer()) {%>
 			if(getData().strong<%=f.getCapName()%> != null) {
 				getData().strong<%=f.getCapName()%> = getData().<%=f.getSafeName()%>.get();
 			}
@@ -736,7 +736,7 @@ public interface <%=genClass.getInterfaceName()%><%=genClass.getTypeParameters()
 	 */
 	public void releaseDataStrongReferences() {
 		<%for (GenFeature f : genClass.getGenFeatures()) {%>
-			<%if (f.isListType() && f.isReferenceType()) {%>
+			<%if (f.isReferenceType() && !f.isContainer()) {%>
 		getData().strong<%=f.getCapName()%> = null;
 			<%}%>
 		<%}%>

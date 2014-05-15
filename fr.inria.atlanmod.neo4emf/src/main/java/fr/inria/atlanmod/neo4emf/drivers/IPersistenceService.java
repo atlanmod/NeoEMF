@@ -140,7 +140,7 @@ public interface IPersistenceService {
 	
 	List<Node> getTmpNodes();
 	
-	void flushTmpRelationships();
+	void flushTmpRelationships(List<Relationship> rels);
 
 	/**
 	 * Return a List of the root nodes

@@ -14,16 +14,21 @@ package fr.inria.atlanmod.neo4emf.drivers.impl;
  * */
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.factory.GraphDatabaseSetting;
+import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.index.lucene.LuceneKernelExtensionFactory;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.extension.KernelExtensionFactory;
 import org.neo4j.kernel.impl.cache.CacheProvider;
 import org.neo4j.kernel.impl.cache.SoftCacheProvider;
+import org.neo4j.kernel.impl.cache.WeakCacheProvider;
 
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceService;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceServiceFactory;
@@ -36,19 +41,30 @@ public class PersistenceServiceFactory extends GraphDatabaseFactory implements I
 
 		// the cache providers
 		ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-		cacheList.add(new SoftCacheProvider());
+		System.out.println("Creating db configuration");
+		cacheList.add(new WeakCacheProvider());
 
 		// the kernel extensions
 		LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
 		List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();
 		extensions.add(lucene);
+		
+//		Map<String,String> config = new HashMap<String,String>();
+//		config.put("cache_type", "weak");
 
 		// the database setup
 		GraphDatabaseFactory gdbf = new GraphDatabaseFactory();
 		gdbf.setKernelExtensions(extensions);
 		gdbf.setCacheProviders(cacheList);
-		GraphDatabaseService db = gdbf.newEmbeddedDatabase(configuration.path().getAbsolutePath());
-		
+		GraphDatabaseService db = null;
+		try {
+//		db = gdbf.newEmbeddedDatabase(configuration.path().getAbsolutePath());
+			db = gdbf.newEmbeddedDatabaseBuilder(configuration.path().getAbsolutePath())
+					.setConfig(GraphDatabaseSettings.cache_type, WeakCacheProvider.NAME)
+					.newGraphDatabase();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		IPersistenceService service = new PersistenceService(db, configuration);
 		registerShutdownHook(db);
 		return service;

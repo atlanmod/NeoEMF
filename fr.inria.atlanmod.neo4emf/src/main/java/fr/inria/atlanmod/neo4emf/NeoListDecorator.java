@@ -9,6 +9,7 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.neo4j.kernel.impl.index.IndexCommand.AddCommand;
 
 public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
@@ -24,19 +25,13 @@ public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
 	@Override
 	public boolean add(E e) {
-//		if(added && !owner.isLoadingOnDemand() && owner.isLoaded()) {
-//			if(owner.getSessionId() < ((INeo4emfObject)e).getSessionId()
-//					|| (owner.getSessionId() == ((INeo4emfObject)e).getSessionId()
-//							&& owner.getNodeId() < ((INeo4emfObject)e).getNodeId())) {
-				owner.addChangelogEntry(e, featureID);
-//			}
-//		}
+		owner.addChangelogEntry(e, featureID);
 		return list.add(e);
 	}
 
 	@Override
 	public void add(int index, E element) {
-		// TODO Auto-generated method stub
+		owner.addChangelogEntry(element, featureID);
 	}
 
 	@Override
@@ -50,8 +45,7 @@ public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
 	@Override
 	public boolean addAll(int index, Collection<? extends E> c) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
@@ -119,20 +113,17 @@ public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
 	public E set(int index, E element) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
@@ -142,8 +133,7 @@ public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return list.subList(fromIndex, toIndex);
 	}
 
 	@Override
@@ -158,49 +148,55 @@ public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
 	@Override
 	public void move(int arg0, E arg1) {
-		// TODO Auto-generated method stub
-		
+		list.move(arg0, arg1);
 	}
 
 	@Override
 	public E move(int arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return move(arg0, arg1);
 	}
 
 	@Override
 	public boolean addAllUnique(Collection<? extends E> arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean added = list.addAllUnique(arg0);
+		// FIXME the entry is created even if the element hasn't been added
+		// FIXME double iteration (one in super implementation, the other below)
+		Iterator<? extends E> it = arg0.iterator();
+		while(it.hasNext()) {
+			owner.addChangelogEntry(it.next(), featureID);
+		}
+		return added;
 	}
 
 	@Override
 	public boolean addAllUnique(int arg0, Collection<? extends E> arg1) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean added = list.addAllUnique(arg0, arg1);
+		// FIXME the entry is created even if the element hasn't been added
+		// FIXME double iteration (one in super implementation, the other below)
+		Iterator<? extends E> it = arg1.iterator();
+		while(it.hasNext()) {
+			owner.addChangelogEntry(it.next(), featureID);
+		}
+		return added;
 	}
 
 	@Override
 	public void addUnique(E arg0) {
-		// TODO Auto-generated method stub
-		
+		list.addUnique(arg0);
+		// FIXME the entry is created even if the element hasn't been added
+		owner.addChangelogEntry(arg0, featureID);
 	}
 
 	@Override
 	public void addUnique(int arg0, E arg1) {
-		// TODO Auto-generated method stub
-		
+		list.addUnique(arg0, arg1);
+		// FIXME the entry is created even if the element hasn't been added
+		owner.addChangelogEntry(arg1, featureID);
 	}
 
 	@Override
 	public NotificationChain basicAdd(E otherEnd, NotificationChain arg1) {
-//		if(!owner.isLoadingOnDemand() && owner.isLoaded()) {
-//			if(owner.getSessionId() < ((INeo4emfObject)otherEnd).getSessionId()
-//						|| (owner.getSessionId() == ((INeo4emfObject)otherEnd).getSessionId()
-//								&& owner.getNodeId() < ((INeo4emfObject)otherEnd).getNodeId())) {
-				owner.addChangelogEntry(otherEnd, featureID);
-//			}
-//		}
+		owner.addChangelogEntry(otherEnd, featureID);
 		return list.basicAdd(otherEnd, arg1);
 	}
 
@@ -266,8 +262,7 @@ public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
 	@Override
 	public E setUnique(int arg0, E arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 }

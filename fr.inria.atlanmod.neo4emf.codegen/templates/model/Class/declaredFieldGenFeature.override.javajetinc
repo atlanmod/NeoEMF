@@ -26,10 +26,8 @@
 	@<%=genModel.getImportedName("com.google.gwt.user.client.rpc.GwtTransient")%>
       <%}%>
       <%if (genFeature.isReferenceType()) {%>
-      	<%if (genFeature.isListType()) {%>
     protected <%=genFeature.getImportedInternalType(genClass)%> strong<%=genFeature.getCapName()%>;
-      	<%}%>
-	protected <%=genModel.getImportedName("java.lang.ref.SoftReference")%><<%=genFeature.getImportedInternalType(genClass)%>> <%=genFeature.getSafeName()%>;
+	protected <%=genModel.getImportedName("java.lang.ref.Reference")%><<%=genFeature.getImportedInternalType(genClass)%>> <%=genFeature.getSafeName()%>;
       <%} else {%>
     protected <%=genFeature.getImportedInternalType(genClass)%> <%=genFeature.getSafeName()%>;
       <%}%>

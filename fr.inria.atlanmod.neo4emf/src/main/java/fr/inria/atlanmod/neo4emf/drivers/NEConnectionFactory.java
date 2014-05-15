@@ -12,17 +12,16 @@
  */
 package fr.inria.atlanmod.neo4emf.drivers;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.index.lucene.LuceneKernelExtensionFactory;
 import org.neo4j.kernel.extension.KernelExtensionFactory;
 import org.neo4j.kernel.impl.cache.CacheProvider;
-import org.neo4j.kernel.impl.cache.SoftCacheProvider;
+import org.neo4j.kernel.impl.cache.NoCacheProvider;
+import org.neo4j.kernel.impl.cache.WeakCacheProvider;
 
 public class NEConnectionFactory {
 	
@@ -32,8 +31,10 @@ public class NEConnectionFactory {
 		
 		// the cache providers
 		ArrayList<CacheProvider> cacheList = new ArrayList<CacheProvider>();
-		cacheList.add(new SoftCacheProvider());
+		System.out.println("pouetpouetpouetpouet");
+		cacheList.add(new WeakCacheProvider());
 
+		
 		// the kernel extensions
 		LuceneKernelExtensionFactory lucene = new LuceneKernelExtensionFactory();
 		List<KernelExtensionFactory<?>> extensions = new ArrayList<KernelExtensionFactory<?>>();

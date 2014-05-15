@@ -511,8 +511,9 @@ public class NEConnection {
 		}
 	}
 	
-	public void flushTmpRelationships() {
-		Iterator<Relationship> it = relationshipIndex.get(IPersistenceService.ID_META, IPersistenceService.TMP_RELATIONSHIP).iterator();
+	public void flushTmpRelationships(List<Relationship> rels) {
+//		Iterator<Relationship> it = relationshipIndex.get(IPersistenceService.ID_META, IPersistenceService.TMP_RELATIONSHIP).iterator();
+		Iterator<Relationship> it = rels.iterator();
 		while(it.hasNext()) {
 			Relationship r = it.next();
 			if(r.getType().equals(IPersistenceService.SET_ATTRIBUTE)) {

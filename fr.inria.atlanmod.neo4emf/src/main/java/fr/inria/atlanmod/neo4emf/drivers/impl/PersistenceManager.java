@@ -22,8 +22,8 @@ import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -181,8 +181,8 @@ public class PersistenceManager implements IPersistenceManager {
 //	}
 //	
 //	@Override
-	public void flushTmpRelationships() {
-		persistenceService.flushTmpRelationships();	
+	public void flushTmpRelationships(List<Relationship> rels) {
+		persistenceService.flushTmpRelationships(rels);	
 	}
 
 //	@Override
@@ -210,7 +210,16 @@ public class PersistenceManager implements IPersistenceManager {
 	
 //	@Override
 	public Relationship createAddLinkRelationship(INeo4emfObject from, INeo4emfObject to, EReference ref) {
-		if(from.getSessionId() >= 0 && to.getSessionId() >= 0) {
+		// FIXME see if it is good (case of an old object that has references to an other one
+		// which hasn't been yet created). If this reference is not bidirectionnal there will be
+		// a problem
+		if(from.getSessionId() >= 0 && to.getSessionId() == -1 && ref.getEOpposite() == null) {
+			Relationship r =  persistenceService.createAddLinkRelationship(from, to, ref);
+			if(r != null) {
+				to.setSessionId(sessionId);
+			}
+		}
+		else if(from.getSessionId() >= 0 && to.getSessionId() >= 0) {
 			return persistenceService.createAddLinkRelationship(from, to, ref);
 		}
 		return null;
@@ -276,24 +285,26 @@ public class PersistenceManager implements IPersistenceManager {
 		Node attributeNode = null;
 		if(((Neo4emfObject)obj).getAttributeNodeId() > -1) {
 			attributeNode = getAttributeNodeById(obj);
-			((INeo4emfObject)obj).loadAllAttributesFrom(attributeNode);
-			return;
+//			((INeo4emfObject)obj).loadAllAttributesFrom(attributeNode);
+//			return;
 		}
-		((INeo4emfObject)obj).loadAllAttributesFrom(node);
-//		loader.fetchAttributes(obj,node,attributeNode);	
+//		((INeo4emfObject)obj).loadAllAttributesFrom(node);
+		loader.fetchAttributes(obj,node,attributeNode);	
 	}
 
 	@Override
 	public void getOnDemand(EObject obj, int featureId) {
 		try {
 			EClass eClass = obj.eClass();
+			EStructuralFeature feature = eClass.getEStructuralFeature(featureId);
+			EClass parent = feature.getEContainingClass();
 			
-			EPackage ePackage = eClass.getEPackage();
+//			EPackage ePackage = eClass.getEPackage();
 		//	RelationshipType relationship =  getRelTypefromERef(ePackage.getNsURI(),eClass.getClassifierID(), featureId);
 			RelationshipType relationship =  null;
 			if ( relationship == null ) {
 				  //throw new NullPointerException(" Cannot find the relationship ");
-				String stri = Neo4emfResourceUtil.formatRelationshipName(eClass,eClass.getEStructuralFeature(featureId));
+				String stri = Neo4emfResourceUtil.formatRelationshipName(parent,feature);
 				relationship = DynamicRelationshipType.withName(stri);
 			}
 			List <Node> nodes= persistenceService.getNodesOnDemand(((INeo4emfObject)obj).getNodeId(),

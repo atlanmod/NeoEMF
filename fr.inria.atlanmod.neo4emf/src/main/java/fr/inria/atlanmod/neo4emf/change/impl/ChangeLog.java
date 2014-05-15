@@ -26,17 +26,20 @@ public class ChangeLog implements IChangeLog<Entry> {
 		this.tmpOptions = new HashMap<String,Object>();
 		this.tmpOptions.put("tmp_save", true);
 		this.maxMemory = Runtime.getRuntime().maxMemory();
+		System.out.println("CL created, max mem : " + (maxMemory/1000000));
 	}
 
 	@Override
 	public boolean add(Entry entry) {
+//		System.out.println(entry.toString());
 		boolean added = changes.add(entry);
 //		System.out.println(entry);
 		long usedMemory = Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory();
-		if(usedMemory/maxMemory > 0.8) {
-//		if(size() == flushSize) {
+//		if((double)usedMemory/maxMemory > 0.1) {
+		if(size() == 50000) {
 			System.out.println("max mem, flushing");
 			flushChangeLog();
+			System.out.println("flushed");
 //		}
 		}
 		return added;
