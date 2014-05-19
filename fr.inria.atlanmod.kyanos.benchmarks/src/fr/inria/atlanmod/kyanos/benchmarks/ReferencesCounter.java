@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Abel Gómez.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Abel Gómez - initial API and implementation
+ ******************************************************************************/
 package fr.inria.atlanmod.kyanos.benchmarks;
 
 import java.io.File;
@@ -27,6 +37,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 public class ReferencesCounter {
 
+	@SuppressWarnings("unused")
 	private static final Logger LOG = Logger.getLogger(ReferencesCounter.class.getName());
 
 	private static final String IN = "input";
