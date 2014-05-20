@@ -127,7 +127,7 @@ public class KyanosMapResourceImpl extends ResourceImpl implements KyanosResourc
 			} else if (!getFile().exists()) {
 				throw new FileNotFoundException(uri.toFileString());
 			} else {
-				this.db = DBMaker.newFileDB(getFile()).cacheSoftRefEnable().closeOnJvmShutdown().mmapFileEnableIfSupported().asyncWriteEnable().make();
+				this.db = DBMaker.newFileDB(getFile()).cacheLRUEnable().closeOnJvmShutdown().mmapFileEnableIfSupported().asyncWriteEnable().make();
 				this.isPersistent = true;
 				this.eStore = createResourceEStore(db);
 			}
@@ -158,7 +158,7 @@ public class KyanosMapResourceImpl extends ResourceImpl implements KyanosResourc
 			if (!getFile().getParentFile().exists()) {
 				getFile().getParentFile().mkdirs();
 			}
-			DB newDb =  DBMaker.newFileDB(getFile()).cacheSoftRefEnable().closeOnJvmShutdown().mmapFileEnableIfSupported().asyncWriteEnable().make();
+			DB newDb =  DBMaker.newFileDB(getFile()).cacheLRUEnable().closeOnJvmShutdown().mmapFileEnableIfSupported().asyncWriteEnable().make();
 			if (!newDb.getCatalog().isEmpty()) {
 				Logger.log(Logger.SEVERITY_WARNING, 
 						NLS.bind("Saving on existing graph {0} without previously loading its contents. "
