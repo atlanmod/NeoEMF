@@ -6,66 +6,68 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="fr.inria.atlanmod.kyanos.benchmarks">
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="../../../"/>
-    <property name="com.tinkerpop.blueprints.location" value="../../eclipse.blueprints/com.tinkerpop.blueprints"/>
-    <property name="com.tinkerpop.blueprints.neo4j.location" value="../../eclipse.blueprints.neo4j/com.tinkerpop.blueprints.neo4j"/>
     <property name="org.eclipse.gmt.modisco.java.location" value="../org.eclipse.gmt.modisco.java"/>
     <property name="org.eclipse.gmt.modisco.java.cdo.location" value="../org.eclipse.gmt.modisco.java.cdo"/>
-    <property name="org.mapdb.location" value="../../eclipse.mapdb/org.mapdb"/>
-    <property name="fr.inria.atlanmod.kyanos.location" value="../../kyanos/fr.inria.atlanmod.kyanos"/>
     <property name="org.eclipse.gmt.modisco.java.kyanos.location" value="../org.eclipse.gmt.modisco.java.kyanos"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <import file="custom-build.xml"/>
-    <path id="Plug-in Dependencies.libraryclasspath"/>
-    <path id="com.tinkerpop.blueprints.classpath">
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/blueprints-core-2.4.0.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/colt-1.2.0.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-beanutils-1.7.0.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-beanutils-core-1.8.0.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-collections-3.2.1.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-configuration-1.6.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-digester-1.8.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-lang-2.4.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-logging-1.1.1.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/concurrent-1.3.4.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-annotations-2.1.1.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-core-2.1.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-databind-2.1.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-datatype-json-org-2.1.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/json-20090211.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/stax-api-1.0.1.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/bundles/jettison-1.3.3.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/stax-1.2.0.jar"/>
-        <path refid="Plug-in Dependencies.libraryclasspath"/>
-    </path>
-    <path id="com.tinkerpop.blueprints.neo4j.classpath">
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/blueprints-neo4j-graph-2.4.0.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/concurrentlinkedhashmap-lru-1.3.1.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/geronimo-jta_1.1_spec-1.1.1.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/logback-classic-0.9.30.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/logback-core-0.9.30.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/lucene-core-3.6.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-backup-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-cluster-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-com-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-consistency-check-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-cypher-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-graph-algo-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-graph-matching-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-ha-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-jmx-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-kernel-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-lucene-index-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-management-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/neo4j-udc-1.9.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/scala-library-2.10.0.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/slf4j-api-1.6.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/zookeeper-3.3.2.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/bundles/log4j-1.2.16.jar"/>
-        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/bundles/netty-3.6.3.Final.jar"/>
-        <path refid="Plug-in Dependencies.libraryclasspath"/>
-        <path refid="com.tinkerpop.blueprints.classpath"/>
+    <path id="Plug-in Dependencies.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/plugins/fr.inria.atlanmod.kyanos_0.1.0.201405201553.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/commons-lang-2.6.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/commons-io-2.4.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/commons-collections4-4.0.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/ant-1.6.2.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/cglib-nodep-3.1.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/jboss-common-4.2.2.GA.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/guava-16.0.1.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.kyanos_0.1.0.201405201553/lib/jars/jsr305-1.3.9.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore_2.9.2.v20131212-0545.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.common_2.9.2.v20131212-0545.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.mapdb_0.9.10.201405201553.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/org.mapdb_0.9.10.201405201553/lib/bundles/mapdb-0.9.10.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/bundles/jettison-1.3.3.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/blueprints-core-2.4.0.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/colt-1.2.0.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/commons-beanutils-1.7.0.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/commons-beanutils-core-1.8.0.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/commons-collections-3.2.1.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/commons-configuration-1.6.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/commons-digester-1.8.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/commons-lang-2.4.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/commons-logging-1.1.1.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/concurrent-1.3.4.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/jackson-annotations-2.1.1.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/jackson-core-2.1.2.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/jackson-databind-2.1.2.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/jackson-datatype-json-org-2.1.2.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/json-20090211.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/stax-api-1.0.1.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.tinkerpop.blueprints_2.4.0/lib/jars/stax-1.2.0.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.300.v20130429-1813.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.9.0.v20130326-1255.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.9.1.v20130814-1242.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.200.v20130514-1256/runtime_registry_compatibility.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.100.v20130327-1442.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.common_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore.change_2.9.0.v20131212-0545.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20131212-0545.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.util_3.3.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.net4j_4.1.101.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.server.db_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.db_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.server_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.server.net4j_4.1.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.db.h2_4.2.1.v20140218-1830.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.jvm_4.1.101.v20140218-1830.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.h2_1.3.168.v201212121212.jar"/>
     </path>
     <path id="org.eclipse.gmt.modisco.java.classpath">
         <path refid="Plug-in Dependencies.libraryclasspath"/>
@@ -79,59 +81,14 @@
         <pathelement location="${org.eclipse.gmt.modisco.java.kyanos.location}/bin"/>
         <path refid="Plug-in Dependencies.libraryclasspath"/>
     </path>
-    <path id="KYANOS_ECLIPSE_DEPS.userclasspath">
-        <pathelement location="../../../plugins/org.eclipse.core.jobs_3.5.300.v20130429-1813.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.core.runtime_3.9.0.v20130326-1255.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.osgi_3.9.1.v20130814-1242.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.equinox.app_1.3.100.v20130327-1442.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.cdo.common_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.cdo.net4j_4.1.101.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.cdo.server.db_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.cdo.server.net4j_4.1.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.cdo.server_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.cdo_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.common_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.ecore_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.net4j.db.h2_4.2.1.v20140218-1830.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.net4j.db_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.net4j.jvm_4.1.101.v20140218-1830.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.net4j.util_3.3.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.net4j_4.2.1.v20140218-1709.jar"/>
-        <pathelement location="../../../plugins/org.h2_1.3.168.v201212121212.jar"/>
-        <pathelement location="../../../plugins/org.eclipse.emf.ecore.change_2.9.0.v20130827-0309.jar"/>
-    </path>
-    <path id="fr.inria.atlanmod.kyanos.classpath">
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/ant-1.6.2.jar"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/cglib-nodep-3.1.jar"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/commons-collections4-4.0.jar"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/commons-io-2.4.jar"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/commons-lang-2.6.jar"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/jboss-common-4.2.2.GA.jar"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/guava-16.0.1.jar"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/jsr305-1.3.9.jar"/>
-        <path refid="Plug-in Dependencies.libraryclasspath"/>
-        <pathelement location="${fr.inria.atlanmod.kyanos.location}/bin"/>
-    </path>
-    <path id="org.mapdb.classpath">
-        <path refid="Plug-in Dependencies.libraryclasspath"/>
-        <pathelement location="${org.mapdb.location}/lib/bundles/mapdb-0.9.10.jar"/>
-    </path>
     <path id="fr.inria.atlanmod.kyanos.benchmarks.classpath">
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
         <pathelement location="bin"/>
-        <path refid="com.tinkerpop.blueprints.classpath"/>
-        <path refid="com.tinkerpop.blueprints.neo4j.classpath"/>
+        <pathelement location="lib/commons-cli-1.2.jar"/>
+        <pathelement location="lib/commons-io-2.4.jar"/>
         <path refid="org.eclipse.gmt.modisco.java.classpath"/>
         <path refid="org.eclipse.gmt.modisco.java.cdo.classpath"/>
         <path refid="org.eclipse.gmt.modisco.java.kyanos.classpath"/>
-        <path refid="KYANOS_ECLIPSE_DEPS.userclasspath"/>
-        <pathelement location="lib/commons-cli-1.2.jar"/>
-        <path refid="fr.inria.atlanmod.kyanos.classpath"/>
-        <path refid="org.mapdb.classpath"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -145,42 +102,18 @@
         <delete dir="bin"/>
     </target>
     <target depends="clean" name="cleanall">
-        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.neo4j.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.cdo.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${org.mapdb.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.kyanos.location}" inheritAll="false" target="clean"/>
     </target>
     <target depends="build-subprojects,build-project" name="build"/>
     <target name="build-subprojects">
-        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.location}" inheritAll="false" target="build-project">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.neo4j.location}" inheritAll="false" target="build-project">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
         <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.location}" inheritAll="false" target="build-project">
             <propertyset>
                 <propertyref name="build.compiler"/>
             </propertyset>
         </ant>
         <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.cdo.location}" inheritAll="false" target="build-project">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="build.xml" dir="${org.mapdb.location}" inheritAll="false" target="build-project">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.location}" inheritAll="false" target="build-project">
             <propertyset>
                 <propertyref name="build.compiler"/>
             </propertyset>
@@ -211,10 +144,5 @@
     <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
-    </target>
-    <target name="Migrator">
-        <java classname="fr.inria.atlanmod.kyanos.benchmarks.Migrator" failonerror="true" fork="yes">
-            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-        </java>
     </target>
 </project>
