@@ -132,11 +132,6 @@
 		</foreach>
 	</target>
 	
-	<target name="migrate.all" depends="extract.resources">
-		<antcall target="migrate.cdo" />
-		<antcall target="migrate.kyanos" />
-	</target>
-	
     <target name="gen.test.resource.cdo">
     	<basename property="cdo.zxmi.filename" file="${cdo.zxmi.file}" suffix="cdo.zxmi"/>
 		<property name="resource.out" value="${benchmarks.dir}/${cdo.zxmi.filename}.cdoresource"/>
@@ -159,44 +154,6 @@
 		        	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 		        	<arg value="-reponame"/>
 		        	<arg value="repo"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-		        </java>
-    			<stopwatch name="timer" action="total"/>
-    			<timestamp.echo message="End" />
-			</then>
-    		<else>
-    			<echo>${resource.out} already exists</echo>
-    		</else>
-    	</if>
-    </target>
-	
-    <target name="gen.test.resource.kyanos">
-    	<basename property="kyanos.zxmi.filename" file="${kyanos.zxmi.file}" suffix="kyanos.zxmi"/>
-		<property name="resource.out" value="${benchmarks.dir}/${kyanos.zxmi.filename}.kyanosresource"/>
-		<property name="resource.properties.out" value="${benchmarks.dir}/${kyanos.zxmi.filename}.kyanosresource.properties"/>
-    	<if>
-			<not>
-				<available file="${resource.out}" />
-			</not>
-    		<then>
-    			<!-- Modify Kyanos resource load/save properties here -->
-    			<propertyfile file="${resource.properties.out}">
-    			  <entry key="blueprints.graph" value="com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph"/>
-    			</propertyfile>
-    			<timestamp.echo message="Start" />
-    			<echo>Creating ${resource.out}</echo>
-    			<echo>JVM args: ${creator.vmargs.value}</echo>
-    			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosCreator" failonerror="true" fork="yes">
-		        	<jvmarg line="${creator.vmargs.value}"/>
-		            <arg value="-input"/>
-		            <arg value="${kyanos.zxmi.file}"/>
-		            <arg value="-output"/>
-		            <arg value="${resource.out}"/>
-		        	<arg value="-epackage_class"/>
-		        	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-		        	<arg value="-options_file"/>
-		        	<arg value="${resource.properties.out}"/>
 		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 		        </java>
     			<stopwatch name="timer" action="total"/>
@@ -248,17 +205,7 @@
 			</path>
 		</foreach>
 	</target>
-	
-	<target name="gen.test.resources.kyanos">
-		<foreach inheritall="true" target="gen.test.resource.kyanos" param="kyanos.zxmi.file">
-			<path>
-				<fileset dir="${benchmarks.dir}">
-					<include name="**/*.kyanos.zxmi"/>
-				</fileset>
-			</path>
-		</foreach>
-	</target>
-	
+
 	<target name="gen.test.resources.kyanos.map">
 		<foreach inheritall="true" target="gen.test.resource.kyanos.map" param="kyanos.zxmi.file">
 			<path>
@@ -269,28 +216,12 @@
 		</foreach>
 	</target>
 	
-	<target name="gen.test.resources.all">
-		<antcall target="gen.test.resources.cdo" />
-		<!--<antcall target="gen.test.resources.kyanos" />-->
-		<antcall target="gen.test.resources.kyanos.map" />
-	</target>
-	
 	<target name="prepare.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
 				<include name="*.cdoresource/**"/>
-			</fileset>
-		</copy>
-	</target>
-	
-	<target name="prepare.test.resources.kyanos">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
 			</fileset>
 		</copy>
 	</target>
@@ -341,7 +272,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="traverse.resources.cdo" description="Simple model traversal (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="traverse.resources.cdo" description="Simple model traversal (CDO)" depends="gen.test.resources.cdo">
 		<antcall target="prepare.test.resources.cdo" />
 		<foreach inheritall="true" target="traverse.resource.cdo" param="cdoresource.dir">
 			<path>
@@ -352,7 +283,7 @@
 		</foreach>
 	</target>
 	
-	<target name="traverse.resources.kyanos.map" description="Simple model traversal (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="traverse.resources.kyanos.map" description="Simple model traversal (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<antcall target="prepare.test.resources.kyanos.map" />
 		<foreach inheritall="true" target="traverse.resource.kyanos.map" param="kyanosresource.dir">
 			<path>
@@ -363,7 +294,7 @@
 		</foreach>
 	</target>
 	
-   <target name="query.orphan.resource.cdo">
+    <target name="query.orphan.resource.cdo">
 		<timestamp.echo message="Start" />
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
@@ -399,7 +330,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.orphan.resources.cdo" description="Query without full traversal (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.orphan.resources.cdo" description="Query without full traversal (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -416,7 +347,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.orphan.resources.kyanos.map" description="Query without full traversal (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.orphan.resources.kyanos.map" description="Query without full traversal (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -469,7 +400,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.grabats.resources.cdo" description="Grabats (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.grabats.resources.cdo" description="Grabats (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -486,7 +417,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.grabats.resources.kyanos.map" description="Grabats (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.grabats.resources.kyanos.map" description="Grabats (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -539,7 +470,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.unusedmethods.resources.cdo" description="Unused methods (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.unusedmethods.resources.cdo" description="Unused methods (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -556,7 +487,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.unusedmethods.resources.kyanos.map" description="Unused methods (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.unusedmethods.resources.kyanos.map" description="Unused methods (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -609,7 +540,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.thrownexceptions.resources.cdo" description="Thrown exceptions per package (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.thrownexceptions.resources.cdo" description="Thrown exceptions per package (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -626,7 +557,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.thrownexceptions.resources.kyanos.map" description="Thrown exception per package (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.thrownexceptions.resources.kyanos.map" description="Thrown exception per package (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -679,7 +610,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.invmethods.resources.cdo" description="Invisible methods (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.invmethods.resources.cdo" description="Invisible methods (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -696,7 +627,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.invmethods.resources.kyanos.map" description="Invisible methods (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.invmethods.resources.kyanos.map" description="Invisible methods (KyanosMap)" depends="gen.test.resources.kyanos.map">
 			<delete dir="${tests.dir}" failonerror="false"/>
 			<mkdir dir="${tests.dir}"/>
 			<copy todir="${tests.dir}">
@@ -749,7 +680,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.classdecl.resources.cdo" description="Class declaration attributes (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.classdecl.resources.cdo" description="Class declaration attributes (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -766,7 +697,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.classdecl.resources.kyanos.map" description="Class declaration attributes (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.classdecl.resources.kyanos.map" description="Class declaration attributes (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -819,7 +750,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.unusedmethods.complex.resources.cdo" description="Complex query (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.unusedmethods.complex.resources.cdo" description="Complex query (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -836,7 +767,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.unusedmethods.complex.resources.kyanos.map" description="Complex query (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.unusedmethods.complex.resources.kyanos.map" description="Complex query (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -889,7 +820,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.rename.resources.cdo" description="Model modification and saving (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.rename.resources.cdo" description="Model modification and saving (CDO)" depends="gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -906,7 +837,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.rename.resources.kyanos.map" description="Model modification and saving (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.rename.resources.kyanos.map" description="Model modification and saving (KyanosMap)" depends="gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
