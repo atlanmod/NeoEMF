@@ -1,4 +1,4 @@
-<!--<?eclipse.ant.import ?>-->
+<?eclipse.ant.import ?>
 <project basedir="." name="benchmarks">
 	<!-- Set the directory for running the benchmarks -->
 	<property name="benchmarks.dir" value="${java.io.tmpdir}"/>
@@ -49,47 +49,6 @@
 			</then>
 		</if>
 	</target>
-	
-	<target name="gendata.boxplot.references" depends="extract.resources">
-		<foreach inheritall="true" target="gendata.boxplot.references.file" param="xmi.file">
-			<path>
-				<fileset dir="${resources.dir}">
-					<include name="**/*.xmi"/>
-				</fileset>
-			</path>
-		</foreach>
-	</target>
-	
-    <target name="gendata.boxplot.references.file">
-    	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
-		<property name="out" value="${benchmarks.dir}/${xmi.filename}.refereces.boxplot.txt"/>
-    	<if>
-			<not>
-				<available file="${out}" />
-			</not>
-    		<then>
-    			<echo>Creating ${out}</echo>
-    			<echo>JVM args: ${creator.vmargs.value}</echo>
-    			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.ReferencesCounter" failonerror="true" fork="yes">
-		        	<jvmarg line="${creator.vmargs.value}"/>
-		            <arg value="-input"/>
-		            <arg value="${xmi.file}"/>
-		            <arg value="-output"/>
-		            <arg value="${out}"/>
-		        	<arg value="-input_epackage_class"/>
-		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
-		        	<arg value="-label"/>
-		        	<arg value="${xmi.filename}"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-		        </java>
-    			<stopwatch name="timer" action="total"/>
-			</then>
-    		<else>
-    			<echo>${out} already exists</echo>
-    		</else>
-    	</if>
-    </target>
 	
     <target name="migrate.cdo.file">
     	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
@@ -365,23 +324,6 @@
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="traverse.resource.kyanos">
-		<timestamp.echo message="Start" />
-		<echo>Traversing ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosTraverser" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	    	<arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
     <target name="traverse.resource.kyanos.map">
 		<timestamp.echo message="Start" />
 		<echo>Traversing ${kyanosresource.dir}</echo>
@@ -399,7 +341,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="traverse.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="traverse.resources.cdo" description="Simple model traversal (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
 		<antcall target="prepare.test.resources.cdo" />
 		<foreach inheritall="true" target="traverse.resource.cdo" param="cdoresource.dir">
 			<path>
@@ -410,18 +352,7 @@
 		</foreach>
 	</target>
 	
-	<target name="traverse.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
-		<antcall target="prepare.test.resources.kyanos" />
-		<foreach inheritall="true" target="traverse.resource.kyanos" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="traverse.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="traverse.resources.kyanos.map" description="Simple model traversal (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
 		<antcall target="prepare.test.resources.kyanos.map" />
 		<foreach inheritall="true" target="traverse.resource.kyanos.map" param="kyanosresource.dir">
 			<path>
@@ -432,18 +363,12 @@
 		</foreach>
 	</target>
 	
-	<target name="traverse.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="traverse.resources.cdo" />
-		<antcall target="traverse.resources.kyanos" />
-		<antcall target="traverse.resources.kyanos.map" />
-	</target>
-	
-	<target name="query.classdecl.resource.cdo">
+   <target name="query.orphan.resource.cdo">
 		<timestamp.echo message="Start" />
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryClassDeclarationAttributes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -457,12 +382,12 @@
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.classdecl.resource.kyanos.map">
+    <target name="query.orphan.resource.kyanos.map">
 		<timestamp.echo message="Start" />
 		<echo>Querying ${kyanosresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryClassDeclarationAttributes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
@@ -474,7 +399,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.classdecl.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.orphan.resources.cdo" description="Query without full traversal (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -482,7 +407,7 @@
 				<include name="*.cdoresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.classdecl.resource.cdo" param="cdoresource.dir">
+		<foreach inheritall="true" target="query.orphan.resource.cdo" param="cdoresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.cdoresource"/>
@@ -491,7 +416,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.classdecl.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.orphan.resources.kyanos.map" description="Query without full traversal (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -499,7 +424,7 @@
 				<include name="*.kyanosmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.classdecl.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.orphan.resource.kyanos.map" param="kyanosresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.kyanosmapresource"/>
@@ -508,11 +433,6 @@
 		</foreach>
 	</target>
 	
-	<target name="query.classdecl.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.classdecl.resources.cdo" />
-		<antcall target="query.classdecl.resources.kyanos.map" />
-	</target>
-
     <target name="query.grabats.resource.cdo">
 		<timestamp.echo message="Start" />
 		<echo>Querying ${cdoresource.dir}</echo>
@@ -549,7 +469,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.grabats.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.grabats.resources.cdo" description="Grabats (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -566,7 +486,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.grabats.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.grabats.resources.kyanos.map" description="Grabats (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -583,9 +503,144 @@
 		</foreach>
 	</target>
 	
-	<target name="query.grabats.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.grabats.resources.cdo" />
-		<antcall target="query.grabats.resources.kyanos.map" />
+    <target name="query.unusedmethods.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryUnusedMethodsList" failonerror="true" fork="yes">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.unusedmethods.resource.kyanos.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryUnusedMethodsList" failonerror="true" fork="yes">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.unusedmethods.resources.cdo" description="Unused methods (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.cdoresource/**"/>
+			</fileset>
+		</copy>
+		<foreach inheritall="true" target="query.unusedmethods.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.unusedmethods.resources.kyanos.map" description="Unused methods (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.kyanosmapresource/**"/>
+			</fileset>
+		</copy>
+		<foreach inheritall="true" target="query.unusedmethods.resource.kyanos.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+    <target name="query.thrownexceptions.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.thrownexceptions.resource.kyanos.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.thrownexceptions.resources.cdo" description="Thrown exceptions per package (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.cdoresource/**"/>
+			</fileset>
+		</copy>
+		<foreach inheritall="true" target="query.thrownexceptions.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.thrownexceptions.resources.kyanos.map" description="Thrown exception per package (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.kyanosmapresource/**"/>
+			</fileset>
+		</copy>
+		<foreach inheritall="true" target="query.thrownexceptions.resource.kyanos.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
 	</target>
 
     <target name="query.invmethods.resource.cdo">
@@ -624,7 +679,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.invmethods.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.invmethods.resources.cdo" description="Invisible methods (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -641,34 +696,29 @@
 		</foreach>
 	</target>
 	
-	<target name="query.invmethods.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.invmethods.resource.kyanos.map" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
+	<target name="query.invmethods.resources.kyanos.map" description="Invisible methods (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+			<delete dir="${tests.dir}" failonerror="false"/>
+			<mkdir dir="${tests.dir}"/>
+			<copy todir="${tests.dir}">
+				<fileset dir="${benchmarks.dir}">
+					<include name="*.kyanosmapresource/**"/>
+				</fileset>
+			</copy>
+			<foreach inheritall="true" target="query.invmethods.resource.kyanos.map" param="kyanosresource.dir">
+				<path>
+					<dirset dir="${tests.dir}">
+						<include name="**/*.kyanosmapresource"/>
+					</dirset>
+				</path>
+			</foreach>
+		</target>
 	
-	<target name="query.invmethods.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.invmethods.resources.cdo" />
-		<antcall target="query.invmethods.resources.kyanos.map" />
-	</target>
-
-    <target name="query.orphan.resource.cdo">
+	<target name="query.classdecl.resource.cdo">
 		<timestamp.echo message="Start" />
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryClassDeclarationAttributes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -682,12 +732,12 @@
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.orphan.resource.kyanos.map">
+    <target name="query.classdecl.resource.kyanos.map">
 		<timestamp.echo message="Start" />
 		<echo>Querying ${kyanosresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryClassDeclarationAttributes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
@@ -699,7 +749,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.orphan.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.classdecl.resources.cdo" description="Class declaration attributes (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -707,7 +757,7 @@
 				<include name="*.cdoresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.orphan.resource.cdo" param="cdoresource.dir">
+		<foreach inheritall="true" target="query.classdecl.resource.cdo" param="cdoresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.cdoresource"/>
@@ -716,7 +766,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.orphan.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.classdecl.resources.kyanos.map" description="Class declaration attributes (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -724,7 +774,7 @@
 				<include name="*.kyanosmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.orphan.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.classdecl.resource.kyanos.map" param="kyanosresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
 					<include name="**/*.kyanosmapresource"/>
@@ -733,11 +783,76 @@
 		</foreach>
 	</target>
 	
-	<target name="query.orphan.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.orphan.resources.cdo" />
-		<antcall target="query.orphan.resources.kyanos.map" />
+    <target name="query.unusedmethods.complex.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryLoop" failonerror="true" fork="yes">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.unusedmethods.complex.resource.kyanos.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryLoop" failonerror="true" fork="yes">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.unusedmethods.complex.resources.cdo" description="Complex query (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.cdoresource/**"/>
+			</fileset>
+		</copy>
+		<foreach inheritall="true" target="query.unusedmethods.complex.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
 	</target>
-
+	
+	<target name="query.unusedmethods.complex.resources.kyanos.map" description="Complex query (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.kyanosmapresource/**"/>
+			</fileset>
+		</copy>
+		<foreach inheritall="true" target="query.unusedmethods.complex.resource.kyanos.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
     <target name="query.rename.resource.cdo">
 		<timestamp.echo message="Start" />
 		<echo>Querying ${cdoresource.dir}</echo>
@@ -774,7 +889,7 @@
 		<timestamp.echo message="End" />
     </target>
 	
-	<target name="query.rename.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
+	<target name="query.rename.resources.cdo" description="Model modification and saving (CDO)" depends="migrate.cdo, gen.test.resources.cdo">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -791,7 +906,7 @@
 		</foreach>
 	</target>
 	
-	<target name="query.rename.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.rename.resources.kyanos.map" description="Model modification and saving (KyanosMap)" depends="migrate.kyanos, gen.test.resources.kyanos.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
@@ -807,568 +922,6 @@
 			</path>
 		</foreach>
 	</target>
-	
-	<target name="query.rename.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.rename.resources.cdo" />
-		<antcall target="query.rename.resources.kyanos.map" />
-	</target>
-
-    <target name="query.thrownexceptions.resource.cdo">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${cdoresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${cdoresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
-	    	<arg value="-reponame"/>
-	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.thrownexceptions.resource.kyanos.map">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-	<target name="query.thrownexceptions.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.cdoresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.thrownexceptions.resource.cdo" param="cdoresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.cdoresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.thrownexceptions.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.thrownexceptions.resource.kyanos.map" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.thrownexceptions.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.thrownexceptions.resources.cdo" />
-		<antcall target="query.thrownexceptions.resources.kyanos.map" />
-	</target>
-
-    <target name="query.unusedmethods.resource.cdo">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${cdoresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryUnusedMethodsList" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${cdoresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
-	    	<arg value="-reponame"/>
-	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.unusedmethods.resource.kyanos.map">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryUnusedMethodsList" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-	<target name="query.unusedmethods.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.cdoresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.unusedmethods.resource.cdo" param="cdoresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.cdoresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.unusedmethods.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.unusedmethods.resource.kyanos.map" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.unusedmethods.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.unusedmethods.resources.cdo" />
-		<antcall target="query.unusedmethods.resources.kyanos.map" />
-	</target>
-
-    <target name="query.unusedmethods.comples.resource.cdo">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${cdoresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryLoop" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${cdoresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
-	    	<arg value="-reponame"/>
-	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.unusedmethods.complex.resource.kyanos.map">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryLoop" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-	<target name="query.unusedmethods.complex.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.cdoresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.loop.resource.cdo" param="cdoresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.cdoresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.unusedmethods.complex.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.loop.resource.kyanos.map" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.unusedmethods.complex.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.loop.resources.cdo" />
-		<antcall target="query.loop.resources.kyanos.map" />
-	</target>
-	
-	<!--
-    <target name="query.list.resource.cdo">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${cdoresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryList" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${cdoresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
-	    	<arg value="-reponame"/>
-	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.list.resource.kyanos">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosQueryList" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.list.resource.kyanos.map">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryList" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-	<target name="query.list.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.cdoresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.list.resource.cdo" param="cdoresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.cdoresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.list.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.list.resource.kyanos" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-
-	<target name="query.list.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.list.resource.kyanos.map" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.list.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.list.resources.cdo" />
-		<antcall target="query.list.resources.kyanos" />
-		<antcall target="query.list.resources.kyanos.map" />
-	</target>
-	
-    <target name="query.loop.resource.cdo">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${cdoresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryLoop" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${cdoresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
-	    	<arg value="-reponame"/>
-	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.loop.resource.kyanos">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosQueryLoop" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.loop.resource.kyanos.map">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryLoop" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-	<target name="query.loop.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.cdoresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.loop.resource.cdo" param="cdoresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.cdoresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.loop.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.loop.resource.kyanos" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.loop.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.loop.resource.kyanos.map" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.loop.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.loop.resources.cdo" />
-		<antcall target="query.loop.resources.kyanos" />
-		<antcall target="query.loop.resources.kyanos.map" />
-	</target>
-	
-    <target name="query.consecutive.resource.cdo">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${cdoresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQuery" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${cdoresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
-	    	<arg value="-reponame"/>
-	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.consecutive.resource.kyanos">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosQuery" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-    <target name="query.consecutive.resource.kyanos.map">
-		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
-		<echo>JVM args: ${tester.vmargs.value}</echo>
-		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQuery" failonerror="true" fork="yes">
-        	<jvmarg line="${tester.vmargs.value}"/>
-	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
-	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
-	    </java>
-		<stopwatch name="timer" action="total"/>
-		<timestamp.echo message="End" />
-    </target>
-	
-	<target name="query.consecutive.resources.cdo" depends="migrate.cdo, gen.test.resources.cdo">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.cdoresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.consecutive.resource.cdo" param="cdoresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.cdoresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.consecutive.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.consecutive.resource.kyanos" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.consecutive.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<delete dir="${tests.dir}" failonerror="false"/>
-		<mkdir dir="${tests.dir}"/>
-		<copy todir="${tests.dir}">
-			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
-			</fileset>
-		</copy>
-		<foreach inheritall="true" target="query.consecutive.resource.kyanos.map" param="kyanosresource.dir">
-			<path>
-				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
-				</dirset>
-			</path>
-		</foreach>
-	</target>
-	
-	<target name="query.consecutive.resources.all" depends="migrate.all, gen.test.resources.all">
-		<antcall target="query.consecutive.resources.cdo" />
-		<antcall target="query.consecutive.resources.kyanos" />
-		<antcall target="query.consecutive.resources.kyanos.map" />
-	</target>
-	-->
 	
 </project>
 
