@@ -1,7 +1,7 @@
 <?eclipse.ant.import ?>
 <project basedir="." name="benchmarks">
 	<!-- Set the directory for running the benchmarks -->
-	<property name="benchmarks.dir" value="${java.io.tmpdir}"/>
+	<property name="benchmarks.dir" value="c:/benchmarks"/>
 	<property name="resources.dir" value="resources"/>
 	<property name="tests.dir" value="${benchmarks.dir}/temp"/>
 	
@@ -112,7 +112,7 @@
     	</if>
     </target>
 
-	<target name="migrate.cdo" depends="extract.resources">
+	<target name="migrate.cdo" description="Migrates and initializes the source models into the benchmarks location for CDO" depends="extract.resources">
 		<foreach inheritall="true" target="migrate.cdo.file" param="xmi.file">
 			<path>
 				<fileset dir="${resources.dir}">
@@ -122,7 +122,7 @@
 		</foreach>
 	</target>
 	
-	<target name="migrate.kyanos" depends="extract.resources">
+	<target name="migrate.kyanos" description="Migrates and initializes the source models into the benchmarks location for Kyanos" depends="extract.resources">
 		<foreach inheritall="true" target="migrate.kyanos.file" param="xmi.file">
 			<path>
 				<fileset dir="${resources.dir}">
