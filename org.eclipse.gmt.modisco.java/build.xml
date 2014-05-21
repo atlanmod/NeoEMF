@@ -5,14 +5,16 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="org.eclipse.gmt.modisco.java">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../"/>
+    <property name="ECLIPSE_HOME" value="../../../../../Eclipse/eclipse-SDK-4.3.2-win32-x86_64/eclipse"/>
     <property name="fr.inria.atlanmod.kyanos.benchmarks.location" value="../fr.inria.atlanmod.kyanos.benchmarks"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.5"/>
     <property name="source" value="1.5"/>
     <path id="Plug-in Dependencies.libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.9.0.v20130326-1255.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.9.1.v20130814-1242.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.9.100.v20131218-1515.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/javax.annotation_1.1.0.v201209060031.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/javax.inject_1.0.0.v20091030.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.9.1.v20140110-1610.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.300.v20130429-1813.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.200.v20130514-1256/runtime_registry_compatibility.jar"/>
@@ -20,10 +22,10 @@
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.100.v20130327-1442.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.common_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20130827-0309.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.gmt.modisco.infra.common.core_0.11.1.201309110624.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore_2.9.2.v20131212-0545.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.common_2.9.2.v20131212-0545.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20131212-0545.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.gmt.modisco.infra.common.core_0.11.2.201401201005.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.8.101.v20130717-0806.jar"/>
     </path>
     <path id="org.eclipse.gmt.modisco.java.classpath">
@@ -34,7 +36,6 @@
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src/">
-                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
