@@ -1,7 +1,7 @@
 <?eclipse.ant.import ?>
 <project basedir="." name="benchmarks">
 	<!-- Set the directory for running the benchmarks -->
-	<property name="benchmarks.dir" value="${java.io.tmpdir}"/>
+	<property name="benchmarks.dir" value="${java.io.tmpdir}/kyanos-benchmarks"/>
 	<property name="resources.dir" value="resources"/>
 	<property name="tests.dir" value="${benchmarks.dir}/temp"/>
 	
@@ -38,6 +38,43 @@
 			<echo message="${current.time} @{message}" />
 		</sequential>
 	</macrodef>
+	
+	
+	<target name="execute.benchmarks.all" description="Prepares the benchmarks environment and executed the benchmarks for CDO and KyanosMap (-Xmx8g, -Xmx512m &amp; -Xmx256m)">
+		<antcall target="execute.benchmarks" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx8g"/>
+		</antcall>
+		<antcall target="execute.benchmarks" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx512m"/>
+		</antcall>
+		<antcall target="execute.benchmarks" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx256m"/>
+		</antcall>
+	</target>
+	
+	<target name="execute.benchmarks">
+		<antcall target="build"/>
+		<antcall target="migrate.cdo"/>
+		<antcall target="migrate.kyanos"/>
+		<antcall target="traverse.resources.cdo"/>
+		<antcall target="traverse.resources.kyanos.map"/>
+		<antcall target="query.orphan.resources.cdo"/>
+		<antcall target="query.orphan.resources.kyanos.map"/>
+		<antcall target="query.grabats.resources.cdo"/>
+		<antcall target="query.grabats.resources.kyanos.map"/>
+		<antcall target="query.unusedmethods.resources.cdo"/>
+		<antcall target="query.unusedmethods.resources.kyanos.map"/>
+		<antcall target="query.thrownexceptions.resources.cdo"/>
+		<antcall target="query.thrownexceptions.resources.kyanos.map"/>
+		<antcall target="query.invmethods.resources.cdo"/>
+		<antcall target="query.invmethods.resources.kyanos.map"/>
+		<antcall target="query.classdecl.resources.cdo"/>
+		<antcall target="query.classdecl.resources.kyanos.map"/>
+		<antcall target="query.unusedmethods.complex.resources.cdo"/>
+		<antcall target="query.unusedmethods.complex.resources.kyanos.map"/>
+		<antcall target="query.rename.resources.cdo"/>
+		<antcall target="query.rename.resources.kyanos.map"/>
+	</target>
 	
 	<target name="extract.resources">
 		<if>
@@ -853,6 +890,7 @@
 			</path>
 		</foreach>
 	</target>
+	
 	
 </project>
 
