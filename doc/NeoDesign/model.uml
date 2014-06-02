@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xmi:id="_YZK-IOo1EeOzle-lsk5rJQ" name="Model">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_YZK-Ieo1EeOzle-lsk5rJQ">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_aXMKAOo1EeOzle-lsk5rJQ" name="PersistentObject">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_V4ulMOo2EeOzle-lsk5rJQ" name="node/Entity/Persistent" type="_kkN-sOo1EeOzle-lsk5rJQ" association="_V4vzUOo2EeOzle-lsk5rJQ">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_V4ulMeo2EeOzle-lsk5rJQ" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_V4ulMuo2EeOzle-lsk5rJQ" value="1"/>
+    </ownedAttribute>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_fql9UOo1EeOzle-lsk5rJQ" name="save"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_hNyOYOo1EeOzle-lsk5rJQ" name="load"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_kkN-sOo1EeOzle-lsk5rJQ" name="Node/Entity/Persistent"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_oMJHoOo1EeOzle-lsk5rJQ" clientDependency="_xshRsOo1EeOzle-lsk5rJQ" name="Neo4JNodeAdapter">
+    <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_xshRsOo1EeOzle-lsk5rJQ" name="InterfaceRealization1" client="_oMJHoOo1EeOzle-lsk5rJQ" supplier="_kkN-sOo1EeOzle-lsk5rJQ" contract="_kkN-sOo1EeOzle-lsk5rJQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_2BuXYOo1EeOzle-lsk5rJQ" clientDependency="_BlkOAOo2EeOzle-lsk5rJQ" name="BlueprintsNodeAdapter">
+    <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_BlkOAOo2EeOzle-lsk5rJQ" name="InterfaceRealization1" client="_2BuXYOo1EeOzle-lsk5rJQ" supplier="_kkN-sOo1EeOzle-lsk5rJQ" contract="_kkN-sOo1EeOzle-lsk5rJQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_LJSnAOo2EeOzle-lsk5rJQ" name="PersistentPackage"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Mk_I8Oo2EeOzle-lsk5rJQ" name="PersistentResource"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_V4vzUOo2EeOzle-lsk5rJQ" name="persistentObject_node/Entity/Persistent_1" memberEnd="_V4vzUeo2EeOzle-lsk5rJQ _V4ulMOo2EeOzle-lsk5rJQ">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_V4vzUeo2EeOzle-lsk5rJQ" name="persistentObject" type="_aXMKAOo1EeOzle-lsk5rJQ" association="_V4vzUOo2EeOzle-lsk5rJQ">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_V4vzUuo2EeOzle-lsk5rJQ" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_V4vzU-o2EeOzle-lsk5rJQ" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_fQBrwOo2EeOzle-lsk5rJQ" name="Connection"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_hU5GgOo2EeOzle-lsk5rJQ" clientDependency="_llVoAOo2EeOzle-lsk5rJQ" name="Neo4JConnection">
+    <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_llVoAOo2EeOzle-lsk5rJQ" name="InterfaceRealization1" client="_hU5GgOo2EeOzle-lsk5rJQ" supplier="_fQBrwOo2EeOzle-lsk5rJQ" contract="_fQBrwOo2EeOzle-lsk5rJQ"/>
+  </packagedElement>
+</uml:Model>
