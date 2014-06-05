@@ -84,7 +84,7 @@ public class PersistenceManager implements IPersistenceManager {
 		this.resource = neo4emfResource;
 		this.persistenceService = IPersistenceServiceFactory.eINSTANCE
 				.createPersistenceService(configuration);
-		this.serializer = new Serializer(this);
+		this.serializer = new Serializer(this,Integer.parseInt(configuration.options().get("transaction_count")));
 		this.proxyManager = new ProxyManager();
 		this.loader = new Loader(this);
 	}

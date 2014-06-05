@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 public class ChangeLog implements IChangeLog<Entry> {
 	
 	private List<Entry> changes = new ArrayList<Entry>();
-	private int flushSize;
+	private int flushSize = 50000;
 	private INeo4emfResource resource;
 	private long maxMemory;
 	
@@ -36,7 +36,7 @@ public class ChangeLog implements IChangeLog<Entry> {
 //		System.out.println(entry);
 		long usedMemory = Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory();
 //		if((double)usedMemory/maxMemory > 0.1) {
-		if(size() == 50000) {
+		if(size() == flushSize) {
 			System.out.println("max mem, flushing");
 			flushChangeLog();
 			System.out.println("flushed");

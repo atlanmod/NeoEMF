@@ -33,7 +33,7 @@ import fr.inria.atlanmod.neo4emf.impl.Neo4emfObject;
 
 public class Serializer implements ISerializer {
 
-	private int maxCount;
+	private int maxCount = 50000;
 	
 	/**
 	 * TODO: Comment this
@@ -49,8 +49,9 @@ public class Serializer implements ISerializer {
 	private int txCount = 0;
 
 	// INodeBuilder nodeBuilder;
-	public Serializer(PersistenceManager manager) {
+	public Serializer(PersistenceManager manager, int maxTransCount) {
 		this.manager = manager;
+		this.maxCount = maxTransCount;
 		for (int i = 0; i < saveOptions.length; i++)
 			defaultOptions.put(saveOptions[i], saveDefaultValues[i]);
 	}
@@ -63,7 +64,7 @@ public class Serializer implements ISerializer {
 		manager.startNewSession();
 //		System.out.println(Runtime.getRuntime().totalMemory() / 1000000);
 //		maxCount = (int)(Runtime.getRuntime().totalMemory() / 100000);
-		maxCount = 50000;
+		//maxCount = 50000;
 		/*
 		 * The number of database operations within a transaction is bounded,
 		 * that's why changes may be processed in several transactions.

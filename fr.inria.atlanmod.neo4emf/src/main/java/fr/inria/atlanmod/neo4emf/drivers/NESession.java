@@ -13,6 +13,8 @@
 package fr.inria.atlanmod.neo4emf.drivers;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -63,10 +65,12 @@ public class NESession {
 	 * @return The resource.
 	 */
 
-	public INeo4emfResource createResource(URI uri, int changeLogSize) {
+	public INeo4emfResource createResource(URI uri, int changeLogSize, int transactionNumberBeforeCommit) {
 //		INeo4emfResource resource;
 		ChangeLogFactory.setChangeLogSize(changeLogSize);
-		configuration = new NEConfiguration(ePackage, uri, Collections.<String,String>emptyMap());
+		Map<String,String> options = new HashMap<String,String>();
+		options.put("transaction_count", Integer.toString(transactionNumberBeforeCommit));
+		configuration = new NEConfiguration(ePackage, uri, options);
 		INeo4emfResourceFactory.eINSTANCE.setConfiguration(configuration);
 		resource = (INeo4emfResource) resourceSet.createResource(uri);
 		resource.setURI(uri);
