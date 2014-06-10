@@ -62,45 +62,25 @@ public class Serializer implements ISerializer {
 	 */
 	public void save(Map<String, Object> options) {
 		manager.startNewSession();
-//		System.out.println(Runtime.getRuntime().totalMemory() / 1000000);
-//		maxCount = (int)(Runtime.getRuntime().totalMemory() / 100000);
-		//maxCount = 50000;
-		/*
-		 * The number of database operations within a transaction is bounded,
-		 * that's why changes may be processed in several transactions.
-		 */
+
 		options = mergeOptions(options);
-		int max = (int) options.get(MAX_OPERATIONS_PER_TRANSACTION);
 		boolean isTmpSave = (boolean)options.get(TMP_SAVE);
 		if(!isTmpSave) {
 			flushTmpSave(options);
 			System.out.println("flushed");
 		}
-		int test = 0;
 		List<Entry> changes = manager.getResource().getChangeLog().changes();
 		while (!changes.isEmpty()) {
 			int times = Math.min(maxCount, changes.size());
 			List<Entry> subset = changes.subList(0, times);
-//			List<Entry> subset = changes;
 			currentTx = manager.createTransaction();
-//			long begin = System.currentTimeMillis();
-//			long end = 0;
-			System.out.println("test");
 			Entry currentEntry = null;
 			boolean error = false;
 			try {
 				for(Entry each : subset) {
 					currentEntry = each;
-					if(test == 4290) {
-						System.out.println("test");
-					}
 					each.process(this,isTmpSave);
-					test++;
 				}
-				System.out.println("end test");
-//				end = System.currentTimeMillis();
-//				System.out.println("available before commit");
-//				System.out.println((Runtime.getRuntime().totalMemory() -Runtime.getRuntime().freeMemory())/1000000);
 				currentTx.success();
 				subset.clear();
 			} catch (Exception e) {
@@ -109,15 +89,9 @@ public class Serializer implements ISerializer {
 				e.printStackTrace();
 				error = true;
 			} finally {
-				long a = System.currentTimeMillis();
 				currentTx.commit();
-//				System.out.println("number of entry before loop commit : " + test);
-//				System.out.println("loop commit txCount : " + txCount);
 				txCount = 0;
 				if(error) return;
-//				long b = System.currentTimeMillis();
-//				System.out.println("time for loop : " + (end-begin) + " ms");
-//				System.out.println("time for loop commit : " + (b-a) + " ms");
 			}
 		}
 	}
@@ -315,13 +289,8 @@ public class Serializer implements ISerializer {
 //								}
 							}
 							if(txCount >= maxCount) {
-//								System.out.println("commit");
-//								long a = System.currentTimeMillis();
 								currentTx.success();
-//								System.out.println("flush");
 								currentTx.commit();
-//								long b = System.currentTimeMillis();
-//								System.out.println("time to commit : " + (b-a) + " ms");
 								currentTx = manager.createTransaction();
 								txCount = 0;
 							}
@@ -345,13 +314,8 @@ public class Serializer implements ISerializer {
 							}
 //						}
 						if(txCount >= maxCount) {
-//							System.out.println("commit");
-//							long a = System.currentTimeMillis();
 							currentTx.success();
-//							System.out.println("flush");
 							currentTx.commit();
-//							long b = System.currentTimeMillis();
-//							System.out.println("time to commit : " + (b-a) + " ms");
 							currentTx = manager.createTransaction();
 							txCount = 0;
 						}
