@@ -104,12 +104,17 @@ public class DirectWriteGraphResourceEStoreImpl implements SearcheableResourceES
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		Object returnValue = null;
-		if (feature instanceof EAttribute) {
-			returnValue = set(object, (EAttribute) feature, index, value);
-		} else if (feature instanceof EReference) {
-			returnValue = set(object, (EReference) feature, index, (EObject) value);
+		if (value == null) {
+			returnValue = get(object, feature, index);
+			clear(object, feature);
 		} else {
-			throw new IllegalArgumentException(feature.toString());
+			if (feature instanceof EAttribute) {
+				returnValue = set(object, (EAttribute) feature, index, value);
+			} else if (feature instanceof EReference) {
+				returnValue = set(object, (EReference) feature, index, (EObject) value);
+			} else {
+				throw new IllegalArgumentException(feature.toString());
+			}
 		}
 		return returnValue;
 	}
