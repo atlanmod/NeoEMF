@@ -102,8 +102,12 @@ public class EmbeddedCDOServer {
 	}
  
 	public void stop() {
-		connector.close();
-		container.deactivate();
+		if (connector != null) {
+			connector.close();
+		}
+		if (container != null) {
+			container.deactivate();
+		}
 	}
 	
 	protected JdbcDataSource getJdbcDataSource(String url) {
