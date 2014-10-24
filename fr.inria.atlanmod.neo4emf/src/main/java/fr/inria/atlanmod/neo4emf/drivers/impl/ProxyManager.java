@@ -42,6 +42,7 @@ public class ProxyManager implements IProxyManager {
 		if (nodes2objects.containsKey(eClass)) {
 			nodes2objects.get(eClass).put(obj.getNodeId(), obj);
 		} 
+		// here need to check the super classes
 		else {
 //			Cache<Long,INeo4emfObject> cache = CacheBuilder.newBuilder().softValues().build();
 			Cache<Long,INeo4emfObject> cache = CacheBuilder.newBuilder().weakValues().build();

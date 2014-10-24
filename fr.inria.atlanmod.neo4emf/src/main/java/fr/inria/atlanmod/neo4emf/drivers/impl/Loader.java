@@ -409,15 +409,38 @@ public class Loader implements ILoader {
 		
 	}
 	private INeo4emfObject getObjectFromNodeIfNotExist(Node node, EClass eClass) {
-		INeo4emfObject eObj = manager.getObjectFromProxy((EClass) eClass, node);
+		INeo4emfObject eObj = manager.getObjectFromProxy(eClass, node);
 		if (eObj == null ) {
 			eObj = getObjectsFromNode(node);
 			}
 		return eObj;
 	}
 	private INeo4emfObject getObjectsFromNodeIfNotExists(EObject obj, Node n, int featureId) {
-		EClassifier eClassifier = obj.eClass().getEAllStructuralFeatures().get(featureId).getEType();
-		return getObjectFromNodeIfNotExist(n, (EClass)eClassifier);
+		//EClassifier eClassifier = obj.eClass().getEAllStructuralFeatures().get(featureId).getEType();
+		/**
+		 * Retrieve the concrete EClass of the associated node. This is
+		 * needed because the cache is filled with concrete EClass and cannot 
+		 * retrieve abstract ones.
+		 * @TODO See if it is more interesting than storing only abstract classes
+		 * in the cache.
+		 */
+		String eClassName = manager.getNodeType(n);
+		String ns_uri = manager.getNodeContainingPackage(n);
+		EPackage ePck = loadMetamodelFromURI(ns_uri);
+		EFactory factory =null;
+		if (ePck.getEFactoryInstance() == null) {
+			ePck.setEFactoryInstance(INeoFactory.eINSTANCE);
+		}
+		if (ePck.getEFactoryInstance().getClass().getName()
+				.equals("org.eclipse.emf.ecore.impl.EFactoryImpl")) {
+			factory = INeoFactory.eINSTANCE;
+			factory.setEPackage(ePck);
+		} else {
+			factory = ePck.getEFactoryInstance();
+		}
+		EClass eClass = getEClassFromNodeName(eClassName, ePck);
+
+		return getObjectFromNodeIfNotExist(n, eClass);
 	}
 	/**
 	 * Get EMF object from a Neo4j node 
