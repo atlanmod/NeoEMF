@@ -9,7 +9,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.neo4j.kernel.impl.index.IndexCommand.AddCommand;
 
 public class NeoListDecorator<E> implements EList<E>, InternalEList<E> {
 
