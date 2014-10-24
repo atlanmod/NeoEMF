@@ -2,7 +2,7 @@
 <feature
       id="fr.inria.atlanmod.neo4emf.feature"
       label="Neo4EMF"
-      version="0.1.0.qualifier"
+      version="0.2.0.qualifier"
       provider-name="AtlanMod - INRIA">
 
    <description url="http://neo4emf.com">
@@ -103,9 +103,12 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation.
    </license>
 
+   <url>
+      <discovery label="Neo4EMF" url="http://www.neo4emf.com"/>
+   </url>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="org.eclipse.emf.codegen.ecore"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -122,21 +125,21 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="fr.inria.atlanmod.neo4emf"
          download-size="0"
          install-size="0"
-         version="0.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="fr.inria.atlanmod.neo4emf.codegen"
          download-size="0"
          install-size="0"
-         version="0.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="fr.inria.atlanmod.neo4emf.ui"
          download-size="0"
          install-size="0"
-         version="0.1.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
