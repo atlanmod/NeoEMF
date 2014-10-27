@@ -1,7 +1,7 @@
 <?eclipse.ant.import ?>
 <project basedir="." name="benchmarks">
 	<!-- Set the directory for running the benchmarks -->
-	<property name="benchmarks.dir" value="c:/Benchmarks/kyanos-benchmarks"/>
+	<property name="benchmarks.dir" value="${java.io.tmpdir}/kyanos-benchmarks"/>
 	<property name="resources.dir" value="resources"/>
 	<property name="tests.dir" value="${benchmarks.dir}/temp"/>
 	<property name="timeout" value="7200000"/>
