@@ -42,9 +42,9 @@ import fr.inria.atlanmod.kyanos.core.KyanosResourceFactory;
 import fr.inria.atlanmod.kyanos.core.impl.KyanosResourceImpl;
 import fr.inria.atlanmod.kyanos.util.KyanosURI;
 
-public class KyanosQueryList {
+public class KyanosGraphQuery {
 
-	private static final Logger LOG = Logger.getLogger(KyanosQueryList.class.getName());
+	private static final Logger LOG = Logger.getLogger(KyanosGraphQuery.class.getName());
 	
 	private static final String IN = "input";
 
@@ -83,7 +83,7 @@ public class KyanosQueryList {
 			
 			URI uri = KyanosURI.createKyanosURI(new File(commandLine.getOptionValue(IN)));
 
-			Class<?> inClazz = KyanosQueryList.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+			Class<?> inClazz = KyanosGraphQuery.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
 			inClazz.getMethod("init").invoke(null);
 			
 			ResourceSet resourceSet = new ResourceSetImpl();
@@ -108,6 +108,16 @@ public class KyanosQueryList {
 				long end = System.currentTimeMillis();
 				LOG.log(Level.INFO, "End query");
 				LOG.log(Level.INFO, MessageFormat.format("Query result (list) contains {0} elements", list.size()));
+				LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end-begin)));
+			}
+			
+			{
+				LOG.log(Level.INFO, "Start query");
+				long begin = System.currentTimeMillis();
+				EList<MethodDeclaration> list = JavaQueries.getUnusedMethodsLoop(resource);
+				long end = System.currentTimeMillis();
+				LOG.log(Level.INFO, "End query");
+				LOG.log(Level.INFO, MessageFormat.format("Query result (loops) contains {0} elements", list.size()));
 				LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end-begin)));
 			}
 			

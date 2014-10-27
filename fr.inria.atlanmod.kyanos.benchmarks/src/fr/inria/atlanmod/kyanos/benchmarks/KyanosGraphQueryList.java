@@ -29,25 +29,24 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMIResource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.gmt.modisco.java.MethodDeclaration;
 
+import fr.inria.atlanmod.kyanos.benchmarks.queries.JavaQueries;
 import fr.inria.atlanmod.kyanos.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.kyanos.core.KyanosResourceFactory;
 import fr.inria.atlanmod.kyanos.core.impl.KyanosResourceImpl;
 import fr.inria.atlanmod.kyanos.util.KyanosURI;
 
-public class KyanosCreator {
+public class KyanosGraphQueryList {
 
-	private static final Logger LOG = Logger.getLogger(KyanosCreator.class.getName());
+	private static final Logger LOG = Logger.getLogger(KyanosGraphQueryList.class.getName());
 	
 	private static final String IN = "input";
-
-	private static final String OUT = "output";
 
 	private static final String EPACKAGE_CLASS = "epackage_class";
 
@@ -58,16 +57,9 @@ public class KyanosCreator {
 		
 		Option inputOpt = OptionBuilder.create(IN);
 		inputOpt.setArgName("INPUT");
-		inputOpt.setDescription("Input file");
+		inputOpt.setDescription("Input Kyanos resource directory");
 		inputOpt.setArgs(1);
 		inputOpt.setRequired(true);
-		
-		
-		Option outputOpt = OptionBuilder.create(OUT);
-		outputOpt.setArgName("OUTPUT");
-		outputOpt.setDescription("Output directory");
-		outputOpt.setArgs(1);
-		outputOpt.setRequired(true);
 		
 		Option inClassOpt = OptionBuilder.create(EPACKAGE_CLASS);
 		inClassOpt.setArgName("CLASS");
@@ -81,7 +73,6 @@ public class KyanosCreator {
 		optFileOpt.setArgs(1);
 		
 		options.addOption(inputOpt);
-		options.addOption(outputOpt);
 		options.addOption(inClassOpt);
 		options.addOption(optFileOpt);
 
@@ -90,64 +81,40 @@ public class KyanosCreator {
 		try {
 			CommandLine commandLine = parser.parse(options, args);
 			
-			URI sourceUri = URI.createFileURI(commandLine.getOptionValue(IN));
-			URI targetUri = KyanosURI.createKyanosURI(new File(commandLine.getOptionValue(OUT)));
+			URI uri = KyanosURI.createKyanosURI(new File(commandLine.getOptionValue(IN)));
 
-			Class<?> inClazz = KyanosCreator.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+			Class<?> inClazz = KyanosGraphQueryList.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
 			inClazz.getMethod("init").invoke(null);
 			
 			ResourceSet resourceSet = new ResourceSetImpl();
-			
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 			resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(KyanosURI.KYANOS_SCHEME, KyanosResourceFactory.eINSTANCE);
 			
-			Resource sourceResource = resourceSet.createResource(sourceUri);
+			Resource resource = resourceSet.createResource(uri);
+			
 			Map<String, Object> loadOpts = new HashMap<String, Object>();
-			if ("zxmi".equals(sourceUri.fileExtension())) {
-				loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
-			}
-			
-			Runtime.getRuntime().gc();
-			long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-			LOG.log(Level.INFO, MessageFormat.format("Used memory before loading: {0}", 
-					MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
-			LOG.log(Level.INFO, "Loading source resource");
-			sourceResource.load(loadOpts);
-			LOG.log(Level.INFO, "Source resource loaded");
-			Runtime.getRuntime().gc();
-			long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-			LOG.log(Level.INFO, MessageFormat.format("Used memory after loading: {0}", 
-					MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
-			LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}", 
-					MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
 
-			
-			Resource targetResource = resourceSet.createResource(targetUri);
-			
-			Map<String, Object> saveOpts = new HashMap<String, Object>();
-			
 			if (commandLine.hasOption(OPTIONS_FILE)) {
 				Properties properties = new Properties();
 				properties.load(new FileInputStream(new File(commandLine.getOptionValue(OPTIONS_FILE))));
 				for (final Entry<Object, Object> entry : properties.entrySet()) {
-			        saveOpts.put((String) entry.getKey(), (String) entry.getValue());
+			        loadOpts.put((String) entry.getKey(), (String) entry.getValue());
 			    }
 			}
-			targetResource.save(saveOpts);
-
-			LOG.log(Level.INFO, "Start moving elements");
-			targetResource.getContents().clear();
-			targetResource.getContents().addAll(sourceResource.getContents());
-			LOG.log(Level.INFO, "End moving elements");
-			LOG.log(Level.INFO, "Start saving");
-			targetResource.save(saveOpts);
-			LOG.log(Level.INFO, "Saved");
+			resource.load(loadOpts);
+			{
+				LOG.log(Level.INFO, "Start query");
+				long begin = System.currentTimeMillis();
+				EList<MethodDeclaration> list = JavaQueries.getUnusedMethodsList(resource);
+				long end = System.currentTimeMillis();
+				LOG.log(Level.INFO, "End query");
+				LOG.log(Level.INFO, MessageFormat.format("Query result (list) contains {0} elements", list.size()));
+				LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end-begin)));
+			}
 			
-			if (targetResource instanceof KyanosResourceImpl) {
-				KyanosResourceImpl.shutdownWithoutUnload((KyanosResourceImpl) targetResource); 
+			if (resource instanceof KyanosResourceImpl) {
+				KyanosResourceImpl.shutdownWithoutUnload((KyanosResourceImpl) resource); 
 			} else {
-				targetResource.unload();
+				resource.unload();
 			}
 			
 		} catch (ParseException e) {
@@ -159,4 +126,6 @@ public class KyanosCreator {
 			MessageUtil.showError(e.toString());
 		}
 	}
+	
+
 }

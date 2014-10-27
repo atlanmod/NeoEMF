@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -29,22 +30,20 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.gmt.modisco.java.MethodDeclaration;
 
-import fr.inria.atlanmod.kyanos.benchmarks.queries.JavaQueries;
 import fr.inria.atlanmod.kyanos.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.kyanos.core.KyanosResourceFactory;
 import fr.inria.atlanmod.kyanos.core.impl.KyanosResourceImpl;
 import fr.inria.atlanmod.kyanos.util.KyanosURI;
 
-public class KyanosQuery {
+public class KyanosGraphTraverser {
 
-	private static final Logger LOG = Logger.getLogger(KyanosQuery.class.getName());
+	private static final Logger LOG = Logger.getLogger(KyanosGraphTraverser.class.getName());
 	
 	private static final String IN = "input";
 
@@ -83,7 +82,7 @@ public class KyanosQuery {
 			
 			URI uri = KyanosURI.createKyanosURI(new File(commandLine.getOptionValue(IN)));
 
-			Class<?> inClazz = KyanosQuery.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+			Class<?> inClazz = KyanosGraphTraverser.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
 			inClazz.getMethod("init").invoke(null);
 			
 			ResourceSet resourceSet = new ResourceSetImpl();
@@ -101,25 +100,15 @@ public class KyanosQuery {
 			    }
 			}
 			resource.load(loadOpts);
-			{
-				LOG.log(Level.INFO, "Start query");
-				long begin = System.currentTimeMillis();
-				EList<MethodDeclaration> list = JavaQueries.getUnusedMethodsList(resource);
-				long end = System.currentTimeMillis();
-				LOG.log(Level.INFO, "End query");
-				LOG.log(Level.INFO, MessageFormat.format("Query result (list) contains {0} elements", list.size()));
-				LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end-begin)));
-			}
-			
-			{
-				LOG.log(Level.INFO, "Start query");
-				long begin = System.currentTimeMillis();
-				EList<MethodDeclaration> list = JavaQueries.getUnusedMethodsLoop(resource);
-				long end = System.currentTimeMillis();
-				LOG.log(Level.INFO, "End query");
-				LOG.log(Level.INFO, MessageFormat.format("Query result (loops) contains {0} elements", list.size()));
-				LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end-begin)));
-			}
+
+			LOG.log(Level.INFO, "Start counting");
+			int count = 0;
+			long begin = System.currentTimeMillis();
+			for (Iterator<EObject> iterator = resource.getAllContents(); iterator.hasNext(); iterator.next(), count++);
+			long end = System.currentTimeMillis();
+			LOG.log(Level.INFO, "End counting");
+			LOG.log(Level.INFO, MessageFormat.format("Resource {0} contains {1} elements", uri, count));
+			LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end-begin)));
 			
 			if (resource instanceof KyanosResourceImpl) {
 				KyanosResourceImpl.shutdownWithoutUnload((KyanosResourceImpl) resource); 

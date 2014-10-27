@@ -42,9 +42,9 @@ import fr.inria.atlanmod.kyanos.core.KyanosResourceFactory;
 import fr.inria.atlanmod.kyanos.core.impl.KyanosResourceImpl;
 import fr.inria.atlanmod.kyanos.util.KyanosURI;
 
-public class KyanosQueryLoop {
+public class KyanosGraphQueryLoop {
 
-	private static final Logger LOG = Logger.getLogger(KyanosQueryLoop.class.getName());
+	private static final Logger LOG = Logger.getLogger(KyanosGraphQueryLoop.class.getName());
 	
 	private static final String IN = "input";
 
@@ -83,7 +83,7 @@ public class KyanosQueryLoop {
 			
 			URI uri = KyanosURI.createKyanosURI(new File(commandLine.getOptionValue(IN)));
 
-			Class<?> inClazz = KyanosQueryLoop.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+			Class<?> inClazz = KyanosGraphQueryLoop.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
 			inClazz.getMethod("init").invoke(null);
 			
 			ResourceSet resourceSet = new ResourceSetImpl();
