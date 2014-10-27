@@ -11,12 +11,13 @@
 package fr.inria.atlanmod.kyanos.benchmarks;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,24 +29,28 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.gmt.modisco.java.ClassDeclaration;
 
 import fr.inria.atlanmod.kyanos.benchmarks.queries.JavaQueries;
 import fr.inria.atlanmod.kyanos.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.kyanos.core.KyanosResourceFactory;
-import fr.inria.atlanmod.kyanos.core.impl.KyanosMapResourceImpl;
+import fr.inria.atlanmod.kyanos.core.impl.KyanosResourceImpl;
 import fr.inria.atlanmod.kyanos.util.KyanosURI;
 
-public class KyanosMapQueryRenameAllMethods {
+public class KyanosGraphQueryGrabats {
 
-	private static final Logger LOG = Logger.getLogger(KyanosMapQueryRenameAllMethods.class.getName());
+	private static final Logger LOG = Logger.getLogger(KyanosGraphQueryGrabats.class.getName());
 	
 	private static final String IN = "input";
 
 	private static final String EPACKAGE_CLASS = "epackage_class";
+
+	private static final String OPTIONS_FILE = "options_file";
 
 	public static void main(String[] args) {
 		Options options = new Options();
@@ -62,40 +67,52 @@ public class KyanosMapQueryRenameAllMethods {
 		inClassOpt.setArgs(1);
 		inClassOpt.setRequired(true);
 		
+		Option optFileOpt = OptionBuilder.create(OPTIONS_FILE);
+		optFileOpt.setArgName("FILE");
+		optFileOpt.setDescription("Properties file holding the options to be used in the Kyanos Resource");
+		optFileOpt.setArgs(1);
+		
 		options.addOption(inputOpt);
 		options.addOption(inClassOpt);
+		options.addOption(optFileOpt);
 
 		CommandLineParser parser = new PosixParser();
 		
 		try {
 			CommandLine commandLine = parser.parse(options, args);
 			
-			URI uri = KyanosURI.createKyanosMapURI(new File(commandLine.getOptionValue(IN)));
+			URI uri = KyanosURI.createKyanosURI(new File(commandLine.getOptionValue(IN)));
 
-			Class<?> inClazz = KyanosMapQueryRenameAllMethods.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+			Class<?> inClazz = KyanosGraphQueryGrabats.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
 			inClazz.getMethod("init").invoke(null);
 			
 			ResourceSet resourceSet = new ResourceSetImpl();
-			resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(KyanosURI.KYANOS_MAP_SCHEME, KyanosResourceFactory.eINSTANCE);
+			resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(KyanosURI.KYANOS_SCHEME, KyanosResourceFactory.eINSTANCE);
 			
 			Resource resource = resourceSet.createResource(uri);
 			
 			Map<String, Object> loadOpts = new HashMap<String, Object>();
+
+			if (commandLine.hasOption(OPTIONS_FILE)) {
+				Properties properties = new Properties();
+				properties.load(new FileInputStream(new File(commandLine.getOptionValue(OPTIONS_FILE))));
+				for (final Entry<Object, Object> entry : properties.entrySet()) {
+			        loadOpts.put((String) entry.getKey(), (String) entry.getValue());
+			    }
+			}
 			resource.load(loadOpts);
-			String name = UUID.randomUUID().toString();
 			{
 				LOG.log(Level.INFO, "Start query");
 				long begin = System.currentTimeMillis();
-				JavaQueries.renameAllMethods(resource, name);
+				EList<ClassDeclaration> list = JavaQueries.grabats09(resource);
 				long end = System.currentTimeMillis();
-				resource.save(Collections.emptyMap());
 				LOG.log(Level.INFO, "End query");
+				LOG.log(Level.INFO, MessageFormat.format("Query result contains {0} elements", list.size()));
 				LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end-begin)));
 			}
 			
-
-			if (resource instanceof KyanosMapResourceImpl) {
-				KyanosMapResourceImpl.shutdownWithoutUnload((KyanosMapResourceImpl) resource); 
+			if (resource instanceof KyanosResourceImpl) {
+				KyanosResourceImpl.shutdownWithoutUnload((KyanosResourceImpl) resource); 
 			} else {
 				resource.unload();
 			}
