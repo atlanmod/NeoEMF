@@ -787,7 +787,7 @@
 	</target>
 	
 	<target name="query.orphan.resources.kyanos.map" description="Query without full traversal (KyanosMap)" depends="gen.test.resources.kyanos.map">
-		<antcall target="prepare.test.resources.kyanos.maph" />
+		<antcall target="prepare.test.resources.kyanos.map" />
 		<foreach inheritall="true" target="query.orphan.resource.kyanos.map" param="kyanosresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
