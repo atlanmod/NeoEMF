@@ -23,4 +23,4 @@ NeoEMF comes with some features depending on the backend used:
 ##Why should I use NeoEMF?
 
 NeoEMF is fully EMF compliant, that means there is no modification to do to use it with existing EMF based applications.
-Additionally NeoEMF is configurable to fit the best you needs (time performance, memory consumption).
+Additionally NeoEMF is configurable to fit the best your needs (time performance, memory consumption).
