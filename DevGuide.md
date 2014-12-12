@@ -1,4 +1,4 @@
-# NeoEMF Developpers Guide
+# NeoEMF Developers Guide
 ## Project organization
 Except for some platform-specific artifacts, for instance Eclipse plugins, project should follow Apache Maven's conventions.
 
