@@ -1,4 +1,4 @@
-# NeoEMF Developpers Guide
+# NeoEMF Developers Guide
 ## Project organization
 Except for some platform-specific artifacts, for instance Eclipse plugins, project should follow Apache Maven's conventions.
 
@@ -47,8 +47,11 @@ More precisely, an interface should not reference its implementation classes. Fo
 	public interface IFactory {
 		IFactory eINSTANCE = FactoryImpl.init();
 	}
+<<<<<<< HEAD
 	
 	
 <!-- Avoid casts -->
 <!--Avoid conditional behavior -->
 <!--Design first for testability, then for performance -->
+=======
+>>>>>>> 8525b97cb08e1d607da653b50a8b130b9c812689
