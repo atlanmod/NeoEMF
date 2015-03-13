@@ -15,7 +15,7 @@ Avoid packages named `beans`, `exceptions`, `factories`, or `collections`.
 Except for the cases enumerated below, the Java source code should follow Google's Style Guide: <http://google-styleguide.googlecode.com/svn/trunk/javaguide.html>
 
 ### Method names
-Part of the source code is meant to be specialized by automatically-generated code. 
+Part of the source code is meant to be specialized by automatically generated code. 
 To avoid naming conflicts, classes that belong to the `emf.ecore` hierarchy should avoid standard *Getter* and *Setter* names.
 
 For instance, access methods for an attribute named `foo` should be:
@@ -34,10 +34,21 @@ Use Java assertions instead of comments for specifying method pre-conditions:
     }
 Use assertions also for checking invariants in method bodies.
 
+## Software quality
+### Unit tests
+### System tests
+
+Benchmarks.
+
 ## Design tips
 ### Supertypes should not depend on subtypes.
-More precisely, an interface should not reference its implementation classes. The following code excerpt should be avoided: 
+More precisely, an interface should not reference its implementation classes. For instance, the following code excerpt should be avoided: 
 
 	public interface IFactory {
 		IFactory eINSTANCE = FactoryImpl.init();
 	}
+	
+	
+<!-- Avoid casts -->
+<!--Avoid conditional behavior -->
+<!--Design first for testability, then for performance -->
