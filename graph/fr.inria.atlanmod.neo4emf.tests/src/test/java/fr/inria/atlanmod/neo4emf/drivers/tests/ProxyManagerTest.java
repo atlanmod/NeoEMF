@@ -47,7 +47,7 @@ public class ProxyManagerTest {
 		URI uri = URI.createURI("neo4emf:"+DB_FOLDER.getAbsolutePath());
 		// NESession initialization (simpler than previous one)
 		NESession session = new NESession(TestPackage.eINSTANCE);
-		resource = session.createResource(uri,1000);
+		resource = session.createResource(uri,1000,100);
 		factory = TestFactory.eINSTANCE;
 		proxy = resource.getPersistenceManager().getProxyManager();
 	}

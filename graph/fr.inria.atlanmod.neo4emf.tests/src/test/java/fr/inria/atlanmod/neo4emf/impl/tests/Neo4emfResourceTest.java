@@ -45,7 +45,7 @@ public class Neo4emfResourceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		resource = session.createResource(uri,1000000);
+		resource = session.createResource(uri,1000000,100);
 	}
 
 	@After

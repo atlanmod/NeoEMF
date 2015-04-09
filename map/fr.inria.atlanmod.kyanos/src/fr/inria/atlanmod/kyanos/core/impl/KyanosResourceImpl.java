@@ -262,7 +262,7 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 	 * @author agomez
 	 * 
 	 */
-	protected class ResourceContentsEStoreEList extends EStoreEObjectImpl.EStoreEList<EObject> {
+	protected class ResourceContentsEStoreEList<E> extends EStoreEObjectImpl.EStoreEList<E> {
 		protected static final long serialVersionUID = 1L;
 
 		protected ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature eStructuralFeature, EStore store) {
@@ -270,7 +270,7 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		}
 
 		@Override
-		protected EObject validate(int index, EObject object) {
+		protected E validate(int index, E object) {
 			if (!canContainNull() && object == null) {
 				throw new IllegalArgumentException("The 'no null' constraint is violated");
 			}
@@ -308,7 +308,7 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		}
 
 		@Override
-		public NotificationChain inverseAdd(EObject object, NotificationChain notifications) {
+		public NotificationChain inverseAdd(E object, NotificationChain notifications) {
 			InternalEObject eObject = (InternalEObject) object;
 			notifications = eObject.eSetResource(KyanosResourceImpl.this, notifications);
 			KyanosResourceImpl.this.attached(eObject);
@@ -316,7 +316,7 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		}
 
 		@Override
-		public NotificationChain inverseRemove(EObject object, NotificationChain notifications) {
+		public NotificationChain inverseRemove(E object, NotificationChain notifications) {
 			InternalEObject eObject = (InternalEObject) object;
 			if (KyanosResourceImpl.this.isLoaded || unloadingContents != null) {
 				KyanosResourceImpl.this.detached(eObject);
@@ -325,13 +325,13 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		}
 		
 		@Override
-		protected void delegateAdd(int index, EObject object) {
+		protected void delegateAdd(int index, Object object) {
 			// FIXME? Maintain a list of hard links to the elements while moving
 			// them to the new resource. If a garbage collection happens while
 			// traversing the children elements, some unsaved objects that are
 			// referenced from a saved object may be garbage collected before
 			// they have been completely stored in the DB
-			List<EObject> hardLinksList = new ArrayList<>();
+			List<Object> hardLinksList = new ArrayList<>();
 			KyanosInternalEObject eObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosInternalEObject.class);
 			// Collect all contents
 			hardLinksList.add(object);
@@ -339,7 +339,7 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 			// Iterate using the hard links list instead the getAllContents
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler
-			for (EObject element : hardLinksList) {
+			for (Object element : hardLinksList) {
 				KyanosInternalEObject internalElement = KyanosEObjectAdapterFactoryImpl.getAdapter(element, KyanosInternalEObject.class);
 				internalElement.kyanosSetResource(KyanosResourceImpl.this);
 			}
@@ -347,17 +347,17 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		}
 
 		@Override
-		protected EObject delegateRemove(int index) {
-			EObject object = super.delegateRemove(index);
-			List<EObject> hardLinksList = new ArrayList<>();
+		protected E delegateRemove(int index) {
+			E object = super.delegateRemove(index);
+			List<E> hardLinksList = new ArrayList<>();
 			KyanosInternalEObject eObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosInternalEObject.class);
 			// Collect all contents
 			hardLinksList.add(object);
-			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
+			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add((E)it.next()));
 			// Iterate using the hard links list instead the getAllContents
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler
-			for (EObject element : hardLinksList) {
+			for (E element : hardLinksList) {
 				KyanosInternalEObject internalElement = KyanosEObjectAdapterFactoryImpl.getAdapter(element, KyanosInternalEObject.class);
 				internalElement.kyanosSetResource(null);
 			}
@@ -365,7 +365,7 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		}
 		
 		@Override
-		protected void didAdd(int index, EObject object) {
+		protected void didAdd(int index, E object) {
 			super.didAdd(index, object);
 			if (index == size() - 1) {
 				loaded();
@@ -374,13 +374,13 @@ public class KyanosResourceImpl extends ResourceImpl implements KyanosResource {
 		}
 
 		@Override
-		protected void didRemove(int index, EObject object) {
+		protected void didRemove(int index, E object) {
 			super.didRemove(index, object);
 			modified();
 		}
 
 		@Override
-		protected void didSet(int index, EObject newObject, EObject oldObject) {
+		protected void didSet(int index, E newObject, E oldObject) {
 			super.didSet(index, newObject, oldObject);
 			modified();
 		}

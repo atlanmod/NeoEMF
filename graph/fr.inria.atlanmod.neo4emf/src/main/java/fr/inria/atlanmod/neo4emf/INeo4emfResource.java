@@ -15,6 +15,7 @@ package fr.inria.atlanmod.neo4emf;
 
 import java.util.List;
 
+import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -26,7 +27,7 @@ import fr.inria.atlanmod.neo4emf.drivers.ILoader;
 import fr.inria.atlanmod.neo4emf.drivers.IPersistenceManager;
 import fr.inria.atlanmod.neo4emf.drivers.ISerializer;
 
-public interface INeo4emfResource extends Resource, Resource.Internal {
+public interface INeo4emfResource extends PersistentResource, Resource.Internal {
 
 	public String MAX_OPERATIONS_PER_TRANSACTION = ISerializer.MAX_OPERATIONS_PER_TRANSACTION;
 

@@ -12,7 +12,7 @@
     <artifactId>common</artifactId>
     <packaging>jar</packaging>
 
-    <name>Neo4EMF :: Common</name>
+    <name>NeoEMF :: Graph :: Common</name>
     <url>http://maven.apache.org</url>
     <inceptionYear>2013</inceptionYear>
     <organization>
@@ -101,6 +101,11 @@
     </reporting>
 
     <dependencies>
+        <dependency>
+            <groupId>org.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

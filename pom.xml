@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.neoemf</groupId>
+    <artifactId>project</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>NeoEMF :: Root</name>
+    <build>
+        <defaultGoal>package</defaultGoal>
+    </build>
+
+    <scm>
+        <connection>scm:git:git@github.com:atlanmod/NeoEMF.git</connection>
+        <developerConnection>scm:git:git@github.com:atlanmod/NeoEMF.git</developerConnection>
+        <url>http://github.com/atlanmod/NeoEMF.git</url>
+    </scm>
+
+    <modules>
+        <module>parent</module>
+		<module>core</module>
+        <module>graph</module>
+        <module>map</module>
+    </modules>
+
+    <developers>
+        <developer>
+            <name>Amine Benelallam</name>
+            <id>amine.benelallam</id>
+            <email>amine.benallam@gmail.com</email>
+            <roles>
+                <role>admin</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+        <developer>
+            <name>Gerson Sunyé</name>
+            <id>gerson.sunye</id>
+            <email>gerson.sunye@gmail.com</email>
+            <roles>
+                <role>admin</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+    </developers>
+
+</project>

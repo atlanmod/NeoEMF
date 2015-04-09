@@ -12,7 +12,7 @@
     <artifactId>tests</artifactId>
     <packaging>jar</packaging>
 
-    <name>Neo4EMF :: Tests</name>
+    <name>NeoEMF :: Graph :: Tests</name>
     <url>http://maven.apache.org</url>
     <inceptionYear>2013</inceptionYear>
     <organization>

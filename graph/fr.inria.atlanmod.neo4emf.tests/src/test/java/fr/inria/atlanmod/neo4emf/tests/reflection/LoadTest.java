@@ -41,7 +41,7 @@ public class LoadTest {
 		FileUtils.forceMkdir(DB_FOLDER);
 
 		NESession session = new NESession(MgraphPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath()),100000);
+		INeo4emfResource resource = session.createResource(URI.createURI("neo4emf:///"+DB_FOLDER.getAbsolutePath()),100000, 100);
 
 		MgraphFactory factory = MgraphFactory.eINSTANCE;
 		

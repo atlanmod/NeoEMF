@@ -1,11 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.inria.atlanmod.neo4emf</groupId>
-	<artifactId>fr.inria.atlanmod.neo4emf.root</artifactId>
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>org.neoemf</groupId>
+        <version>1.0</version>
+        <relativePath>../parent</relativePath>
+    </parent>
+
+	<artifactId>graph</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>Neo4EMF :: Root</name>
+	<name>NeoEMF :: Graph :: Root</name>
 	<url>http://neo4emf.com</url>
 	<description>Fast Storage, On-demand Loading and Unloading of your large scale EMF Models</description>
 
@@ -18,34 +24,6 @@
 		</license>
 	</licenses>
 
-	<scm>
-		<connection>scm:git:git@github.com:neo4emf/Neo4EMF.git</connection>
-		<developerConnection>scm:git:git@github.com:neo4emf/Neo4EMF.git</developerConnection>
-		<url>http://github.com/neo4emf/Neo4EMF.git</url>
-	</scm>
-
-	<developers>
-		<developer>
-			<name>Amine Benelallam</name>
-			<id>amine.benelallam</id>
-			<email>amine.benallam@gmail.com</email>
-			<roles>
-				<role>admin</role>
-				<role>developer</role>
-			</roles>
-			<timezone>+2</timezone>
-		</developer>
-		<developer>
-			<name>Gerson Sunyé</name>
-			<id>gerson.sunye</id>
-			<email>gerson.sunye@gmail.com</email>
-			<roles>
-				<role>admin</role>
-				<role>developer</role>
-			</roles>
-			<timezone>+2</timezone>
-		</developer>
-	</developers>
 
 	<properties>
 		<neo4j.version>1.9.4</neo4j.version>
@@ -64,34 +42,31 @@
 			<version>4.9</version>
 			<scope>test</scope>
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>org.eclipse.emf.ecore</artifactId>
-			<version>2.9.2-v20131212-0545</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-			<version>2.9.1-v20131212-0545</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>org.eclipse.emf.codegen</artifactId>
-			<version>2.9.0-v20140203-1126</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>org.eclipse.emf.codegen.ecore</artifactId>
-			<version>2.9.1-v20140203-1126</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>org.eclipse.emf.common</artifactId>
-			<version>2.9.2-v20131212-0545</version>
 		</dependency>
 	</dependencies>
 

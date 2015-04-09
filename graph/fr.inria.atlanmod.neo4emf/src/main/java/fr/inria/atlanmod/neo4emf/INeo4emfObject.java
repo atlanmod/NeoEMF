@@ -12,12 +12,13 @@ package fr.inria.atlanmod.neo4emf;
  * Descritpion ! To come
  * @author Amine BENELALLAM
  * */
+import fr.inria.atlanmod.neoemf.core.PersistentObject;
 import org.eclipse.emf.ecore.EObject;
 
 import org.neo4j.graphdb.Node;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-public interface INeo4emfObject extends EObject, Comparable<INeo4emfObject> {
+public interface INeo4emfObject extends PersistentObject, Comparable<INeo4emfObject> {
 
 	/**
 	 * Saves all attributes to the Node

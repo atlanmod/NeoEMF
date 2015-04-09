@@ -40,7 +40,7 @@ public class InputData {
 		URI uri = URI.createURI("neo4emf:./data/output/R"+token+"Graph");
 		
 		NESession session = new NESession(MgraphPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(uri,1000000);
+		INeo4emfResource resource = session.createResource(uri,1000000,100);
 		parameters[0][2] = resource;
 		return Arrays.asList(parameters);
 	}
@@ -58,7 +58,7 @@ public class InputData {
 		URI uri = URI.createURI("neo4emf:./data/output/R"+token+"Teach");
 		
 		NESession session = new NESession(MteachPackage.eINSTANCE);
-		INeo4emfResource resource = session.createResource(uri, 10);
+		INeo4emfResource resource = session.createResource(uri, 10,100);
 
 		parameters[0][2] = resource;
 		return Arrays.asList(parameters);
