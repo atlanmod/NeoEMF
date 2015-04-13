@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>fr.inria.atlanmod.neo4emf.root</artifactId>
-        <groupId>fr.inria.atlanmod.neo4emf</groupId>
+        <artifactId>graph</artifactId>
+        <groupId>org.neoemf</groupId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -179,7 +179,7 @@
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neo4emf</groupId>
+            <groupId>org.neoemf</groupId>
             <artifactId>neo4jresolver</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

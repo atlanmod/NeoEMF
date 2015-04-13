@@ -40,6 +40,7 @@ import fr.inria.atlanmod.neo4emf.change.IChangeLog;
 import fr.inria.atlanmod.neo4emf.change.impl.ChangeLogFactory;
 import fr.inria.atlanmod.neo4emf.change.impl.Entry;
 import fr.inria.atlanmod.neo4emf.change.impl.SetAttribute;
+import fr.inria.atlanmod.neoemf.core.Id;
 
 public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject {
 
@@ -69,6 +70,12 @@ public class Neo4emfObject extends MinimalEObjectImpl implements INeo4emfObject 
 	protected ReferenceQueue<Object> garbagedData;
 
 	protected NeoObjectData getObjectData() {
+		return null;
+	}
+	
+	@Override
+	public Id id() {
+		// TODO handle ID iterface
 		return null;
 	}
 

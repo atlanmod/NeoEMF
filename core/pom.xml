@@ -92,7 +92,7 @@
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neo4emf</groupId>
+            <groupId>org.neoemf</groupId>
             <artifactId>neo4jresolver</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
