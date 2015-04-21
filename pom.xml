@@ -3,10 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.neoemf</groupId>
+    <groupId>fr.inria.atlanmod.neoemf</groupId>
     <artifactId>project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>NeoEMF :: Root</name>
     <build>
         <defaultGoal>package</defaultGoal>
@@ -46,6 +46,26 @@
             </roles>
             <timezone>+2</timezone>
         </developer>
+		<developer>
+			<name>Gwendal Daniel</name>
+			<id>gwendal.daniel</id>
+			<email>gwendal.daniel@gmail.com</email>
+			<roles>
+				<role>admin</role>
+				<role>developer</role>
+			</roles>
+			<timezone>+2</timezone>
+		</developer>
+		<developer>
+			<name>Abel Gómez</name>
+			<id>abel.gomez</id>
+			<email>abel.gomez-llana@inria.fr</email>
+			<roles>
+				<role>admin</role>
+				<role>developer</role>
+			</roles>
+			<timezone>+2</timezone>
+		</developer>
     </developers>
 
 </project>

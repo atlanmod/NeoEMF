@@ -10,12 +10,14 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.core;
 
+import java.io.Serializable;
+
 /**
 
  * @author sunye
  *
  */
-public interface Id {
+public interface Id extends Comparable<Id>, Serializable {
 	
 	/**
 	 * 

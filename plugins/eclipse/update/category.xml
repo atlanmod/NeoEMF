@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/fr.inria.atlanmod.neoemf.core.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.core.feature" version="0.0.1.qualifier">
+      <category name="Base"/>
+   </feature>
+   <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.graph.blueprints.feature" version="0.0.1.qualifier">
+      <category name="Blueprints"/>
+   </feature>
+   <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature" version="0.0.1.qualifier">
+      <category name="Blueprints-Adapters"/>
+   </feature>
+   <feature url="features/fr.inria.atlanmod.neoemf.map.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.map.feature" version="0.0.1.qualifier">
+      <category name="Map"/>
+   </feature>
+   <category-def name="Base" label="Base">
+      <description>
+         NeoEMF Core components and utils (no implementation provided, see Stores components to plug a specific datastore)
+      </description>
+   </category-def>
+   <category-def name="Blueprints" label="Blueprints Implementation"/>
+   <category-def name="Map" label="Map Implementation"/>
+   <category-def name="Blueprints-Adapters" label="Blueprints Adapters"/>
+</site>

@@ -11,8 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-//import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
+
+import fr.inria.atlanmod.neoemf.core.impl.PersistenceFactoryImpl;
 
 /**
  * 
@@ -21,6 +23,8 @@ import org.eclipse.emf.ecore.EFactory;
  */
 public interface PersistenceFactory extends EFactory {
 	
-	//PersistentObject create(EClass eClass);
+	public static PersistenceFactory eINSTANCE = new PersistenceFactoryImpl();
+	
+	PersistentEObject create(EClass eClass);
 
 }

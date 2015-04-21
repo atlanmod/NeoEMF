@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="libs/commons-io-2.4.jar" sourcepath="libs-src/commons-io-2.4-sources.jar"/>
-	<classpathentry kind="lib" path="libs/commons-lang3-3.1.jar" sourcepath="libs-src/commons-lang3-3.1-sources.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>

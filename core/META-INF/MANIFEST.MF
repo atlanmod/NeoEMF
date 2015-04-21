@@ -1,0 +1,43 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1429579614099
+Build-Jdk: 1.7.0_71
+Built-By: gdaniel
+Bundle-ClassPath: .,cglib-3.1.jar,log4j-core-2.2.jar,commons-io-2.4.jar,
+ commons-lang-2.6.jar,guava-16.0.1.jar,commons-collections4-4.0.jar
+Bundle-Description: NeoEMF core components. Specialize the standard EMF 
+ classes and provide abstract classes for dedicated backend extensions.(
+ The core component can not be used in a standalone context, it needs at
+  least one persistence solution to work properly).
+Bundle-DocURL: http://www.emn.fr/z-info/atlanmod/index.php/Main_Page
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
+Bundle-Name: NeoEMF :: Core
+Bundle-SymbolicName: fr.inria.atlanmod.neoemf.core
+Bundle-Vendor: Inria-AtlanMod Team
+Bundle-Version: 0.0.1.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Embed-Dependency: cglib,log4j-core,commons-io,commons-lang,guava,commons
+ -collections4
+Embedded-Artifacts: cglib-3.1.jar;g="cglib";a="cglib";v="3.1",log4j-core
+ -2.2.jar;g="org.apache.logging.log4j";a="log4j-core";v="2.2",commons-io
+ -2.4.jar;g="commons-io";a="commons-io";v="2.4",commons-lang-2.6.jar;g="
+ commons-lang";a="commons-lang";v="2.6",guava-16.0.1.jar;g="com.google.g
+ uava";a="guava";v="16.0.1",commons-collections4-4.0.jar;g="org.apache.c
+ ommons";a="commons-collections4";v="4.0"
+Export-Package: fr.inria.atlanmod.neoemf.core;version="0.0.1",fr.inria.a
+ tlanmod.neoemf.core.impl;uses:="fr.inria.atlanmod.neoemf.core,fr.inria.
+ atlanmod.neoemf.datastore";version="0.0.1",fr.inria.atlanmod.neoemf.dat
+ astore;uses:="fr.inria.atlanmod.neoemf.core,fr.inria.atlanmod.neoemf.da
+ tastore.estores,fr.inria.atlanmod.neoemf.resources";version="0.0.1",fr.
+ inria.atlanmod.neoemf.datastore.estores;uses:="fr.inria.atlanmod.neoemf
+ .core";version="0.0.1",fr.inria.atlanmod.neoemf.datastores.estores.impl
+ ;uses:="fr.inria.atlanmod.neoemf.core,fr.inria.atlanmod.neoemf.datastor
+ e.estores";version="0.0.1",fr.inria.atlanmod.neoemf.logger;version="0.0
+ .1",fr.inria.atlanmod.neoemf.resources;version="0.0.1",fr.inria.atlanmo
+ d.neoemf.resources.impl;uses:="fr.inria.atlanmod.neoemf.core.impl,fr.in
+ ria.atlanmod.neoemf.datastore,fr.inria.atlanmod.neoemf.datastore.estore
+ s,fr.inria.atlanmod.neoemf.resources";version="0.0.1",fr.inria.atlanmod
+ .neoemf.util;version="0.0.1"
+Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Tool: Bnd-2.3.0.201405100607

@@ -1,6 +1,0 @@
-<%// Reference class generation%>
-protected static class <%=CodegenUtil.getReferenceClassName(genClass)%> <%=CodegenUtil.getReferenceClassExtends(genClass)%> {
-  <%for (GenFeature genFeature : allReferences) {%>
-<%@ include file="declaredFieldGenFeature.override.javajetinc" fail="silent" %>
-  <%}%>
-}

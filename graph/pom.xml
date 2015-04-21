@@ -1,146 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>org.neoemf</groupId>
-        <version>1.0</version>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		 <artifactId>parent</artifactId>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
-    </parent>
-
-	<artifactId>graph</artifactId>
-	<packaging>pom</packaging>
-	<version>1.0-SNAPSHOT</version>
-	<name>NeoEMF :: Graph :: Root</name>
-	<url>http://neo4emf.com</url>
-	<description>Fast Storage, On-demand Loading and Unloading of your large scale EMF Models</description>
-
-	<licenses>
-		<license>
-			<name>
-                Eclipse Public License - v 1.0
-            </name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
-		</license>
-	</licenses>
-
-
-	<properties>
-		<neo4j.version>1.9.4</neo4j.version>
-		<neo4emf.version>${project.version}</neo4emf.version>
-	</properties>
-
+	</parent>
+    <artifactId>graph</artifactId>
+    <name>NeoEMF :: Graph :: Common</name>
+    <packaging>pom</packaging>
+    <description>Parent project for Graph database implementations of the core component.
+Contains a generic Blueprints implementation that can be specialized with Blueprints connectors to handle several graph database backend types (see blueprints/README for more informations).</description>
 	<modules>
-		<module>fr.inria.atlanmod.neo4emf</module>
-		<module>fr.inria.atlanmod.neo4emf.tests</module>
-		<module>fr.inria.atlanmod.neo4emf.neo4jresolver</module>
+    	<module>blueprints</module>
+    	<module>blueprints-neo4j</module>    
 	</modules>
-
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.9</version>
-			<scope>test</scope>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>org.eclipse.emf.ecore</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>org.eclipse.emf.codegen</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>org.eclipse.emf.codegen.ecore</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>org.eclipse.emf.common</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<version>2.2.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<maxmemory>128M</maxmemory>
-					<javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
-				</configuration>
-				<version>2.9.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<!-- 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>1.6</version>
-				<configuration>
-					<verbose>false</verbose>
-					<addSvnKeyWords>true</addSvnKeyWords>
-				</configuration>
-				<executions>
-					<execution>
-						<id>first</id>
-						<goals>
-							<goal>update-file-header</goal>
-						</goals>
-						<phase>process-sources</phase>
-						<configuration>
-							<licenseName>epl_v1</licenseName>
-							<organizationName>fr.inria.atlanmod.neo4emf</organizationName>
-							<inceptionYear>2014</inceptionYear>
-							<includes>
-								<include>*.java</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			-->
-		</plugins>
-	</build>
-
 </project>

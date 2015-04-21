@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <prerequisites>
+    	<maven>3.0</maven>
+ 	</prerequisites>
+    
+    <parent>
+        <artifactId>eclipse</artifactId>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>fr.inria.atlanmod.neoemf.ui</artifactId>
+    <packaging>eclipse-plugin</packaging>
+    <name>NeoEMF :: Eclipse :: UI</name>
+
+    <properties>
+        <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+	    <tycho-version>0.22.0</tycho-version>
+    </properties>
+
+	<repositories>
+		<repository>
+			<id>eclipse-luna</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/luna</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+    	<dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    <!-- 	<dependency>
+    		<groupId>fr.inria.atlanmod.neoemf</groupId>
+    		<artifactId>NeoEMF-ThirdPartyBundles</artifactId>
+    		<version>${project.version}</version>
+    	</dependency> -->
+	</dependencies>
+
+
+    <build>
+         <sourceDirectory>${basedir}/src</sourceDirectory>
+	    <plugins>
+	   
+	      <plugin>
+	        <groupId>org.eclipse.tycho</groupId>
+	        <artifactId>tycho-maven-plugin</artifactId>
+	        <version>${tycho-version}</version>
+	        <extensions>true</extensions>
+	      </plugin>
+	      <plugin>
+	        <groupId>org.eclipse.tycho</groupId>
+	        <artifactId>target-platform-configuration</artifactId>
+	        <version>${tycho-version}</version>
+	        <configuration>
+	          <pomDependencies>consider</pomDependencies>
+	        </configuration>
+	      </plugin>
+	    </plugins> 
+    </build>
+
+    <description>Eclipse UI integration plugin.</description>
+</project>

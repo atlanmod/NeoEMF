@@ -4,117 +4,49 @@
 
     <parent>
         <artifactId>parent</artifactId>
-        <groupId>org.neoemf</groupId>
-        <version>1.0</version>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
 
     <artifactId>core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
-    <name>NeoEMF::Core</name>
-    <url>http://maven.apache.org</url>
+    <name>NeoEMF :: Core</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <neo4j.version>1.9.4</neo4j.version>
-        <neo4emf.version>${project.version}</neo4emf.version>
+        <manifest-location>META-INF</manifest-location>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.mapdb</groupId>
-            <artifactId>mapdb</artifactId>
-            <version>1.0.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.8.5</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-integration</artifactId>
-            <version>1.2.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.avh4.util</groupId>
             <artifactId>imagecomparison</artifactId>
-            <version>0.0.2</version>
-            <scope>test</scope>
         </dependency>
-
+        
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-            <version>${neo4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>osgi</artifactId>
-            <version>3.9.1-v20140110-1610</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-lucene-index</artifactId>
-            <version>${neo4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-graph-algo</artifactId>
-            <version>${neo4j.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>4.6.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-common-core</artifactId>
-            <version>2.2.22.GA</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>ui</artifactId>
-            <version>3.3.0-I20070614-0800</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neoemf</groupId>
-            <artifactId>neo4jresolver</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+		</dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>16.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tinkerpop.blueprints</groupId>
-            <artifactId>blueprints-core</artifactId>
-            <version>2.6.0</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -145,12 +77,63 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
         </dependency>
+        
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+        
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
     </dependencies>
+    
+    <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <version>${maven-bundle-plugin.version}</version>
+          <configuration>
+            <manifestLocation>${manifest-location}</manifestLocation>
+           <instructions>
+           	<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+           	<Export-Package>fr.inria.atlanmod.neoemf.*</Export-Package>
+           	<Import-Package></Import-Package>
+           	<Embed-Dependency>cglib,log4j-core,commons-io,commons-lang,guava,commons-collections4</Embed-Dependency>-->
+          <!-- 	<Require-Bundle>NeoEMF-Eclipse-ThirdPartyBundles;bundle-version="0.0.1"</Require-Bundle> -->
+            <Require-Bundle>org.eclipse.emf.ecore;visibility:=reexport</Require-Bundle>
+           </instructions>
+          </configuration>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+      	<!-- <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+          <configuration>
+            <archive>
+              <manifestFile>${manifest-location}/MANIFEST.MF</manifestFile>
+            </archive>
+          </configuration>
+        </plugin> -->
+      	<description>NeoEMF core components. Specialize the standard EMF classes and provide abstract classes for dedicated backend extensions.
+(The core component can not be used in a standalone context, it needs at least one persistence solution to work properly).</description>
 </project>

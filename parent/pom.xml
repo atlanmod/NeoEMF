@@ -3,11 +3,33 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.neoemf</groupId>
+    <groupId>fr.inria.atlanmod.neoemf</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0</version>
-    <name>NeoEMF::Parent</name>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>NeoEMF :: Parent</name>
     <packaging>pom</packaging>
+    <url>www.neoemf.com</url>
+    <inceptionYear>2013</inceptionYear>
+    <organization>
+    	<name>Inria-AtlanMod Team</name>
+    	<url>http://www.emn.fr/z-info/atlanmod/index.php/Main_Page</url>
+    </organization>
+    
+    <licenses>
+        <license>
+            <name>
+                Eclipse Public License - v 1.0
+            </name>
+            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        </license>
+    </licenses>
+    
+    <properties>
+    	<maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
+    	<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
     <description>The parent pom holds all the necessary
         version and configuration information for submodules.</description>
     <dependencyManagement>
@@ -46,13 +68,69 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.11</version>
+                <scope>test</scope>
             </dependency>
-
+            
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>16.0.1</version>
-            </dependency>
+	            <groupId>org.mockito</groupId>
+	            <artifactId>mockito-all</artifactId>
+	            <version>1.8.5</version>
+	            <scope>test</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.hamcrest</groupId>
+	            <artifactId>hamcrest-integration</artifactId>
+	            <version>1.2.1</version>
+	            <scope>test</scope>
+	        </dependency>
+        	<dependency>
+	            <groupId>net.avh4.util</groupId>
+	            <artifactId>imagecomparison</artifactId>
+	            <version>0.0.2</version>
+	            <scope>test</scope>
+	        </dependency>
+            
+            <dependency>
+	            <groupId>com.google.guava</groupId>
+	            <artifactId>guava</artifactId>
+	            <version>16.0.1</version>
+        	</dependency>
+        	
+        	<dependency>
+            	<groupId>commons-lang</groupId>
+            	<artifactId>commons-lang</artifactId>
+            	<version>2.6</version>
+        	</dependency>
+        
+        	<dependency>
+            	<groupId>commons-io</groupId>
+            	<artifactId>commons-io</artifactId>
+            	<version>2.4</version>
+        	</dependency>
+        	
+        	<dependency>
+	            <groupId>commons-collections</groupId>
+	            <artifactId>commons-collections</artifactId>
+	            <version>3.2.1</version>
+        	</dependency>
+        	
+        	<dependency>
+	            <groupId>org.apache.commons</groupId>
+	            <artifactId>commons-collections4</artifactId>
+	            <version>4.0</version>
+	        </dependency>
+        
+        	<dependency>
+            	<groupId>cglib</groupId>
+           		<artifactId>cglib</artifactId>
+            	<version>3.1</version>
+        	</dependency>
+        
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>2.2</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -67,10 +145,64 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.2</version>
+            </plugin>
+		    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <reporting>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <sourceEncoding>UTF-8</sourceEncoding>     
+                    <targetJdk>1.6</targetJdk>
+                    <rulesets>
+                        <ruleset>rulesets/java/basic.xml</ruleset>
+                        <ruleset>rulesets/java/braces.xml</ruleset>
+                        <ruleset>rulesets/java/naming.xml</ruleset>
+                        <ruleset>rulesets/java/codesize.xml</ruleset>
+                        <ruleset>rulesets/java/strings.xml</ruleset>
+                        <ruleset>rulesets/java/optimizations.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <configLocation>config/sun_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.4</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

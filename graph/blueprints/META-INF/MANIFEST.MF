@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1429579616487
+Build-Jdk: 1.7.0_71
+Built-By: gdaniel
+Bundle-ClassPath: .,commons-collections-3.2.1.jar,commons-lang-2.6.jar,c
+ ommons-logging-1.1.1.jar,commons-configuration-1.6.jar,guava-16.0.1.jar
+ ,blueprints-core-2.4.0.jar,jboss-common-core-2.2.22.GA.jar
+Bundle-Description: Generic Blueprints implementation of the core compon
+ ent. It can be extended with Blueprints connectors to handle several gr
+ aph databases (see README for more informations).
+Bundle-DocURL: http://www.emn.fr/z-info/atlanmod/index.php/Main_Page
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-ManifestVersion: 2
+Bundle-Name: NeoEMF :: Graph :: Blueprints
+Bundle-SymbolicName: fr.inria.atlanmod.neoemf.graph.blueprints
+Bundle-Vendor: Inria-AtlanMod Team
+Bundle-Version: 0.0.1.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Embed-Dependency: commons-collections,commons-lang,commons-logging,commo
+ ns-configuration,guava,blueprints-core,jboss-common-core
+Embedded-Artifacts: commons-collections-3.2.1.jar;g="commons-collections
+ ";a="commons-collections";v="3.2.1",commons-lang-2.6.jar;g="commons-lan
+ g";a="commons-lang";v="2.6",commons-logging-1.1.1.jar;g="commons-loggin
+ g";a="commons-logging";v="1.1.1",commons-configuration-1.6.jar;g="commo
+ ns-configuration";a="commons-configuration";v="1.6",guava-16.0.1.jar;g=
+ "com.google.guava";a="guava";v="16.0.1",blueprints-core-2.4.0.jar;g="co
+ m.tinkerpop.blueprints";a="blueprints-core";v="2.4.0",jboss-common-core
+ -2.2.22.GA.jar;g="org.jboss";a="jboss-common-core";v="2.2.22.GA"
+Export-Package: fr.inria.atlanmod.neoemf.graph.blueprints.datastore;vers
+ ion="0.0.1"
+Require-Bundle: fr.inria.atlanmod.neoemf.core
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Tool: Bnd-2.3.0.201405100607
