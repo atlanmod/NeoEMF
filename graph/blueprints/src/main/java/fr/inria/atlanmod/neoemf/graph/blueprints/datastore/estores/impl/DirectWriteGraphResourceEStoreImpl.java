@@ -30,7 +30,7 @@ import com.tinkerpop.blueprints.Vertex;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.GraphPersistentBackend;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.GraphPersistenceBackend;
 
 public class DirectWriteGraphResourceEStoreImpl implements SearcheableResourceEStore {
 
@@ -41,10 +41,10 @@ public class DirectWriteGraphResourceEStoreImpl implements SearcheableResourceES
 	protected static final String CONTAINER = "eContainer";
 	protected static final String CONTAINING_FEATURE = "containingFeature";
 
-	protected GraphPersistentBackend graph;
+	protected GraphPersistenceBackend graph;
 	protected Resource.Internal resource;
 
-	public DirectWriteGraphResourceEStoreImpl(Resource.Internal resource, GraphPersistentBackend graph) {
+	public DirectWriteGraphResourceEStoreImpl(Resource.Internal resource, GraphPersistenceBackend graph) {
 		this.graph = graph;
 		this.resource = resource;
 	}

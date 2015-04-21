@@ -23,6 +23,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
+import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.GraphHelper;
 
@@ -33,7 +34,7 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWr
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
-public class GraphPersistentBackendFactory extends
+public class GraphPersistenceBackendFactory extends
 		AbstractPersistenceBackendFactory {
 
 	/**
@@ -45,19 +46,19 @@ public class GraphPersistentBackendFactory extends
 
 	@Override
 	public PersistenceBackend createTransientBackend() {
-		return new GraphPersistentBackend(new TinkerGraph());
+		return new GraphPersistenceBackend(new TinkerGraph());
 	}
 	
 	@Override
 	public SearcheableResourceEStore createTransientEStore(
 			PersistentResource resource, PersistenceBackend backend) {
-		assert backend instanceof GraphPersistentBackend : "Trying to create a Graph-based EStore with an invalid backend";
-		return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistentBackend)backend);
+		assert backend instanceof GraphPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
+		return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
 	}
 	
 	@Override
-	public GraphPersistentBackend createPersistentBackend(File file, Map<?, ?> options) {
-		GraphPersistentBackend graphDB = null;
+	public GraphPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) {
+		GraphPersistenceBackend graphDB = null;
 		PropertiesConfiguration configuration = null;
 		String directoryProperty = null;
 		try {
@@ -109,10 +110,9 @@ public class GraphPersistentBackendFactory extends
 
 			Graph baseGraph = GraphFactory.open(configuration);
 			if (baseGraph instanceof KeyIndexableGraph) {
-				graphDB = new GraphPersistentBackend((KeyIndexableGraph) baseGraph);
+				graphDB = new GraphPersistenceBackend((KeyIndexableGraph) baseGraph);
 			} else {
 				// TODO handle that properly
-				System.out.println("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
 //				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
 			}
 		} finally {
@@ -135,13 +135,13 @@ public class GraphPersistentBackendFactory extends
 	@Override
 	public SearcheableResourceEStore createPersistentEStore(
 			PersistentResource resource, PersistenceBackend backend) {
-		assert backend instanceof GraphPersistentBackend : "Trying to create a Graph-based EStore with an invalid backend";
-		return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistentBackend)backend);
+		assert backend instanceof GraphPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
+		return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
 	}
 	
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-		assert from instanceof GraphPersistentBackend && to instanceof GraphPersistentBackend : "Trying to use Graph backend copy on non Graph databases";
-		GraphHelper.copyGraph((GraphPersistentBackend)from, (GraphPersistentBackend)to);
+		assert from instanceof GraphPersistenceBackend && to instanceof GraphPersistenceBackend : "Trying to use Graph backend copy on non Graph databases";
+		GraphHelper.copyGraph((GraphPersistenceBackend)from, (GraphPersistenceBackend)to);
 	}
 }

@@ -108,14 +108,13 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		this.persistenceBackend = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createTransientBackend();
 		this.eStore = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
 		this.isPersistent = false;
-		//this.kyanosGraph = KyanosGraphFactory.createTransientGraph();
-		//this.eStore = new DirectWriteGraphResourceEStoreImpl(this, kyanosGraph);
-		//Runtime.getRuntime().addShutdownHook(new Thread() {
-		//	@Override
-		//	public void run() {
-		//		PersistentResourceImpl.this.kyanosGraph.shutdown();
-		//	}
-		//});
+		// Stop the backend when the application is terminated
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				PersistentResourceImpl.this.persistenceBackend.stop();
+			}
+		});
 	}
 
 	/**

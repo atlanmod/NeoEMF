@@ -24,6 +24,7 @@ import org.jboss.util.collection.WeakValueHashMap;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
@@ -39,12 +40,13 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 
-public class GraphPersistentBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
+public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 	
+	//private Index<Vertex> metaclassIndex;
 
 	protected class KyanosEdge extends IdEdge {
 		public KyanosEdge(Edge edge) {
-			super(edge, GraphPersistentBackend.this);
+			super(edge, GraphPersistenceBackend.this);
 		}
 		
 		/**
@@ -79,8 +81,11 @@ public class GraphPersistentBackend extends IdGraph<KeyIndexableGraph> implement
 	 */
 	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<Object, InternalPersistentEObject>();
 	
-	public GraphPersistentBackend(KeyIndexableGraph baseGraph) {
+	public GraphPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
+		//if(getIndex("metaclasses", Vertex.class) == null) {
+		//	metaclassIndex = createIndex("metaclasses",Vertex.class);
+		//}
 	}
 	
 	@Override
@@ -113,9 +118,11 @@ public class GraphPersistentBackend extends IdGraph<KeyIndexableGraph> implement
 	 *            The corresponding {@link EObject}
 	 * @return the newly created vertex
 	 */
+	private int addCount = 0;
 	protected Vertex addVertex(EObject eObject) {
 		PersistentEObject kyanosEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
-		return addVertex(kyanosEObject.id().toString());
+		Vertex v = addVertex(kyanosEObject.id().toString());
+		return v;
 	}
 
 	/**
@@ -128,6 +135,7 @@ public class GraphPersistentBackend extends IdGraph<KeyIndexableGraph> implement
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EClass eClass) {
+		addCount++;
 		Vertex vertex = addVertex(buildEClassId(eClass));
 		vertex.setProperty(ECLASS__NAME, eClass.getName());
 		vertex.setProperty(EPACKAGE__NSURI, eClass.getEPackage().getNsURI());
@@ -166,6 +174,7 @@ public class GraphPersistentBackend extends IdGraph<KeyIndexableGraph> implement
 			Vertex eClassVertex = getVertex(eClass);
 			if (eClassVertex == null) {
 				eClassVertex = addVertex(eClass);
+			//	metaclassIndex.put("name", eClass.getName(), eClassVertex);
 			}
 			vertex.addEdge(INSTANCE_OF, eClassVertex);
 			loadedEObjects.put(kyanosEObject.id().toString(), kyanosEObject);

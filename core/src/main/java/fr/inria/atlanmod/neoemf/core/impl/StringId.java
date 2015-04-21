@@ -42,7 +42,7 @@ public class StringId implements Id {
 			return false;
 		}
 		else {
-			return ((Id)obj).toString() == literalId;
+			return ((Id)obj).toString().equals(literalId);
 		}
 		
 	}
