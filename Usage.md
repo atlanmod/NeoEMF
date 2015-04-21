@@ -20,8 +20,31 @@
 	
 	resource.save(options);
 	
+	// Blueprints Neo4j sample (work with maven refactoring)
+	PersistenceBackendFactoryProvider.getFactories().put("kyanos", new GraphPersistentBackendFactory());
+		ResourceSet resSet = new ResourceSetImpl();
+    	resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("kyanos", new PersistentResourceFactoryImpl());
+    	Resource r = resSet.createResource(NeoURI.createNeoURI(new File("neoDb/neo")));
+    	try {
+    		Map<String,String> options = new HashMap<String,String>();
+    		options.put("blueprints.neo4j.conf.cache_type", "soft");
+    		options.put("blueprints.graph", "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph");
+    		r.save(options);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)r);	
 	
-	
+	// Map sample (work with maven refactoring)
+	PersistenceBackendFactoryProvider.getFactories().put("kyanosmap",new MapPersistenceBackendFactory());
+    	ResourceSet resSet = new ResourceSetImpl();
+    	resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("kyanosmap", new PersistentResourceFactoryImpl());
+    	Resource r = resSet.createResource(NeoURI.createNeoMapURI(new File("base")));
+    	try {
+    		r.save(Collections.EMPTY_MAP);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
 
 ### Load an existing resource
 
