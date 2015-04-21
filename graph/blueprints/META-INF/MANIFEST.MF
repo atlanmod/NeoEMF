@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1429579616487
+Bnd-LastModified: 1429580438890
 Build-Jdk: 1.7.0_71
 Built-By: gdaniel
 Bundle-ClassPath: .,commons-collections-3.2.1.jar,commons-lang-2.6.jar,c

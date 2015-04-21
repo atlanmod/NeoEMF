@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1429579619379
+Bnd-LastModified: 1429580440886
 Build-Jdk: 1.7.0_71
 Built-By: gdaniel
 Bundle-ClassPath: .,mapdb-1.0.6.jar,jboss-common-4.2.2.GA.jar

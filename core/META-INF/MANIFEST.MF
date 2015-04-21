@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1429579614099
+Bnd-LastModified: 1429580436973
 Build-Jdk: 1.7.0_71
 Built-By: gdaniel
 Bundle-ClassPath: .,cglib-3.1.jar,log4j-core-2.2.jar,commons-io-2.4.jar,

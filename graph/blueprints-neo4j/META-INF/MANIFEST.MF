@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1429579618233
+Bnd-LastModified: 1429580440173
 Build-Jdk: 1.7.0_71
 Built-By: gdaniel
 Bundle-ClassPath: geronimo-jta_1.1_spec-1.1.1.jar,concurrentlinkedhashma
