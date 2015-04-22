@@ -42,7 +42,7 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 	
-	//private Index<Vertex> metaclassIndex;
+	private Index<Vertex> metaclassIndex;
 
 	protected class KyanosEdge extends IdEdge {
 		public KyanosEdge(Edge edge) {
@@ -83,9 +83,9 @@ public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implemen
 	
 	public GraphPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
-		//if(getIndex("metaclasses", Vertex.class) == null) {
-		//	metaclassIndex = createIndex("metaclasses",Vertex.class);
-		//}
+		if(getIndex("metaclasses", Vertex.class) == null) {
+			metaclassIndex = createIndex("metaclasses",Vertex.class);
+		}
 	}
 	
 	@Override
@@ -174,7 +174,7 @@ public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implemen
 			Vertex eClassVertex = getVertex(eClass);
 			if (eClassVertex == null) {
 				eClassVertex = addVertex(eClass);
-			//	metaclassIndex.put("name", eClass.getName(), eClassVertex);
+				metaclassIndex.put("name", eClass.getName(), eClassVertex);
 			}
 			vertex.addEdge(INSTANCE_OF, eClassVertex);
 			loadedEObjects.put(kyanosEObject.id().toString(), kyanosEObject);
