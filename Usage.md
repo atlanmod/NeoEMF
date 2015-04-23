@@ -68,3 +68,39 @@ Packages should be registered in order to find the factory
 	Resource resource = rs.createResource(uri);
 	
 	resource.load(options);
+
+### Modify an existing resource
+
+First load the resource by giving its location.
+Perform modifications and save with the apropriate options.
+Packages should be registered in order to find the factory.
+(NeoEMF/Graph example)
+	
+	ResourceSet resSet = new ResourceSetImpl();
+	Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+	Map<String, Object> m = reg.getExtensionToFactoryMap();
+	m.put("xmi", new XMIResourceFactoryImpl());
+	resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoURI.KYANOS_SCHEME, PersistentResourceFactory.eINSTANCE);
+	PersistenceBackendFactoryProvider.getFactories().put(NeoURI.KYANOS_SCHEME, new GraphPersistenceBackendFactory());
+	Resource r = resSet.createResource(NeoURI.createNeoURI(new File("myResource")));
+	// load the resource
+	try {
+		r.load(Collections.EMPTY_MAP);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	// perform modifications
+	MyClass myClass = (MyClass)r.getContents().get(0);
+	myClass.setName("NewName");
+	// save with specific options
+	Map<String,String> options = new HashMap<String,String>();
+	options.put("blueprints.neo4j.conf.cache_type", "soft");
+	options.put("blueprints.graph", "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph");
+	try {
+		r.save(options);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	// unload the resource and shutdown the database engine
+	r.unload();
+
