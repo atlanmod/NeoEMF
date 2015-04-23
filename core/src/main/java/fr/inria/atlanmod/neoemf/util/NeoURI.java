@@ -14,17 +14,14 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
+
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 
 public class NeoURI extends URI {
 
-	private static final String FILE_SCHEME = "file";
+	protected static final String FILE_SCHEME = "file";
 
-	public static final String KYANOS_SCHEME = "kyanos";
-
-	public static final String KYANOS_MAP_SCHEME = "kyanosmap";
-	
 	protected URI internalUri;
 	
 	protected NeoURI(int hashCode, URI internalUri) {
@@ -33,41 +30,38 @@ public class NeoURI extends URI {
 	}
 
 	public static URI createNeoURI(URI uri) {
-		if (FILE_SCHEME.equals(uri.scheme())) {
-			return createNeoURI(FileUtils.getFile(uri.toFileString()));
-		} else if (KYANOS_SCHEME.equals(uri.scheme())) {
-			return new NeoURI(uri.hashCode(), uri);
-		} else if (KYANOS_MAP_SCHEME.equals(uri.scheme())) {
+		if(uri.scheme().equals(FILE_SCHEME)) {
+			throw new IllegalArgumentException("Can not create NeoURI from file URI without a valid scheme");
+		}
+		if(PersistenceBackendFactoryRegistry.getFactories().containsKey(uri.scheme())) {
 			return new NeoURI(uri.hashCode(), uri);
 		} else {
-			throw new IllegalArgumentException(MessageFormat.format("Unsupported URI type {0}", uri.toString()));
+			throw new IllegalArgumentException(MessageFormat.format("Unregistered URI scheme {0}", uri.toString()));
 		}
 	}
 	
-	public static URI createNeoURI(File file) {
+	public static URI createNeoURI(File file, String scheme) {
 		URI fileUri = URI.createFileURI(file.getAbsolutePath());
-		URI uri = URI.createHierarchicalURI(
-				NeoURI.KYANOS_SCHEME, 
-				fileUri.authority(),
-				fileUri.device(),
-				fileUri.segments(),
-				fileUri.query(),
-				fileUri.fragment());
-		return new NeoURI(uri.hashCode(), uri);
+		if(scheme == null) {
+			return NeoURI.createNeoURI(fileUri);
+		}
+		return createNeoURI(fileUri, scheme);
 	}
 	
-	public static URI createNeoMapURI(File file) {
-		URI fileUri = URI.createFileURI(file.getAbsolutePath());
+	public static URI createNeoURI(URI fileUri, String scheme) {
+		if(scheme == null) {
+			return createNeoURI(fileUri);
+		}
 		URI uri = URI.createHierarchicalURI(
-				NeoURI.KYANOS_MAP_SCHEME, 
+				scheme, 
 				fileUri.authority(),
 				fileUri.device(),
 				fileUri.segments(),
 				fileUri.query(),
 				fileUri.fragment());
-		return new NeoURI(uri.hashCode(), uri);
+		return  createNeoURI(uri);
 	}
-
+	
 	@Override
 	public boolean isArchive() {
 		return internalUri.isArchive();

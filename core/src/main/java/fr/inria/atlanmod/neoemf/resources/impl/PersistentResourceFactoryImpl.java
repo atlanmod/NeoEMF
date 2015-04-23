@@ -10,21 +10,17 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.resources.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 public class PersistentResourceFactoryImpl implements PersistentResourceFactory {
 
 	@Override
 	public Resource createResource(URI uri) {
-		// TODO handle it in a properties file
-		if (StringUtils.equals(NeoURI.KYANOS_SCHEME, uri.scheme())) {
-			return new PersistentResourceImpl(uri);
-		} else if (StringUtils.equals(NeoURI.KYANOS_MAP_SCHEME, uri.scheme())) {
+		if (PersistenceBackendFactoryRegistry.getFactories().containsKey(uri.scheme())) {
 			return new PersistentResourceImpl(uri);
 		} else {
 			return null;

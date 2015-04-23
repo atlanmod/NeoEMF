@@ -44,7 +44,7 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryProvider;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoURI;
@@ -101,8 +101,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	public PersistentResourceImpl(URI uri) {
 		super(uri);
-		this.persistenceBackend = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createTransientBackend();
-		this.eStore = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
+		this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
+		this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
 		this.isPersistent = false;
 		// Stop the backend when the application is terminated
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -131,11 +131,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			} else if (!getFile().exists()) {
 				throw new FileNotFoundException(uri.toFileString());
 			} else {
-				this.persistenceBackend = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-				this.eStore = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend);
+				this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+				this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend);
 				this.isPersistent = true;
-				//this.kyanosGraph = KyanosGraphFactory.createPersistenGraph(getFile(), options);
-				//this.eStore = createResourceEStore(this.kyanosGraph);
 			}
 			this.options = options;
 			isLoaded = true;
@@ -160,35 +158,13 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			}
 		}
 		if(!isLoaded() || !this.isPersistent) {
-			PersistenceBackend newBackend = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-			PersistenceBackendFactoryProvider.getProvider(uri.scheme()).copyBackend(this.persistenceBackend, newBackend);
+			PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+			PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(this.persistenceBackend, newBackend);
 			this.persistenceBackend = newBackend;
-			this.eStore = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createPersistentEStore(this,persistenceBackend);
+			this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this,persistenceBackend);
 			this.isLoaded = true;
 		}
 		persistenceBackend.save();
-//		if (!isLoaded() || !this.kyanosGraph.getFeatures().isPersistent) {
-//			KyanosGraph newGraph = KyanosGraphFactory.createPersistenGraph(getFile(), options);
-//			if (newGraph.getVertices().iterator().hasNext() || newGraph.getEdges().iterator().hasNext()) {
-//				Logger.log(Logger.SEVERITY_WARNING, 
-//						NLS.bind("Saving on existing graph {0} without previously loading its contents. "
-//								+ "Graph contents will be lost.", getFile().toString()));
-//				for (Edge edge : newGraph.getEdges()) {
-//					edge.remove();
-//				}
-//				newGraph.commit();
-//				for (Vertex vertex : newGraph.getVertices()) {
-//					vertex.remove();
-//				}
-//				newGraph.commit();
-//			}
-//			KyanosGraphFactory.copyGraph(this.kyanosGraph, newGraph);
-//			this.kyanosGraph = newGraph;
-//			this.eStore = createResourceEStore(this.kyanosGraph);
-//			this.isLoaded = true;
-//		}
-//
-//		kyanosGraph.commit();
 	}
 
 	
@@ -223,8 +199,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	protected void shutdown() {
 		this.persistenceBackend.stop();
-		this.persistenceBackend = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createTransientBackend();
-		this.eStore = PersistenceBackendFactoryProvider.getProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
+		this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
+		this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
 		this.isPersistent = false;
 	}
 
@@ -249,17 +225,6 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	public InternalEObject.EStore eStore() {
 		return eStore;
 	}
-
-	/**
-	 * Creates the {@link SearcheableResourceEStore} used by this
-	 * {@link Resource}.
-	 * 
-	 * @param graph
-	 * @return
-	 */
-//	protected SearcheableResourceEStore createResourceEStore(KyanosGraph graph) {
-//		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new AutocommitGraphResourceEStoreImpl(this, graph)));
-//	}
 
 	/**
 	 * A notifying {@link EStoreEList} list implementation for supporting

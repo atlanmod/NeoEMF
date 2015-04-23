@@ -13,25 +13,19 @@ package fr.inria.atlanmod.neoemf.datastore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PersistenceBackendFactoryProvider {
+public class PersistenceBackendFactoryRegistry {
 	
 	private static Map<String,AbstractPersistenceBackendFactory> factories = new HashMap<String,AbstractPersistenceBackendFactory>();
 	
-	public static void init() {
-		// read from properties file and initialize the mapping
-	}
 	
 	public static Map<String,AbstractPersistenceBackendFactory> getFactories() {
 		return factories;
 	}
 	
-	public static AbstractPersistenceBackendFactory getProvider(String kind) {
-		if(factories.isEmpty()) {
-			init();
-		}
-		AbstractPersistenceBackendFactory factory = factories.get(kind);
+	public static AbstractPersistenceBackendFactory getFactoryProvider(String factoryId) {
+		AbstractPersistenceBackendFactory factory = factories.get(factoryId);
 		if(factory == null) {
-			throw new RuntimeException("Can not find a factory for the given type " + kind);
+			throw new RuntimeException("Can not find a factory for the given type " + factoryId);
 		}
 		return factory;
 	}
