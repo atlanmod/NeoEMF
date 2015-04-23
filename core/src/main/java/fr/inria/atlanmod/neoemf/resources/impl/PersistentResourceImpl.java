@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel G�mez.
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Abel G�mez - initial API and implementation
- ******************************************************************************/
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.resources.impl;
 
 import java.io.File;
@@ -55,8 +55,6 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 * Fake {@link EStructuralFeature} that represents the
 	 * {@link Resource#getContents()} feature.
 	 * 
-	 * @author agomez
-	 * 
 	 */
 	protected static class ResourceContentsEStructuralFeature extends EReferenceImpl {
 		protected static final String RESOURCE__CONTENTS__FEATURE_NAME = "eContents";
@@ -74,8 +72,6 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	/**
 	 * Dummy {@link EObject} that represents the root entry point for this
 	 * {@link Resource}
-	 * 
-	 * @author agomez
 	 * 
 	 */
 	protected final class DummyRootEObject extends PersistentEObjectImpl {

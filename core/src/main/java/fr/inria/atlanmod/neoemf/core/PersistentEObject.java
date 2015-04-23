@@ -12,11 +12,6 @@ package fr.inria.atlanmod.neoemf.core;
 
 import org.eclipse.emf.ecore.EObject;
 
-/**
- * 
- * @author sunye
- *
- */
 public interface PersistentEObject extends EObject {
 
     public Id id();

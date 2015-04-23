@@ -13,11 +13,6 @@ package fr.inria.atlanmod.neoemf.resources;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-/**
- * 
- * @author sunye
- *
- */
 public interface PersistentResource extends Resource, Resource.Internal {
 
 	public final static String OPTIONS_GRAPH_TYPE = "blueprints.graph";

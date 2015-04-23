@@ -8,7 +8,6 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-
 package fr.inria.atlanmod.neoemf.core;
 
 import org.eclipse.emf.ecore.EClass;
@@ -16,11 +15,6 @@ import org.eclipse.emf.ecore.EFactory;
 
 import fr.inria.atlanmod.neoemf.core.impl.PersistenceFactoryImpl;
 
-/**
- * 
- * @author sunye
- *
- */
 public interface PersistenceFactory extends EFactory {
 	
 	public static PersistenceFactory eINSTANCE = new PersistenceFactoryImpl();
