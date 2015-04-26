@@ -22,6 +22,15 @@
 		<artifactId>core</artifactId>
 		<version>${project.version}</version>
 	</dependency>
+	<!-- Needed to complete the build, Tycho limitation
+		Pom-first dependencies of manifest-first projects are not fully transitive
+		https://wiki.eclipse.org/Tycho/How_Tos/Dependency_on_pom-first_artifacts
+	 -->
+	<dependency>
+		<groupId>fr.inria.atlanmod.neoemf</groupId>
+		<artifactId>graph.blueprints</artifactId>
+		<version>${project.version}</version>
+	</dependency>
   </dependencies>
   <build>
     <plugins>

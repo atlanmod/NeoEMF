@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizards;
 
@@ -47,6 +47,7 @@ import org.eclipse.ui.part.ISetSelectionTarget;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.KyanosEditor;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
 import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 /**
@@ -119,7 +120,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 			dbFolder.delete(true, new NullProgressMonitor());
 			// Get the URI of the model file.
 			//
-			final URI dbURI = NeoURI.createNeoURI(new File(dbFolder.getRawLocation().toOSString()));
+			final URI dbURI = NeoGraphURI.createNeoGraphURI(new File(dbFolder.getRawLocation().toOSString()));
 			
 			// Do the work within an operation.
 			//

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.neoemf.eclipse.ui.commands;
 
@@ -34,6 +34,7 @@ import org.eclipse.ui.progress.UIJob;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.KyanosEditor;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
 import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 
@@ -70,7 +71,7 @@ public class OpenKyanosDbCommand extends AbstractHandler {
 
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-					URI uri= NeoURI.createNeoURI(new File(folder.getRawLocation().toOSString()));
+					URI uri= NeoGraphURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
 					URIEditorInput editorInput = new URIEditorInput(uri);
 					if (editorInput != null) {
 						IWorkbench workbench = PlatformUI.getWorkbench();

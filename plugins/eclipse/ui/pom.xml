@@ -35,11 +35,11 @@
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
-    <!-- 	<dependency>
+    	<dependency>
     		<groupId>fr.inria.atlanmod.neoemf</groupId>
-    		<artifactId>NeoEMF-ThirdPartyBundles</artifactId>
+    		<artifactId>graph.blueprints</artifactId>
     		<version>${project.version}</version>
-    	</dependency> -->
+    	</dependency>
 	</dependencies>
 
 
