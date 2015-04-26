@@ -32,7 +32,7 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 ## Installation
 
 ## Update Site
-The simplest way to install NeoEMF is to use the update site that is available [here](TODO).
+The simplest way to install NeoEMF is to use the update site that is available [here](http://atlanmod.github.io/NeoEMF/).
 Install the **Base** compenent, which provides NeoEMF core classes and utils.
 Select the backend specific implementation(s) you want to plug in NeoEMF (currently Blueprints and MapDB are available).
 
@@ -41,7 +41,7 @@ Backend specific implementations may need configuration files or require other p
 These requirements are available in the root of the related subprojects.
 
 ## Local Build
-You can build locally NeoEMF by following the instructions in [[Build]].
+You can build locally NeoEMF by following the instructions in th Build section.
 It is then possible to install NeoEMF from the local built update site, or by importing the generated plugins.
 
 ## Build
@@ -57,7 +57,7 @@ To build NeoEMF Eclipse plugins you need to perform the following steps:
  - Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
 
 ## Issues
-If you experience issues installing or using NeoEMF, you can [submit an issue on github](TODO) or contact us at contact@neoemf.com
+If you experience issues installing or using NeoEMF, you can [submit an issue on github](https://github.com/atlanmod/NeoEMF/issues) or contact us at contact@neoemf.com
 
 ## Develop Your Backend Implementation
 If you have developped a specific backend implementation that is not covered by the actual release of NeoEMF, you can submit it as a pull request.
