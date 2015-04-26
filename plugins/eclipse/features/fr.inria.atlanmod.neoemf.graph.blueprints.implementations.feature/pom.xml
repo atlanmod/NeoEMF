@@ -22,17 +22,22 @@
 		<artifactId>graph.blueprints.neo4j</artifactId>
 		<version>${project.version}</version>
 	</dependency>
+	<dependency>
+		<groupId>fr.inria.atlanmod.neoemf</groupId>
+		<artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.feature</artifactId>
+		<version>${project.version}</version>
+	</dependency>
   </dependencies>
   <build>
     <plugins>
 	<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>0.22.0</version>
-				<configuration>
-	          		<pomDependencies>consider</pomDependencies>
-	        	</configuration>
-			</plugin>
+		<groupId>org.eclipse.tycho</groupId>
+		<artifactId>target-platform-configuration</artifactId>
+		<version>0.22.0</version>
+		<configuration>
+	        		<pomDependencies>consider</pomDependencies>
+	      	</configuration>
+	</plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
