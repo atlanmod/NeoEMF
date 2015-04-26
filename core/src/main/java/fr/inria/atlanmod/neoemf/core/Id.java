@@ -12,23 +12,18 @@ package fr.inria.atlanmod.neoemf.core;
 
 import java.io.Serializable;
 
-/**
-
- * @author sunye
- *
- */
 public interface Id extends Comparable<Id>, Serializable {
-	
-	/**
-	 * 
-	 * @return the String representation of the Id.
-	 */
-	String toString();
-	
-	/**
-	 * 
-	 * @return the long number of the Id
-	 */
-	long toLong();
+
+    /**
+     * 
+     * @return The String representation of the Id
+     */
+    String toString();
+    
+    /**
+     * 
+     * @return the long number of the Id
+     */
+    long toLong();
 
 }
