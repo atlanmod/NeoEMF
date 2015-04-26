@@ -16,19 +16,6 @@
     <packaging>eclipse-plugin</packaging>
     <name>NeoEMF :: Eclipse :: UI</name>
 
-    <properties>
-        <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-	    <tycho-version>0.22.0</tycho-version>
-    </properties>
-
-	<repositories>
-		<repository>
-			<id>eclipse-luna</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/luna</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
     	<dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -41,28 +28,5 @@
     		<version>${project.version}</version>
     	</dependency>
 	</dependencies>
-
-
-    <build>
-         <sourceDirectory>${basedir}/src</sourceDirectory>
-	    <plugins>
-	   
-	      <plugin>
-	        <groupId>org.eclipse.tycho</groupId>
-	        <artifactId>tycho-maven-plugin</artifactId>
-	        <version>${tycho-version}</version>
-	        <extensions>true</extensions>
-	      </plugin>
-	      <plugin>
-	        <groupId>org.eclipse.tycho</groupId>
-	        <artifactId>target-platform-configuration</artifactId>
-	        <version>${tycho-version}</version>
-	        <configuration>
-	          <pomDependencies>consider</pomDependencies>
-	        </configuration>
-	      </plugin>
-	    </plugins> 
-    </build>
-
     <description>Eclipse UI integration plugin.</description>
 </project>

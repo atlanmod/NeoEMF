@@ -11,11 +11,6 @@
     <artifactId>features</artifactId>
     <name>NeoEMF :: Features</name>
     <packaging>pom</packaging>
-    <properties>
-    	<maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
-    	<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
     <description>Parent projcet for the feature plugin generation. Is responsible of Base, Graph (and Blueprints connectors), and Map feature generation.</description>
 	<modules>
 		<module>fr.inria.atlanmod.neoemf.core.feature</module>

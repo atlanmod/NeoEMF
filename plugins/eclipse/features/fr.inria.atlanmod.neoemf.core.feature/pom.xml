@@ -9,13 +9,6 @@
   </parent>
   <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
   <packaging>eclipse-feature</packaging>
-  <repositories>
-	<repository>
-		<id>eclipse-luna</id>
-		<layout>p2</layout>
-		<url>http://download.eclipse.org/releases/luna</url>
-	</repository>
-  </repositories>	
   <dependencies>
 	<dependency>
 		<groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -32,27 +25,7 @@
 		<version>${project.version}</version>
 	</dependency>
   </dependencies>
-  <build>
-    <plugins>
-		<plugin>
-			<groupId>org.eclipse.tycho</groupId>
-			<artifactId>target-platform-configuration</artifactId>
-			<version>0.22.0</version>
-			<configuration>
-		    	<pomDependencies>consider</pomDependencies>
-		    </configuration>
-		</plugin>
-	    <plugin>
-	    	<groupId>org.eclipse.tycho</groupId>
-			<artifactId>tycho-maven-plugin</artifactId>
-			<version>0.22.0</version>
-			<extensions>true</extensions>
-			<configuration>
-				<pomDependencies>consider</pomDependencies>
-			</configuration>
-		</plugin>
-	</plugins>
-  </build>
+  
   <name>NeoEMF :: Eclipse :: Features :: Base</name>
   <description>Base feature project (referencing core and ui components).</description>
 </project>
