@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.editors;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;
 import org.eclipse.emf.ecore.resource.Resource;
 
-public class KyanosEditor extends EcoreEditor {
+public class NeoEMFEditor extends EcoreEditor {
 
-	public static final String EDITOR_ID = KyanosEditor.class.getName();
+	public static final String EDITOR_ID = NeoEMFEditor.class.getName();
 	
 	@Override
 	public void dispose() {

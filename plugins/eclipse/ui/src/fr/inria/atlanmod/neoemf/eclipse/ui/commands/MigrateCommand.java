@@ -38,8 +38,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.KyanosImporter;
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.KyanosMigratorUtil;
+import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter;
+import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporterUtil;
 
 public class MigrateCommand extends AbstractHandler {
 
@@ -66,7 +66,7 @@ public class MigrateCommand extends AbstractHandler {
 						if (genModel == null) {
 							showMessage("The selected file does not contain a generator model.", true);
 						} else {
-							String msg = KyanosMigratorUtil.adjustGenModel(genModel);
+							String msg = NeoEMFImporterUtil.adjustGenModel(genModel);
 							if (msg == null) {
 								showMessage("The selected generator model was already migrated.", false);
 							} else {
@@ -76,7 +76,7 @@ public class MigrateCommand extends AbstractHandler {
 						}
 					}
 				} catch (Exception ex) {
-					return new Status(IStatus.ERROR, KyanosImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
+					return new Status(IStatus.ERROR, NeoEMFImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
 				}
 
 				return Status.OK_STATUS;
@@ -128,9 +128,9 @@ public class MigrateCommand extends AbstractHandler {
 					try {
 						final Shell shell = new Shell(display);
 						if (error) {
-							MessageDialog.openError(shell, "Kyanos Migrator", msg);
+							MessageDialog.openError(shell, "NeoEMF Migrator", msg);
 						} else {
-							MessageDialog.openInformation(shell, "Kyanos Migrator", msg);
+							MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
 						}
 					} catch (RuntimeException ignore) {
 					}

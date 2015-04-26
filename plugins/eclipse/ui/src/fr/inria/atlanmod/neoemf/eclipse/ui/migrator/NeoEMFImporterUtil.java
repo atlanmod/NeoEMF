@@ -26,16 +26,15 @@ import org.eclipse.emf.common.util.WrappedException;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 
-public abstract class KyanosMigratorUtil {
+public abstract class NeoEMFImporterUtil {
 
 	private static final String ROOT_EXTENDS_CLASS = PersistentEObjectImpl.class.getName();
 	private static final String NEOEMF_MODEL_PLUGIN_NAME = "fr.inria.atlanmod.neoemf.core";
 	private static final String ROOT_EXTENDS_INTERFACE = PersistentEObject.class.getName();
 
-//	public static final String PLUGIN_VARIABLE_KYANOS = "NEOEMF=" + NeoEMFPlugin.PLUGIN_ID;
-	public static final String PLUGIN_VARIABLE_KYANOS = "NEOEMF=" + NEOEMF_MODEL_PLUGIN_NAME;
+	public static final String PLUGIN_VARIABLE_NEOEMF = "NEOEMF=" + NEOEMF_MODEL_PLUGIN_NAME;
 	
-	private KyanosMigratorUtil() {
+	private NeoEMFImporterUtil() {
 	}
 
 	  public static String adjustGenModel(GenModel genModel)
@@ -69,10 +68,10 @@ public abstract class KyanosMigratorUtil {
 		}
 
 		EList<String> pluginVariables = genModel.getModelPluginVariables();
-		if (!pluginVariables.contains(PLUGIN_VARIABLE_KYANOS)) {
-			pluginVariables.add(PLUGIN_VARIABLE_KYANOS);
+		if (!pluginVariables.contains(PLUGIN_VARIABLE_NEOEMF)) {
+			pluginVariables.add(PLUGIN_VARIABLE_NEOEMF);
 			builder.append("Added Model Plugin Variables = ");
-			builder.append(PLUGIN_VARIABLE_KYANOS);
+			builder.append(PLUGIN_VARIABLE_NEOEMF);
 			builder.append("\n");
 		}
 

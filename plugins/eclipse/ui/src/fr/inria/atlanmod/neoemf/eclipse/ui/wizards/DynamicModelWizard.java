@@ -46,7 +46,7 @@ import org.eclipse.ui.dialogs.WizardNewFolderMainPage;
 import org.eclipse.ui.part.ISetSelectionTarget;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
-import fr.inria.atlanmod.neoemf.eclipse.ui.editors.KyanosEditor;
+import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
 
 /**
@@ -126,7 +126,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 				@Override
 				protected void execute(IProgressMonitor progressMonitor) {
 					if (progressMonitor == null) progressMonitor = new NullProgressMonitor();
-					progressMonitor.beginTask("Create Kyanos resource", 2);
+					progressMonitor.beginTask("Create NeoEMF resource", 2);
 					Resource resource = null;
 					try {
 						// Create a resource set
@@ -187,7 +187,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 			// Open an editor on the new file.
 			//
 			try {
-				page.openEditor(new URIEditorInput(dbURI), KyanosEditor.EDITOR_ID);
+				page.openEditor(new URIEditorInput(dbURI), NeoEMFEditor.EDITOR_ID);
 			} catch (PartInitException exception) {
 				MessageDialog.openError(workbenchWindow.getShell(), "Open Editor", exception.getMessage());
 				return false;

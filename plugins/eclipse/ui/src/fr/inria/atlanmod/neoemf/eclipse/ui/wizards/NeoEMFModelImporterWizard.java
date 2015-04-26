@@ -15,15 +15,15 @@ import org.eclipse.emf.importer.ui.contribution.base.ModelImporterDetailPage;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterPackagePage;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterWizard;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.KyanosImporter;
+import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter;
 
-public class KyanosModelImporterWizard extends ModelImporterWizard {
-	public KyanosModelImporterWizard() {
+public class NeoEMFModelImporterWizard extends ModelImporterWizard {
+	public NeoEMFModelImporterWizard() {
 	}
 
 	@Override
 	protected ModelConverter createModelConverter() {
-		return new KyanosImporter();
+		return new NeoEMFImporter();
 	}
 
 	@Override

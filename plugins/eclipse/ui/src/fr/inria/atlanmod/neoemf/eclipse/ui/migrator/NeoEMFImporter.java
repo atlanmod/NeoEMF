@@ -32,11 +32,11 @@ import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.importer.ModelImporter;
 
-public class KyanosImporter extends ModelImporter {
+public class NeoEMFImporter extends ModelImporter {
 	
-	public static final String IMPORTER_ID = KyanosImporter.class.getName();
+	public static final String IMPORTER_ID = NeoEMFImporter.class.getName();
 
-	public KyanosImporter() {
+	public NeoEMFImporter() {
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class KyanosImporter extends ModelImporter {
 			genModel.getForeignModel().add(makeRelative(uri, genModelURI).toString());
 		}
 
-		KyanosMigratorUtil.adjustGenModel(genModel);
+		NeoEMFImporterUtil.adjustGenModel(genModel);
 	}
 
 	@Override

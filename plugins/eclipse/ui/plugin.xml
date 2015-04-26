@@ -5,12 +5,12 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="fr.inria.atlanmod.neoemf.eclipse.ui.editors.KyanosEditor"
+            class="fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor"
             contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
             default="false"
             icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
-            id="fr.inria.atlanmod.neoemf.eclipse.ui.editors.KyanosEditor"
-            name="Kyanos Editor">
+            id="fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor"
+            name="NeoEMF Editor">
       </editor>
    </extension>
    <extension
@@ -18,10 +18,10 @@
       <modelImporterDescriptor
             description="Create the Ecore model based on other Ecore or EMOF models"
             extensions="ecore,emof"
-            icon="icons/full/obj16/KyanosModelFile.gif"
+            icon="icons/full/obj16/NeoEMFModelFile.gif"
             id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
             name="Ecore model (NeoEMF Native)"
-            wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizards.KyanosModelImporterWizard">
+            wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizards.NeoEMFModelImporterWizard">
       </modelImporterDescriptor>
    </extension>
    <extension
@@ -61,7 +61,7 @@
                         <adapt
                               type="org.eclipse.core.resources.IFolder">
                            <test
-                                 property="fr.inria.atlanmod.neoemf.eclipse.ui.isKyanosDB"
+                                 property="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
                                  value="true">
                            </test>
                         </adapt>
@@ -99,23 +99,23 @@
             name="&amp;Migrate EMF Generator Model">
       </command>
       <command
-            defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.commands.OpenKyanosDbCommand"
+            defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.commands.OpenNeoEMFDbCommand"
             id="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
             name="&amp;Open Model Database">
       </command>
       <command
             defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.commands.CreateDynamicInstanceCommand"
             id="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
-            name="Create &amp;Kyanos Dynamic Instance...">
+            name="Create &amp;NeoEMF Dynamic Instance...">
       </command>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-            class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.KyanosDatabase"
-            id="fr.inria.atlanmod.neoemf.eclipse.ui.isKyanosDB"
+            class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.NeoEMFDatabase"
+            id="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
             namespace="fr.inria.atlanmod.neoemf.eclipse.ui"
-            properties="isKyanosDB"
+            properties="isNeoEMFDB"
             type="org.eclipse.core.resources.IFolder">
       </propertyTester>
    </extension>

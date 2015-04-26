@@ -33,11 +33,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
-import fr.inria.atlanmod.neoemf.eclipse.ui.editors.KyanosEditor;
+import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
 
 
-public class OpenKyanosDbCommand extends AbstractHandler {
+public class OpenNeoEMFDbCommand extends AbstractHandler {
 
 	private IFolder folder;
 
@@ -71,7 +71,7 @@ public class OpenKyanosDbCommand extends AbstractHandler {
 						IWorkbench workbench = PlatformUI.getWorkbench();
 						IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 						try {
-							page.openEditor(editorInput, KyanosEditor.EDITOR_ID);
+							page.openEditor(editorInput, NeoEMFEditor.EDITOR_ID);
 						} catch (PartInitException e) {
 							return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor", e);
 						}
