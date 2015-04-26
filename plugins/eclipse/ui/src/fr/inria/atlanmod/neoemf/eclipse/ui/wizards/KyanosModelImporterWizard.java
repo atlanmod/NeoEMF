@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Abel Gómez - initial API and implementation
- ******************************************************************************/
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizards;
 
 import org.eclipse.emf.converter.ModelConverter;
@@ -17,11 +17,6 @@ import org.eclipse.emf.importer.ui.contribution.base.ModelImporterWizard;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.KyanosImporter;
 
-/**
- * 
- * @author abelgomez
- *
- */
 public class KyanosModelImporterWizard extends ModelImporterWizard {
 	public KyanosModelImporterWizard() {
 	}

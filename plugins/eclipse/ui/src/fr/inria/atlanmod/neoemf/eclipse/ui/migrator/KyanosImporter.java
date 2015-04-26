@@ -1,4 +1,4 @@
-/**
+/*******************************************************************************
  * Copyright (c) 2008, 2013 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
- *    Abel Gómez - Adapted to Kyanos models
- */
+ *    AtlanMod - Adapted to NeoEMF models
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 
 import java.text.MessageFormat;
@@ -32,9 +32,6 @@ import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.importer.ModelImporter;
 
-/**
- * @author abelgomez
- */
 public class KyanosImporter extends ModelImporter {
 	
 	public static final String IMPORTER_ID = KyanosImporter.class.getName();

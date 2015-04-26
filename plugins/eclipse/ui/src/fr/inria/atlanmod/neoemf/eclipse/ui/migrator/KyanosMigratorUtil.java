@@ -1,14 +1,4 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors:
- *     Abel Gómez - initial API and implementation
- ******************************************************************************/
-/**
  * Copyright (c) 2008, 2013 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,8 +7,8 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
- *    Abel Gómez - Adapted to Kyanos models
- */
+ *    AtlanMod - Adapted to NeoEMF models
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 
 import org.eclipse.core.resources.IFolder;
@@ -36,9 +26,6 @@ import org.eclipse.emf.common.util.WrappedException;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 
-/**
- * @author abelgomez
- */
 public abstract class KyanosMigratorUtil {
 
 	private static final String ROOT_EXTENDS_CLASS = PersistentEObjectImpl.class.getName();

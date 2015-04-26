@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Abel Gómez - initial API and implementation
- ******************************************************************************/
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.eclipse.ui.commands;
 
 
@@ -35,7 +35,6 @@ import fr.inria.atlanmod.neoemf.eclipse.ui.wizards.DynamicModelWizard;
 
 /**
  * Create a dynamic instance of an {@link EClass}.
- * @author abelgomez
  */
 public class CreateDynamicInstanceCommand extends AbstractHandler {
 	protected static final URI PLATFORM_RESOURCE = URI.createPlatformResourceURI("/", false);

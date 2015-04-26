@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel G�mez.
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Abel G�mez - initial API and implementation
- ******************************************************************************/
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizards;
 
 import java.io.File;
@@ -48,11 +48,9 @@ import org.eclipse.ui.part.ISetSelectionTarget;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.KyanosEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
-import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 /**
  * This is a simple wizard for creating a new dynamic model file.
- * @author abelgomez
  */
 public class DynamicModelWizard extends Wizard implements INewWizard {
 	/**
