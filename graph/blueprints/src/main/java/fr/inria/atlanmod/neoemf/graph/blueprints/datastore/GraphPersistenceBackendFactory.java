@@ -132,8 +132,8 @@ public class GraphPersistenceBackendFactory extends
 	}
 	
 	@Override
-	public SearcheableResourceEStore createPersistentEStore(
-			PersistentResource resource, PersistenceBackend backend) {
+	public SearcheableResourceEStore internalCreatePersistentEStore(
+			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) {
 		assert backend instanceof GraphPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
 		return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
 	}

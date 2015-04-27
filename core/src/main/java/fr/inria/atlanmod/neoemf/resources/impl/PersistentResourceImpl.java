@@ -132,7 +132,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 				throw new FileNotFoundException(uri.toFileString());
 			} else {
 				this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-				this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend);
+				this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
 				this.isPersistent = true;
 			}
 			this.options = options;
@@ -161,7 +161,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
 			PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(this.persistenceBackend, newBackend);
 			this.persistenceBackend = newBackend;
-			this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this,persistenceBackend);
+			this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this,persistenceBackend, options);
 			this.isLoaded = true;
 		}
 		persistenceBackend.save();

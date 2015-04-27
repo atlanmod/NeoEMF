@@ -49,8 +49,8 @@ public class MapPersistenceBackendFactory extends
 	}
 
 	@Override
-	public SearcheableResourceEStore createPersistentEStore(
-			PersistentResource resource, PersistenceBackend backend) {
+	public SearcheableResourceEStore internalCreatePersistentEStore(
+			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) {
 		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
 		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteMapResourceEStoreImpl(resource, (DB)backend)));
 	}

@@ -20,7 +20,7 @@ public class NeoURITest {
 	public void setUp() {
 		PersistenceBackendFactoryRegistry.getFactories().clear();
 		PersistenceBackendFactoryRegistry.getFactories().put("mock", persistenceBackendFactory);
-		testFile = new File("src/test/resource/neoURITestFile");
+		testFile = new File("src/test/resources/neoURITestFile");
 	}
 	
 	@After
