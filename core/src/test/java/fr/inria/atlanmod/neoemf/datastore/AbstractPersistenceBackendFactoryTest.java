@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.datastore;
 
 import static org.mockito.Matchers.any;
@@ -24,6 +34,7 @@ import fr.inria.atlanmod.neoemf.datastores.estores.impl.IsSetCachingDelegatedESt
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.LoggingDelegatedResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 /**
  * Test cases for the only non-abstract method in @see{AbstractPersistenceBackendFactory::createPersistentEStore} 
@@ -36,7 +47,7 @@ public class AbstractPersistenceBackendFactoryTest {
     private PersistenceBackend mockPersistentBackend = mock(PersistenceBackend.class);
     @SuppressWarnings("rawtypes")
     private Map options = new HashMap();
-    private List<PersistentResource.Store> storeOptions = new ArrayList<PersistentResource.Store>();
+    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<PersistentResourceOptions.StoreOption>();
     
     @SuppressWarnings("unchecked")
     @Before
@@ -46,7 +57,7 @@ public class AbstractPersistenceBackendFactoryTest {
         when(persistenceBackendFactory.internalCreatePersistentEStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mockPersistentEStore);
         PersistenceBackendFactoryRegistry.getFactories().clear();
         PersistenceBackendFactoryRegistry.getFactories().put("mock", persistenceBackendFactory);
-        options.put(PersistentResource.STORE_OPTIONS, storeOptions);
+        options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
     }
     
     @After
@@ -71,7 +82,7 @@ public class AbstractPersistenceBackendFactoryTest {
     
     @Test
     public void testIsSetCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.IS_SET_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.IS_SET_CACHING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof IsSetCachingDelegatedEStoreImpl;
         SearcheableResourceEStore childStore = getChildStore(store);
@@ -82,7 +93,7 @@ public class AbstractPersistenceBackendFactoryTest {
     
     @Test
     public void testLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.LOGGING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.LOGGING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof LoggingDelegatedResourceEStoreImpl;
         SearcheableResourceEStore childStore = getChildStore(store);
@@ -93,7 +104,7 @@ public class AbstractPersistenceBackendFactoryTest {
     
     @Test
     public void testSizeCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.SIZE_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.SIZE_CACHING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof SizeCachingDelegatedEStoreImpl;
         SearcheableResourceEStore childStore = getChildStore(store);
@@ -104,7 +115,7 @@ public class AbstractPersistenceBackendFactoryTest {
     
     @Test
     public void testEStructuralFeatureCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.ESTRUCUTRALFEATURE_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.ESTRUCUTRALFEATURE_CACHING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof EStructuralFeatureCachingDelegatedEStoreImpl;
         SearcheableResourceEStore childStore = getChildStore(store);
@@ -119,8 +130,8 @@ public class AbstractPersistenceBackendFactoryTest {
      */
     @Test
     public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.IS_SET_CACHING);
-        storeOptions.add(PersistentResource.Store.LOGGING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.IS_SET_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.LOGGING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof LoggingDelegatedResourceEStoreImpl;
         SearcheableResourceEStore loggingChildStore = getChildStore(store);
@@ -137,8 +148,8 @@ public class AbstractPersistenceBackendFactoryTest {
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.IS_SET_CACHING);
-        storeOptions.add(PersistentResource.Store.SIZE_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.IS_SET_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.SIZE_CACHING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof SizeCachingDelegatedEStoreImpl;
         SearcheableResourceEStore sizeCachingChildStore = getChildStore(store);
@@ -155,8 +166,8 @@ public class AbstractPersistenceBackendFactoryTest {
      */
     @Test
     public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.SIZE_CACHING);
-        storeOptions.add(PersistentResource.Store.ESTRUCUTRALFEATURE_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.SIZE_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.ESTRUCUTRALFEATURE_CACHING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof SizeCachingDelegatedEStoreImpl;
         SearcheableResourceEStore sizeCachingChildStore = getChildStore(store);
@@ -174,10 +185,10 @@ public class AbstractPersistenceBackendFactoryTest {
      */
     @Test
     public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(PersistentResource.Store.ESTRUCUTRALFEATURE_CACHING);
-        storeOptions.add(PersistentResource.Store.IS_SET_CACHING);
-        storeOptions.add(PersistentResource.Store.LOGGING);
-        storeOptions.add(PersistentResource.Store.SIZE_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.ESTRUCUTRALFEATURE_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.IS_SET_CACHING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.LOGGING);
+        storeOptions.add(PersistentResourceOptions.StoreOption.SIZE_CACHING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof LoggingDelegatedResourceEStoreImpl;
         SearcheableResourceEStore loggingChildStore = getChildStore(store);

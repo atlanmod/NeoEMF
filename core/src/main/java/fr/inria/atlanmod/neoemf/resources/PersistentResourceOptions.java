@@ -10,15 +10,14 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.resources;
 
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
-
-public interface PersistentResource extends Resource, Resource.Internal {
+public interface PersistentResourceOptions {
     
-	public final static String OPTIONS_GRAPH_TYPE = "blueprints.graph";
-	public final static String OPTIONS_GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
-
-	
-	public abstract InternalEObject.EStore eStore();
-	
+    public final static String STORE_OPTIONS = "stores";
+    
+    public static enum StoreOption {
+        IS_SET_CACHING,
+        LOGGING,
+        SIZE_CACHING,
+        ESTRUCUTRALFEATURE_CACHING
+    }
 }

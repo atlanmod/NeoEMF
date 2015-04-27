@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.datastores.estores.impl.IsSetCachingDelegatedESt
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.LoggingDelegatedResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public abstract class AbstractPersistenceBackendFactory {
 	
@@ -33,18 +34,18 @@ public abstract class AbstractPersistenceBackendFactory {
 	public SearcheableResourceEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) {
 	    SearcheableResourceEStore eStore = this.internalCreatePersistentEStore(resource, backend, options);
 	    @SuppressWarnings("unchecked")
-        ArrayList<PersistentResource.Store> storeOptions = (ArrayList<PersistentResource.Store>)options.get(PersistentResource.STORE_OPTIONS);
+        ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
 	    if(storeOptions != null && !storeOptions.isEmpty()) {
-	        if(storeOptions.contains(PersistentResource.Store.IS_SET_CACHING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.IS_SET_CACHING)) {
 	            eStore = new IsSetCachingDelegatedEStoreImpl(eStore);
 	        }
-	        if(storeOptions.contains(PersistentResource.Store.ESTRUCUTRALFEATURE_CACHING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.ESTRUCUTRALFEATURE_CACHING)) {
 	            eStore = new EStructuralFeatureCachingDelegatedEStoreImpl(eStore);
 	        }
-	        if(storeOptions.contains(PersistentResource.Store.SIZE_CACHING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.SIZE_CACHING)) {
 	            eStore = new SizeCachingDelegatedEStoreImpl(eStore);
 	        }
-	        if(storeOptions.contains(PersistentResource.Store.LOGGING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.LOGGING)) {
 	            eStore = new LoggingDelegatedResourceEStoreImpl(eStore);
 	        }
 	    }
