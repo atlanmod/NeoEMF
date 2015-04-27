@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel G�mez.
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Abel G�mez - initial API and implementation
- ******************************************************************************/
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ *******************************************************************************/
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import java.text.MessageFormat;
@@ -118,7 +118,6 @@ public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implemen
 	 *            The corresponding {@link EObject}
 	 * @return the newly created vertex
 	 */
-	private int addCount = 0;
 	protected Vertex addVertex(EObject eObject) {
 		PersistentEObject kyanosEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
 		Vertex v = addVertex(kyanosEObject.id().toString());
@@ -135,7 +134,6 @@ public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implemen
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EClass eClass) {
-		addCount++;
 		Vertex vertex = addVertex(buildEClassId(eClass));
 		vertex.setProperty(ECLASS__NAME, eClass.getName());
 		vertex.setProperty(EPACKAGE__NSURI, eClass.getEPackage().getNsURI());
