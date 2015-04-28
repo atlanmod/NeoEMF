@@ -14,6 +14,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -27,11 +28,15 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.GraphHelper;
 
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitGraphResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteGraphResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.graph.blueprints.resources.GraphResourceOptions;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class GraphPersistenceBackendFactory extends
 		AbstractPersistenceBackendFactory {
@@ -132,10 +137,23 @@ public class GraphPersistenceBackendFactory extends
 	}
 	
 	@Override
-	public SearcheableResourceEStore internalCreatePersistentEStore(
-			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) {
+	protected SearcheableResourceEStore internalCreatePersistentEStore(
+			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 		assert backend instanceof GraphPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
-		return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
+    	@SuppressWarnings("unchecked")
+        ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+    	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(GraphResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
+    	    // Default store
+    	    return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
+    	}
+    	else {
+    	    if(storeOptions.contains(GraphResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
+    	        return new AutocommitGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
+    	    }
+    	    else {
+    	        throw new InvalidDataStoreException();
+    	    }
+    	}
 	}
 	
 	@Override

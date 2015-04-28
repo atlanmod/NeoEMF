@@ -31,28 +31,28 @@ public abstract class AbstractPersistenceBackendFactory {
 	
 	public abstract PersistenceBackend createPersistentBackend(File file, Map<?,?> options);
 	
-	public SearcheableResourceEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) {
+	public SearcheableResourceEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 	    SearcheableResourceEStore eStore = this.internalCreatePersistentEStore(resource, backend, options);
 	    @SuppressWarnings("unchecked")
         ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
 	    if(storeOptions != null && !storeOptions.isEmpty()) {
-	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.IS_SET_CACHING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.IS_SET_CACHING)) {
 	            eStore = new IsSetCachingDelegatedEStoreImpl(eStore);
 	        }
-	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.ESTRUCUTRALFEATURE_CACHING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING)) {
 	            eStore = new EStructuralFeatureCachingDelegatedEStoreImpl(eStore);
 	        }
-	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.SIZE_CACHING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.SIZE_CACHING)) {
 	            eStore = new SizeCachingDelegatedEStoreImpl(eStore);
 	        }
-	        if(storeOptions.contains(PersistentResourceOptions.StoreOption.LOGGING)) {
+	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.LOGGING)) {
 	            eStore = new LoggingDelegatedResourceEStoreImpl(eStore);
 	        }
 	    }
 	    return eStore;
 	}
 	
-	public abstract SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options);
+	protected abstract SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException;
 	
 	public abstract void copyBackend(PersistenceBackend from, PersistenceBackend to);
 	

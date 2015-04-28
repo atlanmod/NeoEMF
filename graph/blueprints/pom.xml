@@ -88,7 +88,7 @@
 	            <manifestLocation>${manifest-location}</manifestLocation>
 	           <instructions>
 	           	<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.datastore,fr.inria.atlanmod.neoemf.graph.blueprints.util</Export-Package>
+	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.resources,fr.inria.atlanmod.neoemf.graph.blueprints.datastore,fr.inria.atlanmod.neoemf.graph.blueprints.util</Export-Package>
 	           	<Import-Package></Import-Package>
 	           	<Embed-Dependency>commons-collections,commons-lang,commons-logging,commons-configuration,guava,blueprints-core,jboss-common-core</Embed-Dependency>
 	           	<Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>

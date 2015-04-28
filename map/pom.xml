@@ -54,7 +54,7 @@
 	            <manifestLocation>${manifest-location}</manifestLocation>
 	           <instructions>
 	           	<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-	           	<Export-Package>fr.inria.atlanmod.neoemf.map.datastore,fr.inria.atlanmod.neoemf.map.util</Export-Package>
+	           	<Export-Package>fr.inria.atlanmod.neoemf.map.resources,fr.inria.atlanmod.neoemf.map.datastore,fr.inria.atlanmod.neoemf.map.util</Export-Package>
 	           	<Import-Package></Import-Package>
 	           	<Embed-Dependency>mapdb,jboss-common</Embed-Dependency>
 	           	<Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>

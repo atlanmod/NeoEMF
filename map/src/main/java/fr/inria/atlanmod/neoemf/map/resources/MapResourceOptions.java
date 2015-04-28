@@ -8,18 +8,18 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-package fr.inria.atlanmod.neoemf.resources;
+package fr.inria.atlanmod.neoemf.map.resources;
 
-public interface PersistentResourceOptions {
-    
-    public final static String STORE_OPTIONS = "stores";
-    
-    public interface StoreOption {}
-    
-    public static enum EStoreOption implements StoreOption {
-        IS_SET_CACHING,
-        LOGGING,
-        SIZE_CACHING,
-        ESTRUCUTRALFEATURE_CACHING
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+
+public interface MapResourceOptions extends PersistentResourceOptions {
+
+    public static enum EStoreMapOption implements StoreOption {
+        AUTOCOMMIT,
+        CACHED_MANY,
+        DIRECT_WRITE,
+        DIRECT_WRITE_WITH_LISTS,
+        DIRECT_WRITE_WITH_INDEXES
     }
+    
 }

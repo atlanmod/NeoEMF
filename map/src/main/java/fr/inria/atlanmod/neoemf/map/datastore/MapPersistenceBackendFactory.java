@@ -11,6 +11,7 @@
 package fr.inria.atlanmod.neoemf.map.datastore;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.mapdb.DB;
@@ -18,12 +19,17 @@ import org.mapdb.DBMaker;
 import org.mapdb.Engine;
 
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastores.estores.impl.IsSetCachingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastores.estores.impl.SizeCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.AutocommitMapResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceWithListsEStoreImpl;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithIndexesResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class MapPersistenceBackendFactory extends
 		AbstractPersistenceBackendFactory {
@@ -49,10 +55,32 @@ public class MapPersistenceBackendFactory extends
 	}
 
 	@Override
-	public SearcheableResourceEStore internalCreatePersistentEStore(
-			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) {
+	protected SearcheableResourceEStore internalCreatePersistentEStore(
+			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
-		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteMapResourceEStoreImpl(resource, (DB)backend)));
+    	@SuppressWarnings("unchecked")
+        ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+        if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE)) {
+            // Default store
+            return new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+        }
+        else {
+            if(storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT)) {
+                return new AutocommitMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+            }
+            else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.CACHED_MANY)) {
+                return new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+            }
+            else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_LISTS)) {
+                return new DirectWriteMapResourceWithListsEStoreImpl(resource, (MapPersistenceBackend)backend);
+            }
+            else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_INDEXES)) {
+                return new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+            }
+            else {
+                throw new InvalidDataStoreException();
+            }
+        }
 	}
 
 	@Override
