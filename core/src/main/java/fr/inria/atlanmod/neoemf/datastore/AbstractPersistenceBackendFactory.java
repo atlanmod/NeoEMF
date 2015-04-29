@@ -29,7 +29,7 @@ public abstract class AbstractPersistenceBackendFactory {
 	
 	public abstract SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend);
 	
-	public abstract PersistenceBackend createPersistentBackend(File file, Map<?,?> options);
+	public abstract PersistenceBackend createPersistentBackend(File file, Map<?,?> options) throws InvalidDataStoreException;
 	
 	public SearcheableResourceEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 	    SearcheableResourceEStore eStore = this.internalCreatePersistentEStore(resource, backend, options);

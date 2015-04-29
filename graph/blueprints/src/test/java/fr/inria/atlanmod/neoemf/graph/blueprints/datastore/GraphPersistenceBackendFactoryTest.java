@@ -94,7 +94,7 @@ public class GraphPersistenceBackendFactoryTest {
     }
     
     @Test
-    public void testCreatePersistentBackendNoOptionNoConfigFile() {
+    public void testCreatePersistentBackendNoOptionNoConfigFile() throws InvalidDataStoreException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
         assert persistentBackend instanceof GraphPersistenceBackend : "Invalid backend created";
         GraphPersistenceBackend graph = (GraphPersistenceBackend)persistentBackend;

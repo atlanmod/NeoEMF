@@ -61,7 +61,7 @@ public class GraphPersistenceBackendFactory extends
 	}
 	
 	@Override
-	public GraphPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) {
+	public GraphPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
 		GraphPersistenceBackend graphDB = null;
 		PropertiesConfiguration configuration = null;
 		String directoryProperty = null;
@@ -71,22 +71,18 @@ public class GraphPersistenceBackendFactory extends
 			try {
 				configuration = new PropertiesConfiguration(path.toFile());
 			} catch (ConfigurationException e) {
-				//throw new InvalidDataStoreException(e);
-				// TODO handle that properly
-				e.printStackTrace();
+				throw new InvalidDataStoreException(e);
 			}
 			// Initialize value if the config file has just been created
-			if (!configuration.containsKey(PersistentResource.OPTIONS_GRAPH_TYPE)) {
-				configuration.setProperty(PersistentResource.OPTIONS_GRAPH_TYPE, PersistentResource.OPTIONS_GRAPH_TYPE_DEFAULT);
-			} else if (options.containsKey(PersistentResource.OPTIONS_GRAPH_TYPE)) {
+			if (!configuration.containsKey(GraphResourceOptions.OPTIONS_GRAPH_TYPE)) {
+				configuration.setProperty(GraphResourceOptions.OPTIONS_GRAPH_TYPE, GraphResourceOptions.OPTIONS_GRAPH_TYPE_DEFAULT);
+			} else if (options.containsKey(GraphResourceOptions.OPTIONS_GRAPH_TYPE)) {
 				// The file already existed, check that the issued options
 				// are not conflictive
-				String savedGraphType = configuration.getString(PersistentResource.OPTIONS_GRAPH_TYPE);
-				String issuedGraphType = options.get(PersistentResource.OPTIONS_GRAPH_TYPE).toString();
+				String savedGraphType = configuration.getString(GraphResourceOptions.OPTIONS_GRAPH_TYPE);
+				String issuedGraphType = options.get(GraphResourceOptions.OPTIONS_GRAPH_TYPE).toString();
 				if (!savedGraphType.equals(issuedGraphType)) {
-					// TODO handle that properly
-					System.out.println("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
-//					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
+					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
 				}
 			}
 
@@ -97,11 +93,9 @@ public class GraphPersistenceBackendFactory extends
 
 			// Check we have a valid graph type, it is needed to get the
 			// graph name
-			String graphType = configuration.getString(PersistentResource.OPTIONS_GRAPH_TYPE);
+			String graphType = configuration.getString(GraphResourceOptions.OPTIONS_GRAPH_TYPE);
 			if (graphType == null) {
-//				// TODO handle that properly
-				System.out.println("Graph type is undefined for " + file.getAbsolutePath());
-//				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
+				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
 			}
 
 			// Calculate the graph name, it is needed for the directory
@@ -116,8 +110,7 @@ public class GraphPersistenceBackendFactory extends
 			if (baseGraph instanceof KeyIndexableGraph) {
 				graphDB = new GraphPersistenceBackend((KeyIndexableGraph) baseGraph);
 			} else {
-				// TODO handle that properly
-//				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
+				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
 			}
 		} finally {
 			// Delete the directory property, it is no longer needed

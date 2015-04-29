@@ -20,12 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mapdb.DB;
-import org.mapdb.Engine;
 
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
@@ -111,7 +108,7 @@ public class MapPersistenceBackendFactoryTest {
     }
     
     @Test
-    public void testCreatePersistentBackendNoOption() {
+    public void testCreatePersistentBackendNoOption() throws InvalidDataStoreException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
         assert persistentBackend instanceof MapPersistenceBackend : "Invalid backend created";
         // Need to test further the nature of the MapDB engine
