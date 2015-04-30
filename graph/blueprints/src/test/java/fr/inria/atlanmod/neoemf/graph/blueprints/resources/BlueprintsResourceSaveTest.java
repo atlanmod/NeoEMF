@@ -31,10 +31,10 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 
-public class GraphResourceSaveTest {
+public class BlueprintsResourceSaveTest {
     
     protected String testFilePath = "src/test/resources/graphResourceSaveOptionTestFile";
     protected String configFileName = "/config.properties";
@@ -51,11 +51,11 @@ public class GraphResourceSaveTest {
     public void setUp() {
         options = new HashMap();
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoGraphURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = new File(testFilePath);
         resSet = new ResourceSetImpl();
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoGraphURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
-        resource = resSet.createResource(NeoGraphURI.createNeoGraphURI(testFile));
+        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
+        resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(testFile));
     }
     
     @After
@@ -90,21 +90,21 @@ public class GraphResourceSaveTest {
         File configFile = new File(testFilePath + configFileName);
         assert configFile.exists();
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE);
-        assert configuration.getString(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE_DEFAULT);
+        assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
+        assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
         assert getKeyCount(configuration) == 1 : "Too much content in the .properties file";
     }
     
     @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
-        options.put(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE_DEFAULT);
+        options.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
         resource.save(options);
         File configFile = new File(testFilePath + configFileName);
         assert configFile.exists();
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE);
-        assert configuration.getString(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE_DEFAULT);
+        assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
+        assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
         assert getKeyCount(configuration) == 1 : "Too much content in the .properties file";
     }
 

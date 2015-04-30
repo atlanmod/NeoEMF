@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 
-public class AutocommitGraphResourceEStoreImpl extends DirectWriteGraphResourceEStoreImpl {
+public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprintsResourceEStoreImpl {
 
 	/**
 	 * Default number of allowed modifications (100000) between commits on the
@@ -27,7 +27,7 @@ public class AutocommitGraphResourceEStoreImpl extends DirectWriteGraphResourceE
 
 	/**
 	 * Number of allowed modifications between commits on the underlying graph
-	 * for this {@link AutocommitGraphResourceEStoreImpl}
+	 * for this {@link AutocommitBlueprintsResourceEStoreImpl}
 	 */
 	protected final int OPS_BETWEEN_COMMITS;
 
@@ -45,7 +45,7 @@ public class AutocommitGraphResourceEStoreImpl extends DirectWriteGraphResourceE
 	 * @param graph
 	 * @param opsBetweenCommits
 	 */
-	public AutocommitGraphResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph, int opsBetweenCommits) {
+	public AutocommitBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph, int opsBetweenCommits) {
 		super(resource, graph);
 		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
 	}
@@ -59,7 +59,7 @@ public class AutocommitGraphResourceEStoreImpl extends DirectWriteGraphResourceE
 	 * @param resource
 	 * @param graph
 	 */
-	public AutocommitGraphResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
+	public AutocommitBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this(resource, graph, OPS_BETWEEN_COMMITS_DEFAULT);
 	}
 

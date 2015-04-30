@@ -18,11 +18,11 @@ import org.eclipse.emf.common.util.URI;
 
 import fr.inria.atlanmod.neoemf.util.NeoURI;
 
-public class NeoGraphURI extends NeoURI {
+public class NeoBlueprintsURI extends NeoURI {
 	
-	public static final String NEO_GRAPH_SCHEME = "neo-graph";
+	public static final String NEO_GRAPH_SCHEME = "neo-blueprints";
 	
-	protected NeoGraphURI(int hashCode, URI internalURI) {
+	protected NeoBlueprintsURI(int hashCode, URI internalURI) {
 		super(hashCode,internalURI);
 	}
 	

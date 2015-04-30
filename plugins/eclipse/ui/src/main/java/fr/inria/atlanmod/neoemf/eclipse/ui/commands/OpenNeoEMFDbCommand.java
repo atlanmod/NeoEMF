@@ -34,7 +34,7 @@ import org.eclipse.ui.progress.UIJob;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 
 
 public class OpenNeoEMFDbCommand extends AbstractHandler {
@@ -65,7 +65,7 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
 
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-					URI uri= NeoGraphURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
+					URI uri= NeoBlueprintsURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
 					URIEditorInput editorInput = new URIEditorInput(uri);
 					if (editorInput != null) {
 						IWorkbench workbench = PlatformUI.getWorkbench();

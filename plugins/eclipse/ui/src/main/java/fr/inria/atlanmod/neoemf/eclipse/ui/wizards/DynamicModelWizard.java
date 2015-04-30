@@ -47,7 +47,7 @@ import org.eclipse.ui.part.ISetSelectionTarget;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 
 /**
  * This is a simple wizard for creating a new dynamic model file.
@@ -118,7 +118,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 			dbFolder.delete(true, new NullProgressMonitor());
 			// Get the URI of the model file.
 			//
-			final URI dbURI = NeoGraphURI.createNeoGraphURI(new File(dbFolder.getRawLocation().toOSString()));
+			final URI dbURI = NeoBlueprintsURI.createNeoGraphURI(new File(dbFolder.getRawLocation().toOSString()));
 			
 			// Do the work within an operation.
 			//

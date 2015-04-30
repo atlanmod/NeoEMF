@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 
-public class NeoGraphURITest {
+public class NeoBlueprintsURITest {
 
 	private AbstractPersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
 	private File testFile = null;
@@ -29,7 +29,7 @@ public class NeoGraphURITest {
 	@Before
 	public void setUp() {
 		PersistenceBackendFactoryRegistry.getFactories().clear();
-		PersistenceBackendFactoryRegistry.getFactories().put(NeoGraphURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
+		PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
 		testFile = new File("src/test/resource/neoGraphURITestFile");
 	}
 	
@@ -44,27 +44,27 @@ public class NeoGraphURITest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
 		URI invalidURI = URI.createURI("invalid:/test");
-		NeoGraphURI.createNeoGraphURI(invalidURI);
+		NeoBlueprintsURI.createNeoGraphURI(invalidURI);
 	}
 	
 	@Test
 	public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-		URI validURI = URI.createURI(NeoGraphURI.NEO_GRAPH_SCHEME+":/test");
-		URI neoURI = NeoGraphURI.createNeoGraphURI(validURI);
-		assert neoURI.scheme().equals(NeoGraphURI.NEO_GRAPH_SCHEME);
+		URI validURI = URI.createURI(NeoBlueprintsURI.NEO_GRAPH_SCHEME+":/test");
+		URI neoURI = NeoBlueprintsURI.createNeoGraphURI(validURI);
+		assert neoURI.scheme().equals(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
 	}
 	
 	@Test
 	public void testCreateNeoGraphURIFromFileURI() {
 		URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-		URI neoURI = NeoGraphURI.createNeoGraphURI(fileURI);
-		assert neoURI.scheme().equals(NeoGraphURI.NEO_GRAPH_SCHEME);
+		URI neoURI = NeoBlueprintsURI.createNeoGraphURI(fileURI);
+		assert neoURI.scheme().equals(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
 	}
 	
 	@Test
 	public void testCreateNeoURIFromFile() {
-		URI neoURI = NeoGraphURI.createNeoGraphURI(testFile);
-		assert neoURI.scheme().equals(NeoGraphURI.NEO_GRAPH_SCHEME);
+		URI neoURI = NeoBlueprintsURI.createNeoGraphURI(testFile);
+		assert neoURI.scheme().equals(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
 	}
 	
 }

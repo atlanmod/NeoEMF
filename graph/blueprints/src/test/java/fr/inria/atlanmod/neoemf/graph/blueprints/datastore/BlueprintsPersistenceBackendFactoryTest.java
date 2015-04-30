@@ -32,13 +32,13 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitGraphResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteGraphResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitBlueprintsResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
-public class GraphPersistenceBackendFactoryTest {
+public class BlueprintsPersistenceBackendFactoryTest {
     
     private AbstractPersistenceBackendFactory persistenceBackendFactory = null;
     private File testFile = null;
@@ -50,7 +50,7 @@ public class GraphPersistenceBackendFactoryTest {
     @Before
     public void setUp() {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoGraphURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = new File("src/test/resources/graphPersistenceBackendFactoryTestFile");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
         
@@ -70,8 +70,8 @@ public class GraphPersistenceBackendFactoryTest {
     }
     
     private PersistenceBackend getInnerBackend(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        assert store instanceof DirectWriteGraphResourceEStoreImpl : "Invalid call, can not get the inner backend if the given EStore is not a DirectWriteGraphResourceEStoreImpl";
-        Field graphStoreField = DirectWriteGraphResourceEStoreImpl.class.getDeclaredField("graph");
+        assert store instanceof DirectWriteBlueprintsResourceEStoreImpl : "Invalid call, can not get the inner backend if the given EStore is not a DirectWriteGraphResourceEStoreImpl";
+        Field graphStoreField = DirectWriteBlueprintsResourceEStoreImpl.class.getDeclaredField("graph");
         graphStoreField.setAccessible(true);
         return (PersistenceBackend)graphStoreField.get(store);
     }
@@ -88,7 +88,7 @@ public class GraphPersistenceBackendFactoryTest {
     public void testCreateTransientEStore() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
         SearcheableResourceEStore eStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
-        assert eStore instanceof DirectWriteGraphResourceEStoreImpl : "Invalid EStore created";
+        assert eStore instanceof DirectWriteBlueprintsResourceEStoreImpl : "Invalid EStore created";
         PersistenceBackend innerBackend = getInnerBackend(eStore);
         assert innerBackend == transientBackend: "The backend in the EStore is not the created one";
     }
@@ -105,7 +105,7 @@ public class GraphPersistenceBackendFactoryTest {
     public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, Collections.EMPTY_MAP);
-        assert eStore instanceof DirectWriteGraphResourceEStoreImpl : "Invalid EStore created";
+        assert eStore instanceof DirectWriteBlueprintsResourceEStoreImpl : "Invalid EStore created";
         PersistenceBackend innerBackend = getInnerBackend(eStore);
         assert innerBackend == persistentBackend;
     }
@@ -115,7 +115,7 @@ public class GraphPersistenceBackendFactoryTest {
         storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend,options);
-        assert eStore instanceof DirectWriteGraphResourceEStoreImpl : "Invalid EStore created";
+        assert eStore instanceof DirectWriteBlueprintsResourceEStoreImpl : "Invalid EStore created";
         PersistenceBackend innerBackend = getInnerBackend(eStore);
         assert innerBackend == persistentBackend : "The backend in the EStore is not the created one";
     }
@@ -125,7 +125,7 @@ public class GraphPersistenceBackendFactoryTest {
         storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assert eStore instanceof AutocommitGraphResourceEStoreImpl : "Invalid EStore created";
+        assert eStore instanceof AutocommitBlueprintsResourceEStoreImpl : "Invalid EStore created";
         PersistenceBackend innerBackend = getInnerBackend(eStore);
         assert innerBackend == persistentBackend : "The backend in the EStore is not the created one";
     }

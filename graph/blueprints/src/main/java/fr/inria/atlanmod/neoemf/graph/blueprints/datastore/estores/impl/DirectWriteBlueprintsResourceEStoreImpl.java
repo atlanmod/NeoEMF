@@ -32,7 +32,7 @@ import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 
-public class DirectWriteGraphResourceEStoreImpl implements SearcheableResourceEStore {
+public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResourceEStore {
 
 	protected static final String SEPARATOR = ":";
 	protected static final String POSITION = "position";
@@ -44,7 +44,7 @@ public class DirectWriteGraphResourceEStoreImpl implements SearcheableResourceES
 	protected BlueprintsPersistenceBackend graph;
 	protected Resource.Internal resource;
 
-	public DirectWriteGraphResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
+	public DirectWriteBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this.graph = graph;
 		this.resource = resource;
 	}

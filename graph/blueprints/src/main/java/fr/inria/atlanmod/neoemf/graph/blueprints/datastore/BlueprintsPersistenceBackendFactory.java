@@ -31,8 +31,8 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitGraphResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteGraphResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitBlueprintsResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -57,7 +57,7 @@ public class BlueprintsPersistenceBackendFactory extends
 	public SearcheableResourceEStore createTransientEStore(
 			PersistentResource resource, PersistenceBackend backend) {
 		assert backend instanceof BlueprintsPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
-		return new DirectWriteGraphResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
+		return new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
 	}
 	
 	@Override
@@ -74,13 +74,13 @@ public class BlueprintsPersistenceBackendFactory extends
 				throw new InvalidDataStoreException(e);
 			}
 			// Initialize value if the config file has just been created
-			if (!configuration.containsKey(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE)) {
-				configuration.setProperty(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE_DEFAULT);
-			} else if (options.containsKey(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE)) {
+			if (!configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)) {
+				configuration.setProperty(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
+			} else if (options.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)) {
 				// The file already existed, check that the issued options
 				// are not conflictive
-				String savedGraphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE);
-				String issuedGraphType = options.get(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE).toString();
+				String savedGraphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
+				String issuedGraphType = options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).toString();
 				if (!savedGraphType.equals(issuedGraphType)) {
 					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
 				}
@@ -93,7 +93,7 @@ public class BlueprintsPersistenceBackendFactory extends
 
 			// Check we have a valid graph type, it is needed to get the
 			// graph name
-			String graphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE);
+			String graphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
 			if (graphType == null) {
 				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
 			}
@@ -141,11 +141,11 @@ public class BlueprintsPersistenceBackendFactory extends
         ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
     	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
     	    // Default store
-    	    return new DirectWriteGraphResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
+    	    return new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	}
     	else {
     	    if(storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
-    	        return new AutocommitGraphResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
+    	        return new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	    }
     	    else {
     	        throw new InvalidDataStoreException();
