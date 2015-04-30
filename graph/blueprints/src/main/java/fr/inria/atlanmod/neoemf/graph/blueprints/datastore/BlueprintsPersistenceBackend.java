@@ -40,13 +40,13 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 
-public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
+public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 	
 	private Index<Vertex> metaclassIndex;
 
 	protected class KyanosEdge extends IdEdge {
 		public KyanosEdge(Edge edge) {
-			super(edge, GraphPersistenceBackend.this);
+			super(edge, BlueprintsPersistenceBackend.this);
 		}
 		
 		/**
@@ -81,7 +81,7 @@ public class GraphPersistenceBackend extends IdGraph<KeyIndexableGraph> implemen
 	 */
 	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<Object, InternalPersistentEObject>();
 	
-	public GraphPersistenceBackend(KeyIndexableGraph baseGraph) {
+	public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
 		if(getIndex("metaclasses", Vertex.class) == null) {
 			metaclassIndex = createIndex("metaclasses",Vertex.class);

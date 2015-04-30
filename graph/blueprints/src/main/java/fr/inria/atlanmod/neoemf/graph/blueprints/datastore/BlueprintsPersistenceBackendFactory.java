@@ -33,12 +33,12 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitGraphResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteGraphResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.GraphResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
-public class GraphPersistenceBackendFactory extends
+public class BlueprintsPersistenceBackendFactory extends
 		AbstractPersistenceBackendFactory {
 
 	/**
@@ -50,19 +50,19 @@ public class GraphPersistenceBackendFactory extends
 
 	@Override
 	public PersistenceBackend createTransientBackend() {
-		return new GraphPersistenceBackend(new TinkerGraph());
+		return new BlueprintsPersistenceBackend(new TinkerGraph());
 	}
 	
 	@Override
 	public SearcheableResourceEStore createTransientEStore(
 			PersistentResource resource, PersistenceBackend backend) {
-		assert backend instanceof GraphPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
-		return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
+		assert backend instanceof BlueprintsPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
+		return new DirectWriteGraphResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
 	}
 	
 	@Override
-	public GraphPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
-		GraphPersistenceBackend graphDB = null;
+	public BlueprintsPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
+		BlueprintsPersistenceBackend graphDB = null;
 		PropertiesConfiguration configuration = null;
 		String directoryProperty = null;
 		try {
@@ -74,13 +74,13 @@ public class GraphPersistenceBackendFactory extends
 				throw new InvalidDataStoreException(e);
 			}
 			// Initialize value if the config file has just been created
-			if (!configuration.containsKey(GraphResourceOptions.OPTIONS_GRAPH_TYPE)) {
-				configuration.setProperty(GraphResourceOptions.OPTIONS_GRAPH_TYPE, GraphResourceOptions.OPTIONS_GRAPH_TYPE_DEFAULT);
-			} else if (options.containsKey(GraphResourceOptions.OPTIONS_GRAPH_TYPE)) {
+			if (!configuration.containsKey(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE)) {
+				configuration.setProperty(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE_DEFAULT);
+			} else if (options.containsKey(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE)) {
 				// The file already existed, check that the issued options
 				// are not conflictive
-				String savedGraphType = configuration.getString(GraphResourceOptions.OPTIONS_GRAPH_TYPE);
-				String issuedGraphType = options.get(GraphResourceOptions.OPTIONS_GRAPH_TYPE).toString();
+				String savedGraphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE);
+				String issuedGraphType = options.get(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE).toString();
 				if (!savedGraphType.equals(issuedGraphType)) {
 					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
 				}
@@ -93,7 +93,7 @@ public class GraphPersistenceBackendFactory extends
 
 			// Check we have a valid graph type, it is needed to get the
 			// graph name
-			String graphType = configuration.getString(GraphResourceOptions.OPTIONS_GRAPH_TYPE);
+			String graphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_GRAPH_TYPE);
 			if (graphType == null) {
 				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
 			}
@@ -105,10 +105,14 @@ public class GraphPersistenceBackendFactory extends
 			String graphName = segments[segments.length - 2];
 			directoryProperty = MessageFormat.format("blueprints.{0}.directory", graphName);
 			configuration.setProperty(directoryProperty, file.getAbsolutePath());
-
-			Graph baseGraph = GraphFactory.open(configuration);
+			Graph baseGraph = null;
+			try {
+			    baseGraph = GraphFactory.open(configuration);
+			}catch(RuntimeException e) {
+			    throw new InvalidDataStoreException("An error occurred when reading the configuration file");
+			}
 			if (baseGraph instanceof KeyIndexableGraph) {
-				graphDB = new GraphPersistenceBackend((KeyIndexableGraph) baseGraph);
+				graphDB = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
 			} else {
 				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
 			}
@@ -132,16 +136,16 @@ public class GraphPersistenceBackendFactory extends
 	@Override
 	protected SearcheableResourceEStore internalCreatePersistentEStore(
 			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-		assert backend instanceof GraphPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
+		assert backend instanceof BlueprintsPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
     	@SuppressWarnings("unchecked")
         ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
-    	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(GraphResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
+    	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
     	    // Default store
-    	    return new DirectWriteGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
+    	    return new DirectWriteGraphResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	}
     	else {
-    	    if(storeOptions.contains(GraphResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
-    	        return new AutocommitGraphResourceEStoreImpl(resource, (GraphPersistenceBackend)backend);
+    	    if(storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
+    	        return new AutocommitGraphResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	    }
     	    else {
     	        throw new InvalidDataStoreException();
@@ -151,7 +155,7 @@ public class GraphPersistenceBackendFactory extends
 	
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-		assert from instanceof GraphPersistenceBackend && to instanceof GraphPersistenceBackend : "Trying to use Graph backend copy on non Graph databases";
-		GraphHelper.copyGraph((GraphPersistenceBackend)from, (GraphPersistenceBackend)to);
+		assert from instanceof BlueprintsPersistenceBackend && to instanceof BlueprintsPersistenceBackend : "Trying to use Graph backend copy on non Graph databases";
+		GraphHelper.copyGraph((BlueprintsPersistenceBackend)from, (BlueprintsPersistenceBackend)to);
 	}
 }

@@ -12,11 +12,11 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.resources;
 
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
-public interface GraphResourceOptions extends PersistentResourceOptions {
+public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     
     public final static String OPTIONS_GRAPH_TYPE = "blueprints.graph";
     public final static String OPTIONS_GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
-
+    
     
     public static enum EStoreGraphOption implements StoreOption {
         AUTOCOMMIT,

@@ -19,11 +19,11 @@ import org.junit.Test;
 
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.GraphPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 
 public class NeoGraphURITest {
 
-	private AbstractPersistenceBackendFactory persistenceBackendFactory = new GraphPersistenceBackendFactory();
+	private AbstractPersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
 	private File testFile = null;
 	
 	@Before

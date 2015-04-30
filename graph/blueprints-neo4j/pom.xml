@@ -18,6 +18,23 @@
     </properties>
 
     <dependencies>
+    	<dependency>
+    		<groupId>fr.inria.atlanmod.neoemf</groupId>
+    		<artifactId>graph.blueprints</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>fr.inria.atlanmod.neoemf</groupId>
+    		<artifactId>graph.blueprints</artifactId>
+    		<version>${project.version}</version>
+    		<type>test-jar</type>
+    		<scope>test</scope>
+    	</dependency>
+    	<dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
         	<groupId>org.neo4j</groupId>
         	<artifactId>neo4j</artifactId>
@@ -75,11 +92,11 @@
 	          <configuration>
 	            <manifestLocation>${manifest-location}</manifestLocation>
 	           <instructions>
-	           	<Bundle-ClassPath>{maven-dependencies}</Bundle-ClassPath>
-	           	<Export-Package>com.googlecode.concurrentlinkedhashmap,org.apache.lucene.*,javax.transaction,javax.transaction.xa,com.tinkerpop.blueprints.impls.neo4j,org.neo4j.*</Export-Package>
+	           	<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources,com.googlecode.concurrentlinkedhashmap,org.apache.lucene.*,javax.transaction,javax.transaction.xa,com.tinkerpop.blueprints.impls.neo4j,org.neo4j.*</Export-Package>
 	           	<Import-Package></Import-Package>
 	           	<Embed-Dependency>geronimo-jta_1.1_spec,concurrentlinkedhashmap-lru,neo4j-lucene-index,lucene-core,neo4j-graph-algo,neo4j-graph-matching,neo4j-kernel,blueprints-neo4j-graph</Embed-Dependency>
-	           	<Require-Bundle></Require-Bundle>
+	           	<Require-Bundle>fr.inria.atlanmod.neoemf.graph.blueprints</Require-Bundle>
 	           </instructions>
 	          </configuration>
 	         <executions>

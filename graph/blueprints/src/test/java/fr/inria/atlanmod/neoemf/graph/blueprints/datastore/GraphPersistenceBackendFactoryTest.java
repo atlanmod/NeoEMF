@@ -34,7 +34,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitGraphResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteGraphResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.GraphResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoGraphURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
@@ -49,7 +49,7 @@ public class GraphPersistenceBackendFactoryTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        persistenceBackendFactory = new GraphPersistenceBackendFactory();
+        persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoGraphURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = new File("src/test/resources/graphPersistenceBackendFactoryTestFile");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
@@ -79,8 +79,8 @@ public class GraphPersistenceBackendFactoryTest {
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
-        assert transientBackend instanceof GraphPersistenceBackend : "Invalid backend created";
-        GraphPersistenceBackend graph = (GraphPersistenceBackend)transientBackend;
+        assert transientBackend instanceof BlueprintsPersistenceBackend : "Invalid backend created";
+        BlueprintsPersistenceBackend graph = (BlueprintsPersistenceBackend)transientBackend;
         assert graph.getBaseGraph() instanceof TinkerGraph : "The base graph is not a TinkerGraph";
     }
     
@@ -96,8 +96,8 @@ public class GraphPersistenceBackendFactoryTest {
     @Test
     public void testCreatePersistentBackendNoOptionNoConfigFile() throws InvalidDataStoreException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
-        assert persistentBackend instanceof GraphPersistenceBackend : "Invalid backend created";
-        GraphPersistenceBackend graph = (GraphPersistenceBackend)persistentBackend;
+        assert persistentBackend instanceof BlueprintsPersistenceBackend : "Invalid backend created";
+        BlueprintsPersistenceBackend graph = (BlueprintsPersistenceBackend)persistentBackend;
         assert graph.getBaseGraph() instanceof TinkerGraph : "The base graph is not the default TinkerGraph";
     }
     
@@ -112,7 +112,7 @@ public class GraphPersistenceBackendFactoryTest {
     
     @Test
     public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(GraphResourceOptions.EStoreGraphOption.DIRECT_WRITE);
+        storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend,options);
         assert eStore instanceof DirectWriteGraphResourceEStoreImpl : "Invalid EStore created";
@@ -122,7 +122,7 @@ public class GraphPersistenceBackendFactoryTest {
     
     @Test
     public void testCreatePersistentEStoreAutocommitOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        storeOptions.add(GraphResourceOptions.EStoreGraphOption.AUTOCOMMIT);
+        storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assert eStore instanceof AutocommitGraphResourceEStoreImpl : "Invalid EStore created";

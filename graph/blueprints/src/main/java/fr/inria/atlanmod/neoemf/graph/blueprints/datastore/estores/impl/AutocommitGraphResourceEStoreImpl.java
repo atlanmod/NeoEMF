@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.GraphPersistenceBackend;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 
 public class AutocommitGraphResourceEStoreImpl extends DirectWriteGraphResourceEStoreImpl {
 
@@ -45,7 +45,7 @@ public class AutocommitGraphResourceEStoreImpl extends DirectWriteGraphResourceE
 	 * @param graph
 	 * @param opsBetweenCommits
 	 */
-	public AutocommitGraphResourceEStoreImpl(Resource.Internal resource, GraphPersistenceBackend graph, int opsBetweenCommits) {
+	public AutocommitGraphResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph, int opsBetweenCommits) {
 		super(resource, graph);
 		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
 	}
@@ -59,7 +59,7 @@ public class AutocommitGraphResourceEStoreImpl extends DirectWriteGraphResourceE
 	 * @param resource
 	 * @param graph
 	 */
-	public AutocommitGraphResourceEStoreImpl(Resource.Internal resource, GraphPersistenceBackend graph) {
+	public AutocommitGraphResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this(resource, graph, OPS_BETWEEN_COMMITS_DEFAULT);
 	}
 
