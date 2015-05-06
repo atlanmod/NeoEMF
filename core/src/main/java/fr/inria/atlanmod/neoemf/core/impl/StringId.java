@@ -53,5 +53,10 @@ public class StringId implements Id {
 		}
 		
 	}
+	
+	@Override
+	public int hashCode() {
+	    return literalId.hashCode();
+	}
 
 }

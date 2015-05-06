@@ -108,11 +108,13 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				PersistentResourceImpl.this.persistenceBackend.stop();
+			    if(PersistentResourceImpl.this.persistenceBackend.isStarted()) {
+			        PersistentResourceImpl.this.persistenceBackend.stop();
+			    }
 			}
 		});
 	}
-
+	
 	/**
 	 * Returns the graph DB file
 	 * 
@@ -163,6 +165,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			this.persistenceBackend = newBackend;
 			this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this,persistenceBackend, options);
 			this.isLoaded = true;
+			this.isPersistent = true;
 		}
 		persistenceBackend.save();
 	}
@@ -202,6 +205,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
 		this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
 		this.isPersistent = false;
+		this.isLoaded = false;
 	}
 
 	@Override
