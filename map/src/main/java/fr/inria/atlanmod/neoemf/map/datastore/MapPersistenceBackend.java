@@ -31,20 +31,17 @@ public class MapPersistenceBackend extends DB implements PersistenceBackend {
 
 	@Override
 	public boolean isStarted() {
-		// TODO Auto-generated method stub
-		return false;
+	    return !this.isClosed();
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		this.close();
 	}
 
 	@Override
 	public void save() {
-		// TODO Auto-generated method stub
-		
+		this.commit();
 	}
 	
 }

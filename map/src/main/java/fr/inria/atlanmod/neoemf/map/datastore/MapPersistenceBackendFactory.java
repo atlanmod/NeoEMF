@@ -14,6 +14,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Engine;
@@ -28,6 +30,7 @@ import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourc
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceWithListsEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithIndexesResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
+import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
@@ -36,7 +39,7 @@ public class MapPersistenceBackendFactory extends
 
 	@Override
 	public PersistenceBackend createTransientBackend() {
-		Engine mapEngine = DBMaker.newMemoryDB().closeOnJvmShutdown().makeEngine();
+	    Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
 		return new MapPersistenceBackend(mapEngine);
 	}
 
@@ -50,8 +53,12 @@ public class MapPersistenceBackendFactory extends
 	@Override
 	public PersistenceBackend createPersistentBackend(File file,
 			Map<?, ?> options) {
-		Engine mapEngine = DBMaker.newFileDB(file).cacheLRUEnable().closeOnJvmShutdown().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
-		return new MapPersistenceBackend(mapEngine);
+	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("kyanos.mapdb")).toFileString());
+	    if (!dbFile.getParentFile().exists()) {
+	        dbFile.getParentFile().mkdirs();
+	    }
+		Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
+	    return new MapPersistenceBackend(mapEngine);
 	}
 
 	@Override
