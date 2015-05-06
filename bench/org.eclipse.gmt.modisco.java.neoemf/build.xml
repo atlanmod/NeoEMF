@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="org.eclipse.gmt.modisco.java.neoemf">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../../Bureau/ec/eclipse/"/>
+    <property name="fr.inria.atlanmod.kyanos.benchmarks.location" value="../fr.inria.atlanmod.neoemf.benchmarks"/>
+    <property name="org.eclipse.gmt.modisco.java.location" value="../org.eclipse.gmt.modisco.java"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+    <path id="Plug-in Dependencies.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/javax.annotation_1.2.0.v201401042248.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/javax.inject_1.0.0.v20091030.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.osgi_3.10.2.v20150203-1939.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.osgi.compatibility.state_1.0.1.v20140709-1414.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.core.jobs_3.6.1.v20141014-1248.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.core.runtime.compatibility.registry_3.5.300.v20140128-0851/runtime_registry_compatibility.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.equinox.registry_3.5.400.v20140428-1507.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.equinox.app_1.3.200.v20130910-1609.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.emf.ecore_2.10.2.v20150123-0348.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.emf.common_2.10.1.v20150123-0348.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.emf.ecore.xmi_2.10.2.v20150123-0348.jar"/>
+        <pathelement location="../../../../../../../org.eclipse.gmt.modisco.java"/>
+    </path>
+    <path id="org.eclipse.gmt.modisco.java.classpath">
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <pathelement location="${org.eclipse.gmt.modisco.java.location}/bin"/>
+    </path>
+    <path id="Maven Dependencies.libraryclasspath">
+        <pathelement location="../../../../../.m2/repository/fr/inria/atlanmod/neoemf/core/0.0.1-SNAPSHOT/core-0.0.1-SNAPSHOT.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/apache/commons/commons-collections4/4.0/commons-collections4-4.0.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/google/guava/guava/16.0.1/guava-16.0.1.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/eclipse/emf/org.eclipse.emf.ecore/2.9.2-v20131212-0545/org.eclipse.emf.ecore-2.9.2-v20131212-0545.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/eclipse/emf/org.eclipse.emf.ecore.xmi/2.9.1-v20131212-0545/org.eclipse.emf.ecore.xmi-2.9.1-v20131212-0545.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/eclipse/emf/org.eclipse.emf.codegen/2.9.0-v20140203-1126/org.eclipse.emf.codegen-2.9.0-v20140203-1126.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/eclipse/emf/org.eclipse.emf.codegen.ecore/2.9.1-v20140203-1126/org.eclipse.emf.codegen.ecore-2.9.1-v20140203-1126.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/eclipse/emf/org.eclipse.emf.common/2.9.2-v20131212-0545/org.eclipse.emf.common-2.9.2-v20131212-0545.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-io/commons-io/2.4/commons-io-2.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/cglib/cglib/3.1/cglib-3.1.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/ow2/asm/asm/4.2/asm-4.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/apache/logging/log4j/log4j-core/2.2/log4j-core-2.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/apache/logging/log4j/log4j-api/2.2/log4j-api-2.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/fr/inria/atlanmod/neoemf/map/0.0.1-SNAPSHOT/map-0.0.1-SNAPSHOT.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/mapdb/mapdb/1.0.7/mapdb-1.0.7.jar"/>
+        <pathelement location="../../../../../.m2/repository/jboss/jboss-common/4.2.2.GA/jboss-common-4.2.2.GA.jar"/>
+        <pathelement location="../../../../../.m2/repository/fr/inria/atlanmod/neoemf/graph.blueprints/0.0.1-SNAPSHOT/graph.blueprints-0.0.1-SNAPSHOT.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/jboss/jboss-common-core/2.2.22.GA/jboss-common-core-2.2.22.GA.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/jboss/logging/jboss-logging-spi/2.1.0.GA/jboss-logging-spi-2.1.0.GA.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/tinkerpop/blueprints/blueprints-core/2.4.0/blueprints-core-2.4.0.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/codehaus/jettison/jettison/1.3.3/jettison-1.3.3.jar"/>
+        <pathelement location="../../../../../.m2/repository/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-json-org/2.1.2/jackson-datatype-json-org-2.1.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/fasterxml/jackson/core/jackson-core/2.1.2/jackson-core-2.1.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.1.2/jackson-databind-2.1.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.1.1/jackson-annotations-2.1.1.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/json/json/20090211/json-20090211.jar"/>
+        <pathelement location="../../../../../.m2/repository/colt/colt/1.2.0/colt-1.2.0.jar"/>
+        <pathelement location="../../../../../.m2/repository/concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-digester/commons-digester/1.8/commons-digester-1.8.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
+        <pathelement location="../../../../../.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar"/>
+        <pathelement location="../../../../../.m2/repository/fr/inria/atlanmod/neoemf/graph.blueprints.neo4j/0.0.1-SNAPSHOT/graph.blueprints.neo4j-0.0.1-SNAPSHOT.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j/1.9.4/neo4j-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-udc/1.9.4/neo4j-udc-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-cypher/1.9.4/neo4j-cypher-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/scala-lang/scala-library/2.10.0/scala-library-2.10.0.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-jmx/1.9.4/neo4j-jmx-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-kernel/1.9.4/neo4j-kernel-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-graph-algo/1.9.4/neo4j-graph-algo-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-graph-matching/1.9.4/neo4j-graph-matching-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/tinkerpop/blueprints/blueprints-neo4j-graph/2.4.0/blueprints-neo4j-graph-2.4.0.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-ha/1.9.2/neo4j-ha-1.9.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-backup/1.9.2/neo4j-backup-1.9.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-consistency-check/1.9.2/neo4j-consistency-check-1.9.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-com/1.9.2/neo4j-com-1.9.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/io/netty/netty/3.6.3.Final/netty-3.6.3.Final.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-cluster/1.9.2/neo4j-cluster-1.9.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/apache/zookeeper/zookeeper/3.3.2/zookeeper-3.3.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar"/>
+        <pathelement location="../../../../../.m2/repository/ch/qos/logback/logback-classic/0.9.30/logback-classic-0.9.30.jar"/>
+        <pathelement location="../../../../../.m2/repository/ch/qos/logback/logback-core/0.9.30/logback-core-0.9.30.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/slf4j/slf4j-api/1.6.2/slf4j-api-1.6.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-management/1.9.2/neo4j-management-1.9.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/apache/lucene/lucene-core/3.6.2/lucene-core-3.6.2.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/neo4j/neo4j-lucene-index/1.9.4/neo4j-lucene-index-1.9.4.jar"/>
+        <pathelement location="../../../../../.m2/repository/com/googlecode/concurrentlinkedhashmap/concurrentlinkedhashmap-lru/1.3.1/concurrentlinkedhashmap-lru-1.3.1.jar"/>
+        <pathelement location="../../../../../.m2/repository/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1.1/geronimo-jta_1.1_spec-1.1.1.jar"/>
+    </path>
+    <path id="org.eclipse.gmt.modisco.java.neoemf.classpath">
+        <pathelement location="target/classes"/>
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <path refid="org.eclipse.gmt.modisco.java.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="target/classes"/>
+        <copy includeemptydirs="false" todir="target/classes">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.xtend"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="target/classes"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.location}" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="target/classes" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="org.eclipse.gmt.modisco.java.neoemf.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.benchmarks.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.benchmarks.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+</project>
