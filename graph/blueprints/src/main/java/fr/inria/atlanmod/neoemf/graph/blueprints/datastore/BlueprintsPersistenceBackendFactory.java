@@ -109,7 +109,7 @@ public class BlueprintsPersistenceBackendFactory extends
 			try {
 			    baseGraph = GraphFactory.open(configuration);
 			}catch(RuntimeException e) {
-			    throw new InvalidDataStoreException("An error occurred when reading the configuration file");
+			    throw new InvalidDataStoreException(e);
 			}
 			if (baseGraph instanceof KeyIndexableGraph) {
 				graphDB = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
