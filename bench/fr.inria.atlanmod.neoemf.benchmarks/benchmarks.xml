@@ -629,7 +629,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -708,7 +708,7 @@
 	<!--
 	<target name="traverse.resources.morsa" description="Simple model traversal (Morsa)">
 		<foreach inheritall="true" target="traverse.resource.morsa" param="morsaresource.dir" 
-		list="c:/Benchmarks/kyanos-benchmarks/fr.inria.atlanmod.kyanos.tests.morsaresource,c:/Benchmarks/kyanos-benchmarks/fr.inria.atlanmod.neo4emf.neo4jresolver.morsaresource,c:/Benchmarks/kyanos-benchmarks/org.eclipse.gmt.modisco.java.kyanos.morsaresource,c:/Benchmarks/kyanos-benchmarks/org.eclipse.jdt.core.morsaresource,c:/Benchmarks/kyanos-benchmarks/org.eclipse.jdt.source.all.morsaresource" />
+		list="c:/Benchmarks/kyanos-benchmarks/fr.inria.atlanmod.kyanos.tests.morsaresource,c:/Benchmarks/kyanos-benchmarks/fr.inria.atlanmod.neo4emf.neo4jresolver.morsaresource,c:/Benchmarks/kyanos-benchmarks/org.eclipse.gmt.modisco.java.neoemf.morsaresource,c:/Benchmarks/kyanos-benchmarks/org.eclipse.jdt.core.morsaresource,c:/Benchmarks/kyanos-benchmarks/org.eclipse.jdt.source.all.morsaresource" />
 	</target>
 	
 	<target name="traverse.resources.xmi" description="Simple model traversal (XMI)" depends="gen.test.resources.xmi">
@@ -752,7 +752,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -769,7 +769,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -838,7 +838,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -855,7 +855,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -924,7 +924,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -941,7 +941,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1010,7 +1010,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1027,7 +1027,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1096,7 +1096,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1113,7 +1113,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1182,7 +1182,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1199,7 +1199,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1268,7 +1268,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1285,7 +1285,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1354,7 +1354,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
@@ -1371,7 +1371,7 @@
 	        <arg value="-input"/>
 	        <arg value="${kyanosresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
