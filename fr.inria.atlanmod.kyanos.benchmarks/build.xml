@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="fr.inria.atlanmod.kyanos.benchmarks">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../"/>
+    <property name="com.tinkerpop.blueprints.location" value="../../eclipse.blueprints/com.tinkerpop.blueprints"/>
+    <property name="org.apache.hadoop.hbase.location" value="../../../workspace/org.apache.hadoop.hbase"/>
+    <property name="org.eclipse.gmt.modisco.java.location" value="../org.eclipse.gmt.modisco.java"/>
+    <property name="org.eclipse.gmt.modisco.java.cdo.location" value="../org.eclipse.gmt.modisco.java.cdo"/>
+    <property name="fr.inria.atlanmod.kyanos.location" value="../../kyanos/fr.inria.atlanmod.kyanos"/>
+    <property name="org.eclipse.gmt.modisco.java.kyanos.location" value="../org.eclipse.gmt.modisco.java.kyanos"/>
+    <property name="com.tinkerpop.blueprints.neo4j.location" value="../../eclipse.blueprints.neo4j/com.tinkerpop.blueprints.neo4j"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <import file="custom-build.xml"/>
+    <import file="run-multi.xml"/>
+    <path id="Plug-in Dependencies.libraryclasspath">
+        <pathelement location="../../../../../../fr.inria.atlanmod.kyanos"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore_2.9.1.v20130827-0309.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.common_2.9.1.v20130827-0309.jar"/>
+        <pathelement location="../../../../../../org.mapdb"/>
+        <pathelement location="../../../../../../com.tinkerpop.blueprints"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.300.v20130429-1813.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.9.0.v20130326-1255.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.9.1.v20130814-1242.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.200.v20130514-1256/runtime_registry_compatibility.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.100.v20130327-1442.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.common_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore.change_2.9.0.v20130827-0309.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20130827-0309.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.util_3.3.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.net4j_4.1.101.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.server.db_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.db_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.server_4.2.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.cdo.server.net4j_4.1.1.v20140218-1709.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.db.h2_4.2.1.v20140218-1830.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.jvm_4.1.101.v20140218-1830.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.net4j.tcp_4.1.101.v20140218-1830.jar"/>
+        <pathelement location="../../../../../../org.eclipse.gmt.modisco.java"/>
+        <pathelement location="../../../../../../org.eclipse.gmt.modisco.java.kyanos"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.h2_1.3.168.v201212121212.jar"/>
+        <pathelement location="../../../../../../org.apache.hadoop.hbase"/>
+    </path>
+    <path id="org.eclipse.gmt.modisco.java.classpath">
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <pathelement location="${org.eclipse.gmt.modisco.java.location}/bin"/>
+    </path>
+    <path id="org.eclipse.gmt.modisco.java.cdo.classpath">
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <pathelement location="${org.eclipse.gmt.modisco.java.cdo.location}/bin"/>
+    </path>
+    <path id="org.eclipse.gmt.modisco.java.kyanos.classpath">
+        <pathelement location="${org.eclipse.gmt.modisco.java.kyanos.location}/bin"/>
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+    </path>
+    <path id="org.apache.hadoop.hbase.classpath">
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/bin"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/activation-1.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/ant-1.8.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/ant-launcher-1.8.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/asm-3.2.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/avro-1.7.4.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-beanutils-1.7.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-beanutils-core-1.8.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-cli-1.2.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-codec-1.9.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-collections-3.2.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-compress-1.4.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-configuration-1.6.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-digester-1.8.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-el-1.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-httpclient-3.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-io-2.4.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-lang-2.6.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-logging-1.2.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-math3-3.1.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/commons-net-3.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/findbugs-annotations-1.3.9-1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/gson-2.2.4.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/guava-12.0.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hadoop-annotations-2.6.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hadoop-auth-2.6.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hadoop-common-2.6.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hamcrest-core-1.3.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hbase-annotations-1.0.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hbase-client-1.0.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hbase-common-1.0.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/hbase-protocol-1.0.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/htrace-core-3.0.4.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/htrace-core-3.1.0-incubating.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/httpclient-4.2.5.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/httpcore-4.2.5.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jackson-core-asl-1.9.13.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jackson-jaxrs-1.9.13.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jackson-mapper-asl-1.9.13.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jackson-xc-1.9.13.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jasper-compiler-5.5.23.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jasper-runtime-5.5.23.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/java-xmlbuilder-0.4.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jaxb-api-2.2.2.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jaxb-impl-2.2.3-1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jcodings-1.0.8.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jdiff-1.0.9.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jets3t-0.9.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jetty-6.1.26.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jetty-util-6.1.26.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/joni-2.1.2.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jsch-0.1.42.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jsp-api-2.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/jsr305-1.3.9.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/junit-4.11.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/netty-all-4.0.23.Final.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/paranamer-2.3.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/servlet-api-2.5.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/slf4j-api-1.7.7.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/slf4j-log4j12-1.7.5.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/stax-api-1.0-2.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/xmlenc-0.52.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/xz-1.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/jars/zookeeper-3.4.6.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/apacheds-i18n-2.0.0-M15.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/apacheds-kerberos-codec-2.0.0-M15.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/api-asn1-api-1.0.0-M20.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/api-util-1.0.0-M20.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/curator-client-2.6.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/curator-framework-2.6.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/curator-recipes-2.6.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/jersey-core-1.9.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/jersey-json-1.9.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/jersey-server-1.9.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/jettison-1.1.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/log4j-1.2.17.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/protobuf-java-2.5.0.jar"/>
+        <pathelement location="${org.apache.hadoop.hbase.location}/lib/bundles/snappy-java-1.0.4.1.jar"/>
+    </path>
+    <path id="fr.inria.atlanmod.kyanos.classpath">
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/ant-1.6.2.jar"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/cglib-nodep-3.1.jar"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/commons-collections4-4.0.jar"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/commons-io-2.4.jar"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/commons-lang-2.6.jar"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/jboss-common-4.2.2.GA.jar"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/guava-16.0.1.jar"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/lib/jars/jsr305-1.3.9.jar"/>
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <pathelement location="${fr.inria.atlanmod.kyanos.location}/bin"/>
+        <path refid="org.apache.hadoop.hbase.classpath"/>
+    </path>
+    <path id="com.tinkerpop.blueprints.classpath">
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/blueprints-core-2.4.0.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/colt-1.2.0.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-beanutils-1.7.0.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-beanutils-core-1.8.0.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-collections-3.2.1.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-configuration-1.6.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-digester-1.8.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-lang-2.4.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/commons-logging-1.1.1.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/concurrent-1.3.4.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-annotations-2.1.1.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-core-2.1.2.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-databind-2.1.2.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/jackson-datatype-json-org-2.1.2.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/json-20090211.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/stax-api-1.0.1.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/bundles/jettison-1.3.3.jar"/>
+        <pathelement location="${com.tinkerpop.blueprints.location}/lib/jars/stax-1.2.0.jar"/>
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+    </path>
+    <path id="com.tinkerpop.blueprints.neo4j.classpath">
+        <pathelement location="${com.tinkerpop.blueprints.neo4j.location}/lib/jars/blueprints-neo4j-graph-2.4.0.jar"/>
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <path refid="com.tinkerpop.blueprints.classpath"/>
+    </path>
+    <path id="fr.inria.atlanmod.kyanos.benchmarks.classpath">
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <pathelement location="bin"/>
+        <pathelement location="lib/commons-cli-1.2.jar"/>
+        <pathelement location="lib/commons-io-2.4.jar"/>
+        <path refid="org.eclipse.gmt.modisco.java.classpath"/>
+        <path refid="org.eclipse.gmt.modisco.java.cdo.classpath"/>
+        <path refid="org.eclipse.gmt.modisco.java.kyanos.classpath"/>
+        <path refid="fr.inria.atlanmod.kyanos.classpath"/>
+        <path refid="com.tinkerpop.blueprints.classpath"/>
+        <path refid="com.tinkerpop.blueprints.neo4j.classpath"/>
+        <path refid="org.apache.hadoop.hbase.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.ucls"/>
+                <exclude name="**/*.useq"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${org.apache.hadoop.hbase.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.cdo.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.kyanos.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.neo4j.location}" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${org.apache.hadoop.hbase.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.cdo.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.kyanos.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${com.tinkerpop.blueprints.neo4j.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="CdoCreator">
+        <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoCreator" failonerror="true" fork="yes">
+            <arg line="-input resources/org.eclipse.gmt.modisco.java.kyanos.cdo.zxmi -reponame kyanos -epackage_class org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        </java>
+    </target>
+    <target name="KyanosHbaseCreator">
+        <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosHbaseCreator" failonerror="true" fork="yes">
+            <arg line="-input resources/org.eclipse.gmt.modisco.java.kyanos.kyanos.zxmi -output kyanoshbase://127.0.0.1/org.eclipse.gmt.modisco.java.kyanos.kyanos.zxmi -epackage_class org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        </java>
+    </target>
+    <target name="KyanosHbaseTraverser">
+        <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosHbaseTraverser" failonerror="true" fork="yes">
+            <arg line="-input kyanoshbase://127.0.0.1/org.eclipse.gmt.modisco.java.kyanos.kyanos.zxmi -epackage_class org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        </java>
+    </target>
+    <target name="Migrator">
+        <java classname="fr.inria.atlanmod.kyanos.benchmarks.Migrator" failonerror="true" fork="yes">
+            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        </java>
+    </target>
+    <target name="CdoTraverser">
+        <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoTraverser" failonerror="true" fork="yes">
+            <arg line="-reponame kyanos -epackage_class org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        </java>
+    </target>
+</project>
