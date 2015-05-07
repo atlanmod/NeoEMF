@@ -18,6 +18,7 @@ import java.util.Map;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.IsSetCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastores.estores.impl.LoadedObjectCounterLoggingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.LoggingDelegatedResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -47,6 +48,9 @@ public abstract class AbstractPersistenceBackendFactory {
 	        }
 	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.LOGGING)) {
 	            eStore = new LoggingDelegatedResourceEStoreImpl(eStore);
+	        }
+	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING)) {
+	            eStore = new LoadedObjectCounterLoggingDelegatedEStoreImpl(eStore);
 	        }
 	    }
 	    return eStore;

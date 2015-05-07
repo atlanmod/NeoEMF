@@ -31,6 +31,7 @@ import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.DelegatedResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.IsSetCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastores.estores.impl.LoadedObjectCounterLoggingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.LoggingDelegatedResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastores.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -118,6 +119,17 @@ public class AbstractPersistenceBackendFactoryTest {
         storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
         assert store instanceof EStructuralFeatureCachingDelegatedEStoreImpl;
+        SearcheableResourceEStore childStore = getChildStore(store);
+        assert childStore instanceof SearcheableResourceEStore;
+        // Ensure this is the mock that is returned by checking the real class name
+        assert childStore.getClass().getSimpleName().contains("SearcheableResourceEStore");
+    }
+    
+    @Test
+    public void testLoadedObjectCounterLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+        storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
+        SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
+        assert store instanceof LoadedObjectCounterLoggingDelegatedEStoreImpl;
         SearcheableResourceEStore childStore = getChildStore(store);
         assert childStore instanceof SearcheableResourceEStore;
         // Ensure this is the mock that is returned by checking the real class name

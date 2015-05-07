@@ -20,6 +20,7 @@ public interface PersistentResourceOptions {
         IS_SET_CACHING,
         LOGGING,
         SIZE_CACHING,
-        ESTRUCUTRALFEATURE_CACHING
+        ESTRUCUTRALFEATURE_CACHING,
+        LOADED_OBJECT_COUNTER_LOGGING
     }
 }
