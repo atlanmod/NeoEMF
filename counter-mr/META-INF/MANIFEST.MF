@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: counter-mr
+Require-Bundle: 
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.core.resources,
+ org.eclipse.emf.validation,
+ fr.inria.atlanmod.kyanos;bundle-version="0.1.0",
+ org.eclipse.gmt.modisco.java;bundle-version="0.11.1",
+ org.eclipse.gmt.modisco.java.kyanos;bundle-version="1.0.0"
+Bundle-Version: 0.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ManifestVersion: 2
