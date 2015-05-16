@@ -25,8 +25,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
-public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends
-        LoggingDelegatedResourceEStoreImpl implements SearcheableResourceEStore {
+public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 
     private Set<InternalEObject> loadedObjects = new HashSet<InternalEObject>();
 
@@ -51,7 +50,11 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends
     public Object get(InternalEObject object, EStructuralFeature feature,
             int index) {
         loadedObjects.add(object);
-        return super.get(object, feature, index);
+        Object result = super.get(object, feature, index);
+        if(result instanceof InternalEObject) {
+            loadedObjects.add((InternalEObject)result);
+        }
+        return result;
     }
 
     @Override
