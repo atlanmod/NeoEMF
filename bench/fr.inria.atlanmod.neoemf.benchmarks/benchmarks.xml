@@ -16,7 +16,7 @@
 	<!-- Default JVM arguments for creating test resources -->
 	<property name="creator.vmargs" value="-Xmx8g" />
 	<!-- Default JVM argument for traversing and querying test resources -->
-	<property name="tester.vmargs" value="-Xmx8g" />
+	<property name="tester.vmargs" value="-server -Xmx250m -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -XX:+CMSClassUnloadingEnabled" />
 	
 	<property name="debug.vmargs" value="" />
 	<!--<property name="debug.vmargs" value="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,address=8000" />-->
@@ -1411,5 +1411,452 @@
 		</foreach>
 	</target>
 	
+	
+	<!-- Targets for ASE 2015 benchmarks !-->
+	<target name="ase15.query.invmethods.resources.neoemf.graph" description="Invisible Methods" depends="gen.test.resources.kyanos.graph">
+		<antcall target="prepare.test.resources.kyanos.graph" />
+		<foreach inheritall="true" target="ase15.query.invmethods.resource.neoemf.graph" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.invmethods.resource.neoemf.graph">
+		<basename property="kyanos.zxmi.filename" file="${kyanos.zxmi.file}" suffix="kyanos.zxmi"/>
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.kyanosgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFGraphQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.grabats09.resources.neoemf.graph" description="Grabats09" depends="gen.test.resources.kyanos.graph">
+		<antcall target="prepare.test.resources.kyanos.graph" />
+		<foreach inheritall="true" target="ase15.query.grabats09.resource.neoemf.graph" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.grabats09.resource.neoemf.graph">
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.kyanosgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFGraphQueryGrabats09" failonerror="false" fork="yes" timeout="${timeout}">
+	    	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+		<classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.thrownExceptions.resources.neoemf.graph" description="Thrown Exceptions" depends="gen.test.resources.kyanos.graph">
+			<antcall target="prepare.test.resources.kyanos.graph" />
+			<foreach inheritall="true" target="ase15.query.thrownExceptions.resource.neoemf.graph" param="kyanosresource.dir">
+				<path>
+					<dirset dir="${tests.dir}">
+						<include name="**/*.kyanosgraphresource"/>
+					</dirset>
+				</path>
+			</foreach>
+		</target>
+		
+		<target name="ase15.query.thrownExceptions.resource.neoemf.graph">
+			<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.kyanosgraphresource.properties"/>
+			<timestamp.echo message="Start" />
+			<echo>Querying ${kyanosresource.dir}</echo>
+			<echo>JVM args: ${tester.vmargs.value}</echo>
+			<stopwatch name="timer"/>
+		    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFGraphQueryThrownExceptions" failonerror="false" fork="yes" timeout="${timeout}">
+		    	<jvmarg line="${tester.vmargs.value}"/>
+		        <arg value="-input"/>
+		        <arg value="${kyanosresource.dir}"/>
+		    	<arg value="-epackage_class"/>
+		    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+		    	<arg value="-options_file"/>
+		    	<arg value="${resource.properties.out}"/>
+			<classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+		    </java>
+			<stopwatch name="timer" action="total"/>
+			<timestamp.echo message="End" />
+	    </target>
+	
+	<target name="ase15.query.invmethods.specific.resources.neoemf.graph" description="Invisible Methods" depends="gen.test.resources.kyanos.graph">
+		<antcall target="prepare.test.resources.kyanos.graph" />
+		<foreach inheritall="true" target="ase15.query.invmethods.specific.resource.neoemf.graph" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.specific.resource.neoemf.graph">
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.kyanosgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFGraphQuerySpecificInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+	    	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+		<classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.branchstatements.specific.resources.neoemf.graph" description="Invisible Methods" depends="gen.test.resources.kyanos.graph">
+		<antcall target="prepare.test.resources.kyanos.graph" />
+		<foreach inheritall="true" target="ase15.query.branchstatements.specific.resource.neoemf.graph" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.branchstatements.specific.resource.neoemf.graph">
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.kyanosgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFGraphQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+	    	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+		<classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.invmethods.resources.neoemf.map" description="Invisible Methods" depends="gen.test.resources.kyanos.map">
+		<antcall target="prepare.test.resources.kyanos.map" />
+		<foreach inheritall="true" target="ase15.query.invmethods.resource.neoemf.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFMapQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.grabats09.resources.neoemf.map" description="Grabats09" depends="gen.test.resources.kyanos.map">
+		<antcall target="prepare.test.resources.kyanos.map" />
+		<foreach inheritall="true" target="ase15.query.grabats09.resource.neoemf.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.grabats09.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFMapQueryGrabats09" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.thrownExceptions.resources.neoemf.map" description="Thrown Exceptions" depends="gen.test.resources.kyanos.map">
+		<antcall target="prepare.test.resources.kyanos.map" />
+		<foreach inheritall="true" target="ase15.query.thrownExceptions.resource.neoemf.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.thrownExceptions.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFMapQueryThrownExceptions" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.invmethods.specific.resources.neoemf.map" description="Invisible Methods" depends="gen.test.resources.kyanos.map">
+		<antcall target="prepare.test.resources.kyanos.map" />
+		<foreach inheritall="true" target="ase15.query.invmethods.specific.resource.neoemf.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.specific.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFMapQuerySpecificInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.branchstatements.specific.resources.neoemf.map" description="Invisible Methods" depends="gen.test.resources.kyanos.map">
+		<antcall target="prepare.test.resources.kyanos.map" />
+		<foreach inheritall="true" target="ase15.query.branchstatements.specific.resource.neoemf.map" param="kyanosresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.kyanosmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.branchstatements.specific.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.NeoEMFMapQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${kyanosresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.invmethods.resources.cdo" description="Invisible Methods" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.invmethods.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.CdoQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+			<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.grabats09.resources.cdo" description="Grabats09" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.grabats09.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.grabats09.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.CdoQueryGrabats09" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+        	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+		
+	<target name="ase15.query.thrownExceptions.resources.cdo" description="Thrown Exceptions" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.thrownExceptions.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.thrownExceptions.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.CdoQueryThrownExceptions" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+			<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+		
+	<target name="ase15.query.invmethods.specific.resources.cdo" description="Invisible Methods" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.invmethods.specific.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.specific.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.CdoQuerySpecificInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+		
+	<target name="ase15.query.branchstatements.specific.resources.cdo" description="Invisible Methods" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.branchstatements.specific.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.branchstatements.specific.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.ase2015.CdoQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	  		<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
 </project>
-

@@ -136,6 +136,14 @@
         <pathelement location="lib/log4j-api-2.2.jar"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
     </path>
+    <path id="run.KyanosMapTraverser.classpath">
+        <path refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <path id="run.KyanosMapCreator.classpath">
+        <path refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
     <target name="init">
         <mkdir dir="target/classes"/>
         <copy includeemptydirs="false" todir="target/classes">
@@ -192,5 +200,17 @@
     <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
+    </target>
+    <target name="KyanosMapTraverser">
+        <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapTraverser" failonerror="true" fork="yes">
+            <arg line="-epackage_class &quot;org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl&quot;&#10;-input &quot;/home/gdaniel/Documents/Research/kyanos-benchmarks/fr.inria.atlanmod.kyanos.tests.kyanosmapresource&quot;"/>
+            <classpath refid="run.KyanosMapTraverser.classpath"/>
+        </java>
+    </target>
+    <target name="KyanosMapCreator">
+        <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapCreator" failonerror="true" fork="yes">
+            <arg line="-epackage_class &quot;org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl&quot;&#10;-input &quot;/home/gdaniel/Documents/Research/kyanos-benchmarks/fr.inria.atlanmod.kyanos.tests.kyanos.zxmi&quot;&#10;-output &quot;/home/gdaniel/Documents/Research/kyanos-benchmarks/fr.inria.atlanmod.kyanos.tests.kyanosmapresource&quot;"/>
+            <classpath refid="run.KyanosMapCreator.classpath"/>
+        </java>
     </target>
 </project>
