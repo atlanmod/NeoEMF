@@ -25,7 +25,7 @@ Persistence backend factories bundled with NeoEMF are
 ### Register the Persistent Resource Factory
 
 As regular EMF initialization, you need to register the [PersistentResourceFactory](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/resources/PersistentResourceFactory.java) implementation in the resource set
-specifying the URI protocol. Each backend implementation provide a subclass of [NeoURI](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/util/NeoURI.java) to ease protocol definition.
+specifying the URI protocol. Each backend implementation provides a subclass of [NeoURI](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/util/NeoURI.java) to ease protocol definition.
 Note that the associated [PersistentResourceFactoryImpl](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/resources/impl/PersistentResourceFactoryImpl.java) and the created [PersistentResource](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/resources/impl/PersistentResourceImpl.java) do not depend on the selected backend.
 
 #### Neo4j under Blueprints API
@@ -85,7 +85,7 @@ Once this two initialization steps has been performed, the resulting resource ca
 	MyClass myClass = (MyClass)r.getContents().get(0);
 	myClass.setName("NewName");
     
-	// save with specific options
+	// save the modifications
 	try {
 		resource.save(Collections.EMPTY_MAP);
 	} catch (IOException e) {
@@ -113,7 +113,7 @@ Once this two initialization steps has been performed, the resulting resource ca
 	MyClass myClass = (MyClass)r.getContents().get(0);
 	myClass.setName("NewName");
     
-	// save with specific options
+	// save the modifications
 	try {
 		resource.save(Collections.EMPTY_MAP);
 	} catch (IOException e) {
