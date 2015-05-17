@@ -1,106 +1,120 @@
 # NeoEMF Usage Guide
 
-### Create a new resource
-    // NeoEMF proposal
+## Initialize NeoEMF
+
+### Add a Persistence Backend Factory
+
+In order to use NeoEMF, you first need to register a persistence backend factory (concrete subclass of [AbstractPersistenceBackendFactory](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/datastore/AbstractPersistenceBackendFactory.java)).
+This factory is responsible of the creation of the persistence backend (concrete subclass of [PersistenceBackend](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/datastore/PersistenceBackend.java)) that is in charge of
+the model storage.
+
+Persistence backend factories bundled with NeoEMF are
+ - Neo4j under the Blueprints API (dedicated page [here](https://github.com/atlanmod/NeoEMF/tree/master/graph/blueprints-neo4j))
+ - MapDB (dedicated page [here](https://github.com/atlanmod/NeoEMF/tree/master/map))
+
+#### Neo4j under Blueprints API
+
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new BlueprintsPersistenceBackendFactory());
+
+#### MapDB
+
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
+
+### Register the Persistent Resource Factory
+
+As regular EMF initialization, you need to register the [PersistentResourceFactory](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/resources/PersistentResourceFactory.java) implementation in the resource set
+specifying the URI protocol. Each backend implementation provide a subclass of [NeoURI](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/util/NeoURI.java) to ease protocol definition.
+Note that the associated [PersistentResourceFactoryImpl](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/resources/impl/PersistentResourceFactoryImpl.java) and the created [PersistentResource](https://github.com/atlanmod/NeoEMF/blob/master/core/src/main/java/fr/inria/atlanmod/neoemf/resources/impl/PersistentResourceImpl.java) do not depend on the selected backend.
+
+#### Neo4j under Blueprints API
+
+    ResourceSet resSet = new ResourceSetImpl();
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
+    Resource resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(new File("path_to_neodb")));
     
-	ResourceSet rs = new ResourceSetImpl();
-	
-	Map<?,?> map = rs.getResourceFactoryRegistry().getProtocolToFactoryMap();
-	
-	ResourceFactory mapdbResourceFactory = new NeoemfResourceFactory(backend, mapping) // ???
-	ResourceFactory neo4jResourceFactory = new NeoemfResourceFactory(backend, mapping) // ???
+#### MapDB
 
-	map.put("mapdb", mapdbResourceFactory);
-	map.put("neo4j", neo4jResourceFactory);
-	
-	URI uri1 = URI.createURI("mapdb:/MyFirstNeo4emfResource");
-	URI uri2 = URI.createURI("neo4j:/MyFirstNeo4emfResource");
-	
-	Resource resource = rs.createResource(uri);
-	
-	resource.save(options);
-	
-	// Blueprints Neo4j sample (work with maven refactoring)
-	PersistenceBackendFactoryProvider.getFactories().put("kyanos", new GraphPersistentBackendFactory());
-		ResourceSet resSet = new ResourceSetImpl();
-    	resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("kyanos", new PersistentResourceFactoryImpl());
-    	Resource r = resSet.createResource(NeoURI.createNeoURI(new File("neoDb/neo")));
-    	try {
-    		Map<String,String> options = new HashMap<String,String>();
-    		options.put("blueprints.neo4j.conf.cache_type", "soft");
-    		options.put("blueprints.graph", "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph");
-    		r.save(options);
-    	} catch(Exception e) {
-    		e.printStackTrace();
-    	}
-    	PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)r);	
-	
-	// Map sample (work with maven refactoring)
-	PersistenceBackendFactoryProvider.getFactories().put("kyanosmap",new MapPersistenceBackendFactory());
-    	ResourceSet resSet = new ResourceSetImpl();
-    	resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("kyanosmap", new PersistentResourceFactoryImpl());
-    	Resource r = resSet.createResource(NeoURI.createNeoMapURI(new File("base")));
-    	try {
-    		r.save(Collections.EMPTY_MAP);
-    	} catch(Exception e) {
-    		e.printStackTrace();
-    	}
+    ResourceSet resSet = new ResourceSetImpl();
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
+    Resource resource = resSet.createResource(NeoMapURI.createNeoMapURI(new File("path_to_mapdb")));
 
-### Load an existing resource
 
-To load an existing resource, one must know its location 
+Once this two initialization steps has been performed, the resulting resource can be used as a regular EMF [Resource](http://download.eclipse.org/modeling/emf/emf/javadoc/2.4.3/org/eclipse/emf/ecore/resource/Resource.html).
 
-Packages should be registered in order to find the factory 
+## Save a Resource
+	
+    /* Initialization depending on the backend */
+    try {
+        resource.save(Collections.EMPTY_MAP);
+    } catch(IOException e) {
+        e.printStackTrace();
+    }
 
-    // NeoEMF proposal
-	ResourceSet rs = new ResourceSetImpl();
-	Map<?,?> map = rs.getResourceFactoryRegistry().getProtocolToFactoryMap();
+## Load an existing Resource
 	
-	ResourceFactory mapdbResourceFactory = new NeoemfResourceFactory(backend, mapping) // ???
-	ResourceFactory neo4jResourceFactory = new NeoemfResourceFactory(backend, mapping) // ???
-	
-	map.put("mapdb", mapdbResourceFactory);
-	map.put("neo4j", neo4jResourceFactory);
-	
-	URI uri1 = URI.createURI("mapdb:/./MyFirstNeo4emfResource");
-	URI uri2 = URI.createURI("neo4j:/./MyFirstNeo4emfResource");
-	
-	Resource resource = rs.createResource(uri);
-	
-	resource.load(options);
-
-### Modify an existing resource
-
-First load the resource by giving its location.
-Perform modifications and save with the apropriate options.
-Packages should be registered in order to find the factory.
-(NeoEMF/Graph example)
-	
-	ResourceSet resSet = new ResourceSetImpl();
-	Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-	Map<String, Object> m = reg.getExtensionToFactoryMap();
-	m.put("xmi", new XMIResourceFactoryImpl());
-	resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoURI.KYANOS_SCHEME, PersistentResourceFactory.eINSTANCE);
-	PersistenceBackendFactoryProvider.getFactories().put(NeoURI.KYANOS_SCHEME, new GraphPersistenceBackendFactory());
-	Resource r = resSet.createResource(NeoURI.createNeoURI(new File("myResource")));
-	// load the resource
+    /* Initialization depending on the backend */
+	Resource resource = resSet.createResource(createURI);
 	try {
-		r.load(Collections.EMPTY_MAP);
+        resource.load(Collections.EMPTY_MAP);
+    } catch(IOExceptio e) {
+        e.printStackTrace();
+    }
+
+## Neo4j Blueprints Complete Example: modify an existing Resource
+	
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new BlueprintsPersistenceBackendFactory());
+	ResourceSet resSet = new ResourceSetImpl();
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
+    Resource resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(new File("path_to_neodb")));
+	
+    // load the resource
+	try {
+		resource.load(Collections.EMPTY_MAP);
 	} catch (IOException e) {
 		e.printStackTrace();
 	}
 	// perform modifications
 	MyClass myClass = (MyClass)r.getContents().get(0);
 	myClass.setName("NewName");
+    
 	// save with specific options
-	Map<String,String> options = new HashMap<String,String>();
-	options.put("blueprints.neo4j.conf.cache_type", "soft");
-	options.put("blueprints.graph", "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph");
 	try {
-		r.save(options);
+		resource.save(Collections.EMPTY_MAP);
 	} catch (IOException e) {
 		e.printStackTrace();
 	}
 	// unload the resource and shutdown the database engine
-	r.unload();
+	resource.unload();
 
+## MapDB Complete Example: modify an existing Resource
+
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
+    ResourceSet resSet = new ResourceSetImpl();
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
+    Resource resource = resSet.createResource(NeoMapURI.createNeoMapURI(new File("path_to_mapdb")));
+    
+    // load the resource
+	try {
+		resource.load(Collections.EMPTY_MAP);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	// perform modifications
+	MyClass myClass = (MyClass)r.getContents().get(0);
+	myClass.setName("NewName");
+    
+	// save with specific options
+	try {
+		resource.save(Collections.EMPTY_MAP);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	// unload the resource and shutdown the database engine
+	resource.unload();
+    
+## Backend Specific Options
+
+NeoEMF can handle backend specific options using the standard option mechanism (a Map containing options as key-value pairs provided as a parameter at Resource loading and saving).
+See backend pages to have the list of available options.
+ - [Neo4j under Blueprints](https://github.com/atlanmod/NeoEMF/tree/master/graph/blueprints-neo4j)
+ - [MapDB](https://github.com/atlanmod/NeoEMF/tree/master/map)
