@@ -14,11 +14,13 @@ Persistence backend factories bundled with NeoEMF are
 
 #### Neo4j under Blueprints API
 
-    PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new BlueprintsPersistenceBackendFactory());
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, 
+        new BlueprintsPersistenceBackendFactory());
 
 #### MapDB
 
-    PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, 
+        new MapPersistenceBackendFactory());
 
 ### Register the Persistent Resource Factory
 
@@ -29,14 +31,18 @@ Note that the associated [PersistentResourceFactoryImpl](https://github.com/atla
 #### Neo4j under Blueprints API
 
     ResourceSet resSet = new ResourceSetImpl();
-    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
-    Resource resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(new File("path_to_neodb")));
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().
+        put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
+    Resource resource = resSet.createResource(
+        NeoBlueprintsURI.createNeoGraphURI(new File("path_to_neodb")));
     
 #### MapDB
 
     ResourceSet resSet = new ResourceSetImpl();
-    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
-    Resource resource = resSet.createResource(NeoMapURI.createNeoMapURI(new File("path_to_mapdb")));
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().
+        put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
+    Resource resource = resSet.createResource(
+        NeoMapURI.createNeoMapURI(new File("path_to_mapdb")));
 
 
 Once this two initialization steps has been performed, the resulting resource can be used as a regular EMF [Resource](http://download.eclipse.org/modeling/emf/emf/javadoc/2.4.3/org/eclipse/emf/ecore/resource/Resource.html).
@@ -62,9 +68,11 @@ Once this two initialization steps has been performed, the resulting resource ca
 
 ## Neo4j Blueprints Complete Example: modify an existing Resource
 	
-    PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new BlueprintsPersistenceBackendFactory());
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, 
+        new BlueprintsPersistenceBackendFactory());
 	ResourceSet resSet = new ResourceSetImpl();
-    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().
+        put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
     Resource resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(new File("path_to_neodb")));
 	
     // load the resource
@@ -88,9 +96,11 @@ Once this two initialization steps has been performed, the resulting resource ca
 
 ## MapDB Complete Example: modify an existing Resource
 
-    PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
+    PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, 
+        new MapPersistenceBackendFactory());
     ResourceSet resSet = new ResourceSetImpl();
-    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
+    resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().
+        put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
     Resource resource = resSet.createResource(NeoMapURI.createNeoMapURI(new File("path_to_mapdb")));
     
     // load the resource
