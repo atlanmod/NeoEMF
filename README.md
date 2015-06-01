@@ -53,6 +53,7 @@ To build NeoEMF Eclipse plugins you need to perform the following steps:
  - NeoEMF plugins and update site are built and stored in your local m2 repository (<m2>/fr/inria/atlanmod/neoemf)
 
 ### Known Issues:
+ - Only Luna plugins are fetched (the compatibility is not ensured for previous eclipse versions)
  - The Eclipse plugins can not be built if maven can not access internet (it is needed to fetch Luna p2 repositories) 
  - Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
 
