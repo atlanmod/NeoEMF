@@ -22,7 +22,8 @@ NeoEMF Benchmarks
  6. (**Optional**) Select a working directory to run the benchmarks in the file fr.inria.atlanmod.neoemf.benchmarks/benchmarks.xml (${java.io.tmpdir}/kyanos-benchmarks is used by default)
    - Change benchmarks.dir property on line 4
  7. Run the benchmarks
-   - Right click on the benchmarks.launch file and select Run as -> benchmarks
+   1. Right click on the build.xml file and select Run as -> Ant Build ...
+   2. Select the tasks you want (it is recommanded to use init-eclipse-compiler and build-eclipse-compiler tasks for building the projects)
    
 ### Note for 32 bits configurations or computers with limited RAM
 
@@ -30,6 +31,12 @@ This setup is not recommanded, since biggest models could not be imported from X
 In any case, it is necessary to decrease the max heap size on line 16, 18 and 45 in file fr.inria.atlanmod.neoemf.benchmarks/benchmarks.xml:
 `<property name="creator.vmargs" value="-Xmx8g" />` should be
 `<property name="creator.vmargs" value="-Xmx2g" />`
+
+### Known Issues
+
+The task build-eclipse-compiler may crash with the following error `Class not found: org.eclipse.jdt.core.JDTCompilerAdapter`. In that case
+add `org.eclipse.jdt.core_*.jar` and `jdtCompilerAdapter.jar` to the Ant classpath (Run as -> Ant Build -> Classpath).
+The needed jars are located in `<Eclipse Home>/plugins/org.apache.ant_*/lib`.
 
 ### Acknowledgements
 
