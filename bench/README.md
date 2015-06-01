@@ -22,8 +22,8 @@ NeoEMF Benchmarks
  6. (**Optional**) Select a working directory to run the benchmarks in the file fr.inria.atlanmod.neoemf.benchmarks/benchmarks.xml (${java.io.tmpdir}/kyanos-benchmarks is used by default)
    - Change benchmarks.dir property on line 4
  7. Run the benchmarks
-   1. Right click on the build.xml file and select Run as -> Ant Build ...
-   2. Select the tasks you want (it is recommanded to use init-eclipse-compiler and build-eclipse-compiler tasks for building the projects)
+   1. Right click on the banchmarks.launch file and select Run as -> Benchmarks. This will build the different projects
+   2. Right click on the build.xml gile and select Run as -> Benchmarks. Select the tasks you want to perform and run
    
 ### Note for 32 bits configurations or computers with limited RAM
 
