@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.atl_mr.builder;
+package fr.inria.atlanmod.counter_mr.builder;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -69,7 +69,6 @@ public class RecordBuilder  {
 
 			// Initialize ExtensionToFactoryMap
 			Resource.Factory.Registry.INSTANCE.getProtocolToFactoryMap().put(KyanosURI.KYANOS_HBASE_SCHEME, new KyanosResourceFactoryImpl());
-
 
 			// Build records file
 			Builder recordBuilder = new Builder(URI.createURI(inputLocation));

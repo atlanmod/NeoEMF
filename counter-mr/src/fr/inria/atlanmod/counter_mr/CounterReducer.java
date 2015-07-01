@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.atl_mr;
+package fr.inria.atlanmod.counter_mr;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -8,12 +8,13 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class ATLMRReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+public class CounterReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
 
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		Logger.getGlobal().log(Level.INFO, "Setting up reducer - START");
-
+		Logger.getGlobal().log(Level.INFO, "Registering the metamodel");
+		org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl.init();
 		super.setup(context);
 
 		Logger.getGlobal().log(Level.INFO, "Setting up reducer - END");

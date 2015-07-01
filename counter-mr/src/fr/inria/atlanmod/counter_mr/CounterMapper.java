@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.atl_mr;
+package fr.inria.atlanmod.counter_mr;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -23,15 +23,17 @@ import fr.inria.atlanmod.kyanos.core.impl.KyanosHbaseResourceImpl;
  *
  */
 
-public class ATLMRMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class CounterMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
 	private KyanosHbaseResourceImpl resource = null;
 
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		Logger.getGlobal().log(Level.INFO, "Setting up mapper - START");
+		Logger.getGlobal().log(Level.INFO, "Registering the metamodel");
+		org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl.init();
 		super.setup(context);
-		URI inputUri = URI.createURI(context.getConfiguration().get(ATLMRMaster.INPUT_MODEL));
+		URI inputUri = URI.createURI(context.getConfiguration().get(CounterMaster.INPUT_MODEL));
 		resource = new KyanosHbaseResourceImpl(inputUri);
 		resource.load(Collections.emptyMap());
 		Logger.getGlobal().log(Level.INFO, "Setting up mapper - END");
@@ -42,21 +44,24 @@ public class ATLMRMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 		Logger.getGlobal().log(Level.FINEST, "Mapping - START - " + value.toString());
 
 		String uriFragment = value.toString();
+		try {
+			int children = 0;
+			EObject eObject = resource.getEObject(uriFragment);
+			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); it.next(), children++) {
+			}
+			context.write(new Text(eObject.eClass().getName()), new IntWritable(children));
 
-		EObject eObject = resource.getEObject(uriFragment);
-
-		int children = 0;
-
-		for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); it.next(), children++) {
+		} catch (Exception e) {
+			Logger.getGlobal().log(Level.SEVERE, e.getLocalizedMessage());
+			e.printStackTrace();
 		}
-
-		context.write(new Text(eObject.eClass().getName()), new IntWritable(children));
 
 		Logger.getGlobal().log(Level.FINEST, "Mapping - END");
 	}
 
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
+
 		Logger.getGlobal().log(Level.INFO, "Cleaning up mapper - START");
 		KyanosHbaseResourceImpl.shutdownWithoutUnload(resource);
 		super.cleanup(context);
