@@ -80,5 +80,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/bundles/log4j-1.2.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bundles/protobuf-java-2.5.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bundles/snappy-java-1.0.4.1.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=org.apache.hadoop.hbase&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

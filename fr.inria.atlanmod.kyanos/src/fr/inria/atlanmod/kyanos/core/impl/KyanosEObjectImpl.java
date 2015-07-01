@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.kyanos.core.impl;
 
@@ -86,7 +86,7 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	@Override
 	public int eContainerFeatureID() {
 		if (eContainerFeatureID == UNSETTED_FEATURE_ID) {
-			if (eDirectResource() instanceof KyanosResource) {
+			if (eResource() instanceof KyanosResource) {
 				EReference containingFeature = (EReference) eStore().getContainingFeature(this);
 				if (containingFeature != null) {
 					EReference oppositeFeature = containingFeature.getEOpposite();
