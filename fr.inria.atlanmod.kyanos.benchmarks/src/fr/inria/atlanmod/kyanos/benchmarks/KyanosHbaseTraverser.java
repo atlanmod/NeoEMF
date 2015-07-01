@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.kyanos.benchmarks;
 
@@ -79,6 +79,7 @@ public class KyanosHbaseTraverser {
 			Resource resource = resourceSet.createResource(uri);
 			
 			Map<String, Object> loadOpts = new HashMap<String, Object>();
+			LOG.log(Level.INFO, "Laoding the resource");
 			resource.load(loadOpts);
 
 			LOG.log(Level.INFO, "Start counting");
@@ -103,6 +104,7 @@ public class KyanosHbaseTraverser {
 			formatter.printHelp("java -jar <this-file.jar>", options, true);
 		} catch (Throwable e) {
 			MessageUtil.showError(e.toString());
+			e.printStackTrace();
 		}
 	}
 	
