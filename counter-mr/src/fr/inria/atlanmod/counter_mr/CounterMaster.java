@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.atl_mr;
+package fr.inria.atlanmod.counter_mr;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +31,11 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class ATLMRMaster extends Configured implements Tool {
+public class CounterMaster extends Configured implements Tool {
 
 	protected static final String JOB_NAME = "Counter in MapReduce";
 
@@ -73,7 +74,7 @@ public class ATLMRMaster extends Configured implements Tool {
 	 */
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
-		int res = ToolRunner.run(conf, new ATLMRMaster(), args);
+		int res = ToolRunner.run(conf, new CounterMaster(), args);
 		System.exit(res);
 	}
 
@@ -112,10 +113,11 @@ public class ATLMRMaster extends Configured implements Tool {
 			Job job = Job.getInstance(conf, JOB_NAME);
 
 			// Configure classes
-			job.setJarByClass(ATLMRMaster.class);
-			job.setMapperClass(ATLMRMapper.class);
-			job.setReducerClass(ATLMRReducer.class);
+			job.setJarByClass(CounterMaster.class);
+			job.setMapperClass(CounterMapper.class);
+			job.setReducerClass(CounterReducer.class);
 			job.setInputFormatClass(NLineInputFormat.class);
+			job.setOutputFormatClass(TextOutputFormat.class);
 			//			job.setOutputFormatClass(SequenceFileOutputFormat.class);
 			job.setMapOutputKeyClass(Text.class);
 			job.setMapOutputValueClass(IntWritable.class);
@@ -126,7 +128,7 @@ public class ATLMRMaster extends Configured implements Tool {
 			Path recordsPath = new Path(recordsLocation);
 			FileInputFormat.setInputPaths(job, recordsPath);
 			String timestamp = new SimpleDateFormat("yyyyMMddhhmm").format(new Date());
-			String outDirName = "atlmr-out-" + timestamp + "-" + UUID.randomUUID();
+			String outDirName = "xounter-out-" + timestamp + "-" + UUID.randomUUID();
 			FileOutputFormat.setOutputPath(job, new Path(job.getWorkingDirectory().suffix(Path.SEPARATOR + outDirName).toUri()));
 
 			// Configure records per map

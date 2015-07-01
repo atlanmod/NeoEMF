@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.atl_mr.utils;
+package fr.inria.atlanmod.counter_mr.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

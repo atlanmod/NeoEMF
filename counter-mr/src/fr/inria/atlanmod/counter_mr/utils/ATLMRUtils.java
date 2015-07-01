@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.atl_mr.utils;
+package fr.inria.atlanmod.counter_mr.utils;
 
 import org.apache.hadoop.conf.Configuration;
 import org.eclipse.emf.common.util.URI;
