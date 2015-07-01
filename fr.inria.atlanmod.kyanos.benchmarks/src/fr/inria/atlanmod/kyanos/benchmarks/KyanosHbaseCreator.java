@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.kyanos.benchmarks;
 
@@ -82,6 +82,7 @@ public class KyanosHbaseCreator {
 			URI targetUri = URI.createURI(commandLine.getOptionValue(OUT));
 
 			KyanosHbaseCreator.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS)).getMethod("init").invoke(null);
+			org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl.init();
 			
 			ResourceSet resourceSet = new ResourceSetImpl();
 			
@@ -91,6 +92,7 @@ public class KyanosHbaseCreator {
 			
 			Resource sourceResource = resourceSet.createResource(sourceUri);
 			Map<String, Object> loadOpts = new HashMap<String, Object>();
+			
 			if ("zxmi".equals(sourceUri.fileExtension())) {
 				loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
 			}
