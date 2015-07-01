@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.kyanos.datastore.estores.impl;
 
@@ -113,7 +113,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		if (feature instanceof EAttribute) {
 			return get(kyanosEObject, (EAttribute) feature, index);
 		} else if (feature instanceof EReference) {
-			return get(kyanosEObject, (EReference) feature, index);
+			return ((EReference) feature).isContainer() ? getContainer(object) : get(kyanosEObject, (EReference) feature, index);
 		} else {
 			throw new IllegalArgumentException(feature.toString());
 		}
@@ -176,7 +176,8 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 
 	protected Object set(KyanosEObject object, EReference eReference, int index, KyanosInternalEObject referencedObject) {
 		Object oldValue = isSet((InternalEObject) object, eReference) ? get(object, eReference, index) :  null;
-
+		if (referencedObject == null)
+			System.out.println("");
 		updateLoadedEObjects(referencedObject);
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
@@ -395,7 +396,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		}
 	}
 
-
+	
 	@Override
 	public Object[] toArray(InternalEObject object, EStructuralFeature feature) {
 		int size = size(object, feature);
