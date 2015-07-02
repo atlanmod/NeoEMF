@@ -24,7 +24,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
-import fr.inria.atlanmod.neoemf.datastores.estores.impl.OwnedTransientEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {

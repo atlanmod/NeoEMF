@@ -8,7 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-package fr.inria.atlanmod.neoemf.datastores.estores.impl;
+package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import java.util.Map;
 
