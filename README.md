@@ -58,8 +58,8 @@ In order to import NeoEMF Git repository in Eclipse, you will need the following
  - __m2e__ - version 1.5.1 or later
 
 And the following m2e connectors (installable through "Preferences -> Maven -> Discovery / m2e Marketplace"):
- - __Maven SCM Handler for EGit__ - version 0.14 or later
- - __Tycho Project Configurators__ - version 0.8.0 or later
+ - __Maven SCM Handler for EGit (m2e-egit)__ - version 0.14 or later
+ - __Tycho Project Configurators (Tycho configurator)__ - version 0.8.0 or later
 
 Steps:
  - Import the project using File->import->Maven->Check out Maven Projects from SCM
