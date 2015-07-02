@@ -53,15 +53,19 @@ To build NeoEMF Eclipse plugins you need to perform the following steps:
  - NeoEMF plugins and update site are built and stored in your local m2 repository (<m2>/fr/inria/atlanmod/neoemf)
 
 ### Import Git repository in Eclipse
-In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation:
- - [EGit]() - version 4.0.1 or earlier
- - [m2e]() - version 1.6.1 or earlier
- - [Maven SCM Handler for EGit]() - version 0.14 or earlier
- - [Tycho Project Configurators]() - version 0.8.0 or earlier
+In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation (installable from the software repository of your Eclipse release):
+ - __EGit__ - version 3.4.2 or later
+ - __m2e__ - version 1.5.1 or later
+
+And the following m2e connectors (installable through "Preferences -> Maven -> Discovery / m2e Marketplace"):
+ - __Maven SCM Handler for EGit__ - version 0.14 or later
+ - __Tycho Project Configurators__ - version 0.8.0 or later
+
 Steps:
  - Import the project using File->import->Maven->Check out Maven Projects from SCM
  - Select "git" in the SCM URL field and paste the repository address (https://github.com/atlanmod/NeoEMF.git)
  - Choose your workspace and working sets setting and finish
+
 The projects **project**, **parent**, **core**, **graph**, **graph.blueprints** and **map** will be imported and built
 If you want to import the projects generating eclipse specific plugins (features, update site), you have to import them by
 hand using File->import->maven->Existing Maven Projects, and select the projects under the "plugins" folder in your local repository.
