@@ -45,12 +45,26 @@ You can build locally NeoEMF by following the instructions in th Build section.
 It is then possible to install NeoEMF from the local built update site, or by importing the generated plugins.
 
 ## Build
-To build NeoEMF first download the latest release [here](https://github.com/atlanmod/NeoEMF/releases) and unzip it. Then go to the root of the extracted directory and run `mvn clean install`. This will build NeoEMF core components and database specific implementations. You can also run the tests by using "mvn test (-pl <core|map|graph>)".
+To build NeoEMF first download the latest release [here](https://github.com/atlanmod/NeoEMF/releases) and unzip it (you can also download the development version [here](https://github.com/atlanmod/NeoEMF/archive/master.zip)). Then go to the root of the extracted directory and run `mvn clean install`. This will build NeoEMF core components and database specific implementations. You can also run the tests by using "mvn test (-pl <core|map|graph>)".
 
 To build NeoEMF Eclipse plugins you need to perform the following steps:
  - Move to eclipse folder `cd plugins/eclipse`
  - Run maven `mvn clean install`
  - NeoEMF plugins and update site are built and stored in your local m2 repository (<m2>/fr/inria/atlanmod/neoemf)
+
+### Import Git repository in Eclipse
+In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation:
+ - [EGit]() - version 4.0.1 or earlier
+ - [m2e]() - version 1.6.1 or earlier
+ - [Maven SCM Handler for EGit]() - version 0.14 or earlier
+ - [Tycho Project Configurators]() - version 0.8.0 or earlier
+Steps:
+ - Import the project using File->import->Maven->Check out Maven Projects from SCM
+ - Select "git" in the SCM URL field and paste the repository address (https://github.com/atlanmod/NeoEMF.git)
+ - Choose your workspace and working sets setting and finish
+The projects **project**, **parent**, **core**, **graph**, **graph.blueprints** and **map** will be imported and built
+If you want to import the projects generating eclipse specific plugins (features, update site), you have to import them by
+hand using File->import->maven->Existing Maven Projects, and select the projects under the "plugins" folder in your local repository.
 
 ### Known Issues:
  - Only Luna plugins are fetched (the compatibility is not ensured for previous eclipse versions)
