@@ -50,7 +50,7 @@ To build NeoEMF first download the latest release [here](https://github.com/atla
 To build NeoEMF Eclipse plugins you need to perform the following steps:
  - Move to eclipse folder `cd plugins/eclipse`
  - Run maven `mvn clean install`
- - NeoEMF plugins and update site are built and stored in your local m2 repository (<m2>/fr/inria/atlanmod/neoemf)
+ - NeoEMF plugins and update site are built and stored in your local m2 repository (.m2/fr/inria/atlanmod/neoemf)
 
 ### Import Git repository in Eclipse
 In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation (installable from the software repository of your Eclipse release):
