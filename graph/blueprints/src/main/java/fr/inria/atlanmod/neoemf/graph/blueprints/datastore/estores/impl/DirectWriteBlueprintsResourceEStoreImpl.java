@@ -336,13 +336,15 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		if (index < 0 || index > newSize) {
 			throw new IndexOutOfBoundsException();
 		} else {
-			Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()
-					.iterator();
-			while (iterator.hasNext()) {
-				Edge edge = iterator.next();
-				int position = edge.getProperty(POSITION);
-				edge.setProperty(POSITION, position + 1);
-			}
+		    if(index != size) {
+    			Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()
+    					.iterator();
+    			while (iterator.hasNext()) {
+    				Edge edge = iterator.next();
+    				int position = edge.getProperty(POSITION);
+    				edge.setProperty(POSITION, position + 1);
+    			}
+		    }
 			Edge edge = vertex.addEdge(eReference.getName(), referencedVertex);
 			edge.setProperty(POSITION, index);
 		}
