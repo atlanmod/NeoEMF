@@ -169,8 +169,14 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		if (vertex == null) {
 			vertex = addVertex(kyanosEObject);
 			EClass eClass = kyanosEObject.eClass();
-			Vertex eClassVertex = getVertex(eClass);
-			if (eClassVertex == null) {
+			Iterator<Vertex> metaclassIndexHits = metaclassIndex.get("name", eClass.getName()).iterator();
+			Vertex eClassVertex = null;
+			if(metaclassIndexHits.hasNext()) {
+			    eClassVertex = metaclassIndexHits.next();
+			}
+			//Vertex eClassVertex = getVertex(eClass);
+			//if (eClassVertex == null) {
+			else {
 				eClassVertex = addVertex(eClass);
 				metaclassIndex.put("name", eClass.getName(), eClassVertex);
 			}
