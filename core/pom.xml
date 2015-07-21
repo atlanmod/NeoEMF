@@ -104,7 +104,7 @@
           <configuration>
             <manifestLocation>${manifest-location}</manifestLocation>
            <instructions>
-           	<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+           	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
            	<Export-Package>fr.inria.atlanmod.neoemf.*</Export-Package>
            	<Import-Package></Import-Package>
            	<Embed-Dependency>cglib,log4j-core,commons-io,commons-lang,guava,commons-collections4</Embed-Dependency>-->
