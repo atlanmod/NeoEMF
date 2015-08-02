@@ -287,7 +287,27 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-		return ArrayUtils.indexOf(toArray(object, feature), value);
+	    if(feature instanceof EAttribute) {
+	        return ArrayUtils.indexOf(toArray(object, feature), value);
+	    }
+	    else if(feature instanceof EReference) {
+	        if(value == null) {
+	            return ArrayUtils.INDEX_NOT_FOUND;
+	        }
+	        Vertex inVertex = graph.getVertex(object);
+	        Vertex outVertex = graph.getVertex((EObject)value);
+	        Iterator<Edge> iterator = outVertex.getEdges(Direction.IN, feature.getName()).iterator();
+	        while(iterator.hasNext()) {
+	            Edge e = iterator.next();
+	            if(e.getVertex(Direction.OUT).equals(inVertex)) {
+	                return e.getProperty(POSITION);
+	            }
+	        }
+	        return ArrayUtils.INDEX_NOT_FOUND;
+	    }
+	    else {
+	        throw new IllegalArgumentException(feature.toString());
+	    }
 	}
 
 	@Override
