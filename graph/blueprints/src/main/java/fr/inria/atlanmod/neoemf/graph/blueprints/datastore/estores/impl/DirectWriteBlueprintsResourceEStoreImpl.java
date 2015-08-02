@@ -337,6 +337,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 			throw new IndexOutOfBoundsException();
 		} else {
 		    if(index != size) {
+		        // Avoid unnecessary database access
     			Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()
     					.iterator();
     			while (iterator.hasNext()) {
