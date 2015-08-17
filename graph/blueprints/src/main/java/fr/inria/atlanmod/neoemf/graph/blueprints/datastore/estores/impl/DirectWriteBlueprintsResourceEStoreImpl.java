@@ -287,12 +287,55 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-		return ArrayUtils.indexOf(toArray(object, feature), value);
+	    if(feature instanceof EAttribute) {
+	        return ArrayUtils.indexOf(toArray(object, feature), value);
+	    }
+	    else if(feature instanceof EReference) {
+	        if(value == null) {
+	            return ArrayUtils.INDEX_NOT_FOUND;
+	        }
+	        Vertex inVertex = graph.getVertex(object);
+	        Vertex outVertex = graph.getVertex((EObject)value);
+	        Iterator<Edge> iterator = outVertex.getEdges(Direction.IN, feature.getName()).iterator();
+	        while(iterator.hasNext()) {
+	            Edge e = iterator.next();
+	            if(e.getVertex(Direction.OUT).equals(inVertex)) {
+	                return e.getProperty(POSITION);
+	            }
+	        }
+	        return ArrayUtils.INDEX_NOT_FOUND;
+	    }
+	    else {
+	        throw new IllegalArgumentException(feature.toString());
+	    }
 	}
 
 	@Override
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-		return ArrayUtils.lastIndexOf(toArray(object, feature), value);
+	    if(feature instanceof EAttribute) {
+	        return ArrayUtils.lastIndexOf(toArray(object, feature), value);
+	    }
+	    else if(feature instanceof EReference) {
+	        if(value == null) {
+	            return ArrayUtils.INDEX_NOT_FOUND;
+	        }
+	        Vertex inVertex = graph.getVertex(object);
+	        Vertex outVertex = graph.getVertex((EObject)value);
+	        Iterator<Edge> iterator = outVertex.getEdges(Direction.IN, feature.getName()).iterator();
+	        Edge lastPositionEdge = null;
+	        while(iterator.hasNext()) {
+	            Edge e = iterator.next();
+	            if(e.getVertex(Direction.OUT).equals(inVertex)) {
+	                if(lastPositionEdge == null || ((int)e.getProperty(POSITION)) > (int)lastPositionEdge.getProperty(POSITION)) {
+	                    lastPositionEdge = e;
+	                }
+	            }
+	        }
+	        return(lastPositionEdge == null ? ArrayUtils.INDEX_NOT_FOUND : (int)lastPositionEdge.getProperty(POSITION));
+	    }
+	    else {
+	        throw new IllegalArgumentException(feature.toString());
+	    }
 	}
 
 	@Override
@@ -336,13 +379,16 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		if (index < 0 || index > newSize) {
 			throw new IndexOutOfBoundsException();
 		} else {
-			Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()
-					.iterator();
-			while (iterator.hasNext()) {
-				Edge edge = iterator.next();
-				int position = edge.getProperty(POSITION);
-				edge.setProperty(POSITION, position + 1);
-			}
+		    if(index != size) {
+		        // Avoid unnecessary database access
+    			Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()
+    					.iterator();
+    			while (iterator.hasNext()) {
+    				Edge edge = iterator.next();
+    				int position = edge.getProperty(POSITION);
+    				edge.setProperty(POSITION, position + 1);
+    			}
+		    }
 			Edge edge = vertex.addEdge(eReference.getName(), referencedVertex);
 			edge.setProperty(POSITION, index);
 		}
