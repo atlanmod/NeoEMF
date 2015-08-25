@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.kyanos.core.impl;
 
@@ -21,7 +21,7 @@ import org.apache.commons.lang.ClassUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import fr.inria.atlanmod.kyanos.core.KyanosEObject;
+//import fr.inria.atlanmod.kyanos.core.KyanosEObject;
 import fr.inria.atlanmod.kyanos.core.KyanosInternalEObject;
 
 public class KyanosEObjectAdapterFactoryImpl {

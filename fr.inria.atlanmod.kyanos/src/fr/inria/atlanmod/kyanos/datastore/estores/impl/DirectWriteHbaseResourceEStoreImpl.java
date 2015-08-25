@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -84,7 +85,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		this.connection = connection;
 		this.resource = resource;
 		
-		TableName tableName = TableName.valueOf(resource.getURI().devicePath().replaceAll("/", "_"));
+		TableName tableName = TableName.valueOf(formatURI(resource.getURI()));
 		
 		if (!connection.getAdmin().tableExists(tableName)) {
 			HTableDescriptor desc = new HTableDescriptor(tableName);
@@ -98,6 +99,12 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		}
 		
 		table = connection.getTable(tableName);
+	}
+
+
+	private byte[] formatURI(URI uri) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
