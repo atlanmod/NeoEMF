@@ -43,7 +43,6 @@ public class KyanosUtil {
 		public boolean deleteResourceIfExists (URI modelURI) throws IOException {
 			{ 
 				// setting up the configuration according to the URI
-				Logger.log(Logger.SEVERITY_INFO, MessageFormat.format("", modelURI.toString()));
 				conf.set("hbase.zookeeper.quorum", modelURI.host());
 				conf.set("hbase.zookeeper.property.clientPort", modelURI.port() != null ? modelURI.port() : "2181");
 				
@@ -57,7 +56,7 @@ public class KyanosUtil {
 //					
 //				} catch (ZooKeeperConnectionException e){
 //					Logger.log(Logger.SEVERITY_ERROR, 
-//					MessageFormat.format("zooKeeper conenxion failed using the follwing configuration:\n hbase.zookeeper.quorum:{0}\nhbase.zookeeper.property.clientPort:{1}", e.getLocalizedMessage()));
+//					MessageFormat.format("zooKeeper connexion failed using the following configuration:\n hbase.zookeeper.quorum:{0}\nhbase.zookeeper.property.clientPort:{1}", e.getLocalizedMessage()));
 //
 //				} catch (IOException e) {
 //					// Log this 
@@ -71,19 +70,35 @@ public class KyanosUtil {
 			
 			Connection resourceConnection = ConnectionFactory.createConnection(conf);
 			Admin admin = resourceConnection.getAdmin();
-			
-			TableName tableName = TableName.valueOf(modelURI.devicePath().replaceAll("/", "_"));
-
+			String cloneURI = cloneURI (modelURI);
+			TableName tableName = TableName.valueOf(cloneURI);
+			Logger.log(Logger.SEVERITY_INFO, "Delete table if exists");
+			try {	
 			if (admin.tableExists(tableName)) {
 				
 				admin.disableTable(tableName);
 				admin.deleteTable(tableName);
 				
-				// log table deleted 
+				Logger.log(Logger.SEVERITY_INFO, "Table has been deleted");
 				return true;
-			}		
+				}	
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw e;
+			}
 			return false;
 			
+		}
+
+		private String cloneURI(URI modelURI) {
+			StringBuilder strBld = new StringBuilder();
+			for (int i=0; i < modelURI.segmentCount(); i++) {
+				strBld.append(modelURI.segment(i).replaceAll("-","_"));
+				 if (i != modelURI.segmentCount() -1 )
+					 strBld.append("_");
+			}
+			
+			return strBld.toString();
 		}
 		
 	}
