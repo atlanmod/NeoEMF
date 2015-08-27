@@ -37,9 +37,9 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	protected static int opCount = 0;
 
 	/**
-	 * Constructor for this {@link KyanosGraph}-based {@link EStore}. Allows to
+	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link EStore}. Allows to
 	 * specify the number of allowed modification on the underlying graph before
-	 * calling the {@link KyanosGraph#commit()} method automatically.
+	 * calling the {@link BlueprintsPersistenceBackend#commit()} method automatically.
 	 * 
 	 * @param resource
 	 * @param graph
@@ -51,9 +51,9 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	}
 
 	/**
-	 * Constructor for this {@link KyanosGraph}-based {@link EStore}. Allows to
+	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link EStore}. Allows to
 	 * make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
-	 * graph before calling the {@link KyanosGraph#commit()} method
+	 * graph before calling the {@link BlueprintsPersistenceBackend#commit()} method
 	 * automatically.
 	 * 
 	 * @param resource

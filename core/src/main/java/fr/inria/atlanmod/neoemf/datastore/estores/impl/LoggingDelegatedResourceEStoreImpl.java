@@ -24,7 +24,7 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that logs every call to its
- * methods in the {@link KyanosPlugin} default {@link ILog}
+ * methods in the {@link NeoLogger}
  * 
  */
 public class LoggingDelegatedResourceEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {

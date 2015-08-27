@@ -28,7 +28,7 @@ public class NeoEObjectAdapterFactoryImpl {
 
 	/**
 	 * {@link WeakHashMap} that stores the EObjects that have been already
-	 * adapted to avoid duplication of {@link KyanosEObject}s. We use a
+	 * adapted to avoid duplication of {@link PersistentEObject}s. We use a
 	 * {@link WeakHashMap} since the adaptor is no longer needed when the
 	 * original {@link EObject} has been garbage collected
 	 */
@@ -50,7 +50,7 @@ public class NeoEObjectAdapterFactoryImpl {
 			}
 			{
 				// Compute the interfaces that the proxy has to implement
-				// These are the current interfaces + KyanosEObject
+				// These are the current interfaces + PersistentEObject
 				List<Class<?>> interfaces = new ArrayList<>();
 				interfaces.addAll(ClassUtils.getAllInterfaces(adaptableObject.getClass()));
 				interfaces.add(InternalPersistentEObject.class);

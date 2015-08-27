@@ -93,7 +93,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	protected SearcheableResourceEStore eStore;
 
 	/**
-	 * The underlying {@link KyanosGraph} that stores the data
+	 * The underlying {@link PersistenceBackend} that stores the data
 	 */
 	protected PersistenceBackend persistenceBackend;
 	
@@ -191,7 +191,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		if (eObject.eResource() != this) {
 			return "/-1";
 		} else {
-			// Try to adapt as a KyanosEObject and return the ID
+			// Try to adapt as a PersistentEObject and return the ID
 			PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
 			if (persistentEObject != null) {
 				return (persistentEObject.id().toString());

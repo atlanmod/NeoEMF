@@ -44,8 +44,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	private Index<Vertex> metaclassIndex;
 
-	protected class KyanosEdge extends IdEdge {
-		public KyanosEdge(Edge edge) {
+	protected class NeoEdge extends IdEdge {
+		public NeoEdge(Edge edge) {
 			super(edge, BlueprintsPersistenceBackend.this);
 		}
 		
@@ -119,8 +119,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EObject eObject) {
-		PersistentEObject kyanosEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
-		Vertex v = addVertex(kyanosEObject.id().toString());
+		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
+		Vertex v = addVertex(neoEObject.id().toString());
 		return v;
 	}
 
@@ -149,8 +149,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getVertex(EObject eObject) {
-		PersistentEObject kyanosEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
-		return getVertex(kyanosEObject.id().toString());
+		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
+		return getVertex(neoEObject.id().toString());
 	}
 
 	/**
@@ -164,11 +164,11 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
-		InternalPersistentEObject kyanosEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
-		Vertex vertex = getVertex(kyanosEObject.id().toString());
+		InternalPersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+		Vertex vertex = getVertex(neoEObject.id().toString());
 		if (vertex == null) {
-			vertex = addVertex(kyanosEObject);
-			EClass eClass = kyanosEObject.eClass();
+			vertex = addVertex(neoEObject);
+			EClass eClass = neoEObject.eClass();
 			Iterator<Vertex> metaclassIndexHits = metaclassIndex.get("name", eClass.getName()).iterator();
 			Vertex eClassVertex = null;
 			if(metaclassIndexHits.hasNext()) {
@@ -179,7 +179,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				metaclassIndex.put("name", eClass.getName(), eClassVertex);
 			}
 			vertex.addEdge(INSTANCE_OF, eClassVertex);
-			loadedEObjects.put(kyanosEObject.id().toString(), kyanosEObject);
+			loadedEObjects.put(neoEObject.id().toString(), neoEObject);
 		}
 		return vertex;
 	}
@@ -200,7 +200,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
     @Override
 	public Edge addEdge(final Object id, final Vertex outVertex, final Vertex inVertex, final String label) {
-        return new KyanosEdge(getBaseGraph().addEdge(id, ((IdVertex) outVertex).getBaseVertex(), ((IdVertex) inVertex).getBaseVertex(), label));
+        return new NeoEdge(getBaseGraph().addEdge(id, ((IdVertex) outVertex).getBaseVertex(), ((IdVertex) inVertex).getBaseVertex(), label));
     }
 
     @Override
@@ -209,7 +209,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
         if (null == edge)
             return null;
         else
-            return new KyanosEdge(edge);
+            return new NeoEdge(edge);
     }
     
     
@@ -238,24 +238,24 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public InternalPersistentEObject reifyVertex(Vertex vertex) {
 		Object id = vertex.getId();
-		InternalPersistentEObject kyanosEObject = loadedEObjects.get(id);
-		if (kyanosEObject == null) {
+		InternalPersistentEObject neoEObject = loadedEObjects.get(id);
+		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(vertex);
 			if (eClass != null) {
 				EObject eObject = EcoreUtil.create(eClass);
 				if (eObject instanceof InternalPersistentEObject) {
-					kyanosEObject = (InternalPersistentEObject) eObject;
+					neoEObject = (InternalPersistentEObject) eObject;
 				} else {
-					kyanosEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
 				}
-				kyanosEObject.id(new StringId(id.toString()));
+				neoEObject.id(new StringId(id.toString()));
 			} else {
 				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
 						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
 			}
-			loadedEObjects.put(id, kyanosEObject);
+			loadedEObjects.put(id, neoEObject);
 		}
-		return kyanosEObject;
+		return neoEObject;
 	}
 	
 	/**
