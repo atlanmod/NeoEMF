@@ -11,6 +11,8 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -82,6 +85,7 @@ public class BlueprintsPersistenceBackendFactory extends
 				String savedGraphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
 				String issuedGraphType = options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).toString();
 				if (!savedGraphType.equals(issuedGraphType)) {
+				    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
 					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
 				}
 			}
@@ -97,14 +101,36 @@ public class BlueprintsPersistenceBackendFactory extends
 			if (graphType == null) {
 				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
 			}
-
-			// Calculate the graph name, it is needed for the directory
-			// property
+			
 			String[] segments = graphType.split("\\.");
-			// TODO: Add sanity check for array access
-			String graphName = segments[segments.length - 2];
-			directoryProperty = MessageFormat.format("blueprints.{0}.directory", graphName);
-			configuration.setProperty(directoryProperty, file.getAbsolutePath());
+			if(segments.length >= 2) {
+    			String graphName = segments[segments.length - 2];
+    			String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0))+graphName.substring(1);
+    			String configClassQualifiedName = MessageFormat.format("fr.inria.atlanmod.neoemf.graph.blueprints.{0}.config.Blueprints{1}Config", graphName, upperCaseGraphName);
+    			try {
+                    ClassLoader classLoader = BlueprintsPersistenceBackendFactory.class.getClassLoader();
+                    Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
+                    Method configMethod = configClass.getMethod("putDefaultBlueprints"+upperCaseGraphName+"Config", Configuration.class, File.class);
+                    configMethod.invoke(null,configuration, file);
+                    
+                } catch (ClassNotFoundException e1) {
+                    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Unable to find the configuration class " + configClassQualifiedName);
+                    e1.printStackTrace();
+                } catch (NoSuchMethodException e2) {
+                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format("Unable to find putDefaultBlueprints{0}Config in class Blueprints{0}Config", upperCaseGraphName));
+                    e2.printStackTrace();
+                } catch (InvocationTargetException e3) {
+                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format("An error occured during the exection of putDefaultBlueprints{0}Config", upperCaseGraphName));
+                    e3.printStackTrace();
+                } catch (IllegalAccessException e4) {
+                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format("An error occured during the exection of putDefaultBlueprints{0}Config", upperCaseGraphName));
+                    e4.printStackTrace();
+                }
+			}
+			else {
+			    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Unable to compute graph type name from " + graphType);
+			}
+
 			Graph baseGraph = null;
 			try {
 			    baseGraph = GraphFactory.open(configuration);
@@ -114,14 +140,12 @@ public class BlueprintsPersistenceBackendFactory extends
 			if (baseGraph instanceof KeyIndexableGraph) {
 				graphDB = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
 			} else {
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Graph type " +file.getAbsolutePath()+" does not support Key Indices");
 				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
 			}
 		} finally {
-			// Delete the directory property, it is no longer needed
 			if (configuration != null && directoryProperty != null) {
-				configuration.clearProperty(directoryProperty);
 				try {
-					// And save the properties together with the DB
 					configuration.save();
 				} catch (ConfigurationException e) {
 					// Unable to save configuration, supposedly it's a minor error,
