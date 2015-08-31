@@ -42,7 +42,7 @@ import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
 
 public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableResourceEStore {
 
-	protected static final String INSTANCE_OF = "kyanosInstanceOf";
+	protected static final String INSTANCE_OF = "neoInstanceOf";
 	protected static final String CONTAINER = "eContainer";
 
 	@SuppressWarnings("unchecked")
@@ -62,7 +62,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 	public DirectWriteMapWithIndexesResourceEStoreImpl(Resource.Internal resource, DB db) {
 		this.db = db;
 		this.resource = resource;
-		this.map = db.getHashMap("Kyanos");
+		this.map = db.getHashMap("NeoEMF");
 		this.sizesMap = db.getHashMap("SIZES");
 		this.instanceOfMap = db.getHashMap(INSTANCE_OF);
 		this.containersMap = db.getHashMap(CONTAINER);

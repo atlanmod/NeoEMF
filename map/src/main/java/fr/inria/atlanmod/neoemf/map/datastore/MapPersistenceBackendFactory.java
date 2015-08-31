@@ -53,7 +53,7 @@ public class MapPersistenceBackendFactory extends
 	@Override
 	public PersistenceBackend createPersistentBackend(File file,
 			Map<?, ?> options) {
-	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("kyanos.mapdb")).toFileString());
+	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
 	    if (!dbFile.getParentFile().exists()) {
 	        dbFile.getParentFile().mkdirs();
 	    }
