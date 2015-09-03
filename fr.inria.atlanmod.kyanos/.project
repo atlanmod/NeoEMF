@@ -26,4 +26,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.apache.ivyde.eclipse.ivynature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>libs/lib</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/apache/hbase/lib</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

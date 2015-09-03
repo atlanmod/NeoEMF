@@ -21,15 +21,18 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Connection;
+//import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
@@ -75,19 +78,25 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 	@SuppressWarnings("unchecked")
 	protected Map<Object, KyanosInternalEObject> loadedEObjects = new SoftValueHashMap();
 	
-	protected Connection connection;
+	//protected Connection connection;
 	
-	protected Table table;
+	protected HTable table;
 	
 	protected Resource.Internal resource;
+	
+	protected static Configuration conf = HBaseConfiguration.create();
 
-	public DirectWriteHbaseResourceEStoreImpl(Resource.Internal resource, Connection connection) throws IOException {
-		this.connection = connection;
+
+	public DirectWriteHbaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
+	//	this.connection = connection;
 		this.resource = resource;
 		
-		TableName tableName = TableName.valueOf(formatURI(resource.getURI()));
+		conf.set("hbase.zookeeper.quorum", resource.getURI().host());
+		conf.set("hbase.zookeeper.property.clientPort", resource.getURI().port() != null ? resource.getURI().port() : "2181");
 		
-		if (!connection.getAdmin().tableExists(tableName)) {
+		TableName tableName = TableName.valueOf(formatURI(resource.getURI()));
+		HBaseAdmin admin = new HBaseAdmin(conf);
+		if (admin.tableExists(tableName)) {
 			HTableDescriptor desc = new HTableDescriptor(tableName);
 			HColumnDescriptor propertyFamily = new HColumnDescriptor(PROPERTY_FAMILY);
 			HColumnDescriptor typeFamily = new HColumnDescriptor(TYPE_FAMILY);
@@ -95,10 +104,10 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			desc.addFamily(propertyFamily);
 			desc.addFamily(typeFamily);
 			desc.addFamily(containmentFamily);
-			connection.getAdmin().createTable(desc);
+			admin.createTable(desc);
 		}
 		
-		table = connection.getTable(tableName);
+		table = new HTable(conf, tableName);
 	}
 
 
@@ -165,13 +174,13 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		try {
 			if (!eAttribute.isMany()) {
 				Put put = new Put(Bytes.toBytes(object.kyanosId()));
-				put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), Bytes.toBytes(serializeValue(eAttribute, value)));
+				put.add(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), Bytes.toBytes(serializeValue(eAttribute, value)));
 				table.put(put);
 			} else {
 				String[] array = (String[]) getFromTable(object, eAttribute);
 				array[index] = serializeValue(eAttribute, value);
 				Put put = new Put(Bytes.toBytes(object.kyanosId()));
-				put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), toBytes(array));
+				put.add(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), toBytes(array));
 				table.put(put);
 			}
 		} catch (IOException e) {
@@ -192,13 +201,13 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		try {
 			if (!eReference.isMany()) {
 				Put put = new Put(Bytes.toBytes(object.kyanosId()));
-				put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), Bytes.toBytes(referencedObject.kyanosId()));
+				put.add(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), Bytes.toBytes(referencedObject.kyanosId()));
 				table.put(put);
 			} else {
 				String[] array = (String[]) getFromTable(object, eReference);
 				array[index] = referencedObject.kyanosId();
 				Put put = new Put(Bytes.toBytes(object.kyanosId()));
-				put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
+				put.add(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
 				table.put(put);
 			}
 		} catch (IOException e) {
@@ -245,7 +254,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			}
 			array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
 			Put put = new Put(Bytes.toBytes(object.kyanosId()));
-			put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), toBytes(array));
+			put.add(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), toBytes(array));
 			table.put(put);
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
@@ -264,7 +273,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			}
 			array = (String[]) ArrayUtils.add(array, index, referencedObject.kyanosId());
 			Put put = new Put(Bytes.toBytes(object.kyanosId()));
-			put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
+			put.add(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
 			table.put(put);
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
@@ -291,7 +300,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			String[] array = (String[]) getFromTable(object, eAttribute);
 			array = (String[]) ArrayUtils.remove(array, index);
 			Put put = new Put(Bytes.toBytes(object.kyanosId()));
-			put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), toBytes(array));
+			put.add(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), toBytes(array));
 			table.put(put);
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
@@ -307,7 +316,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			String[] array = (String[]) getFromTable(object, eReference);
 			array = (String[]) ArrayUtils.remove(array, index);
 			Put put = new Put(Bytes.toBytes(object.kyanosId()));
-			put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
+			put.add(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
 			table.put(put);
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
@@ -329,7 +338,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		KyanosEObject kyanosEObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosEObject.class);
 		try {
 			Delete delete = new Delete(Bytes.toBytes(kyanosEObject.kyanosId()));
-			delete.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()));
+			delete.deleteColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()));
 			table.delete(delete);
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
@@ -395,7 +404,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		KyanosEObject kyanosEObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosEObject.class);
 		try {
 			Put put = new Put(Bytes.toBytes(kyanosEObject.kyanosId()));
-			put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), toBytes(new String[] {}));
+			put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), toBytes(new String[] {}));
 			table.put(put);
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
@@ -541,8 +550,8 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		if (eReference.isContainment()) {
 			try {
 				Put put = new Put(Bytes.toBytes(referencedObject.kyanosId()));
-				put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.kyanosId()));
-				put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(eReference.getName()));
+				put.add(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.kyanosId()));
+				put.add(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(eReference.getName()));
 //				table.checkAndPut(
 //						Bytes.toBytes(referencedObject.kyanosId()), CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, CompareOp.NOT_EQUAL,
 //						Bytes.toBytes(object.kyanosId()), put);
@@ -558,8 +567,8 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 	protected void updateInstanceOf(KyanosEObject object) {
 		try {
 			Put put = new Put(Bytes.toBytes(object.kyanosId()));
-			put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(object.eClass().getEPackage().getNsURI()));
-			put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(object.eClass().getName()));
+			put.add(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(object.eClass().getEPackage().getNsURI()));
+			put.add(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(object.eClass().getName()));
 			table.checkAndPut(Bytes.toBytes(object.kyanosId()), TYPE_FAMILY, ECLASS_QUALIFIER, null, put);
 
 		} catch (IOException e) {

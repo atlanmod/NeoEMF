@@ -6,9 +6,7 @@ import java.text.MessageFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.eclipse.emf.common.util.URI;
 
 import fr.inria.atlanmod.kyanos.logger.Logger;
@@ -68,8 +66,8 @@ public class KyanosUtil {
 //				
 			}
 			
-			Connection resourceConnection = ConnectionFactory.createConnection(conf);
-			Admin admin = resourceConnection.getAdmin();
+			//Connection resourceConnection = ConnectionFactory.createConnection(conf);
+			HBaseAdmin admin = new HBaseAdmin(conf);
 			String cloneURI = cloneURI (modelURI);
 			TableName tableName = TableName.valueOf(cloneURI);
 			Logger.log(Logger.SEVERITY_INFO, "Delete table if exists");

@@ -20,8 +20,6 @@ import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -94,13 +92,13 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 
 	protected SearcheableResourceEStore eStore;
 
-	protected Connection connection;
+	//protected Connection connection;
 	
 	protected boolean isPersistent = false;
 
 	public KyanosHbaseResourceImpl(URI uri) {
 		super(uri);
-		this.connection = null;
+		//this.connection = null;
 		this.eStore = null;
 		this.isPersistent = false;
 	}
@@ -112,9 +110,9 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 			if (isLoaded) {
 				return;
 			} else {
-				this.connection = createConnection();
+			//	this.connection = createConnection();
 				this.isPersistent = true;
-				this.eStore = createResourceEStore(connection);
+				this.eStore = createResourceEStore();
 			}
 			this.options = options;
 			isLoaded = true;
@@ -139,19 +137,19 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 		}
 
 		if (!isLoaded() || !this.isPersistent) {
-			this.connection = createConnection();
+			//this.connection = createConnection();
 			this.isPersistent = true;
-			this.eStore = createResourceEStore(connection);
+			this.eStore = createResourceEStore();
 			this.isLoaded = true;
 		}
 	}
 
-	protected Connection createConnection() throws IOException {
-		Configuration conf = HBaseConfiguration.create();
-		conf.set("hbase.zookeeper.quorum", getURI().host());
-		conf.set("hbase.zookeeper.property.clientPort", getURI().port() != null ? getURI().port() : "2181");
-		return ConnectionFactory.createConnection(conf);
-	}
+//	protected Connection createConnection() throws IOException {
+//		Configuration conf = HBaseConfiguration.create();
+//		conf.set("hbase.zookeeper.quorum", getURI().host());
+//		conf.set("hbase.zookeeper.property.clientPort", getURI().port() != null ? getURI().port() : "2181");
+//		return ConnectionFactory.createConnection(conf);
+//	}
 
 	@Override
 	public EList<EObject> getContents() {
@@ -183,7 +181,7 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 	}
 
 	protected void shutdown() throws IOException {
-		this.connection.close();
+//		this.connection.close();
 		this.eStore = null;
 		this.isPersistent = false;
 	}
@@ -222,8 +220,8 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 	 * @return
 	 * @throws IOException 
 	 */
-	protected SearcheableResourceEStore createResourceEStore(Connection connection) throws IOException {
-		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHbaseResourceEStoreImpl(this, connection)));
+	protected SearcheableResourceEStore createResourceEStore() throws IOException {
+		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHbaseResourceEStoreImpl(this)));
 	}
 
 	/**
