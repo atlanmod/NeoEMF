@@ -88,7 +88,7 @@ public class BlueprintsResourceSaveTest {
     public void testSaveGraphResourceNoOption() throws IOException, ConfigurationException {
         resource.save(Collections.EMPTY_MAP);
         File configFile = new File(testFilePath + configFileName);
-        assert configFile.exists();
+        assert configFile.exists() : "Config file does not exist";
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
         assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
@@ -101,7 +101,7 @@ public class BlueprintsResourceSaveTest {
         options.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
         resource.save(options);
         File configFile = new File(testFilePath + configFileName);
-        assert configFile.exists();
+        assert configFile.exists() : "Config file does not exist";
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
         assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
