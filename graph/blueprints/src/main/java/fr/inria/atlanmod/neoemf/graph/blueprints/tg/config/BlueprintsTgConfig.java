@@ -8,26 +8,24 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config;
+package fr.inria.atlanmod.neoemf.graph.blueprints.tg.config;
 
 import java.io.File;
 
 import org.apache.commons.configuration.Configuration;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
-import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.BlueprintsTgConfig;
+public class BlueprintsTgConfig extends AbstractBlueprintsConfig {
 
-public class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
-    
-    public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsNeo4jConfig();
+    public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsTgConfig();
     
     @Override
-    public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
-        currentConfiguration.addProperty("blueprints.neo4j.directory", dbLocation.getAbsolutePath());
+    public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
+        currentConfiguration.addProperty("blueprints.tg.directory", dbLocation.getAbsolutePath());
     }
-
+    
     @Override
     public void setGlobalSettings() {
-
-    }    
+        
+    }
+    
 }

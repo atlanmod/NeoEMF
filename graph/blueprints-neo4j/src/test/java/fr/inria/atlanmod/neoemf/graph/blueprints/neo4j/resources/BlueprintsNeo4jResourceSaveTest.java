@@ -30,7 +30,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Number of properties for an empty Neo4j instance (with no option provided)
      */
-    private static final int defaultPropertyCount = 2;
+    private static final int defaultPropertyCount = 3;
     
     @SuppressWarnings("unchecked")
     @Before
