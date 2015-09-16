@@ -87,6 +87,7 @@
 	          <configuration>
 	            <manifestLocation>${manifest-location}</manifestLocation>
 	           <instructions>
+	           	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
 	           	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
 	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.resources,fr.inria.atlanmod.neoemf.graph.blueprints.datastore,fr.inria.atlanmod.neoemf.graph.blueprints.util</Export-Package>
 	           	<Import-Package></Import-Package>

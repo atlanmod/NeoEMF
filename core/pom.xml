@@ -104,10 +104,11 @@
           <configuration>
             <manifestLocation>${manifest-location}</manifestLocation>
            <instructions>
+          	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
            	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
            	<Export-Package>fr.inria.atlanmod.neoemf.*</Export-Package>
            	<Import-Package></Import-Package>
-           	<Embed-Dependency>cglib,log4j-core,commons-io,commons-lang,guava,commons-collections4</Embed-Dependency>-->
+           	<Embed-Dependency>cglib-nodep,log4j-core,commons-io,commons-lang,guava,commons-collections4</Embed-Dependency>-->
             <Require-Bundle>org.eclipse.emf.ecore;visibility:=reexport</Require-Bundle>
            </instructions>
           </configuration>

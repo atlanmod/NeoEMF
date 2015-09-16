@@ -29,6 +29,7 @@
     	<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.config.location>config/google_checks.xml</checkstyle.config.location>
+        <build.tstamp>$${tstamp}</build.tstamp>
     </properties>
     
     <description>The parent pom holds all the necessary

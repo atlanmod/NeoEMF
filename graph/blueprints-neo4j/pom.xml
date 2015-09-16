@@ -92,6 +92,7 @@
 	          <configuration>
 	            <manifestLocation>${manifest-location}</manifestLocation>
 	           <instructions>
+	           	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
 	           	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
 	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources,fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config,com.googlecode.concurrentlinkedhashmap,org.apache.lucene.*;-split-package:=first,javax.transaction,javax.transaction.xa,com.tinkerpop.blueprints.impls.neo4j,org.neo4j.*;-split-package:=first</Export-Package>
 	           	<Import-Package></Import-Package>
