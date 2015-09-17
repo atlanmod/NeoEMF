@@ -109,6 +109,7 @@
            	<Export-Package>fr.inria.atlanmod.neoemf.*</Export-Package>
            	<Import-Package></Import-Package>
            	<Embed-Dependency>cglib-nodep,log4j-core,commons-io,commons-lang,guava,commons-collections4</Embed-Dependency>-->
+           	<DynamicImport-Package>*</DynamicImport-Package>
             <Require-Bundle>org.eclipse.emf.ecore;visibility:=reexport</Require-Bundle>
            </instructions>
           </configuration>
