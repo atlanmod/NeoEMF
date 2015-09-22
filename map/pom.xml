@@ -41,6 +41,14 @@
             <artifactId>jboss-common</artifactId>
             <version>4.2.2.GA</version>
         </dependency>
+        <dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -57,7 +65,7 @@
 	           	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
 	           	<Export-Package>fr.inria.atlanmod.neoemf.map.resources,fr.inria.atlanmod.neoemf.map.datastore,fr.inria.atlanmod.neoemf.map.util</Export-Package>
 	           	<Import-Package></Import-Package>
-	           	<Embed-Dependency>mapdb,jboss-common</Embed-Dependency>
+	           	<Embed-Dependency>mapdb,jboss-common,commons-lang,commons-io</Embed-Dependency>
 	           	<Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>
 	           </instructions>
 	          </configuration>
