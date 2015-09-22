@@ -92,7 +92,7 @@ public class MapPersistenceBackendFactory extends
 
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-		// TODO Auto-generated method stub
+	    throw new UnsupportedOperationException("Transient to Persistent Map migration not implemented yet");
 	}
 
 }
