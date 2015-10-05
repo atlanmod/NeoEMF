@@ -23,6 +23,8 @@
 		<module>core</module>
         <module>graph</module>
         <module>map</module>
+		<module>test-commons</module>
+		<module>tests</module>
     </modules>
 
     <developers>
