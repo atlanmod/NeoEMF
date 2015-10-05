@@ -24,6 +24,7 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.AutocommitMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
@@ -92,7 +93,7 @@ public class MapPersistenceBackendFactory extends
 
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-	    throw new UnsupportedOperationException("Transient to Persistent Map migration not implemented yet");
+	    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Transient to Persistent Map migration not implemented yet");
 	}
 
 }
