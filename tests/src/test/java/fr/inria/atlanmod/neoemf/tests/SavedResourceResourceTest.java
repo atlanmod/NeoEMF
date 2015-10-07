@@ -23,9 +23,9 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
 
-public class SavedResourceContainerTest extends AllBackendTest {
+public class SavedResourceResourceTest extends AllBackendTest {
 
-    protected MapSampleFactory factory;
+protected MapSampleFactory factory;
     
     protected SampleModel mapSampleModel;
     protected SampleModelContentObject mapSampleContentObject;
@@ -56,7 +56,6 @@ public class SavedResourceContainerTest extends AllBackendTest {
         tinkerSampleContentObject = factory.createSampleModelContentObject();
         tinkerSampleModel.getContentObjects().add(tinkerSampleContentObject);
         tinkerResource.getContents().add(tinkerSampleModel);
-        
     }
 
     @After
@@ -65,99 +64,99 @@ public class SavedResourceContainerTest extends AllBackendTest {
     }
 
     @Test
-    public void testEContainerMapDB() {
-        assert mapSampleModel.eContainer() == null : "Top Level EObject has a not null container";
-        assert mapSampleContentObject.eContainer().equals(mapSampleModel) : "Wrong eContainer value";
+    public void testEResourceMapDB() {
+        assert mapSampleModel.eResource().equals(mapResource) : "Wrong eResource value";
+        assert mapSampleContentObject.eResource().equals(mapResource) : "Wrong eResource value";
     }
     
     @Test
-    public void testEContainerNeo4j() {
-        assert neo4jSampleModel.eContainer() == null : "Top Level EObject has a not null container";
-        assert neo4jSampleContentObject.eContainer().equals(neo4jSampleModel) : "Wrong eContainer value";
+    public void testEResourceNeo4j() {
+        assert neo4jSampleModel.eResource().equals(neo4jResource) : "Wrong eResource value";
+        assert neo4jSampleContentObject.eResource().equals(neo4jResource) : "Wrong eResource value";
     }
     
     @Test
-    public void testEContainerTinker() {
-        assert tinkerSampleModel.eContainer() == null : "Top Level EObject has a not null container";
-        assert tinkerSampleContentObject.eContainer().equals(tinkerSampleModel) : "Wrong eContainer value";
+    public void testEResourceTinker() {
+        assert tinkerSampleModel.eResource().equals(tinkerResource) : "Wrong eResource value";
+        assert tinkerSampleContentObject.eResource().equals(tinkerResource) : "Wrong eResource value";
     }
     
     @Test
-    public void testGetAllContentsContainerMapDB() {
+    public void testGetAllContentsEResourceMapDB() {
         Iterator<EObject> it = mapResource.getAllContents();
         EObject sampleModel = it.next();
-        assert sampleModel.eContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eResource().equals(mapResource) : "Wrong eResource value";
         EObject sampleContentObject = it.next();
-        assert sampleContentObject.eContainer().equals(sampleModel) : "Wrong eContainer value";
+        assert sampleContentObject.eResource().equals(mapResource) : "Wrong eResource value";
     }
     
     @Test
-    public void testGetAllContentsContainerNeo4j() {
+    public void testGetAllContentsEResourceNeo4j() {
         Iterator<EObject> it = neo4jResource.getAllContents();
         EObject sampleModel = it.next();
-        assert sampleModel.eContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eResource().equals(neo4jResource) : "Wrong eResource value";
         EObject sampleContentObject = it.next();
-        assert sampleContentObject.eContainer().equals(sampleModel) : "Wrong eContainer value";
+        assert sampleContentObject.eResource().equals(neo4jResource) : "Wrong eResource value";
     }
     
     @Test
-    public void testGetAllContentsContainerTinker() {
+    public void testGetAllContentsEResourceTinker() {
         Iterator<EObject> it = tinkerResource.getAllContents();
         EObject sampleModel = it.next();
-        assert sampleModel.eContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eResource().equals(tinkerResource) : "Wrong eResource value";
         EObject sampleContentObject = it.next();
-        assert sampleContentObject.eContainer().equals(sampleModel) : "Wrong eContainer value";
+        assert sampleContentObject.eResource().equals(tinkerResource) : "Wrong eResource value";
     }
     
     @Test
-    public void testEInternalContainerMapDB() {
+    public void testEDirectResourceMapDB() {
         InternalEObject internalMapSampleModel = (InternalEObject)mapSampleModel;
-        assert internalMapSampleModel.eInternalContainer() == null : "Top Level EObject has a not null internal container";
+        assert internalMapSampleModel.eDirectResource().equals(mapResource) : "Wrong eDirectResource value";
         InternalEObject internalMapSampleContentObject = (InternalEObject)mapSampleContentObject;
-        assert internalMapSampleContentObject.eInternalContainer().equals(internalMapSampleModel) : "Wrong eInternalContainer value";
+        assert internalMapSampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
     }
     
     @Test
-    public void testEInternalContainerNeo4j() {
-        InternalEObject internalNeo4jSampleModel = (InternalEObject)neo4jSampleModel;
-        assert internalNeo4jSampleModel.eInternalContainer() == null : "Top Level EObject has a not null internal container";
-        InternalEObject internalNeo4jSampleContentObject = (InternalEObject)neo4jSampleContentObject;
-        assert internalNeo4jSampleContentObject.eInternalContainer().equals(internalNeo4jSampleModel) : "Wrong eInternalContainer value";
+    public void testEDirectResourceNeo4j() {
+        InternalEObject internalMapSampleModel = (InternalEObject)neo4jSampleModel;
+        assert internalMapSampleModel.eDirectResource().equals(neo4jResource) : "Wrong eDirectResource value";
+        InternalEObject internalMapSampleContentObject = (InternalEObject)neo4jSampleContentObject;
+        assert internalMapSampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
     }
     
     @Test
-    public void testEInternalContainerTinker() {
-        InternalEObject internalTinkerSampleModel = (InternalEObject)tinkerSampleModel;
-        assert internalTinkerSampleModel.eInternalContainer() == null : "Top Level EObject has a not null internal container";
-        InternalEObject internalTinkerSampleContentObject = (InternalEObject)tinkerSampleContentObject;
-        assert internalTinkerSampleContentObject.eInternalContainer().equals(internalTinkerSampleModel) : "Wrong eInternalContainer value";
+    public void testEDirectResourceTinker() {
+        InternalEObject internalMapSampleModel = (InternalEObject)tinkerSampleModel;
+        assert internalMapSampleModel.eDirectResource().equals(tinkerResource) : "Wrong eDirectResource value";
+        InternalEObject internalMapSampleContentObject = (InternalEObject)tinkerSampleContentObject;
+        assert internalMapSampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
     }
     
     @Test
-    public void testGetAllContentsEInternalContainerMapDB() {
+    public void testGetAllContentsEDirectResourceMapDB() {
         Iterator<EObject> it = mapResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eInternalContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eDirectResource().equals(mapResource) : "Wrong eDirectResource value";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eInternalContainer().equals(sampleModel) : "Wrong eInternalContainer value";
+        assert sampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
     }
     
     @Test
-    public void testGetAllContentsEInternalContainerNeo4j() {
+    public void testGetAllContentsEDirectResourceNeo4j() {
         Iterator<EObject> it = neo4jResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eInternalContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eDirectResource().equals(neo4jResource) : "Wrong eDirectResource value";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eInternalContainer().equals(sampleModel) : "Wrong eInternalContainer value";
+        assert sampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
     }
     
     @Test
-    public void testGetAllContentsEInternalContainerTinker() {
+    public void testGetAllContentsEDirectResourceTinker() {
         Iterator<EObject> it = tinkerResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eInternalContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eDirectResource().equals(tinkerResource) : "Wrong eDirectResource value";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eInternalContainer().equals(sampleModel) : "Wrong eInternalContainer value";
+        assert sampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
     }
 
 }
