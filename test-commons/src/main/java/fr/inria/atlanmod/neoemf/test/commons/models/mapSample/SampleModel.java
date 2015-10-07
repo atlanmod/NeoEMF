@@ -4,6 +4,7 @@ package fr.inria.atlanmod.neoemf.test.commons.models.mapSample;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 
 /**
@@ -17,6 +18,7 @@ import org.eclipse.emf.common.util.EMap;
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getName <em>Name</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getMap <em>Map</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getKvMap <em>Kv Map</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getContentObjects <em>Content Objects</em>}</li>
  * </ul>
  * </p>
  *
@@ -85,5 +87,21 @@ public interface SampleModel extends PersistentEObject {
      * @generated
      */
     EMap<K, V> getKvMap();
+
+    /**
+     * Returns the value of the '<em><b>Content Objects</b></em>' containment reference list.
+     * The list contents are of type {@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Content Objects</em>' containment reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Content Objects</em>' containment reference list.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage#getSampleModel_ContentObjects()
+     * @model containment="true"
+     * @generated
+     */
+    EList<SampleModelContentObject> getContentObjects();
 
 } // SampleModel

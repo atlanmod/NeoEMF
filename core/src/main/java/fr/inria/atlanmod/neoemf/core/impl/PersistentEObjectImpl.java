@@ -68,6 +68,15 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	
 	@Override
 	public InternalEObject eInternalContainer() {
+//	    if(eContainer == null) {
+//	        // Try to get the container from the eStore
+//	        // (May happen if eInternalContainer is called before eContainer)
+//	        if(resource instanceof PersistentResource) {
+//	            InternalEObject container = eStore().getContainer(this);
+//	            eBasicSetContainer(container);
+//	            eBasicSetContainerFeatureID(eContainerFeatureID());
+//	        }
+//	    }
 		return eContainer;
 	}
 	
@@ -94,8 +103,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	public int eContainerFeatureID() {
 		if (eContainerFeatureID == UNSETTED_FEATURE_ID) {
-			if (eDirectResource() instanceof PersistentResource) {
-				EReference containingFeature = (EReference) eStore().getContainingFeature(this);
+//			if (eDirectResource() instanceof PersistentResource) {
+			if(resource instanceof PersistentResource) {
+		        EReference containingFeature = (EReference) eStore().getContainingFeature(this);
 				if (containingFeature != null) {
 					EReference oppositeFeature = containingFeature.getEOpposite();
 					if (oppositeFeature != null) {

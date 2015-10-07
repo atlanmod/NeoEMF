@@ -6,6 +6,7 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -56,6 +57,13 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
      * @generated
      */
     private EClass kToVMapEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass sampleModelContentObjectEClass = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -152,6 +160,15 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
      */
     public EReference getSampleModel_KvMap() {
         return (EReference)sampleModelEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getSampleModel_ContentObjects() {
+        return (EReference)sampleModelEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -267,6 +284,24 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getSampleModelContentObject() {
+        return sampleModelContentObjectEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getSampleModelContentObject_Name() {
+        return (EAttribute)sampleModelContentObjectEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public MapSampleFactory getMapSampleFactory() {
         return (MapSampleFactory)getEFactoryInstance();
     }
@@ -294,6 +329,7 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         createEAttribute(sampleModelEClass, SAMPLE_MODEL__NAME);
         createEReference(sampleModelEClass, SAMPLE_MODEL__MAP);
         createEReference(sampleModelEClass, SAMPLE_MODEL__KV_MAP);
+        createEReference(sampleModelEClass, SAMPLE_MODEL__CONTENT_OBJECTS);
 
         stringToStringMapEClass = createEClass(STRING_TO_STRING_MAP);
         createEAttribute(stringToStringMapEClass, STRING_TO_STRING_MAP__KEY);
@@ -310,6 +346,9 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         kToVMapEClass = createEClass(KTO_VMAP);
         createEReference(kToVMapEClass, KTO_VMAP__KEY);
         createEReference(kToVMapEClass, KTO_VMAP__VALUE);
+
+        sampleModelContentObjectEClass = createEClass(SAMPLE_MODEL_CONTENT_OBJECT);
+        createEAttribute(sampleModelContentObjectEClass, SAMPLE_MODEL_CONTENT_OBJECT__NAME);
     }
 
     /**
@@ -346,6 +385,7 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         initEAttribute(getSampleModel_Name(), ecorePackage.getEString(), "name", null, 0, 1, SampleModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getSampleModel_Map(), this.getStringToStringMap(), null, "map", null, 0, -1, SampleModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getSampleModel_KvMap(), this.getKToVMap(), null, "kvMap", null, 0, -1, SampleModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getSampleModel_ContentObjects(), this.getSampleModelContentObject(), null, "contentObjects", null, 0, -1, SampleModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(stringToStringMapEClass, Map.Entry.class, "StringToStringMap", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getStringToStringMap_Key(), ecorePackage.getEString(), "key", null, 1, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -362,6 +402,9 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         initEClass(kToVMapEClass, Map.Entry.class, "KToVMap", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
         initEReference(getKToVMap_Key(), this.getK(), null, "key", null, 1, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getKToVMap_Value(), this.getV(), null, "value", null, 1, 1, Map.Entry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(sampleModelContentObjectEClass, SampleModelContentObject.class, "SampleModelContentObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getSampleModelContentObject_Name(), ecorePackage.getEString(), "name", null, 0, 1, SampleModelContentObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Create resource
         createResource(eNS_URI);

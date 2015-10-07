@@ -49,6 +49,15 @@ public interface MapSampleFactory extends EFactory {
     V createV();
 
     /**
+     * Returns a new object of class '<em>Sample Model Content Object</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Sample Model Content Object</em>'.
+     * @generated
+     */
+    SampleModelContentObject createSampleModelContentObject();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

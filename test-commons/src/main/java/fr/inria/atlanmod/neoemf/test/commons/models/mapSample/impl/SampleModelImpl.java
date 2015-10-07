@@ -8,7 +8,9 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 
 import org.eclipse.emf.ecore.EClass;
@@ -23,6 +25,7 @@ import org.eclipse.emf.ecore.EClass;
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getMap <em>Map</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getKvMap <em>Kv Map</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getContentObjects <em>Content Objects</em>}</li>
  * </ul>
  * </p>
  *
@@ -94,6 +97,16 @@ public class SampleModelImpl extends PersistentEObjectImpl implements SampleMode
     @SuppressWarnings("unchecked")
     public EMap<K, V> getKvMap() {
         return (EMap<K, V>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__KV_MAP, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<SampleModelContentObject> getContentObjects() {
+        return (EList<SampleModelContentObject>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__CONTENT_OBJECTS, true);
     }
 
 } //SampleModelImpl

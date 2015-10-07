@@ -63,6 +63,7 @@ public class MapSampleFactoryImpl extends EFactoryImpl implements MapSampleFacto
             case MapSamplePackage.K: return (EObject)createK();
             case MapSamplePackage.V: return (EObject)createV();
             case MapSamplePackage.KTO_VMAP: return (EObject)createKToVMap();
+            case MapSamplePackage.SAMPLE_MODEL_CONTENT_OBJECT: return (EObject)createSampleModelContentObject();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -116,6 +117,16 @@ public class MapSampleFactoryImpl extends EFactoryImpl implements MapSampleFacto
     public Map.Entry<K, V> createKToVMap() {
         KToVMapImpl kToVMap = new KToVMapImpl();
         return kToVMap;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SampleModelContentObject createSampleModelContentObject() {
+        SampleModelContentObjectImpl sampleModelContentObject = new SampleModelContentObjectImpl();
+        return sampleModelContentObject;
     }
 
     /**

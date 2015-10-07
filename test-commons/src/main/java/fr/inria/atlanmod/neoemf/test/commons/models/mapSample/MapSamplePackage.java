@@ -94,13 +94,22 @@ public interface MapSamplePackage extends EPackage {
     int SAMPLE_MODEL__KV_MAP = 2;
 
     /**
+     * The feature id for the '<em><b>Content Objects</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SAMPLE_MODEL__CONTENT_OBJECTS = 3;
+
+    /**
      * The number of structural features of the '<em>Sample Model</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int SAMPLE_MODEL_FEATURE_COUNT = 3;
+    int SAMPLE_MODEL_FEATURE_COUNT = 4;
 
     /**
      * The number of operations of the '<em>Sample Model</em>' class.
@@ -298,6 +307,44 @@ public interface MapSamplePackage extends EPackage {
 
 
     /**
+     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl <em>Sample Model Content Object</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModelContentObject()
+     * @generated
+     */
+    int SAMPLE_MODEL_CONTENT_OBJECT = 5;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SAMPLE_MODEL_CONTENT_OBJECT__NAME = 0;
+
+    /**
+     * The number of structural features of the '<em>Sample Model Content Object</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SAMPLE_MODEL_CONTENT_OBJECT_FEATURE_COUNT = 1;
+
+    /**
+     * The number of operations of the '<em>Sample Model Content Object</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SAMPLE_MODEL_CONTENT_OBJECT_OPERATION_COUNT = 0;
+
+
+    /**
      * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel <em>Sample Model</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -339,6 +386,17 @@ public interface MapSamplePackage extends EPackage {
      * @generated
      */
     EReference getSampleModel_KvMap();
+
+    /**
+     * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getContentObjects <em>Content Objects</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference list '<em>Content Objects</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getContentObjects()
+     * @see #getSampleModel()
+     * @generated
+     */
+    EReference getSampleModel_ContentObjects();
 
     /**
      * Returns the meta object for class '{@link java.util.Map.Entry <em>String To String Map</em>}'.
@@ -473,6 +531,27 @@ public interface MapSamplePackage extends EPackage {
     EReference getKToVMap_Value();
 
     /**
+     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject <em>Sample Model Content Object</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Sample Model Content Object</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject
+     * @generated
+     */
+    EClass getSampleModelContentObject();
+
+    /**
+     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getName <em>Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Name</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getName()
+     * @see #getSampleModelContentObject()
+     * @generated
+     */
+    EAttribute getSampleModelContentObject_Name();
+
+    /**
      * Returns the factory that creates the instances of the model.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -528,6 +607,14 @@ public interface MapSamplePackage extends EPackage {
          * @generated
          */
         EReference SAMPLE_MODEL__KV_MAP = eINSTANCE.getSampleModel_KvMap();
+
+        /**
+         * The meta object literal for the '<em><b>Content Objects</b></em>' containment reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference SAMPLE_MODEL__CONTENT_OBJECTS = eINSTANCE.getSampleModel_ContentObjects();
 
         /**
          * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl <em>String To String Map</em>}' class.
@@ -632,6 +719,24 @@ public interface MapSamplePackage extends EPackage {
          * @generated
          */
         EReference KTO_VMAP__VALUE = eINSTANCE.getKToVMap_Value();
+
+        /**
+         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl <em>Sample Model Content Object</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModelContentObject()
+         * @generated
+         */
+        EClass SAMPLE_MODEL_CONTENT_OBJECT = eINSTANCE.getSampleModelContentObject();
+
+        /**
+         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute SAMPLE_MODEL_CONTENT_OBJECT__NAME = eINSTANCE.getSampleModelContentObject_Name();
 
     }
 
