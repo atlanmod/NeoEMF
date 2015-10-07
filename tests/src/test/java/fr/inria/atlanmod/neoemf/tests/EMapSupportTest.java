@@ -48,25 +48,25 @@ public class EMapSupportTest extends AllBackendTest{
     @Test
     public void testGetMapStringStringEmptyMapDB() {
         SampleModel model = (SampleModel)mapResource.getContents().get(0);
-        assert model.getMap() instanceof Map : "Map field is not an instance of java Map";
+        assert model.getMap() instanceof EMap : "Map field is not an instance of EMap";
         EMap<String,String> map = model.getMap();
-        assert map.isEmpty() : "Map is not empty";
+        assert map.isEmpty() : "EMap is not empty";
     }
     
     @Test
     public void testGetMapStringStringEmptyNeo4j() {
         SampleModel model = (SampleModel)neo4jResource.getContents().get(0);
-        assert model.getMap() instanceof Map : "Map field is not an instance of java Map";
+        assert model.getMap() instanceof EMap : "Map field is not an instance of EMap";
         EMap<String, String> map = model.getMap();
-        assert map.isEmpty() : "Map is not empty";
+        assert map.isEmpty() : "EMap is not empty";
     }
     
     @Test
     public void testGetMapStringStringEmptyTinker() {
         SampleModel model = (SampleModel)tinkerResource.getContents().get(0);
-        assert model.getMap() instanceof Map : "Map field is not an instance of java Map";
+        assert model.getMap() instanceof EMap : "Map field is not an instance of java EMap";
         EMap<String, String> map = model.getMap();
-        assert map.isEmpty() : "Map is not empty";
+        assert map.isEmpty() : "EMap is not empty";
     }
     
     @Test
@@ -108,7 +108,7 @@ public class EMapSupportTest extends AllBackendTest{
     @Test
     public void testGetMapKVEmptyMapDB() {
         SampleModel model = (SampleModel)mapResource.getContents().get(0);
-        assert model.getKvMap() instanceof Map : "KvMap field is not an instance of java Map";
+        assert model.getKvMap() instanceof EMap : "KvMap field is not an instance of EMap";
         EMap<K,V> map = model.getKvMap();
         assert map.isEmpty() : "KvMap is not empty";
     }
@@ -116,7 +116,7 @@ public class EMapSupportTest extends AllBackendTest{
     @Test
     public void testGetMapKVEmptyNeo4j() {
         SampleModel model = (SampleModel)neo4jResource.getContents().get(0);
-        assert model.getKvMap() instanceof Map : "KvMap field is not an instance of java Map";
+        assert model.getKvMap() instanceof EMap : "KvMap field is not an instance of EMap";
         EMap<K,V> map = model.getKvMap();
         assert map.isEmpty() : "KvMap is not empty";
     }
@@ -124,7 +124,7 @@ public class EMapSupportTest extends AllBackendTest{
     @Test
     public void testGetMapKVEmptyTinker() {
         SampleModel model = (SampleModel)tinkerResource.getContents().get(0);
-        assert model.getKvMap() instanceof Map : "KvMap field is not an instance of java Map";
+        assert model.getKvMap() instanceof EMap : "KvMap field is not an instance of EMap";
         EMap<K,V> map = model.getKvMap();
         assert map.isEmpty() : "KvMap is not empty";
     }
