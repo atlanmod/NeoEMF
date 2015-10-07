@@ -10,53 +10,30 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.tests;
 
-import java.io.File;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.EMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
-import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
-import fr.inria.atlanmod.neoemf.test.commons.MapResourceBuilder;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V;
 
-public class EMapSupport {
+public class EMapSupportTest extends AllBackendTest{
 
-    PersistentResource mapResource;
-    PersistentResource neo4jResource;
-    PersistentResource tinkerResource;
     
-    File mapFile;
-    File neo4jFile;
-    File tinkerFile;
     
-    MapSampleFactory factory;
+    protected MapSampleFactory factory;
     
     @Before
     public void setUp() throws Exception {
-        
-        mapFile = new File("/tmp/EMapStringStringSupportMapDB");
-        neo4jFile = new File("/tmp/EMapStringStringSupportNeo4j");
-        tinkerFile = new File("/tmp/EMapStringStringSupportTinker");
-        
         factory = MapSampleFactory.eINSTANCE;
-        
-        MapResourceBuilder mapBuilder = new MapResourceBuilder(MapSamplePackage.eINSTANCE);
-        BlueprintsResourceBuilder blueprintsBuilder = new BlueprintsResourceBuilder(MapSamplePackage.eINSTANCE);
-        
-        mapResource = mapBuilder.persistent().file(mapFile).build();
-        neo4jResource = blueprintsBuilder.neo4j().persistent().file(neo4jFile).build();
-        tinkerResource = blueprintsBuilder.tinkerGraph().persistent().file(tinkerFile).build();
-        
+        this.ePackage = MapSamplePackage.eINSTANCE;
+        super.setUp();
         mapResource.getContents().add(factory.createSampleModel());
         neo4jResource.getContents().add(factory.createSampleModel());
         tinkerResource.getContents().add(factory.createSampleModel());
@@ -65,13 +42,7 @@ public class EMapSupport {
 
     @After
     public void tearDown() throws Exception {
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)mapResource);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)neo4jResource);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)tinkerResource);
-        
-        FileUtils.forceDelete(mapFile);
-        FileUtils.forceDelete(neo4jFile);
-        FileUtils.forceDelete(tinkerFile);
+        super.tearDown();
     }
 
     @Test
