@@ -67,15 +67,15 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	
 	@Override
 	public InternalEObject eInternalContainer() {
-	    if(eContainer == null) {
-	        // Try to get the container from the eStore
-	        // (May happen if eInternalContainer is called before eContainer)
-	        if(resource instanceof PersistentResource) {
-	            InternalEObject container = eStore().getContainer(this);
-	            eBasicSetContainer(container);
-	            eBasicSetContainerFeatureID(eContainerFeatureID());
-	        }
-	    }
+//	    if(eContainer == null) {
+//	        // Try to get the container from the eStore
+//	        // (May happen if eInternalContainer is called before eContainer)
+//	        if(resource instanceof PersistentResource) {
+//	            InternalEObject container = eStore().getContainer(this);
+//	            eBasicSetContainer(container);
+//	            eBasicSetContainerFeatureID(eContainerFeatureID());
+//	        }
+//	    }
 		return eContainer;
 	}
 	
@@ -142,11 +142,11 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	public void resource(Internal resource) {
 		this.resource = resource;
-		if(resource.getContents().contains(this)) {
+		//if(resource.getContents().contains(this)) {
 		    // Fix eDirectResource error when the EObject is fetched from the database
 		    // through the EStore and not added to the ResourceContentsEStoreEList
-		    eSetDirectResource(resource);
-		}
+		  //  eSetDirectResource(resource);
+		//}
 		EStore oldStore = eStore;
 		// Set the new EStore
 		if (resource instanceof PersistentResource) {
