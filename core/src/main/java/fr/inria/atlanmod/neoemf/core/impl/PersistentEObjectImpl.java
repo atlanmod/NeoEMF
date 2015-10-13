@@ -35,7 +35,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 
 	protected static final int UNSETTED_FEATURE_ID = -1;
 	
-//	protected String id;
 	protected Id id;
 	
 	protected Resource.Internal resource;
@@ -65,17 +64,15 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		this.id = id;
 	}
 	
+	/**
+	 * @return InternalEObject the container of the {@link PersistentEObject}
+	 * Do not return the same value as standard EMF implementation if the container
+	 * has not been accessed with the public method {@link eContainer()} before.
+	 */
 	@Override
 	public InternalEObject eInternalContainer() {
-//	    if(eContainer == null) {
-//	        // Try to get the container from the eStore
-//	        // (May happen if eInternalContainer is called before eContainer)
-//	        if(resource instanceof PersistentResource) {
-//	            InternalEObject container = eStore().getContainer(this);
-//	            eBasicSetContainer(container);
-//	            eBasicSetContainerFeatureID(eContainerFeatureID());
-//	        }
-//	    }
+	    // Do not load the container from the eStore here:
+	    // it creates an important overhead and performance loss
 		return eContainer;
 	}
 	
@@ -102,7 +99,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	public int eContainerFeatureID() {
 		if (eContainerFeatureID == UNSETTED_FEATURE_ID) {
-//			if (eDirectResource() instanceof PersistentResource) {
 			if(resource instanceof PersistentResource) {
 		        EReference containingFeature = (EReference) eStore().getContainingFeature(this);
 				if (containingFeature != null) {
@@ -142,11 +138,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	public void resource(Internal resource) {
 		this.resource = resource;
-		//if(resource.getContents().contains(this)) {
-		    // Fix eDirectResource error when the EObject is fetched from the database
-		    // through the EStore and not added to the ResourceContentsEStoreEList
-		  //  eSetDirectResource(resource);
-		//}
 		EStore oldStore = eStore;
 		// Set the new EStore
 		if (resource instanceof PersistentResource) {

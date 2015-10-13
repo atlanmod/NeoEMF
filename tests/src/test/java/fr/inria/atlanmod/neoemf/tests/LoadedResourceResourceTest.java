@@ -140,52 +140,52 @@ public class LoadedResourceResourceTest extends AllBackendTest {
     @Test
     public void testGetElementsEDirectResourceMapDB() {
         InternalEObject model = (InternalEObject)mapResource.getContents().get(0);
-        assert model.eDirectResource().equals(mapResource) : "Wrong eDirectResource value";
+        assert model.eDirectResource() == null : "eDirectResource must return null";
         InternalEObject modelContent = (InternalEObject)((SampleModel)model).getContentObjects().get(0);
-        assert modelContent.eDirectResource() == null : "Non top level element eDirectResource is not null";
+        assert modelContent.eDirectResource() == null : "eDirectResource must return null";
     }
     
     @Test
     public void testGetElementsEDirectResourceNeo4j() {
         InternalEObject model = (InternalEObject)neo4jResource.getContents().get(0);
-        assert model.eDirectResource().equals(neo4jResource) : "Wrong eDirectResource value";
+        assert model.eDirectResource() == null : "eDirectResource must return null";
         InternalEObject modelContent = (InternalEObject)((SampleModel)model).getContentObjects().get(0);
-        assert modelContent.eDirectResource() == null : "Non top level element eDirectResource is not null";
+        assert modelContent.eDirectResource() == null : "eDirectResource must return null";
     }
     
     @Test
     public void testGetElementsEDirectResourceTinker() {
         InternalEObject model = (InternalEObject)tinkerResource.getContents().get(0);
-        assert model.eDirectResource().equals(tinkerResource) : "Wrong eDirectResource value";
+        assert model.eDirectResource() == null : "eDirectResource must return null";
         InternalEObject modelContent = (InternalEObject)((SampleModel)model).getContentObjects().get(0);
-        assert modelContent.eDirectResource() == null : "Non top level element eDirectResource is not null";
+        assert modelContent.eDirectResource() == null : "eDirectResource must return null";
     }
     
     @Test
     public void testGetAllContentsEDirectResourceMapDB() {
         Iterator<EObject> it = mapResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eDirectResource().equals(mapResource) : "Wrong eDirectResource value";
+        assert sampleModel.eDirectResource() == null : "eDirectResource must return null";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
+        assert sampleContentObject.eDirectResource() == null : "eDirectResource must return null";
     }
     
     @Test
     public void testGetAllContentsEDirectResourceNeo4j() {
         Iterator<EObject> it = neo4jResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eDirectResource().equals(neo4jResource) : "Wrong eDirectResource value";
+        assert sampleModel.eDirectResource() == null : "eDirectResource must return null";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
+        assert sampleContentObject.eDirectResource() == null : "eDirectResource must return null";
     }
     
     @Test
     public void testGetAllContentsEDirectResourceTinker() {
         Iterator<EObject> it = tinkerResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eDirectResource().equals(tinkerResource) : "Wrong eDirectResource value";
+        assert sampleModel.eDirectResource() == null : "eDirectResource must return null";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eDirectResource() == null : "Non top level element eDirectResource is not null";
+        assert sampleContentObject.eDirectResource() == null : "eDirectResource must return null";
     }
     
 }

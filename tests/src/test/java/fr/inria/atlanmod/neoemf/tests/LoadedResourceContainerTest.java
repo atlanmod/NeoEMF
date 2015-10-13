@@ -141,52 +141,52 @@ public class LoadedResourceContainerTest extends AllBackendTest {
     @Test
     public void testGetElementsEInternalContainerMapDB() {
         InternalEObject model = (InternalEObject)mapResource.getContents().get(0);
-        assert model.eInternalContainer() == null;
+        assert model.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
         InternalEObject modelContent = (InternalEObject)((SampleModel)model).getContentObjects().get(0);
-        assert modelContent.eInternalContainer().equals(model);
+        assert modelContent.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
     }
     
     @Test
     public void testGetElementsEInternalContainerNeo4j() {
         InternalEObject model = (InternalEObject)neo4jResource.getContents().get(0);
-        assert model.eInternalContainer() == null;
+        assert model.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
         InternalEObject modelContent = (InternalEObject)((SampleModel)model).getContentObjects().get(0);
-        assert modelContent.eInternalContainer().equals(model);
+        assert modelContent.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
     }
     
     @Test
     public void testGetElementsEInternalContainerTinker() {
         InternalEObject model = (InternalEObject)tinkerResource.getContents().get(0);
-        assert model.eInternalContainer() == null;
+        assert model.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
         InternalEObject modelContent = (InternalEObject)((SampleModel)model).getContentObjects().get(0);
-        assert modelContent.eInternalContainer().equals(model);
+        assert modelContent.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
     }
     
     @Test
     public void testGetAllContentsEInternalContainerMapDB() {
         Iterator<EObject> it = mapResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eInternalContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eInternalContainer().equals(sampleModel) : "Wrong eInternalContainer value";
+        assert sampleContentObject.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
     }
     
     @Test
     public void testGetAllContentsEInternalContainerNeo4j() {
         Iterator<EObject> it = neo4jResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eInternalContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eInternalContainer().equals(sampleModel) : "Wrong eInternalContainer value";
+        assert sampleContentObject.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
     }
     
     @Test
     public void testGetAllContentsEInternalContainerTinker() {
         Iterator<EObject> it = tinkerResource.getAllContents();
         InternalEObject sampleModel = (InternalEObject)it.next();
-        assert sampleModel.eInternalContainer() == null : "Top Level EObject has a not null container";
+        assert sampleModel.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
         InternalEObject sampleContentObject = (InternalEObject)it.next();
-        assert sampleContentObject.eInternalContainer().equals(sampleModel) : "Wrong eInternalContainer value";
+        assert sampleContentObject.eInternalContainer() == null : "eInternalContainer must return null if eContainer has not been called";
     }
 
 }

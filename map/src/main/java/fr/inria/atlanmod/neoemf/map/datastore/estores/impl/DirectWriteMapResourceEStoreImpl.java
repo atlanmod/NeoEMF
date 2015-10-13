@@ -184,6 +184,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		}
 		array = ArrayUtils.add(array, index, referencedObject.id());
 		map.put(Fun.t2(object.id(), eReference.getName()), array);
+		loadedEObjects.put(referencedObject.id(),(InternalPersistentEObject)referencedObject);
 	}
 
 	@Override
