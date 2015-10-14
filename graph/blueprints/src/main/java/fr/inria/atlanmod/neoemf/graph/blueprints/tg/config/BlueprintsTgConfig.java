@@ -20,7 +20,12 @@ public class BlueprintsTgConfig extends AbstractBlueprintsConfig {
     
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
-        currentConfiguration.addProperty("blueprints.tg.directory", dbLocation.getAbsolutePath());
+        if(currentConfiguration.getString("blueprints.tg.directory") == null) {
+            currentConfiguration.addProperty("blueprints.tg.directory", dbLocation.getAbsolutePath());
+        }
+        if(currentConfiguration.getString("blueprints.tg.file-type") == null) {
+            currentConfiguration.addProperty("blueprints.tg.file-type", "GRAPHML");
+        }
     }
     
     @Override

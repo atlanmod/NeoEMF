@@ -46,6 +46,7 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoURI;
 
@@ -108,11 +109,14 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+			    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing the backend");
 			    if(PersistentResourceImpl.this.persistenceBackend.isStarted()) {
 			        PersistentResourceImpl.this.persistenceBackend.stop();
+			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend closed");
 			    }
 			}
 		});
+		NeoLogger.log(NeoLogger.SEVERITY_INFO, "Persistent Resource Created");
 	}
 	
 	/**

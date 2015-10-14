@@ -201,6 +201,9 @@ public class BlueprintsPersistenceBackendFactory extends
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
 		assert from instanceof BlueprintsPersistenceBackend && to instanceof BlueprintsPersistenceBackend : "Trying to use Graph backend copy on non Graph databases";
-		GraphHelper.copyGraph((BlueprintsPersistenceBackend)from, (BlueprintsPersistenceBackend)to);
+		BlueprintsPersistenceBackend bFrom = (BlueprintsPersistenceBackend)from;
+		BlueprintsPersistenceBackend bTo = (BlueprintsPersistenceBackend)to;
+	    GraphHelper.copyGraph(bFrom, bTo);
+	    bTo.initMetaClassesIndex(bFrom.getIndexedEClasses());
 	}
 }

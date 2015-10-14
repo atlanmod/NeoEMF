@@ -11,7 +11,9 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
@@ -27,6 +29,7 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdVertex;
@@ -80,10 +83,12 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * is removed from the {@link Map}.
 	 */
 	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<Object, InternalPersistentEObject>();
+	protected List<EClass> indexedEClasses = new ArrayList<EClass>();
 	
 	public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
-		if(getIndex("metaclasses", Vertex.class) == null) {
+		metaclassIndex = getIndex("metaclasses", Vertex.class);
+		if(metaclassIndex == null) {
 			metaclassIndex = createIndex("metaclasses",Vertex.class);
 		}
 	}
@@ -106,7 +111,18 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	@Override
 	public void save() {
-		this.commit();
+	    if(this.getFeatures().supportsTransactions) {
+	        this.commit();
+	    } else {
+	        this.shutdown();
+	    }
+	}
+	
+	public void initMetaClassesIndex(List<EClass> eClassList) {
+	    for(EClass eClass : eClassList) {
+	        assert !metaclassIndex.get("name", eClass.getName()).iterator().hasNext() : "Index is not consistent";
+	        metaclassIndex.put("name", eClass.getName(), getVertex(eClass));
+	    }
 	}
 	
 	/**
@@ -177,6 +193,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			else {
 				eClassVertex = addVertex(eClass);
 				metaclassIndex.put("name", eClass.getName(), eClassVertex);
+				indexedEClasses.add(eClass);
 			}
 			vertex.addEdge(INSTANCE_OF, eClassVertex);
 			loadedEObjects.put(neoEObject.id().toString(), neoEObject);
@@ -275,5 +292,14 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * 
+	 * @return the list of EClasses that have been indexed.
+	 * This list is needed to support index copy in {@link BlueprintsPersistenceBackendFactory#copyBackend(PersistenceBackend, PersistenceBackend)}
+	 */
+	public List<EClass> getIndexedEClasses() {
+	    return indexedEClasses;
 	}
 }

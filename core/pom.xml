@@ -92,6 +92,10 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
     </dependencies>
     
     <build>
@@ -108,7 +112,7 @@
            	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
            	<Export-Package>fr.inria.atlanmod.neoemf.*</Export-Package>
            	<Import-Package></Import-Package>
-           	<Embed-Dependency>cglib-nodep,log4j-core,commons-io,commons-lang,guava,commons-collections4</Embed-Dependency>-->
+           	<Embed-Dependency>cglib-nodep,log4j-api,log4j-core,commons-io,commons-lang,guava,commons-collections4</Embed-Dependency>-->
            	<DynamicImport-Package>*</DynamicImport-Package>
             <Require-Bundle>org.eclipse.emf.ecore;visibility:=reexport</Require-Bundle>
            </instructions>

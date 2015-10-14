@@ -92,7 +92,7 @@ public class BlueprintsResourceSaveTest {
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
         assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
-        assert getKeyCount(configuration) == 2 : "Too much content in the .properties file";
+        assert getKeyCount(configuration) == 3 : "Too much content in the .properties file";
     }
     
     @SuppressWarnings("unchecked")
@@ -105,7 +105,7 @@ public class BlueprintsResourceSaveTest {
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
         assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
-        assert getKeyCount(configuration) == 2 : "Too much content in the .properties file";
+        assert getKeyCount(configuration) == 3 : "Too much content in the .properties file";
     }
 
 }
