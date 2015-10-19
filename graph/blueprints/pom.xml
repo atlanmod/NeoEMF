@@ -89,9 +89,10 @@
 	           <instructions>
 	           	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
 	           	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
-	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.resources,fr.inria.atlanmod.neoemf.graph.blueprints.datastore,fr.inria.atlanmod.neoemf.graph.blueprints.util</Export-Package>
+	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.resources,fr.inria.atlanmod.neoemf.graph.blueprints.tg.config,fr.inria.atlanmod.neoemf.graph.blueprints.datastore,fr.inria.atlanmod.neoemf.graph.blueprints.util,org.apache.commons.configuration,com.tinkerpop.blueprints.*</Export-Package>
 	           	<Import-Package></Import-Package>
 	           	<Embed-Dependency>commons-collections,commons-lang,commons-logging,commons-configuration,guava,blueprints-core,jboss-common-core</Embed-Dependency>
+	           	<DynamicImport-Package>*</DynamicImport-Package>
 	           	<Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>
 	           </instructions>
 	          </configuration>
