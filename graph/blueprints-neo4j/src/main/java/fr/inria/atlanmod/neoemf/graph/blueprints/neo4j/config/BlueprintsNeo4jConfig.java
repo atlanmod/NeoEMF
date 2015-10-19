@@ -15,7 +15,6 @@ import java.io.File;
 import org.apache.commons.configuration.Configuration;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
-import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.BlueprintsTgConfig;
 
 public class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
     
@@ -23,7 +22,9 @@ public class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
     
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
-        currentConfiguration.addProperty("blueprints.neo4j.directory", dbLocation.getAbsolutePath());
+        if(currentConfiguration.getString("blueprints.neo4j.directory") == null) {
+            currentConfiguration.addProperty("blueprints.neo4j.directory", dbLocation.getAbsolutePath());
+        }
     }
 
     @Override
