@@ -11,6 +11,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
@@ -28,6 +29,9 @@ public class AllBackendTest {
     protected PersistentResource neo4jResource;
     protected PersistentResource tinkerResource;
     
+    protected MapResourceBuilder mapBuilder;
+    protected BlueprintsResourceBuilder blueprintsBuilder;
+    
     protected File mapFile;
     protected File neo4jFile;
     protected File tinkerFile;
@@ -42,13 +46,21 @@ public class AllBackendTest {
         neo4jFile   = new File("/tmp/"+className+"Neo4j");
         tinkerFile  = new File("/tmp/"+className+"Tinker");
         
-        MapResourceBuilder mapBuilder               = new MapResourceBuilder(ePackage);
-        BlueprintsResourceBuilder blueprintsBuilder = new BlueprintsResourceBuilder(ePackage);
+        mapBuilder               = new MapResourceBuilder(ePackage);
+        blueprintsBuilder = new BlueprintsResourceBuilder(ePackage);
         
+    }
+    
+    public void createPersistentStores() throws IOException {
         mapResource     = mapBuilder.persistent().file(mapFile).build();
         neo4jResource   = blueprintsBuilder.neo4j().persistent().file(neo4jFile).build();
         tinkerResource  = blueprintsBuilder.tinkerGraph().persistent().file(tinkerFile).build();
-        
+    }
+    
+    public void createTransientStores() throws IOException {
+        mapResource = mapBuilder.file(mapFile).build();
+        neo4jResource = blueprintsBuilder.neo4j().file(neo4jFile).build();
+        tinkerResource = blueprintsBuilder.file(tinkerFile).build();
     }
 
     @After
@@ -57,9 +69,15 @@ public class AllBackendTest {
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)neo4jResource);
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)tinkerResource);
         
-        FileUtils.forceDelete(mapFile);
-        FileUtils.forceDelete(neo4jFile);
-        FileUtils.forceDelete(tinkerFile);
+        if(mapFile.exists()) {
+            FileUtils.forceDelete(mapFile);
+        }
+        if(neo4jFile.exists()) {
+            FileUtils.forceDelete(neo4jFile);
+        }
+        if(tinkerFile.exists()) {
+            FileUtils.forceDelete(tinkerFile);
+        }
     }
 
 }

@@ -24,6 +24,8 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 public abstract class AbstractResourceBuilder {
 
+    protected EPackage ePackage;
+    
     protected ResourceSet rSet;
     protected URI uri;
     protected Map<Object,Object> resourceOptions;
@@ -31,6 +33,11 @@ public abstract class AbstractResourceBuilder {
     protected boolean isPersistent;
     
     public AbstractResourceBuilder(EPackage ePackage) {
+        this.ePackage = ePackage;
+        initBuilder();
+    }
+    
+    protected void initBuilder() {
         isPersistent = false;
         EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
         rSet = new ResourceSetImpl();
@@ -51,6 +58,7 @@ public abstract class AbstractResourceBuilder {
         if(isPersistent) {
             resource.save(resourceOptions);
         }
+        initBuilder();
         return resource;
     }
     

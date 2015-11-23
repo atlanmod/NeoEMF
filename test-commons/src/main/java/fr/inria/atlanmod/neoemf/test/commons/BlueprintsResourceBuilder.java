@@ -26,6 +26,16 @@ public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
     
     public BlueprintsResourceBuilder(EPackage ePackage) {
         super(ePackage);
+        initBlueprintsBuilder();
+    }
+    
+    @Override
+    protected void initBuilder() {
+        super.initBuilder();
+        initBlueprintsBuilder();
+    }
+    
+    private void initBlueprintsBuilder() {
         if(!PersistenceBackendFactoryRegistry.getFactories().containsKey(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
             PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new BlueprintsPersistenceBackendFactory());
         }

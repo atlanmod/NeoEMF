@@ -24,6 +24,16 @@ public class MapResourceBuilder extends AbstractResourceBuilder {
 
     public MapResourceBuilder(EPackage ePackage) {
         super(ePackage);
+        initMapBuilder();
+    }
+    
+    @Override
+    protected void initBuilder() {
+        super.initBuilder();
+        initMapBuilder();
+    }
+    
+    private void initMapBuilder() {
         if(!PersistenceBackendFactoryRegistry.getFactories().containsKey(NeoMapURI.NEO_MAP_SCHEME)) {
             PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
         }

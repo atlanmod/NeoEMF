@@ -172,5 +172,27 @@ public class MapPersistenceBackendFactoryTest {
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl)eStore);
         assert innerBackend == persistentBackend : "The backend in the EStore is not the created one";
     }
+    
+    /**
+     * Test if {@link MapPersistenceBackend.copyBackend} creates the persistent
+     * data stores from the transient ones. Only empty backends are tested.
+     * @throws InvalidDataStoreException
+     */
+    @Test
+    public void testCopyBackend() throws InvalidDataStoreException {
+        PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
+        assert transientBackend instanceof MapPersistenceBackend : "Transient backend is not an instance of MapPersistenceBackend";
+        MapPersistenceBackend transientMap = (MapPersistenceBackend)transientBackend;
+        SearcheableResourceEStore transientEStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
+        assert persistentBackend instanceof MapPersistenceBackend : "Persistent backend is not an instance of MapPersistenceBackend";
+        MapPersistenceBackend persistentMap = (MapPersistenceBackend)persistentBackend;
+        SearcheableResourceEStore persistentEStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        persistenceBackendFactory.copyBackend(transientMap, persistentMap);
+        for(String tKey : transientMap.getAll().keySet()) {
+            assert persistentMap.getAll().containsKey(tKey) : "Persistent backend does not contain the key " + tKey;
+            assert persistentMap.getAll().get(tKey).equals(transientMap.get(tKey)) : "Persistent backend structure " + tKey + " is not equal to transient one";
+        }
+    }
 
 }

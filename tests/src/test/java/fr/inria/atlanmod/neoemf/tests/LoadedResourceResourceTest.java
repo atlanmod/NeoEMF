@@ -41,6 +41,7 @@ public class LoadedResourceResourceTest extends AllBackendTest {
         this.ePackage = MapSamplePackage.eINSTANCE;
         
         super.setUp();
+        super.createPersistentStores();
         
         SampleModel mapSampleModel = factory.createSampleModel();
         SampleModelContentObject mapSampleContentObject = factory.createSampleModelContentObject();
