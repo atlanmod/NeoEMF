@@ -24,6 +24,11 @@
 		<artifactId>graph.blueprints</artifactId>
 		<version>${project.version}</version>
 	</dependency>
+	<dependency>
+		<groupId>fr.inria.atlanmod.neoemf</groupId>
+		<artifactId>map</artifactId>
+		<version>${project.version}</version>
+	</dependency>
   </dependencies>
   
   <name>NeoEMF :: Eclipse :: Features :: Base</name>

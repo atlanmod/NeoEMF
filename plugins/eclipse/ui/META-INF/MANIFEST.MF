@@ -20,7 +20,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.importer,
  org.eclipse.emf.ecore.editor,
  fr.inria.atlanmod.neoemf.core;bundle-version="0.0.1",
- fr.inria.atlanmod.neoemf.graph.blueprints;bundle-version="0.0.1"
+ fr.inria.atlanmod.neoemf.graph.blueprints;bundle-version="0.0.1",
+ fr.inria.atlanmod.neoemf.map;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ target/classes/,
+ lib/commons-configuration-1.6.jar

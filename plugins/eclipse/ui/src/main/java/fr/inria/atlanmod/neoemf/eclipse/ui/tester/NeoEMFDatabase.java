@@ -29,7 +29,7 @@ public class NeoEMFDatabase extends PropertyTester {
 		if (IS_NEOEMF_DB.equals(property) && receiver instanceof IFolder) {
 			boolean expected = (Boolean) expectedValue;
 			IFolder folder = (IFolder) receiver;
-			if (folder.exists(new Path("config.properties")) == expected) {
+			if (folder.exists(new Path("neoconfig.properties")) == expected) {
 				return true;
 			}
 		}

@@ -30,6 +30,7 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
+               icon="icons/full/obj16/neoemf.png"
                label="&amp;NeoEMF">
             <command
                   commandId="fr.inria.atlanmod.neoemf.eclipse.ui.migrate"

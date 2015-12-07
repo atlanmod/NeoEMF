@@ -27,6 +27,34 @@
     		<artifactId>graph.blueprints</artifactId>
     		<version>${project.version}</version>
     	</dependency>
+    	<dependency>
+    		<groupId>fr.inria.atlanmod.neoemf</groupId>
+    		<artifactId>map</artifactId>
+    		<version>${project.version}</version>
+    	</dependency>
+    	<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.6</version>
+		</dependency>
 	</dependencies>
+	<build>
+    <plugins>
+       <plugin> 
+           <artifactId>maven-dependency-plugin</artifactId> 
+               <executions> 
+                   <execution> 
+                       <phase>prepare-package</phase> 
+                       <goals> 
+                           <goal>copy-dependencies</goal> 
+                       </goals> 
+                       <configuration> 
+                           <outputDirectory>lib</outputDirectory> 
+                       </configuration> 
+                   </execution> 
+               </executions> 
+       </plugin>
+    </plugins>
+  	</build>
     <description>Eclipse UI integration plugin.</description>
 </project>
