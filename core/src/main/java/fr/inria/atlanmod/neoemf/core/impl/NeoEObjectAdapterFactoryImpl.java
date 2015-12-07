@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.sf.cglib.core.NamingPolicy;
 import net.sf.cglib.proxy.Enhancer;
 
 import org.apache.commons.lang.ClassUtils;
@@ -56,7 +57,7 @@ public class NeoEObjectAdapterFactoryImpl {
 				interfaces.add(InternalPersistentEObject.class);
 				// Create the proxy
 				Enhancer enhancer = new Enhancer();
-				enhancer.setClassLoader(NeoEObjectAdapterFactoryImpl.class.getClassLoader());
+				enhancer.setClassLoader(adaptableObject.getClass().getClassLoader());
 				enhancer.setSuperclass(adaptableObject.getClass());
 				enhancer.setInterfaces(interfaces.toArray(new Class[] {}));
 				enhancer.setCallback(new NeoEObjectProxyHandlerImpl((InternalEObject) adaptableObject));
