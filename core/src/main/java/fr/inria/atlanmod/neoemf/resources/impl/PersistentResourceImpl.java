@@ -109,10 +109,10 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-			    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing the backend");
+			    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing backend of resource " + this.toString());
 			    if(PersistentResourceImpl.this.persistenceBackend.isStarted()) {
 			        PersistentResourceImpl.this.persistenceBackend.stop();
-			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend closed");
+			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend of resource " + this.toString() + " closed");
 			    }
 			}
 		});
