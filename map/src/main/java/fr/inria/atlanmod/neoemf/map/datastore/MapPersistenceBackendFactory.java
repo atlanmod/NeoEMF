@@ -11,16 +11,18 @@
 package fr.inria.atlanmod.neoemf.map.datastore;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Engine;
-import org.mapdb.Pump;
-import org.mapdb.Store;
 
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
@@ -40,6 +42,8 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 public class MapPersistenceBackendFactory extends
 		AbstractPersistenceBackendFactory {
 
+    public static final String MAPDB_BACKEND = "mapdb";
+    
 	@Override
 	public PersistenceBackend createTransientBackend() {
 	    Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
@@ -55,11 +59,28 @@ public class MapPersistenceBackendFactory extends
 
 	@Override
 	public PersistenceBackend createPersistentBackend(File file,
-			Map<?, ?> options) {
+			Map<?, ?> options) throws InvalidDataStoreException {
 	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
 	    if (!dbFile.getParentFile().exists()) {
 	        dbFile.getParentFile().mkdirs();
 	    }
+	    PropertiesConfiguration neoConfig = null;
+	    Path neoConfigPath = Paths.get(file.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
+        try {
+            neoConfig= new PropertiesConfiguration(neoConfigPath.toFile());
+        } catch (ConfigurationException e) {
+            throw new InvalidDataStoreException(e);
+        }
+        if (!neoConfig.containsKey(BACKEND_PROPERTY)) {
+            neoConfig.setProperty(BACKEND_PROPERTY, MAPDB_BACKEND);
+        }
+        if(neoConfig != null) {
+            try {
+                neoConfig.save();
+            } catch(ConfigurationException e) {
+                NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+            }
+        }
 		Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
 	    return new MapPersistenceBackend(mapEngine);
 	}
@@ -93,9 +114,9 @@ public class MapPersistenceBackendFactory extends
         }
 	}
 
-	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-	    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Transient to Persistent Map migration not implemented yet");
 	    assert from instanceof MapPersistenceBackend : "The backend to copy is not an instance of MapPersistenceBackend";
 	    assert to instanceof MapPersistenceBackend : "The target copy backend is not an instance of MapPersistenceBackend";
 	    MapPersistenceBackend mapFrom = (MapPersistenceBackend)from;
@@ -104,16 +125,14 @@ public class MapPersistenceBackendFactory extends
 	    for(String fromKey : fromAll.keySet()) {
 	        Object collection = fromAll.get(fromKey);
 	        if(collection instanceof Map) {
-	            Map fromMap = (Map)collection;
-	            Map toMap = mapTo.getHashMap(fromKey);
+                Map fromMap = (Map)collection;
+                Map toMap = mapTo.getHashMap(fromKey);
 	            toMap.putAll(fromMap);
 	        }
 	        else {
 	            throw new UnsupportedOperationException("Cannot copy Map backend: store type " + collection.getClass().getSimpleName() + " is not supported");
 	        }
 	    }
-	    System.out.println(mapFrom.getAll().toString());
-	    System.out.println(mapTo.getAll().toString());
 	}
 
 }

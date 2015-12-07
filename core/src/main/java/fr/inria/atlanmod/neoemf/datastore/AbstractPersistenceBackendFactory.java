@@ -26,6 +26,9 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public abstract class AbstractPersistenceBackendFactory {
 	
+    public final static String NEO_CONFIG_FILE = "neoconfig.properties";
+    public final static String BACKEND_PROPERTY = "backend";
+    
 	public abstract PersistenceBackend createTransientBackend();
 	
 	public abstract SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend);
