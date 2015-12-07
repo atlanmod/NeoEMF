@@ -201,7 +201,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		final EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
 		final EClassifier eType = feature.getEType();
 		if (feature.isMany()) {
-		    if(eType.getInstanceClassName().equals("java.util.Map$Entry")) {
+		    if(eType.getInstanceClassName() != null && eType.getInstanceClassName().equals("java.util.Map$Entry")) {
 		        class EStoreEcoreEMap extends EcoreEMap<Object, Object>
 		        {
 		          private static final long serialVersionUID = 1L;

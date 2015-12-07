@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.jboss.util.collection.SoftValueHashMap;
@@ -36,6 +37,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
@@ -390,7 +392,13 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		if (PersistentEObject == null) {
 			EClass eClass = resolveInstanceOf(id);
 			if (eClass != null) {
-				EObject eObject = EcoreUtil.create(eClass);
+			    EObject eObject = null;
+                if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+                    // Dynamic EMF
+                    eObject = PersistenceFactory.eINSTANCE.create(eClass);
+                } else {
+                    eObject = EcoreUtil.create(eClass);
+                }
 				if (eObject instanceof InternalPersistentEObject) {
 					PersistentEObject = (InternalPersistentEObject) eObject;
 				} else {

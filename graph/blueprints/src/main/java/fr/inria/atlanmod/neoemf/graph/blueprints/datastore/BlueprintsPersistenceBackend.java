@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.jboss.util.collection.SoftValueHashMap;
 import org.jboss.util.collection.WeakValueHashMap;
@@ -29,11 +30,11 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdVertex;
 
+import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
@@ -259,7 +260,14 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(vertex);
 			if (eClass != null) {
-				EObject eObject = EcoreUtil.create(eClass);
+			    EObject eObject = null;
+			    if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+			        // Dynamic EMF
+			        eObject = PersistenceFactory.eINSTANCE.create(eClass);
+			    } else {
+			        // EObject eObject = EcoreUtil.create(eClass);
+			        eObject = EcoreUtil.create(eClass);
+			    }
 				if (eObject instanceof InternalPersistentEObject) {
 					neoEObject = (InternalPersistentEObject) eObject;
 				} else {
