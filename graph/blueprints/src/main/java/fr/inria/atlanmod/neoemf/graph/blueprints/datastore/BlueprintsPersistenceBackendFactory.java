@@ -52,6 +52,7 @@ public class BlueprintsPersistenceBackendFactory extends
 	 * options
 	 */
 	protected static final String CONFIG_FILE = "config.properties";
+	public static final String BLUEPRINTS_BACKEND = "blueprints";
 
 	@Override
 	public PersistenceBackend createTransientBackend() {
@@ -68,6 +69,7 @@ public class BlueprintsPersistenceBackendFactory extends
 	@Override
 	public BlueprintsPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
 		BlueprintsPersistenceBackend graphDB = null;
+		PropertiesConfiguration neoConfig = null;
 		PropertiesConfiguration configuration = null;
 		try {
 			// Try to load previous configurations
@@ -164,6 +166,16 @@ public class BlueprintsPersistenceBackendFactory extends
 			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Graph type " +file.getAbsolutePath()+" does not support Key Indices");
 				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
 			}
+			// Save the neoconfig file
+			Path neoConfigPath = Paths.get(file.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
+            try {
+                neoConfig= new PropertiesConfiguration(neoConfigPath.toFile());
+            } catch (ConfigurationException e) {
+                throw new InvalidDataStoreException(e);
+            }
+            if (!neoConfig.containsKey(BACKEND_PROPERTY)) {
+                neoConfig.setProperty(BACKEND_PROPERTY, BLUEPRINTS_BACKEND);
+            }
 		} finally {
 			if (configuration != null) {
 				try {
@@ -173,6 +185,13 @@ public class BlueprintsPersistenceBackendFactory extends
 					// so we log it without rising an exception
 					NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
 				}
+			}
+			if(neoConfig != null) {
+			    try {
+			        neoConfig.save();
+			    } catch(ConfigurationException e) {
+			        NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			    }
 			}
 		}
 		return graphDB;
