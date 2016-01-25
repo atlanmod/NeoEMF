@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.kyanos.datastore.estores.impl;
 
@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
  */
 public class TransientEStoreImpl implements InternalEObject.EStore {
 
+	// TODO use synchronized hashMaps 
 	protected Map<EStoreEntryKey, Object> singleMap = new HashMap<EStoreEntryKey, Object>();
 	protected Map<EStoreEntryKey, List<Object>> manyMap = new HashMap<EStoreEntryKey, List<Object>>();
 

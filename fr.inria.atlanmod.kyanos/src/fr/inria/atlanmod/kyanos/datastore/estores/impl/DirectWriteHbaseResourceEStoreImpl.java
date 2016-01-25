@@ -26,9 +26,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.Stoppable;
 import org.apache.hadoop.hbase.TableName;
-//import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -36,8 +34,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.hbase.util.Sleeper;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -58,8 +54,6 @@ import fr.inria.atlanmod.kyanos.util.KyanosUtil;
 
 public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceEStore {
 
-//	protected static final String INSTANCE_OF = "kyanosInstanceOf";
-//	protected static final String CONTAINER = "eContainer";
 
 	protected static final byte[] PROPERTY_FAMILY =				Bytes.toBytes("p");
 	protected static final byte[] TYPE_FAMILY = 				Bytes.toBytes("t");
@@ -70,16 +64,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 	protected static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
 	
 	private static final int ATTEMP_TIMES = 5;
-	private static final int SLEEP = 5;
-
-//	// TODO: Change in final version by short version to save space
-//	protected static final byte[] PROPERTY_FAMILY =				Bytes.toBytes("property");
-//	protected static final byte[] TYPE_FAMILY = 				Bytes.toBytes("type");
-//	protected static final byte[] METAMODEL_QUALIFIER =			Bytes.toBytes("metamodel");
-//	protected static final byte[] ECLASS_QUALIFIER = 			Bytes.toBytes("eclass");
-//	protected static final byte[] CONTAINMENT_FAMILY = 			Bytes.toBytes("containment");
-//	protected static final byte[] CONTAINER_QUALIFIER = 		Bytes.toBytes("container");
-//	protected static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("containingFeature");
+	private static final int SLEEP = 1000;
 
 	
 	@SuppressWarnings("unchecked")
@@ -95,15 +80,16 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 
 
 	public DirectWriteHbaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
-	//	this.connection = connection;
+
 		this.resource = resource;
 		
 		conf.set("hbase.zookeeper.quorum", resource.getURI().host());
 		conf.set("hbase.zookeeper.property.clientPort", resource.getURI().port() != null ? resource.getURI().port() : "2181");
 		
 		TableName tableName = TableName.valueOf(KyanosUtil.formatURI(resource.getURI()));
+		@SuppressWarnings("resource")
 		HBaseAdmin admin = new HBaseAdmin(conf);
-		if (admin.tableExists(tableName)) {
+		if (! admin.tableExists(tableName)) {
 			HTableDescriptor desc = new HTableDescriptor(tableName);
 			HColumnDescriptor propertyFamily = new HColumnDescriptor(PROPERTY_FAMILY);
 			HColumnDescriptor typeFamily = new HColumnDescriptor(TYPE_FAMILY);
@@ -116,7 +102,6 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		
 		table = new HTable(conf, tableName);
 	}
-
 
 
 	@Override
@@ -179,40 +164,48 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				put.add(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), Bytes.toBytes(serializeValue(eAttribute, value)));
 				table.put(put);
 			} else {
-				boolean passed = false;
-				int attemp = 0;			
-				// the sleeper seems not to fit
-				//Sleeper sleeper = new Sleeper(SLEEP,null); 
-				do {
-					//sleeper.sleep();
-					this.wait(attemp*SLEEP);
-					attemp++;
-					// TODO add attemp to the configuration file
-					if (attemp > ATTEMP_TIMES) 
-							throw new TimeoutException();
+				try {
+					String[] array;
+					boolean passed = false;
+					int attemp = 0;			
+
+					do {				
+						array = (String[]) getFromTable(object, eAttribute);
+						//array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+						Put put = new Put(Bytes.toBytes(object.kyanosId())).add( 
+									PROPERTY_FAMILY,
+									Bytes.toBytes(eAttribute.getName()),
+									toBytes((String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value))));
+						passed = table.checkAndPut(Bytes.toBytes(object.kyanosId()), 
+												   PROPERTY_FAMILY,
+												   Bytes.toBytes(eAttribute.getName()),
+												   array == null ? null :toBytes(array),
+												   put);
+						if (!passed) {
+							if (attemp > ATTEMP_TIMES) 
+								throw new TimeoutException();
+							Thread.sleep((++attemp)*SLEEP);
+									}
+						
+						} while (!passed);	
 					
-					String[] array = (String[]) getFromTable(object, eAttribute);
-					array[index] = serializeValue(eAttribute, value);
-					Put put = new Put(Bytes.toBytes(object.kyanosId()));
-					passed = table.checkAndPut(Bytes.toBytes(object.kyanosId()), 
-											   PROPERTY_FAMILY,
-											   Bytes.toBytes(eAttribute.getName()),
-											   toBytes(array),
-											   put);
-					} while (!passed);	
-				
+				} catch (IOException e) {
+					Logger.log(Logger.SEVERITY_ERROR, 
+							MessageFormat.format("Unable to set ''{0}'' to ''{1}'' for element ''{2}''", value, eAttribute.getName(), object));
+				}catch (TimeoutException e) {
+					Logger.log(Logger.SEVERITY_ERROR, 
+							MessageFormat.format("Unable to set ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, eAttribute.getName(), object, ATTEMP_TIMES));
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					Logger.log(Logger.SEVERITY_ERROR, 
+							MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+					e.printStackTrace();
+				}
 			}
-		} catch (TimeoutException e) {
-			Logger.log(Logger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to set information for element ''{0}'' after ''{1}'' times ", object, ATTEMP_TIMES));
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
 					MessageFormat.format("Unable to set information for element ''{0}''", object));
-		} catch (InterruptedException e) {
-			Logger.log(Logger.SEVERITY_ERROR, 
-					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
-			e.printStackTrace();
-		}
+		} 
 		return oldValue;
 	}
 
@@ -228,37 +221,15 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				put.add(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), Bytes.toBytes(referencedObject.kyanosId()));
 				table.put(put);
 			} else {
-				boolean passed = false;
-				int attemp = 0;			
-				// the sleeper seems not to fit
-				//Sleeper sleeper = new Sleeper(SLEEP,null); 
-				do {
-					//sleeper.sleep();
-					this.wait(attemp*SLEEP);
-					attemp++;
-					// TODO add attemp to the configuration file
-					if (attemp > ATTEMP_TIMES) throw new TimeoutException();
-					String[] array = (String[]) getFromTable(object, eReference);
-					array[index] = referencedObject.kyanosId();
-					Put put = new Put(Bytes.toBytes(object.kyanosId()));
-					passed = table.checkAndPut(Bytes.toBytes(object.kyanosId()), 
-											   PROPERTY_FAMILY,
-											   Bytes.toBytes(eReference.getName()),
-											   toBytes(array),
-											   put);
-						} while (!passed);			
-		} 
-		
-		} catch (TimeoutException e) {
-			Logger.log(Logger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to set information for element ''{0}'' after ''{1}'' times ", object, ATTEMP_TIMES));
+				String[] array = (String[]) getFromTable(object, eReference);
+				array[index] = referencedObject.kyanosId();
+				Put put = new Put(Bytes.toBytes(object.kyanosId()));
+				put.add(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
+				table.put(put);
+			}
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
 					MessageFormat.format("Unable to set information for element ''{0}''", object));
-		} catch (InterruptedException e) {
-			Logger.log(Logger.SEVERITY_ERROR, 
-					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
-			e.printStackTrace();
 		}
 		return oldValue;
 	}
@@ -294,31 +265,28 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 
 	protected void add(KyanosEObject object, EAttribute eAttribute, int index, Object value) {
 		try {
-			String[] array = (String[]) getFromTable(object, eAttribute);
-			if (array == null) {
-				array = new String[] {};
-			}
-//			
+			String[] array;
 			boolean passed = false;
 			int attemp = 0;			
-			// the sleeper seems not to fit
-			//Sleeper sleeper = new Sleeper(SLEEP,null); 
-			do {
-				//sleeper.sleep();
-				this.wait(attemp*SLEEP);
-				attemp++;
-				// TODO add attemp to the configuration file
-				if (attemp > ATTEMP_TIMES) 
-						throw new TimeoutException();
-				
+
+			do {				
 				array = (String[]) getFromTable(object, eAttribute);
-				array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
-				Put put = new Put(Bytes.toBytes(object.kyanosId()));
+				//array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+				Put put = new Put(Bytes.toBytes(object.kyanosId())).add( 
+							PROPERTY_FAMILY,
+							Bytes.toBytes(eAttribute.getName()),
+							toBytes((String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value))));
 				passed = table.checkAndPut(Bytes.toBytes(object.kyanosId()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eAttribute.getName()),
-										   toBytes(array),
+										   array == null ? null :toBytes(array),
 										   put);
+				if (!passed) {
+					if (attemp > ATTEMP_TIMES) 
+						throw new TimeoutException();
+					Thread.sleep((++attemp)*SLEEP);
+							}
+				
 				} while (!passed);	
 			
 		} catch (IOException e) {
@@ -341,31 +309,30 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			updateContainment(object, eReference, referencedObject);
 			updateInstanceOf(referencedObject);
 			
-			String[] array = (String[]) getFromTable(object, eReference);
-			if (array == null) {
-				array = new String[] {};
-			}
+			String[] array;
 			boolean passed = false;
 			int attemp = 0;			
-			// the sleeper seems not to fit
-			//Sleeper sleeper = new Sleeper(SLEEP,null); 
-			do {
-				//sleeper.sleep();
-				this.wait(attemp*SLEEP);
-				attemp++;
-				// TODO add attemp to the configuration file
-				if (attemp > ATTEMP_TIMES) 
-					throw new TimeoutException();
-				
+
+			do {				
 				array = (String[]) getFromTable(object, eReference);
-				array = (String[]) ArrayUtils.add(array, index, referencedObject.kyanosId());
-				Put put = new Put(Bytes.toBytes(object.kyanosId()));
+				//array = (String[]) ArrayUtils.add(array, index, referencedObject.kyanosId());
+				Put put = new Put(Bytes.toBytes(object.kyanosId())).add(
+								  PROPERTY_FAMILY,
+								  Bytes.toBytes(eReference.getName()),
+						          toBytes((String[]) ArrayUtils.add(array, index, referencedObject.kyanosId())));
+				
 				passed = table.checkAndPut(Bytes.toBytes(object.kyanosId()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eReference.getName()),
-										   toBytes(array),
+										   array == null ? null : toBytes(array),
 										   put);
-					} while (!passed);
+				if (!passed) {
+					if (attemp > ATTEMP_TIMES) 
+						throw new TimeoutException();
+					Thread.sleep((++attemp)*SLEEP);
+							}
+				
+				} while (!passed);
 			
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
@@ -384,6 +351,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
+		// TODO nothing guarantees that the index is still the same 
 		KyanosEObject kyanosEObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosEObject.class);
 		if (feature instanceof EAttribute) {
 			return remove(kyanosEObject, (EAttribute) feature, index);
@@ -397,31 +365,92 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 	protected Object remove(KyanosEObject object, EAttribute eAttribute, int index) {
 		Object oldValue = get(object, eAttribute, index);
 		try {
-			String[] array = (String[]) getFromTable(object, eAttribute);
-			array = (String[]) ArrayUtils.remove(array, index);
-			Put put = new Put(Bytes.toBytes(object.kyanosId()));
-			put.add(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), toBytes(array));
-			table.put(put);
+			
+			String[] array;
+			boolean passed = false;
+			int attemp = 0;			
+
+			do {				
+				array = (String[]) getFromTable(object, eAttribute);
+				//array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+				Put put = new Put(Bytes.toBytes(object.kyanosId())).add( 
+							PROPERTY_FAMILY,
+							Bytes.toBytes(eAttribute.getName()),
+							toBytes((String[]) ArrayUtils.remove(array, index)));
+				passed = table.checkAndPut(Bytes.toBytes(object.kyanosId()), 
+										   PROPERTY_FAMILY,
+										   Bytes.toBytes(eAttribute.getName()),
+										   array == null ? null :toBytes(array),
+										   put);
+				if (!passed) {
+					if (attemp > ATTEMP_TIMES) 
+						throw new TimeoutException();
+					Thread.sleep((++attemp)*SLEEP);
+					oldValue = get(object, eAttribute, index);
+							}
+				
+				} while (!passed);	
+			
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to delete ''{0}[{1}''] for element ''{2}''", eAttribute.getName(), index, object));
+					MessageFormat.format("Unable to delete ''{0}'' to ''{1}'' for element ''{2}''", oldValue, eAttribute.getName(), object));
+		}catch (TimeoutException e) {
+			Logger.log(Logger.SEVERITY_ERROR, 
+					MessageFormat.format("Unable to delete ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", oldValue, eAttribute.getName(), object, ATTEMP_TIMES));
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			Logger.log(Logger.SEVERITY_ERROR, 
+					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+			e.printStackTrace();
 		}
+
 		return oldValue;
 	}
 
 	protected Object remove(KyanosEObject object, EReference eReference, int index) {
 		
 		Object oldValue = get(object, eReference, index);
+		
 		try {
-			String[] array = (String[]) getFromTable(object, eReference);
-			array = (String[]) ArrayUtils.remove(array, index);
-			Put put = new Put(Bytes.toBytes(object.kyanosId()));
-			put.add(PROPERTY_FAMILY, Bytes.toBytes(eReference.getName()), toBytes(array));
-			table.put(put);
+			
+			String[] array;
+			boolean passed = false;
+			int attemp = 0;			
+
+			do {				
+				array = (String[]) getFromTable(object, eReference);
+				//array = (String[]) ArrayUtils.add(array, index, referencedObject.kyanosId());
+				Put put = new Put(Bytes.toBytes(object.kyanosId())).add(
+								  PROPERTY_FAMILY,
+								  Bytes.toBytes(eReference.getName()),
+						          toBytes((String[]) ArrayUtils.remove(array, index)));
+				
+				passed = table.checkAndPut(Bytes.toBytes(object.kyanosId()), 
+										   PROPERTY_FAMILY,
+										   Bytes.toBytes(eReference.getName()),
+										   array == null ? null : toBytes(array),
+										   put);
+				if (!passed) {
+					if (attemp > ATTEMP_TIMES) 
+						throw new TimeoutException();
+					Thread.sleep((++attemp)*SLEEP);
+							}
+				
+				} while (!passed);
+			
 		} catch (IOException e) {
 			Logger.log(Logger.SEVERITY_ERROR, 
 					MessageFormat.format("Unable to delete ''{0}[{1}''] for element ''{2}''", eReference.getName(), index, object));
+		} catch (TimeoutException e) {
+			Logger.log(Logger.SEVERITY_ERROR, 
+					MessageFormat.format("Unable to delete ''{0}[{1}''] for element ''{2}''", eReference.getName(), index, object));
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			Logger.log(Logger.SEVERITY_ERROR, 
+					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+			e.printStackTrace();
 		}
+		
 		return oldValue;
 	}
 
@@ -624,6 +653,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		}
 		return kyanosEObject;
 	}
+	
 
 	protected EClass resolveInstanceOf(String id) {
 		try {
@@ -647,6 +677,9 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 	
 	protected void updateContainment(KyanosEObject object, EReference eReference, KyanosEObject referencedObject) {
 		if (eReference.isContainment()) {
+			
+			// remove from root 
+			
 			try {
 				Put put = new Put(Bytes.toBytes(referencedObject.kyanosId()));
 				put.add(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.kyanosId()));
@@ -743,5 +776,6 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			IOUtils.closeQuietly(objectInputStream);
 		}
 		return result;
+
 	}
 }
