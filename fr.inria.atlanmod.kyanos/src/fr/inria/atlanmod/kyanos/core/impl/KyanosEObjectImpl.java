@@ -172,6 +172,8 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	public void dynamicSet(int dynamicFeatureID, Object value) {
 		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
 		if (feature.isMany()) {
+			// TODO this operation should be atomic 
+			// restitute the old value in case the operation fails in the middle
 			eStore().unset(this, feature);
 			@SuppressWarnings("rawtypes")
 			EList collection = (EList) value;
