@@ -55,7 +55,7 @@ public class KyanosUtil {
 					
 				} catch (ZooKeeperConnectionException e){
 					Logger.log(Logger.SEVERITY_ERROR, 
-							MessageFormat.format("zooKeeper connexion failed using the following configuration:\n hbase.zookeeper.quorum:{0}\nhbase.zookeeper.property.clientPort:{1}", e.getLocalizedMessage()));
+							MessageFormat.format("zooKeeper connexion failed using the following configuration:\n hbase.zookeeper.quorum:{0}\nhbase.zookeeper.property.clientPort:{1}", e.getLocalizedMessage(), conf.get("hbase.zookeeper.property.clientPort")));
 
 				} catch (IOException e) {
 					// Log this 
@@ -68,6 +68,7 @@ public class KyanosUtil {
 			}
 			
 			//Connection resourceConnection = ConnectionFactory.createConnection(conf);
+			@SuppressWarnings("resource")
 			HBaseAdmin admin = new HBaseAdmin(conf);
 			String cloneURI = formatURI (modelURI);
 			TableName tableName = TableName.valueOf(cloneURI);
@@ -75,7 +76,10 @@ public class KyanosUtil {
 			try {	
 			if (admin.tableExists(tableName)) {
 				
-				admin.disableTable(tableName);
+				if (! admin.isTableDisabled(tableName)) {
+					admin.disableTable(tableName);
+				}
+				
 				admin.deleteTable(tableName);
 				
 				Logger.log(Logger.SEVERITY_INFO, "Table has been deleted");
