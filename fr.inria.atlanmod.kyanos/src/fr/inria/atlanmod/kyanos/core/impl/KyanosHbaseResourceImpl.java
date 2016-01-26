@@ -158,6 +158,12 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 		}
 	}
 
+//	protected Connection createConnection() throws IOException {
+//		Configuration conf = HBaseConfiguration.create();
+//		conf.set("hbase.zookeeper.quorum", getURI().host());
+//		conf.set("hbase.zookeeper.property.clientPort", getURI().port() != null ? getURI().port() : "2181");
+//		return ConnectionFactory.createConnection(conf);
+//	}
 
 	@Override
 	public EList<EObject> getContents() {
