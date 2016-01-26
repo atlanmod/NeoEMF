@@ -47,7 +47,6 @@ import fr.inria.atlanmod.kyanos.core.KyanosEObject;
 import fr.inria.atlanmod.kyanos.core.KyanosInternalEObject;
 import fr.inria.atlanmod.kyanos.core.impl.KyanosEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.kyanos.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.kyanos.datastore.estores.impl.TransientEStoreImpl.EStoreEntryKey;
 import fr.inria.atlanmod.kyanos.logger.Logger;
 import fr.inria.atlanmod.kyanos.util.KyanosUtil;
 
@@ -75,10 +74,9 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	final String UNSUP_MSG = "Unable to write to resource with URI {0}. Make sure that the resource is not read-only";
 	
-	// theses maps are not synchronized
-		protected Map<EStoreEntryKey, String> singleMap = new HashMap<EStoreEntryKey, String>();
-		protected Map<EStoreEntryKey, List<Object>> manyMap = new HashMap<EStoreEntryKey, List<Object>>();
-
+	// This map is not synchronized
+	// not well suitable for multi-threaded applications
+		protected Map<EStoreEntryKey, Object> featuresMap = new HashMap<EStoreEntryKey, Object>();
 
 		
 		public class EStoreEntryKey {
@@ -177,7 +175,7 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 	}
 	
 	protected Object get(KyanosEObject object, EAttribute eAttribute, int index) {
-		Object value = getFromTable(object, eAttribute);
+		Object value = getFromTableIfNotExisting(object, eAttribute);
 		if (!eAttribute.isMany()) {
 			return parseValue(eAttribute, (String) value);
 		} else {
@@ -187,7 +185,7 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 	}
 
 	protected Object get(KyanosEObject object, EReference eReference, int index) {
-		Object value = getFromTable(object, eReference);
+		Object value = getFromTableIfNotExisting(object, eReference);
 		if (!eReference.isMany()) {
 			return getEObject((String) value);
 		} else {
@@ -283,7 +281,7 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		KyanosEObject kyanosEObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosEObject.class);
-		String[] array = (String[]) getFromTable(kyanosEObject, feature);
+		String[] array = (String[]) getFromTableIfNotExisting(kyanosEObject, feature);
 		return array != null ? array.length : 0; 
 	}
 
@@ -297,7 +295,7 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 	@Override
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		KyanosEObject kyanosEObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosEObject.class);
-		String[] array = (String[]) getFromTable(kyanosEObject, feature);
+		String[] array = (String[]) getFromTableIfNotExisting(kyanosEObject, feature);
 		if (array == null) {
 			return -1;
 		}
@@ -313,7 +311,7 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 	@Override
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		KyanosEObject kyanosEObject = KyanosEObjectAdapterFactoryImpl.getAdapter(object, KyanosEObject.class);
-		String[] array = (String[]) getFromTable(kyanosEObject, feature);
+		String[] array = (String[]) getFromTableIfNotExisting(kyanosEObject, feature);
 		if (array == null) {
 			return -1;
 		}
@@ -492,18 +490,24 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 	 *         single-valued {@link EStructuralFeature}s or a {@link String}[]
 	 *         for many-valued {@link EStructuralFeature}s
 	 */
-	protected Object getFromTable(KyanosEObject object, EStructuralFeature feature) {
-		try {
-			Result result = table.get(new Get(Bytes.toBytes(object.kyanosId())));
-			byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
-			if (!feature.isMany()) {
-				return Bytes.toString(value);
-			} else {
-				return toStrings(value);
+	protected Object getFromTableIfNotExisting(KyanosEObject object, EStructuralFeature feature) {
+		EStoreEntryKey entry = new EStoreEntryKey(object.kyanosId(), feature);
+		if (featuresMap.containsKey(entry) 
+				&& featuresMap.get(entry) != null)  {	
+			return featuresMap.get(entry);
+		} else {
+			try {
+				Result result = table.get(new Get(Bytes.toBytes(object.kyanosId())));
+				byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
+				if (!feature.isMany()) {
+					return featuresMap.put(entry, Bytes.toString(value));
+				} else {
+					return featuresMap.put(entry, toStrings(value));
+				}
+			} catch (IOException e) {
+				Logger.log(Logger.SEVERITY_ERROR, MessageFormat.format("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object));
 			}
-		} catch (IOException e) {
-			Logger.log(Logger.SEVERITY_ERROR, MessageFormat.format("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object));
-		}
+		}	
 		return null;
 	}
 
