@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
  */
 public class TransientEStoreImpl implements InternalEObject.EStore {
 
-	// TODO use synchronized hashMaps 
+	// theses maps are not synchronized
 	protected Map<EStoreEntryKey, Object> singleMap = new HashMap<EStoreEntryKey, Object>();
 	protected Map<EStoreEntryKey, List<Object>> manyMap = new HashMap<EStoreEntryKey, List<Object>>();
 
