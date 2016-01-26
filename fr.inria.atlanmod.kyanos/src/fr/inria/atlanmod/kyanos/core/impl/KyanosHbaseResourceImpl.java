@@ -13,12 +13,12 @@ package fr.inria.atlanmod.kyanos.core.impl;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.hadoop.conf.Configuration;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -41,6 +41,7 @@ import fr.inria.atlanmod.kyanos.core.KyanosResource;
 import fr.inria.atlanmod.kyanos.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.kyanos.datastore.estores.impl.DirectWriteHbaseResourceEStoreImpl;
 import fr.inria.atlanmod.kyanos.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.kyanos.datastore.estores.impl.ReadOnlyHbaseResourceEStoreImpl;
 import fr.inria.atlanmod.kyanos.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.kyanos.datastore.exceptions.InvalidOptionsException;
 
@@ -87,8 +88,8 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 
 	protected final DummyRootEObject DUMMY_ROOT_EOBJECT = new DummyRootEObject(this);
 
-	protected Map<?, ?> options;
-
+	protected Map<Object, Object> options;
+	
 	protected SearcheableResourceEStore eStore;
 
 	//protected Connection connection;
@@ -100,6 +101,12 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 		//this.connection = null;
 		this.eStore = null;
 		this.isPersistent = false;
+		// initialize the map options with default values 
+		{
+			options =  new HashMap<Object, Object> (); 
+			options.put(KyanosResource.OPTIONS_HBASE_READ_ONLY, KyanosResource.OPTIONS_HBASE_READ_ONLY_DEFAULT);
+			
+		}
 	}
 
 	@Override
@@ -109,16 +116,24 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 			if (isLoaded) {
 				return;
 			} else {
-			//	this.connection = createConnection();
-				this.isPersistent = true;
-				this.eStore = createResourceEStore();
+				//	this.connection = createConnection();
+				if (options.containsKey(KyanosResource.OPTIONS_HBASE_READ_ONLY)
+						&& options.get(KyanosResource.OPTIONS_HBASE_READ_ONLY).equals(Boolean.FALSE)) {
+					this.isPersistent = true;
+					this.eStore = createResourceEStore();
+				} else {
+					this.eStore = createReadOnlyResourceEStore();
+				}
+				
 			}
-			this.options = options;
+			this.options.putAll(options);
 			isLoaded = true;
 		} finally {
 			isLoading = false;
 		}
 	}
+
+
 
 	@Override
 	public void save(Map<?, ?> options) throws IOException {
@@ -143,12 +158,6 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 		}
 	}
 
-//	protected Connection createConnection() throws IOException {
-//		Configuration conf = HBaseConfiguration.create();
-//		conf.set("hbase.zookeeper.quorum", getURI().host());
-//		conf.set("hbase.zookeeper.property.clientPort", getURI().port() != null ? getURI().port() : "2181");
-//		return ConnectionFactory.createConnection(conf);
-//	}
 
 	@Override
 	public EList<EObject> getContents() {
@@ -222,7 +231,21 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 	protected SearcheableResourceEStore createResourceEStore() throws IOException {
 		return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHbaseResourceEStoreImpl(this)));
 	}
-
+	/**
+	 * Creates a read-only {@value SearcheableResourceEStore}
+	 * @return
+	 * @throws 
+	 */
+	protected SearcheableResourceEStore createReadOnlyResourceEStore() {
+		
+		try {
+			return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new ReadOnlyHbaseResourceEStoreImpl(this)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	/**
 	 * A notifying {@link EStoreEList} list implementation for supporting
 	 * {@link Resource#getContents}.
