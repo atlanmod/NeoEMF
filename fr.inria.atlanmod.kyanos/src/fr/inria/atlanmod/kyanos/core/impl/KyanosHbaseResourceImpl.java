@@ -97,28 +97,41 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 	protected boolean isPersistent = false;
 
 	public KyanosHbaseResourceImpl(URI uri) {
+
 		super(uri);
 		//this.connection = null;
 		this.eStore = null;
 		this.isPersistent = false;
 		// initialize the map options with default values 
-		{
-			options =  new HashMap<Object, Object> (); 
-			options.put(KyanosResource.OPTIONS_HBASE_READ_ONLY, KyanosResource.OPTIONS_HBASE_READ_ONLY_DEFAULT);
+		options =  new HashMap<Object, Object> (); 
+		options.put(KyanosResource.OPTIONS_HBASE_READ_ONLY, KyanosResource.OPTIONS_HBASE_READ_ONLY_DEFAULT);
 			
-		}
+		
 	}
 
 	@Override
 	public void load(Map<?, ?> options) throws IOException {
+		
+		// merging options 
+		if (this.options != null) {
+			// Check that the save options do not collide with previous load options
+			for (Entry<?, ?> entry : options.entrySet()) {
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				if (this.options.containsKey(key)) {
+					this.options.remove(key);
+				}
+				this.options.put(key, value);
+			}
+		}
+		
 		try {
 			isLoading = true;
 			if (isLoaded) {
 				return;
 			} else {
 				//	this.connection = createConnection();
-				if (options.containsKey(KyanosResource.OPTIONS_HBASE_READ_ONLY)
-						&& options.get(KyanosResource.OPTIONS_HBASE_READ_ONLY).equals(Boolean.FALSE)) {
+				if (this.options.get(KyanosResource.OPTIONS_HBASE_READ_ONLY).equals(Boolean.FALSE)) {
 					this.isPersistent = true;
 					this.eStore = createResourceEStore();
 				} else {
@@ -126,7 +139,7 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 				}
 				
 			}
-			this.options.putAll(options);
+			//this.options.putAll(options);
 			isLoaded = true;
 		} finally {
 			isLoading = false;
