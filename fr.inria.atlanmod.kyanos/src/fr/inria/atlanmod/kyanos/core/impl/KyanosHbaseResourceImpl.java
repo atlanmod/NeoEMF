@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.notify.impl.NotificationImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -334,6 +335,63 @@ public class KyanosHbaseResourceImpl extends ResourceImpl implements KyanosResou
 			return eObject.eSetResource(null, notifications);
 		}
 		
+		@Override
+		public boolean add(EObject object)
+		{
+		    if (isUnique() && contains(object))
+		    {
+		      return false;
+		    }
+		    else
+		    {
+		      addUnique(object);
+		      return true;
+		    }
+		}
+		 
+		 @Override
+		  public void addUnique(EObject object)
+		  {
+			int index = size() == 0 ? 0 : -1;
+			
+		    if (isNotificationRequired())
+		    {      
+		      boolean oldIsSet = isSet();
+		      doAddUnique(index, object);
+		      NotificationImpl notification = createNotification(Notification.ADD, null, object, index, oldIsSet);
+		      if (hasInverse())
+		      {
+		        NotificationChain notifications = inverseAdd(object, null);
+		        if (hasShadow())
+		        {
+		          notifications = shadowAdd(object, notifications);
+		        }
+		        if (notifications == null)
+		        {
+		          dispatchNotification(notification);
+		        }
+		        else
+		        {
+		          notifications.add(notification);
+		          notifications.dispatch();
+		        }
+		      }
+		      else
+		      {
+		        dispatchNotification(notification);
+		      }
+		    }
+		    else
+		    {
+		      doAddUnique(index, object);
+		      if (hasInverse())
+		      {
+		        NotificationChain notifications = inverseAdd(object, null);
+		        if (notifications != null) notifications.dispatch();
+		      }
+		    }
+		  }
+		 
 		@Override
 		protected void delegateAdd(int index, EObject object) {
 			// FIXME? Maintain a list of hard links to the elements while moving

@@ -11,6 +11,7 @@
 package fr.inria.atlanmod.kyanos.core.impl;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -145,7 +146,7 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 						eStore.clear(this, feature);
 						int size = oldStore.size(this, feature);
 						for (int i = 0; i < size; i++) {
-							eStore.add(this, feature, i, 
+							eStore.add(this, feature, i == 0 ? 0 : EStore.NO_INDEX, 
 									oldStore.get(this, feature, i));
 						}
 					}
@@ -189,7 +190,7 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	public Object dynamicGet(int dynamicFeatureID) {
 		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
 		if (feature.isMany()) {
-			return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
+			return new KyanosEStoreEList(this, feature);
 		} else {
 			return eStore().get(this, feature, EStore.NO_INDEX);
 		}
@@ -259,4 +260,47 @@ public class KyanosEObjectImpl extends MinimalEStoreEObjectImpl implements Kyano
 	    }
 		return result.toString();
 	}
+	
+	public class KyanosEStoreEList extends EStoreEObjectImpl.BasicEStoreEList<Object> {
+
+		/**
+		 * @author Amine Benelallam
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public KyanosEStoreEList(InternalEObject owner,
+				EStructuralFeature eStructuralFeature) {
+			super(owner, eStructuralFeature);
+		}
+		
+//	    @Override
+//	    protected void delegateAdd(Object object)
+//	    {
+//	      delegateAdd(delegateSize() == 0 ? 0 : EStore.NO_INDEX , object);
+//	      add(object);
+//	    }
+	    
+	    @Override
+	    public boolean add(Object object)
+	    {
+	      if (isUnique() && contains(object))
+	      {
+	        return false;
+	      }
+	      else
+	      {
+	    	if (eStructuralFeature instanceof EAttribute) { 
+	        addUnique(object);
+	    	} else {
+	    		int index = size() == 0 ? 0 : EStore.NO_INDEX;
+	    		addUnique(index, object);
+	    	}
+	        return true;
+	      }
+	    }
+
+	}
+// end KyanosEStoreElist
 }
+// end KyanosEObject

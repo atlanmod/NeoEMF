@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 Abel Gómez.
+ * Copyright (c) 2014 Abel Gï¿½mez.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Abel Gómez - initial API and implementation
+ *     Abel Gï¿½mez - initial API and implementation
  ******************************************************************************/
 package fr.inria.atlanmod.kyanos.datastore.estores.impl;
 
@@ -103,6 +103,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 		}
 	}
 
+	
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		eStore.add(object, feature, index, value);

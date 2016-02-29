@@ -1,16 +1,27 @@
 package fr.inria.atlanmod.kyanos.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.MessageFormat;
+import java.util.Iterator;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.common.util.URI;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+
+import fr.inria.atlanmod.kyanos.core.KyanosEFactory;
 import fr.inria.atlanmod.kyanos.logger.Logger;
 
 
@@ -22,7 +33,7 @@ public class KyanosUtil {
 		
 		public static  ResourceUtil INSTANCE = getInstance();
 
-		protected ResourceUtil () {
+		public ResourceUtil () {
 			
 		}
 		
@@ -105,6 +116,82 @@ public class KyanosUtil {
 		}
 		
 		return strBld.toString();
+	}
+	
+	/**
+	 * 
+	 * @author Amine  BENELALLAM
+	 *
+	 */
+	
+	public static class EncoderUtil {
+		
+		public static final char VALUE_SEPERATOR_DEFAULT = ',';
+		
+		public static String [] toStringsReferences(byte[] value) {
+			int uidLength = KyanosEFactory.UUID_LENGTH;
+			if (value != null) {
+				assert (value.length) % (uidLength + 1) == uidLength;
+				int length = (value.length + 1)/(uidLength + 1);
+				
+				Iterator<String> iterator =  Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(value)).iterator();
+				//List<String>  strings = new LinkedList<String>();
+				String[] strings = new String[length];
+				int index = 0;
+				while (iterator.hasNext()) {
+					//strings.add(iterator.next());
+					strings[index++] = iterator.next();
+				}
+				//return strings.toArray(new String[strings.size()]);
+				return strings;
+			}	
+			return null;
+		}
+
+
+		public static byte[] toBytesReferences (String[] strings) {
+			if (strings != null) {
+				return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes();
+			}
+			return null;
+		}
+		public static byte[] toBytes(String[] strings) {
+			try {
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+				objectOutputStream.writeObject(strings);
+				objectOutputStream.flush();
+				objectOutputStream.close();
+				return byteArrayOutputStream.toByteArray();
+			} catch (IOException e) {
+				Logger.log(Logger.SEVERITY_ERROR, MessageFormat.format("Unable to convert ''{0}'' to byte[]", strings.toString()));
+			}
+			return null;
+		}
+
+		public static String[] toStrings(byte[] bytes) {
+			
+			if (bytes == null) {
+				return null;
+			}
+			
+			String[] result = null;
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+			ObjectInputStream objectInputStream = null;
+			try {
+				objectInputStream = new ObjectInputStream(byteArrayInputStream);
+				result = (String[]) objectInputStream.readObject();
+
+			} catch (IOException e) {
+				Logger.log(Logger.SEVERITY_ERROR, MessageFormat.format("Unable to convert ''{0}'' to String[]", bytes.toString()));
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				IOUtils.closeQuietly(objectInputStream);
+			}
+			return result;
+
+		}
 	}
 	
 }

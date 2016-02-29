@@ -76,7 +76,8 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 	
 	// This map is not synchronized
 	// not well suitable for multi-threaded applications
-		protected Map<EStoreEntryKey, Object> featuresMap = new HashMap<EStoreEntryKey, Object>();
+	@SuppressWarnings("unchecked")
+	protected Map<EStoreEntryKey, Object> featuresMap = new SoftValueHashMap();
 
 		
 		public class EStoreEntryKey {
@@ -197,14 +198,17 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+		System.out.println("what the heck you4re doing here ??");
 		throw new UnsupportedOperationException(MessageFormat.format(UNSUP_MSG, table.getName().getNameAsString()));
 	}
 
 	protected Object set(KyanosEObject object, EAttribute eAttribute, int index, Object value) {
+		System.out.println("what the heck you4re doing here ??");
 		throw new UnsupportedOperationException(MessageFormat.format(UNSUP_MSG, table.getName().getNameAsString()));
 	}
 
 	protected Object set(KyanosEObject object, EReference eReference, int index, KyanosInternalEObject referencedObject) {
+		System.out.println("what the heck you4re doing here ??");
 		throw new UnsupportedOperationException(MessageFormat.format(UNSUP_MSG, table.getName().getNameAsString()));
 	}
 
@@ -226,14 +230,17 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+		System.out.println("what the heck you4re doing here ??");
 		throw new UnsupportedOperationException(MessageFormat.format(UNSUP_MSG, table.getName().getNameAsString()));
 	}
 
 	protected void add(KyanosEObject object, EAttribute eAttribute, int index, Object value) {
+		System.out.println("what the heck you4re doing here ??");
 		throw new UnsupportedOperationException(MessageFormat.format(UNSUP_MSG, table.getName().getNameAsString()));
 	}
 
 	protected void add(KyanosEObject object, EReference eReference, int index, KyanosInternalEObject referencedObject) {
+		System.out.println("what the heck you4re doing here ??");
 		throw new UnsupportedOperationException(MessageFormat.format(UNSUP_MSG, table.getName().getNameAsString()));
 
 	}
@@ -500,50 +507,18 @@ public class ReadOnlyHbaseResourceEStoreImpl implements SearcheableResourceEStor
 				Result result = table.get(new Get(Bytes.toBytes(object.kyanosId())));
 				byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
 				if (!feature.isMany()) {
-					return featuresMap.put(entry, Bytes.toString(value));
+					featuresMap.put(entry, Bytes.toString(value));
 				} else {
-					return featuresMap.put(entry, toStrings(value));
+					featuresMap.put(entry, feature instanceof EAttribute ?
+													KyanosUtil.EncoderUtil.toStrings(value) : 
+														KyanosUtil.EncoderUtil.toStringsReferences(value)	);
 				}
 			} catch (IOException e) {
 				Logger.log(Logger.SEVERITY_ERROR, MessageFormat.format("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object));
 			}
 		}	
-		return null;
+		return featuresMap.get(entry);
 	}
 
-	protected static byte[] toBytes(String[] strings) {
-		try {
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-			objectOutputStream.writeObject(strings);
-			objectOutputStream.flush();
-			objectOutputStream.close();
-			return byteArrayOutputStream.toByteArray();
-		} catch (IOException e) {
-			Logger.log(Logger.SEVERITY_ERROR, MessageFormat.format("Unable to convert ''{0}'' to byte[]", strings.toString()));
-		}
-		return null;
-	}
 
-	protected static String[] toStrings(byte[] bytes) {
-		if (bytes == null) {
-			return null;
-		}
-		String[] result = null;
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-		ObjectInputStream objectInputStream = null;
-		try {
-			objectInputStream = new ObjectInputStream(byteArrayInputStream);
-			result = (String[]) objectInputStream.readObject();
-
-		} catch (IOException e) {
-			Logger.log(Logger.SEVERITY_ERROR, MessageFormat.format("Unable to convert ''{0}'' to String[]", bytes.toString()));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			IOUtils.closeQuietly(objectInputStream);
-		}
-		return result;
-
-	}
 }

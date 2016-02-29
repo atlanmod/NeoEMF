@@ -122,7 +122,10 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
 		List<Object> saved = manyMap.get(entry);
 		if (saved != null) {
-			saved.add(index, value);
+			if (index == NO_INDEX)
+				saved.add(value);
+			else 
+				saved.add(index, value);
 		} else {
 			List<Object> list = new ArrayList<Object>();
 			list.add(value);
