@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Kyanos EMF Plug-in
+Bundle-Name: NeoEMF Plug-in
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.hbase;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: fr.inria.atlanmod.kyanos.KyanosPlugin
