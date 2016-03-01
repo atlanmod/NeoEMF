@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/atl-mr/src/fr/inria/atlanmod/atl_mr/builder/RecordBuilder.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fr.inria.atlanmod.atl_mr.builder.RecordBuilder"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-sourcemm data/Class2Relational/Class.ecore -input data/Class2Relational/result1000000000_0.xmi -output data/Class2Relational/result1000000000_0.xmi.rec"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="atl-mr"/>
+</launchConfiguration>

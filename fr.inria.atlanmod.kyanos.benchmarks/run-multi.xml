@@ -1,0 +1,72 @@
+<?eclipse.ant.import ?>
+<project basedir="." name="hbase">
+	
+    <target name="traverse.resource.cdoremote">
+		<echo>Traversing CDO</echo>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoTraverser" failonerror="true" fork="yes">
+        	<jvmarg line="-Dfile.encoding=utf-8"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="kyanos"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+    </target>
+	
+    <target name="traverse.resource.hbase">
+		<echo>Traversing HBase</echo>
+	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosHbaseTraverser" failonerror="true" fork="yes">
+        	<jvmarg line="-Dfile.encoding=utf-8"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+	    	<arg value="-input"/>
+	    	<arg value="kyanoshbase://127.0.0.1/org.eclipse.gmt.modisco.java.kyanos.kyanos.zxmi"/>
+	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    </java>
+    </target>
+	
+	
+    <target name="traverse.parallel.cdo">
+    	<parallel threadcount="16">
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    		<antcall target="traverse.resource.cdoremote"/>
+    	</parallel>
+    </target>
+
+	<target name="traverse.parallel.hbase">
+    	<parallel threadcount="16">
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    		<antcall target="traverse.resource.hbase"/>
+    	</parallel>
+    </target>
+	
+</project>
+
