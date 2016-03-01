@@ -1,0 +1,180 @@
+<?eclipse.ant.import ?>
+<project name="mr-dist" default="dist" xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${basedir}/ant-contrib.jar" />
+		</classpath>
+	</taskdef>
+
+	<property name="bin" location="bin" />
+	<property name="dist" location="dist" />
+	<property name="dist.libs" location="${dist}/libs" />
+	<property name="dist.libs.ivy" location="${dist.libs}/ivy" />
+	<property name="dist.libs.plugins" location="${dist.libs}/plugins" />
+	<property name="dist.libs.kyanos" location="${dist.libs}/kyanos" />
+	<property name="run.sh" value="${dist}/run.sh" />
+	<property name="run.bat" value="${dist}/run.bat" />
+
+	<property name="jar.file" location="${dist}/${ant.project.name}.jar" />
+
+
+	<target name="dist.kyanos">
+		<pde.exportPlugins destination="${dist.libs.kyanos}" exportSource="false" exportType="directory" plugins="fr.inria.atlanmod.kyanos,org.eclipse.gmt.modisco.java,org.eclipse.gmt.modisco.java.kyanos" useJARFormat="true" />
+	</target>
+
+	<target name="dist">
+		<ivy:resolve refresh="true" showprogress="true" />
+		<ivy:retrieve pattern="${dist.libs.ivy}/[conf]/[artifact]-[type]-[revision].[ext]" />
+
+		<jar destfile="${jar.file}">
+			<fileset dir="${bin}" includes="**/*.class" />
+			<manifest>
+				<attribute name="Main-Class" value="fr.inria.atlanmod.atl_mr.ATLMRMaster" />
+			</manifest>
+		</jar>
+
+		<restrict id="filtered.plugins">
+			<path refid="Plug-in Dependencies.libraryclasspath" />
+			<rsel:name name="*.jar" />
+		</restrict>
+
+		<copy todir="${dist.libs.plugins}" verbose="yes" flatten="yes" failonerror="no">
+			<restrict>
+				<restrict refid="filtered.plugins" />
+			</restrict>
+		</copy>
+
+		<pathconvert property="libjars.plugins" pathsep="," dirsep="/">
+			<map from="${dist.libs.plugins}" to="libs/plugins" />
+			<fileset dir="${dist.libs.plugins}" />
+		</pathconvert>
+
+		<pathconvert property="libsjars.kyanos" pathsep="," dirsep="/">
+			<map from="${dist.libs.kyanos}/plugins" to="libs/kyanos/plugins" />
+			<fileset dir="${dist.libs.kyanos}/plugins" />
+		</pathconvert>
+		
+		<antcall target="create.bat" />
+		<antcall target="create.sh" />
+	</target>
+
+	<target name="clean-dist">
+		<delete>
+			<fileset dir="${dist}" includes="**/*" />
+			<dirset dir="${dist}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="create.bat">
+
+
+		<echo file="${run.bat}">@ECHO OFF
+SETLOCAL
+
+SET JARS=libs/kyanos/plugins/*;libs/plugins/*;libs/ivy/default/*
+SET LIBJARS=${libjars.plugins},${libsjars.kyanos}
+
+:PARSE
+IF "%~1"=="" GOTO ENDPARSE
+IF "%~1"=="-f" GOTO TRANSFORMATION
+IF "%~1"=="-s" GOTO SOURCEMM
+IF "%~1"=="-t" GOTO TARGETMM
+IF "%~1"=="-i" GOTO INPUT
+IF "%~1"=="--file" GOTO TRANSFORMATION
+IF "%~1"=="--source-metamodel" GOTO SOURCEMM
+IF "%~1"=="--target-metamodel" GOTO TARGETMM
+IF "%~1"=="--input" GOTO INPUT
+SHIFT
+GOTO PARSE
+
+:SOURCEMM
+SHIFT
+SET SOURCEMM=%~1
+GOTO PARSE
+
+:TARGETMM
+SHIFT
+SET TARGETMM=%~1
+GOTO PARSE
+
+:TRANSFORMATION
+SHIFT
+SET TRANSFORMATION=%~1
+GOTO PARSE
+
+:INPUT
+SHIFT
+SET INPUT=%~1
+GOTO PARSE
+
+:ENDPARSE
+
+SET RECORDS=%INPUT%.rec
+
+java -cp ${ant.project.name}.jar;%JARS% fr.inria.atlanmod.atl_mr.builder.RecordBuilder -s %SOURCEMM% -i %INPUT% -o %RECORDS%
+
+FOR /F %%i IN ("%RECORDS%") DO SET ABSRECORDS=%%~fi
+
+SET URIRECORDS=%ABSRECORDS%
+SET URIRECORDS=%URIRECORDS:\=/%
+SET URIRECORDS=file:///%URIRECORDS%
+
+CALL yarn jar atl-mr.jar -libjars "%LIBJARS%" -files "%SOURCEMM%#%SOURCEMM:\=/%,%TARGETMM%#%TARGETMM:\=/%,%TRANSFORMATION%#%TRANSFORMATION:\=/%,%INPUT%#%INPUT:\=/%" %* -r %URIRECORDS%
+		</echo>
+	</target>
+
+	<target name="create.sh">
+		<echo file="${run.sh}">#!/bin/bash
+
+YARNARGS=$@
+
+JARS=libs/atlmr/plugins/*:libs/plugins/*:libs/ivy/default/*
+LIBJARS=${libjars.plugins},${libsjars.atlmr}
+
+
+while [[ $# > 1 ]]
+do
+key="$1"
+shift
+
+case $key in
+    -f | --file)
+    TRANSFORMATION="$1"
+    shift
+    ;;
+    -s | --source-metamodel)
+    SOURCEMM="$1"
+    shift
+    ;;
+    -t | --target-metamodel)
+    TARGETMM="$1"
+    shift
+    ;;
+    -i | --input)
+    INPUT="$1"
+    shift
+    ;;
+    *)
+    ;;
+esac
+done
+
+RECORDS=$INPUT.rec
+
+java -cp ${ant.project.name}.jar:$JARS fr.inria.atlanmod.atl_mr.builder.RecordBuilder -s $SOURCEMM -i $INPUT -o $RECORDS
+
+URIRECORDS=/user/$USER/$RECORDS
+
+hdfs dfs -mkdir -p /user/$USER/`dirname $RECORDS`
+hdfs dfs -copyFromLocal -f $RECORDS $URIRECORDS
+
+MAPPERS=`yarn node -list | grep -c -E '^\s+\w+:[0-9]+\s+RUNNING\s+'`
+
+yarn jar atl-mr.jar -libjars "$LIBJARS" -files "$SOURCEMM#$SOURCEMM,$TARGETMM#$TARGETMM,$TRANSFORMATION#$TRANSFORMATION,$INPUT#$INPUT" $YARNARGS -r $URIRECORDS -m $MAPPERS
+</echo>
+	</target>
+
+
+</project>
+
