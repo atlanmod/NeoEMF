@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.emf.ecore.protocol_parser">
+      <parser
+            class="fr.inria.atlanmod.neoemf.core.impl.NeoEMFResourceFactoryImpl"
+            protocolName="kyanos">
+      </parser>
+      <parser
+            class="fr.inria.atlanmod.neoemf.core.impl.NeoEMFResourceFactoryImpl"
+            protocolName="kyanosmap">
+      </parser>
+      <parser
+            class="fr.inria.atlanmod.neoemf.core.impl.NeoEMFResourceFactoryImpl"
+            protocolName="http">
+      </parser>
+   </extension>
+
+</plugin>

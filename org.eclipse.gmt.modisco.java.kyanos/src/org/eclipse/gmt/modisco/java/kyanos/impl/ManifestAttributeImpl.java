@@ -2,12 +2,10 @@
  */
 package org.eclipse.gmt.modisco.java.kyanos.impl;
 
-import fr.inria.atlanmod.kyanos.core.impl.KyanosEObjectImpl;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEMFEObjectImpl;
 
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.gmt.modisco.java.ManifestAttribute;
-
 import org.eclipse.gmt.modisco.java.kyanos.JavaPackage;
 
 /**
@@ -24,7 +22,7 @@ import org.eclipse.gmt.modisco.java.kyanos.JavaPackage;
  *
  * @generated
  */
-public class ManifestAttributeImpl extends KyanosEObjectImpl implements ManifestAttribute {
+public class ManifestAttributeImpl extends NeoEMFEObjectImpl implements ManifestAttribute {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

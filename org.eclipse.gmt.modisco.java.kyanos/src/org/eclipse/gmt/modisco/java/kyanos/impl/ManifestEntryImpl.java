@@ -2,15 +2,12 @@
  */
 package org.eclipse.gmt.modisco.java.kyanos.impl;
 
-import fr.inria.atlanmod.kyanos.core.impl.KyanosEObjectImpl;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEMFEObjectImpl;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.gmt.modisco.java.ManifestAttribute;
 import org.eclipse.gmt.modisco.java.ManifestEntry;
-
 import org.eclipse.gmt.modisco.java.kyanos.JavaPackage;
 
 /**
@@ -27,7 +24,7 @@ import org.eclipse.gmt.modisco.java.kyanos.JavaPackage;
  *
  * @generated
  */
-public class ManifestEntryImpl extends KyanosEObjectImpl implements ManifestEntry {
+public class ManifestEntryImpl extends NeoEMFEObjectImpl implements ManifestEntry {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

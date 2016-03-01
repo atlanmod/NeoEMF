@@ -12,7 +12,7 @@ Export-Package: org.eclipse.gmt.modisco.java.kyanos,
  org.eclipse.gmt.modisco.java.kyanos.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
- fr.inria.atlanmod.kyanos;visibility:=reexport,
+ fr.inria.atlanmod.neoemf.hbase;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.gmt.modisco.java
 Bundle-ActivationPolicy: lazy

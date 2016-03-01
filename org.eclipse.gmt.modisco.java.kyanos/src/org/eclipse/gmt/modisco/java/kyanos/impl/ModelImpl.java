@@ -2,19 +2,16 @@
  */
 package org.eclipse.gmt.modisco.java.kyanos.impl;
 
-import fr.inria.atlanmod.kyanos.core.impl.KyanosEObjectImpl;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEMFEObjectImpl;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.gmt.modisco.java.Archive;
 import org.eclipse.gmt.modisco.java.ClassFile;
 import org.eclipse.gmt.modisco.java.CompilationUnit;
 import org.eclipse.gmt.modisco.java.Model;
 import org.eclipse.gmt.modisco.java.Type;
 import org.eclipse.gmt.modisco.java.UnresolvedItem;
-
 import org.eclipse.gmt.modisco.java.kyanos.JavaPackage;
 
 /**
@@ -36,7 +33,7 @@ import org.eclipse.gmt.modisco.java.kyanos.JavaPackage;
  *
  * @generated
  */
-public class ModelImpl extends KyanosEObjectImpl implements Model {
+public class ModelImpl extends NeoEMFEObjectImpl implements Model {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
