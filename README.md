@@ -1,2 +1,2 @@
 # NeoEMF-hbase
-An HBase implementation of NeoEMF in HBase
+a decentralized implementation of NeoEMF in HBase
