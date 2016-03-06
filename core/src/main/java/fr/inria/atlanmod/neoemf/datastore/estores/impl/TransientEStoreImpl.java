@@ -99,7 +99,10 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 			if (saved != null) {
 				return saved.get(index);
 			} else {
-				return null;
+			    // The list is empty (since it is not persisted in the
+			    // manyMap object
+			    throw new IndexOutOfBoundsException();
+//				return null;
 			}
 		}
 	}
@@ -130,7 +133,15 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	@Override
 	public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		return manyMap.get(entry).remove(index);
+		List<Object> saved = manyMap.get(entry);
+        if (saved != null) {
+            return saved.remove(index);
+        } else {
+            // The list is empty (since it is not persisted in the
+            // manyMap object
+            throw new IndexOutOfBoundsException();
+//          return null;
+        }
 	}
 
 	@Override
@@ -209,7 +220,8 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	@Override
 	public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		return manyMap.get(entry).isEmpty();
+		List<Object> res = manyMap.get(entry);
+		return res == null ? true : res.isEmpty();
 	}
 
 	@Override
@@ -222,7 +234,9 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	@Override
 	public int hashCode(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		return manyMap.get(entry).hashCode();
+		List<Object> list = manyMap.get(entry);
+		// Return the default hasCode value if the list is empty
+		return list != null ? list.hashCode() : 1;
 	}
 
 	@Override
