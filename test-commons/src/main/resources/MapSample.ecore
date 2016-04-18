@@ -8,7 +8,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="kvMap" upperBound="-1"
         eType="#//KToVMap" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="contentObjects" upperBound="-1"
-        eType="#//SampleModelContentObject" containment="true"/>
+        eType="#//SampleModelContentObject" containment="true" eOpposite="#//SampleModelContentObject/parent"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="StringToStringMap" instanceClassName="java.util.Map$Entry">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -28,5 +28,19 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SampleModelContentObject">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//SampleModel"
+        eOpposite="#//SampleModel/contentObjects"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Pack">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="packs" upperBound="-1"
+        eType="#//Pack" containment="true" eOpposite="#//Pack/parentPack"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentPack" eType="#//Pack"
+        eOpposite="#//Pack/packs"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownedContents" upperBound="-1"
+        eType="#//PackContent" containment="true" eOpposite="#//PackContent/parentPack"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PackContent">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentPack" eType="#//Pack"
+        eOpposite="#//Pack/ownedContents"/>
   </eClassifiers>
 </ecore:EPackage>

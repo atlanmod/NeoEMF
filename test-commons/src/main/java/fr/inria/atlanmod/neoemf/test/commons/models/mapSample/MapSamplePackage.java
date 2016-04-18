@@ -25,543 +25,720 @@ import org.eclipse.emf.ecore.EReference;
  */
 public interface MapSamplePackage extends EPackage {
     /**
-     * The package name.
-     * <!-- begin-user-doc -->
+	 * The package name.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     String eNAME = "mapSample";
 
     /**
-     * The package namespace URI.
-     * <!-- begin-user-doc -->
+	 * The package namespace URI.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     String eNS_URI = "com.mapSample";
 
     /**
-     * The package namespace name.
-     * <!-- begin-user-doc -->
+	 * The package namespace name.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     String eNS_PREFIX = "mapSample";
 
     /**
-     * The singleton instance of the package.
-     * <!-- begin-user-doc -->
+	 * The singleton instance of the package.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     MapSamplePackage eINSTANCE = fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl.init();
 
     /**
-     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl <em>Sample Model</em>}' class.
-     * <!-- begin-user-doc -->
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl <em>Sample Model</em>}' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModel()
-     * @generated
-     */
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModel()
+	 * @generated
+	 */
     int SAMPLE_MODEL = 0;
 
     /**
-     * The feature id for the '<em><b>Name</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL__NAME = 0;
 
     /**
-     * The feature id for the '<em><b>Map</b></em>' map.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Map</b></em>' map.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL__MAP = 1;
 
     /**
-     * The feature id for the '<em><b>Kv Map</b></em>' map.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Kv Map</b></em>' map.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL__KV_MAP = 2;
 
     /**
-     * The feature id for the '<em><b>Content Objects</b></em>' containment reference list.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Content Objects</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL__CONTENT_OBJECTS = 3;
 
     /**
-     * The number of structural features of the '<em>Sample Model</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of structural features of the '<em>Sample Model</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL_FEATURE_COUNT = 4;
 
     /**
-     * The number of operations of the '<em>Sample Model</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of operations of the '<em>Sample Model</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL_OPERATION_COUNT = 0;
 
     /**
-     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl <em>String To String Map</em>}' class.
-     * <!-- begin-user-doc -->
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl <em>String To String Map</em>}' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getStringToStringMap()
-     * @generated
-     */
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getStringToStringMap()
+	 * @generated
+	 */
     int STRING_TO_STRING_MAP = 1;
 
     /**
-     * The feature id for the '<em><b>Key</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Key</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int STRING_TO_STRING_MAP__KEY = 0;
 
     /**
-     * The feature id for the '<em><b>Value</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int STRING_TO_STRING_MAP__VALUE = 1;
 
     /**
-     * The number of structural features of the '<em>String To String Map</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of structural features of the '<em>String To String Map</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int STRING_TO_STRING_MAP_FEATURE_COUNT = 2;
 
     /**
-     * The number of operations of the '<em>String To String Map</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of operations of the '<em>String To String Map</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int STRING_TO_STRING_MAP_OPERATION_COUNT = 0;
 
 
     /**
-     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl <em>K</em>}' class.
-     * <!-- begin-user-doc -->
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl <em>K</em>}' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getK()
-     * @generated
-     */
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getK()
+	 * @generated
+	 */
     int K = 2;
 
     /**
-     * The feature id for the '<em><b>KName</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>KName</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int K__KNAME = 0;
 
     /**
-     * The feature id for the '<em><b>KInt</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>KInt</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int K__KINT = 1;
 
     /**
-     * The number of structural features of the '<em>K</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of structural features of the '<em>K</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int K_FEATURE_COUNT = 2;
 
     /**
-     * The number of operations of the '<em>K</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of operations of the '<em>K</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int K_OPERATION_COUNT = 0;
 
     /**
-     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl <em>V</em>}' class.
-     * <!-- begin-user-doc -->
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl <em>V</em>}' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getV()
-     * @generated
-     */
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getV()
+	 * @generated
+	 */
     int V = 3;
 
     /**
-     * The feature id for the '<em><b>VName</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>VName</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int V__VNAME = 0;
 
     /**
-     * The feature id for the '<em><b>VInt</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>VInt</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int V__VINT = 1;
 
     /**
-     * The number of structural features of the '<em>V</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of structural features of the '<em>V</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int V_FEATURE_COUNT = 2;
 
     /**
-     * The number of operations of the '<em>V</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of operations of the '<em>V</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int V_OPERATION_COUNT = 0;
 
     /**
-     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl <em>KTo VMap</em>}' class.
-     * <!-- begin-user-doc -->
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl <em>KTo VMap</em>}' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getKToVMap()
-     * @generated
-     */
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getKToVMap()
+	 * @generated
+	 */
     int KTO_VMAP = 4;
 
     /**
-     * The feature id for the '<em><b>Key</b></em>' reference.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Key</b></em>' reference.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int KTO_VMAP__KEY = 0;
 
     /**
-     * The feature id for the '<em><b>Value</b></em>' reference.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int KTO_VMAP__VALUE = 1;
 
     /**
-     * The number of structural features of the '<em>KTo VMap</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of structural features of the '<em>KTo VMap</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int KTO_VMAP_FEATURE_COUNT = 2;
 
     /**
-     * The number of operations of the '<em>KTo VMap</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of operations of the '<em>KTo VMap</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int KTO_VMAP_OPERATION_COUNT = 0;
 
 
     /**
-     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl <em>Sample Model Content Object</em>}' class.
-     * <!-- begin-user-doc -->
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl <em>Sample Model Content Object</em>}' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModelContentObject()
-     * @generated
-     */
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModelContentObject()
+	 * @generated
+	 */
     int SAMPLE_MODEL_CONTENT_OBJECT = 5;
 
     /**
-     * The feature id for the '<em><b>Name</b></em>' attribute.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL_CONTENT_OBJECT__NAME = 0;
 
     /**
-     * The number of structural features of the '<em>Sample Model Content Object</em>' class.
-     * <!-- begin-user-doc -->
+	 * The feature id for the '<em><b>Parent</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SAMPLE_MODEL_CONTENT_OBJECT__PARENT = 1;
+
+				/**
+	 * The number of structural features of the '<em>Sample Model Content Object</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int SAMPLE_MODEL_CONTENT_OBJECT_FEATURE_COUNT = 1;
+	 * @generated
+	 * @ordered
+	 */
+    int SAMPLE_MODEL_CONTENT_OBJECT_FEATURE_COUNT = 2;
 
     /**
-     * The number of operations of the '<em>Sample Model Content Object</em>' class.
-     * <!-- begin-user-doc -->
+	 * The number of operations of the '<em>Sample Model Content Object</em>' class.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
+	 * @generated
+	 * @ordered
+	 */
     int SAMPLE_MODEL_CONTENT_OBJECT_OPERATION_COUNT = 0;
 
 
     /**
-     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel <em>Sample Model</em>}'.
-     * <!-- begin-user-doc -->
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl <em>Pack</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getPack()
+	 * @generated
+	 */
+	int PACK = 6;
+
+				/**
+	 * The feature id for the '<em><b>Packs</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK__PACKS = 0;
+
+				/**
+	 * The feature id for the '<em><b>Parent Pack</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK__PARENT_PACK = 1;
+
+				/**
+	 * The feature id for the '<em><b>Owned Contents</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK__OWNED_CONTENTS = 2;
+
+				/**
+	 * The number of structural features of the '<em>Pack</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK_FEATURE_COUNT = 3;
+
+				/**
+	 * The number of operations of the '<em>Pack</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK_OPERATION_COUNT = 0;
+
+				/**
+	 * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContentImpl <em>Pack Content</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContentImpl
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getPackContent()
+	 * @generated
+	 */
+	int PACK_CONTENT = 7;
+
+				/**
+	 * The feature id for the '<em><b>Parent Pack</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK_CONTENT__PARENT_PACK = 0;
+
+				/**
+	 * The number of structural features of the '<em>Pack Content</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK_CONTENT_FEATURE_COUNT = 1;
+
+				/**
+	 * The number of operations of the '<em>Pack Content</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PACK_CONTENT_OPERATION_COUNT = 0;
+
+
+				/**
+	 * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel <em>Sample Model</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for class '<em>Sample Model</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel
-     * @generated
-     */
+	 * @return the meta object for class '<em>Sample Model</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel
+	 * @generated
+	 */
     EClass getSampleModel();
 
     /**
-     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getName <em>Name</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Name</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getName()
-     * @see #getSampleModel()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getName()
+	 * @see #getSampleModel()
+	 * @generated
+	 */
     EAttribute getSampleModel_Name();
 
     /**
-     * Returns the meta object for the map '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getMap <em>Map</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the map '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getMap <em>Map</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the map '<em>Map</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getMap()
-     * @see #getSampleModel()
-     * @generated
-     */
+	 * @return the meta object for the map '<em>Map</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getMap()
+	 * @see #getSampleModel()
+	 * @generated
+	 */
     EReference getSampleModel_Map();
 
     /**
-     * Returns the meta object for the map '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getKvMap <em>Kv Map</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the map '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getKvMap <em>Kv Map</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the map '<em>Kv Map</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getKvMap()
-     * @see #getSampleModel()
-     * @generated
-     */
+	 * @return the meta object for the map '<em>Kv Map</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getKvMap()
+	 * @see #getSampleModel()
+	 * @generated
+	 */
     EReference getSampleModel_KvMap();
 
     /**
-     * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getContentObjects <em>Content Objects</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getContentObjects <em>Content Objects</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the containment reference list '<em>Content Objects</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getContentObjects()
-     * @see #getSampleModel()
-     * @generated
-     */
+	 * @return the meta object for the containment reference list '<em>Content Objects</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel#getContentObjects()
+	 * @see #getSampleModel()
+	 * @generated
+	 */
     EReference getSampleModel_ContentObjects();
 
     /**
-     * Returns the meta object for class '{@link java.util.Map.Entry <em>String To String Map</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for class '{@link java.util.Map.Entry <em>String To String Map</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for class '<em>String To String Map</em>'.
-     * @see java.util.Map.Entry
-     * @model keyDataType="org.eclipse.emf.ecore.EString" keyRequired="true"
-     *        valueDataType="org.eclipse.emf.ecore.EString" valueRequired="true"
-     * @generated
-     */
+	 * @return the meta object for class '<em>String To String Map</em>'.
+	 * @see java.util.Map.Entry
+	 * @model keyDataType="org.eclipse.emf.ecore.EString" keyRequired="true"
+	 *        valueDataType="org.eclipse.emf.ecore.EString" valueRequired="true"
+	 * @generated
+	 */
     EClass getStringToStringMap();
 
     /**
-     * Returns the meta object for the attribute '{@link java.util.Map.Entry <em>Key</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link java.util.Map.Entry <em>Key</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Key</em>'.
-     * @see java.util.Map.Entry
-     * @see #getStringToStringMap()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>Key</em>'.
+	 * @see java.util.Map.Entry
+	 * @see #getStringToStringMap()
+	 * @generated
+	 */
     EAttribute getStringToStringMap_Key();
 
     /**
-     * Returns the meta object for the attribute '{@link java.util.Map.Entry <em>Value</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link java.util.Map.Entry <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Value</em>'.
-     * @see java.util.Map.Entry
-     * @see #getStringToStringMap()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see java.util.Map.Entry
+	 * @see #getStringToStringMap()
+	 * @generated
+	 */
     EAttribute getStringToStringMap_Value();
 
     /**
-     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K <em>K</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K <em>K</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for class '<em>K</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K
-     * @generated
-     */
+	 * @return the meta object for class '<em>K</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K
+	 * @generated
+	 */
     EClass getK();
 
     /**
-     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKName <em>KName</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKName <em>KName</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>KName</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKName()
-     * @see #getK()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>KName</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKName()
+	 * @see #getK()
+	 * @generated
+	 */
     EAttribute getK_KName();
 
     /**
-     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKInt <em>KInt</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKInt <em>KInt</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>KInt</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKInt()
-     * @see #getK()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>KInt</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K#getKInt()
+	 * @see #getK()
+	 * @generated
+	 */
     EAttribute getK_KInt();
 
     /**
-     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V <em>V</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V <em>V</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for class '<em>V</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V
-     * @generated
-     */
+	 * @return the meta object for class '<em>V</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V
+	 * @generated
+	 */
     EClass getV();
 
     /**
-     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVName <em>VName</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVName <em>VName</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>VName</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVName()
-     * @see #getV()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>VName</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVName()
+	 * @see #getV()
+	 * @generated
+	 */
     EAttribute getV_VName();
 
     /**
-     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVInt <em>VInt</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVInt <em>VInt</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>VInt</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVInt()
-     * @see #getV()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>VInt</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V#getVInt()
+	 * @see #getV()
+	 * @generated
+	 */
     EAttribute getV_VInt();
 
     /**
-     * Returns the meta object for class '{@link java.util.Map.Entry <em>KTo VMap</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for class '{@link java.util.Map.Entry <em>KTo VMap</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for class '<em>KTo VMap</em>'.
-     * @see java.util.Map.Entry
-     * @model keyType="fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K" keyRequired="true"
-     *        valueType="fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V" valueRequired="true"
-     * @generated
-     */
+	 * @return the meta object for class '<em>KTo VMap</em>'.
+	 * @see java.util.Map.Entry
+	 * @model keyType="fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K" keyRequired="true"
+	 *        valueType="fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V" valueRequired="true"
+	 * @generated
+	 */
     EClass getKToVMap();
 
     /**
-     * Returns the meta object for the reference '{@link java.util.Map.Entry <em>Key</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the reference '{@link java.util.Map.Entry <em>Key</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Key</em>'.
-     * @see java.util.Map.Entry
-     * @see #getKToVMap()
-     * @generated
-     */
+	 * @return the meta object for the reference '<em>Key</em>'.
+	 * @see java.util.Map.Entry
+	 * @see #getKToVMap()
+	 * @generated
+	 */
     EReference getKToVMap_Key();
 
     /**
-     * Returns the meta object for the reference '{@link java.util.Map.Entry <em>Value</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the reference '{@link java.util.Map.Entry <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Value</em>'.
-     * @see java.util.Map.Entry
-     * @see #getKToVMap()
-     * @generated
-     */
+	 * @return the meta object for the reference '<em>Value</em>'.
+	 * @see java.util.Map.Entry
+	 * @see #getKToVMap()
+	 * @generated
+	 */
     EReference getKToVMap_Value();
 
     /**
-     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject <em>Sample Model Content Object</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject <em>Sample Model Content Object</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for class '<em>Sample Model Content Object</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject
-     * @generated
-     */
+	 * @return the meta object for class '<em>Sample Model Content Object</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject
+	 * @generated
+	 */
     EClass getSampleModelContentObject();
 
     /**
-     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getName <em>Name</em>}'.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Name</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getName()
-     * @see #getSampleModelContentObject()
-     * @generated
-     */
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getName()
+	 * @see #getSampleModelContentObject()
+	 * @generated
+	 */
     EAttribute getSampleModelContentObject_Name();
 
     /**
-     * Returns the factory that creates the instances of the model.
-     * <!-- begin-user-doc -->
+	 * Returns the meta object for the container reference '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getParent <em>Parent</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Parent</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject#getParent()
+	 * @see #getSampleModelContentObject()
+	 * @generated
+	 */
+	EReference getSampleModelContentObject_Parent();
+
+				/**
+	 * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack <em>Pack</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Pack</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack
+	 * @generated
+	 */
+	EClass getPack();
+
+				/**
+	 * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getPacks <em>Packs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Packs</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getPacks()
+	 * @see #getPack()
+	 * @generated
+	 */
+	EReference getPack_Packs();
+
+				/**
+	 * Returns the meta object for the container reference '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getParentPack <em>Parent Pack</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Parent Pack</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getParentPack()
+	 * @see #getPack()
+	 * @generated
+	 */
+	EReference getPack_ParentPack();
+
+				/**
+	 * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getOwnedContents <em>Owned Contents</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Owned Contents</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getOwnedContents()
+	 * @see #getPack()
+	 * @generated
+	 */
+	EReference getPack_OwnedContents();
+
+				/**
+	 * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent <em>Pack Content</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Pack Content</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent
+	 * @generated
+	 */
+	EClass getPackContent();
+
+				/**
+	 * Returns the meta object for the container reference '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getParentPack <em>Parent Pack</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Parent Pack</em>'.
+	 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getParentPack()
+	 * @see #getPackContent()
+	 * @generated
+	 */
+	EReference getPackContent_ParentPack();
+
+				/**
+	 * Returns the factory that creates the instances of the model.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the factory that creates the instances of the model.
-     * @generated
-     */
+	 * @return the factory that creates the instances of the model.
+	 * @generated
+	 */
     MapSampleFactory getMapSampleFactory();
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * Defines literals for the meta objects that represent
      * <ul>
      *   <li>each class,</li>
@@ -571,172 +748,232 @@ public interface MapSamplePackage extends EPackage {
      *   <li>and each data type</li>
      * </ul>
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     interface Literals {
         /**
-         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl <em>Sample Model</em>}' class.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl <em>Sample Model</em>}' class.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModel()
-         * @generated
-         */
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModel()
+		 * @generated
+		 */
         EClass SAMPLE_MODEL = eINSTANCE.getSampleModel();
 
         /**
-         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute SAMPLE_MODEL__NAME = eINSTANCE.getSampleModel_Name();
 
         /**
-         * The meta object literal for the '<em><b>Map</b></em>' map feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Map</b></em>' map feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EReference SAMPLE_MODEL__MAP = eINSTANCE.getSampleModel_Map();
 
         /**
-         * The meta object literal for the '<em><b>Kv Map</b></em>' map feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Kv Map</b></em>' map feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EReference SAMPLE_MODEL__KV_MAP = eINSTANCE.getSampleModel_KvMap();
 
         /**
-         * The meta object literal for the '<em><b>Content Objects</b></em>' containment reference list feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Content Objects</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EReference SAMPLE_MODEL__CONTENT_OBJECTS = eINSTANCE.getSampleModel_ContentObjects();
 
         /**
-         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl <em>String To String Map</em>}' class.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl <em>String To String Map</em>}' class.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getStringToStringMap()
-         * @generated
-         */
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getStringToStringMap()
+		 * @generated
+		 */
         EClass STRING_TO_STRING_MAP = eINSTANCE.getStringToStringMap();
 
         /**
-         * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Key</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute STRING_TO_STRING_MAP__KEY = eINSTANCE.getStringToStringMap_Key();
 
         /**
-         * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute STRING_TO_STRING_MAP__VALUE = eINSTANCE.getStringToStringMap_Value();
 
         /**
-         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl <em>K</em>}' class.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl <em>K</em>}' class.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getK()
-         * @generated
-         */
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getK()
+		 * @generated
+		 */
         EClass K = eINSTANCE.getK();
 
         /**
-         * The meta object literal for the '<em><b>KName</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>KName</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute K__KNAME = eINSTANCE.getK_KName();
 
         /**
-         * The meta object literal for the '<em><b>KInt</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>KInt</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute K__KINT = eINSTANCE.getK_KInt();
 
         /**
-         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl <em>V</em>}' class.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl <em>V</em>}' class.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getV()
-         * @generated
-         */
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getV()
+		 * @generated
+		 */
         EClass V = eINSTANCE.getV();
 
         /**
-         * The meta object literal for the '<em><b>VName</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>VName</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute V__VNAME = eINSTANCE.getV_VName();
 
         /**
-         * The meta object literal for the '<em><b>VInt</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>VInt</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute V__VINT = eINSTANCE.getV_VInt();
 
         /**
-         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl <em>KTo VMap</em>}' class.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl <em>KTo VMap</em>}' class.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getKToVMap()
-         * @generated
-         */
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getKToVMap()
+		 * @generated
+		 */
         EClass KTO_VMAP = eINSTANCE.getKToVMap();
 
         /**
-         * The meta object literal for the '<em><b>Key</b></em>' reference feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Key</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EReference KTO_VMAP__KEY = eINSTANCE.getKToVMap_Key();
 
         /**
-         * The meta object literal for the '<em><b>Value</b></em>' reference feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EReference KTO_VMAP__VALUE = eINSTANCE.getKToVMap_Value();
 
         /**
-         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl <em>Sample Model Content Object</em>}' class.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl <em>Sample Model Content Object</em>}' class.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl
-         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModelContentObject()
-         * @generated
-         */
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSampleModelContentObject()
+		 * @generated
+		 */
         EClass SAMPLE_MODEL_CONTENT_OBJECT = eINSTANCE.getSampleModelContentObject();
 
         /**
-         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @generated
-         */
+		 * @generated
+		 */
         EAttribute SAMPLE_MODEL_CONTENT_OBJECT__NAME = eINSTANCE.getSampleModelContentObject_Name();
+
+								/**
+		 * The meta object literal for the '<em><b>Parent</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SAMPLE_MODEL_CONTENT_OBJECT__PARENT = eINSTANCE.getSampleModelContentObject_Parent();
+
+								/**
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl <em>Pack</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getPack()
+		 * @generated
+		 */
+		EClass PACK = eINSTANCE.getPack();
+
+								/**
+		 * The meta object literal for the '<em><b>Packs</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PACK__PACKS = eINSTANCE.getPack_Packs();
+
+								/**
+		 * The meta object literal for the '<em><b>Parent Pack</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PACK__PARENT_PACK = eINSTANCE.getPack_ParentPack();
+
+								/**
+		 * The meta object literal for the '<em><b>Owned Contents</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PACK__OWNED_CONTENTS = eINSTANCE.getPack_OwnedContents();
+
+								/**
+		 * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContentImpl <em>Pack Content</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContentImpl
+		 * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getPackContent()
+		 * @generated
+		 */
+		EClass PACK_CONTENT = eINSTANCE.getPackContent();
+
+								/**
+		 * The meta object literal for the '<em><b>Parent Pack</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PACK_CONTENT__PARENT_PACK = eINSTANCE.getPackContent_ParentPack();
 
     }
 

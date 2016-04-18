@@ -18,156 +18,156 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl#getTypedKey <em>Key</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.StringToStringMapImpl#getTypedValue <em>Value</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
 public class StringToStringMapImpl extends PersistentEObjectImpl implements BasicEMap.Entry<String,String> {
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected StringToStringMapImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return MapSamplePackage.Literals.STRING_TO_STRING_MAP;
-    }
+		return MapSamplePackage.Literals.STRING_TO_STRING_MAP;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected int eStaticFeatureCount() {
-        return 0;
-    }
+		return 0;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getTypedKey() {
-        return (String)eGet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__KEY, true);
-    }
+		return (String)eGet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__KEY, true);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setTypedKey(String newKey) {
-        eSet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__KEY, newKey);
-    }
+		eSet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__KEY, newKey);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getTypedValue() {
-        return (String)eGet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__VALUE, true);
-    }
+		return (String)eGet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__VALUE, true);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setTypedValue(String newValue) {
-        eSet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__VALUE, newValue);
-    }
+		eSet(MapSamplePackage.Literals.STRING_TO_STRING_MAP__VALUE, newValue);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected int hash = -1;
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public int getHash() {
-        if (hash == -1) {
-            Object theKey = getKey();
-            hash = (theKey == null ? 0 : theKey.hashCode());
-        }
-        return hash;
-    }
+		if (hash == -1) {
+			Object theKey = getKey();
+			hash = (theKey == null ? 0 : theKey.hashCode());
+		}
+		return hash;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setHash(int hash) {
-        this.hash = hash;
-    }
+		this.hash = hash;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getKey() {
-        return getTypedKey();
-    }
+		return getTypedKey();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setKey(String key) {
-        setTypedKey(key);
-    }
+		setTypedKey(key);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getValue() {
-        return getTypedValue();
-    }
+		return getTypedValue();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String setValue(String value) {
-        String oldValue = getValue();
-        setTypedValue(value);
-        return oldValue;
-    }
+		String oldValue = getValue();
+		setTypedValue(value);
+		return oldValue;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @SuppressWarnings("unchecked")
     public EMap<String, String> getEMap() {
-        EObject container = eContainer();
-        return container == null ? null : (EMap<String, String>)container.eGet(eContainmentFeature());
-    }
+		EObject container = eContainer();
+		return container == null ? null : (EMap<String, String>)container.eGet(eContainmentFeature());
+	}
 
 } //StringToStringMapImpl

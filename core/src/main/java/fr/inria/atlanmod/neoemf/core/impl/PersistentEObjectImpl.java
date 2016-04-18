@@ -10,6 +10,8 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.core.impl;
 
+import java.util.Iterator;
+
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -73,7 +75,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	public InternalEObject eInternalContainer() {
 	    // Do not load the container from the eStore here:
 	    // it creates an important overhead and performance loss
-		return eContainer;
+		return eContainer == null ? super.eInternalContainer() : eContainer;
 	}
 	
 	@Override
@@ -91,8 +93,10 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	protected void eBasicSetContainer(InternalEObject newContainer) {
 		eContainer = newContainer;
+//		if(newContainer != null && newContainer.eDirectResource() != resource) {
 		if (newContainer != null && newContainer.eResource() != resource) {
 			resource((Resource.Internal) eContainer.eResource());
+//			resource((Resource.Internal) eContainer.eDirectResource());
 		}
 	}
 	
@@ -152,19 +156,38 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
 				if (oldStore.isSet(this, feature)) {
 					if (!feature.isMany()) {
+						if(oldStore.get(this, feature, EStore.NO_INDEX) == null) {
+						    // Do nothing
+						    // TODO check if this could happen in a normal setting
+						}else{
 						eStore.set(this, feature, EStore.NO_INDEX, 
 								oldStore.get(this, feature, EStore.NO_INDEX));
+						}
 					} else {
 						eStore.clear(this, feature);
 						int size = oldStore.size(this, feature);
 						for (int i = 0; i < size; i++) {
+							if(oldStore.get(this,feature,i) == null) {
+								// Do nothing
+							    // TODO check if this could happen in a normal setting
+							}else{
 							eStore.add(this, feature, i, 
 									oldStore.get(this, feature, i));
+							}
 						}
 					}
 				}
 			}
 		}
+		// test
+//		Iterator<EObject> it = this.eContents().iterator();
+//		while(it.hasNext()) {
+//			InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(it.next(), InternalPersistentEObject.class);
+//			if(internalElement.resource() != this.resource) {
+//				internalElement.resource(this.resource);
+//			}
+//
+//		}
 	}
 	
 
@@ -175,6 +198,16 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		}
 		return eStore;
 	}
+	
+//	@Override
+//	public Internal eInternalResource() {
+//		return resource == null ? super.eInternalResource() : resource;
+//	}
+//	
+//	@Override
+//	public Internal eDirectResource() {
+//		return resource == null ? super.eDirectResource() : resource;
+//	}
 	
 	@Override
 	protected boolean eIsCaching() {

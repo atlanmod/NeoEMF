@@ -81,8 +81,11 @@ public class MapPersistenceBackendFactory extends
                 NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
             }
         }
-		Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
-	    return new MapPersistenceBackend(mapEngine);
+//		Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
+        // [TODO] Check the difference when asyncWriteEnable() is set, it has been desactived for MONDO deliverable but 
+        // not well tested
+	    Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().makeEngine();
+        return new MapPersistenceBackend(mapEngine);
 	}
 
 	@Override

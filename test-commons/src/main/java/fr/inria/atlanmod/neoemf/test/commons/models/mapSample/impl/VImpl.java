@@ -15,78 +15,78 @@ import org.eclipse.emf.ecore.EClass;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl#getVName <em>VName</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.VImpl#getVInt <em>VInt</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
 public class VImpl extends PersistentEObjectImpl implements V {
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected VImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return MapSamplePackage.Literals.V;
-    }
+		return MapSamplePackage.Literals.V;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected int eStaticFeatureCount() {
-        return 0;
-    }
+		return 0;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getVName() {
-        return (String)eGet(MapSamplePackage.Literals.V__VNAME, true);
-    }
+		return (String)eGet(MapSamplePackage.Literals.V__VNAME, true);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setVName(String newVName) {
-        eSet(MapSamplePackage.Literals.V__VNAME, newVName);
-    }
+		eSet(MapSamplePackage.Literals.V__VNAME, newVName);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public int getVInt() {
-        return (Integer)eGet(MapSamplePackage.Literals.V__VINT, true);
-    }
+		return (Integer)eGet(MapSamplePackage.Literals.V__VINT, true);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setVInt(int newVInt) {
-        eSet(MapSamplePackage.Literals.V__VINT, newVInt);
-    }
+		eSet(MapSamplePackage.Literals.V__VINT, newVInt);
+	}
 
 } //VImpl
