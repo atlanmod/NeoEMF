@@ -12,8 +12,12 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -523,7 +527,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Vertex vertex = graph.getVertex(object);
 		Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, CONTAINER).iterator();
 		if (iterator.hasNext()) {
-			return graph.reifyVertex(iterator.next());
+//			return graph.reifyVertex(iterator.next());
+			return reifyVertex(iterator.next());
 		}
 		return null;
 	}
@@ -574,6 +579,14 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		return internalEObject;
 	}
 	
+	protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
+		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex,eClass);
+		if (internalEObject.resource() != resource()) {
+			internalEObject.resource(resource());
+		}
+		return internalEObject;
+	}
+	
 	@Override
 	public EObject eObject(Id uriFragment) {
 		Vertex vertex = graph.getVertex(uriFragment);
@@ -583,5 +596,20 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	@Override
 	public Resource.Internal resource() {
 		return resource;
+	}
+	
+	@Override
+	public EList<EObject> getAllInstances(EClass eClass) {
+		Map<EClass, Iterator<Vertex>> indexHits = graph.getAllInstances(eClass);
+		EList<EObject> instances = new BasicEList<EObject>();
+		Set<EClass> mapKeys = indexHits.keySet();
+		for(EClass metaClass : mapKeys) {
+			Iterator<Vertex> instanceVertices = indexHits.get(metaClass);
+			while(instanceVertices.hasNext()) {
+				Vertex instanceVertex = instanceVertices.next();
+				instances.add(reifyVertex(instanceVertex, metaClass));
+			}
+		}
+		return instances;
 	}
 }
