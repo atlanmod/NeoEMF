@@ -10,6 +10,7 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -139,5 +140,11 @@ public class DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 	@Override
 	public EObject eObject(Id id) {
 		return eStore.eObject(id);
+	}
+	
+	@Override
+	public EList<EObject> getAllInstances(EClass eClass)
+			throws UnsupportedOperationException {
+		return eStore.getAllInstances(eClass);
 	}
 }

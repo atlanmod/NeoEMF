@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -360,6 +361,12 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 
 	protected static Object serializeToMapValue(EAttribute eAttribute, Object value) {
 		return value != null ? EcoreUtil.convertToString(eAttribute.getEAttributeType(), value) : null;
+	}
+	
+	@Override
+	public EList<EObject> getAllInstances(EClass eClass)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 	
 }

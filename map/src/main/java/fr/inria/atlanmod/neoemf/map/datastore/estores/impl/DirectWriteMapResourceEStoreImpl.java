@@ -12,9 +12,11 @@ package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -427,6 +429,12 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
 		return map.get(Fun.t2(object.id(), feature.getName()));
+	}
+	
+	@Override
+	public EList<EObject> getAllInstances(EClass eClass)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 	
 }

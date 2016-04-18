@@ -12,6 +12,8 @@ package fr.inria.atlanmod.neoemf.datastore;
 
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
 public interface PersistenceBackend {
@@ -41,6 +43,14 @@ public interface PersistenceBackend {
 	 * back-end
 	 */
 	public void save();
+	
+	/**
+	 * Back-end specific computation of allInstances
+	 * @param eClass the class to compute the instances of
+	 * @return an Object containing the back-end specific objects corresponding to the instances of the EClass
+	 * @throws UnsupportedOperationException if the back-end does not support allInstances lookup
+	 */
+	public Object getAllInstances(EClass eClass) throws UnsupportedOperationException;
 	
 }
 

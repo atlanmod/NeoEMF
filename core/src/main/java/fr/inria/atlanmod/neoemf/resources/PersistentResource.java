@@ -10,11 +10,16 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.resources;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 public interface PersistentResource extends Resource, Resource.Internal {
 	
 	public abstract InternalEObject.EStore eStore();
+	
+	public EList<EObject> getAllInstances(EClass eClass);
 	
 }

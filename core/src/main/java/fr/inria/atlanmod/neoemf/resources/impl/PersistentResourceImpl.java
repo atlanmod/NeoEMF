@@ -23,8 +23,10 @@ import java.util.Map.Entry;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
@@ -203,6 +205,25 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		}
 		return super.getURIFragment(eObject);
 	}
+	
+	@Override
+	public EList<EObject> getAllInstances(EClass eClass) {
+		try {
+			return eStore.getAllInstances(eClass);
+		} catch(UnsupportedOperationException e) {
+			NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
+			Iterator<EObject> it = getAllContents();
+			EList<EObject> instanceList = new BasicEList<EObject>();
+			while(it.hasNext()) {
+				EObject eObject = it.next();
+				if(eClass.isInstance(eObject)) {
+					instanceList.add(eObject);
+				}
+			}
+			return instanceList;
+		}
+	}
+	
 
 	protected void shutdown() {
 		this.persistenceBackend.stop();

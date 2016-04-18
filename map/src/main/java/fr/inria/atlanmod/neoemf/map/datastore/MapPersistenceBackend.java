@@ -12,6 +12,7 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 
 import java.util.Map;
 
+import org.eclipse.emf.ecore.EClass;
 import org.mapdb.DB;
 import org.mapdb.Engine;
 
@@ -42,6 +43,12 @@ public class MapPersistenceBackend extends DB implements PersistenceBackend {
 	@Override
 	public void save() {
 		this.commit();
+	}
+	
+	@Override
+	public Object getAllInstances(EClass eClass)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("MapDB backend does not support custom all instances computation");
 	}
 	
 }

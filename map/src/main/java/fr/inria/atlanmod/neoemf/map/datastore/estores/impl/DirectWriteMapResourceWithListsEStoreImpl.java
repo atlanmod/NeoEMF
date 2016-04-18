@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -462,6 +463,12 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public EList<EObject> getAllInstances(EClass eClass)
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 	
 }

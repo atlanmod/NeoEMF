@@ -12,12 +12,17 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
@@ -245,6 +250,39 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 
 	
+	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
+		Object id = vertex.getId();
+		InternalPersistentEObject neoEObject = null;
+//		synchronized(loadedEObjects) {
+			neoEObject = loadedEObjects.get(id);
+//		}
+		if (neoEObject == null) {
+			if (eClass != null) {
+			    EObject eObject = null;
+			    if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+			        // Dynamic EMF
+			        eObject = PersistenceFactory.eINSTANCE.create(eClass);
+			    } else {
+			        // EObject eObject = EcoreUtil.create(eClass);
+			        eObject = EcoreUtil.create(eClass);
+			    }
+				if (eObject instanceof InternalPersistentEObject) {
+					neoEObject = (InternalPersistentEObject) eObject;
+				} else {
+					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+				}
+				neoEObject.id(new StringId(id.toString()));
+			} else {
+				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
+						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
+			}
+			synchronized(loadedEObjects) {
+				loadedEObjects.put(id, neoEObject);
+			}
+		}
+		return neoEObject;
+	}
+	
 	/**
 	 * Reifies the given {@link Vertex} as an {@link EObject}. The method
 	 * guarantees that the same {@link EObject} is returned for a given
@@ -256,7 +294,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public InternalPersistentEObject reifyVertex(Vertex vertex) {
 		Object id = vertex.getId();
-		InternalPersistentEObject neoEObject = loadedEObjects.get(id);
+		InternalPersistentEObject neoEObject = null;
+//		synchronized(loadedEObjects) {
+			neoEObject = loadedEObjects.get(id);
+//		}
 		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(vertex);
 			if (eClass != null) {
@@ -278,7 +319,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
 						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
 			}
-			loadedEObjects.put(id, neoEObject);
+			synchronized(loadedEObjects) {
+				loadedEObjects.put(id, neoEObject);
+			}
 		}
 		return neoEObject;
 	}
@@ -309,5 +352,49 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public List<EClass> getIndexedEClasses() {
 	    return indexedEClasses;
+	}
+	
+	@Override
+	public Map<EClass,Iterator<Vertex>> getAllInstances(EClass eClass) {
+		Map<EClass,Iterator<Vertex>> indexHits = new HashMap<EClass,Iterator<Vertex>>();
+		if(eClass.isAbstract()) {
+			// Find all the concrete subclasses of the given EClass
+			// (the metaclass index only stores the concrete EClasses)
+			EList<EClass> concreteSubClasses = new BasicEList<EClass>();
+			EPackage ePackage = eClass.getEPackage();
+			for(EClassifier eClassifier : ePackage.getEClassifiers()) {
+				if(eClassifier instanceof EClass) {
+					EClass packageEClass = (EClass)eClassifier;
+					if(eClass.isSuperTypeOf(packageEClass) && !packageEClass.isAbstract()) {
+						concreteSubClasses.add(packageEClass);
+					}
+				}
+			}
+			// Get all the vertices that are indexed with one of the EClass
+			for(EClass concreteEClass : concreteSubClasses) {
+				Iterator<Vertex> metaClassVertexIterator = metaclassIndex.get("name", concreteEClass.getName()).iterator();
+				if(metaClassVertexIterator.hasNext()) {
+					Vertex metaClassVertex = metaClassVertexIterator.next();
+					Iterator<Vertex> instanceVertexIterator = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF).iterator();
+					indexHits.put(concreteEClass, instanceVertexIterator);
+				}
+				else {
+					NeoLogger.log(NeoLogger.SEVERITY_WARNING, "MetaClass '" + concreteEClass.getName() + "'not found in index");
+				}
+				
+			}	
+		}
+		else {
+			Iterator<Vertex> metaClassVertexIterator = metaclassIndex.get("name", eClass.getName()).iterator();
+			if(metaClassVertexIterator.hasNext()) {
+				Vertex metaClassVertex = metaClassVertexIterator.next();
+				Iterator<Vertex> instanceVertexIterator = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF).iterator();
+				indexHits.put(eClass, instanceVertexIterator);
+			}
+			else {
+				NeoLogger.log(NeoLogger.SEVERITY_WARNING, "MetaClass '" + eClass.getName() + "'not found in index");
+			}
+		}
+		return indexHits;
 	}
 }

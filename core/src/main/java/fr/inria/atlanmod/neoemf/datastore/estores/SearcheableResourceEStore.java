@@ -10,6 +10,8 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.datastore.estores;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
@@ -40,5 +42,13 @@ public interface SearcheableResourceEStore extends InternalEObject.EStore {
 	 * @return
 	 */
 	public EObject eObject(Id id);
+	
+	/**
+	 * Back-end specific computation of allInstances()
+	 * @param eClass the EClass to compute the instances of
+	 * @return an {@link EList} containing all the EObjects that are instances of the given {@link EClass}
+	 * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
+	 */
+	public EList<EObject> getAllInstances(EClass eClass) throws UnsupportedOperationException;
 	
 }
