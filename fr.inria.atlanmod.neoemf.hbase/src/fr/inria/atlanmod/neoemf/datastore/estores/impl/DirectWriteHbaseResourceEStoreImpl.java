@@ -59,7 +59,11 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 	protected static final byte[] CONTAINER_QUALIFIER = 		Bytes.toBytes("n");
 	protected static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
 	
+<<<<<<< HEAD
 	private static final int ATTEMP_TIMES_DEFAULT = 5;
+=======
+	private static final int ATTEMP_TIMES_DEFAULT = 10;
+>>>>>>> old_origin/master
 	private static final long SLEEP_DEFAULT = 1L;
 	
 
