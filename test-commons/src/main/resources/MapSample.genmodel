@@ -40,9 +40,11 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MapSample.ecore#//Pack/packs"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MapSample.ecore#//Pack/parentPack"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MapSample.ecore#//Pack/ownedContents"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//Pack/name"/>
     </genClasses>
     <genClasses ecoreClass="MapSample.ecore#//PackContent">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference MapSample.ecore#//PackContent/parentPack"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//PackContent/name"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

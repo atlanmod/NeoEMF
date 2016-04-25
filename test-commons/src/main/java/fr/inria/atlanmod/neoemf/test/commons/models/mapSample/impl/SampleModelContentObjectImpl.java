@@ -16,78 +16,78 @@ import org.eclipse.emf.ecore.EClass;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelContentObjectImpl#getParent <em>Parent</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */
 public class SampleModelContentObjectImpl extends PersistentEObjectImpl implements SampleModelContentObject {
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     protected SampleModelContentObjectImpl() {
-		super();
-	}
+        super();
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected EClass eStaticClass() {
-		return MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT;
-	}
+        return MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected int eStaticFeatureCount() {
-		return 0;
-	}
+        return 0;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public String getName() {
-		return (String)eGet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__NAME, true);
-	}
+        return (String)eGet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__NAME, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setName(String newName) {
-		eSet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__NAME, newName);
-	}
+        eSet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__NAME, newName);
+    }
 
 				/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	public SampleModel getParent() {
-		return (SampleModel)eGet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__PARENT, true);
-	}
+        return (SampleModel)eGet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__PARENT, true);
+    }
 
 				/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	public void setParent(SampleModel newParent) {
-		eSet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__PARENT, newParent);
-	}
+        eSet(MapSamplePackage.Literals.SAMPLE_MODEL_CONTENT_OBJECT__PARENT, newParent);
+    }
 
 } //SampleModelContentObjectImpl

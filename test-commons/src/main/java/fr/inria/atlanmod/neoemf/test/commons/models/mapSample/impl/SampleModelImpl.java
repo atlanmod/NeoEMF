@@ -21,92 +21,92 @@ import org.eclipse.emf.ecore.EClass;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getMap <em>Map</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getKvMap <em>Kv Map</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SampleModelImpl#getContentObjects <em>Content Objects</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */
 public class SampleModelImpl extends PersistentEObjectImpl implements SampleModel {
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     protected SampleModelImpl() {
-		super();
-	}
+        super();
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected EClass eStaticClass() {
-		return MapSamplePackage.Literals.SAMPLE_MODEL;
-	}
+        return MapSamplePackage.Literals.SAMPLE_MODEL;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected int eStaticFeatureCount() {
-		return 0;
-	}
+        return 0;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public String getName() {
-		return (String)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__NAME, true);
-	}
+        return (String)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__NAME, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setName(String newName) {
-		eSet(MapSamplePackage.Literals.SAMPLE_MODEL__NAME, newName);
-	}
+        eSet(MapSamplePackage.Literals.SAMPLE_MODEL__NAME, newName);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @SuppressWarnings("unchecked")
     public EMap<String, String> getMap() {
-		return (EMap<String, String>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__MAP, true);
-	}
+        return (EMap<String, String>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__MAP, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @SuppressWarnings("unchecked")
     public EMap<K, V> getKvMap() {
-		return (EMap<K, V>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__KV_MAP, true);
-	}
+        return (EMap<K, V>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__KV_MAP, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @SuppressWarnings("unchecked")
     public EList<SampleModelContentObject> getContentObjects() {
-		return (EList<SampleModelContentObject>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__CONTENT_OBJECTS, true);
-	}
+        return (EList<SampleModelContentObject>)eGet(MapSamplePackage.Literals.SAMPLE_MODEL__CONTENT_OBJECTS, true);
+    }
 
 } //SampleModelImpl

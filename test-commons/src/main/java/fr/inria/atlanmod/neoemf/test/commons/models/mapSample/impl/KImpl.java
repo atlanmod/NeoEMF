@@ -15,78 +15,78 @@ import org.eclipse.emf.ecore.EClass;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl#getKName <em>KName</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KImpl#getKInt <em>KInt</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */
 public class KImpl extends PersistentEObjectImpl implements K {
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     protected KImpl() {
-		super();
-	}
+        super();
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected EClass eStaticClass() {
-		return MapSamplePackage.Literals.K;
-	}
+        return MapSamplePackage.Literals.K;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected int eStaticFeatureCount() {
-		return 0;
-	}
+        return 0;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public String getKName() {
-		return (String)eGet(MapSamplePackage.Literals.K__KNAME, true);
-	}
+        return (String)eGet(MapSamplePackage.Literals.K__KNAME, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setKName(String newKName) {
-		eSet(MapSamplePackage.Literals.K__KNAME, newKName);
-	}
+        eSet(MapSamplePackage.Literals.K__KNAME, newKName);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public int getKInt() {
-		return (Integer)eGet(MapSamplePackage.Literals.K__KINT, true);
-	}
+        return (Integer)eGet(MapSamplePackage.Literals.K__KINT, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setKInt(int newKInt) {
-		eSet(MapSamplePackage.Literals.K__KINT, newKInt);
-	}
+        eSet(MapSamplePackage.Literals.K__KINT, newKInt);
+    }
 
 } //KImpl

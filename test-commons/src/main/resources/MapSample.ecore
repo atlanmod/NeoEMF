@@ -38,9 +38,11 @@
         eOpposite="#//Pack/packs"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ownedContents" upperBound="-1"
         eType="#//PackContent" containment="true" eOpposite="#//PackContent/parentPack"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PackContent">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentPack" eType="#//Pack"
         eOpposite="#//Pack/ownedContents"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

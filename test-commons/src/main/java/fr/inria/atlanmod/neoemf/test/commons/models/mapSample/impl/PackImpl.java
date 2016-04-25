@@ -18,81 +18,100 @@ import org.eclipse.emf.ecore.EClass;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getPacks <em>Packs</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getParentPack <em>Parent Pack</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getOwnedContents <em>Owned Contents</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getName <em>Name</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */
 public class PackImpl extends PersistentEObjectImpl implements Pack {
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	protected PackImpl() {
-		super();
-	}
+        super();
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	@Override
 	protected EClass eStaticClass() {
-		return MapSamplePackage.Literals.PACK;
-	}
+        return MapSamplePackage.Literals.PACK;
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	@Override
 	protected int eStaticFeatureCount() {
-		return 0;
-	}
+        return 0;
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	@SuppressWarnings("unchecked")
 	public EList<Pack> getPacks() {
-		return (EList<Pack>)eGet(MapSamplePackage.Literals.PACK__PACKS, true);
-	}
+        return (EList<Pack>)eGet(MapSamplePackage.Literals.PACK__PACKS, true);
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	public Pack getParentPack() {
-		return (Pack)eGet(MapSamplePackage.Literals.PACK__PARENT_PACK, true);
-	}
+        return (Pack)eGet(MapSamplePackage.Literals.PACK__PARENT_PACK, true);
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	public void setParentPack(Pack newParentPack) {
-		eSet(MapSamplePackage.Literals.PACK__PARENT_PACK, newParentPack);
-	}
+        eSet(MapSamplePackage.Literals.PACK__PARENT_PACK, newParentPack);
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	@SuppressWarnings("unchecked")
 	public EList<PackContent> getOwnedContents() {
-		return (EList<PackContent>)eGet(MapSamplePackage.Literals.PACK__OWNED_CONTENTS, true);
-	}
+        return (EList<PackContent>)eGet(MapSamplePackage.Literals.PACK__OWNED_CONTENTS, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getName() {
+        return (String)eGet(MapSamplePackage.Literals.PACK__NAME, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setName(String newName) {
+        eSet(MapSamplePackage.Literals.PACK__NAME, newName);
+    }
 
 } //PackImpl

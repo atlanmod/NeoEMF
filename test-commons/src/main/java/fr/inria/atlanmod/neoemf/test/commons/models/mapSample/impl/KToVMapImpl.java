@@ -20,156 +20,156 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl#getTypedKey <em>Key</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.KToVMapImpl#getTypedValue <em>Value</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */
 public class KToVMapImpl extends PersistentEObjectImpl implements BasicEMap.Entry<K,V> {
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     protected KToVMapImpl() {
-		super();
-	}
+        super();
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected EClass eStaticClass() {
-		return MapSamplePackage.Literals.KTO_VMAP;
-	}
+        return MapSamplePackage.Literals.KTO_VMAP;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @Override
     protected int eStaticFeatureCount() {
-		return 0;
-	}
+        return 0;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public K getTypedKey() {
-		return (K)eGet(MapSamplePackage.Literals.KTO_VMAP__KEY, true);
-	}
+        return (K)eGet(MapSamplePackage.Literals.KTO_VMAP__KEY, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setTypedKey(K newKey) {
-		eSet(MapSamplePackage.Literals.KTO_VMAP__KEY, newKey);
-	}
+        eSet(MapSamplePackage.Literals.KTO_VMAP__KEY, newKey);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public V getTypedValue() {
-		return (V)eGet(MapSamplePackage.Literals.KTO_VMAP__VALUE, true);
-	}
+        return (V)eGet(MapSamplePackage.Literals.KTO_VMAP__VALUE, true);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setTypedValue(V newValue) {
-		eSet(MapSamplePackage.Literals.KTO_VMAP__VALUE, newValue);
-	}
+        eSet(MapSamplePackage.Literals.KTO_VMAP__VALUE, newValue);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     protected int hash = -1;
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public int getHash() {
-		if (hash == -1) {
-			Object theKey = getKey();
-			hash = (theKey == null ? 0 : theKey.hashCode());
-		}
-		return hash;
-	}
+        if (hash == -1) {
+            Object theKey = getKey();
+            hash = (theKey == null ? 0 : theKey.hashCode());
+        }
+        return hash;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setHash(int hash) {
-		this.hash = hash;
-	}
+        this.hash = hash;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public K getKey() {
-		return getTypedKey();
-	}
+        return getTypedKey();
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setKey(K key) {
-		setTypedKey(key);
-	}
+        setTypedKey(key);
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public V getValue() {
-		return getTypedValue();
-	}
+        return getTypedValue();
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public V setValue(V value) {
-		V oldValue = getValue();
-		setTypedValue(value);
-		return oldValue;
-	}
+        V oldValue = getValue();
+        setTypedValue(value);
+        return oldValue;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     @SuppressWarnings("unchecked")
     public EMap<K, V> getEMap() {
-		EObject container = eContainer();
-		return container == null ? null : (EMap<K, V>)container.eGet(eContainmentFeature());
-	}
+        EObject container = eContainer();
+        return container == null ? null : (EMap<K, V>)container.eGet(eContainmentFeature());
+    }
 
 } //KToVMapImpl
