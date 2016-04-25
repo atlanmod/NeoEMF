@@ -17,12 +17,9 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     public final static String OPTIONS_BLUEPRINTS_GRAPH_TYPE = "blueprints.graph";
     public final static String OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
     
-    public final static String OPTIONS_BLUEPRINTS_PREFETCHING_URI = "blueprints.prefetching.planURI";
-    
     public static enum EStoreGraphOption implements StoreOption {
         AUTOCOMMIT,
         DIRECT_WRITE,
-        PREFETCHING
     }
     
 }

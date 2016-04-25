@@ -79,11 +79,6 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>fr.inria.atlanmod.prefetch</groupId>
-  			<artifactId>prefetch</artifactId>
-  			<version>0.0.1-SNAPSHOT</version>
-  		</dependency>
     </dependencies>
     
     <build>
@@ -102,7 +97,7 @@
 	           	<Import-Package></Import-Package>
 	           	<Embed-Dependency>commons-io,commons-collections,commons-lang,commons-logging,commons-configuration,guava,blueprints-core,jboss-common-core</Embed-Dependency>
 	           	<DynamicImport-Package>*</DynamicImport-Package>
-	           	<Require-Bundle>fr.inria.atlanmod.neoemf.core;visibility:=reexport,fr.inria.atlanmod.neoemf.prefetch;resolution:=optional</Require-Bundle>
+	           	<Require-Bundle>fr.inria.atlanmod.neoemf.core;visibility:=reexport</Require-Bundle>
 	           </instructions>
 	          </configuration>
 	         <executions>

@@ -38,7 +38,6 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.PrefetchingDirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -213,11 +212,6 @@ public class BlueprintsPersistenceBackendFactory extends
     	    if(storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
     	        return new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	    }
- else if (storeOptions
-                    .contains(BlueprintsResourceOptions.EStoreGraphOption.PREFETCHING)) {
-                return new PrefetchingDirectWriteBlueprintsResourceEStoreImpl(resource,
-                        (BlueprintsPersistenceBackend) backend);
-            }
     	    else {
     	        throw new InvalidDataStoreException();
     	    }
