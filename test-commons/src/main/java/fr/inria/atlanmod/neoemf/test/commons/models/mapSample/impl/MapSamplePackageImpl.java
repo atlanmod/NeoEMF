@@ -2,13 +2,16 @@
  */
 package fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl;
 
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent2;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SpecializedPackContent;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -76,12 +79,33 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
 
 				/**
      * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass abstractPackContentEClass = null;
+
+                /**
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass packContentEClass = null;
 
 				/**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass specializedPackContentEClass = null;
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass packContent2EClass = null;
+
+                /**
      * Creates an instance of the model <b>Package</b>, registered with
      * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
      * package URI value.
@@ -369,6 +393,33 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
 
                 /**
      * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getAbstractPackContent() {
+        return abstractPackContentEClass;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getAbstractPackContent_ParentPack() {
+        return (EReference)abstractPackContentEClass.getEStructuralFeatures().get(0);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractPackContent_Name() {
+        return (EAttribute)abstractPackContentEClass.getEStructuralFeatures().get(1);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
@@ -378,20 +429,20 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
 
 				/**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public EReference getPackContent_ParentPack() {
-        return (EReference)packContentEClass.getEStructuralFeatures().get(0);
+    public EClass getSpecializedPackContent() {
+        return specializedPackContentEClass;
     }
 
-				/**
+                /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getPackContent_Name() {
-        return (EAttribute)packContentEClass.getEStructuralFeatures().get(1);
+    public EClass getPackContent2() {
+        return packContent2EClass;
     }
 
                 /**
@@ -454,9 +505,15 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         createEReference(packEClass, PACK__OWNED_CONTENTS);
         createEAttribute(packEClass, PACK__NAME);
 
+        abstractPackContentEClass = createEClass(ABSTRACT_PACK_CONTENT);
+        createEReference(abstractPackContentEClass, ABSTRACT_PACK_CONTENT__PARENT_PACK);
+        createEAttribute(abstractPackContentEClass, ABSTRACT_PACK_CONTENT__NAME);
+
         packContentEClass = createEClass(PACK_CONTENT);
-        createEReference(packContentEClass, PACK_CONTENT__PARENT_PACK);
-        createEAttribute(packContentEClass, PACK_CONTENT__NAME);
+
+        specializedPackContentEClass = createEClass(SPECIALIZED_PACK_CONTENT);
+
+        packContent2EClass = createEClass(PACK_CONTENT2);
     }
 
     /**
@@ -487,6 +544,9 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         // Set bounds for type parameters
 
         // Add supertypes to classes
+        packContentEClass.getESuperTypes().add(this.getAbstractPackContent());
+        specializedPackContentEClass.getESuperTypes().add(this.getPackContent());
+        packContent2EClass.getESuperTypes().add(this.getAbstractPackContent());
 
         // Initialize classes, features, and operations; add parameters
         initEClass(sampleModelEClass, SampleModel.class, "SampleModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -518,12 +578,18 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         initEClass(packEClass, Pack.class, "Pack", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getPack_Packs(), this.getPack(), this.getPack_ParentPack(), "packs", null, 0, -1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getPack_ParentPack(), this.getPack(), this.getPack_Packs(), "parentPack", null, 0, 1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getPack_OwnedContents(), this.getPackContent(), this.getPackContent_ParentPack(), "ownedContents", null, 0, -1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getPack_OwnedContents(), this.getAbstractPackContent(), this.getAbstractPackContent_ParentPack(), "ownedContents", null, 0, -1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getPack_Name(), ecorePackage.getEString(), "name", null, 0, 1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+        initEClass(abstractPackContentEClass, AbstractPackContent.class, "AbstractPackContent", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAbstractPackContent_ParentPack(), this.getPack(), this.getPack_OwnedContents(), "parentPack", null, 0, 1, AbstractPackContent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractPackContent_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractPackContent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         initEClass(packContentEClass, PackContent.class, "PackContent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getPackContent_ParentPack(), this.getPack(), this.getPack_OwnedContents(), "parentPack", null, 0, 1, PackContent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getPackContent_Name(), ecorePackage.getEString(), "name", null, 0, 1, PackContent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(specializedPackContentEClass, SpecializedPackContent.class, "SpecializedPackContent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(packContent2EClass, PackContent2.class, "PackContent2", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         // Create resource
         createResource(eNS_URI);

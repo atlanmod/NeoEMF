@@ -110,9 +110,31 @@ public class MapSampleSwitch<T> extends Switch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case MapSamplePackage.ABSTRACT_PACK_CONTENT: {
+                AbstractPackContent abstractPackContent = (AbstractPackContent)theEObject;
+                T result = caseAbstractPackContent(abstractPackContent);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case MapSamplePackage.PACK_CONTENT: {
                 PackContent packContent = (PackContent)theEObject;
                 T result = casePackContent(packContent);
+                if (result == null) result = caseAbstractPackContent(packContent);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case MapSamplePackage.SPECIALIZED_PACK_CONTENT: {
+                SpecializedPackContent specializedPackContent = (SpecializedPackContent)theEObject;
+                T result = caseSpecializedPackContent(specializedPackContent);
+                if (result == null) result = casePackContent(specializedPackContent);
+                if (result == null) result = caseAbstractPackContent(specializedPackContent);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case MapSamplePackage.PACK_CONTENT2: {
+                PackContent2 packContent2 = (PackContent2)theEObject;
+                T result = casePackContent2(packContent2);
+                if (result == null) result = caseAbstractPackContent(packContent2);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -226,6 +248,21 @@ public class MapSampleSwitch<T> extends Switch<T> {
     }
 
 				/**
+     * Returns the result of interpreting the object as an instance of '<em>Abstract Pack Content</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Abstract Pack Content</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseAbstractPackContent(AbstractPackContent object) {
+        return null;
+    }
+
+                /**
      * Returns the result of interpreting the object as an instance of '<em>Pack Content</em>'.
      * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -241,6 +278,36 @@ public class MapSampleSwitch<T> extends Switch<T> {
     }
 
 				/**
+     * Returns the result of interpreting the object as an instance of '<em>Specialized Pack Content</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Specialized Pack Content</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseSpecializedPackContent(SpecializedPackContent object) {
+        return null;
+    }
+
+                /**
+     * Returns the result of interpreting the object as an instance of '<em>Pack Content2</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Pack Content2</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T casePackContent2(PackContent2 object) {
+        return null;
+    }
+
+                /**
      * Returns the result of interpreting the object as an instance of '<em>EObject</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;

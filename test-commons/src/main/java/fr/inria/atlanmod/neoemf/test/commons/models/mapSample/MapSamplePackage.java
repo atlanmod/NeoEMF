@@ -418,6 +418,52 @@ public interface MapSamplePackage extends EPackage {
 	int PACK_OPERATION_COUNT = 0;
 
 				/**
+     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl <em>Abstract Pack Content</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getAbstractPackContent()
+     * @generated
+     */
+    int ABSTRACT_PACK_CONTENT = 7;
+
+                /**
+     * The feature id for the '<em><b>Parent Pack</b></em>' container reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT__PARENT_PACK = 0;
+
+                /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT__NAME = 1;
+
+                /**
+     * The number of structural features of the '<em>Abstract Pack Content</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT_FEATURE_COUNT = 2;
+
+                /**
+     * The number of operations of the '<em>Abstract Pack Content</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT_OPERATION_COUNT = 0;
+
+                /**
      * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContentImpl <em>Pack Content</em>}' class.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -425,7 +471,7 @@ public interface MapSamplePackage extends EPackage {
      * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getPackContent()
      * @generated
      */
-	int PACK_CONTENT = 7;
+	int PACK_CONTENT = 8;
 
 				/**
      * The feature id for the '<em><b>Parent Pack</b></em>' container reference.
@@ -434,7 +480,7 @@ public interface MapSamplePackage extends EPackage {
      * @generated
      * @ordered
      */
-	int PACK_CONTENT__PARENT_PACK = 0;
+	int PACK_CONTENT__PARENT_PACK = ABSTRACT_PACK_CONTENT__PARENT_PACK;
 
 				/**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -443,7 +489,7 @@ public interface MapSamplePackage extends EPackage {
      * @generated
      * @ordered
      */
-    int PACK_CONTENT__NAME = 1;
+    int PACK_CONTENT__NAME = ABSTRACT_PACK_CONTENT__NAME;
 
                 /**
      * The number of structural features of the '<em>Pack Content</em>' class.
@@ -452,7 +498,7 @@ public interface MapSamplePackage extends EPackage {
      * @generated
      * @ordered
      */
-	int PACK_CONTENT_FEATURE_COUNT = 2;
+	int PACK_CONTENT_FEATURE_COUNT = ABSTRACT_PACK_CONTENT_FEATURE_COUNT + 0;
 
 				/**
      * The number of operations of the '<em>Pack Content</em>' class.
@@ -461,10 +507,104 @@ public interface MapSamplePackage extends EPackage {
      * @generated
      * @ordered
      */
-	int PACK_CONTENT_OPERATION_COUNT = 0;
+	int PACK_CONTENT_OPERATION_COUNT = ABSTRACT_PACK_CONTENT_OPERATION_COUNT + 0;
 
 
 				/**
+     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SpecializedPackContentImpl <em>Specialized Pack Content</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SpecializedPackContentImpl
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSpecializedPackContent()
+     * @generated
+     */
+    int SPECIALIZED_PACK_CONTENT = 9;
+
+                /**
+     * The feature id for the '<em><b>Parent Pack</b></em>' container reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SPECIALIZED_PACK_CONTENT__PARENT_PACK = PACK_CONTENT__PARENT_PACK;
+
+                /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SPECIALIZED_PACK_CONTENT__NAME = PACK_CONTENT__NAME;
+
+                /**
+     * The number of structural features of the '<em>Specialized Pack Content</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SPECIALIZED_PACK_CONTENT_FEATURE_COUNT = PACK_CONTENT_FEATURE_COUNT + 0;
+
+                /**
+     * The number of operations of the '<em>Specialized Pack Content</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SPECIALIZED_PACK_CONTENT_OPERATION_COUNT = PACK_CONTENT_OPERATION_COUNT + 0;
+
+
+                /**
+     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContent2Impl <em>Pack Content2</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContent2Impl
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getPackContent2()
+     * @generated
+     */
+    int PACK_CONTENT2 = 10;
+
+                /**
+     * The feature id for the '<em><b>Parent Pack</b></em>' container reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACK_CONTENT2__PARENT_PACK = ABSTRACT_PACK_CONTENT__PARENT_PACK;
+
+                /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACK_CONTENT2__NAME = ABSTRACT_PACK_CONTENT__NAME;
+
+                /**
+     * The number of structural features of the '<em>Pack Content2</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACK_CONTENT2_FEATURE_COUNT = ABSTRACT_PACK_CONTENT_FEATURE_COUNT + 0;
+
+                /**
+     * The number of operations of the '<em>Pack Content2</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACK_CONTENT2_OPERATION_COUNT = ABSTRACT_PACK_CONTENT_OPERATION_COUNT + 0;
+
+
+                /**
      * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel <em>Sample Model</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -737,6 +877,38 @@ public interface MapSamplePackage extends EPackage {
     EAttribute getPack_Name();
 
                 /**
+     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent <em>Abstract Pack Content</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Abstract Pack Content</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent
+     * @generated
+     */
+    EClass getAbstractPackContent();
+
+                /**
+     * Returns the meta object for the container reference '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getParentPack <em>Parent Pack</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the container reference '<em>Parent Pack</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getParentPack()
+     * @see #getAbstractPackContent()
+     * @generated
+     */
+    EReference getAbstractPackContent_ParentPack();
+
+                /**
+     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getName <em>Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Name</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getName()
+     * @see #getAbstractPackContent()
+     * @generated
+     */
+    EAttribute getAbstractPackContent_Name();
+
+                /**
      * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent <em>Pack Content</em>}'.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -747,26 +919,24 @@ public interface MapSamplePackage extends EPackage {
 	EClass getPackContent();
 
 				/**
-     * Returns the meta object for the container reference '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getParentPack <em>Parent Pack</em>}'.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @return the meta object for the container reference '<em>Parent Pack</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getParentPack()
-     * @see #getPackContent()
-     * @generated
-     */
-	EReference getPackContent_ParentPack();
-
-				/**
-     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getName <em>Name</em>}'.
+     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SpecializedPackContent <em>Specialized Pack Content</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Name</em>'.
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getName()
-     * @see #getPackContent()
+     * @return the meta object for class '<em>Specialized Pack Content</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SpecializedPackContent
      * @generated
      */
-    EAttribute getPackContent_Name();
+    EClass getSpecializedPackContent();
+
+                /**
+     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent2 <em>Pack Content2</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Pack Content2</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent2
+     * @generated
+     */
+    EClass getPackContent2();
 
                 /**
      * Returns the factory that creates the instances of the model.
@@ -1006,6 +1176,32 @@ public interface MapSamplePackage extends EPackage {
         EAttribute PACK__NAME = eINSTANCE.getPack_Name();
 
                                 /**
+         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl <em>Abstract Pack Content</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getAbstractPackContent()
+         * @generated
+         */
+        EClass ABSTRACT_PACK_CONTENT = eINSTANCE.getAbstractPackContent();
+
+                                /**
+         * The meta object literal for the '<em><b>Parent Pack</b></em>' container reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference ABSTRACT_PACK_CONTENT__PARENT_PACK = eINSTANCE.getAbstractPackContent_ParentPack();
+
+                                /**
+         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_PACK_CONTENT__NAME = eINSTANCE.getAbstractPackContent_Name();
+
+                                /**
          * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContentImpl <em>Pack Content</em>}' class.
          * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1016,20 +1212,24 @@ public interface MapSamplePackage extends EPackage {
 		EClass PACK_CONTENT = eINSTANCE.getPackContent();
 
 								/**
-         * The meta object literal for the '<em><b>Parent Pack</b></em>' container reference feature.
-         * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-         * @generated
-         */
-		EReference PACK_CONTENT__PARENT_PACK = eINSTANCE.getPackContent_ParentPack();
-
-                                /**
-         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SpecializedPackContentImpl <em>Specialized Pack Content</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.SpecializedPackContentImpl
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getSpecializedPackContent()
          * @generated
          */
-        EAttribute PACK_CONTENT__NAME = eINSTANCE.getPackContent_Name();
+        EClass SPECIALIZED_PACK_CONTENT = eINSTANCE.getSpecializedPackContent();
+
+                                /**
+         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContent2Impl <em>Pack Content2</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContent2Impl
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getPackContent2()
+         * @generated
+         */
+        EClass PACK_CONTENT2 = eINSTANCE.getPackContent2();
 
     }
 

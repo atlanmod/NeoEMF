@@ -3,13 +3,10 @@
 package fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl;
 
 import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
-
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 
 /**
@@ -92,8 +89,8 @@ public class PackImpl extends PersistentEObjectImpl implements Pack {
      * @generated
      */
 	@SuppressWarnings("unchecked")
-	public EList<PackContent> getOwnedContents() {
-        return (EList<PackContent>)eGet(MapSamplePackage.Literals.PACK__OWNED_CONTENTS, true);
+	public EList<AbstractPackContent> getOwnedContents() {
+        return (EList<AbstractPackContent>)eGet(MapSamplePackage.Literals.PACK__OWNED_CONTENTS, true);
     }
 
     /**

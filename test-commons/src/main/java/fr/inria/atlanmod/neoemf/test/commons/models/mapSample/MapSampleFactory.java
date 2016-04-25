@@ -76,6 +76,24 @@ public interface MapSampleFactory extends EFactory {
 	PackContent createPackContent();
 
 				/**
+     * Returns a new object of class '<em>Specialized Pack Content</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Specialized Pack Content</em>'.
+     * @generated
+     */
+    SpecializedPackContent createSpecializedPackContent();
+
+                /**
+     * Returns a new object of class '<em>Pack Content2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Pack Content2</em>'.
+     * @generated
+     */
+    PackContent2 createPackContent2();
+
+                /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

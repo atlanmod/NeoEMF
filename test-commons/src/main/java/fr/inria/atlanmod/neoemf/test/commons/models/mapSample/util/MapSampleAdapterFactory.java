@@ -98,8 +98,20 @@ public class MapSampleAdapterFactory extends AdapterFactoryImpl {
                 return createPackAdapter();
             }
             @Override
+            public Adapter caseAbstractPackContent(AbstractPackContent object) {
+                return createAbstractPackContentAdapter();
+            }
+            @Override
             public Adapter casePackContent(PackContent object) {
                 return createPackContentAdapter();
+            }
+            @Override
+            public Adapter caseSpecializedPackContent(SpecializedPackContent object) {
+                return createSpecializedPackContentAdapter();
+            }
+            @Override
+            public Adapter casePackContent2(PackContent2 object) {
+                return createPackContent2Adapter();
             }
             @Override
             public Adapter defaultCase(EObject object) {
@@ -220,6 +232,20 @@ public class MapSampleAdapterFactory extends AdapterFactoryImpl {
     }
 
 				/**
+     * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent <em>Abstract Pack Content</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent
+     * @generated
+     */
+    public Adapter createAbstractPackContentAdapter() {
+        return null;
+    }
+
+                /**
      * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent <em>Pack Content</em>}'.
      * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -234,6 +260,34 @@ public class MapSampleAdapterFactory extends AdapterFactoryImpl {
     }
 
 				/**
+     * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SpecializedPackContent <em>Specialized Pack Content</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SpecializedPackContent
+     * @generated
+     */
+    public Adapter createSpecializedPackContentAdapter() {
+        return null;
+    }
+
+                /**
+     * Creates a new adapter for an object of class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent2 <em>Pack Content2</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent2
+     * @generated
+     */
+    public Adapter createPackContent2Adapter() {
+        return null;
+    }
+
+                /**
      * Creates a new adapter for the default case.
      * <!-- begin-user-doc -->
      * This default implementation returns null.

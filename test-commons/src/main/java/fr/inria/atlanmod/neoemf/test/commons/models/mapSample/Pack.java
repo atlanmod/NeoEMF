@@ -75,8 +75,8 @@ public interface Pack extends PersistentEObject {
 
 	/**
      * Returns the value of the '<em><b>Owned Contents</b></em>' containment reference list.
-     * The list contents are of type {@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent}.
-     * It is bidirectional and its opposite is '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getParentPack <em>Parent Pack</em>}'.
+     * The list contents are of type {@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent}.
+     * It is bidirectional and its opposite is '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getParentPack <em>Parent Pack</em>}'.
      * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Owned Contents</em>' containment reference list isn't clear,
@@ -85,11 +85,11 @@ public interface Pack extends PersistentEObject {
 	 * <!-- end-user-doc -->
      * @return the value of the '<em>Owned Contents</em>' containment reference list.
      * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage#getPack_OwnedContents()
-     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent#getParentPack
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getParentPack
      * @model opposite="parentPack" containment="true"
      * @generated
      */
-	EList<PackContent> getOwnedContents();
+	EList<AbstractPackContent> getOwnedContents();
 
     /**
      * Returns the value of the '<em><b>Name</b></em>' attribute.

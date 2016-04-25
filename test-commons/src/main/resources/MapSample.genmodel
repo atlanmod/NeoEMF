@@ -42,9 +42,12 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MapSample.ecore#//Pack/ownedContents"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//Pack/name"/>
     </genClasses>
-    <genClasses ecoreClass="MapSample.ecore#//PackContent">
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference MapSample.ecore#//PackContent/parentPack"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//PackContent/name"/>
+    <genClasses image="false" ecoreClass="MapSample.ecore#//AbstractPackContent">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference MapSample.ecore#//AbstractPackContent/parentPack"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//AbstractPackContent/name"/>
     </genClasses>
+    <genClasses ecoreClass="MapSample.ecore#//PackContent"/>
+    <genClasses ecoreClass="MapSample.ecore#//SpecializedPackContent"/>
+    <genClasses ecoreClass="MapSample.ecore#//PackContent2"/>
   </genPackages>
 </genmodel:GenModel>

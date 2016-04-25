@@ -66,6 +66,8 @@ public class MapSampleFactoryImpl extends EFactoryImpl implements MapSampleFacto
             case MapSamplePackage.SAMPLE_MODEL_CONTENT_OBJECT: return (EObject)createSampleModelContentObject();
             case MapSamplePackage.PACK: return (EObject)createPack();
             case MapSamplePackage.PACK_CONTENT: return (EObject)createPackContent();
+            case MapSamplePackage.SPECIALIZED_PACK_CONTENT: return (EObject)createSpecializedPackContent();
+            case MapSamplePackage.PACK_CONTENT2: return (EObject)createPackContent2();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -152,6 +154,26 @@ public class MapSampleFactoryImpl extends EFactoryImpl implements MapSampleFacto
     }
 
 				/**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SpecializedPackContent createSpecializedPackContent() {
+        SpecializedPackContentImpl specializedPackContent = new SpecializedPackContentImpl();
+        return specializedPackContent;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public PackContent2 createPackContent2() {
+        PackContent2Impl packContent2 = new PackContent2Impl();
+        return packContent2;
+    }
+
+                /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
