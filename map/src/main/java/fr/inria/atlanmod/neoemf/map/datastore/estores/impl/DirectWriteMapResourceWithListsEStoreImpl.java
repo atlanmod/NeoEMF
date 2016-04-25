@@ -466,7 +466,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	}
 	
 	@Override
-	public EList<EObject> getAllInstances(EClass eClass)
+	public EList<EObject> getAllInstances(EClass eClass, boolean strict)
 			throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}

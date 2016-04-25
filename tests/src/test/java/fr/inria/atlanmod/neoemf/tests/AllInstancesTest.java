@@ -21,13 +21,19 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent2;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SpecializedPackContent;
 
 public class AllInstancesTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
     // These variables should be updated if createResourceContent is changed
     protected int packCount = 6;
-    protected int packContentCount = 50;
+    protected int abstractPackContentCount = 150;
+    protected int packContentCount = 100;
+    protected int specializedPackContentCount = 50;
+    protected int packContent2Count = 50;
+    
     
     @Before
     public void setUp() throws Exception {
@@ -42,8 +48,8 @@ public class AllInstancesTest extends AllBackendTest {
     }
     
     /**
-     * Creates a Pack hierarchy containing 1 root, 5 sub-pack elements, and 10
-     * PackContent elements in each sub-pack
+     * Creates a Pack hierarchy containing 1 root, 5 sub-pack elements, 10
+     * PackContent, and 10 SpecializedPackContent elements in each sub-pack
      * @param r the PersistentResource to fill with the created model
      */
     protected void createResourceContent(PersistentResource r) {
@@ -57,6 +63,12 @@ public class AllInstancesTest extends AllBackendTest {
                 PackContent newPackContent = factory.createPackContent();
                 newPackContent.setName("pContent"+i+ "-" + j);
                 newPack.getOwnedContents().add(newPackContent);
+                SpecializedPackContent newSpecializedPackContent = factory.createSpecializedPackContent();
+                newSpecializedPackContent.setName("spContent"+i+"-"+j);
+                newPack.getOwnedContents().add(newSpecializedPackContent);
+                PackContent2 newPackContent2 = factory.createPackContent2();
+                newPackContent2.setName("pContent2"+i+"-"+j);
+                newPack.getOwnedContents().add(newPackContent2);
             }
         }
         r.getContents().add(rootPack);

@@ -599,8 +599,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	}
 	
 	@Override
-	public EList<EObject> getAllInstances(EClass eClass) {
-		Map<EClass, Iterator<Vertex>> indexHits = graph.getAllInstances(eClass);
+	public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+		Map<EClass, Iterator<Vertex>> indexHits = graph.getAllInstances(eClass, strict);
 		EList<EObject> instances = new BasicEList<EObject>();
 		Set<EClass> mapKeys = indexHits.keySet();
 		for(EClass metaClass : mapKeys) {

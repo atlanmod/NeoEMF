@@ -46,7 +46,7 @@ public class MapPersistenceBackend extends DB implements PersistenceBackend {
 	}
 	
 	@Override
-	public Object getAllInstances(EClass eClass)
+	public Object getAllInstances(EClass eClass, boolean strict)
 			throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("MapDB backend does not support custom all instances computation");
 	}

@@ -143,8 +143,8 @@ public class DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 	}
 	
 	@Override
-	public EList<EObject> getAllInstances(EClass eClass)
+	public EList<EObject> getAllInstances(EClass eClass, boolean strict)
 			throws UnsupportedOperationException {
-		return eStore.getAllInstances(eClass);
+		return eStore.getAllInstances(eClass, strict);
 	}
 }

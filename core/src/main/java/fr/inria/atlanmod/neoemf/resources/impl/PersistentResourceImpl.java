@@ -208,20 +208,32 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	
 	@Override
 	public EList<EObject> getAllInstances(EClass eClass) {
-		try {
-			return eStore.getAllInstances(eClass);
-		} catch(UnsupportedOperationException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
-			Iterator<EObject> it = getAllContents();
-			EList<EObject> instanceList = new BasicEList<EObject>();
-			while(it.hasNext()) {
-				EObject eObject = it.next();
-				if(eClass.isInstance(eObject)) {
-					instanceList.add(eObject);
-				}
-			}
-			return instanceList;
-		}
+		return this.getAllInstances(eClass, false);
+	}
+	
+	@Override
+	public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+	    try {
+	        return eStore.getAllInstances(eClass,strict);
+	    } catch(UnsupportedOperationException e) {
+	        NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
+	        Iterator<EObject> it = getAllContents();
+	        EList<EObject> instanceList = new BasicEList<EObject>();
+	        while(it.hasNext()) {
+	            EObject eObject = it.next();
+	            if(eClass.isInstance(eObject)) {
+	                if(strict) {
+	                    if(eObject.eClass().equals(eClass)) {
+	                        instanceList.add(eObject);
+	                    }
+	                }
+	                else {
+	                    instanceList.add(eObject);
+	                }
+                }
+	        }
+	        return instanceList;
+	    }
 	}
 	
 

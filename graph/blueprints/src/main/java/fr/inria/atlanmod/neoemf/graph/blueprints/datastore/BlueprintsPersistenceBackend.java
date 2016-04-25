@@ -12,13 +12,14 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
@@ -355,46 +356,40 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 	
 	@Override
-	public Map<EClass,Iterator<Vertex>> getAllInstances(EClass eClass) {
+	public Map<EClass,Iterator<Vertex>> getAllInstances(EClass eClass, boolean strict) {
 		Map<EClass,Iterator<Vertex>> indexHits = new HashMap<EClass,Iterator<Vertex>>();
-		if(eClass.isAbstract()) {
-			// Find all the concrete subclasses of the given EClass
-			// (the metaclass index only stores the concrete EClasses)
-			EList<EClass> concreteSubClasses = new BasicEList<EClass>();
-			EPackage ePackage = eClass.getEPackage();
-			for(EClassifier eClassifier : ePackage.getEClassifiers()) {
-				if(eClassifier instanceof EClass) {
-					EClass packageEClass = (EClass)eClassifier;
-					if(eClass.isSuperTypeOf(packageEClass) && !packageEClass.isAbstract()) {
-						concreteSubClasses.add(packageEClass);
-					}
-				}
-			}
-			// Get all the vertices that are indexed with one of the EClass
-			for(EClass concreteEClass : concreteSubClasses) {
-				Iterator<Vertex> metaClassVertexIterator = metaclassIndex.get("name", concreteEClass.getName()).iterator();
-				if(metaClassVertexIterator.hasNext()) {
-					Vertex metaClassVertex = metaClassVertexIterator.next();
-					Iterator<Vertex> instanceVertexIterator = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF).iterator();
-					indexHits.put(concreteEClass, instanceVertexIterator);
-				}
-				else {
-					NeoLogger.log(NeoLogger.SEVERITY_WARNING, "MetaClass '" + concreteEClass.getName() + "'not found in index");
-				}
-				
-			}	
+		Set<EClass> eClassToFind = new HashSet<EClass>();
+		if(eClass.isAbstract() && strict) {
+		    // There is no strict instance of an abstract class
+		    return Collections.emptyMap();
 		}
-		else {
-			Iterator<Vertex> metaClassVertexIterator = metaclassIndex.get("name", eClass.getName()).iterator();
+		eClassToFind.add(eClass);
+		if(!strict) {
+		    // Find all the concrete subclasses of the given EClass
+            // (the metaclass index only stores the concrete EClasses)
+            EPackage ePackage = eClass.getEPackage();
+            for(EClassifier eClassifier : ePackage.getEClassifiers()) {
+                if(eClassifier instanceof EClass) {
+                    EClass packageEClass = (EClass)eClassifier;
+                    if(eClass.isSuperTypeOf(packageEClass) && !packageEClass.isAbstract()) {
+                        eClassToFind.add(packageEClass);
+                    }
+                }
+            } 
+		}
+		// Get all the vertices that are indexed with one of the EClass
+		for(EClass ec : eClassToFind) {
+			Iterator<Vertex> metaClassVertexIterator = metaclassIndex.get("name", ec.getName()).iterator();
 			if(metaClassVertexIterator.hasNext()) {
 				Vertex metaClassVertex = metaClassVertexIterator.next();
 				Iterator<Vertex> instanceVertexIterator = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF).iterator();
-				indexHits.put(eClass, instanceVertexIterator);
+				indexHits.put(ec, instanceVertexIterator);
 			}
 			else {
-				NeoLogger.log(NeoLogger.SEVERITY_WARNING, "MetaClass '" + eClass.getName() + "'not found in index");
+				NeoLogger.log(NeoLogger.SEVERITY_WARNING, "MetaClass '" + ec.getName() + "'not found in index");
 			}
-		}
+			
+		}	
 		return indexHits;
 	}
 }

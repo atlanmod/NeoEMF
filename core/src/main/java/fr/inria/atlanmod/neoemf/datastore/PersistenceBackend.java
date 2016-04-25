@@ -47,10 +47,11 @@ public interface PersistenceBackend {
 	/**
 	 * Back-end specific computation of allInstances
 	 * @param eClass the class to compute the instances of
+	 * @param strict true if the lookup searches for strict instances
 	 * @return an Object containing the back-end specific objects corresponding to the instances of the EClass
 	 * @throws UnsupportedOperationException if the back-end does not support allInstances lookup
 	 */
-	public Object getAllInstances(EClass eClass) throws UnsupportedOperationException;
+	public Object getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
 	
 }
 
