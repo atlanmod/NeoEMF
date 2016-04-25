@@ -40,11 +40,11 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class BlueprintsPersistenceBackendFactoryTest {
     
-    private AbstractPersistenceBackendFactory persistenceBackendFactory = null;
-    private File testFile = null;
+    protected AbstractPersistenceBackendFactory persistenceBackendFactory = null;
+    protected File testFile = null;
     @SuppressWarnings("rawtypes")
-    private Map options = new HashMap();
-    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<PersistentResourceOptions.StoreOption>();
+    protected Map options = new HashMap();
+    protected List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<PersistentResourceOptions.StoreOption>();
     
     @SuppressWarnings("unchecked")
     @Before
@@ -69,7 +69,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
         }
     }
     
-    private PersistenceBackend getInnerBackend(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    protected PersistenceBackend getInnerBackend(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         assert store instanceof DirectWriteBlueprintsResourceEStoreImpl : "Invalid call, can not get the inner backend if the given EStore is not a DirectWriteGraphResourceEStoreImpl";
         Field graphStoreField = DirectWriteBlueprintsResourceEStoreImpl.class.getDeclaredField("graph");
         graphStoreField.setAccessible(true);
