@@ -11,6 +11,7 @@
 package fr.inria.atlanmod.neoemf.map.util;
 
 import java.io.File;
+import java.util.Date;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
@@ -23,6 +24,8 @@ import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 
 public class NeoMapURITest {
 
+	private static final String TEST_FILE_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "neoMapURITestFile";
+
 	private AbstractPersistenceBackendFactory persistenceBackendFactory = new MapPersistenceBackendFactory();
 	private File testFile = null;
 	
@@ -30,7 +33,7 @@ public class NeoMapURITest {
 	public void setUp() {
 		PersistenceBackendFactoryRegistry.getFactories().clear();
 		PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
-		testFile = new File("src/test/resource/neoMapURITestFile");
+		testFile = new File(TEST_FILE_PATH + String.valueOf(new Date().getTime()));
 	}
 	
 	@After

@@ -3,6 +3,7 @@ package fr.inria.atlanmod.neoemf.issues;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -26,26 +27,30 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent;
 
 public class SodiIssue {
 
+    private static final String TEST_FILE_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "sodiMapResource";
+
 	protected MapSampleFactory mFac;
 	protected MapSamplePackage mPack;
 	protected Resource resource;
+
+    protected File testFile;
 	
 	@Before
 	public void setUp() {
+        testFile = new File(TEST_FILE_PATH + String.valueOf(new Date().getTime()));
 		PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
 		mPack = MapSamplePackage.eINSTANCE;
 		mFac = MapSampleFactory.eINSTANCE;
 		ResourceSet rSet = new ResourceSetImpl();
 		rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
-		resource = rSet.createResource(NeoMapURI.createNeoMapURI(new File("/tmp/sodiMapResource")));
+		resource = rSet.createResource(NeoMapURI.createNeoMapURI(testFile));
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)resource);
-		File sodiMapFile = new File("/tmp/sodiMapResource");
-		if(sodiMapFile.exists()) {
-			FileUtils.forceDelete(sodiMapFile);
+		if(testFile.exists()) {
+			FileUtils.forceDelete(testFile);
 		}
 	}
 	

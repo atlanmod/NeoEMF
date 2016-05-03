@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -40,6 +41,8 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class MapPersistenceBackendFactoryTest {
 
+    private static final String TEST_FOLDER_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "mapPersistenceBackendFactoryTest";
+
     private AbstractPersistenceBackendFactory persistenceBackendFactory = null;
     private File testFolder = null;
     private File testFile = null;
@@ -52,9 +55,9 @@ public class MapPersistenceBackendFactoryTest {
     public void setUp() throws IOException {
         persistenceBackendFactory = new MapPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
-        testFolder = new File("src/test/resources/mapPersistenceBackendFactoryTest");
+        testFolder = new File(TEST_FOLDER_PATH + String.valueOf(new Date().getTime()));
         testFolder.mkdirs();
-        testFile = new File("src/test/resources/mapPersistenceBackendFactoryTest/db");
+        testFile = new File(testFolder + "/db");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
         
     }
@@ -66,7 +69,7 @@ public class MapPersistenceBackendFactoryTest {
             try {
                 FileUtils.forceDelete(testFolder);
             }catch(IOException e) {
-                
+                System.err.println(e);
             }
             testFolder = null;
             testFile = null;

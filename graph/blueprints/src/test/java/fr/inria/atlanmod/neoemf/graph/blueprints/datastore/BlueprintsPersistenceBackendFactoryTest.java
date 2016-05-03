@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
@@ -39,6 +40,8 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class BlueprintsPersistenceBackendFactoryTest {
+
+    private static final String TEST_FILE_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "graphPersistenceBackendFactoryTestFile";
     
     protected AbstractPersistenceBackendFactory persistenceBackendFactory = null;
     protected File testFile = null;
@@ -51,7 +54,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
     public void setUp() {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = new File("src/test/resources/graphPersistenceBackendFactoryTestFile");
+        testFile = new File(TEST_FILE_PATH + String.valueOf(new Date().getTime()));
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
         
     }
@@ -63,7 +66,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
             try {
                 FileUtils.forceDelete(testFile);
             }catch(IOException e) {
-                
+                System.err.println(e);
             }
             testFile = null;
         }
