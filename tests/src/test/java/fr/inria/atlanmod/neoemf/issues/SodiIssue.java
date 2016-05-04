@@ -2,6 +2,8 @@ package fr.inria.atlanmod.neoemf.issues;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
 
@@ -27,7 +29,8 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent;
 
 public class SodiIssue {
 
-    private static final String TEST_FILE_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "sodiMapResource";
+    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "sodiMapResource";
 
 	protected MapSampleFactory mFac;
 	protected MapSamplePackage mPack;
@@ -37,7 +40,7 @@ public class SodiIssue {
 	
 	@Before
 	public void setUp() {
-        testFile = new File(TEST_FILE_PATH + String.valueOf(new Date().getTime()));
+        testFile = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
 		PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
 		mPack = MapSamplePackage.eINSTANCE;
 		mFac = MapSampleFactory.eINSTANCE;
@@ -50,7 +53,11 @@ public class SodiIssue {
 	public void tearDown() throws Exception {
 		PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)resource);
 		if(testFile.exists()) {
-			FileUtils.forceDelete(testFile);
+            try {
+                FileUtils.forceDelete(testFile);
+            } catch (IOException e) {
+                //System.err.println(e);
+            }
 		}
 	}
 	
