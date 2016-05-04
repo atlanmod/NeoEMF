@@ -7,6 +7,9 @@ import org.mockito.Mockito;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class PersistenceBackendFactoryRegistryTest {
 
 	private AbstractPersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(AbstractPersistenceBackendFactory.class);
@@ -20,23 +23,23 @@ public class PersistenceBackendFactoryRegistryTest {
 	@Test
 	public void testSingleAdd() {
 		PersistenceBackendFactoryRegistry.getFactories().put("mock1", persistenceBackendFactory1);
-		assert PersistenceBackendFactoryRegistry.getFactories().size() == 1;
+		assertEquals(1, PersistenceBackendFactoryRegistry.getFactories().size());
 		AbstractPersistenceBackendFactory registeredFactory = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
-		assert registeredFactory != null;
-		assert registeredFactory == persistenceBackendFactory1;
+		assertNotNull(registeredFactory);
+		assertEquals(persistenceBackendFactory1, registeredFactory);
 	}
 	
 	@Test
 	public void testMulltipleAdd() {
 		PersistenceBackendFactoryRegistry.getFactories().put("mock1", persistenceBackendFactory1);
 		PersistenceBackendFactoryRegistry.getFactories().put("mock2", persistenceBackendFactory2);
-		assert PersistenceBackendFactoryRegistry.getFactories().size() == 2;
+		assertEquals(2, PersistenceBackendFactoryRegistry.getFactories().size());
 		AbstractPersistenceBackendFactory registeredFactory1 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
 		AbstractPersistenceBackendFactory registeredFactory2 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock2");
-		assert registeredFactory1 != null;
-		assert registeredFactory1 == persistenceBackendFactory1;
-		assert registeredFactory2 != null;
-		assert registeredFactory2 == persistenceBackendFactory2;
+		assertNotNull(registeredFactory1);
+		assertEquals(persistenceBackendFactory1, registeredFactory1);
+		assertNotNull(registeredFactory2);
+		assertEquals(persistenceBackendFactory2, registeredFactory2);
 	}
 
 }

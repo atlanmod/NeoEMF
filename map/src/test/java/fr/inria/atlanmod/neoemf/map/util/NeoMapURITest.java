@@ -24,6 +24,8 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 
+import static org.junit.Assert.assertEquals;
+
 public class NeoMapURITest {
 
 	private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
@@ -57,20 +59,20 @@ public class NeoMapURITest {
 	public void testCreateNeoGraphURIFromStandardURIValidScheme() {
 		URI validURI = URI.createURI(NeoMapURI.NEO_MAP_SCHEME+":/test");
 		URI neoURI = NeoMapURI.createNeoMapURI(validURI);
-		assert neoURI.scheme().equals(NeoMapURI.NEO_MAP_SCHEME);
+		assertEquals(NeoMapURI.NEO_MAP_SCHEME, neoURI.scheme());
 	}
 	
 	@Test
 	public void testCreateNeoGraphURIFromFileURI() {
 		URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
 		URI neoURI = NeoMapURI.createNeoMapURI(fileURI);
-		assert neoURI.scheme().equals(NeoMapURI.NEO_MAP_SCHEME);
+		assertEquals(NeoMapURI.NEO_MAP_SCHEME, neoURI.scheme());
 	}
 	
 	@Test
 	public void testCreateNeoURIFromFile() {
 		URI neoURI = NeoMapURI.createNeoMapURI(testFile);
-		assert neoURI.scheme().equals(NeoMapURI.NEO_MAP_SCHEME);
+		assertEquals(NeoMapURI.NEO_MAP_SCHEME, neoURI.scheme());
 	}
 	
 }

@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 
+import static org.junit.Assert.assertEquals;
+
 public class NeoURITest {
 
 	private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
@@ -47,7 +49,7 @@ public class NeoURITest {
 	public void testCreateNeoURIFromStandardURIValidScheme() {
 		URI validURI = URI.createURI("mock://test");
 		URI neoURI = NeoURI.createNeoURI(validURI);
-		assert neoURI.scheme().equals("mock");
+		assertEquals("mock", neoURI.scheme());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -64,7 +66,7 @@ public class NeoURITest {
 	@Test
 	public void testCreateNeoURIFromFileValidScheme() {
 		URI neoURI = NeoURI.createNeoURI(testFile, "mock");
-		assert neoURI.scheme().equals("mock");
+		assertEquals("mock", neoURI.scheme());
 		System.out.println(neoURI.devicePath());
 	}
 	
@@ -83,7 +85,7 @@ public class NeoURITest {
 	public void testCreateNeoURIFromFileURIValidScheme() {
 		URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
 		URI neoURI = NeoURI.createNeoURI(fileURI,"mock");
-		assert neoURI.scheme().equals("mock");
+		assertEquals("mock", neoURI.scheme());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)

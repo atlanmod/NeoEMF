@@ -24,6 +24,8 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 
+import static org.junit.Assert.assertEquals;
+
 public class NeoBlueprintsURITest {
 
 	private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
@@ -57,20 +59,20 @@ public class NeoBlueprintsURITest {
 	public void testCreateNeoGraphURIFromStandardURIValidScheme() {
 		URI validURI = URI.createURI(NeoBlueprintsURI.NEO_GRAPH_SCHEME+":/test");
 		URI neoURI = NeoBlueprintsURI.createNeoGraphURI(validURI);
-		assert neoURI.scheme().equals(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
+		assertEquals(NeoBlueprintsURI.NEO_GRAPH_SCHEME, neoURI.scheme());
 	}
 	
 	@Test
 	public void testCreateNeoGraphURIFromFileURI() {
 		URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
 		URI neoURI = NeoBlueprintsURI.createNeoGraphURI(fileURI);
-		assert neoURI.scheme().equals(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
+		assertEquals(NeoBlueprintsURI.NEO_GRAPH_SCHEME, neoURI.scheme());
 	}
 	
 	@Test
 	public void testCreateNeoURIFromFile() {
 		URI neoURI = NeoBlueprintsURI.createNeoGraphURI(testFile);
-		assert neoURI.scheme().equals(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
+		assertEquals(NeoBlueprintsURI.NEO_GRAPH_SCHEME, neoURI.scheme());
 	}
 	
 }

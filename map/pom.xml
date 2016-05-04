@@ -76,7 +76,7 @@
 	            <manifestLocation>${manifest-location}</manifestLocation>
 	           <instructions>
 	           	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-	           	<Bundle-ClassPath>.,{maven-dependencies},target/classes/</Bundle-ClassPath>
+	           	<Bundle-ClassPath>.,{maven-dependencies},target/classes</Bundle-ClassPath>
 	           	<Export-Package>fr.inria.atlanmod.neoemf.map.resources,fr.inria.atlanmod.neoemf.map.datastore,fr.inria.atlanmod.neoemf.map.util</Export-Package>
 	           	<Import-Package></Import-Package>
 	           	<Embed-Dependency>mapdb,jboss-common,commons-lang,commons-io,commons-collections,commons-configuration,commons-logging</Embed-Dependency>

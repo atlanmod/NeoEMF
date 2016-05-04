@@ -21,6 +21,9 @@ import org.junit.Test;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceSaveTest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
 
     private static final String TEST_FILENAME = "graphNeo4jResourceSaveOptionTestFile";
@@ -48,18 +51,20 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
         options.clear();
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE));
+        assertEquals(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J, configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE));
         /*
-         * Check the configuration file contains the store_dir property (computed by
-         * blueprints at graph creation)
+         * Check the configuration file contains the store_dir property (computed by blueprints at graph creation)
          */
-        assert configuration.containsKey(OPTIONS_GRAPH_NEO4J_STORE_DIR);
-        assert configuration.getString(OPTIONS_GRAPH_NEO4J_STORE_DIR).equals(testFile.getAbsolutePath());
-        assert getKeyCount(configuration) == defaultPropertyCount : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(OPTIONS_GRAPH_NEO4J_STORE_DIR));
+        assertEquals(testFile.getAbsolutePath(), configuration.getString(OPTIONS_GRAPH_NEO4J_STORE_DIR));
+
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount, getKeyCount(configuration));
     }
     
     @SuppressWarnings("unchecked")
@@ -67,12 +72,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceNoneCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.NONE);
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE).equals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.NONE.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.NONE.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -87,12 +94,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceWeakCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.WEAK);
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE).equals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.WEAK.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.WEAK.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -107,12 +116,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceSoftCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE,BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT);
         resource.save(options);
+        
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+        
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE).equals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -127,12 +138,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceStrongCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.STRONG);
         resource.save(options);
+        
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+        
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE).equals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.STRONG.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.STRONG.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -147,12 +160,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceTrueUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE);
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS).equals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -167,12 +182,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceTrueBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, true);
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS).equals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -187,12 +204,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceFalseUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE);
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS).equals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -207,12 +226,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceFalseBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, false);
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS).equals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString());
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -228,12 +249,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourcePositiveStringsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY, "64M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY).equals("64M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -264,12 +287,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceNullStringsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY, "0M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY).equals("0M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY));
+        assertEquals("0M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -285,12 +310,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourcePositiveArraysMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY,"64M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY).equals("64M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -321,12 +348,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceNullArraysMappedMemoryOption () throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY,"0M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY).equals("0M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY));
+        assertEquals("0M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -342,12 +371,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourcePositiveNodesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY,"64M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY).equals("64M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -378,12 +409,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceNullNodesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY,"0M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY).equals("0M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY));
+        assertEquals("0M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -399,12 +432,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourcePositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY,"64M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY).equals("64M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -435,12 +470,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceNullPropertiesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY,"0M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY).equals("0M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertEquals("0M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -456,12 +493,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourcePositiveRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY,"64M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY).equals("64M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -492,12 +531,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     public void testSaveGraphNeo4jResourceNullRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY,"0M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY).equals("0M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 1 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertEquals("0M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 1, getKeyCount(configuration));
     }
     
     /**
@@ -514,14 +555,16 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY, "64M");
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY, "64M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY).equals("64M");
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY).equals("64M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 2 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 2, getKeyCount(configuration));
     }
     
     /**
@@ -568,23 +611,25 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY, "64M");
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY, "64M");
         resource.save(options);
+
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists();
+        assertTrue(configFile.exists());
+        
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE).equals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString());
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS).equals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString());
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY).equals("64M");
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY).equals("64M");
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY).equals("64M");
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY).equals("64M");
-        assert configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY);
-        assert configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY).equals("64M");
-        assert getKeyCount(configuration) == defaultPropertyCount + 7 : "The number of properties in the configuration file is not consistent with the given options";
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertEquals(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE));
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertEquals(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString(), configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS));
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY));
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY));
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY));
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY));
+        assertTrue(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertEquals("64M", configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY));
+        assertEquals("The number of properties in the configuration file is not consistent with the given options", defaultPropertyCount + 7, getKeyCount(configuration));
     }
 }

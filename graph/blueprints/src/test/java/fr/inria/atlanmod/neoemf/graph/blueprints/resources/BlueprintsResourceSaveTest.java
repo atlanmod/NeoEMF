@@ -36,6 +36,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistence
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class BlueprintsResourceSaveTest {
     
     private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
@@ -94,11 +97,11 @@ public class BlueprintsResourceSaveTest {
     public void testSaveGraphResourceNoOption() throws IOException, ConfigurationException {
         resource.save(Collections.EMPTY_MAP);
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists() : "Config file does not exist";
+        assertTrue("Config file does not exist", configFile.exists());
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
-        assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
-        assert getKeyCount(configuration) == 3 : "Too much content in the .properties file";
+        assertTrue(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE));
+        assertEquals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT, configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE));
+        assertEquals("Too much content in the .properties file", 3, getKeyCount(configuration));
     }
     
     @SuppressWarnings("unchecked")
@@ -107,11 +110,11 @@ public class BlueprintsResourceSaveTest {
         options.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
         resource.save(options);
         File configFile = new File(testFile + configFileName);
-        assert configFile.exists() : "Config file does not exist";
+        assertTrue("Config file does not exist", configFile.exists());
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
-        assert configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).equals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
-        assert getKeyCount(configuration) == 3 : "Too much content in the .properties file";
+        assertTrue(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE));
+        assertEquals(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT, configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE));
+        assertEquals("Too much content in the .properties file", 3, getKeyCount(configuration));
     }
 
 }
