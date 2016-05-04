@@ -12,6 +12,8 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.resources;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,9 +38,10 @@ import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 
 public class BlueprintsResourceSaveTest {
     
-    private static final String TEST_FILE_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "graphResourceSaveOptionTestFile";
+    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
 
-    protected String testFilePath = TEST_FILE_PATH;
+    protected String testFilePath = TEST_FILENAME;
 
     protected String configFileName = "/config.properties";
     
@@ -55,7 +58,7 @@ public class BlueprintsResourceSaveTest {
         options = new HashMap();
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = new File(testFilePath + String.valueOf(new Date().getTime()));
+        testFile = TEST_DIR.resolve(testFilePath + String.valueOf(new Date().getTime())).toFile();
         resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
         resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(testFile));
@@ -69,8 +72,8 @@ public class BlueprintsResourceSaveTest {
         if(testFile != null) {
             try {
                 FileUtils.forceDelete(testFile);
-            }catch(IOException e) {
-                System.err.println(e);
+            } catch(IOException e) {
+                //System.err.println(e);
             }
             testFile = null;
         }

@@ -12,7 +12,6 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -24,7 +23,7 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceSav
 
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
 
-    private static final String TEST_FILE_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "graphNeo4jResourceSaveOptionTestFile";
+    private static final String TEST_FILENAME = "graphNeo4jResourceSaveOptionTestFile";
 
     /**
      * Used to verify a property added by Blueprints during the graph creation
@@ -38,7 +37,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        this.testFilePath = TEST_FILE_PATH;
+        this.testFilePath = TEST_FILENAME;
         super.setUp();
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
     }

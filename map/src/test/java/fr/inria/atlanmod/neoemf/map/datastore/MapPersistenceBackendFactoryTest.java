@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,7 +43,8 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class MapPersistenceBackendFactoryTest {
 
-    private static final String TEST_FOLDER_PATH = System.getProperty("java.io.tmpdir") + "NeoEMF/" + "mapPersistenceBackendFactoryTest";
+    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = null;
     private File testFolder = null;
@@ -55,7 +58,7 @@ public class MapPersistenceBackendFactoryTest {
     public void setUp() throws IOException {
         persistenceBackendFactory = new MapPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
-        testFolder = new File(TEST_FOLDER_PATH + String.valueOf(new Date().getTime()));
+        testFolder = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
         testFolder.mkdirs();
         testFile = new File(testFolder + "/db");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
@@ -68,8 +71,8 @@ public class MapPersistenceBackendFactoryTest {
         if(testFolder != null) {
             try {
                 FileUtils.forceDelete(testFolder);
-            }catch(IOException e) {
-                System.err.println(e);
+            } catch(IOException e) {
+                //System.err.println(e);
             }
             testFolder = null;
             testFile = null;
