@@ -15,8 +15,9 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test case to reproduce the issue #7 @link{https://github.com/atlanmod/NeoEMF/issues/7}
@@ -29,9 +30,9 @@ public class Issue7Test {
         MapSampleFactory factory = MapSampleFactory.eINSTANCE;
 
         SampleModel model = factory.createSampleModel();
-        assertNotNull("Created SampleModel is null", model);
-        assertNotNull("Accessed List is null", model.getContentObjects());
-        assertTrue("Accessed List is not empty", model.getContentObjects().isEmpty());
+        assertThat("Created SampleModel is null", model, notNullValue());
+        assertThat("Accessed List is null", model.getContentObjects(), notNullValue());
+        assertThat("Accessed List is not empty", model.getContentObjects(), empty());
     }
 
 }

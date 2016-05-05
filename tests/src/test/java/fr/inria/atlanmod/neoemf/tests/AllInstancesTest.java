@@ -17,7 +17,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.After;
 import org.junit.Before;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class AllInstancesTest extends AllBackendTest {
 
@@ -72,21 +73,21 @@ public class AllInstancesTest extends AllBackendTest {
         r.getContents().add(rootPack);
     }
 
-    protected void testAllInstancesPersistentTranscient(PersistentResource persistentResource, boolean strict, int abstractPackContentCount, int packContentCount) {
+    protected void allInstancesPersistentTranscient(PersistentResource persistentResource, boolean strict, int abstractPackContentCount, int packContentCount) {
         EList<EObject> allPacks = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
-        assertEquals("Invalid count : expected " + packCount + ", found " + allPacks.size(), packCount, allPacks.size());
+        assertThat("Invalid count", allPacks.size(), is(packCount));
 
         EList<EObject> allAbstractPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
-        assertEquals("Invalid count : expected " + abstractPackContentCount + ", found " + allAbstractPackContents.size(), abstractPackContentCount, allAbstractPackContents.size());
+        assertThat("Invalid count", allAbstractPackContents.size(), is(abstractPackContentCount));
 
         EList<EObject> allPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
-        assertEquals("Invalid count : expected " + packContentCount + ", found " + allPackContents.size(), packContentCount, allPackContents.size());
+        assertThat("Invalid count", allPackContents.size(), is(packContentCount));
 
         EList<EObject> allSpecializedPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
-        assertEquals("Invalid count : expected " + specializedPackContentCount + ", found " + allSpecializedPackContents.size(), specializedPackContentCount, allSpecializedPackContents.size());
+        assertThat("Invalid count", allSpecializedPackContents.size(), is(specializedPackContentCount));
 
         EList<EObject> allPackContents2 = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
-        assertEquals("Invalid count : expected " + packContent2Count + ", found " + allPackContents2.size(), packContent2Count, allPackContents2.size());
+        assertThat("Invalid count", allPackContents2.size(), is(packContent2Count));
     }
 
 }

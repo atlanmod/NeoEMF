@@ -34,39 +34,39 @@ public class AllInstancesTransientTest extends AllInstancesTest {
 
     @Test
     public void testAllInstancesTransientMapDB() {
-        testAllInstancesTransient(mapResource);
+        allInstancesTransient(mapResource);
     }
 
     @Test
     public void testAllInstancesTransientNeo4j() {
-        testAllInstancesTransient(neo4jResource);
+        allInstancesTransient(neo4jResource);
     }
 
     @Test
     public void testAllInstancesTransientTinker() {
-        testAllInstancesTransient(tinkerResource);
+        allInstancesTransient(tinkerResource);
     }
 
     @Test
     public void testAllInstancesStrictTransientMapDB() {
-        testAllInstancesStrictTransient(mapResource);
+        allInstancesStrictTransient(mapResource);
     }
 
     @Test
     public void testAllInstancesStrictTransientNeo4j() {
-        testAllInstancesStrictTransient(neo4jResource);
+        allInstancesStrictTransient(neo4jResource);
     }
 
     @Test
     public void testAllInstancesStrictTransientTinker() {
-        testAllInstancesStrictTransient(tinkerResource);
+        allInstancesStrictTransient(tinkerResource);
     }
 
-    private void testAllInstancesTransient(PersistentResource persistentResource) {
-        testAllInstancesPersistentTranscient(persistentResource, false, abstractPackContentCount, packContentCount);
+    private void allInstancesTransient(PersistentResource persistentResource) {
+        allInstancesPersistentTranscient(persistentResource, false, abstractPackContentCount, packContentCount);
     }
 
-    private void testAllInstancesStrictTransient(PersistentResource persistentResource) {
-        testAllInstancesPersistentTranscient(persistentResource, true, abstractPackContentStrictCount, packContentStrictCount);
+    private void allInstancesStrictTransient(PersistentResource persistentResource) {
+        allInstancesPersistentTranscient(persistentResource, true, abstractPackContentStrictCount, packContentStrictCount);
     }
 }

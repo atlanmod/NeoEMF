@@ -25,7 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class AllBackendTest {
 
@@ -46,7 +47,7 @@ public class AllBackendTest {
 
     @Before
     public void setUp() throws Exception {
-        assertNotNull("EPackage not set", this.ePackage);
+        assertThat("EPackage not set", this.ePackage, notNullValue());
         String className = this.getClass().getSimpleName();
         String timestamp = String.valueOf(new Date().getTime());
         mapFile = TEST_DIR.resolve(className + "MapDB" + timestamp).toFile();

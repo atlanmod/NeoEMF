@@ -19,95 +19,96 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class LoadedResourceResourceTest extends AllLoadedResourceTest {
 
     @Test
     public void testGetElementsEResourceMapDB() {
-        testGetElementsEResource(mapResource);
+        getElementsEResource(mapResource);
     }
 
     @Test
     public void testGetElementsEResourceNeo4j() {
-        testGetElementsEResource(neo4jResource);
+        getElementsEResource(neo4jResource);
     }
 
     @Test
     public void testGetElementsEResourceTinker() {
-        testGetElementsEResource(tinkerResource);
+        getElementsEResource(tinkerResource);
     }
 
     @Test
     public void testGetAllContentsEResourceMapDB() {
-        testGetAllContentsEResource(mapResource);
+        getAllContentsEResource(mapResource);
     }
 
     @Test
     public void testGetAllContentsEResourceNeo4j() {
-        testGetAllContentsEResource(neo4jResource);
+        getAllContentsEResource(neo4jResource);
     }
 
     @Test
     public void testGetAllContentsEResourceTinker() {
-        testGetAllContentsEResource(tinkerResource);
+        getAllContentsEResource(tinkerResource);
     }
 
     @Test
     public void testGetElementsEDirectResourceMapDB() {
-        testGetElementsEDirectResource(mapResource);
+        getElementsEDirectResource(mapResource);
     }
 
     @Test
     public void testGetElementsEDirectResourceNeo4j() {
-        testGetElementsEDirectResource(neo4jResource);
+        getElementsEDirectResource(neo4jResource);
     }
 
     @Test
     public void testGetElementsEDirectResourceTinker() {
-        testGetElementsEDirectResource(tinkerResource);
+        getElementsEDirectResource(tinkerResource);
     }
 
     @Test
     public void testGetAllContentsEDirectResourceMapDB() {
-        testGetAllContentsEDirectResource(mapResource);
+        getAllContentsEDirectResource(mapResource);
     }
 
     @Test
     public void testGetAllContentsEDirectResourceNeo4j() {
-        testGetAllContentsEDirectResource(neo4jResource);
+        getAllContentsEDirectResource(neo4jResource);
     }
 
     @Test
     public void testGetAllContentsEDirectResourceTinker() {
-        testGetAllContentsEDirectResource(tinkerResource);
+        getAllContentsEDirectResource(tinkerResource);
     }
 
-    private void testGetElementsEResource(PersistentResource persistentResource) {
+    private void getElementsEResource(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
-        assertEquals("Wrong eResource value", persistentResource, model.eResource());
+        assertThat("Wrong eResource value", model.eResource().equals(persistentResource), is(true));
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertEquals("Wrong eResource value", persistentResource, modelContent.eResource());
+        assertThat("Wrong eResource value", modelContent.eResource().equals(persistentResource), is(true));
     }
 
-    private void testGetElementsEDirectResource(PersistentResource persistentResource) {
+    private void getElementsEDirectResource(PersistentResource persistentResource) {
         InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
-        assertNull("eDirectResource must return null", model.eDirectResource());
+        assertThat("eDirectResource must return null", model.eDirectResource(), nullValue());
 
         InternalEObject modelContent = (InternalEObject) ((SampleModel) model).getContentObjects().get(0);
-        assertNull("eDirectResource must return null", modelContent.eDirectResource());
+        assertThat("eDirectResource must return null", modelContent.eDirectResource(), nullValue());
     }
 
-    private void testGetAllContentsEDirectResource(PersistentResource persistentResource) {
+    private void getAllContentsEDirectResource(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertNull("eDirectResource must return null", sampleModel.eDirectResource());
+        assertThat("eDirectResource must return null", sampleModel.eDirectResource(), nullValue());
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertNull("eDirectResource must return null", sampleContentObject.eDirectResource());
+        assertThat("eDirectResource must return null", sampleContentObject.eDirectResource(), nullValue());
     }
 
 }

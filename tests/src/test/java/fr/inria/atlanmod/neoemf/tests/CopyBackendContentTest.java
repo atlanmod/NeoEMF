@@ -23,9 +23,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
-
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
 
 public class CopyBackendContentTest extends AllBackendTest {
 
@@ -66,21 +68,21 @@ public class CopyBackendContentTest extends AllBackendTest {
     @Test
     public void testCopyBackendMapDB() throws IOException {
         mapResource.save(Collections.EMPTY_MAP);
-        assertFalse("Map resource content is empty", mapResource.getContents().isEmpty());
+        assertThat("Map resource content is empty", mapResource.getContents(), not(empty()));
         assertThat("Top-level element is not a SampleModel", mapResource.getContents().get(0), instanceOf(SampleModel.class));
 
         SampleModel sampleModel = (SampleModel) mapResource.getContents().get(0);
-        assertEquals("SampleModel has an invalid name attribute", MODEL_NAME, sampleModel.getName());
+        assertThat("SampleModel has an invalid name attribute", sampleModel.getName(), is(MODEL_NAME));
 
         EList<SampleModelContentObject> contentObjects = sampleModel.getContentObjects();
-        assertFalse("SampleModel contentObjects collection is empty", contentObjects.isEmpty());
-        assertEquals("SampleModel contentObjects collection has an invalid size", 2, contentObjects.size());
+        assertThat("SampleModel contentObjects collection is empty", contentObjects, not(empty()));
+        assertThat("SampleModel contentObjects collection has an invalid size", contentObjects.size(), is(2));
 
-        assertEquals("First element in contentObjects collection has an invalid name", CONTENT1_NAME, contentObjects.get(0).getName());
-        assertEquals("Second element in contentObjects collection has an invalid name", CONTENT2_NAME, contentObjects.get(1).getName());
+        assertThat("First element in contentObjects collection has an invalid name", contentObjects.get(0).getName(), is(CONTENT1_NAME));
+        assertThat("Second element in contentObjects collection has an invalid name", contentObjects.get(1).getName(), is(CONTENT2_NAME));
 
-        assertEquals("First element in contentObjects collection has an invalid container", sampleModel, contentObjects.get(0).eContainer());
-        assertEquals("Second element in contentObjects collection has an invalid container", sampleModel, contentObjects.get(1).eContainer());
+        assertThat("First element in contentObjects collection has an invalid container", contentObjects.get(0).eContainer().equals(sampleModel), is(true));
+        assertThat("Second element in contentObjects collection has an invalid container", contentObjects.get(1).eContainer().equals(sampleModel), is(true));
     }
 
 }

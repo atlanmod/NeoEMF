@@ -24,19 +24,6 @@
         </dependency>
         	    
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-integration</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.avh4.util</groupId>
             <artifactId>imagecomparison</artifactId>
         </dependency>
@@ -57,28 +44,47 @@
            <groupId>com.google.guava</groupId>
            <artifactId>guava</artifactId>
        </dependency>
+
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 			<version>1.6</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 		</dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     
     <build>
@@ -92,7 +98,7 @@
 	            <manifestLocation>${manifest-location}</manifestLocation>
 	           <instructions>
 	           	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-	           	<Bundle-ClassPath>.,{maven-dependencies},target/classes</Bundle-ClassPath>
+	           	<Bundle-ClassPath>.,{maven-dependencies}<!--,target/classes--></Bundle-ClassPath>
 	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.resources,fr.inria.atlanmod.neoemf.graph.blueprints.tg.config,fr.inria.atlanmod.neoemf.graph.blueprints.datastore,fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl,fr.inria.atlanmod.neoemf.graph.blueprints.util,org.apache.commons.configuration,com.tinkerpop.blueprints.*</Export-Package>
 	           	<Import-Package></Import-Package>
 	           	<Embed-Dependency>commons-io,commons-collections,commons-lang,commons-logging,commons-configuration,guava,blueprints-core,jboss-common-core</Embed-Dependency>

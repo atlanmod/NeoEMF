@@ -20,103 +20,104 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class LoadedResourceContainerTest extends AllLoadedResourceTest {
 
     @Test
     public void testGetElementsContainerMapDB() {
-        testGetElementsContainer(mapResource);
+        getElementsContainer(mapResource);
     }
 
     @Test
     public void testGetElementsContainerNeo4j() {
-        testGetElementsContainer(neo4jResource);
+        getElementsContainer(neo4jResource);
     }
 
     @Test
     public void testGetElementsContainerTinker() {
-        testGetElementsContainer(tinkerResource);
+        getElementsContainer(tinkerResource);
     }
 
     @Test
     public void testGetAllContentsContainerMapDB() {
-        testGetAllContentsContainer(mapResource);
+        getAllContentsContainer(mapResource);
     }
 
     @Test
     public void testGetAllContentsContainerNeo4j() {
-        testGetAllContentsContainer(neo4jResource);
+        getAllContentsContainer(neo4jResource);
     }
 
     @Test
     public void testGetAllContentsContainerTinker() {
-        testGetAllContentsContainer(tinkerResource);
+        getAllContentsContainer(tinkerResource);
     }
 
     @Test
     @Ignore
     public void testGetElementsEInternalContainerMapDB() {
-        testGetElementsEInternalContainer(mapResource);
+        getElementsEInternalContainer(mapResource);
     }
 
     @Test
     @Ignore
     public void testGetElementsEInternalContainerNeo4j() {
-        testGetElementsEInternalContainer(neo4jResource);
+        getElementsEInternalContainer(neo4jResource);
     }
 
     @Test
     @Ignore
     public void testGetElementsEInternalContainerTinker() {
-        testGetElementsEInternalContainer(tinkerResource);
+        getElementsEInternalContainer(tinkerResource);
     }
 
     @Test
     @Ignore
     public void testGetAllContentsEInternalContainerMapDB() {
-        testGetAllContentsEInternalContainer(mapResource);
+        getAllContentsEInternalContainer(mapResource);
     }
 
     @Test
     @Ignore
     public void testGetAllContentsEInternalContainerNeo4j() {
-        testGetAllContentsEInternalContainer(neo4jResource);
+        getAllContentsEInternalContainer(neo4jResource);
     }
 
     @Test
     @Ignore
     public void testGetAllContentsEInternalContainerTinker() {
-        testGetAllContentsEInternalContainer(tinkerResource);
+        getAllContentsEInternalContainer(tinkerResource);
     }
 
-    private void testGetElementsContainer(PersistentResource persistentResource) {
+    private void getElementsContainer(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
-        assertNull(model.eContainer());
+        assertThat(model.eContainer(), nullValue());
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertEquals(model, modelContent.eContainer());
+        assertThat(modelContent.eContainer().equals(model), is(true));
     }
 
-    private void testGetElementsEInternalContainer(PersistentResource persistentResource) {
+    private void getElementsEInternalContainer(PersistentResource persistentResource) {
         // TODO check if we have to correct it or not (performance issues)
         InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
-        assertNull("eInternalContainer must return null if eContainer has not been called", model.eInternalContainer());
+        assertThat("eInternalContainer must return null if eContainer has not been called", model.eInternalContainer(), nullValue());
 
         InternalEObject modelContent = (InternalEObject) ((SampleModel) model).getContentObjects().get(0);
-        assertNull("eInternalContainer must return null if eContainer has not been called", modelContent.eInternalContainer());
+        assertThat("eInternalContainer must return null if eContainer has not been called", modelContent.eInternalContainer(), nullValue());
     }
 
-    private void testGetAllContentsEInternalContainer(PersistentResource persistentResource) {
+    private void getAllContentsEInternalContainer(PersistentResource persistentResource) {
         // TODO check if we have to correct it or not (performance issues)
         Iterator<EObject> it = persistentResource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertNull("eInternalContainer must return null if eContainer has not been called", sampleModel.eInternalContainer());
+        assertThat("eInternalContainer must return null if eContainer has not been called", sampleModel.eInternalContainer(), nullValue());
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertNull("eInternalContainer must return null if eContainer has not been called", sampleContentObject.eInternalContainer());
+        assertThat("eInternalContainer must return null if eContainer has not been called", sampleContentObject.eInternalContainer(), nullValue());
     }
 
 }

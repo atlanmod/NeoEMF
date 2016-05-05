@@ -21,29 +21,30 @@ import org.eclipse.emf.ecore.EObject;
 
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class AllSavedLoadedResourceTest extends AllBackendTest {
 
-    protected void testGetAllContentsContainer(PersistentResource persistentResource) {
+    protected void getAllContentsContainer(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();
 
         EObject sampleModel = it.next();
-        assertNull("Top Level EObject has a not null container", sampleModel.eContainer());
+        assertThat("Top Level EObject has a not null container", sampleModel.eContainer(), nullValue());
 
         EObject sampleContentObject = it.next();
-        assertEquals("Wrong eContainer value", sampleModel, sampleContentObject.eContainer());
+        assertThat("Wrong eContainer value", sampleContentObject.eContainer(), is(sampleModel));
     }
 
-    protected void testGetAllContentsEResource(PersistentResource persistentResource) {
+    protected void getAllContentsEResource(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();
 
         EObject sampleModel = it.next();
-        assertEquals("Wrong eResource value", persistentResource, sampleModel.eResource());
+        assertThat("Wrong eResource value", sampleModel.eResource().equals(persistentResource), is(true));
 
         EObject sampleContentObject = it.next();
-        assertEquals("Wrong eResource value", persistentResource, sampleContentObject.eResource());
+        assertThat("Wrong eResource value", sampleContentObject.eResource().equals(persistentResource), is(true));
     }
 
 }

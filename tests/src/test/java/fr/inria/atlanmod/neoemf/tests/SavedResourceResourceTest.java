@@ -19,92 +19,93 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class SavedResourceResourceTest extends AllSavedResourceTest {
 
     @Test
     public void testEResourceMapDB() {
-        testEResource(mapResource, mapSampleModel, mapSampleContentObject);
+        checkEResource(mapResource, mapSampleModel, mapSampleContentObject);
     }
 
     @Test
     public void testEResourceNeo4j() {
-        testEResource(neo4jResource, neo4jSampleModel, neo4jSampleContentObject);
+        checkEResource(neo4jResource, neo4jSampleModel, neo4jSampleContentObject);
     }
 
     @Test
     public void testEResourceTinker() {
-        testEResource(tinkerResource, tinkerSampleModel, tinkerSampleContentObject);
+        checkEResource(tinkerResource, tinkerSampleModel, tinkerSampleContentObject);
     }
 
     @Test
     public void testGetAllContentsEResourceMapDB() {
-        testGetAllContentsEResource(mapResource);
+        getAllContentsEResource(mapResource);
     }
 
     @Test
     public void testGetAllContentsEResourceNeo4j() {
-        testGetAllContentsEResource(neo4jResource);
+        getAllContentsEResource(neo4jResource);
     }
 
     @Test
     public void testGetAllContentsEResourceTinker() {
-        testGetAllContentsEResource(tinkerResource);
+        getAllContentsEResource(tinkerResource);
     }
 
     @Test
     public void testEDirectResourceMapDB() {
-        testEDirectResource(mapResource, mapSampleModel, mapSampleContentObject);
+        checkEDirectResource(mapResource, mapSampleModel, mapSampleContentObject);
     }
 
     @Test
     public void testEDirectResourceNeo4j() {
-        testEDirectResource(neo4jResource, neo4jSampleModel, neo4jSampleContentObject);
+        checkEDirectResource(neo4jResource, neo4jSampleModel, neo4jSampleContentObject);
     }
 
     @Test
     public void testEDirectResourceTinker() {
-        testEDirectResource(tinkerResource, tinkerSampleModel, tinkerSampleContentObject);
+        checkEDirectResource(tinkerResource, tinkerSampleModel, tinkerSampleContentObject);
     }
 
     @Test
     public void testGetAllContentsEDirectResourceMapDB() {
-        testGetAllContentsEDirectResource(mapResource);
+        getAllContentsEDirectResource(mapResource);
     }
 
     @Test
     public void testGetAllContentsEDirectResourceNeo4j() {
-        testGetAllContentsEDirectResource(neo4jResource);
+        getAllContentsEDirectResource(neo4jResource);
     }
 
     @Test
     public void testGetAllContentsEDirectResourceTinker() {
-        testGetAllContentsEDirectResource(tinkerResource);
+        getAllContentsEDirectResource(tinkerResource);
     }
 
-    private void testEResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        assertEquals("Wrong eResource value", persistentResource, sampleModel.eResource());
-        assertEquals("Wrong eResource value", persistentResource, sampleModelContentObject.eResource());
+    private void checkEResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
+        assertThat("Wrong eResource value", sampleModel.eResource().equals(persistentResource), is(true));
+        assertThat("Wrong eResource value", sampleModelContentObject.eResource().equals(persistentResource), is(true));
     }
 
-    private void testEDirectResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
+    private void checkEDirectResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
         InternalEObject internalMapSampleModel = (InternalEObject) sampleModel;
-        assertEquals("Wrong eDirectResource value", persistentResource, internalMapSampleModel.eDirectResource());
+        assertThat("Wrong eDirectResource value", internalMapSampleModel.eDirectResource().equals(persistentResource), is(true));
 
         InternalEObject internalMapSampleContentObject = (InternalEObject) sampleModelContentObject;
-        assertNull("Non top level element eDirectResource is not null", internalMapSampleContentObject.eDirectResource());
+        assertThat("Non top level element eDirectResource is not null", internalMapSampleContentObject.eDirectResource(), nullValue());
     }
 
-    private void testGetAllContentsEDirectResource(PersistentResource persistentResource) {
+    private void getAllContentsEDirectResource(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertEquals("Wrong eDirectResource value", persistentResource, sampleModel.eDirectResource());
+        assertThat("Wrong eDirectResource value", sampleModel.eDirectResource().equals(persistentResource), is(true));
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertNull("Non top level element eDirectResource is not null", sampleContentObject.eDirectResource());
+        assertThat("Non top level element eDirectResource is not null", sampleContentObject.eDirectResource(), nullValue());
     }
 
 }

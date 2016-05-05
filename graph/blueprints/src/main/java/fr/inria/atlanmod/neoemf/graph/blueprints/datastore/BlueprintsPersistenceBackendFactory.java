@@ -63,7 +63,8 @@ public class BlueprintsPersistenceBackendFactory extends
 	@Override
 	public SearcheableResourceEStore createTransientEStore(
 			PersistentResource resource, PersistenceBackend backend) {
-		assert backend instanceof BlueprintsPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
+        //TODO: Check the assertion and convert to condition if it is critical
+		//assert backend instanceof BlueprintsPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
 		return new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
 	}
 	
@@ -201,7 +202,8 @@ public class BlueprintsPersistenceBackendFactory extends
 	@Override
 	protected SearcheableResourceEStore internalCreatePersistentEStore(
 			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-		assert backend instanceof BlueprintsPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
+        //TODO: Check the assertion and convert to condition if it is critical
+		//assert backend instanceof BlueprintsPersistenceBackend : "Trying to create a Graph-based EStore with an invalid backend";
     	@SuppressWarnings("unchecked")
         ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
     	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
@@ -220,7 +222,8 @@ public class BlueprintsPersistenceBackendFactory extends
 	
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-		assert from instanceof BlueprintsPersistenceBackend && to instanceof BlueprintsPersistenceBackend : "Trying to use Graph backend copy on non Graph databases";
+        //TODO: Check the assertion and convert to condition if it is critical
+		//assert from instanceof BlueprintsPersistenceBackend && to instanceof BlueprintsPersistenceBackend : "Trying to use Graph backend copy on non Graph databases";
 		BlueprintsPersistenceBackend bFrom = (BlueprintsPersistenceBackend)from;
 		BlueprintsPersistenceBackend bTo = (BlueprintsPersistenceBackend)to;
 	    GraphHelper.copyGraph(bFrom, bTo);

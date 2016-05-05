@@ -17,8 +17,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThat;
 
 public class EMapSupportTest extends AllBackendTest {
 
@@ -45,94 +47,94 @@ public class EMapSupportTest extends AllBackendTest {
 
     @Test
     public void testGetMapStringStringEmptyMapDB() {
-        testGetMapStringStringEmpty(mapResource);
+        getMapStringStringEmpty(mapResource);
     }
 
     @Test
     public void testGetMapStringStringEmptyNeo4j() {
-        testGetMapStringStringEmpty(neo4jResource);
+        getMapStringStringEmpty(neo4jResource);
     }
 
     @Test
     public void testGetMapStringStringEmptyTinker() {
-        testGetMapStringStringEmpty(tinkerResource);
+        getMapStringStringEmpty(tinkerResource);
     }
 
     @Test
     public void testPutMapStringStringMapDB() {
-        testPutMapStringString(mapResource);
+        putMapStringString(mapResource);
     }
 
     @Test
     public void testPutMapStringStringNeo4j() {
-        testPutMapStringString(neo4jResource);
+        putMapStringString(neo4jResource);
     }
 
     @Test
     public void testPutMapStringStringTinker() {
-        testPutMapStringString(tinkerResource);
+        putMapStringString(tinkerResource);
     }
 
     @Test
     public void testGetMapKVEmptyMapDB() {
-        testGetMapKVEmpty(mapResource);
+        getMapKVEmpty(mapResource);
     }
 
     @Test
     public void testGetMapKVEmptyNeo4j() {
-        testGetMapKVEmpty(neo4jResource);
+        getMapKVEmpty(neo4jResource);
     }
 
     @Test
     public void testGetMapKVEmptyTinker() {
-        testGetMapKVEmpty(tinkerResource);
+        getMapKVEmpty(tinkerResource);
     }
 
     @Test
     public void testPutMapKVMapDB() {
-        testPutMapKV(mapResource);
+        putMapKV(mapResource);
     }
 
     @Test
     public void testPutMapKVNeo4j() {
-        testPutMapKV(neo4jResource);
+        putMapKV(neo4jResource);
     }
 
     @Test
     public void testPutMapKVTinker() {
-        testPutMapKV(tinkerResource);
+        putMapKV(tinkerResource);
     }
 
-    private void testGetMapStringStringEmpty(PersistentResource persistentResource) {
+    private void getMapStringStringEmpty(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         assertThat("Map field is not an instance of EMap", model.getMap(), instanceOf(EMap.class));
 
         EMap<String, String> map = model.getMap();
-        assertTrue("EMap is not empty", map.isEmpty());
+        assertThat("EMap is not empty", map, empty());
     }
 
-    private void testPutMapStringString(PersistentResource persistentResource) {
+    private void putMapStringString(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         EMap<String, String> map = model.getMap();
         map.put(KEY1, VALUE1);
         map.put(KEY2, VALUE2);
 
-        assertTrue("Map does not contain " + KEY1, map.containsKey(KEY1));
-        assertTrue("Map does not contain " + KEY2, map.containsKey(KEY2));
+        assertThat("Map does not contain " + KEY1, map.containsKey(KEY1), is(true));
+        assertThat("Map does not contain " + KEY2, map.containsKey(KEY2), is(true));
 
-        assertEquals("Wrong value for " + KEY1, VALUE1, map.get(KEY1));
-        assertEquals("Wrong  value for " + KEY2, VALUE2, map.get(KEY2));
+        assertThat("Wrong value for " + KEY1, map.get(KEY1), is(VALUE1));
+        assertThat("Wrong  value for " + KEY2, map.get(KEY2), is(VALUE2));
     }
 
-    private void testGetMapKVEmpty(PersistentResource persistentResource) {
+    private void getMapKVEmpty(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         assertThat("KvMap field is not an instance of EMap", model.getKvMap(), instanceOf(EMap.class));
 
         EMap<K, V> map = model.getKvMap();
-        assertTrue("KvMap is not empty", map.isEmpty());
+        assertThat("KvMap is not empty", map, empty());
     }
 
-    private void testPutMapKV(PersistentResource persistentResource) {
+    private void putMapKV(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         EMap<K, V> map = model.getKvMap();
 
@@ -155,11 +157,11 @@ public class EMapSupportTest extends AllBackendTest {
         map.put(k1, v1);
         map.put(k2, v2);
 
-        assertTrue("Map does not contain " + KEY1, map.containsKey(k1));
-        assertTrue("Map does not contain " + KEY2, map.containsKey(k2));
+        assertThat("Map does not contain " + KEY1, map.containsKey(k1), is(true));
+        assertThat("Map does not contain " + KEY2, map.containsKey(k2), is(true));
 
-        assertEquals("Wrong value for " + KEY1, v1, map.get(k1));
-        assertEquals("Wrong value for " + KEY2, v2, map.get(k2));
+        assertThat("Wrong value for " + KEY1, map.get(k1), is(v1));
+        assertThat("Wrong value for " + KEY2, map.get(k2), is(v2));
     }
 
 }

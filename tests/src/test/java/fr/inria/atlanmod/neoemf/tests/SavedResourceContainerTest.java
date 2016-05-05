@@ -19,92 +19,93 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class SavedResourceContainerTest extends AllSavedResourceTest {
 
     @Test
     public void testEContainerMapDB() {
-        testEContainer(mapSampleModel, mapSampleContentObject);
+        checkEContainer(mapSampleModel, mapSampleContentObject);
     }
 
     @Test
     public void testEContainerNeo4j() {
-        testEContainer(neo4jSampleModel, neo4jSampleContentObject);
+        checkEContainer(neo4jSampleModel, neo4jSampleContentObject);
     }
 
     @Test
     public void testEContainerTinker() {
-        testEContainer(tinkerSampleModel, tinkerSampleContentObject);
+        checkEContainer(tinkerSampleModel, tinkerSampleContentObject);
     }
 
     @Test
     public void testGetAllContentsContainerMapDB() {
-        testGetAllContentsContainer(mapResource);
+        getAllContentsContainer(mapResource);
     }
 
     @Test
     public void testGetAllContentsContainerNeo4j() {
-        testGetAllContentsContainer(neo4jResource);
+        getAllContentsContainer(neo4jResource);
     }
 
     @Test
     public void testGetAllContentsContainerTinker() {
-        testGetAllContentsContainer(tinkerResource);
+        getAllContentsContainer(tinkerResource);
     }
 
     @Test
     public void testEInternalContainerMapDB() {
-        testEInternalContainer(mapSampleModel, mapSampleContentObject);
+        checkEInternalContainer(mapSampleModel, mapSampleContentObject);
     }
 
     @Test
     public void testEInternalContainerNeo4j() {
-        testEInternalContainer(neo4jSampleModel, neo4jSampleContentObject);
+        checkEInternalContainer(neo4jSampleModel, neo4jSampleContentObject);
     }
 
     @Test
     public void testEInternalContainerTinker() {
-        testEInternalContainer(tinkerSampleModel, tinkerSampleContentObject);
+        checkEInternalContainer(tinkerSampleModel, tinkerSampleContentObject);
     }
 
     @Test
     public void testGetAllContentsEInternalContainerMapDB() {
-        testGetAllContentsEInternalContainer(mapResource);
+        getAllContentsEInternalContainer(mapResource);
     }
 
     @Test
     public void testGetAllContentsEInternalContainerNeo4j() {
-        testGetAllContentsEInternalContainer(neo4jResource);
+        getAllContentsEInternalContainer(neo4jResource);
     }
 
     @Test
     public void testGetAllContentsEInternalContainerTinker() {
-        testGetAllContentsEInternalContainer(tinkerResource);
+        getAllContentsEInternalContainer(tinkerResource);
     }
 
-    private void testEContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        assertNull("Top Level EObject has a not null container", sampleModel.eContainer());
-        assertEquals("Wrong eContainer value", sampleModel, sampleModelContentObject.eContainer());
+    private void checkEContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
+        assertThat("Top Level EObject has a not null container", sampleModel.eContainer(), nullValue());
+        assertThat("Wrong eContainer value", sampleModelContentObject.eContainer().equals(sampleModel), is(true));
     }
 
-    private void testEInternalContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
+    private void checkEInternalContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
         InternalEObject internalMapSampleModel = (InternalEObject) sampleModel;
-        assertNull("Top Level EObject has a not null internal container", internalMapSampleModel.eInternalContainer());
+        assertThat("Top Level EObject has a not null internal container", internalMapSampleModel.eInternalContainer(), nullValue());
 
         InternalEObject internalMapSampleContentObject = (InternalEObject) sampleModelContentObject;
-        assertEquals("Wrong eInternalContainer value", internalMapSampleModel, internalMapSampleContentObject.eInternalContainer());
+        assertThat("Wrong eInternalContainer value", internalMapSampleContentObject.eInternalContainer(), is(internalMapSampleModel));
     }
 
-    private void testGetAllContentsEInternalContainer(PersistentResource persistentResource) {
+    private void getAllContentsEInternalContainer(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertNull("Top Level EObject has a not null container", sampleModel.eInternalContainer());
+        assertThat("Top Level EObject has a not null container", sampleModel.eInternalContainer(), nullValue());
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertEquals("Wrong eInternalContainer value", sampleModel, sampleContentObject.eInternalContainer());
+        assertThat("Wrong eInternalContainer value", sampleContentObject.eInternalContainer(), is(sampleModel));
     }
 
 }
