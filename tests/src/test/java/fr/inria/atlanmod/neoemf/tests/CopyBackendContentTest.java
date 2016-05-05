@@ -26,6 +26,7 @@ import java.util.Collections;
 
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
@@ -73,14 +74,14 @@ public class CopyBackendContentTest extends AllBackendTest {
         assertThat("Top-level element is not a SampleModel", mapResource.getContents().get(0), instanceOf(SampleModel.class));
 
         SampleModel sampleModel = (SampleModel) mapResource.getContents().get(0);
-        assertThat("SampleModel has an invalid name attribute", sampleModel.getName(), is(MODEL_NAME));
+        assertThat("SampleModel has an invalid name attribute", sampleModel.getName(), equalTo(MODEL_NAME));
 
         EList<SampleModelContentObject> contentObjects = sampleModel.getContentObjects();
         assertThat("SampleModel contentObjects collection is empty", contentObjects, not(empty()));
-        assertThat("SampleModel contentObjects collection has an invalid size", contentObjects.size(), is(2));
+        assertThat("SampleModel contentObjects collection has an invalid size", contentObjects.size(), equalTo(2));
 
-        assertThat("First element in contentObjects collection has an invalid name", contentObjects.get(0).getName(), is(CONTENT1_NAME));
-        assertThat("Second element in contentObjects collection has an invalid name", contentObjects.get(1).getName(), is(CONTENT2_NAME));
+        assertThat("First element in contentObjects collection has an invalid name", contentObjects.get(0).getName(), equalTo(CONTENT1_NAME));
+        assertThat("Second element in contentObjects collection has an invalid name", contentObjects.get(1).getName(), equalTo(CONTENT2_NAME));
 
         assertThat("First element in contentObjects collection has an invalid container", contentObjects.get(0).eContainer().equals(sampleModel), is(true));
         assertThat("Second element in contentObjects collection has an invalid container", contentObjects.get(1).eContainer().equals(sampleModel), is(true));

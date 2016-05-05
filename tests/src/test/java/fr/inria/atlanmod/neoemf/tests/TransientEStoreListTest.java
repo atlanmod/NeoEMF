@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -109,7 +110,7 @@ public class TransientEStoreListTest {
 
     @Test
     public void testIndexOf() {
-        assertThat("IndexOf returns a wrong value", model.getContentObjects().indexOf(mapFactory.createSampleModelContentObject()), is(-1));
+        assertThat("IndexOf returns a wrong value", model.getContentObjects().indexOf(mapFactory.createSampleModelContentObject()), equalTo(-1));
     }
 
     @Test
@@ -124,7 +125,7 @@ public class TransientEStoreListTest {
 
     @Test
     public void testLastIndexOf() {
-        assertThat("LastIndexOf returns a wrong value", model.getContentObjects().lastIndexOf(mapFactory.createSampleModelContentObject()), is(-1));
+        assertThat("LastIndexOf returns a wrong value", model.getContentObjects().lastIndexOf(mapFactory.createSampleModelContentObject()), equalTo(-1));
     }
 
     @Test
@@ -215,7 +216,7 @@ public class TransientEStoreListTest {
 
     @Test
     public void testSizeEmptyList() {
-        assertThat(model.getContentObjects().size(), is(0));
+        assertThat(model.getContentObjects().size(), equalTo(0));
     }
 
     @Test
@@ -224,7 +225,7 @@ public class TransientEStoreListTest {
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().size(), is(2));
+        assertThat(model.getContentObjects().size(), equalTo(2));
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -238,12 +239,12 @@ public class TransientEStoreListTest {
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().subList(0, 1).size(), is(1));
+        assertThat(model.getContentObjects().subList(0, 1).size(), equalTo(1));
     }
 
     @Test
     public void testToArrayEmptyList() {
-        assertThat(model.getContentObjects().toArray().length, is(0));
+        assertThat(model.getContentObjects().toArray().length, equalTo(0));
     }
 
     @Test
@@ -252,7 +253,7 @@ public class TransientEStoreListTest {
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().toArray().length, is(2));
+        assertThat(model.getContentObjects().toArray().length, equalTo(2));
     }
 
     @Test
@@ -268,7 +269,7 @@ public class TransientEStoreListTest {
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().toArray(array).length, is(2));
+        assertThat(model.getContentObjects().toArray(array).length, equalTo(2));
     }
 
     @Test

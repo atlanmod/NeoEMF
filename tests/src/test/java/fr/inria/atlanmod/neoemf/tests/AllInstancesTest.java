@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.After;
 import org.junit.Before;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class AllInstancesTest extends AllBackendTest {
@@ -76,19 +76,19 @@ public class AllInstancesTest extends AllBackendTest {
 
     protected void allInstancesPersistentTranscient(PersistentResource persistentResource, boolean strict, int abstractPackContentCount, int packContentCount) {
         EList<EObject> allPacks = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
-        assertThat("Invalid count", allPacks.size(), is(packCount));
+        assertThat("Invalid count", allPacks.size(), equalTo(packCount));
 
         EList<EObject> allAbstractPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
-        assertThat("Invalid count", allAbstractPackContents.size(), is(abstractPackContentCount));
+        assertThat("Invalid count", allAbstractPackContents.size(), equalTo(abstractPackContentCount));
 
         EList<EObject> allPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
-        assertThat("Invalid count", allPackContents.size(), is(packContentCount));
+        assertThat("Invalid count", allPackContents.size(), equalTo(packContentCount));
 
         EList<EObject> allSpecializedPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
-        assertThat("Invalid count", allSpecializedPackContents.size(), is(specializedPackContentCount));
+        assertThat("Invalid count", allSpecializedPackContents.size(), equalTo(specializedPackContentCount));
 
         EList<EObject> allPackContents2 = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
-        assertThat("Invalid count", allPackContents2.size(), is(packContent2Count));
+        assertThat("Invalid count", allPackContents2.size(), equalTo(packContent2Count));
     }
 
 }

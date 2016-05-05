@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class BlueprintsResourceSaveTest {
@@ -100,7 +101,7 @@ public class BlueprintsResourceSaveTest {
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(true));
         assertThat(configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT));
-        assertThat("Too much content in the .properties file", getKeyCount(configuration), is(3));
+        assertThat("Too much content in the .properties file", getKeyCount(configuration), equalTo(3));
     }
 
     @SuppressWarnings("unchecked")
@@ -115,7 +116,7 @@ public class BlueprintsResourceSaveTest {
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(true));
         assertThat(configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT));
-        assertThat("Too much content in the .properties file", getKeyCount(configuration), is(3));
+        assertThat("Too much content in the .properties file", getKeyCount(configuration), equalTo(3));
     }
 
 }

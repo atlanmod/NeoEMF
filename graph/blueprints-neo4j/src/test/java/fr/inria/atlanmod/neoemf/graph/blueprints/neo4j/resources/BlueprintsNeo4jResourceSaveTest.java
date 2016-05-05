@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
@@ -64,7 +65,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
         assertThat(configuration.containsKey(OPTIONS_GRAPH_NEO4J_STORE_DIR), is(true));
         assertThat(configuration.getString(OPTIONS_GRAPH_NEO4J_STORE_DIR), is(testFile.getAbsolutePath()));
 
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount));
     }
 
     @SuppressWarnings("unchecked")
@@ -78,8 +79,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(BlueprintsNeo4jResourceOptions.CACHE_TYPE.NONE.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), equalTo(BlueprintsNeo4jResourceOptions.CACHE_TYPE.NONE.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -87,6 +88,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -100,8 +102,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(BlueprintsNeo4jResourceOptions.CACHE_TYPE.WEAK.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), equalTo(BlueprintsNeo4jResourceOptions.CACHE_TYPE.WEAK.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -109,6 +111,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -122,8 +125,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), equalTo(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -131,6 +134,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -144,8 +148,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(BlueprintsNeo4jResourceOptions.CACHE_TYPE.STRONG.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), equalTo(BlueprintsNeo4jResourceOptions.CACHE_TYPE.STRONG.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -153,6 +157,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -166,8 +171,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), equalTo(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -175,6 +180,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -188,8 +194,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), equalTo(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -197,6 +203,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -210,8 +217,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), equalTo(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -219,6 +226,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -232,8 +240,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString()));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), equalTo(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE.toString()));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -242,6 +250,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -255,8 +264,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), is("64M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), equalTo("64M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -265,6 +274,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -280,6 +290,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -293,8 +304,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), is("0M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), equalTo("0M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -303,6 +314,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -316,8 +328,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), is("64M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), equalTo("64M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -326,6 +338,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -341,6 +354,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -354,8 +368,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), is("0M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), equalTo("0M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -364,6 +378,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -377,8 +392,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), is("64M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), equalTo("64M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -387,6 +402,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -402,6 +418,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -415,8 +432,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), is("0M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), equalTo("0M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -425,6 +442,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -438,8 +456,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is("64M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), equalTo("64M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -448,6 +466,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -463,6 +482,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -476,8 +496,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is("0M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), equalTo("0M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -486,6 +506,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -499,8 +520,8 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is("64M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), equalTo("64M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
@@ -509,6 +530,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -524,6 +546,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -537,16 +560,17 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is("0M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 1));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), equalTo("0M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 1));
     }
 
     /**
-     * Test the existence of relationships_mapped_memory and properties_mapped_memory properties 
+     * Test the existence of relationships_mapped_memory and properties_mapped_memory properties
      * in the configuration file (with a positive value).
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -561,10 +585,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is("64M"));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), equalTo("64M"));
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is("64M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 2));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), equalTo("64M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 2));
     }
 
     /**
@@ -574,6 +598,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -588,16 +613,17 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * Test the existence of all the properties in the configuration file (all options given to the
      * resource are valid).
      * Tested options are:
-     *  - cache_type
-     *  - use_memory_mapped_buffers
-     *  - strings_mapped_memory
-     *  - arrays_mapped_memory
-     *  - nodes_mapped_memory
-     *  - properties_mapped_memory
-     *  - relationships_mapped_memory
+     * - cache_type
+     * - use_memory_mapped_buffers
+     * - strings_mapped_memory
+     * - arrays_mapped_memory
+     * - nodes_mapped_memory
+     * - properties_mapped_memory
+     * - relationships_mapped_memory
      * This test use the option @see{BlueprintsNeo4jResourceOptions.OPTIONS_GRAPH_TYPE_NEO4J}
      * but does not test it (it is done in @see{testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
+     *
      * @see{testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @SuppressWarnings("unchecked")
@@ -617,19 +643,19 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), is(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString()));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE), equalTo(BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT.toString()));
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), is(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString()));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS), equalTo(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE.toString()));
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), is("64M"));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY), equalTo("64M"));
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), is("64M"));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY), equalTo("64M"));
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), is("64M"));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY), equalTo("64M"));
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), is("64M"));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY), equalTo("64M"));
         assertThat(configuration.containsKey(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is(true));
-        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), is("64M"));
-        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), is(defaultPropertyCount + 7));
+        assertThat(configuration.getString(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY), equalTo("64M"));
+        assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(defaultPropertyCount + 7));
     }
 }

@@ -197,6 +197,7 @@ public class MapPersistenceBackendFactoryTest {
     /**
      * Test if {@link AbstractPersistenceBackendFactory#copyBackend} creates the persistent
      * data stores from the transient ones. Only empty backends are tested.
+     *
      * @throws InvalidDataStoreException
      */
     @Test

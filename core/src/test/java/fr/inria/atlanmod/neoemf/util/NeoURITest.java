@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class NeoURITest {
@@ -60,7 +60,7 @@ public class NeoURITest {
     public void testCreateNeoURIFromStandardURIValidScheme() {
         URI validURI = URI.createURI("mock://test");
         URI neoURI = NeoURI.createNeoURI(validURI);
-        assertThat(neoURI.scheme(), is("mock"));
+        assertThat(neoURI.scheme(), equalTo("mock"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -77,7 +77,7 @@ public class NeoURITest {
     @Test
     public void testCreateNeoURIFromFileValidScheme() {
         URI neoURI = NeoURI.createNeoURI(testFile, "mock");
-        assertThat(neoURI.scheme(), is("mock"));
+        assertThat(neoURI.scheme(), equalTo("mock"));
         System.out.println(neoURI.devicePath());
     }
 
@@ -96,7 +96,7 @@ public class NeoURITest {
     public void testCreateNeoURIFromFileURIValidScheme() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
         URI neoURI = NeoURI.createNeoURI(fileURI, "mock");
-        assertThat(neoURI.scheme(), is("mock"));
+        assertThat(neoURI.scheme(), equalTo("mock"));
     }
 
     @Test(expected = IllegalArgumentException.class)

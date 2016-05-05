@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Test cases for the only non-abstract method in @see{AbstractPersistenceBackendFactory::createPersistentEStore}
- *
  */
 public class AbstractPersistenceBackendFactoryTest {
 
@@ -206,7 +205,8 @@ public class AbstractPersistenceBackendFactoryTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in @see{AbstractPersistenceBackendFactory}
-     * 4 stores : @see{EStructuralFeatureCachingDelegatedEStoreImpl}, @see{IsSetCachingDelegatedEStoreImpl}, 
+     * 4 stores : @see{EStructuralFeatureCachingDelegatedEStoreImpl}, @see{IsSetCachingDelegatedEStoreImpl},
+     *
      * @see{LoggingDelegatedResourceEStoreImpl}, and @see{SizeCachingDelegatedEStoreImpl}
      */
     @Test
