@@ -8,6 +8,7 @@
  * Contributors:
  * Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;

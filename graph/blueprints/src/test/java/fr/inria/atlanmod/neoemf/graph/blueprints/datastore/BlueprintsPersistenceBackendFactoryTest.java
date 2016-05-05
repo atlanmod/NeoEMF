@@ -8,6 +8,7 @@
  * Contributors:
  * Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
