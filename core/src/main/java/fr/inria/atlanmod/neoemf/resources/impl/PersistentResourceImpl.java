@@ -425,6 +425,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	}
 
 	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
-		resource.shutdown();
+		if (resource != null) {
+			resource.shutdown();
+		}
 	}
 }
