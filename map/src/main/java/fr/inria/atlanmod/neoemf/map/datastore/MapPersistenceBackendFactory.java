@@ -54,8 +54,7 @@ public class MapPersistenceBackendFactory extends
 	@Override
 	public SearcheableResourceEStore createTransientEStore(
 			PersistentResource resource, PersistenceBackend backend) {
-        //TODO: Check the assertion and convert to condition if it is critical
-		//assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
+		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
 		return new DirectWriteMapResourceEStoreImpl(resource, (DB)backend);
 	}
 
@@ -93,8 +92,7 @@ public class MapPersistenceBackendFactory extends
 	@Override
 	protected SearcheableResourceEStore internalCreatePersistentEStore(
 			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-        //TODO: Check the assertion and convert to condition if it is critical
-		//assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
+		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
     	@SuppressWarnings("unchecked")
         ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
         if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE)) {
@@ -123,9 +121,8 @@ public class MapPersistenceBackendFactory extends
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        //TODO: Check assertions and convert to conditions if they are criticals
-	    //assert from instanceof MapPersistenceBackend : "The backend to copy is not an instance of MapPersistenceBackend";
-	    //assert to instanceof MapPersistenceBackend : "The target copy backend is not an instance of MapPersistenceBackend";
+	    assert from instanceof MapPersistenceBackend : "The backend to copy is not an instance of MapPersistenceBackend";
+	    assert to instanceof MapPersistenceBackend : "The target copy backend is not an instance of MapPersistenceBackend";
 	    MapPersistenceBackend mapFrom = (MapPersistenceBackend)from;
 	    MapPersistenceBackend mapTo = (MapPersistenceBackend)to;
 	    Map<String,Object> fromAll = mapFrom.getAll();

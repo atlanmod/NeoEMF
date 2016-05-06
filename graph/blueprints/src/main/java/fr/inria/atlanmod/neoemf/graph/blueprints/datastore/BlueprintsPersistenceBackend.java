@@ -128,8 +128,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	public void initMetaClassesIndex(List<EClass> eClassList) {
 	    for(EClass eClass : eClassList) {
-            //TODO: Check the assertion and convert to condition if it is critical
-	        //assert !metaclassIndex.get("name", eClass.getName()).iterator().hasNext() : "Index is not consistent";
+	        assert !metaclassIndex.get("name", eClass.getName()).iterator().hasNext() : "Index is not consistent";
 	        metaclassIndex.put("name", eClass.getName(), getVertex(eClass));
 	    }
 	}
