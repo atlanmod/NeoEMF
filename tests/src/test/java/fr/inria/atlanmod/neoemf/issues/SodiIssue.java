@@ -17,18 +17,20 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
 
 public class SodiIssue {
 
-    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     private static final String TEST_FILENAME = "sodiMapResource";
 
     protected MapSampleFactory mFac;
@@ -39,7 +41,7 @@ public class SodiIssue {
 
     @Before
     public void setUp() {
-        testFile = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
         mPack = MapSamplePackage.eINSTANCE;
         mFac = MapSampleFactory.eINSTANCE;
@@ -51,11 +53,14 @@ public class SodiIssue {
     @After
     public void tearDown() throws Exception {
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
-        if (testFile.exists()) {
+
+        temporaryFolder.delete();
+
+        if (temporaryFolder.getRoot().exists()) {
             try {
-                FileUtils.forceDelete(testFile);
+                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                //System.err.println(e);
+                System.err.println(e);
             }
         }
     }

@@ -23,13 +23,13 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.hamcrest.collection.IsMapContaining.hasKey;
@@ -39,7 +39,9 @@ import static org.junit.Assert.assertThat;
 
 public class MapPersistenceBackendFactoryTest {
 
-    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = null;
@@ -54,25 +56,28 @@ public class MapPersistenceBackendFactoryTest {
     public void setUp() throws IOException {
         persistenceBackendFactory = new MapPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
-        testFolder = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
         testFolder.mkdirs();
         testFile = new File(testFolder + "/db");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
-
     }
 
     @After
     public void tearDown() {
         PersistenceBackendFactoryRegistry.getFactories().clear();
-        if (testFolder != null) {
+
+        temporaryFolder.delete();
+
+        if (temporaryFolder.getRoot().exists()) {
             try {
-                FileUtils.forceDelete(testFolder);
+                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                //System.err.println(e);
+                System.err.println(e);
             }
-            testFolder = null;
-            testFile = null;
         }
+
+        testFolder = null;
+        testFile = null;
     }
 
     private PersistenceBackend getInnerBackend(DirectWriteMapResourceEStoreImpl store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {

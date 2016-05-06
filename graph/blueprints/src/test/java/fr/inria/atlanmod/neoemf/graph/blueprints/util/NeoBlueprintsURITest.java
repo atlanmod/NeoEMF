@@ -14,14 +14,16 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.util;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.Date;
 
 import static org.hamcrest.core.Is.is;
@@ -29,7 +31,9 @@ import static org.junit.Assert.assertThat;
 
 public class NeoBlueprintsURITest {
 
-    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     private static final String TEST_FILENAME = "neoGraphURITestFile";
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
@@ -39,15 +43,22 @@ public class NeoBlueprintsURITest {
     public void setUp() {
         PersistenceBackendFactoryRegistry.getFactories().clear();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
     }
 
     @After
     public void tearDown() {
-        if (testFile != null) {
-            testFile.delete();
-            testFile = null;
+        temporaryFolder.delete();
+
+        if (temporaryFolder.getRoot().exists()) {
+            try {
+                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
+            } catch (IOException e) {
+                System.err.println(e);
+            }
         }
+
+        testFile = null;
     }
 
     @Test(expected = IllegalArgumentException.class)

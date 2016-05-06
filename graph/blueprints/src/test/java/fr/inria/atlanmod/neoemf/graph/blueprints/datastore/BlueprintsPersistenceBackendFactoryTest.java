@@ -26,13 +26,13 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.hamcrest.core.Is.is;
@@ -41,7 +41,9 @@ import static org.junit.Assert.assertThat;
 
 public class BlueprintsPersistenceBackendFactoryTest {
 
-    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     private static final String TEST_FILENAME = "graphPersistenceBackendFactoryTestFile";
 
     protected AbstractPersistenceBackendFactory persistenceBackendFactory = null;
@@ -55,7 +57,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
     public void setUp() {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
 
     }
@@ -63,14 +65,18 @@ public class BlueprintsPersistenceBackendFactoryTest {
     @After
     public void tearDown() {
         PersistenceBackendFactoryRegistry.getFactories().clear();
-        if (testFile != null) {
+
+        temporaryFolder.delete();
+
+        if (temporaryFolder.getRoot().exists()) {
             try {
-                FileUtils.forceDelete(testFile);
+                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                //System.err.println(e);
+                System.err.println(e);
             }
-            testFile = null;
         }
+
+        testFile = null;
     }
 
     protected PersistenceBackend getInnerBackend(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {

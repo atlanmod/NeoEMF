@@ -24,12 +24,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.hamcrest.core.Is.is;
@@ -38,7 +38,9 @@ import static org.junit.Assert.assertThat;
 
 public class BlueprintsResourceSaveTest {
 
-    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
 
     protected String testFilePath = TEST_FILENAME;
@@ -59,7 +61,7 @@ public class BlueprintsResourceSaveTest {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
 
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = TEST_DIR.resolve(testFilePath + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + String.valueOf(new Date().getTime())).toFile();
         resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
         resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(testFile));
@@ -70,14 +72,18 @@ public class BlueprintsResourceSaveTest {
         resource.unload();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
         PersistenceBackendFactoryRegistry.getFactories().clear();
-        if (testFile != null) {
+
+        temporaryFolder.delete();
+
+        if (temporaryFolder.getRoot().exists()) {
             try {
-                FileUtils.forceDelete(testFile);
+                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                //System.err.println(e);
+                System.err.println(e);
             }
-            testFile = null;
         }
+
+        testFile = null;
     }
 
     protected int getKeyCount(PropertiesConfiguration configuration) {

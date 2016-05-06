@@ -19,11 +19,11 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -31,7 +31,8 @@ import static org.junit.Assert.assertThat;
 
 public class AllBackendTest {
 
-    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     protected PersistentResource mapResource;
     protected PersistentResource neo4jResource;
@@ -51,13 +52,11 @@ public class AllBackendTest {
         assertThat("EPackage not set", this.ePackage, notNullValue());
         String className = this.getClass().getSimpleName();
         String timestamp = String.valueOf(new Date().getTime());
-        mapFile = TEST_DIR.resolve(className + "MapDB" + timestamp).toFile();
-        neo4jFile = TEST_DIR.resolve(className + "Neo4j" + timestamp).toFile();
-        tinkerFile = TEST_DIR.resolve(className + "Tinker" + timestamp).toFile();
-
+        mapFile = temporaryFolder.getRoot().toPath().resolve(className + "MapDB" + timestamp).toFile();
+        neo4jFile = temporaryFolder.getRoot().toPath().resolve(className + "Neo4j" + timestamp).toFile();
+        tinkerFile = temporaryFolder.getRoot().toPath().resolve(className + "Tinker" + timestamp).toFile();
         mapBuilder = new MapResourceBuilder(ePackage);
         blueprintsBuilder = new BlueprintsResourceBuilder(ePackage);
-
     }
 
     public void createPersistentStores() throws IOException {
@@ -78,25 +77,13 @@ public class AllBackendTest {
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) neo4jResource);
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) tinkerResource);
 
-        if (mapFile.exists()) {
+        temporaryFolder.delete();
+
+        if (temporaryFolder.getRoot().exists()) {
             try {
-                FileUtils.forceDelete(mapFile);
+                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                //System.err.println(e);
-            }
-        }
-        if (neo4jFile.exists()) {
-            try {
-                FileUtils.forceDelete(neo4jFile);
-            } catch (IOException e) {
-                //System.err.println(e);
-            }
-        }
-        if (tinkerFile.exists()) {
-            try {
-                FileUtils.forceDelete(tinkerFile);
-            } catch (IOException e) {
-                //System.err.println(e);
+                    System.err.println(e);
             }
         }
     }
