@@ -11,6 +11,9 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.util;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
@@ -23,6 +26,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistence
 
 public class NeoBlueprintsURITest {
 
+	private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "neoGraphURITestFile";
+
 	private AbstractPersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
 	private File testFile = null;
 	
@@ -30,7 +36,7 @@ public class NeoBlueprintsURITest {
 	public void setUp() {
 		PersistenceBackendFactoryRegistry.getFactories().clear();
 		PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-		testFile = new File("src/test/resource/neoGraphURITestFile");
+		testFile = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
 	}
 	
 	@After

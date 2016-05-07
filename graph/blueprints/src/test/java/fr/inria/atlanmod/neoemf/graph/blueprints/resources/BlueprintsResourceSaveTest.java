@@ -12,10 +12,13 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.resources;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Date;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -30,13 +33,16 @@ import org.junit.Test;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 
 public class BlueprintsResourceSaveTest {
     
-    protected String testFilePath = "src/test/resources/graphResourceSaveOptionTestFile";
+    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
+
+    protected String testFilePath = TEST_FILENAME;
+
     protected String configFileName = "/config.properties";
     
     protected AbstractPersistenceBackendFactory persistenceBackendFactory = null;
@@ -52,7 +58,7 @@ public class BlueprintsResourceSaveTest {
         options = new HashMap();
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = new File(testFilePath);
+        testFile = TEST_DIR.resolve(testFilePath + String.valueOf(new Date().getTime())).toFile();
         resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
         resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(testFile));
@@ -66,8 +72,8 @@ public class BlueprintsResourceSaveTest {
         if(testFile != null) {
             try {
                 FileUtils.forceDelete(testFile);
-            }catch(IOException e) {
-                
+            } catch(IOException e) {
+                //System.err.println(e);
             }
             testFile = null;
         }
@@ -87,7 +93,7 @@ public class BlueprintsResourceSaveTest {
     @Test
     public void testSaveGraphResourceNoOption() throws IOException, ConfigurationException {
         resource.save(Collections.EMPTY_MAP);
-        File configFile = new File(testFilePath + configFileName);
+        File configFile = new File(testFile + configFileName);
         assert configFile.exists() : "Config file does not exist";
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
@@ -100,7 +106,7 @@ public class BlueprintsResourceSaveTest {
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
         resource.save(options);
-        File configFile = new File(testFilePath + configFileName);
+        File configFile = new File(testFile + configFileName);
         assert configFile.exists() : "Config file does not exist";
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
         assert configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);

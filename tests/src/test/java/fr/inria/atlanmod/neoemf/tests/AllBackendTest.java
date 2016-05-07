@@ -12,9 +12,9 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.FileAttribute;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.After;
@@ -26,7 +26,9 @@ import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
 import fr.inria.atlanmod.neoemf.test.commons.MapResourceBuilder;
 
 public class AllBackendTest {
-    
+
+    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+
     protected PersistentResource mapResource;
     protected PersistentResource neo4jResource;
     protected PersistentResource tinkerResource;
@@ -44,9 +46,10 @@ public class AllBackendTest {
     public void setUp() throws Exception {
         assert this.ePackage != null : "EPackage not set";
         String className = this.getClass().getSimpleName();
-        mapFile     = new File("/tmp/"+className+"MapDB");
-        neo4jFile   = new File("/tmp/"+className+"Neo4j");
-        tinkerFile  = new File("/tmp/"+className+"Tinker");
+        String timestamp = String.valueOf(new Date().getTime());
+        mapFile     = TEST_DIR.resolve(className + "MapDB" + timestamp).toFile();
+        neo4jFile   = TEST_DIR.resolve(className + "Neo4j" + timestamp).toFile();
+        tinkerFile  = TEST_DIR.resolve(className + "Tinker" + timestamp).toFile();
         
         mapBuilder               = new MapResourceBuilder(ePackage);
         blueprintsBuilder = new BlueprintsResourceBuilder(ePackage);
@@ -72,13 +75,25 @@ public class AllBackendTest {
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)tinkerResource);
         
         if(mapFile.exists()) {
-            FileUtils.forceDelete(mapFile);
+            try {
+                FileUtils.forceDelete(mapFile);
+            } catch (IOException e) {
+                //System.err.println(e);
+            }
         }
         if(neo4jFile.exists()) {
-            FileUtils.forceDelete(neo4jFile);
+            try {
+                FileUtils.forceDelete(neo4jFile);
+            } catch (IOException e) {
+                //System.err.println(e);
+            }
         }
         if(tinkerFile.exists()) {
-            FileUtils.forceDelete(tinkerFile);
+            try {
+                FileUtils.forceDelete(tinkerFile);
+            } catch (IOException e) {
+                //System.err.println(e);
+            }
         }
     }
 

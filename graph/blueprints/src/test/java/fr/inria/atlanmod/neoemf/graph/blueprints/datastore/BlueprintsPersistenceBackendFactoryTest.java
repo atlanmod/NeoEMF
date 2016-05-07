@@ -13,11 +13,14 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
@@ -39,6 +42,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class BlueprintsPersistenceBackendFactoryTest {
+
+    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "graphPersistenceBackendFactoryTestFile";
     
     protected AbstractPersistenceBackendFactory persistenceBackendFactory = null;
     protected File testFile = null;
@@ -51,7 +57,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
     public void setUp() {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = new File("src/test/resources/graphPersistenceBackendFactoryTestFile");
+        testFile = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
         
     }
@@ -62,8 +68,8 @@ public class BlueprintsPersistenceBackendFactoryTest {
         if(testFile != null) {
             try {
                 FileUtils.forceDelete(testFile);
-            }catch(IOException e) {
-                
+            } catch(IOException e) {
+                //System.err.println(e);
             }
             testFile = null;
         }

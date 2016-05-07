@@ -13,11 +13,14 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -40,6 +43,9 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 public class MapPersistenceBackendFactoryTest {
 
+    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
+
     private AbstractPersistenceBackendFactory persistenceBackendFactory = null;
     private File testFolder = null;
     private File testFile = null;
@@ -52,9 +58,9 @@ public class MapPersistenceBackendFactoryTest {
     public void setUp() throws IOException {
         persistenceBackendFactory = new MapPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
-        testFolder = new File("src/test/resources/mapPersistenceBackendFactoryTest");
+        testFolder = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
         testFolder.mkdirs();
-        testFile = new File("src/test/resources/mapPersistenceBackendFactoryTest/db");
+        testFile = new File(testFolder + "/db");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
         
     }
@@ -65,8 +71,8 @@ public class MapPersistenceBackendFactoryTest {
         if(testFolder != null) {
             try {
                 FileUtils.forceDelete(testFolder);
-            }catch(IOException e) {
-                
+            } catch(IOException e) {
+                //System.err.println(e);
             }
             testFolder = null;
             testFile = null;

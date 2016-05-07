@@ -1,6 +1,9 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
@@ -13,6 +16,9 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 
 public class NeoURITest {
 
+	private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    private static final String TEST_FILENAME = "neoURITestFile";
+
 	private AbstractPersistenceBackendFactory persistenceBackendFactory = Mockito.mock(AbstractPersistenceBackendFactory.class);
 	private File testFile = null;
 	
@@ -20,7 +26,7 @@ public class NeoURITest {
 	public void setUp() {
 		PersistenceBackendFactoryRegistry.getFactories().clear();
 		PersistenceBackendFactoryRegistry.getFactories().put("mock", persistenceBackendFactory);
-		testFile = new File("src/test/resources/neoURITestFile");
+		testFile = TEST_DIR.resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
 	}
 	
 	@After
