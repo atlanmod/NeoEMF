@@ -11,16 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
+import fr.inria.atlanmod.neoemf.AllCoreTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class PersistenceBackendFactoryRegistryTest {
+public class PersistenceBackendFactoryRegistryTest extends AllCoreTest {
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(AbstractPersistenceBackendFactory.class);
     private AbstractPersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(AbstractPersistenceBackendFactory.class);
@@ -37,7 +38,7 @@ public class PersistenceBackendFactoryRegistryTest {
 
         AbstractPersistenceBackendFactory registeredFactory = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
         assertThat(registeredFactory, notNullValue());
-        assertThat(registeredFactory, is(persistenceBackendFactory1));
+        assertThat(registeredFactory, sameInstance(persistenceBackendFactory1));
     }
 
     @Test
@@ -48,11 +49,11 @@ public class PersistenceBackendFactoryRegistryTest {
 
         AbstractPersistenceBackendFactory registeredFactory1 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
         assertThat(registeredFactory1, notNullValue());
-        assertThat(registeredFactory1, is(persistenceBackendFactory1));
+        assertThat(registeredFactory1, sameInstance(persistenceBackendFactory1));
 
         AbstractPersistenceBackendFactory registeredFactory2 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock2");
         assertThat(registeredFactory2, notNullValue());
-        assertThat(registeredFactory2, is(persistenceBackendFactory2));
+        assertThat(registeredFactory2, sameInstance(persistenceBackendFactory2));
     }
 
 }

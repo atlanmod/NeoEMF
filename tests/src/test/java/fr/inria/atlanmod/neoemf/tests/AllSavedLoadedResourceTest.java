@@ -13,11 +13,12 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Iterator;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public abstract class AllSavedLoadedResourceTest extends AllBackendTest {
@@ -29,17 +30,17 @@ public abstract class AllSavedLoadedResourceTest extends AllBackendTest {
         assertThat("Top Level EObject has a not null container", sampleModel.eContainer(), nullValue());
 
         EObject sampleContentObject = it.next();
-        assertThat("Wrong eContainer value", sampleContentObject.eContainer(), is(sampleModel));
+        assertThat("Wrong eContainer value", sampleContentObject.eContainer(), sameInstance(sampleModel));
     }
 
     protected void getAllContentsEResource(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();
 
         EObject sampleModel = it.next();
-        assertThat("Wrong eResource value", sampleModel.eResource().equals(persistentResource), is(true));
+        assertThat("Wrong eResource value", sampleModel.eResource(), sameInstance((Resource) persistentResource));
 
         EObject sampleContentObject = it.next();
-        assertThat("Wrong eResource value", sampleContentObject.eResource().equals(persistentResource), is(true));
+        assertThat("Wrong eResource value", sampleContentObject.eResource(), sameInstance((Resource) persistentResource));
     }
 
 }

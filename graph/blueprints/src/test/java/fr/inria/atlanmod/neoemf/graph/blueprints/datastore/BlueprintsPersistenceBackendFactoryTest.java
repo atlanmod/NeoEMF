@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.AllGraphTest;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
@@ -35,11 +36,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class BlueprintsPersistenceBackendFactoryTest {
+public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -103,7 +104,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteBlueprintsResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend(eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(transientBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(transientBackend));
     }
 
     @Test
@@ -123,7 +124,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteBlueprintsResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend(eStore);
-        assertThat(innerBackend, is(persistentBackend));
+        assertThat(innerBackend, sameInstance(persistentBackend));
     }
 
     @Test
@@ -136,7 +137,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteBlueprintsResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend(eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
     @Test
@@ -149,7 +150,7 @@ public class BlueprintsPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(AutocommitBlueprintsResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend(eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
 }

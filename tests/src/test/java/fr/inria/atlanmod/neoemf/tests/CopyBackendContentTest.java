@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,10 +26,10 @@ import java.io.IOException;
 import java.util.Collections;
 
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class CopyBackendContentTest extends AllBackendTest {
@@ -83,8 +84,8 @@ public class CopyBackendContentTest extends AllBackendTest {
         assertThat("First element in contentObjects collection has an invalid name", contentObjects.get(0).getName(), equalTo(CONTENT1_NAME));
         assertThat("Second element in contentObjects collection has an invalid name", contentObjects.get(1).getName(), equalTo(CONTENT2_NAME));
 
-        assertThat("First element in contentObjects collection has an invalid container", contentObjects.get(0).eContainer().equals(sampleModel), is(true));
-        assertThat("Second element in contentObjects collection has an invalid container", contentObjects.get(1).eContainer().equals(sampleModel), is(true));
+        assertThat("First element in contentObjects collection has an invalid container", contentObjects.get(0).eContainer(), sameInstance((EObject) sampleModel));
+        assertThat("Second element in contentObjects collection has an invalid container", contentObjects.get(1).eContainer(), sameInstance((EObject) sampleModel));
     }
 
 }

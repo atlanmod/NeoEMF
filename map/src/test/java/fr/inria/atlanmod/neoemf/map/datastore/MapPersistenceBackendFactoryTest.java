@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.map.AllMapTest;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.*;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
@@ -35,9 +36,10 @@ import java.util.*;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class MapPersistenceBackendFactoryTest {
+public class MapPersistenceBackendFactoryTest extends AllMapTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -113,7 +115,7 @@ public class MapPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
-        assertThat(innerBackend, is(transientBackend));
+        assertThat(innerBackend, sameInstance(transientBackend));
     }
 
     @Test
@@ -131,7 +133,7 @@ public class MapPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
     @Test
@@ -144,7 +146,7 @@ public class MapPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
     @Test
@@ -157,7 +159,7 @@ public class MapPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceWithListsEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceWithListsEStoreImpl) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
     @Test
@@ -170,7 +172,7 @@ public class MapPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapWithIndexesResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapWithIndexesResourceEStoreImpl) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
     @Test
@@ -183,7 +185,7 @@ public class MapPersistenceBackendFactoryTest {
         assertThat("Invaild EStore created", eStore, instanceOf(AutocommitMapResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
     @Test
@@ -196,7 +198,7 @@ public class MapPersistenceBackendFactoryTest {
         assertThat("Invalid EStore created", eStore, instanceOf(CachedManyDirectWriteMapResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, is(persistentBackend));
+        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
     /**
