@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import org.eclipse.emf.ecore.EClass;
@@ -19,6 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject;
  * A {@link TransientEStoreImpl} that belongs to a single {@link EObject} owner
  * 
  */
+//TODO: All methods call super methods, is this class really necessary ?
 public class OwnedTransientEStoreImpl extends TransientEStoreImpl {
 
 	protected EObject owner;

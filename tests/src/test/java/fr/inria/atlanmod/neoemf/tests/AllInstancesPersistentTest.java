@@ -8,26 +8,24 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.tests;
 
-import java.io.IOException;
-import java.util.Collections;
-
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
+import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
+import java.io.IOException;
+import java.util.Collections;
 
 public class AllInstancesPersistentTest extends AllInstancesTest {
-    
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        
+
         super.createPersistentStores();
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
@@ -41,301 +39,86 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
 
     @Test
     public void testAllInstancesPersistentMapDB() {
-        EList<EObject> allPacks = mapResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack());
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent());
-        assert allAbstractPackContents.size() == abstractPackContentCount : "Invalid count : expected "
-                + abstractPackContentCount + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent());
-        assert allPackContents.size() == packContentCount : "Invalid count : expected "
-                + packContentCount + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent());
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2());
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesPersistent(mapResource);
     }
-    
-    @Test
-    public void testAllInstancesStricPersistentMapDB() {
-        EList<EObject> allPacks = mapResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(),
-                true);
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), true);
-        assert allAbstractPackContents.size() == 0 : "Invalid count : expected "
-                + 0 + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent(), true);
-        assert allPackContents.size() == 50 : "Invalid count : expected "
-                + 50 + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), true);
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2(), true);
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
-    }
-    
+
     @Test
     public void testAllInstancesPersistentNeo4j() {
-        EList<EObject> allPacks = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack());
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent());
-        assert allAbstractPackContents.size() == abstractPackContentCount : "Invalid count : expected "
-                + abstractPackContentCount + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent());
-        assert allPackContents.size() == packContentCount : "Invalid count : expected "
-                + packContentCount + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent());
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2());
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesPersistent(neo4jResource);
     }
-    
-    @Test
-    public void testAllInstancesStrictPersistentNeo4j() {
-        EList<EObject> allPacks = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(),
-                true);
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), true);
-        assert allAbstractPackContents.size() == 0 : "Invalid count : expected "
-                + 0 + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent(), true);
-        assert allPackContents.size() == 50 : "Invalid count : expected "
-                + 50 + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), true);
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2(), true);
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
-    }
-    
+
     @Test
     public void testAllInstancesPersistentTinker() {
-        EList<EObject> allPacks = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack());
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent());
-        assert allAbstractPackContents.size() == abstractPackContentCount : "Invalid count : expected "
-                + abstractPackContentCount + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent());
-        assert allPackContents.size() == packContentCount : "Invalid count : expected "
-                + packContentCount + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent());
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2());
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesPersistent(tinkerResource);
     }
-    
+
+    @Test
+    public void testAllInstancesStricPersistentMapDB() {
+        allInstancesStrictPersistent(mapResource);
+    }
+
+    @Test
+    public void testAllInstancesStrictPersistentNeo4j() {
+        allInstancesStrictPersistent(neo4jResource);
+    }
+
     @Test
     public void testAllInstancesStrictPersistentTinker() {
-        EList<EObject> allPacks = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(),
-                true);
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), true);
-        assert allAbstractPackContents.size() == 0 : "Invalid count : expected "
-                + 0 + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent(), true);
-        assert allPackContents.size() == 50 : "Invalid count : expected "
-                + 50 + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), true);
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2(), true);
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesStrictPersistent(tinkerResource);
     }
-    
+
     @Test
     public void testAllInstancesPersistentLoadedMapDB() throws IOException {
-        mapResource.save(Collections.EMPTY_MAP);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)mapResource);
-        mapResource.load(Collections.EMPTY_MAP);
-        EList<EObject> allPacks = mapResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack());
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent());
-        assert allAbstractPackContents.size() == abstractPackContentCount : "Invalid count : expected "
-                + abstractPackContentCount + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent());
-        assert allPackContents.size() == packContentCount : "Invalid count : expected "
-                + packContentCount + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent());
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2());
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesPersistentLoaded(mapResource);
     }
-    
-    @Test
-    public void testAllInstancesStrictPersistentLoadedMapDB() throws IOException {
-        mapResource.save(Collections.EMPTY_MAP);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)mapResource);
-        mapResource.load(Collections.EMPTY_MAP);
-        EList<EObject> allPacks = mapResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(),
-                true);
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), true);
-        assert allAbstractPackContents.size() == 0 : "Invalid count : expected "
-                + 0 + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent(), true);
-        assert allPackContents.size() == 50 : "Invalid count : expected "
-                + 50 + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = mapResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), true);
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = mapResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2(), true);
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
-    }
-    
+
     @Test
     public void testAllInstancesPersistentLoadedNeo4j() throws IOException {
-        neo4jResource.save(Collections.EMPTY_MAP);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)neo4jResource);
-        neo4jResource.load(Collections.EMPTY_MAP);
-        EList<EObject> allPacks = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack());
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent());
-        assert allAbstractPackContents.size() == abstractPackContentCount : "Invalid count : expected "
-                + abstractPackContentCount + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent());
-        assert allPackContents.size() == packContentCount : "Invalid count : expected "
-                + packContentCount + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent());
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2());
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesPersistentLoaded(neo4jResource);
     }
-    
-    @Test
-    public void testAllInstancesStrictPersistentLoadedNeo4j() throws IOException {
-        neo4jResource.save(Collections.EMPTY_MAP);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)neo4jResource);
-        neo4jResource.load(Collections.EMPTY_MAP);
-        EList<EObject> allPacks = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(),
-                true);
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), true);
-        assert allAbstractPackContents.size() == 0 : "Invalid count : expected "
-                + 0 + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent(), true);
-        assert allPackContents.size() == 50 : "Invalid count : expected "
-                + 50 + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = neo4jResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), true);
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = neo4jResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2(), true);
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
-    }
-    
+
     @Test
     public void testAllInstancesPersistentLoadedTinker() throws IOException {
-        tinkerResource.save(Collections.EMPTY_MAP);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)tinkerResource);
-        tinkerResource.load(Collections.EMPTY_MAP);
-        EList<EObject> allPacks = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack());
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent());
-        assert allAbstractPackContents.size() == abstractPackContentCount : "Invalid count : expected "
-                + abstractPackContentCount + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent());
-        assert allPackContents.size() == packContentCount : "Invalid count : expected "
-                + packContentCount + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent());
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2());
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesPersistentLoaded(tinkerResource);
     }
-    
+
+    @Test
+    public void testAllInstancesStrictPersistentLoadedMapDB() throws IOException {
+        allInstancesStrictPersistentLoaded(mapResource);
+    }
+
+    @Test
+    public void testAllInstancesStrictPersistentLoadedNeo4j() throws IOException {
+        allInstancesStrictPersistentLoaded(neo4jResource);
+    }
+
+    @Test
     public void testAllInstancesStrictPersistentLoadedTinker() throws IOException {
-        tinkerResource.save(Collections.EMPTY_MAP);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)tinkerResource);
-        tinkerResource.load(Collections.EMPTY_MAP);
-        EList<EObject> allPacks = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(),
-                true);
-        assert allPacks.size() == packCount : "Invalid count : expected " + packCount + ", found "
-                + allPacks.size();
-        EList<EObject> allAbstractPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), true);
-        assert allAbstractPackContents.size() == 0 : "Invalid count : expected "
-                + 0 + ", found " + allAbstractPackContents.size();
-        EList<EObject> allPackContents = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent(), true);
-        assert allPackContents.size() == 50 : "Invalid count : expected "
-                + 50 + ", found " + allPackContents.size();
-        EList<EObject> allSpecializedPackContents = tinkerResource
-                .getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), true);
-        assert allSpecializedPackContents.size() == specializedPackContentCount : "Invalid count : expected "
-                + specializedPackContentCount + ", found " + allSpecializedPackContents.size();
-        EList<EObject> allPackContents2 = tinkerResource.getAllInstances(MapSamplePackage.eINSTANCE
-                .getPackContent2(), true);
-        assert allPackContents2.size() == packContent2Count : "Invalid count : expected "
-                + packContent2Count + ", found " + allPackContents2.size();
+        allInstancesStrictPersistentLoaded(tinkerResource);
+    }
+
+    private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
+        persistentResource.save(Collections.EMPTY_MAP);
+        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
+        persistentResource.load(Collections.EMPTY_MAP);
+
+        allInstancesPersistent(persistentResource);
+    }
+
+    private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
+        persistentResource.save(Collections.EMPTY_MAP);
+        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
+        persistentResource.load(Collections.EMPTY_MAP);
+
+        allInstancesStrictPersistent(persistentResource);
+    }
+
+    private void allInstancesPersistent(PersistentResource persistentResource) {
+        allInstancesPersistentTranscient(persistentResource, false, abstractPackContentCount, packContentCount);
+    }
+
+    private void allInstancesStrictPersistent(PersistentResource persistentResource) {
+        allInstancesPersistentTranscient(persistentResource, true, abstractPackContentStrictCount, packContentStrictCount);
     }
 
 }
