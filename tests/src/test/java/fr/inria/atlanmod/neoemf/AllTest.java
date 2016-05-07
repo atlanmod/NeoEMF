@@ -26,12 +26,8 @@ public abstract class AllTest {
         }
 
         @Override
-        protected void failed(Throwable e, Description description) {
-            System.out.println("## FAILED"); }
-
-        @Override
-        protected void succeeded(Description description) {
-            System.out.println("## SUCCESS");
+        protected void finished(Description description) {
+            System.out.println("##");
         }
     };
 
