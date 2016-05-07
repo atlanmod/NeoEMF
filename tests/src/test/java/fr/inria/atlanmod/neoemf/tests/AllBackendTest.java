@@ -73,6 +73,7 @@ public class AllBackendTest {
 
     @After
     public void tearDown() throws Exception {
+        printMemoryUsage();
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) mapResource);
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) neo4jResource);
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) tinkerResource);
