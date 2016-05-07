@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.datastore.estores;
 
 import org.eclipse.emf.common.util.EList;

@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.resources.impl;
 
 import org.eclipse.emf.common.util.URI;

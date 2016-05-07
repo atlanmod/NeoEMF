@@ -8,60 +8,63 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-package fr.inria.atlanmod.neoemf.tests;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
-import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.ecore.EPackage;
-import org.junit.After;
-import org.junit.Before;
+package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
 import fr.inria.atlanmod.neoemf.test.commons.MapResourceBuilder;
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.ecore.EPackage;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class AllBackendTest {
 
-    private static final Path TEST_DIR = Paths.get(System.getProperty("java.io.tmpdir"), "NeoEMF");
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     protected PersistentResource mapResource;
     protected PersistentResource neo4jResource;
     protected PersistentResource tinkerResource;
-    
+
     protected MapResourceBuilder mapBuilder;
     protected BlueprintsResourceBuilder blueprintsBuilder;
-    
+
     protected File mapFile;
     protected File neo4jFile;
     protected File tinkerFile;
-    
+
     protected EPackage ePackage;
-    
+
     @Before
     public void setUp() throws Exception {
-        assert this.ePackage != null : "EPackage not set";
+        assertThat("EPackage not set", this.ePackage, notNullValue());
         String className = this.getClass().getSimpleName();
         String timestamp = String.valueOf(new Date().getTime());
-        mapFile     = TEST_DIR.resolve(className + "MapDB" + timestamp).toFile();
-        neo4jFile   = TEST_DIR.resolve(className + "Neo4j" + timestamp).toFile();
-        tinkerFile  = TEST_DIR.resolve(className + "Tinker" + timestamp).toFile();
-        
-        mapBuilder               = new MapResourceBuilder(ePackage);
+        mapFile = temporaryFolder.getRoot().toPath().resolve(className + "MapDB" + timestamp).toFile();
+        neo4jFile = temporaryFolder.getRoot().toPath().resolve(className + "Neo4j" + timestamp).toFile();
+        tinkerFile = temporaryFolder.getRoot().toPath().resolve(className + "Tinker" + timestamp).toFile();
+        mapBuilder = new MapResourceBuilder(ePackage);
         blueprintsBuilder = new BlueprintsResourceBuilder(ePackage);
-        
     }
-    
+
     public void createPersistentStores() throws IOException {
-        mapResource     = mapBuilder.persistent().file(mapFile).build();
-        neo4jResource   = blueprintsBuilder.neo4j().persistent().file(neo4jFile).build();
-        tinkerResource  = blueprintsBuilder.tinkerGraph().persistent().file(tinkerFile).build();
+        mapResource = mapBuilder.persistent().file(mapFile).build();
+        neo4jResource = blueprintsBuilder.neo4j().persistent().file(neo4jFile).build();
+        tinkerResource = blueprintsBuilder.tinkerGraph().persistent().file(tinkerFile).build();
     }
-    
+
     public void createTransientStores() throws IOException {
         mapResource = mapBuilder.file(mapFile).build();
         neo4jResource = blueprintsBuilder.neo4j().file(neo4jFile).build();
@@ -70,31 +73,18 @@ public class AllBackendTest {
 
     @After
     public void tearDown() throws Exception {
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)mapResource);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)neo4jResource);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)tinkerResource);
-        
-        if(mapFile.exists()) {
+        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) mapResource);
+        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) neo4jResource);
+        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) tinkerResource);
+
+        temporaryFolder.delete();
+
+        if (temporaryFolder.getRoot().exists()) {
             try {
-                FileUtils.forceDelete(mapFile);
+                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                //System.err.println(e);
-            }
-        }
-        if(neo4jFile.exists()) {
-            try {
-                FileUtils.forceDelete(neo4jFile);
-            } catch (IOException e) {
-                //System.err.println(e);
-            }
-        }
-        if(tinkerFile.exists()) {
-            try {
-                FileUtils.forceDelete(tinkerFile);
-            } catch (IOException e) {
-                //System.err.println(e);
+                    System.err.println(e);
             }
         }
     }
-
 }

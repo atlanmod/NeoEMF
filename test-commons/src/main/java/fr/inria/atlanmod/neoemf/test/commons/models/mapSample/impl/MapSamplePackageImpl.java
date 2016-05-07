@@ -1,5 +1,3 @@
-/**
- */
 package fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl;
 
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;

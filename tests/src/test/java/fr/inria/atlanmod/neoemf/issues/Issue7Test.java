@@ -8,28 +8,32 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
-package fr.inria.atlanmod.neoemf.issues;
 
-import org.junit.Test;
+package fr.inria.atlanmod.neoemf.issues;
 
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
+import org.junit.Test;
+
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test case to reproduce the issue #7 @link{https://github.com/atlanmod/NeoEMF/issues/7}
  */
 public class Issue7Test {
-    
+
     @Test
     public void testIssue7() {
         MapSamplePackage samplePackage = MapSamplePackage.eINSTANCE;
         MapSampleFactory factory = MapSampleFactory.eINSTANCE;
-        
+
         SampleModel model = factory.createSampleModel();
-        assert model != null : "Created SampleModel is null";
-        assert model.getContentObjects() != null : "Accessed List is null";
-        assert model.getContentObjects().isEmpty() : "Accessed List is not empty";
+        assertThat("Created SampleModel is null", model, notNullValue());
+        assertThat("Accessed List is null", model.getContentObjects(), notNullValue());
+        assertThat("Accessed List is not empty", model.getContentObjects(), empty());
     }
-    
+
 }

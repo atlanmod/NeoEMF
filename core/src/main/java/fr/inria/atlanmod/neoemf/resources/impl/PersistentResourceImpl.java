@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.resources.impl;
 
 import java.io.File;
@@ -340,7 +341,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		
 		@Override
 		protected void delegateAdd(int index, Object object) {
-			// FIXME? Maintain a list of hard links to the elements while moving
+			// FIXME: Maintain a list of hard links to the elements while moving
 			// them to the new resource. If a garbage collection happens while
 			// traversing the children elements, some unsaved objects that are
 			// referenced from a saved object may be garbage collected before
@@ -426,6 +427,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	}
 
 	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
-		resource.shutdown();
+		if (resource != null) {
+			resource.shutdown();
+		}
 	}
 }
