@@ -75,7 +75,7 @@ public class TransientEStoreListTest extends AllTest {
     @Test
     public void testClear() {
         model.getContentObjects().clear();
-        assertThat("List isn't empty after clean", model.getContentObjects(), empty());
+        assertThat("List isn't empty after clean", model.getContentObjects().isEmpty(), is(true));
     }
 
     @Test

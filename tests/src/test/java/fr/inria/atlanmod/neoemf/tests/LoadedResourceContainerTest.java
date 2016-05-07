@@ -97,7 +97,7 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         assertThat(model.eContainer(), nullValue());
 
-        SampleModelContentObject modelContent = model.getContentObjects().get(0);
+        SampleModelContentObject modelContent = (SampleModelContentObject) model.getContentObjects().get(0);
         assertThat(modelContent.eContainer(), sameInstance((EObject) model));
     }
 
