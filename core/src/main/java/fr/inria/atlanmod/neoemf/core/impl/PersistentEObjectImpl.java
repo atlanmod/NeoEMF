@@ -31,6 +31,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
@@ -157,8 +158,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				if (oldStore.isSet(this, feature)) {
 					if (!feature.isMany()) {
 						if(oldStore.get(this, feature, EStore.NO_INDEX) == null) {
+						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
 						    // Do nothing
-						    // TODO check if this could happen in a normal setting
 						}else{
 						eStore.set(this, feature, EStore.NO_INDEX, 
 								oldStore.get(this, feature, EStore.NO_INDEX));
@@ -168,8 +169,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 						int size = oldStore.size(this, feature);
 						for (int i = 0; i < size; i++) {
 							if(oldStore.get(this,feature,i) == null) {
+							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
 								// Do nothing
-							    // TODO check if this could happen in a normal setting
 							}else{
 							eStore.add(this, feature, i, 
 									oldStore.get(this, feature, i));
@@ -179,15 +180,19 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				}
 			}
 		}
-		// test
-//		Iterator<EObject> it = this.eContents().iterator();
-//		while(it.hasNext()) {
-//			InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(it.next(), InternalPersistentEObject.class);
-//			if(internalElement.resource() != this.resource) {
-//				internalElement.resource(this.resource);
-//			}
-//
-//		}
+		/*
+		 * Attach contained objects to the same resource to avoid EStore hierarchy inconsistency
+		 * This is necessary to handle attachment of entire stand-alone sub-tree to a PersistentResource
+		 * (otherwise only the top-level elements of the subtree are added)
+		 */
+		Iterator<EObject> it = this.eContents().iterator();
+		while(it.hasNext()) {
+			InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(it.next(), InternalPersistentEObject.class);
+			if(internalElement.resource() != this.resource) {
+				internalElement.resource(this.resource);
+			}
+
+		}
 	}
 	
 

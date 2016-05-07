@@ -400,13 +400,22 @@ public interface MapSamplePackage extends EPackage {
     int PACK__NAME = 3;
 
                 /**
+     * The feature id for the '<em><b>Non Containment Ref Comments</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACK__NON_CONTAINMENT_REF_COMMENTS = 4;
+
+                /**
      * The number of structural features of the '<em>Pack</em>' class.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-	int PACK_FEATURE_COUNT = 4;
+	int PACK_FEATURE_COUNT = 5;
 
 				/**
      * The number of operations of the '<em>Pack</em>' class.
@@ -446,13 +455,22 @@ public interface MapSamplePackage extends EPackage {
     int ABSTRACT_PACK_CONTENT__NAME = 1;
 
                 /**
+     * The feature id for the '<em><b>Containment No Opposite Ref Comment</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT = 2;
+
+                /**
      * The number of structural features of the '<em>Abstract Pack Content</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ABSTRACT_PACK_CONTENT_FEATURE_COUNT = 2;
+    int ABSTRACT_PACK_CONTENT_FEATURE_COUNT = 3;
 
                 /**
      * The number of operations of the '<em>Abstract Pack Content</em>' class.
@@ -490,6 +508,15 @@ public interface MapSamplePackage extends EPackage {
      * @ordered
      */
     int PACK_CONTENT__NAME = ABSTRACT_PACK_CONTENT__NAME;
+
+                /**
+     * The feature id for the '<em><b>Containment No Opposite Ref Comment</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT = ABSTRACT_PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT;
 
                 /**
      * The number of structural features of the '<em>Pack Content</em>' class.
@@ -539,6 +566,15 @@ public interface MapSamplePackage extends EPackage {
     int SPECIALIZED_PACK_CONTENT__NAME = PACK_CONTENT__NAME;
 
                 /**
+     * The feature id for the '<em><b>Containment No Opposite Ref Comment</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SPECIALIZED_PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT = PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT;
+
+                /**
      * The number of structural features of the '<em>Specialized Pack Content</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -586,6 +622,15 @@ public interface MapSamplePackage extends EPackage {
     int PACK_CONTENT2__NAME = ABSTRACT_PACK_CONTENT__NAME;
 
                 /**
+     * The feature id for the '<em><b>Containment No Opposite Ref Comment</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACK_CONTENT2__CONTAINMENT_NO_OPPOSITE_REF_COMMENT = ABSTRACT_PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT;
+
+                /**
      * The number of structural features of the '<em>Pack Content2</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -602,6 +647,44 @@ public interface MapSamplePackage extends EPackage {
      * @ordered
      */
     int PACK_CONTENT2_OPERATION_COUNT = ABSTRACT_PACK_CONTENT_OPERATION_COUNT + 0;
+
+
+                /**
+     * The meta object id for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentCommentImpl <em>Abstract Pack Content Comment</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentCommentImpl
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getAbstractPackContentComment()
+     * @generated
+     */
+    int ABSTRACT_PACK_CONTENT_COMMENT = 11;
+
+                /**
+     * The feature id for the '<em><b>Content</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT_COMMENT__CONTENT = 0;
+
+                /**
+     * The number of structural features of the '<em>Abstract Pack Content Comment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT_COMMENT_FEATURE_COUNT = 1;
+
+                /**
+     * The number of operations of the '<em>Abstract Pack Content Comment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_PACK_CONTENT_COMMENT_OPERATION_COUNT = 0;
 
 
                 /**
@@ -877,6 +960,17 @@ public interface MapSamplePackage extends EPackage {
     EAttribute getPack_Name();
 
                 /**
+     * Returns the meta object for the reference list '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getNonContainmentRefComments <em>Non Containment Ref Comments</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Non Containment Ref Comments</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getNonContainmentRefComments()
+     * @see #getPack()
+     * @generated
+     */
+    EReference getPack_NonContainmentRefComments();
+
+                /**
      * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent <em>Abstract Pack Content</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -909,6 +1003,17 @@ public interface MapSamplePackage extends EPackage {
     EAttribute getAbstractPackContent_Name();
 
                 /**
+     * Returns the meta object for the containment reference list '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getContainmentNoOppositeRefComment <em>Containment No Opposite Ref Comment</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference list '<em>Containment No Opposite Ref Comment</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getContainmentNoOppositeRefComment()
+     * @see #getAbstractPackContent()
+     * @generated
+     */
+    EReference getAbstractPackContent_ContainmentNoOppositeRefComment();
+
+                /**
      * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent <em>Pack Content</em>}'.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -937,6 +1042,27 @@ public interface MapSamplePackage extends EPackage {
      * @generated
      */
     EClass getPackContent2();
+
+                /**
+     * Returns the meta object for class '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment <em>Abstract Pack Content Comment</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Abstract Pack Content Comment</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment
+     * @generated
+     */
+    EClass getAbstractPackContentComment();
+
+                /**
+     * Returns the meta object for the attribute '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment#getContent <em>Content</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Content</em>'.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment#getContent()
+     * @see #getAbstractPackContentComment()
+     * @generated
+     */
+    EAttribute getAbstractPackContentComment_Content();
 
                 /**
      * Returns the factory that creates the instances of the model.
@@ -1176,6 +1302,14 @@ public interface MapSamplePackage extends EPackage {
         EAttribute PACK__NAME = eINSTANCE.getPack_Name();
 
                                 /**
+         * The meta object literal for the '<em><b>Non Containment Ref Comments</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference PACK__NON_CONTAINMENT_REF_COMMENTS = eINSTANCE.getPack_NonContainmentRefComments();
+
+                                /**
          * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl <em>Abstract Pack Content</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1200,6 +1334,14 @@ public interface MapSamplePackage extends EPackage {
          * @generated
          */
         EAttribute ABSTRACT_PACK_CONTENT__NAME = eINSTANCE.getAbstractPackContent_Name();
+
+                                /**
+         * The meta object literal for the '<em><b>Containment No Opposite Ref Comment</b></em>' containment reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference ABSTRACT_PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT = eINSTANCE.getAbstractPackContent_ContainmentNoOppositeRefComment();
 
                                 /**
          * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackContentImpl <em>Pack Content</em>}' class.
@@ -1230,6 +1372,24 @@ public interface MapSamplePackage extends EPackage {
          * @generated
          */
         EClass PACK_CONTENT2 = eINSTANCE.getPackContent2();
+
+                                /**
+         * The meta object literal for the '{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentCommentImpl <em>Abstract Pack Content Comment</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentCommentImpl
+         * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.MapSamplePackageImpl#getAbstractPackContentComment()
+         * @generated
+         */
+        EClass ABSTRACT_PACK_CONTENT_COMMENT = eINSTANCE.getAbstractPackContentComment();
+
+                                /**
+         * The meta object literal for the '<em><b>Content</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_PACK_CONTENT_COMMENT__CONTENT = eINSTANCE.getAbstractPackContentComment_Content();
 
     }
 

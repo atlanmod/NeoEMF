@@ -4,6 +4,7 @@ package fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl;
 
 import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
 import org.eclipse.emf.common.util.EList;
@@ -20,6 +21,7 @@ import org.eclipse.emf.ecore.EClass;
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getParentPack <em>Parent Pack</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getOwnedContents <em>Owned Contents</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getName <em>Name</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.PackImpl#getNonContainmentRefComments <em>Non Containment Ref Comments</em>}</li>
  * </ul>
  * </p>
  *
@@ -109,6 +111,16 @@ public class PackImpl extends PersistentEObjectImpl implements Pack {
      */
     public void setName(String newName) {
         eSet(MapSamplePackage.Literals.PACK__NAME, newName);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<AbstractPackContentComment> getNonContainmentRefComments() {
+        return (EList<AbstractPackContentComment>)eGet(MapSamplePackage.Literals.PACK__NON_CONTAINMENT_REF_COMMENTS, true);
     }
 
 } //PackImpl

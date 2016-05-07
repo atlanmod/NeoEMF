@@ -5,9 +5,11 @@ package fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl;
 import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 /**
@@ -19,6 +21,7 @@ import org.eclipse.emf.ecore.EClass;
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl#getParentPack <em>Parent Pack</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl#getName <em>Name</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl.AbstractPackContentImpl#getContainmentNoOppositeRefComment <em>Containment No Opposite Ref Comment</em>}</li>
  * </ul>
  * </p>
  *
@@ -88,6 +91,16 @@ public abstract class AbstractPackContentImpl extends PersistentEObjectImpl impl
      */
     public void setName(String newName) {
         eSet(MapSamplePackage.Literals.ABSTRACT_PACK_CONTENT__NAME, newName);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<AbstractPackContentComment> getContainmentNoOppositeRefComment() {
+        return (EList<AbstractPackContentComment>)eGet(MapSamplePackage.Literals.ABSTRACT_PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT, true);
     }
 
 } //AbstractPackContentImpl

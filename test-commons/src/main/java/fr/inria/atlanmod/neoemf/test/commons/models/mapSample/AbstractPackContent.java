@@ -3,6 +3,7 @@
 package fr.inria.atlanmod.neoemf.test.commons.models.mapSample;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -14,6 +15,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
  * <ul>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getParentPack <em>Parent Pack</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getName <em>Name</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent#getContainmentNoOppositeRefComment <em>Containment No Opposite Ref Comment</em>}</li>
  * </ul>
  * </p>
  *
@@ -76,5 +78,21 @@ public interface AbstractPackContent extends PersistentEObject {
      * @generated
      */
     void setName(String value);
+
+    /**
+     * Returns the value of the '<em><b>Containment No Opposite Ref Comment</b></em>' containment reference list.
+     * The list contents are of type {@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Containment No Opposite Ref Comment</em>' containment reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Containment No Opposite Ref Comment</em>' containment reference list.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage#getAbstractPackContent_ContainmentNoOppositeRefComment()
+     * @model containment="true"
+     * @generated
+     */
+    EList<AbstractPackContentComment> getContainmentNoOppositeRefComment();
 
 } // AbstractPackContent

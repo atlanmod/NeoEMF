@@ -39,13 +39,20 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="ownedContents" upperBound="-1"
         eType="#//AbstractPackContent" containment="true" eOpposite="#//AbstractPackContent/parentPack"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nonContainmentRefComments"
+        upperBound="-1" eType="#//AbstractPackContentComment"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractPackContent" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentPack" eType="#//Pack"
         eOpposite="#//Pack/ownedContents"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containmentNoOppositeRefComment"
+        upperBound="-1" eType="#//AbstractPackContentComment" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PackContent" eSuperTypes="#//AbstractPackContent"/>
   <eClassifiers xsi:type="ecore:EClass" name="SpecializedPackContent" eSuperTypes="#//PackContent"/>
   <eClassifiers xsi:type="ecore:EClass" name="PackContent2" eSuperTypes="#//AbstractPackContent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractPackContentComment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
 </ecore:EPackage>

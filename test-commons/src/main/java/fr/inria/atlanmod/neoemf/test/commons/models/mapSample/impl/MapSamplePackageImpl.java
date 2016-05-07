@@ -3,6 +3,7 @@
 package fr.inria.atlanmod.neoemf.test.commons.models.mapSample.impl;
 
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
@@ -104,6 +105,13 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
      * @generated
      */
     private EClass packContent2EClass = null;
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass abstractPackContentCommentEClass = null;
 
                 /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -396,6 +404,15 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
      * <!-- end-user-doc -->
      * @generated
      */
+    public EReference getPack_NonContainmentRefComments() {
+        return (EReference)packEClass.getEStructuralFeatures().get(4);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getAbstractPackContent() {
         return abstractPackContentEClass;
     }
@@ -416,6 +433,15 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
      */
     public EAttribute getAbstractPackContent_Name() {
         return (EAttribute)abstractPackContentEClass.getEStructuralFeatures().get(1);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getAbstractPackContent_ContainmentNoOppositeRefComment() {
+        return (EReference)abstractPackContentEClass.getEStructuralFeatures().get(2);
     }
 
                 /**
@@ -443,6 +469,24 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
      */
     public EClass getPackContent2() {
         return packContent2EClass;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getAbstractPackContentComment() {
+        return abstractPackContentCommentEClass;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractPackContentComment_Content() {
+        return (EAttribute)abstractPackContentCommentEClass.getEStructuralFeatures().get(0);
     }
 
                 /**
@@ -504,16 +548,21 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         createEReference(packEClass, PACK__PARENT_PACK);
         createEReference(packEClass, PACK__OWNED_CONTENTS);
         createEAttribute(packEClass, PACK__NAME);
+        createEReference(packEClass, PACK__NON_CONTAINMENT_REF_COMMENTS);
 
         abstractPackContentEClass = createEClass(ABSTRACT_PACK_CONTENT);
         createEReference(abstractPackContentEClass, ABSTRACT_PACK_CONTENT__PARENT_PACK);
         createEAttribute(abstractPackContentEClass, ABSTRACT_PACK_CONTENT__NAME);
+        createEReference(abstractPackContentEClass, ABSTRACT_PACK_CONTENT__CONTAINMENT_NO_OPPOSITE_REF_COMMENT);
 
         packContentEClass = createEClass(PACK_CONTENT);
 
         specializedPackContentEClass = createEClass(SPECIALIZED_PACK_CONTENT);
 
         packContent2EClass = createEClass(PACK_CONTENT2);
+
+        abstractPackContentCommentEClass = createEClass(ABSTRACT_PACK_CONTENT_COMMENT);
+        createEAttribute(abstractPackContentCommentEClass, ABSTRACT_PACK_CONTENT_COMMENT__CONTENT);
     }
 
     /**
@@ -580,16 +629,21 @@ public class MapSamplePackageImpl extends EPackageImpl implements MapSamplePacka
         initEReference(getPack_ParentPack(), this.getPack(), this.getPack_Packs(), "parentPack", null, 0, 1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getPack_OwnedContents(), this.getAbstractPackContent(), this.getAbstractPackContent_ParentPack(), "ownedContents", null, 0, -1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getPack_Name(), ecorePackage.getEString(), "name", null, 0, 1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getPack_NonContainmentRefComments(), this.getAbstractPackContentComment(), null, "nonContainmentRefComments", null, 0, -1, Pack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(abstractPackContentEClass, AbstractPackContent.class, "AbstractPackContent", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getAbstractPackContent_ParentPack(), this.getPack(), this.getPack_OwnedContents(), "parentPack", null, 0, 1, AbstractPackContent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractPackContent_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractPackContent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractPackContent_ContainmentNoOppositeRefComment(), this.getAbstractPackContentComment(), null, "containmentNoOppositeRefComment", null, 0, -1, AbstractPackContent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(packContentEClass, PackContent.class, "PackContent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(specializedPackContentEClass, SpecializedPackContent.class, "SpecializedPackContent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(packContent2EClass, PackContent2.class, "PackContent2", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(abstractPackContentCommentEClass, AbstractPackContentComment.class, "AbstractPackContentComment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getAbstractPackContentComment_Content(), ecorePackage.getEString(), "content", null, 0, 1, AbstractPackContentComment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Create resource
         createResource(eNS_URI);

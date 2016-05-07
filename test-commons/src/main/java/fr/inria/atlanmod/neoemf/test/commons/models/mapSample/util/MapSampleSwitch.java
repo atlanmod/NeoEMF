@@ -138,6 +138,12 @@ public class MapSampleSwitch<T> extends Switch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case MapSamplePackage.ABSTRACT_PACK_CONTENT_COMMENT: {
+                AbstractPackContentComment abstractPackContentComment = (AbstractPackContentComment)theEObject;
+                T result = caseAbstractPackContentComment(abstractPackContentComment);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             default: return defaultCase(theEObject);
         }
     }
@@ -304,6 +310,21 @@ public class MapSampleSwitch<T> extends Switch<T> {
      * @generated
      */
     public T casePackContent2(PackContent2 object) {
+        return null;
+    }
+
+                /**
+     * Returns the result of interpreting the object as an instance of '<em>Abstract Pack Content Comment</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Abstract Pack Content Comment</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseAbstractPackContentComment(AbstractPackContentComment object) {
         return null;
     }
 

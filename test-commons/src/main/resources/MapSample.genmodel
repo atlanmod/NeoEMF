@@ -41,13 +41,18 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MapSample.ecore#//Pack/parentPack"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MapSample.ecore#//Pack/ownedContents"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//Pack/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MapSample.ecore#//Pack/nonContainmentRefComments"/>
     </genClasses>
     <genClasses image="false" ecoreClass="MapSample.ecore#//AbstractPackContent">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference MapSample.ecore#//AbstractPackContent/parentPack"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//AbstractPackContent/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MapSample.ecore#//AbstractPackContent/containmentNoOppositeRefComment"/>
     </genClasses>
     <genClasses ecoreClass="MapSample.ecore#//PackContent"/>
     <genClasses ecoreClass="MapSample.ecore#//SpecializedPackContent"/>
     <genClasses ecoreClass="MapSample.ecore#//PackContent2"/>
+    <genClasses ecoreClass="MapSample.ecore#//AbstractPackContentComment">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MapSample.ecore#//AbstractPackContentComment/content"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

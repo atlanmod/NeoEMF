@@ -12,6 +12,8 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;

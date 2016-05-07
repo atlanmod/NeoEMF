@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getParentPack <em>Parent Pack</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getOwnedContents <em>Owned Contents</em>}</li>
  *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getName <em>Name</em>}</li>
+ *   <li>{@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack#getNonContainmentRefComments <em>Non Containment Ref Comments</em>}</li>
  * </ul>
  * </p>
  *
@@ -116,5 +117,21 @@ public interface Pack extends PersistentEObject {
      * @generated
      */
     void setName(String value);
+
+    /**
+     * Returns the value of the '<em><b>Non Containment Ref Comments</b></em>' reference list.
+     * The list contents are of type {@link fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Non Containment Ref Comments</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Non Containment Ref Comments</em>' reference list.
+     * @see fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage#getPack_NonContainmentRefComments()
+     * @model
+     * @generated
+     */
+    EList<AbstractPackContentComment> getNonContainmentRefComments();
 
 } // Pack

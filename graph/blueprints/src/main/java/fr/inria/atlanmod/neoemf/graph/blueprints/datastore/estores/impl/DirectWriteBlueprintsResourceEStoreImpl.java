@@ -434,7 +434,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Vertex vertex = graph.getVertex(object);
 		String referenceName = eReference.getName();
 		Integer size = getSize(vertex, eReference);
-		Object returnValue = null;
+		InternalEObject returnValue = null;
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
 		} else {
@@ -446,12 +446,21 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 					Vertex referencedVertex = edge.getVertex(Direction.IN);
 					returnValue = reifyVertex(referencedVertex);
 					edge.remove();
+					if(eReference.isContainment()) {
+						for (Edge conEdge : referencedVertex.getEdges(Direction.OUT, CONTAINER)) {
+							conEdge.remove();
+						}
+					}
 				} else {
 					edge.setProperty(POSITION, position - 1);
 				}
 			}
 		}
 		setSize(vertex, eReference, size - 1); // Update size
+		if(eReference.isContainment()) {
+			returnValue.eBasicSetContainer(null, -1, null);
+			((InternalPersistentEObject)returnValue).resource(null);
+		}
 		return returnValue;
 	}
 
@@ -527,7 +536,6 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Vertex vertex = graph.getVertex(object);
 		Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, CONTAINER).iterator();
 		if (iterator.hasNext()) {
-//			return graph.reifyVertex(iterator.next());
 			return reifyVertex(iterator.next());
 		}
 		return null;
@@ -541,9 +549,9 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 			Edge edge = iterator.next();
 			String featureName = edge.getProperty(CONTAINING_FEATURE);
 			Vertex containerVertex = edge.getVertex(Direction.IN);
-			if (featureName != null) {
-				EObject container = reifyVertex(containerVertex);
-				return container.eClass().getEStructuralFeature(featureName);
+	        if (featureName != null) {
+                EObject container = reifyVertex(containerVertex);
+                return container.eClass().getEStructuralFeature(featureName);
 			}
 		}
 		return null;
@@ -573,16 +581,38 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	protected InternalEObject reifyVertex(Vertex vertex) {
 		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex);
-		if (internalEObject.resource() != resource()) {
-			internalEObject.resource(resource());
+		if(internalEObject.resource() != resource()) {
+			if(internalEObject.eContainer() == null) {
+				Iterator<Vertex> it = vertex.getVertices(Direction.IN,"eContents").iterator();
+				if(it.hasNext()) {
+					internalEObject.resource(resource());
+				}
+				else {
+					// not part of the resource
+				}
+			}
+			else {
+				internalEObject.resource(resource());
+			}
 		}
 		return internalEObject;
 	}
 	
 	protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
 		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex,eClass);
-		if (internalEObject.resource() != resource()) {
-			internalEObject.resource(resource());
+		if(internalEObject.resource() != resource()) {
+			if(internalEObject.eContainer() == null) {
+				Iterator<Vertex> it = vertex.getVertices(Direction.IN,"eContents").iterator();
+				if(it.hasNext()) {
+					internalEObject.resource(resource());
+				}
+				else {
+					// not part of the resource
+				}
+			}
+			else {
+				internalEObject.resource(resource());
+			}
 		}
 		return internalEObject;
 	}
