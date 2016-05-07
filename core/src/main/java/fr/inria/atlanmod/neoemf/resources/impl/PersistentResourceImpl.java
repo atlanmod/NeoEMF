@@ -427,8 +427,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	}
 
 	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
-	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Shutdown Without Unload of Persistent Resource " + resource.getURI());
 		if (resource != null) {
+		    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Shutdown Without Unload of Persistent Resource " + resource.getURI());
 			resource.shutdown();
 		}
 	}
