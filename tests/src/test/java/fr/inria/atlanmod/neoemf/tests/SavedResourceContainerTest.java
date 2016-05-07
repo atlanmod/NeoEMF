@@ -20,8 +20,8 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class SavedResourceContainerTest extends AllSavedResourceTest {
@@ -88,7 +88,7 @@ public class SavedResourceContainerTest extends AllSavedResourceTest {
 
     private void checkEContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
         assertThat("Top Level EObject has a not null container", sampleModel.eContainer(), nullValue());
-        assertThat("Wrong eContainer value", sampleModelContentObject.eContainer().equals(sampleModel), is(true));
+        assertThat("Wrong eContainer value", sampleModelContentObject.eContainer(), sameInstance((EObject) sampleModel));
     }
 
     private void checkEInternalContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
@@ -96,7 +96,7 @@ public class SavedResourceContainerTest extends AllSavedResourceTest {
         assertThat("Top Level EObject has a not null internal container", internalMapSampleModel.eInternalContainer(), nullValue());
 
         InternalEObject internalMapSampleContentObject = (InternalEObject) sampleModelContentObject;
-        assertThat("Wrong eInternalContainer value", internalMapSampleContentObject.eInternalContainer(), is(internalMapSampleModel));
+        assertThat("Wrong eInternalContainer value", internalMapSampleContentObject.eInternalContainer(), sameInstance(internalMapSampleModel));
     }
 
     private void getAllContentsEInternalContainer(PersistentResource persistentResource) {
@@ -106,7 +106,7 @@ public class SavedResourceContainerTest extends AllSavedResourceTest {
         assertThat("Top Level EObject has a not null container", sampleModel.eInternalContainer(), nullValue());
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat("Wrong eInternalContainer value", sampleContentObject.eInternalContainer(), is(sampleModel));
+        assertThat("Wrong eInternalContainer value", sampleContentObject.eInternalContainer(), sameInstance(sampleModel));
     }
 
 }

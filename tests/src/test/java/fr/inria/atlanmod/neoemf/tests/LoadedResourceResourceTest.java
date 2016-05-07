@@ -16,12 +16,13 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class LoadedResourceResourceTest extends AllLoadedResourceTest {
@@ -88,10 +89,10 @@ public class LoadedResourceResourceTest extends AllLoadedResourceTest {
 
     private void getElementsEResource(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
-        assertThat("Wrong eResource value", model.eResource().equals(persistentResource), is(true));
+        assertThat("Wrong eResource value", model.eResource(), sameInstance((Resource) persistentResource));
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertThat("Wrong eResource value", modelContent.eResource().equals(persistentResource), is(true));
+        assertThat("Wrong eResource value", modelContent.eResource(), sameInstance((Resource) persistentResource));
     }
 
     private void getElementsEDirectResource(PersistentResource persistentResource) {

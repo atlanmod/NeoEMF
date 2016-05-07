@@ -3,103 +3,40 @@ package fr.inria.atlanmod.neoemf.tests;
 import java.util.Iterator;
 
 import org.eclipse.emf.ecore.EObject;
-import org.junit.After;
-import org.junit.Before;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
 
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent;
+
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsSame.sameInstance;
+import static org.junit.Assert.assertThat;
 
 /**
  * Checks that adding a transient containment sub-tree to an
  * existing PersistentResource add all its elements to the
  * resource.
  */
-public class SetContainmentAfterNonContainmentTest extends AllBackendTest{
+public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
 
-    protected MapSampleFactory factory;
-	
-	protected Pack p1;
-	protected Pack p2;
-	protected PackContent pc1;
-	protected AbstractPackContentComment com1;
-	
-	@Before
-	public void setUp() throws Exception {
-		factory = MapSampleFactory.eINSTANCE;
-		ePackage = MapSamplePackage.eINSTANCE;
-		super.setUp();
-		super.createPersistentStores();
-	}
-	
-	@After
-	public void tearDown() throws Exception {
-		super.tearDown();
-		p1 = null;
-		p2 = null;
-		pc1 = null;
-		com1 = null;
-	}
-	
 	@Test
 	public void testAddContainmentSubtreeToPersistentResourceMapDB() {
-	    createResourceContent(mapResource);
-        InternalPersistentEObject icom1 = (InternalPersistentEObject)com1;
-        
-        assert icom1.eStore() instanceof DirectWriteMapResourceEStoreImpl;
-        assert icom1.resource() == mapResource;
-        // Check that the element has a container (it cannot be in the resource
-        // if it does not)
-        assert icom1.eContainer() == pc1;
-        assert icom1.eInternalContainer() == pc1;
-        // Check that the element is in the containment reference list of its
-        // parent
-        assert pc1.getContainmentNoOppositeRefComment().contains(com1);
-        // Check everything is accessible from the resource
-        assert resourceContentCount(mapResource) == 4;
+		addContainmentSubtreeToPersistentResource(mapResource, DirectWriteMapResourceEStoreImpl.class);
 	}
 	
 	@Test
 	public void testAddContainmentSubtreeToPersistentResourceNeo4j() {
-	    createResourceContent(neo4jResource);
-	    InternalPersistentEObject icom1 = (InternalPersistentEObject)com1;
-        
-        assert icom1.eStore() instanceof DirectWriteBlueprintsResourceEStoreImpl;
-        assert icom1.resource() == neo4jResource;
-        // Check that the element has a container (it cannot be in the resource
-        // if it does not)
-        assert icom1.eContainer() == pc1;
-        assert icom1.eInternalContainer() == pc1;
-        // Check that the element is in the containment reference list of its
-        // parent
-        assert pc1.getContainmentNoOppositeRefComment().contains(com1);
-     // Check everything is accessible from the resource
-        assert resourceContentCount(neo4jResource) == 4;
+		addContainmentSubtreeToPersistentResource(neo4jResource, DirectWriteBlueprintsResourceEStoreImpl.class);
 	}
 	
 	@Test
 	public void testAddContainmentSubtreeToPersistentResourceTinker() {
-	    createResourceContent(tinkerResource);
-	    InternalPersistentEObject icom1 = (InternalPersistentEObject)com1;
-        
-        assert icom1.eStore() instanceof DirectWriteBlueprintsResourceEStoreImpl;
-        assert icom1.resource() == tinkerResource;
-        // Check that the element has a container (it cannot be in the resource
-        // if it does not)
-        assert icom1.eContainer() == pc1;
-        assert icom1.eInternalContainer() == pc1;
-        // Check that the element is in the containment reference list of its
-        // parent
-        assert pc1.getContainmentNoOppositeRefComment().contains(com1);
-     // Check everything is accessible from the resource
-        assert resourceContentCount(tinkerResource) == 4;
+		addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsResourceEStoreImpl.class);
 	}
 	
 	protected void createResourceContent(PersistentResource r) {
@@ -132,6 +69,24 @@ public class SetContainmentAfterNonContainmentTest extends AllBackendTest{
 	        it.next();
 	    }
 	    return count;
+	}
+
+	private void addContainmentSubtreeToPersistentResource(PersistentResource persistentResource, Class<?> eStoreClass) {
+		createResourceContent(persistentResource);
+		InternalPersistentEObject icom1 = (InternalPersistentEObject)com1;
+
+		assertThat(icom1.eStore(), instanceOf(eStoreClass));
+		assertThat(icom1.resource(), sameInstance((Resource.Internal) persistentResource));
+
+		// Check that the element has a container (it cannot be in the resource if it does not)
+		assertThat(icom1.eContainer(), sameInstance((EObject) pc1));
+		assertThat(icom1.eInternalContainer(), sameInstance((EObject) pc1));
+
+		// Check that the element is in the containment reference list of its parent
+		assertThat(pc1.getContainmentNoOppositeRefComment(), hasItem(com1));
+
+		// Check everything is accessible from the resource
+		assertThat(resourceContentCount(persistentResource), equalTo(4));
 	}
 	
 }

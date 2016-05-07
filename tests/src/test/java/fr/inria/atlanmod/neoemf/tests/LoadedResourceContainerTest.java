@@ -21,8 +21,8 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class LoadedResourceContainerTest extends AllLoadedResourceTest {
@@ -98,7 +98,7 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
         assertThat(model.eContainer(), nullValue());
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertThat(modelContent.eContainer().equals(model), is(true));
+        assertThat(modelContent.eContainer(), sameInstance((EObject) model));
     }
 
     private void getElementsEInternalContainer(PersistentResource persistentResource) {

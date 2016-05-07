@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.neoemf.AllCoreTest;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import org.apache.commons.io.FileUtils;
@@ -29,7 +30,7 @@ import java.util.Date;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class NeoURITest {
+public class NeoURITest extends AllCoreTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

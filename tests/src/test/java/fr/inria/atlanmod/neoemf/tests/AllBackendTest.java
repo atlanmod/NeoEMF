@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
@@ -20,7 +21,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -31,7 +31,7 @@ import java.util.Date;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public abstract class AllBackendTest {
+public abstract class AllBackendTest extends AllTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -97,14 +97,13 @@ public abstract class AllBackendTest {
         Runtime runtime = Runtime.getRuntime();
         System.out.println("##### Heap utilization statistics [MB] #####");
         //Print used memory
-        System.out.println("Used Memory:"
-            + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+        System.out.println("  Used Memory  : " + String.format("%4d", (runtime.totalMemory() - runtime.freeMemory()) / mb));
         //Print free memory
-        System.out.println("Free Memory:"
-            + runtime.freeMemory() / mb);
+        System.out.println("  Free Memory  : " + String.format("%4d", runtime.freeMemory() / mb));
         //Print total available memory
-        System.out.println("Total Memory:" + runtime.totalMemory() / mb);
+        System.out.println("  Total Memory : " + String.format("%4d", runtime.totalMemory() / mb));
         //Print Maximum available memory
-        System.out.println("Max Memory:" + runtime.maxMemory() / mb);
+        System.out.println("  Max Memory   : " + String.format("%4d", runtime.maxMemory() / mb));
+        System.out.println("#####");
     }
 }

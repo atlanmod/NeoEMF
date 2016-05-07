@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.map.util;
 
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.map.AllMapTest;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -29,7 +30,7 @@ import java.util.Date;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class NeoMapURITest {
+public class NeoMapURITest extends AllMapTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

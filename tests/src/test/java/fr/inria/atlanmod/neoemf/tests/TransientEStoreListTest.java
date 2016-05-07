@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
@@ -32,7 +33,7 @@ import static org.junit.Assert.assertThat;
  * Test cases that check List method consistency for the @see{TransientEStoreImpl} class.
  * Issue #7 reported the error for isEmpty method @see{Issue7Test}
  */
-public class TransientEStoreListTest {
+public class TransientEStoreListTest extends AllTest {
 
     protected SampleModel model;
     protected MapSamplePackage mapPackage;

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
+import fr.inria.atlanmod.neoemf.AllCoreTest;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.*;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test cases for the only non-abstract method in @see{AbstractPersistenceBackendFactory::createPersistentEStore}
  */
-public class AbstractPersistenceBackendFactoryTest {
+public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = mock(AbstractPersistenceBackendFactory.class);
     private SearcheableResourceEStore mockPersistentEStore = mock(SearcheableResourceEStore.class);
