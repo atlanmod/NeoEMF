@@ -112,10 +112,10 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-			    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing backend of resource " + this.toString());
 			    if(PersistentResourceImpl.this.persistenceBackend.isStarted()) {
+			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing backend of resource " + PersistentResourceImpl.this.uri);
 			        PersistentResourceImpl.this.persistenceBackend.stop();
-			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend of resource " + this.toString() + " closed");
+			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend of resource " + PersistentResourceImpl.this.uri + " closed");
 			    }
 			}
 		});
@@ -427,6 +427,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	}
 
 	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
+	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Shutdown Without Unload of Persistent Resource " + resource.getURI());
 		if (resource != null) {
 			resource.shutdown();
 		}

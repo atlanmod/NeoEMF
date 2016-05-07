@@ -54,6 +54,7 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 	
 	private Index<Vertex> metaclassIndex;
+	private boolean isStarted = true;
 
 	protected class NeoEdge extends IdEdge {
 		public NeoEdge(Edge edge) {
@@ -108,12 +109,13 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	@Override
 	public boolean isStarted() {
-		return true;
+		return isStarted;
 	}
 	
 	@Override
 	public void stop() {
 		this.shutdown();
+		isStarted = false;
 		
 	}
 	
