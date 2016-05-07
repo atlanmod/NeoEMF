@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import org.junit.Test;
 
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -34,7 +34,7 @@ public class Issue7Test extends AllTest {
         SampleModel model = factory.createSampleModel();
         assertThat("Created SampleModel is null", model, notNullValue());
         assertThat("Accessed List is null", model.getContentObjects(), notNullValue());
-        assertThat("Accessed List is not empty", model.getContentObjects(), empty());
+        assertThat("Accessed List is not empty", model.getContentObjects().isEmpty(), is(true));
     }
 
 }

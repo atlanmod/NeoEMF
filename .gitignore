@@ -135,3 +135,5 @@
 ### Others
 
 /lib
+**/*.log
+**/java-gen

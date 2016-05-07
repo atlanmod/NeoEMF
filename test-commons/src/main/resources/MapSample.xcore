@@ -1,0 +1,62 @@
+@Ecore(nsURI="com.mapSample")
+@GenModel(modelDirectory="/test-commons/src/main/java/", modelPluginID="mapSample", rootExtendsInterface="fr.inria.atlanmod.neoemf.core.PersistentEObject", rootExtendsClass="fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl", reflectiveDelegation="true", importerID="org.eclipse.emf.importer.ecore", bundleManifest="false", featureDelegation="Reflective", pluginKey="")
+package fr.inria.atlanmod.neoemf.test.commons.models.mapSample
+
+class SampleModel {
+	String name
+	contains StringToStringMap[] map
+	contains KToVMap[] kvMap
+	contains SampleModelContentObject[] contentObjects opposite parent
+}
+
+class StringToStringMap wraps java.util.Map.Entry {
+	String[1] key
+	String[1] value
+}
+
+class K {
+	String kName
+	int kInt
+}
+
+class V {
+	String vName
+	int vInt
+}
+
+class KToVMap wraps java.util.Map.Entry {
+	refers K[1] key
+	refers V[1] value
+}
+
+class SampleModelContentObject {
+	String name
+	container SampleModel parent opposite contentObjects
+}
+
+class Pack {
+	contains Pack[] packs opposite parentPack
+	container Pack parentPack opposite packs
+	contains AbstractPackContent[] ownedContents opposite parentPack
+	String name
+	refers AbstractPackContentComment[] nonContainmentRefComments
+}
+
+abstract class AbstractPackContent {
+	container Pack parentPack opposite ownedContents
+	String name
+	contains AbstractPackContentComment[] containmentNoOppositeRefComment
+}
+
+class PackContent extends AbstractPackContent {
+}
+
+class SpecializedPackContent extends PackContent {
+}
+
+class PackContent2 extends AbstractPackContent {
+}
+
+class AbstractPackContentComment {
+	String content
+}

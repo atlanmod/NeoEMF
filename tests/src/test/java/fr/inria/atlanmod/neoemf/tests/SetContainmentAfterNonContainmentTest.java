@@ -11,7 +11,7 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWr
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsSame.sameInstance;
@@ -83,7 +83,7 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
 		assertThat(icom1.eInternalContainer(), sameInstance((EObject) pc1));
 
 		// Check that the element is in the containment reference list of its parent
-		assertThat(pc1.getContainmentNoOppositeRefComment(), hasItem(com1));
+		assertThat(pc1.getContainmentNoOppositeRefComment().contains(com1), is(true));
 
 		// Check everything is accessible from the resource
 		assertThat(resourceContentCount(persistentResource), equalTo(4));
