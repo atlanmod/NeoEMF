@@ -15,10 +15,12 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
 import fr.inria.atlanmod.neoemf.test.commons.MapResourceBuilder;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -29,7 +31,7 @@ import java.util.Date;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class AllBackendTest {
+public abstract class AllBackendTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
