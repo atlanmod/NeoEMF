@@ -21,7 +21,7 @@ import org.junit.Before;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class AllInstancesTest extends AllBackendTest {
+public abstract class AllInstancesTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
     // These variables should be updated if createResourceContent is changed

@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
 import org.junit.Before;
 
-public class AllSavedResourceTest extends AllSavedLoadedResourceTest {
+public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
 
     protected MapSampleFactory factory;
 

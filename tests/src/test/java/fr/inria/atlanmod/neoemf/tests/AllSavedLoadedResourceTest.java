@@ -20,7 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class AllSavedLoadedResourceTest extends AllBackendTest {
+public abstract class AllSavedLoadedResourceTest extends AllBackendTest {
 
     protected void getAllContentsContainer(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();

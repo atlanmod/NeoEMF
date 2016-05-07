@@ -26,7 +26,7 @@ import org.junit.Before;
 
 import java.util.Collections;
 
-public class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
+public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
 
     MapSampleFactory factory;
 
