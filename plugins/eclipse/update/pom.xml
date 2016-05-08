@@ -1,65 +1,67 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <parent>
-  	<groupId>fr.inria.atlanmod.neoemf</groupId>
-  	<artifactId>eclipse</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>fr.inria.atlanmod.neoemf.update</artifactId>
-  <packaging>eclipse-repository</packaging>
-	
-	<dependencies>
-		<dependency>
-			<groupId>fr.inria.atlanmod.neoemf</groupId>
-			<artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.inria.atlanmod.neoemf</groupId>
-			<artifactId>
-				fr.inria.atlanmod.neoemf.graph.blueprints.feature
-			</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.inria.atlanmod.neoemf</groupId>
-			<artifactId>
-				fr.inria.atlanmod.neoemf.map.feature
-			</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.inria.atlanmod.neoemf</groupId>
-			<artifactId>
-				fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature
-			</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.inria.atlanmod.neoemf</groupId>
-			<artifactId>core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.inria.atlanmod.neoemf</groupId>
-			<artifactId>graph.blueprints</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-repository-plugin</artifactId>
-				<version>${tycho-maven-plugin.version}</version>
-				<!-- <configuration>
-	          		<includeAllDependencies>true</includeAllDependencies>
-	        	</configuration> -->
-			</plugin>
-			<plugin>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>eclipse</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>fr.inria.atlanmod.neoemf.update</artifactId>
+    <packaging>eclipse-repository</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.map.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>graph.blueprints</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-repository-plugin</artifactId>
+                <version>${tycho-maven-plugin.version}</version>
+                <!-- <configuration>
+                      <includeAllDependencies>true</includeAllDependencies>
+                </configuration> -->
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -69,7 +71,7 @@
                     </execution>
                 </executions>
             </plugin>
-		</plugins>
-	</build>
-  
+        </plugins>
+    </build>
+
 </project>

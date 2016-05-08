@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-  	<groupId>fr.inria.atlanmod.neoemf</groupId>
-  	<artifactId>features</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.feature</artifactId>
-  <packaging>eclipse-feature</packaging>
-  <dependencies>
-	<dependency>
-		<groupId>fr.inria.atlanmod.neoemf</groupId>
-		<artifactId>graph.blueprints</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>fr.inria.atlanmod.neoemf</groupId>
-		<artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-  </dependencies>
-  <name>NeoEMF :: Eclipse :: Features :: Blueprints</name>
-  <description>Blueprints feature project (does not include blueprints implementations).</description>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>features</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.feature</artifactId>
+    <packaging>eclipse-feature</packaging>
+
+    <name>NeoEMF :: Eclipse :: Features :: Blueprints</name>
+    <description>Blueprints feature project (does not include blueprints implementations).</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>graph.blueprints</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>
