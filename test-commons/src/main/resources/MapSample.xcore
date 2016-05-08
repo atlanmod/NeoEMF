@@ -1,5 +1,6 @@
 @Ecore(nsURI="com.mapSample")
 @GenModel(modelDirectory="/test-commons/src/main/java/", modelPluginID="mapSample", rootExtendsInterface="fr.inria.atlanmod.neoemf.core.PersistentEObject", rootExtendsClass="fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl", reflectiveDelegation="true", importerID="org.eclipse.emf.importer.ecore", bundleManifest="false", featureDelegation="Reflective", pluginKey="")
+
 package fr.inria.atlanmod.neoemf.test.commons.models.mapSample
 
 class SampleModel {
