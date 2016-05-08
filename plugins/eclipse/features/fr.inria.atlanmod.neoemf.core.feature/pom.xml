@@ -1,36 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-  	<groupId>fr.inria.atlanmod.neoemf</groupId>
-  	<artifactId>features</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
-  <packaging>eclipse-feature</packaging>
-  <dependencies>
-	<dependency>
-		<groupId>fr.inria.atlanmod.neoemf</groupId>
-		<artifactId>core</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-	<!-- Needed to complete the build, Tycho limitation
-		Pom-first dependencies of manifest-first projects are not fully transitive
-		https://wiki.eclipse.org/Tycho/How_Tos/Dependency_on_pom-first_artifacts
-	 -->
-	<dependency>
-		<groupId>fr.inria.atlanmod.neoemf</groupId>
-		<artifactId>graph.blueprints</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>fr.inria.atlanmod.neoemf</groupId>
-		<artifactId>map</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-  </dependencies>
-  
-  <name>NeoEMF :: Eclipse :: Features :: Base</name>
-  <description>Base feature project (referencing core and ui components).</description>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>features</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
+    <packaging>eclipse-feature</packaging>
+
+    <name>NeoEMF :: Eclipse :: Features :: Base</name>
+    <description>Base feature project (referencing core and ui components).</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--
+            Needed to complete the build, Tycho limitation
+            Pom-first dependencies of manifest-first projects are not fully transitive
+            https://wiki.eclipse.org/Tycho/How_Tos/Dependency_on_pom-first_artifacts
+         -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>graph.blueprints</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>map</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

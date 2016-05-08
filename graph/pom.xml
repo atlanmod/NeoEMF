@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	<parent>
-		 <artifactId>parent</artifactId>
+
+    <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
-	</parent>
+    </parent>
+
     <artifactId>graph</artifactId>
-    <name>NeoEMF :: Graph :: Common</name>
     <packaging>pom</packaging>
-    <description>Parent project for Graph database implementations of the core component.
-Contains a generic Blueprints implementation that can be specialized with Blueprints connectors to handle several graph database backend types (see blueprints/README for more informations).</description>
-	<modules>
-    	<module>blueprints</module>
-    	<module>blueprints-neo4j</module>    
-	</modules>
+
+    <name>NeoEMF :: Graph :: Common</name>
+    <description>
+        Parent project for Graph database implementations of the core component.
+        Contains a generic Blueprints implementation that can be specialized with Blueprints connectors to handle
+        several graph database backend types (see blueprints/README for more informations).
+    </description>
+
+    <modules>
+        <module>blueprints</module>
+        <module>blueprints-neo4j</module>
+    </modules>
+
 </project>

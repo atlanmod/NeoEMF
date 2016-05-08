@@ -1,63 +1,76 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <artifactId>parent</artifactId>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
 
     <artifactId>map</artifactId>
     <packaging>bundle</packaging>
+
     <name>NeoEMF :: Map</name>
     <description>Map implementation of the core component.</description>
 
-	<properties>
-        <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <manifest-location>META-INF</manifest-location>
     </properties>
 
     <dependencies>
-    	<dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    
         <dependency>
             <groupId>org.mapdb</groupId>
             <artifactId>mapdb</artifactId>
-            <version>1.0.7</version>
         </dependency>
 
         <dependency>
             <groupId>jboss</groupId>
             <artifactId>jboss-common</artifactId>
-            <version>4.2.2.GA</version>
         </dependency>
+
+        <!-- Internal dependencies -->
+
         <dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Common dependencies -->
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+
         <dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+
         <dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-		</dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+        </dependency>
+
+        <!-- Logging dependencies -->
+
         <dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-			<version>1.6</version>
-		</dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
 
         <dependency>
             <groupId>junit</groupId>
@@ -73,33 +86,46 @@
     </dependencies>
 
     <build>
-    	<plugins>
-	      <plugin>
-	        <groupId>org.apache.felix</groupId>
-	        <artifactId>maven-bundle-plugin</artifactId>
-	        <extensions>true</extensions>
-	        <version>${maven-bundle-plugin.version}</version>
-	          <configuration>
-	            <manifestLocation>${manifest-location}</manifestLocation>
-	           <instructions>
-	           	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-	           	<Bundle-ClassPath>.,{maven-dependencies}<!--,target/classes--></Bundle-ClassPath>
-	           	<Export-Package>fr.inria.atlanmod.neoemf.map.resources,fr.inria.atlanmod.neoemf.map.datastore,fr.inria.atlanmod.neoemf.map.util</Export-Package>
-	           	<Import-Package></Import-Package>
-	           	<Embed-Dependency>mapdb,jboss-common,commons-lang,commons-io,commons-collections,commons-configuration,commons-logging</Embed-Dependency>
-	           	<Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>
-	           </instructions>
-	          </configuration>
-	         <executions>
-	          <execution>
-	            <id>bundle-manifest</id>
-	            <phase>process-classes</phase>
-	            <!--<goals>
-	              <goal>manifest</goal>
-	            </goals>-->
-	          </execution>
-	        </executions>
-	      </plugin>
-	    </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>${maven-bundle-plugin.version}</version>
+                <configuration>
+                    <manifestLocation>${manifest-location}</manifestLocation>
+                    <instructions>
+                        <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+                        <Export-Package>
+                            fr.inria.atlanmod.neoemf.map.resources,
+                            fr.inria.atlanmod.neoemf.map.datastore,
+                            fr.inria.atlanmod.neoemf.map.util
+                        </Export-Package>
+                        <Import-Package></Import-Package>
+                        <Embed-Dependency>
+                            mapdb,
+                            jboss-common,
+                            commons-lang,
+                            commons-io,
+                            commons-collections,
+                            commons-configuration,
+                            commons-logging
+                        </Embed-Dependency>
+                        <Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <!--<goals>
+                          <goal>manifest</goal>
+                        </goals>-->
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
+
 </project>

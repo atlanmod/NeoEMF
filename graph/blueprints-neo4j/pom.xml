@@ -1,80 +1,88 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <artifactId>graph</artifactId>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>graph</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>graph.blueprints.neo4j</artifactId>
     <packaging>bundle</packaging>
+
     <name>NeoEMF :: Graph :: Blueprints :: Neo4j Wrapper</name>
-    
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <manifest-location>META-INF</manifest-location>
-        <neo4j.version>1.9.4</neo4j.version>
     </properties>
 
     <dependencies>
-    	<dependency>
-    		<groupId>fr.inria.atlanmod.neoemf</groupId>
-    		<artifactId>graph.blueprints</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
-    	<dependency>
-    		<groupId>fr.inria.atlanmod.neoemf</groupId>
-    		<artifactId>graph.blueprints</artifactId>
-    		<version>${project.version}</version>
-    		<type>test-jar</type>
-    		<scope>test</scope>
-    	</dependency>
         <dependency>
-        	<groupId>org.neo4j</groupId>
-        	<artifactId>neo4j</artifactId>
-        	<version>${neo4j.version}</version>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
         </dependency>
+
         <dependency>
-        	<groupId>org.neo4j</groupId>
-        	<artifactId>neo4j-kernel</artifactId>
-        	<version>${neo4j.version}</version>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
         </dependency>
+
         <dependency>
-        	<groupId>org.neo4j</groupId>
-        	<artifactId>neo4j-graph-algo</artifactId>
-        	<version>${neo4j.version}</version>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-graph-algo</artifactId>
         </dependency>
+
         <dependency>
-        	<groupId>org.neo4j</groupId>
-        	<artifactId>neo4j-graph-matching</artifactId>
-        	<version>${neo4j.version}</version>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-graph-matching</artifactId>
         </dependency>
-       <dependency>
-       	<groupId>com.tinkerpop.blueprints</groupId>
-       	<artifactId>blueprints-neo4j-graph</artifactId>
-       	<version>2.4.0</version>
-       </dependency>
-       <dependency>
-       	<groupId>org.apache.lucene</groupId>
-       	<artifactId>lucene-core</artifactId>
-       	<version>3.6.2</version>
-       </dependency>
-       <dependency>
-       	<groupId>org.neo4j</groupId>
-       	<artifactId>neo4j-lucene-index</artifactId>
-       	<version>${neo4j.version}</version>
-       </dependency>
-       <dependency>
-       	<groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-       	<artifactId>concurrentlinkedhashmap-lru</artifactId>
-       	<version>1.3.1</version>
-       </dependency>
-       <dependency>
-       	<groupId>org.apache.geronimo.specs</groupId>
-       	<artifactId>geronimo-jta_1.1_spec</artifactId>
-       	<version>1.1.1</version>
-       </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-lucene-index</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tinkerpop.blueprints</groupId>
+            <artifactId>blueprints-neo4j-graph</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+            <artifactId>concurrentlinkedhashmap-lru</artifactId>
+        </dependency>
+
+        <!-- Internal dependencies -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>graph.blueprints</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>graph.blueprints</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Test dependencies -->
 
         <dependency>
             <groupId>junit</groupId>
@@ -88,35 +96,54 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
-    	<plugins>
-	      <plugin>
-	        <groupId>org.apache.felix</groupId>
-	        <artifactId>maven-bundle-plugin</artifactId>
-	        <extensions>true</extensions>
-	        <version>${maven-bundle-plugin.version}</version>
-	          <configuration>
-	            <manifestLocation>${manifest-location}</manifestLocation>
-	           <instructions>
-	           	<Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-	           	<Bundle-ClassPath>.,{maven-dependencies}<!--,target/classes--></Bundle-ClassPath>
-	           	<Export-Package>fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources,fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config,com.googlecode.concurrentlinkedhashmap,org.apache.lucene.*;-split-package:=first,javax.transaction,javax.transaction.xa,com.tinkerpop.blueprints.impls.neo4j,org.neo4j.*;-split-package:=first</Export-Package>
-	           	<Import-Package></Import-Package>
-	           	<Embed-Dependency>geronimo-jta_1.1_spec,concurrentlinkedhashmap-lru,neo4j-lucene-index,lucene-core,neo4j-graph-algo,neo4j-graph-matching,neo4j-kernel,blueprints-neo4j-graph</Embed-Dependency>
-	           	<Require-Bundle>fr.inria.atlanmod.neoemf.graph.blueprints</Require-Bundle>
-	           </instructions>
-	          </configuration>
-	         <executions>
-	          <execution>
-	            <id>bundle-manifest</id>
-	            <phase>process-classes</phase>
-	            <!--<goals>
-	              <goal>manifest</goal>
-	            </goals>-->
-	          </execution>
-	        </executions>
-	      </plugin>
-	    </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>${maven-bundle-plugin.version}</version>
+                <configuration>
+                    <manifestLocation>${manifest-location}</manifestLocation>
+                    <instructions>
+                        <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
+                        <Bundle-ClassPath>.,{maven-dependencies}<!--,target/classes--></Bundle-ClassPath>
+                        <Export-Package>
+                            fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources,
+                            fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config,
+                            com.googlecode.concurrentlinkedhashmap,
+                            org.apache.lucene.*;-split-package:=first,
+                            javax.transaction,
+                            javax.transaction.xa,
+                            com.tinkerpop.blueprints.impls.neo4j,
+                            org.neo4j.*;-split-package:=first
+                        </Export-Package>
+                        <Import-Package></Import-Package>
+                        <Embed-Dependency>
+                            geronimo-jta_1.1_spec,
+                            concurrentlinkedhashmap-lru,
+                            neo4j-lucene-index,
+                            lucene-core,
+                            neo4j-graph-algo,
+                            neo4j-graph-matching,
+                            neo4j-kernel,
+                            blueprints-neo4j-graph
+                        </Embed-Dependency>
+                        <Require-Bundle>fr.inria.atlanmod.neoemf.graph.blueprints</Require-Bundle>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <!--<goals>
+                          <goal>manifest</goal>
+                        </goals>-->
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
+
 </project>

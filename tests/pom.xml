@@ -1,30 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
-	<parent>
-        <artifactId>parent</artifactId>
+
+    <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
 
-	<artifactId>tests</artifactId>
-	<packaging>jar</packaging>
-	
-	<name>NeoEMF :: Tests</name>
-	
-	<properties>
+    <artifactId>tests</artifactId>
+    <packaging>jar</packaging>
+
+    <name>NeoEMF :: Tests</name>
+
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <manifest-location>META-INF</manifest-location>
     </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>fr.inria.atlanmod.neoemf</groupId>
-			<artifactId>test-commons</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+    <dependencies>
+
+        <!-- Internal dependencies -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>test-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Test dependencies -->
 
         <dependency>
             <groupId>junit</groupId>
@@ -37,23 +44,23 @@
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
+    </dependencies>
 
-	</dependencies>
-	
-	<build>
-    <plugins>
-     <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-jar-plugin</artifactId>
-       <version>2.2</version>
-       <executions>
-         <execution>
-           <goals>
-             <goal>test-jar</goal>
-           </goals>
-         </execution>
-       </executions>
-     </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
