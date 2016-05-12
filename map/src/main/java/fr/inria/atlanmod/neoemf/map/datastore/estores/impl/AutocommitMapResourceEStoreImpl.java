@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
@@ -122,6 +123,11 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	
 	@Override
 	protected void finalize() throws Throwable {
-		db.commit();
+		try {
+			db.commit();
+		} catch (Exception ex) {
+			NeoLogger.log(NeoLogger.SEVERITY_ERROR, ex);
+		}
+		super.finalize();
 	}
 }

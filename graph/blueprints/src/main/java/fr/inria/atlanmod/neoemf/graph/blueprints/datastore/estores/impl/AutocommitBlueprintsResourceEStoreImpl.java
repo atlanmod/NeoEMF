@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl;
 
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
@@ -123,6 +124,11 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	
 	@Override
 	protected void finalize() throws Throwable {
-		graph.commit();
+		try {
+			graph.commit();
+		} catch (Exception ex) {
+			NeoLogger.log(NeoLogger.SEVERITY_ERROR, ex);
+		}
+		super.finalize();
 	}
 }
