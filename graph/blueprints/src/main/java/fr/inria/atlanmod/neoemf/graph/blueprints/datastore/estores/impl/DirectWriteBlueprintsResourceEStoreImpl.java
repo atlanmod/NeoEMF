@@ -110,7 +110,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		Object returnValue = null;
+		Object returnValue;
 		if (value == null) {
 			returnValue = get(object, feature, index);
 			clear(object, feature);
@@ -127,7 +127,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	}
 
 	protected Object set(InternalEObject object, EAttribute eAttribute, int index, Object value) {
-		Object returnValue = null;
+		Object returnValue;
 		Vertex vertex = graph.getOrCreateVertex(object);
 		if (!eAttribute.isMany()) {
 			Object property = vertex.getProperty(eAttribute.getName());
@@ -386,7 +386,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		Object returnValue = null;
+		Object returnValue;
 		if (feature instanceof EAttribute) {
 			returnValue = remove(object, (EAttribute) feature, index);
 		} else if (feature instanceof EReference) {
@@ -400,7 +400,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected Object remove(InternalEObject object, EAttribute eAttribute, int index) {
 		Vertex vertex = graph.getVertex(object);
 		Integer size = getSize(vertex, eAttribute);
-		Object returnValue = null;
+		Object returnValue;
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
 		} else {

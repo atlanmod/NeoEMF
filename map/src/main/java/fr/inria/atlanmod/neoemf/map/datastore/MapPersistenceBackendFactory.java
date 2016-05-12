@@ -66,7 +66,7 @@ public class MapPersistenceBackendFactory extends
 	    if (!dbFile.getParentFile().exists()) {
 	        dbFile.getParentFile().mkdirs();
 	    }
-	    PropertiesConfiguration neoConfig = null;
+	    PropertiesConfiguration neoConfig;
 	    Path neoConfigPath = Paths.get(file.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
         try {
             neoConfig= new PropertiesConfiguration(neoConfigPath.toFile());

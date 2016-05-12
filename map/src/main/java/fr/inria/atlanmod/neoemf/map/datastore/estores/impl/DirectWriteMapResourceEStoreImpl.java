@@ -364,7 +364,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(id);
 			if (eClass != null) {
-			    EObject eObject = null;
+			    EObject eObject;
                 if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
                     // Dynamic EMF
                     eObject = PersistenceFactory.eINSTANCE.create(eClass);

@@ -152,7 +152,7 @@ public class BlueprintsPersistenceBackendFactory extends
 			    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Unable to compute graph type name from " + graphType);
 			}
 
-			Graph baseGraph = null;
+			Graph baseGraph;
 			try {
 			    baseGraph = GraphFactory.open(configuration);
 			}catch(RuntimeException e) {

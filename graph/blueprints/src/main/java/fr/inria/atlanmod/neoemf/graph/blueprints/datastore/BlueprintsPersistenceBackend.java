@@ -196,7 +196,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			vertex = addVertex(neoEObject);
 			EClass eClass = neoEObject.eClass();
 			Iterator<Vertex> metaclassIndexHits = metaclassIndex.get("name", eClass.getName()).iterator();
-			Vertex eClassVertex = null;
+			Vertex eClassVertex;
 			if(metaclassIndexHits.hasNext()) {
 			    eClassVertex = metaclassIndexHits.next();
 			}
@@ -252,13 +252,13 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
 		Object id = vertex.getId();
-		InternalPersistentEObject neoEObject = null;
+		InternalPersistentEObject neoEObject;
 //		synchronized(loadedEObjects) {
 			neoEObject = loadedEObjects.get(id);
 //		}
 		if (neoEObject == null) {
 			if (eClass != null) {
-			    EObject eObject = null;
+			    EObject eObject;
 			    if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
 			        // Dynamic EMF
 			        eObject = PersistenceFactory.eINSTANCE.create(eClass);
@@ -294,14 +294,14 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public InternalPersistentEObject reifyVertex(Vertex vertex) {
 		Object id = vertex.getId();
-		InternalPersistentEObject neoEObject = null;
+		InternalPersistentEObject neoEObject;
 //		synchronized(loadedEObjects) {
 			neoEObject = loadedEObjects.get(id);
 //		}
 		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(vertex);
 			if (eClass != null) {
-			    EObject eObject = null;
+			    EObject eObject;
 			    if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
 			        // Dynamic EMF
 			        eObject = PersistenceFactory.eINSTANCE.create(eClass);
