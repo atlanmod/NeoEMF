@@ -312,50 +312,53 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		return result.toString();
 	}
 
-	private class EStoreEcoreEMap extends EcoreEMap<Object, Object>
-	{
+	private class EStoreEcoreEMap extends EcoreEMap<Object, Object> {
 		private static final long serialVersionUID = 1L;
 
 		public EStoreEcoreEMap(EClassifier eType, EStructuralFeature feature)
 		{
 			super ((EClass)eType, BasicEMap.Entry.class, null);
-			delegateEList =
-					new EStoreEObjectImpl.BasicEStoreEList<BasicEMap.Entry<Object, Object>>(PersistentEObjectImpl.this, feature)
-					{
-						private static final long serialVersionUID = 1L;
-
-						@Override
-						protected void didAdd(int index, BasicEMap.Entry<Object, Object> newObject)
-						{
-							doPut(newObject);
-						}
-
-						@Override
-						protected void didSet(int index, BasicEMap.Entry<Object, Object> newObject, BasicEMap.Entry<Object, Object> oldObject)
-						{
-							didRemove(index, oldObject);
-							didAdd(index, newObject);
-						}
-
-						@Override
-						protected void didRemove(int index, BasicEMap.Entry<Object, Object> oldObject)
-						{
-							EStoreEcoreEMap.this.doRemove(oldObject);
-						}
-
-						@Override
-						protected void didClear(int size, Object [] oldObjects)
-						{
-							EStoreEcoreEMap.this.doClear();
-						}
-
-						@Override
-						protected void didMove(int index, BasicEMap.Entry<Object, Object> movedObject, int oldIndex)
-						{
-							EStoreEcoreEMap.this.doMove(movedObject);
-						}
-					};
+			delegateEList = new EntryBasicEStoreEList(feature);
 			size = delegateEList.size();
+		}
+
+		private class EntryBasicEStoreEList extends EStoreEObjectImpl.BasicEStoreEList<Entry<Object, Object>> {
+			private static final long serialVersionUID = 1L;
+
+			public EntryBasicEStoreEList(EStructuralFeature feature) {
+				super(PersistentEObjectImpl.this, feature);
+			}
+
+			@Override
+            protected void didAdd(int index, Entry<Object, Object> newObject)
+            {
+                doPut(newObject);
+            }
+
+			@Override
+            protected void didSet(int index, Entry<Object, Object> newObject, Entry<Object, Object> oldObject)
+            {
+                didRemove(index, oldObject);
+                didAdd(index, newObject);
+            }
+
+			@Override
+            protected void didRemove(int index, Entry<Object, Object> oldObject)
+            {
+                EStoreEcoreEMap.this.doRemove(oldObject);
+            }
+
+			@Override
+            protected void didClear(int size, Object [] oldObjects)
+            {
+                EStoreEcoreEMap.this.doClear();
+            }
+
+			@Override
+            protected void didMove(int index, Entry<Object, Object> movedObject, int oldIndex)
+            {
+                EStoreEcoreEMap.this.doMove(movedObject);
+            }
 		}
 	}
 }
