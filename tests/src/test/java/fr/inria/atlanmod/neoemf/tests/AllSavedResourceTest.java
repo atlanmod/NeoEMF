@@ -35,7 +35,7 @@ public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
         this.factory = MapSampleFactory.eINSTANCE;
         this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
-        super.createPersistentStores();
+        createPersistentStores();
 
         mapSampleModel = factory.createSampleModel();
         mapSampleContentObject = factory.createSampleModelContentObject();

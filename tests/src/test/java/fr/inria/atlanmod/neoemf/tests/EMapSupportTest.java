@@ -34,7 +34,7 @@ public class EMapSupportTest extends AllBackendTest {
         factory = MapSampleFactory.eINSTANCE;
         this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
-        super.createPersistentStores();
+        createPersistentStores();
         mapResource.getContents().add(factory.createSampleModel());
         neo4jResource.getContents().add(factory.createSampleModel());
         tinkerResource.getContents().add(factory.createSampleModel());

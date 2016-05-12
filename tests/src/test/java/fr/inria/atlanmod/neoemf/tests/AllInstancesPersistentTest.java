@@ -26,7 +26,7 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        super.createPersistentStores();
+        createPersistentStores();
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);

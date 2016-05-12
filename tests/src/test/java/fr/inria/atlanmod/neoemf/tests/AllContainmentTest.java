@@ -30,7 +30,7 @@ public abstract class AllContainmentTest extends AllBackendTest {
         factory = MapSampleFactory.eINSTANCE;
         ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
-        super.createPersistentStores();
+        createPersistentStores();
     }
 
     @After

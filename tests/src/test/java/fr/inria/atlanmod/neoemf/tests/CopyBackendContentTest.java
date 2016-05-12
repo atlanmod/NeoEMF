@@ -44,7 +44,7 @@ public class CopyBackendContentTest extends AllBackendTest {
         this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
 
-        super.createTransientStores();
+        createTransientStores();
 
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);

@@ -22,7 +22,7 @@ public class AllInstancesTransientTest extends AllInstancesTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        super.createTransientStores();
+        createTransientStores();
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);

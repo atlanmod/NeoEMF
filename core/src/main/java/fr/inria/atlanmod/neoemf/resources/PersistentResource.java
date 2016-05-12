@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 public interface PersistentResource extends Resource, Resource.Internal {
 	
-	public abstract InternalEObject.EStore eStore();
+	InternalEObject.EStore eStore();
 	
 	/**
 	 * <p>
@@ -29,7 +29,7 @@ public interface PersistentResource extends Resource, Resource.Internal {
 	 * @param eClass the EClass for which look for instances
 	 * @return all the instances of the given EClass from the resource
 	 */
-	public EList<EObject> getAllInstances(EClass eClass);
+	EList<EObject> getAllInstances(EClass eClass);
 	
 	/**
 	 * <p>
@@ -41,6 +41,6 @@ public interface PersistentResource extends Resource, Resource.Internal {
      * the strict instances of the given EClass. If <b>false</b> it 
      * also returns the instances of the sub-types of eClass.
 	 */
-	public EList<EObject> getAllInstances(EClass eClass, boolean strict);
+	EList<EObject> getAllInstances(EClass eClass, boolean strict);
 	
 }

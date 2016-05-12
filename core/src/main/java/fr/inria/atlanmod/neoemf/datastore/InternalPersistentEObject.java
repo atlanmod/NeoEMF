@@ -20,10 +20,10 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 public interface InternalPersistentEObject extends PersistentEObject,
 		InternalEObject {
 
-	public void id(Id id);
+	void id(Id id);
 	
-	public Resource.Internal resource();
+	Resource.Internal resource();
 	
-	public void resource(Resource.Internal resource);
+	void resource(Resource.Internal resource);
 	
 }

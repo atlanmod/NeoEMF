@@ -19,6 +19,6 @@ import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 
 public interface PersistentResourceFactory extends Resource.Factory {
 
-	public static PersistentResourceFactory eINSTANCE = new PersistentResourceFactoryImpl();
+	PersistentResourceFactory eINSTANCE = new PersistentResourceFactoryImpl();
 
 }

@@ -112,9 +112,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-			    if(PersistentResourceImpl.this.persistenceBackend.isStarted()) {
+			    if(persistenceBackend.isStarted()) {
 			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing backend of resource " + PersistentResourceImpl.this.uri);
-			        PersistentResourceImpl.this.persistenceBackend.stop();
+					persistenceBackend.stop();
 			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend of resource " + PersistentResourceImpl.this.uri + " closed");
 			    }
 			}
@@ -148,7 +148,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			isLoaded = true;
 		} finally {
 			isLoading = false;
-			NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + this.uri + " Loaded");
+			NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Loaded");
 		}
 	}
 
@@ -167,16 +167,16 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 				}
 			}
 		}
-		if(!isLoaded() || !this.isPersistent) {
+		if(!isLoaded() || !isPersistent) {
 			PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-			PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(this.persistenceBackend, newBackend);
+			PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(persistenceBackend, newBackend);
 			this.persistenceBackend = newBackend;
 			this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this,persistenceBackend, options);
 			this.isLoaded = true;
 			this.isPersistent = true;
 		}
 		persistenceBackend.save();
-		NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + this.uri + " Saved");
+		NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Saved");
 	}
 
 	
@@ -211,7 +211,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	
 	@Override
 	public EList<EObject> getAllInstances(EClass eClass) {
-		return this.getAllInstances(eClass, false);
+		return getAllInstances(eClass, false);
 	}
 	
 	@Override
@@ -241,7 +241,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	
 
 	protected void shutdown() {
-		this.persistenceBackend.stop();
+		persistenceBackend.stop();
 		this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
 		this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
 		this.isPersistent = false;
@@ -304,7 +304,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 		@Override
 		protected boolean isNotificationRequired() {
-			return PersistentResourceImpl.this.eNotificationRequired();
+			return eNotificationRequired();
 		}
 
 		@Override
@@ -326,15 +326,15 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		public NotificationChain inverseAdd(E object, NotificationChain notifications) {
 			InternalEObject eObject = (InternalEObject) object;
 			notifications = eObject.eSetResource(PersistentResourceImpl.this, notifications);
-			PersistentResourceImpl.this.attached(eObject);
+			attached(eObject);
 			return notifications;
 		}
 
 		@Override
 		public NotificationChain inverseRemove(E object, NotificationChain notifications) {
 			InternalEObject eObject = (InternalEObject) object;
-			if (PersistentResourceImpl.this.isLoaded || unloadingContents != null) {
-				PersistentResourceImpl.this.detached(eObject);
+			if (isLoaded || unloadingContents != null) {
+				detached(eObject);
 			}
 			return eObject.eSetResource(null, notifications);
 		}
@@ -411,10 +411,10 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		}
 
 		protected void loaded() {
-			if (!PersistentResourceImpl.this.isLoaded()) {
-				Notification notification = PersistentResourceImpl.this.setLoaded(true);
+			if (!isLoaded()) {
+				Notification notification = setLoaded(true);
 				if (notification != null) {
-					PersistentResourceImpl.this.eNotify(notification);
+					eNotify(notification);
 				}
 			}
 		}

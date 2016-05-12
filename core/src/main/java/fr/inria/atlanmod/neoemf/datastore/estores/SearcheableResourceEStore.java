@@ -32,7 +32,7 @@ public interface SearcheableResourceEStore extends InternalEObject.EStore {
 	 * 
 	 * @return
 	 */
-	public Resource resource();
+	Resource resource();
 
 	/**
 	 * Returns the resolved {@link EObject} identified by the given
@@ -42,7 +42,7 @@ public interface SearcheableResourceEStore extends InternalEObject.EStore {
 	 * @param id
 	 * @return
 	 */
-	public EObject eObject(Id id);
+	EObject eObject(Id id);
 	
 	/**
 	 * Back-end specific computation of allInstances()
@@ -51,6 +51,6 @@ public interface SearcheableResourceEStore extends InternalEObject.EStore {
 	 * @return an {@link EList} containing all the EObjects that are instances of the given {@link EClass}
 	 * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
 	 */
-	public EList<EObject> getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
+	EList<EObject> getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
 	
 }

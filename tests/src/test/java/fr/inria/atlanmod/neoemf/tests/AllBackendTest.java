@@ -51,8 +51,8 @@ public abstract class AllBackendTest extends AllTest {
 
     @Before
     public void setUp() throws Exception {
-        assertThat("EPackage not set", this.ePackage, notNullValue());
-        String className = this.getClass().getSimpleName();
+        assertThat("EPackage not set", ePackage, notNullValue());
+        String className = getClass().getSimpleName();
         String timestamp = String.valueOf(new Date().getTime());
         mapFile = temporaryFolder.getRoot().toPath().resolve(className + "MapDB" + timestamp).toFile();
         neo4jFile = temporaryFolder.getRoot().toPath().resolve(className + "Neo4j" + timestamp).toFile();

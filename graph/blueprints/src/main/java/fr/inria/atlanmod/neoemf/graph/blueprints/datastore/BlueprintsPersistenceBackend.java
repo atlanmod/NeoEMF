@@ -68,7 +68,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		 */
 		@Override
 		public void remove() {
-			Vertex referencedVertex = this.getVertex(Direction.IN);
+			Vertex referencedVertex = getVertex(Direction.IN);
 			super.remove();
 			if (!referencedVertex.getEdges(Direction.IN).iterator().hasNext()) {
 				// If the Vertex has no more incoming edges remove it from the DB
@@ -114,17 +114,17 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	@Override
 	public void stop() {
-		this.shutdown();
+		shutdown();
 		isStarted = false;
 		
 	}
 	
 	@Override
 	public void save() {
-	    if(this.getFeatures().supportsTransactions) {
-	        this.commit();
+	    if(getFeatures().supportsTransactions) {
+			commit();
 	    } else {
-	        this.shutdown();
+			shutdown();
 	    }
 	}
 	

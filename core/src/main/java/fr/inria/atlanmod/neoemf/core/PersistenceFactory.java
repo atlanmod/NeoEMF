@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.core.impl.PersistenceFactoryImpl;
 
 public interface PersistenceFactory extends EFactory {
 	
-	public static PersistenceFactory eINSTANCE = new PersistenceFactoryImpl();
+	PersistenceFactory eINSTANCE = new PersistenceFactoryImpl();
 	
 	PersistentEObject create(EClass eClass);
 

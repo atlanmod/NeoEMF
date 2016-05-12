@@ -25,7 +25,7 @@ public class StringId implements Id {
 	
 	@Override
 	public int compareTo(Id o) {
-		return o.toString().compareTo(this.toString());
+		return o.toString().compareTo(toString());
 	}
 	
 	@Override
@@ -46,7 +46,7 @@ public class StringId implements Id {
 		else if(obj == null) {
 			return false;
 		}
-		else if(obj.getClass() != this.getClass()) {
+		else if(obj.getClass() != getClass()) {
 			return false;
 		}
 		else {

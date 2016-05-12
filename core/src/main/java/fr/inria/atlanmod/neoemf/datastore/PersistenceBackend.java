@@ -25,25 +25,25 @@ public interface PersistenceBackend {
 	 * @param options
 	 * @throws InvalidDataStoreException
 	 */
-	public void start(Map<?, ?> options) throws InvalidDataStoreException;
+	void start(Map<?, ?> options) throws InvalidDataStoreException;
 	
 	/**
 	 * Returns whether the underlying data store has been started or not.
 	 * 
 	 * @return
 	 */
-	public boolean isStarted();
+	boolean isStarted();
 	
 	/**
 	 * Cleanly stops the underlying data store.
 	 */
-	public void stop();
+	void stop();
 	
 	/**
 	 * Saves the modifications of the owned {@link EObject}s in the persistence
 	 * back-end
 	 */
-	public void save();
+	void save();
 	
 	/**
 	 * Back-end specific computation of allInstances
@@ -52,7 +52,7 @@ public interface PersistenceBackend {
 	 * @return an Object containing the back-end specific objects corresponding to the instances of the EClass
 	 * @throws UnsupportedOperationException if the back-end does not support allInstances lookup
 	 */
-	public Object getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
+	Object getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
 	
 }
 

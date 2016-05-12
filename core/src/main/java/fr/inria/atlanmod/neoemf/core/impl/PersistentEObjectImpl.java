@@ -186,7 +186,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		 * This is necessary to handle attachment of entire stand-alone sub-tree to a PersistentResource
 		 * (otherwise only the top-level elements of the subtree are added)
 		 */
-		for (EObject eObject : this.eContents()) {
+		for (EObject eObject : eContents()) {
 			InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
 			if (internalElement.resource() != this.resource) {
 				internalElement.resource(this.resource);
@@ -258,7 +258,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		                  @Override
 		                  protected void didAdd(int index, BasicEMap.Entry<Object, Object> newObject)
 		                  {
-		                    EStoreEcoreEMap.this.doPut(newObject);
+							  doPut(newObject);
 		                  }
 
 		                  @Override

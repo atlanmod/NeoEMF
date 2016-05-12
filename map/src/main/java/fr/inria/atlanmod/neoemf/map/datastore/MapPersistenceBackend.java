@@ -33,17 +33,17 @@ public class MapPersistenceBackend extends DB implements PersistenceBackend {
 
 	@Override
 	public boolean isStarted() {
-	    return !this.isClosed();
+	    return !isClosed();
 	}
 
 	@Override
 	public void stop() {
-		this.close();
+		close();
 	}
 
 	@Override
 	public void save() {
-		this.commit();
+		commit();
 	}
 	
 	@Override

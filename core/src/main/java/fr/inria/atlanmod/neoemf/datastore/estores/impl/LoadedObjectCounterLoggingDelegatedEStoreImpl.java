@@ -37,12 +37,7 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                NeoLogger.log(
-                        Level.INFO,
-                        MessageFormat
-                                .format("{0} objects loaded during the execution",
-                                        LoadedObjectCounterLoggingDelegatedEStoreImpl.this.loadedObjects
-                                                .size()));
+                NeoLogger.log(Level.INFO, MessageFormat.format("{0} objects loaded during the execution", loadedObjects.size()));
             }
         });
     }

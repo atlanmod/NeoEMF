@@ -37,7 +37,7 @@ public abstract class AbstractPersistenceBackendFactory {
 	public abstract PersistenceBackend createPersistentBackend(File file, Map<?,?> options) throws InvalidDataStoreException;
 	
 	public SearcheableResourceEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-	    SearcheableResourceEStore eStore = this.internalCreatePersistentEStore(resource, backend, options);
+	    SearcheableResourceEStore eStore = internalCreatePersistentEStore(resource, backend, options);
 	    @SuppressWarnings("unchecked")
         ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
 	    if(storeOptions != null && !storeOptions.isEmpty()) {

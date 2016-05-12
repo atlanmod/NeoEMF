@@ -13,11 +13,11 @@ package fr.inria.atlanmod.neoemf.resources;
 
 public interface PersistentResourceOptions {
     
-    public final static String STORE_OPTIONS = "stores";
+    String STORE_OPTIONS = "stores";
     
-    public interface StoreOption {}
+    interface StoreOption {}
     
-    public static enum EStoreOption implements StoreOption {
+    enum EStoreOption implements StoreOption {
         IS_SET_CACHING,
         LOGGING,
         SIZE_CACHING,
