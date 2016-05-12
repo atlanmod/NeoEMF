@@ -333,15 +333,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return
 	 */
 	protected static String buildEClassId(EClass eClass) {
-		if (eClass != null) {
-			StringBuilder builder = new StringBuilder();
-			builder.append(eClass.getName());
-			builder.append("@");
-			builder.append(eClass.getEPackage().getNsURI());
-			return builder.toString();
-		} else {
-			return null;
-		}
+		return eClass != null ? eClass.getName() + "@" + eClass.getEPackage().getNsURI() : null;
 	}
 	
 	/**
