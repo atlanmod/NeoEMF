@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EClass;
@@ -145,7 +146,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EObject eObject) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
+		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
 		return addVertex(neoEObject.id().toString());
 	}
 
@@ -174,7 +175,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getVertex(EObject eObject) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
+		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
 		return getVertex(neoEObject.id().toString());
 	}
 
@@ -189,7 +190,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
-		InternalPersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+		InternalPersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 		Vertex vertex = getVertex(neoEObject.id().toString());
 		if (vertex == null) {
 			vertex = addVertex(neoEObject);
@@ -268,7 +269,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				if (eObject instanceof InternalPersistentEObject) {
 					neoEObject = (InternalPersistentEObject) eObject;
 				} else {
-					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+					neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 				}
 				neoEObject.id(new StringId(id.toString()));
 			} else {
@@ -311,7 +312,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				if (eObject instanceof InternalPersistentEObject) {
 					neoEObject = (InternalPersistentEObject) eObject;
 				} else {
-					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+					neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 				}
 				neoEObject.id(new StringId(id.toString()));
 			} else {

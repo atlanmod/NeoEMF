@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -179,7 +180,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject PersistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		return map.containsKey(new Tuple2<>(PersistentEObject.id(), feature.getName()));
 	}
 
@@ -254,7 +255,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject PersistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		map.remove(new Tuple2<>(PersistentEObject.id(), feature.getName()));
 	}
 
@@ -291,7 +292,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		if (feature instanceof EAttribute) {
 			return list.indexOf(serializeToMapValue((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
+			PersistentEObject childEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			return list.indexOf(childEObject.id());
 		}
 	}
@@ -308,7 +309,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		if (feature instanceof EAttribute) {
 			return list.lastIndexOf(serializeToMapValue((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
+			PersistentEObject childEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			return list.lastIndexOf(childEObject.id());
 		}
 	}
@@ -316,7 +317,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject PersistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		map.put(new Tuple2<>(PersistentEObject.id(), feature.getName()), new Object[] {});
 	}
 
@@ -352,7 +353,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
-		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject PersistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		ContainerInfo info = containersMap.get(PersistentEObject.id());
 		if (info != null) {
 			return (InternalEObject) eObject(info.containerId);
@@ -363,7 +364,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
-		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject PersistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		ContainerInfo info = containersMap.get(PersistentEObject.id());
 		if (info != null) {
 			EObject container = eObject(info.containerId);
@@ -399,7 +400,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 				if (eObject instanceof InternalPersistentEObject) {
 					PersistentEObject = (InternalPersistentEObject) eObject;
 				} else {
-					PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+					PersistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 				}
 				PersistentEObject.id(id);
 			} else {
@@ -408,6 +409,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 			}
 			loadedEObjects.put(id, PersistentEObject);
 		}
+		Objects.requireNonNull(PersistentEObject);
 		if (PersistentEObject.resource() != resource()) {
 			PersistentEObject.resource(resource());
 		}

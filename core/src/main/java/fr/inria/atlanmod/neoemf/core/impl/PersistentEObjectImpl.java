@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.core.impl;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
@@ -183,7 +184,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		 * (otherwise only the top-level elements of the subtree are added)
 		 */
 		for (EObject eObject : eContents()) {
-			InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+			InternalPersistentEObject internalElement = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 			if (internalElement.resource() != this.resource) {
 				internalElement.resource(this.resource);
 			}

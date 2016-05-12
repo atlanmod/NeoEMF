@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -440,6 +441,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		}
 		setSize(vertex, eReference, size - 1); // Update size
 		if(eReference.isContainment()) {
+			Objects.requireNonNull(returnValue);
 			returnValue.eBasicSetContainer(null, -1, null);
 			((InternalPersistentEObject)returnValue).resource(null);
 		}

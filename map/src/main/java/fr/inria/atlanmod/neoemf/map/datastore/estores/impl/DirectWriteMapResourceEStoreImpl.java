@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.common.util.EList;
@@ -153,7 +154,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		return map.containsKey(Fun.t2(neoEObject.id(), feature.getName()));
 	}
 
@@ -231,7 +232,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		map.remove(Fun.t2(neoEObject.id(), feature.getName()));
 	}
 
@@ -266,7 +267,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		if (feature instanceof EAttribute) {
 			return ArrayUtils.indexOf(array, serializeToMapValue((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
+			PersistentEObject childEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			return ArrayUtils.indexOf(array, childEObject.id());
 		}
 	}
@@ -282,7 +283,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		if (feature instanceof EAttribute) {
 			return ArrayUtils.lastIndexOf(array, serializeToMapValue((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
+			PersistentEObject childEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			return ArrayUtils.lastIndexOf(array, childEObject.id());
 		}
 	}
@@ -290,7 +291,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		map.put(Fun.t2(neoEObject.id(), feature.getName()), new Object[] {});
 	}
 
@@ -326,7 +327,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		ContainerInfo info = containersMap.get(neoEObject.id());
 		if (info != null) {
 			return (InternalEObject) eObject(info.containerId);
@@ -337,7 +338,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		ContainerInfo info = containersMap.get(neoEObject.id());
 		if (info != null) {
 			EObject container = eObject(info.containerId);
@@ -373,7 +374,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 				if (eObject instanceof InternalPersistentEObject) {
 					neoEObject = (InternalPersistentEObject) eObject;
 				} else {
-					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+					neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 				}
 				neoEObject.id(id);
 			} else {
@@ -382,6 +383,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 			}
 			loadedEObjects.put(id, neoEObject);
 		}
+		Objects.requireNonNull(neoEObject);
 		if (neoEObject.resource() != resource()) {
 			neoEObject.resource(resource());
 		}
