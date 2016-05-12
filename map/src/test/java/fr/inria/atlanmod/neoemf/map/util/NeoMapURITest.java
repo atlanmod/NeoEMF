@@ -55,7 +55,7 @@ public class NeoMapURITest extends AllMapTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                System.err.println(e);
+                System.err.println(e.getMessage());
             }
         }
 
