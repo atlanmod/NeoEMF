@@ -163,19 +163,19 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
         return super.getContainingFeature(object);
     }
 
-    @Override
-    public EObject create(EClass eClass) {
-        return super.create(eClass);
-    }
+//  @Override
+//  public EObject create(EClass eClass) {
+//      return super.create(eClass);
+//  }
 
-    @Override
-    public Resource resource() {
-        return super.resource();
-    }
+//  @Override
+//  public Resource resource() {
+//      return super.resource();
+//  }
 
-    @Override
-    public EObject eObject(Id id) {
-        return super.eObject(id);
-    }
+//  @Override
+//  public EObject eObject(Id id) {
+//      return super.eObject(id);
+//  }
 
 }
