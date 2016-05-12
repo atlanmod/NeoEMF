@@ -148,14 +148,14 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	protected Object set(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if (!eAttribute.isMany()) {
-			Object oldValue = map.put(new Tuple2<Id, String>(object.id(), eAttribute.getName()), serializeToMapValue(eAttribute, value));
+			Object oldValue = map.put(new Tuple2<>(object.id(), eAttribute.getName()), serializeToMapValue(eAttribute, value));
 			return parseMapValue(eAttribute, oldValue);
 		} else {
 			@SuppressWarnings("unchecked")
 			List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 			Object oldValue = list.get(index); 
 			list.set(index, serializeToMapValue(eAttribute, value));
-			map.put(new Tuple2<Id, String>(object.id(), eAttribute.getName()), list.toArray());
+			map.put(new Tuple2<>(object.id(), eAttribute.getName()), list.toArray());
 			return parseMapValue(eAttribute, oldValue);
 		}
 	}
@@ -164,14 +164,14 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
 		if (!eReference.isMany()) {
-			Object oldId = map.put(new Tuple2<Id, String>(object.id(), eReference.getName()), referencedObject.id());
+			Object oldId = map.put(new Tuple2<>(object.id(), eReference.getName()), referencedObject.id());
 			return oldId != null ? eObject((Id) oldId) : null;
 		} else {
 			@SuppressWarnings("unchecked")
 			List<Object> list = (List<Object>) getFromMap(object, eReference);
 			Object oldId = list.get(index);
 			list.set(index, referencedObject.id());
-			map.put(new Tuple2<Id, String>(object.id(), eReference.getName()), list.toArray());
+			map.put(new Tuple2<>(object.id(), eReference.getName()), list.toArray());
 			return oldId != null ? eObject((Id) oldId) : null;
 		}
 	}
@@ -180,7 +180,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
-		return map.containsKey(new Tuple2<Id, String>(PersistentEObject.id(), feature.getName()));
+		return map.containsKey(new Tuple2<>(PersistentEObject.id(), feature.getName()));
 	}
 
 
@@ -201,7 +201,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		@SuppressWarnings("unchecked")
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		list.add(index, serializeToMapValue(eAttribute, value));
-		map.put(new Tuple2<Id, String>(object.id(), eAttribute.getName()), list.toArray());
+		map.put(new Tuple2<>(object.id(), eAttribute.getName()), list.toArray());
 	}
 
 	protected void add(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
@@ -210,7 +210,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		@SuppressWarnings("unchecked")
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		list.add(index, referencedObject.id());
-		map.put(new Tuple2<Id, String>(object.id(), eReference.getName()), list.toArray());
+		map.put(new Tuple2<>(object.id(), eReference.getName()), list.toArray());
 	}
 
 	@Override
@@ -230,7 +230,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		Object oldValue = list.get(index);
 		list.remove(index);
-		map.put(new Tuple2<Id, String>(object.id(), eAttribute.getName()), list.toArray());
+		map.put(new Tuple2<>(object.id(), eAttribute.getName()), list.toArray());
 		return parseMapValue(eAttribute, oldValue);
 	}
 
@@ -239,7 +239,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		Object oldId = list.get(index);
 		list.remove(index);
-		map.put(new Tuple2<Id, String>(object.id(), eReference.getName()), list.toArray());
+		map.put(new Tuple2<>(object.id(), eReference.getName()), list.toArray());
 		return eObject((Id) oldId);
 
 	}
@@ -255,7 +255,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
-		map.remove(new Tuple2<Id, String>(PersistentEObject.id(), feature.getName()));
+		map.remove(new Tuple2<>(PersistentEObject.id(), feature.getName()));
 	}
 
 
@@ -317,7 +317,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject PersistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
-		map.put(new Tuple2<Id, String>(PersistentEObject.id(), feature.getName()), new Object[] {});
+		map.put(new Tuple2<>(PersistentEObject.id(), feature.getName()), new Object[] {});
 	}
 
 
@@ -456,10 +456,10 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
 		if (!feature.isMany()) {
-			return map.get(new Tuple2<Id, String>(object.id(), feature.getName()));
+			return map.get(new Tuple2<>(object.id(), feature.getName()));
 		} else {
 			try {
-				return mapCache.get(new Tuple2<Id, String>(object.id(), feature.getName()));
+				return mapCache.get(new Tuple2<>(object.id(), feature.getName()));
 			} catch (ExecutionException e) {
 			}
 		}

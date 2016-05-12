@@ -293,7 +293,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		        return new EStoreEcoreEMap();
 		    }
 		    else {
-		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
+		        return new EStoreEObjectImpl.BasicEStoreEList<>(this, feature);
 		    }
 		} else {
 			return eStore().get(this, feature, EStore.NO_INDEX);

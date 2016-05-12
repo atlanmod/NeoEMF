@@ -28,7 +28,7 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 
-    private Set<InternalEObject> loadedObjects = new HashSet<InternalEObject>();
+    private Set<InternalEObject> loadedObjects = new HashSet<>();
 
     public LoadedObjectCounterLoggingDelegatedEStoreImpl(
             SearcheableResourceEStore eStore) {

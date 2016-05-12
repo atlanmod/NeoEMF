@@ -182,7 +182,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	
 	@Override
 	public EList<EObject> getContents() {
-		return new ResourceContentsEStoreEList<EObject>(DUMMY_ROOT_EOBJECT, ROOT_CONTENTS_ESTRUCTURALFEATURE, eStore());
+		return new ResourceContentsEStoreEList<>(DUMMY_ROOT_EOBJECT, ROOT_CONTENTS_ESTRUCTURALFEATURE, eStore());
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	    } catch(UnsupportedOperationException e) {
 	        NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
 	        Iterator<EObject> it = getAllContents();
-	        EList<EObject> instanceList = new BasicEList<EObject>();
+	        EList<EObject> instanceList = new BasicEList<>();
 	        while(it.hasNext()) {
 	            EObject eObject = it.next();
 	            if(eClass.isInstance(eObject)) {

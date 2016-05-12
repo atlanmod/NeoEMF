@@ -42,7 +42,7 @@ public abstract class AbstractResourceBuilder {
         isPersistent = false;
         EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
         rSet = new ResourceSetImpl();
-        resourceOptions = new HashMap<Object, Object>();
+        resourceOptions = new HashMap<>();
     }
     
     public abstract AbstractResourceBuilder uri(URI uri);

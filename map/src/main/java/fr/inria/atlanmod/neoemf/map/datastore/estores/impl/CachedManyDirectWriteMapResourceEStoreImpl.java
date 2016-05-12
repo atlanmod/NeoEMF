@@ -53,7 +53,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	
 	@Override
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-		Tuple2<Id, String> key = new Tuple2<Id, String>(object.id(), feature.getName());
+		Tuple2<Id, String> key = new Tuple2<>(object.id(), feature.getName());
 		Object returnValue = cachedArray.get(key);
 		if (returnValue == null) {
 			returnValue = super.getFromMap(object, feature);

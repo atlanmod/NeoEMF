@@ -42,7 +42,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
     private PersistenceBackend mockPersistentBackend = mock(PersistenceBackend.class);
     @SuppressWarnings("rawtypes")
     private Map options = new HashMap();
-    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<PersistentResourceOptions.StoreOption>();
+    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     @Before

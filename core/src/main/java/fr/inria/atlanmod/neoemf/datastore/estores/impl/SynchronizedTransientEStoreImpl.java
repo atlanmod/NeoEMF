@@ -123,7 +123,7 @@ public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {
 		if (saved != null) {
 			saved.add(index, value);
 		} else {
-			List<Object> list = Collections.synchronizedList(new ArrayList<Object>());
+			List<Object> list = Collections.synchronizedList(new ArrayList<>());
 			list.add(value);
 			manyMap.put(entry, list);
 		}

@@ -51,7 +51,7 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
     private File testFile = null;
     @SuppressWarnings("rawtypes")
     private Map options = new HashMap();
-    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<PersistentResourceOptions.StoreOption>();
+    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     @Before

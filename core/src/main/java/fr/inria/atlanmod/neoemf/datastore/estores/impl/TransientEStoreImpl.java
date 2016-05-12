@@ -30,8 +30,8 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
  */
 public class TransientEStoreImpl implements InternalEObject.EStore {
 
-	protected Map<EStoreEntryKey, Object> singleMap = new HashMap<EStoreEntryKey, Object>();
-	protected Map<EStoreEntryKey, List<Object>> manyMap = new HashMap<EStoreEntryKey, List<Object>>();
+	protected Map<EStoreEntryKey, Object> singleMap = new HashMap<>();
+	protected Map<EStoreEntryKey, List<Object>> manyMap = new HashMap<>();
 
 	public class EStoreEntryKey {
 
@@ -125,7 +125,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		if (saved != null) {
 			saved.add(index, value);
 		} else {
-			List<Object> list = new ArrayList<Object>();
+			List<Object> list = new ArrayList<>();
 			list.add(value);
 			manyMap.put(entry, list);
 		}

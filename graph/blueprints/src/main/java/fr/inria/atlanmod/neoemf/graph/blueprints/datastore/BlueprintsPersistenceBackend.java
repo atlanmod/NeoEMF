@@ -91,8 +91,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * {@link EObject} is no longer referenced and can be garbage collected it
 	 * is removed from the {@link Map}.
 	 */
-	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<Object, InternalPersistentEObject>();
-	protected List<EClass> indexedEClasses = new ArrayList<EClass>();
+	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<>();
+	protected List<EClass> indexedEClasses = new ArrayList<>();
 	
 	public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
@@ -360,8 +360,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	@Override
 	public Map<EClass,Iterator<Vertex>> getAllInstances(EClass eClass, boolean strict) {
-		Map<EClass,Iterator<Vertex>> indexHits = new HashMap<EClass,Iterator<Vertex>>();
-		Set<EClass> eClassToFind = new HashSet<EClass>();
+		Map<EClass,Iterator<Vertex>> indexHits = new HashMap<>();
+		Set<EClass> eClassToFind = new HashSet<>();
 		if(eClass.isAbstract() && strict) {
 		    // There is no strict instance of an abstract class
 		    return Collections.emptyMap();
