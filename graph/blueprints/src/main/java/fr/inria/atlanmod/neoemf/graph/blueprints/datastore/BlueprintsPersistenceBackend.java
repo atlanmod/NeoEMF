@@ -138,8 +138,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	/**
 	 * Create a new vertex, add it to the graph, and return the newly created
-	 * vertex. The issued {@link EObject} is used to calculate the
-	 * {@link Vertex} <code>id</code>.
+	 * vertex. The issued {@link EObject} is used to calculate the {@link Vertex} {@code id}.
 	 * 
 	 * @param eObject
 	 *            The corresponding {@link EObject}
@@ -152,8 +151,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 	/**
 	 * Create a new vertex, add it to the graph, and return the newly created
-	 * vertex. The issued {@link EClass} is used to calculate the
-	 * {@link Vertex} <code>id</code>.
+	 * vertex. The issued {@link EClass} is used to calculate the {@link Vertex} {@code id}.
 	 * 
 	 * @param eClass
 	 *            The corresponding {@link EClass}
@@ -170,7 +168,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * Return the vertex corresponding to the provided {@link EObject}. If no
 	 * vertex corresponds to that {@link EObject}, then return null.
 	 * 
-	 * @param id
+	 * @param eObject
 	 * @return the vertex referenced by the provided {@link EObject} or null
 	 *         when no such vertex exists
 	 */
@@ -182,10 +180,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	/**
 	 * Return the vertex corresponding to the provided {@link EObject}. If no
 	 * vertex corresponds to that {@link EObject}, then the corresponding
-	 * {@link Vertex} together with its <code>INSTANCE_OF</code> relationship is
-	 * created.
+	 * {@link Vertex} together with its {@code INSTANCE_OF} relationship is created.
 	 * 
-	 * @param id
+	 * @param eObject
 	 * @return the vertex referenced by the provided {@link EObject} or null
 	 *         when no such vertex exists
 	 */
@@ -215,7 +212,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * Returns the vertex corresponding to the provided {@link EClass}. If no
 	 * vertex corresponds to that {@link EClass}, then return null.
 	 * 
-	 * @param id
+	 * @param eClass
 	 * @return the vertex referenced by the provided {@link EClass} or null when
 	 *         no such vertex exists
 	 */
@@ -327,8 +324,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 	
 	/**
-	 * Builds the <code>id</code> used to identify {@link EClass} {@link Vertex}
-	 * es.
+	 * Builds the {@code id} used to identify {@link EClass} {@link Vertex}es.
 	 * 
 	 * @param eClass
 	 * @return

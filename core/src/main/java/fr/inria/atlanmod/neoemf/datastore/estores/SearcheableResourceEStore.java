@@ -36,8 +36,7 @@ public interface SearcheableResourceEStore extends InternalEObject.EStore {
 
 	/**
 	 * Returns the resolved {@link EObject} identified by the given
-	 * <code>id</code> or <code>null</code> if no {@link EObject} can be
-	 * resolved.
+	 * {@code id} or {@code null} if no {@link EObject} can be resolved.
 	 * 
 	 * @param id
 	 * @return

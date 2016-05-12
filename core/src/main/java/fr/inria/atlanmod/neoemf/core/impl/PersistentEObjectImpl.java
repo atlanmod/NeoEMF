@@ -72,7 +72,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	/**
 	 * @return InternalEObject the container of the {@link PersistentEObject}
 	 * Do not return the same value as standard EMF implementation if the container
-	 * has not been accessed with the public method {@link eContainer()} before.
+	 * has not been accessed with the public method {@link #eContainer()} before.
 	 */
 	@Override
 	public InternalEObject eInternalContainer() {

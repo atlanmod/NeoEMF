@@ -33,7 +33,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test cases for the only non-abstract method in @see{AbstractPersistenceBackendFactory::createPersistentEStore}
+ * Test cases for the only non-abstract method in {@link AbstractPersistenceBackendFactory#createPersistentEStore(PersistentResource, PersistenceBackend, Map)}
  */
 public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
 
@@ -142,8 +142,8 @@ public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in @see{AbstractPersistenceBackendFactory}
-     * 2 stores : @see{IsSetCachingDelegatedEStoreImpl} and @see{LoggingDelegatedEStoreImpl}
+     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link LoggingDelegatedResourceEStoreImpl}
      */
     @Test
     public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
@@ -163,8 +163,8 @@ public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in @see{AbstractPersistenceBackendFactory}
-     * 2 stores : @see{IsSetCachingDelegatedEStoreImpl} and @see{SizeCachingDelegatedEStoreImpl}
+     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
@@ -184,8 +184,8 @@ public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in @see{AbstractPersistenceBackendFactory}
-     * 2 stores : @see{SizeCachingDelegatedEStoreImpl} and @see{EStructuralFeatureCachingDelegatedEStoreImpl}
+     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * 2 stores : {@link SizeCachingDelegatedEStoreImpl} and {@link EStructuralFeatureCachingDelegatedEStoreImpl}
      */
     @Test
     public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
@@ -205,10 +205,9 @@ public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in @see{AbstractPersistenceBackendFactory}
-     * 4 stores : @see{EStructuralFeatureCachingDelegatedEStoreImpl}, @see{IsSetCachingDelegatedEStoreImpl},
-     *
-     * @see{LoggingDelegatedResourceEStoreImpl}, and @see{SizeCachingDelegatedEStoreImpl}
+     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * 4 stores : {@link EStructuralFeatureCachingDelegatedEStoreImpl}, {@link IsSetCachingDelegatedEStoreImpl},
+     * {@link LoggingDelegatedResourceEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
      */
     @Test
     public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {

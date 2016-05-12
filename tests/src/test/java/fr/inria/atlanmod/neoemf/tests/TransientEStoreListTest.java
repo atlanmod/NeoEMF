@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.TransientEStoreImpl;
+import fr.inria.atlanmod.neoemf.issues.Issue7Test;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
@@ -30,8 +32,8 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 /**
- * Test cases that check List method consistency for the @see{TransientEStoreImpl} class.
- * Issue #7 reported the error for isEmpty method @see{Issue7Test}
+ * Test cases that check List method consistency for the {@link TransientEStoreImpl} class.
+ * Issue #7 reported the error for isEmpty method {@link Issue7Test}
  */
 public class TransientEStoreListTest extends AllTest {
 

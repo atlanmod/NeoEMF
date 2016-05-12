@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 public interface PersistenceBackend {
 
 	/**
-	 * Starts the underlying data store with the given <code>options</code>
+	 * Starts the underlying data store with the given {@code options}
 	 * 
 	 * @param options
 	 * @throws InvalidDataStoreException

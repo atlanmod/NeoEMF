@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import net.sf.cglib.core.NamingPolicy;
 import net.sf.cglib.proxy.Enhancer;
 
