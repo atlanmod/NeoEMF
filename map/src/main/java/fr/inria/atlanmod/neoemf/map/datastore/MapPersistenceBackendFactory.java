@@ -125,12 +125,11 @@ public class MapPersistenceBackendFactory extends
 	    assert to instanceof MapPersistenceBackend : "The target copy backend is not an instance of MapPersistenceBackend";
 	    MapPersistenceBackend mapFrom = (MapPersistenceBackend)from;
 	    MapPersistenceBackend mapTo = (MapPersistenceBackend)to;
-	    Map<String,Object> fromAll = mapFrom.getAll();
-	    for(String fromKey : fromAll.keySet()) {
-	        Object collection = fromAll.get(fromKey);
+	    for(Map.Entry<String, Object> entry : mapFrom.getAll().entrySet()) {
+	        Object collection = entry.getValue();
 	        if(collection instanceof Map) {
                 Map fromMap = (Map)collection;
-                Map toMap = mapTo.getHashMap(fromKey);
+                Map toMap = mapTo.getHashMap(entry.getKey());
 	            toMap.putAll(fromMap);
 	        }
 	        else {

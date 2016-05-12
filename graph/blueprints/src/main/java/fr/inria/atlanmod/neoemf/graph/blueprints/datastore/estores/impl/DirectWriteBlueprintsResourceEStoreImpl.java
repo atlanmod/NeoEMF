@@ -249,9 +249,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 				iterator.next().remove();
 			}
 		} else {
-			Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges().iterator();
-			while (iterator.hasNext()) {
-				iterator.next().remove();
+			for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges()) {
+				edge.remove();
 			}
 			vertex.removeProperty(eReference.getName() + SEPARATOR + SIZE_LITERAL);
 		}
@@ -301,13 +300,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	        }
 	        Vertex inVertex = graph.getVertex(object);
 	        Vertex outVertex = graph.getVertex((EObject)value);
-	        Iterator<Edge> iterator = outVertex.getEdges(Direction.IN, feature.getName()).iterator();
-	        while(iterator.hasNext()) {
-	            Edge e = iterator.next();
-	            if(e.getVertex(Direction.OUT).equals(inVertex)) {
-	                return e.getProperty(POSITION);
-	            }
-	        }
+			for (Edge e : outVertex.getEdges(Direction.IN, feature.getName())) {
+				if (e.getVertex(Direction.OUT).equals(inVertex)) {
+					return e.getProperty(POSITION);
+				}
+			}
 	        return ArrayUtils.INDEX_NOT_FOUND;
 	    }
 	    else {
@@ -386,13 +383,10 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		} else {
 		    if(index != size) {
 		        // Avoid unnecessary database access
-    			Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()
-    					.iterator();
-    			while (iterator.hasNext()) {
-    				Edge edge = iterator.next();
-    				int position = edge.getProperty(POSITION);
-    				edge.setProperty(POSITION, position + 1);
-    			}
+				for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()) {
+					int position = edge.getProperty(POSITION);
+					edge.setProperty(POSITION, position + 1);
+				}
 		    }
 			Edge edge = vertex.addEdge(eReference.getName(), referencedVertex);
 			edge.setProperty(POSITION, index);
@@ -439,15 +433,13 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
 		} else {
-			Iterator<Edge> iterator = vertex.query().labels(referenceName).direction(Direction.OUT).interval(POSITION, index, size).edges().iterator();
-			while (iterator.hasNext()) {
-				Edge edge = iterator.next();
+			for (Edge edge : vertex.query().labels(referenceName).direction(Direction.OUT).interval(POSITION, index, size).edges()) {
 				int position = edge.getProperty(POSITION);
 				if (position == index) {
 					Vertex referencedVertex = edge.getVertex(Direction.IN);
 					returnValue = reifyVertex(referencedVertex);
 					edge.remove();
-					if(eReference.isContainment()) {
+					if (eReference.isContainment()) {
 						for (Edge conEdge : referencedVertex.getEdges(Direction.OUT, CONTAINER)) {
 							conEdge.remove();
 						}
@@ -494,9 +486,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	protected void clear(InternalEObject object, EReference eReference) {
 		Vertex vertex = graph.getOrCreateVertex(object);
-		Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges().iterator();
-		while (iterator.hasNext()) {
-			iterator.next().remove();
+		for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges()) {
+			edge.remove();
 		}
 		setSize(vertex, eReference, 0);
 	}
@@ -633,12 +624,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
 		Map<EClass, Iterator<Vertex>> indexHits = graph.getAllInstances(eClass, strict);
 		EList<EObject> instances = new BasicEList<>();
-		Set<EClass> mapKeys = indexHits.keySet();
-		for(EClass metaClass : mapKeys) {
-			Iterator<Vertex> instanceVertices = indexHits.get(metaClass);
+		for(Map.Entry<EClass, Iterator<Vertex>> entry : indexHits.entrySet()) {
+			Iterator<Vertex> instanceVertices = entry.getValue();
 			while(instanceVertices.hasNext()) {
 				Vertex instanceVertex = instanceVertices.next();
-				instances.add(reifyVertex(instanceVertex, metaClass));
+				instances.add(reifyVertex(instanceVertex, entry.getKey()));
 			}
 		}
 		return instances;
