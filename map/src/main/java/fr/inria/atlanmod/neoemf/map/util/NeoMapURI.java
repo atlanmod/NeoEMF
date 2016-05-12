@@ -21,22 +21,24 @@ import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 public class NeoMapURI extends NeoURI {
 
-public static final String NEO_MAP_SCHEME = "neo-map";
+	public static final String NEO_MAP_SCHEME = "neo-map";
 	
 	protected NeoMapURI(int hashCode, URI internalURI) {
 		super(hashCode,internalURI);
 	}
 	
 	public static URI createNeoMapURI(URI uri) {
+		URI returnValue;
 		if(NeoURI.FILE_SCHEME.equals(uri.scheme())) {
-			return createNeoMapURI(FileUtils.getFile(uri.toFileString()));
+			returnValue = createNeoMapURI(FileUtils.getFile(uri.toFileString()));
 		}
 		else if(NEO_MAP_SCHEME.equals(uri.scheme())) {
-			return NeoURI.createNeoURI(uri);
+			returnValue = NeoURI.createNeoURI(uri);
 		}
 		else {
 			throw new IllegalArgumentException(MessageFormat.format("Can not create NeoMapURI from the URI scheme {0}",uri.scheme()));
 		}
+		return returnValue;
 	}
 	
 	public static URI createNeoMapURI(File file) {

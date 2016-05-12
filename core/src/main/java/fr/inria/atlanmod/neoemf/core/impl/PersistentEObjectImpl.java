@@ -39,9 +39,9 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
 
 	protected static final int UNSETTED_FEATURE_ID = -1;
-	
+
 	protected Id id;
-	
+
 	protected Resource.Internal resource;
 	
 	/**
@@ -49,15 +49,15 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	 * also maintained in the underlying {@link EStore}
 	 */
 	protected InternalEObject eContainer;
-	
+
 	protected int eContainerFeatureID = UNSETTED_FEATURE_ID;
-	
+
 	protected EStore eStore;
 
 	public PersistentEObjectImpl() {
 		this.id = new StringId(EcoreUtil.generateUUID());
 	}
-	
+
 
 	@Override
 	public Id id() {
@@ -83,14 +83,16 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	
 	@Override
 	public EObject eContainer() {
+		EObject returnValue;
 		if (resource instanceof PersistentResource) {
 			InternalEObject container = eStore().getContainer(this);
 			eBasicSetContainer(container);
 			eBasicSetContainerFeatureID(eContainerFeatureID());
-			return container;
+			returnValue = container;
 		} else {
-			return super.eContainer();
+			returnValue = super.eContainer();
 		}
+		return returnValue;
 	}
 	
 	@Override
@@ -105,18 +107,16 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	
 	@Override
 	public int eContainerFeatureID() {
-		if (eContainerFeatureID == UNSETTED_FEATURE_ID) {
-			if(resource instanceof PersistentResource) {
-		        EReference containingFeature = (EReference) eStore().getContainingFeature(this);
-				if (containingFeature != null) {
-					EReference oppositeFeature = containingFeature.getEOpposite();
-					if (oppositeFeature != null) {
-						eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
-					} else {
-						eBasicSetContainerFeatureID(
-								InternalEObject.EOPPOSITE_FEATURE_BASE - 
-								eInternalContainer().eClass().getFeatureID(containingFeature));
-					}
+		if (eContainerFeatureID == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
+			EReference containingFeature = (EReference) eStore().getContainingFeature(this);
+			if (containingFeature != null) {
+				EReference oppositeFeature = containingFeature.getEOpposite();
+				if (oppositeFeature != null) {
+					eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
+				} else {
+					eBasicSetContainerFeatureID(
+							InternalEObject.EOPPOSITE_FEATURE_BASE -
+									eInternalContainer().eClass().getFeatureID(containingFeature));
 				}
 			}
 		}
@@ -233,67 +233,20 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	
 	@Override
 	public Object dynamicGet(int dynamicFeatureID) {
+		Object returnValue;
 		final EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
 		final EClassifier eType = feature.getEType();
 		if (feature.isMany()) {
 		    if(eType.getInstanceClassName() != null && eType.getInstanceClassName().equals("java.util.Map$Entry")) {
-		        class EStoreEcoreEMap extends EcoreEMap<Object, Object>
-		        {
-		          private static final long serialVersionUID = 1L;
-
-		          public EStoreEcoreEMap()
-		          {
-		            super
-		              ((EClass)eType,
-		               BasicEMap.Entry.class,
-		               null);
-		            delegateEList =
-		               new EStoreEObjectImpl.BasicEStoreEList<BasicEMap.Entry<Object, Object>>(PersistentEObjectImpl.this, feature)
-		               {
-		                  private static final long serialVersionUID = 1L;
-
-		                  @Override
-		                  protected void didAdd(int index, BasicEMap.Entry<Object, Object> newObject)
-		                  {
-							  doPut(newObject);
-		                  }
-
-		                  @Override
-		                  protected void didSet(int index, BasicEMap.Entry<Object, Object> newObject, BasicEMap.Entry<Object, Object> oldObject)
-		                  {
-		                    didRemove(index, oldObject);
-		                    didAdd(index, newObject);
-		                  }
-
-		                  @Override
-		                  protected void didRemove(int index, BasicEMap.Entry<Object, Object> oldObject)
-		                  {
-		                    EStoreEcoreEMap.this.doRemove(oldObject);
-		                  }
-
-		                  @Override
-		                  protected void didClear(int size, Object [] oldObjects)
-		                  {
-		                    EStoreEcoreEMap.this.doClear();
-		                  }
-
-		                  @Override
-		                  protected void didMove(int index, BasicEMap.Entry<Object, Object> movedObject, int oldIndex)
-		                  {
-		                    EStoreEcoreEMap.this.doMove(movedObject);
-		                  }
-		               };
-		            size = delegateEList.size();
-		          }
-		        }
-		        return new EStoreEcoreEMap();
+				returnValue = new EStoreEcoreEMap(eType, feature);
 		    }
 		    else {
-		        return new EStoreEObjectImpl.BasicEStoreEList<>(this, feature);
+				returnValue = new EStoreEObjectImpl.BasicEStoreEList<>(this, feature);
 		    }
 		} else {
-			return eStore().get(this, feature, EStore.NO_INDEX);
+			returnValue = eStore().get(this, feature, EStore.NO_INDEX);
 		}
+		return returnValue;
 	}
 	
 	@Override
@@ -357,5 +310,52 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		      result.append(')');
 	    }
 		return result.toString();
+	}
+
+	private class EStoreEcoreEMap extends EcoreEMap<Object, Object>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public EStoreEcoreEMap(EClassifier eType, EStructuralFeature feature)
+		{
+			super ((EClass)eType, BasicEMap.Entry.class, null);
+			delegateEList =
+					new EStoreEObjectImpl.BasicEStoreEList<BasicEMap.Entry<Object, Object>>(PersistentEObjectImpl.this, feature)
+					{
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						protected void didAdd(int index, BasicEMap.Entry<Object, Object> newObject)
+						{
+							doPut(newObject);
+						}
+
+						@Override
+						protected void didSet(int index, BasicEMap.Entry<Object, Object> newObject, BasicEMap.Entry<Object, Object> oldObject)
+						{
+							didRemove(index, oldObject);
+							didAdd(index, newObject);
+						}
+
+						@Override
+						protected void didRemove(int index, BasicEMap.Entry<Object, Object> oldObject)
+						{
+							EStoreEcoreEMap.this.doRemove(oldObject);
+						}
+
+						@Override
+						protected void didClear(int size, Object [] oldObjects)
+						{
+							EStoreEcoreEMap.this.doClear();
+						}
+
+						@Override
+						protected void didMove(int index, BasicEMap.Entry<Object, Object> movedObject, int oldIndex)
+						{
+							EStoreEcoreEMap.this.doMove(movedObject);
+						}
+					};
+			size = delegateEList.size();
+		}
 	}
 }

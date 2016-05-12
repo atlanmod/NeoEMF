@@ -65,12 +65,11 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		protected static final String RESOURCE__CONTENTS__FEATURE_NAME = "eContents";
 
 		public ResourceContentsEStructuralFeature() {
-			this.setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
-			this.setLowerBound(0);
-			this.setName(RESOURCE__CONTENTS__FEATURE_NAME);
-			this.setEType(new EClassifierImpl() {
-			});
-			this.setFeatureID(RESOURCE__CONTENTS);
+			setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
+			setLowerBound(0);
+			setName(RESOURCE__CONTENTS__FEATURE_NAME);
+			setEType(new EClassifierImpl() {});
+			setFeatureID(RESOURCE__CONTENTS);
 		}
 	}
 
@@ -134,22 +133,22 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	@Override
 	public void load(Map<?, ?> options) throws IOException {
-		try {
-			isLoading = true;
-			if (isLoaded) {
-				return;
-			} else if (!getFile().exists()) {
-				throw new FileNotFoundException(uri.toFileString());
-			} else {
-				this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-				this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
-				this.isPersistent = true;
+		if (!isLoaded) {
+			try {
+				isLoading = true;
+				if (!getFile().exists()) {
+					throw new FileNotFoundException(uri.toFileString());
+				} else {
+					this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+					this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
+					this.isPersistent = true;
+				}
+				this.options = options;
+				isLoaded = true;
+			} finally {
+				isLoading = false;
+				NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Loaded");
 			}
-			this.options = options;
-			isLoaded = true;
-		} finally {
-			isLoading = false;
-			NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Loaded");
 		}
 	}
 
@@ -161,10 +160,11 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			for (Entry<?, ?> entry : options.entrySet()) {
 				Object key = entry.getKey();
 				Object value = entry.getValue();
-				if (this.options.containsKey(key) && value != null) {
-					if (!value.equals(this.options.get(key))) {
-						throw new IOException(new InvalidOptionsException(MessageFormat.format("key = {0}; value = {1}", key.toString(), value.toString())));
-					}
+				if (this.options.containsKey(key)
+						&& value != null
+						&& !value.equals(this.options.get(key)))
+				{
+					throw new IOException(new InvalidOptionsException(MessageFormat.format("key = {0}; value = {1}", key.toString(), value.toString())));
 				}
 			}
 		}
@@ -194,16 +194,17 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	@Override
 	public String getURIFragment(EObject eObject) {
+		String returnValue = super.getURIFragment(eObject);
 		if (eObject.eResource() != this) {
-			return "/-1";
+			returnValue = "/-1";
 		} else {
 			// Try to adapt as a PersistentEObject and return the ID
 			PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
 			if (persistentEObject != null) {
-				return persistentEObject.id().toString();
+				returnValue = persistentEObject.id().toString();
 			}
 		}
-		return super.getURIFragment(eObject);
+		return returnValue;
 	}
 	
 	@Override
@@ -213,8 +214,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	
 	@Override
 	public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+		EList<EObject> returnValue;
 	    try {
-	        return eStore.getAllInstances(eClass,strict);
+			returnValue = eStore.getAllInstances(eClass,strict);
 	    } catch(UnsupportedOperationException e) {
 	        NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
 	        Iterator<EObject> it = getAllContents();
@@ -232,8 +234,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	                }
                 }
 	        }
-	        return instanceList;
+			returnValue = instanceList;
 	    }
+		return returnValue;
 	}
 	
 

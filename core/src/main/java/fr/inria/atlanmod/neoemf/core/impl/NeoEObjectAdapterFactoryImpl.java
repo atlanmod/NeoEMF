@@ -35,23 +35,20 @@ public class NeoEObjectAdapterFactoryImpl {
 	 * {@link WeakHashMap} since the adaptor is no longer needed when the
 	 * original {@link EObject} has been garbage collected
 	 */
-	protected static Map<InternalEObject, InternalPersistentEObject> adaptedObjects = new WeakHashMap<>();	
-	
+	private static final Map<InternalEObject, InternalPersistentEObject> ADAPTED_OBJECTS = new WeakHashMap<>();
+
 	@SuppressWarnings("unchecked")
 	public static <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
+		T returnValue = null;
 		if (adapterType.isInstance(adaptableObject)) {
-			return (T) adaptableObject;
+			returnValue = (T) adaptableObject;
 		} else if (adapterType.isAssignableFrom(InternalPersistentEObject.class) 
 				&& adaptableObject instanceof InternalEObject) {
-			{
-				EObject adapter = adaptedObjects.get(adaptableObject);
-				if (adapter != null) {
-					if (adapterType.isAssignableFrom(adapter.getClass())) {
-						return (T) adapter;
-					}
-				}
-			}
-			{
+
+			EObject eObjectAdapter = ADAPTED_OBJECTS.get(adaptableObject);
+			if (eObjectAdapter != null && adapterType.isAssignableFrom(eObjectAdapter.getClass())) {
+				returnValue = (T) eObjectAdapter;
+			} else {
 				// Compute the interfaces that the proxy has to implement
 				// These are the current interfaces + PersistentEObject
 				List<Class<?>> interfaces = new ArrayList<>();
@@ -64,11 +61,11 @@ public class NeoEObjectAdapterFactoryImpl {
 				enhancer.setInterfaces(interfaces.toArray(new Class[] {}));
 				enhancer.setCallback(new NeoEObjectProxyHandlerImpl((InternalEObject) adaptableObject));
 				T adapter = (T) enhancer.create();
-				adaptedObjects.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  adapter);
-				return adapter;
+				ADAPTED_OBJECTS.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  adapter);
+				returnValue = adapter;
 			}
 		}
-		return null;
+		return returnValue;
 	}
 
 }

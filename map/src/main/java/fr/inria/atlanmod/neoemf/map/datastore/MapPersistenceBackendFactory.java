@@ -92,29 +92,31 @@ public class MapPersistenceBackendFactory extends
 	protected SearcheableResourceEStore internalCreatePersistentEStore(
 			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
-    	@SuppressWarnings("unchecked")
+		SearcheableResourceEStore returnValue;
+		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
         if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE)) {
             // Default store
-            return new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+			returnValue = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
         }
         else {
             if(storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT)) {
-                return new AutocommitMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+				returnValue = new AutocommitMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
             }
             else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.CACHED_MANY)) {
-                return new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+				returnValue = new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
             }
             else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_LISTS)) {
-                return new DirectWriteMapResourceWithListsEStoreImpl(resource, (MapPersistenceBackend)backend);
+				returnValue = new DirectWriteMapResourceWithListsEStoreImpl(resource, (MapPersistenceBackend)backend);
             }
             else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_INDEXES)) {
-                return new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+				returnValue = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
             }
             else {
                 throw new InvalidDataStoreException();
             }
         }
+		return returnValue;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

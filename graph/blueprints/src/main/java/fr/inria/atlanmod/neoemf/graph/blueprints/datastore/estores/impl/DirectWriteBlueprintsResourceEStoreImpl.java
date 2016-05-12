@@ -57,40 +57,43 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
+		Object returnValue;
 		if (feature instanceof EAttribute) {
-			return get(object, (EAttribute) feature, index);
+			returnValue = get(object, (EAttribute) feature, index);
 		} else if (feature instanceof EReference) {
-			return get(object, (EReference) feature, index);
+			returnValue = get(object, (EReference) feature, index);
 		} else {
 			throw new IllegalArgumentException(feature.toString());
 		}
+		return returnValue;
 	}
 
 	protected Object get(InternalEObject object, EAttribute eAttribute, int index) {
+		Object returnValue;
 		Vertex vertex = graph.getVertex(object);
 		if (!eAttribute.isMany()) {
 			Object property = vertex.getProperty(eAttribute.getName());
-			return parseProperty(eAttribute, property);
+			returnValue = parseProperty(eAttribute, property);
 		} else {
 			Integer size = getSize(vertex, eAttribute);
 			if (index < 0 || index >= size) {
 				throw new IndexOutOfBoundsException();
 			} else {
 				Object property = vertex.getProperty(eAttribute.getName() + SEPARATOR + index);
-				return parseProperty(eAttribute, property);
+				returnValue = parseProperty(eAttribute, property);
 			}
 		}
+		return returnValue;
 	}
 
 	protected Object get(InternalEObject object, EReference eReference, int index) {
+		Object returnValue = null;
 		Vertex vertex = graph.getVertex(object);
 		if (!eReference.isMany()) {
 			Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, eReference.getName()).iterator();
 			if (iterator.hasNext()) {
 				Vertex referencedVertex = iterator.next();
-				return reifyVertex(referencedVertex);
-			} else {
-				return null;
+				returnValue = reifyVertex(referencedVertex);
 			}
 		} else {
 			Integer size = getSize(vertex, eReference);
@@ -100,12 +103,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 				Iterator<Vertex> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).has(POSITION, index).vertices().iterator();
 				if (iterator.hasNext()) {
 					Vertex referencedVertex = iterator.next();
-					return reifyVertex(referencedVertex);
-				} else {
-					return null;
+					returnValue = reifyVertex(referencedVertex);
 				}
 			}
 		}
+		return returnValue;
 	}
 
 	@Override
@@ -186,33 +188,35 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
+		boolean returnValue;
 		if (feature instanceof EAttribute) {
-			return isSet(object, (EAttribute) feature);
+			returnValue = isSet(object, (EAttribute) feature);
 		} else if (feature instanceof EReference) {
-			return isSet(object, (EReference) feature);
+			returnValue = isSet(object, (EReference) feature);
 		} else {
 			throw new IllegalArgumentException(feature.toString());
 		}
+		return returnValue;
 	}
 
 	protected boolean isSet(InternalEObject object, EAttribute eAttribute) {
+		boolean returnValue = false;
 		Vertex vertex = graph.getVertex(object);
 		if (vertex != null) {
 			String suffix = !eAttribute.isMany() ? "" : SEPARATOR + SIZE_LITERAL;
-			return null != vertex.getProperty(eAttribute.getName() + suffix);
-		} else {
-			return false;
+			returnValue = null != vertex.getProperty(eAttribute.getName() + suffix);
 		}
+		return returnValue;
 	}
 
 	protected boolean isSet(InternalEObject object, EReference eReference) {
+		boolean returnValue = false;
 		Vertex vertex = graph.getVertex(object);
 		if (vertex != null) {
 			Iterable<Vertex> vertices = vertex.getVertices(Direction.OUT, eReference.getName());
-			return vertices.iterator().hasNext();
-		} else {
-			return false;
+			returnValue = vertices.iterator().hasNext();
 		}
+		return returnValue;
 	}
 
 	@Override
@@ -281,53 +285,62 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
+		int resultValue = ArrayUtils.INDEX_NOT_FOUND;
 	    if(feature instanceof EAttribute) {
-	        return ArrayUtils.indexOf(toArray(object, feature), value);
+			resultValue = ArrayUtils.indexOf(toArray(object, feature), value);
 	    }
 	    else if(feature instanceof EReference) {
-	        if(value == null) {
-	            return ArrayUtils.INDEX_NOT_FOUND;
-	        }
-	        Vertex inVertex = graph.getVertex(object);
-	        Vertex outVertex = graph.getVertex((EObject)value);
-			for (Edge e : outVertex.getEdges(Direction.IN, feature.getName())) {
-				if (e.getVertex(Direction.OUT).equals(inVertex)) {
-					return e.getProperty(POSITION);
+	        if(value != null) {
+				Vertex inVertex = graph.getVertex(object);
+				Vertex outVertex = graph.getVertex((EObject) value);
+				Iterator<Edge> iterator = outVertex.getEdges(Direction.IN, feature.getName()).iterator();
+
+				boolean indexFound = false;
+				while (iterator.hasNext() || !indexFound) {
+					Edge e = iterator.next();
+					if (e.getVertex(Direction.OUT).equals(inVertex)) {
+						resultValue = e.getProperty(POSITION);
+						indexFound = true;
+					}
 				}
 			}
-	        return ArrayUtils.INDEX_NOT_FOUND;
 	    }
 	    else {
 	        throw new IllegalArgumentException(feature.toString());
 	    }
+		return resultValue;
 	}
 
 	@Override
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
+		int resultValue;
 	    if(feature instanceof EAttribute) {
-	        return ArrayUtils.lastIndexOf(toArray(object, feature), value);
+			resultValue = ArrayUtils.lastIndexOf(toArray(object, feature), value);
 	    }
 	    else if(feature instanceof EReference) {
-	        if(value == null) {
-	            return ArrayUtils.INDEX_NOT_FOUND;
-	        }
-	        Vertex inVertex = graph.getVertex(object);
-	        Vertex outVertex = graph.getVertex((EObject)value);
-	        Iterator<Edge> iterator = outVertex.getEdges(Direction.IN, feature.getName()).iterator();
-	        Edge lastPositionEdge = null;
-	        while(iterator.hasNext()) {
-	            Edge e = iterator.next();
-	            if(e.getVertex(Direction.OUT).equals(inVertex)) {
-	                if(lastPositionEdge == null || (int)e.getProperty(POSITION) > (int)lastPositionEdge.getProperty(POSITION)) {
-	                    lastPositionEdge = e;
-	                }
-	            }
-	        }
-	        return lastPositionEdge == null ? ArrayUtils.INDEX_NOT_FOUND : (int)lastPositionEdge.getProperty(POSITION);
-	    }
+			if (value == null) {
+				resultValue = ArrayUtils.INDEX_NOT_FOUND;
+			} else {
+				Vertex inVertex = graph.getVertex(object);
+				Vertex outVertex = graph.getVertex((EObject) value);
+				Iterator<Edge> iterator = outVertex.getEdges(Direction.IN, feature.getName()).iterator();
+				Edge lastPositionEdge = null;
+				while (iterator.hasNext()) {
+					Edge e = iterator.next();
+					if (e.getVertex(Direction.OUT).equals(inVertex)
+							&& (lastPositionEdge == null
+							|| (int) e.getProperty(POSITION) > (int) lastPositionEdge.getProperty(POSITION)))
+					{
+						lastPositionEdge = e;
+					}
+				}
+				resultValue = lastPositionEdge == null ? ArrayUtils.INDEX_NOT_FOUND : (int) lastPositionEdge.getProperty(POSITION);
+			}
+		}
 	    else {
 	        throw new IllegalArgumentException(feature.toString());
 	    }
+		return resultValue;
 	}
 
 	@Override
@@ -511,16 +524,18 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
+		InternalEObject returnValue = null;
 		Vertex vertex = graph.getVertex(object);
 		Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, CONTAINER).iterator();
 		if (iterator.hasNext()) {
-			return reifyVertex(iterator.next());
+			returnValue = reifyVertex(iterator.next());
 		}
-		return null;
+		return returnValue;
 	}
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
+		EStructuralFeature resultValue = null;
 		Vertex vertex = graph.getVertex(object);
 		Iterator<Edge> iterator = vertex.getEdges(Direction.OUT, CONTAINER).iterator();
 		if (iterator.hasNext()) {
@@ -529,10 +544,10 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 			Vertex containerVertex = edge.getVertex(Direction.IN);
 	        if (featureName != null) {
                 EObject container = reifyVertex(containerVertex);
-                return container.eClass().getEStructuralFeature(featureName);
+				resultValue = container.eClass().getEStructuralFeature(featureName);
 			}
 		}
-		return null;
+		return resultValue;
 	}
 
 	@Override

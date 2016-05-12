@@ -28,15 +28,17 @@ public class NeoBlueprintsURI extends NeoURI {
 	}
 	
 	public static URI createNeoGraphURI(URI uri) {
+		URI returnValue;
 		if(NeoURI.FILE_SCHEME.equals(uri.scheme())) {
-			return createNeoGraphURI(FileUtils.getFile(uri.toFileString()));
+			returnValue = createNeoGraphURI(FileUtils.getFile(uri.toFileString()));
 		}
 		else if(NEO_GRAPH_SCHEME.equals(uri.scheme())) {
-			return NeoURI.createNeoURI(uri);
+			returnValue = NeoURI.createNeoURI(uri);
 		}
 		else {
 			throw new IllegalArgumentException(MessageFormat.format("Can not create NeoGraphURI from the URI scheme {0}",uri.scheme()));
 		}
+		return returnValue;
 	}
 	
 	public static URI createNeoGraphURI(File file) {

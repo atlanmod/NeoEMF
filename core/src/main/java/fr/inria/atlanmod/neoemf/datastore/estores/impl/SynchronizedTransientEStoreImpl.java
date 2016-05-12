@@ -101,13 +101,15 @@ public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
+		Object returnValue;
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
 		if (index == NO_INDEX) {
-			return singleMap.get(entry);
+			returnValue = singleMap.get(entry);
 		} else {
 			List<Object> saved = manyMap.get(entry);
-			return saved != null ? saved.get(index) : null;
+			returnValue = saved != null ? saved.get(index) : null;
 		}
+		return returnValue;
 	}
 
 	@Override

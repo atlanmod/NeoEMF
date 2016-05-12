@@ -82,32 +82,36 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
+		Object returnValue;
 		PersistentEObject persistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		if (feature instanceof EAttribute) {
 			Object value = map.get(Fun.t3(persistentEObject.id(), feature.getName(), index));
-			return parseMapValue((EAttribute) feature, value);
+			returnValue = parseMapValue((EAttribute) feature, value);
 		} else if (feature instanceof EReference) {
 			Object value = map.get(Fun.t3(persistentEObject.id(), feature.getName(), index));
-			return eObject((Id) value);
+			returnValue = eObject((Id) value);
 		} else {
 			throw new IllegalArgumentException(feature.toString());
 		}
+		return returnValue;
 	}
 	
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+		Object returnValue;
 		PersistentEObject persistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		if (!feature.isMany()) {
 			sizesMap.put(Fun.t2(persistentEObject.id(), feature.getName()), EStore.NO_INDEX);
 		}
 		if (feature instanceof EAttribute) {
-			return set(persistentEObject, (EAttribute) feature, index, value);
+			returnValue = set(persistentEObject, (EAttribute) feature, index, value);
 		} else if (feature instanceof EReference) {
 			PersistentEObject referencedEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
-			return set(persistentEObject, (EReference) feature, index, referencedEObject);
+			returnValue = set(persistentEObject, (EReference) feature, index, referencedEObject);
 		} else {
 			throw new IllegalArgumentException(feature.toString());
 		}
+		return returnValue;
 	}
 
 	protected Object set(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
@@ -225,7 +229,8 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		Integer size = sizesMap.remove(Fun.t2(persistentEObject.id(), feature.getName()));
+		sizesMap.remove(Fun.t2(persistentEObject.id(), feature.getName()));
+//		Integer size =
 //		for (int i = 0; i < size; i++) {
 //			map.remove(Fun.t3(persistentEObject.id(), feature.getName(), i));
 //		}
@@ -263,12 +268,13 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
+		InternalEObject returnValue = null;
 		PersistentEObject persistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		ContainerInfo info = containersMap.get(persistentEObject.id());
 		if (info != null) {
-			return (InternalEObject) eObject(info.containerId);
+			returnValue = (InternalEObject) eObject(info.containerId);
 		}
-		return null;
+		return returnValue;
 	}
 
 
@@ -293,35 +299,35 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 
 	@Override
 	public EObject eObject(Id id) {
-		if (id == null) {
-			return null;
-		}
-		InternalPersistentEObject persistentEObject = loadedEObjects.get(id);
-		if (persistentEObject == null) {
-			EClass eClass = resolveInstanceOf(id);
-			if (eClass != null) {
-			    EObject eObject;
-                if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
-                    // Dynamic EMF
-                    eObject = PersistenceFactory.eINSTANCE.create(eClass);
-                } else {
-                    eObject = EcoreUtil.create(eClass);
-                }
-				if (eObject instanceof InternalPersistentEObject) {
-					persistentEObject = (InternalPersistentEObject) eObject;
+		InternalPersistentEObject persistentEObject = null;
+		if (id != null) {
+			persistentEObject = loadedEObjects.get(id);
+			if (persistentEObject == null) {
+				EClass eClass = resolveInstanceOf(id);
+				if (eClass != null) {
+					EObject eObject;
+					if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+						// Dynamic EMF
+						eObject = PersistenceFactory.eINSTANCE.create(eClass);
+					} else {
+						eObject = EcoreUtil.create(eClass);
+					}
+					if (eObject instanceof InternalPersistentEObject) {
+						persistentEObject = (InternalPersistentEObject) eObject;
+					} else {
+						persistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+					}
+					persistentEObject.id(id);
 				} else {
-					persistentEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+					NeoLogger.log(NeoLogger.SEVERITY_ERROR,
+							MessageFormat.format("Element {0} does not have an associated EClass", id));
 				}
-				persistentEObject.id(id);
-			} else {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-						MessageFormat.format("Element {0} does not have an associated EClass", id));
+				loadedEObjects.put(id, persistentEObject);
 			}
-			loadedEObjects.put(id, persistentEObject);
-		}
-		Objects.requireNonNull(persistentEObject);
-		if (persistentEObject.resource() != resource()) {
-			persistentEObject.resource(resource());
+			Objects.requireNonNull(persistentEObject);
+			if (persistentEObject.resource() != resource()) {
+				persistentEObject.resource(resource());
+			}
 		}
 		return persistentEObject;
 	}

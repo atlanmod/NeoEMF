@@ -100,13 +100,14 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
+		Object returnValue;
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
 		if (index == NO_INDEX) {
-			return singleMap.get(entry);
+			returnValue = singleMap.get(entry);
 		} else {
 			List<Object> saved = manyMap.get(entry);
 			if (saved != null) {
-				return saved.get(index);
+				returnValue = saved.get(index);
 			} else {
 			    // The list is empty (since it is not persisted in the
 			    // manyMap object
@@ -114,6 +115,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 //				return null;
 			}
 		}
+		return returnValue;
 	}
 
 	@Override
