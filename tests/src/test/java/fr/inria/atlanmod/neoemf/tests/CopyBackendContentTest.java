@@ -72,7 +72,7 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     @Test
     public void testCopyBackendMapDB() throws IOException {
-        mapResource.save(Collections.EMPTY_MAP);
+        mapResource.save(Collections.emptyMap());
         assertThat("Map resource content is empty", mapResource.getContents(), not(empty()));
         assertThat("Top-level element is not a SampleModel", mapResource.getContents().get(0), instanceOf(SampleModel.class));
 

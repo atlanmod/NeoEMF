@@ -100,17 +100,17 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     }
 
     private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.EMPTY_MAP);
+        persistentResource.save(Collections.emptyMap());
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
-        persistentResource.load(Collections.EMPTY_MAP);
+        persistentResource.load(Collections.emptyMap());
 
         allInstancesPersistent(persistentResource);
     }
 
     private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.EMPTY_MAP);
+        persistentResource.save(Collections.emptyMap());
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
-        persistentResource.load(Collections.EMPTY_MAP);
+        persistentResource.load(Collections.emptyMap());
 
         allInstancesStrictPersistent(persistentResource);
     }

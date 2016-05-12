@@ -141,18 +141,13 @@ public class BlueprintsPersistenceBackendFactory extends
                             "Unable to find configuration methods in class Blueprints{0}Config",
                             upperCaseGraphName));
                     e3.printStackTrace();
-                } catch (InvocationTargetException e4) {
+                } catch (InvocationTargetException | IllegalAccessException e4) {
                     NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format(
                             "An error occured during the exection of a configuration method",
                             upperCaseGraphName));
                     e4.printStackTrace();
-                } catch (IllegalAccessException e5) {
-                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format(
-                            "An error occured during the exection of a configuration method",
-                            upperCaseGraphName));
-                    e5.printStackTrace();
                 }
-            }
+			}
 			else {
 			    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Unable to compute graph type name from " + graphType);
 			}

@@ -70,7 +70,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
 
     @Test
     public void testNoOptions() throws InvalidDataStoreException {
-        SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, Collections.EMPTY_MAP);
+        SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, Collections.emptyMap());
         assertThat(store, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));

@@ -109,7 +109,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
 
     @Test
     public void testCreatePersistentBackendNoOptionNoConfigFile() throws InvalidDataStoreException {
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
         assertThat("Invalid backend created", persistentBackend, instanceOf(BlueprintsPersistenceBackend.class));
 
         BlueprintsPersistenceBackend graph = (BlueprintsPersistenceBackend) persistentBackend;
@@ -118,9 +118,9 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
 
     @Test
     public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, Collections.EMPTY_MAP);
+        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, Collections.emptyMap());
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteBlueprintsResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend(eStore);
@@ -131,7 +131,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
     public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
 
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteBlueprintsResourceEStoreImpl.class));
@@ -144,7 +144,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
     public void testCreatePersistentEStoreAutocommitOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
 
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.EMPTY_MAP);
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat("Invalid EStore created", eStore, instanceOf(AutocommitBlueprintsResourceEStoreImpl.class));

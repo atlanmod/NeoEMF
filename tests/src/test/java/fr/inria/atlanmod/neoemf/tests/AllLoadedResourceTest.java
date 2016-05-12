@@ -54,9 +54,9 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
         tinkerSampleModel.getContentObjects().add(tinkerSampleContentObject);
         tinkerResource.getContents().add(tinkerSampleModel);
 
-        mapResource.save(Collections.EMPTY_MAP);
-        neo4jResource.save(Collections.EMPTY_MAP);
-        tinkerResource.save(Collections.EMPTY_MAP);
+        mapResource.save(Collections.emptyMap());
+        neo4jResource.save(Collections.emptyMap());
+        tinkerResource.save(Collections.emptyMap());
 
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) mapResource);
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) neo4jResource);
@@ -73,9 +73,9 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
         neo4jResource = (PersistentResource) rSet.getResource(NeoBlueprintsURI.createNeoGraphURI(neo4jFile), true);
         tinkerResource = (PersistentResource) rSet.getResource(NeoBlueprintsURI.createNeoGraphURI(tinkerFile), true);
 
-        mapResource.load(Collections.EMPTY_MAP);
-        neo4jResource.load(Collections.EMPTY_MAP);
-        tinkerResource.load(Collections.EMPTY_MAP);
+        mapResource.load(Collections.emptyMap());
+        neo4jResource.load(Collections.emptyMap());
+        tinkerResource.load(Collections.emptyMap());
     }
 
 }

@@ -100,7 +100,7 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
 
     @Test
     public void testSaveGraphResourceNoOption() throws IOException, ConfigurationException {
-        resource.save(Collections.EMPTY_MAP);
+        resource.save(Collections.emptyMap());
 
         File configFile = new File(testFile + configFileName);
         assertThat("Config file does not exist", configFile.exists(), is(true));
