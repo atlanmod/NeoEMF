@@ -38,6 +38,7 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
@@ -51,6 +52,7 @@ public class CopyBackendContentTest extends AllBackendTest {
         createResourceContent(tinkerResource);
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();

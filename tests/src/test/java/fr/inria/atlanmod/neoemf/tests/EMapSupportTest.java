@@ -29,6 +29,7 @@ public class EMapSupportTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
@@ -41,6 +42,7 @@ public class EMapSupportTest extends AllBackendTest {
 
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();

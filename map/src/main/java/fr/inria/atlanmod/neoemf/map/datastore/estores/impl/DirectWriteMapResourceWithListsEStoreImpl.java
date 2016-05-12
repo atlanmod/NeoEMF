@@ -346,7 +346,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	@Override
 	public int hashCode(InternalEObject object, EStructuralFeature feature) {
-		return toArray(object, feature).hashCode();
+		return Arrays.hashCode(toArray(object, feature));
 	}
 
 

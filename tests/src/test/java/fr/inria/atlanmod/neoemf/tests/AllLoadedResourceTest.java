@@ -30,6 +30,7 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
 
     MapSampleFactory factory;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         this.factory = MapSampleFactory.eINSTANCE;

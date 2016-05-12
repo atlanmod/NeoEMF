@@ -20,6 +20,7 @@ public interface PersistenceFactory extends EFactory {
 	
 	PersistenceFactory eINSTANCE = new PersistenceFactoryImpl();
 	
+	@Override
 	PersistentEObject create(EClass eClass);
 
 }

@@ -22,6 +22,7 @@ import java.util.Collections;
 
 public class AllInstancesPersistentTest extends AllInstancesTest {
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -32,6 +33,7 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
         createResourceContent(tinkerResource);
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();

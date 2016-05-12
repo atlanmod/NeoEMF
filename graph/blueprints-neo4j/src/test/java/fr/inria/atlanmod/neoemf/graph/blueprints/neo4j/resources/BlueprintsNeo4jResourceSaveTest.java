@@ -38,6 +38,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     private static final int defaultPropertyCount = 3;
 
+    @Override
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {

@@ -25,6 +25,7 @@ public abstract class AllContainmentTest extends AllBackendTest {
     protected PackContent pc1;
     protected AbstractPackContentComment com1;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
@@ -33,6 +34,7 @@ public abstract class AllContainmentTest extends AllBackendTest {
         createPersistentStores();
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();

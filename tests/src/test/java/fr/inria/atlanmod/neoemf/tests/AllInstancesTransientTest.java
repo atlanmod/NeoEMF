@@ -18,6 +18,7 @@ import org.junit.Test;
 
 public class AllInstancesTransientTest extends AllInstancesTest {
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -28,6 +29,7 @@ public class AllInstancesTransientTest extends AllInstancesTest {
         createResourceContent(tinkerResource);
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();

@@ -256,7 +256,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 
 	@Override
 	public int hashCode(InternalEObject object, EStructuralFeature feature) {
-		return toArray(object, feature).hashCode();
+		return Arrays.hashCode(toArray(object, feature));
 	}
 
 

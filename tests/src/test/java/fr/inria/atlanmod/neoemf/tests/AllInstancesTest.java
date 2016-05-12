@@ -34,6 +34,7 @@ public abstract class AllInstancesTest extends AllBackendTest {
     protected int packContentStrictCount = 50;
 
 
+    @Override
     @Before
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
@@ -41,6 +42,7 @@ public abstract class AllInstancesTest extends AllBackendTest {
         super.setUp();
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();

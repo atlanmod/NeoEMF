@@ -30,6 +30,7 @@ public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
     protected SampleModel tinkerSampleModel;
     protected SampleModelContentObject tinkerSampleContentObject;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         this.factory = MapSampleFactory.eINSTANCE;
