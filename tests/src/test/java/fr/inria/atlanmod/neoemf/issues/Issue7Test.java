@@ -28,7 +28,7 @@ public class Issue7Test extends AllTest {
 
     @Test
     public void testIssue7() {
-        MapSamplePackage samplePackage = MapSamplePackage.eINSTANCE;
+        //MapSamplePackage samplePackage = MapSamplePackage.eINSTANCE;
         MapSampleFactory factory = MapSampleFactory.eINSTANCE;
 
         SampleModel model = factory.createSampleModel();

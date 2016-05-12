@@ -213,12 +213,12 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
         assertThat("Transient backend is not an instance of MapPersistenceBackend", transientBackend, instanceOf(MapPersistenceBackend.class));
 
         MapPersistenceBackend transientMap = (MapPersistenceBackend) transientBackend;
-        SearcheableResourceEStore transientEStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
+        //SearcheableResourceEStore transientEStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
         assertThat("Persistent backend is not an instance of MapPersistenceBackend", persistentBackend, instanceOf(MapPersistenceBackend.class));
 
         MapPersistenceBackend persistentMap = (MapPersistenceBackend) persistentBackend;
-        SearcheableResourceEStore persistentEStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        //SearcheableResourceEStore persistentEStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         persistenceBackendFactory.copyBackend(transientMap, persistentMap);
         for (String tKey : transientMap.getAll().keySet()) {
             assertThat("Persistent backend does not contain the key " + tKey, persistentMap.getAll(), hasKey(tKey));
