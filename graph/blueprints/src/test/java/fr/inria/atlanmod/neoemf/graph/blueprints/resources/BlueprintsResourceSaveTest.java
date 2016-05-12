@@ -48,8 +48,8 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
 
     protected String configFileName = "/config.properties";
 
-    protected AbstractPersistenceBackendFactory persistenceBackendFactory = null;
-    protected File testFile = null;
+    protected AbstractPersistenceBackendFactory persistenceBackendFactory;
+    protected File testFile;
     @SuppressWarnings("rawtypes")
     protected Map options;
     protected ResourceSet resSet;
@@ -62,7 +62,7 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
 
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + new Date().getTime()).toFile();
         resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
         resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(testFile));

@@ -47,8 +47,8 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
 
     private static final String TEST_FILENAME = "graphPersistenceBackendFactoryTestFile";
 
-    protected AbstractPersistenceBackendFactory persistenceBackendFactory = null;
-    protected File testFile = null;
+    protected AbstractPersistenceBackendFactory persistenceBackendFactory;
+    protected File testFile;
     @SuppressWarnings("rawtypes")
     protected Map options = new HashMap();
     protected List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
@@ -58,7 +58,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
     public void setUp() {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
 
     }

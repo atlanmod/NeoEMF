@@ -101,7 +101,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 */
 	protected PersistenceBackend persistenceBackend;
 	
-	protected boolean isPersistent = false;
+	protected boolean isPersistent;
 
 	public PersistentResourceImpl(URI uri) {
 		super(uri);

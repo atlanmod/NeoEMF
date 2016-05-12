@@ -38,13 +38,13 @@ public class NeoURITest extends AllCoreTest {
     private static final String TEST_FILENAME = "neoURITestFile";
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = Mockito.mock(AbstractPersistenceBackendFactory.class);
-    private File testFile = null;
+    private File testFile;
 
     @Before
     public void setUp() {
         PersistenceBackendFactoryRegistry.getFactories().clear();
         PersistenceBackendFactoryRegistry.getFactories().put("mock", persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 
     @After

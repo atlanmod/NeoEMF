@@ -347,12 +347,12 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	@Override
 	public Map<EClass,Iterator<Vertex>> getAllInstances(EClass eClass, boolean strict) {
-		Map<EClass,Iterator<Vertex>> indexHits = new HashMap<>();
-		Set<EClass> eClassToFind = new HashSet<>();
 		if(eClass.isAbstract() && strict) {
 		    // There is no strict instance of an abstract class
 		    return Collections.emptyMap();
 		}
+		Map<EClass,Iterator<Vertex>> indexHits = new HashMap<>();
+		Set<EClass> eClassToFind = new HashSet<>();
 		eClassToFind.add(eClass);
 		if(!strict) {
 		    // Find all the concrete subclasses of the given EClass

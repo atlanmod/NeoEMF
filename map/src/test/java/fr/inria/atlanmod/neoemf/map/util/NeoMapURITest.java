@@ -38,13 +38,13 @@ public class NeoMapURITest extends AllMapTest {
     private static final String TEST_FILENAME = "neoMapURITestFile";
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = new MapPersistenceBackendFactory();
-    private File testFile = null;
+    private File testFile;
 
     @Before
     public void setUp() {
         PersistenceBackendFactoryRegistry.getFactories().clear();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 
     @After

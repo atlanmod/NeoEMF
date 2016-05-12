@@ -46,9 +46,9 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
 
     private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
 
-    private AbstractPersistenceBackendFactory persistenceBackendFactory = null;
-    private File testFolder = null;
-    private File testFile = null;
+    private AbstractPersistenceBackendFactory persistenceBackendFactory;
+    private File testFolder;
+    private File testFile;
     @SuppressWarnings("rawtypes")
     private Map options = new HashMap();
     private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
@@ -58,7 +58,7 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
     public void setUp() throws IOException {
         persistenceBackendFactory = new MapPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
-        testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         testFolder.mkdirs();
         testFile = new File(testFolder + "/db");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
