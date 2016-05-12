@@ -50,27 +50,36 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			MapKey other = (MapKey) obj;
-			if (!getOuterType().equals(other.getOuterType()))
+			if (!getOuterType().equals(other.getOuterType())) {
 				return false;
+			}
 			if (feature == null) {
-				if (other.feature != null)
+				if (other.feature != null) {
 					return false;
-			} else if (!feature.equals(other.feature))
+				}
+			} else if (!feature.equals(other.feature)) {
 				return false;
-			if (index != other.index)
+			}
+			if (index != other.index) {
 				return false;
+			}
 			if (object == null) {
-				if (other.object != null)
+				if (other.object != null) {
 					return false;
-			} else if (!object.equals(other.object))
+				}
+			} else if (!object.equals(other.object)) {
 				return false;
+			}
 			return true;
 		}
 

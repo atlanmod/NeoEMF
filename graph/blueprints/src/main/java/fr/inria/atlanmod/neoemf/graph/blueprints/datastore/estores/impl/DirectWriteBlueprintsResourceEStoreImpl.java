@@ -197,11 +197,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected boolean isSet(InternalEObject object, EAttribute eAttribute) {
 		Vertex vertex = graph.getVertex(object);
 		if (vertex != null) {
-			if (!eAttribute.isMany()) {
-				return null != vertex.getProperty(eAttribute.getName());
-			} else {
-				return null != vertex.getProperty(eAttribute.getName() + SEPARATOR + SIZE_LITERAL);
-			}
+			String suffix = !eAttribute.isMany() ? "" : SEPARATOR + SIZE_LITERAL;
+			return null != vertex.getProperty(eAttribute.getName() + suffix);
 		} else {
 			return false;
 		}
@@ -264,11 +261,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		Vertex vertex = graph.getVertex(object);
-		if (vertex != null) {
-			return getSize(vertex, feature);
-		} else {
-			return 0;
-		}
+		return vertex == null ? 0 : getSize(vertex, feature);
 	}
 
 	protected static Integer getSize(Vertex vertex, EStructuralFeature feature) {
@@ -282,11 +275,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-		if (value == null) {
-			return false;
-		} else {
-			return ArrayUtils.contains(toArray(object, feature), value);
-		}
+		return value != null && ArrayUtils.contains(toArray(object, feature), value);
 	}
 
 	@Override
@@ -328,12 +317,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	        while(iterator.hasNext()) {
 	            Edge e = iterator.next();
 	            if(e.getVertex(Direction.OUT).equals(inVertex)) {
-	                if(lastPositionEdge == null || ((int)e.getProperty(POSITION)) > (int)lastPositionEdge.getProperty(POSITION)) {
+	                if(lastPositionEdge == null || (int)e.getProperty(POSITION) > (int)lastPositionEdge.getProperty(POSITION)) {
 	                    lastPositionEdge = e;
 	                }
 	            }
 	        }
-	        return(lastPositionEdge == null ? ArrayUtils.INDEX_NOT_FOUND : (int)lastPositionEdge.getProperty(POSITION));
+	        return lastPositionEdge == null ? ArrayUtils.INDEX_NOT_FOUND : (int)lastPositionEdge.getProperty(POSITION);
 	    }
 	    else {
 	        throw new IllegalArgumentException(feature.toString());
@@ -506,12 +495,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	@Override
 	public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
 		int size = size(object, feature);
-		T[] result = null;
-		if (array.length < size) {
-			result = Arrays.copyOf(array, size);
-		} else {
-			result = array;
-		}
+		T[] result = array.length < size ? Arrays.copyOf(array, size) : array;
 		for (int index = 0; index < size; index++) {
 			result[index] = (T) get(object, feature, index);
 		}

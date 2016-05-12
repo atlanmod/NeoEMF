@@ -46,25 +46,33 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 		
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			MapKey other = (MapKey) obj;
-			if (!getOuterType().equals(other.getOuterType()))
+			if (!getOuterType().equals(other.getOuterType())) {
 				return false;
+			}
 			if (object == null) {
-				if (other.object != null)
+				if (other.object != null) {
 					return false;
-			} else if (!object.equals(other.object))
+				}
+			} else if (!object.equals(other.object)) {
 				return false;
+			}
 			if (feature == null) {
-				if (other.feature != null)
+				if (other.feature != null) {
 					return false;
-			} else if (!feature.equals(other.feature))
+				}
+			} else if (!feature.equals(other.feature)) {
 				return false;
+			}
 			return true;
 		}
 		
@@ -95,11 +103,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
 		Boolean isSet = isSetCache.get(new MapKey(object, feature));
-		if (isSet != null) {
-			return isSet;
-		} else {
-			return eStore.isSet(object, feature);
-		}
+		return isSet != null ? isSet : eStore.isSet(object, feature);
 	}
 
 	@Override
@@ -111,8 +115,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
 		isSetCache.remove(new MapKey(object, feature)); // Remove, next queries will update the right cached value
-		Object returnValue = super.remove(object, feature, index);
-		return returnValue;
+		return super.remove(object, feature, index);
 	}
 	
 	@Override
@@ -138,7 +141,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	@Override
 	public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
 		boolean returnValue = super.contains(object, feature, value);
-		if (returnValue == true) {
+		if (returnValue) {
 			isSetCache.put(new MapKey(object, feature), true);
 		}
 		return returnValue;

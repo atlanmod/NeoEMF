@@ -129,11 +129,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	
 	@Override
 	public Resource eResource() {
-		if (resource != null) {
-			return resource;
-		} else {
-			return super.eResource();
-		}
+		return resource != null ? resource : super.eResource();
 	}
 	
 	@Override
@@ -317,9 +313,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (obj == null) {
-			return false;
-		} else if (getClass() != obj.getClass()) {
+		} else if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		} else {
 			PersistentEObject other = (PersistentEObject) obj;

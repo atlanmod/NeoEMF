@@ -246,12 +246,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 	@Override
 	public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
 		int size = size(object, feature);
-		T[] result = null;
-		if (array.length < size) {
-			result = Arrays.copyOf(array, size);
-		} else {
-			result = array;
-		}
+		T[] result = array.length < size ? Arrays.copyOf(array, size) : array;
 		for (int index = 0; index < size; index++) {
 			result[index] = (T) get(object, feature, index);
 		}
@@ -332,17 +327,13 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 
 	protected EClass resolveInstanceOf(Id id) {
 		EClassInfo eClassInfo = instanceOfMap.get(id);
-		if (eClassInfo != null) {
-			EClass eClass = (EClass) Registry.INSTANCE.getEPackage(eClassInfo.nsURI).getEClassifier(eClassInfo.className);
-			return eClass;
-		}
-		return null;
+		return eClassInfo != null ? (EClass) Registry.INSTANCE.getEPackage(eClassInfo.nsURI).getEClassifier(eClassInfo.className) : null;
 	}
 	
 	protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
 		if (eReference.isContainment()) {
 			ContainerInfo info = containersMap.get(referencedObject.id());
-			if (info == null || !(info.containerId.equals(object.id()))) {
+			if (info == null || !info.containerId.equals(object.id())) {
 				containersMap.put(referencedObject.id(), new ContainerInfo(object.id(), eReference.getName()));
 			}
 		}

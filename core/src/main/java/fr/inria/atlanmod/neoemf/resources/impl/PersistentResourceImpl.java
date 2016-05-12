@@ -188,11 +188,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	@Override
 	public EObject getEObject(String uriFragment) {
 		EObject eObject = eStore.eObject(new StringId(uriFragment));
-		if (eObject != null) {
-			return eObject;
-		} else {
-			return super.getEObject(uriFragment);
-		}
+		return eObject != null ? eObject : super.getEObject(uriFragment);
 	}
 
 	@Override
@@ -203,7 +199,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			// Try to adapt as a PersistentEObject and return the ID
 			PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
 			if (persistentEObject != null) {
-				return (persistentEObject.id().toString());
+				return persistentEObject.id().toString();
 			}
 		}
 		return super.getURIFragment(eObject);
@@ -350,7 +346,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
 			// Collect all contents
 			hardLinksList.add(object);
-			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
+			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next())) {
+			}
 			// Iterate using the hard links list instead the getAllContents
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler
@@ -369,7 +366,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
 			// Collect all contents
 			hardLinksList.add(object);
-			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add((E)it.next()));
+			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add((E)it.next())) {
+			}
 			// Iterate using the hard links list instead the getAllContents
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler

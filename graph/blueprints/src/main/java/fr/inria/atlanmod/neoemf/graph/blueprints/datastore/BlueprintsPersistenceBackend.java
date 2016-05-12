@@ -146,8 +146,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	protected Vertex addVertex(EObject eObject) {
 		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
-		Vertex v = addVertex(neoEObject.id().toString());
-		return v;
+		return addVertex(neoEObject.id().toString());
 	}
 
 	/**
@@ -233,10 +232,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
     @Override
 	public Edge getEdge(final Object id) {
         final Edge edge = getBaseGraph().getEdge(id);
-        if (null == edge)
-            return null;
-        else
-            return new NeoEdge(edge);
+		return null != edge ? new NeoEdge(edge) : null;
     }
     
     
@@ -247,8 +243,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			Vertex eClassVertex = iterator.next();
 			String name = eClassVertex.getProperty(ECLASS__NAME);
 			String nsUri = eClassVertex.getProperty(EPACKAGE__NSURI);
-			EClass eClass = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
-			return eClass;
+			return (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
 		}
 		return null;
 	}

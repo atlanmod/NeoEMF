@@ -43,14 +43,11 @@ public class StringId implements Id {
 		if(obj == this) {
 			return true;
 		}
-		else if(obj == null) {
-			return false;
-		}
-		else if(obj.getClass() != getClass()) {
+		else if(obj == null || obj.getClass() != getClass()) {
 			return false;
 		}
 		else {
-			return ((Id)obj).toString().equals(literalId);
+			return obj.toString().equals(literalId);
 		}
 		
 	}

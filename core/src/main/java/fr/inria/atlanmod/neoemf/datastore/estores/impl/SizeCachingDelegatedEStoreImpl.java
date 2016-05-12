@@ -46,25 +46,33 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 		
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			MapKey other = (MapKey) obj;
-			if (!getOuterType().equals(other.getOuterType()))
+			if (!getOuterType().equals(other.getOuterType())) {
 				return false;
+			}
 			if (object == null) {
-				if (other.object != null)
+				if (other.object != null) {
 					return false;
-			} else if (!object.equals(other.object))
+				}
+			} else if (!object.equals(other.object)) {
 				return false;
+			}
 			if (feature == null) {
-				if (other.feature != null)
+				if (other.feature != null) {
 					return false;
-			} else if (!feature.equals(other.feature))
+				}
+			} else if (!feature.equals(other.feature)) {
 				return false;
+			}
 			return true;
 		}
 		
@@ -96,11 +104,7 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 	@Override
 	public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
 		Integer size = sizeCache.get(new MapKey(object, feature));
-		if (size != null) {
-			return size == 0;
-		} else {
-			return super.isEmpty(object, feature);
-		}
+		return size != null ? size == 0 : super.isEmpty(object, feature);
 	}
 
 	@Override

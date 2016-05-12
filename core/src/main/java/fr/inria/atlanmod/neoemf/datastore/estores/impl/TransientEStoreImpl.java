@@ -55,25 +55,33 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			EStoreEntryKey other = (EStoreEntryKey) obj;
-			if (!getOuterType().equals(other.getOuterType()))
+			if (!getOuterType().equals(other.getOuterType())) {
 				return false;
+			}
 			if (eObject == null) {
-				if (other.eObject != null)
+				if (other.eObject != null) {
 					return false;
-			} else if (!eObject.equals(other.eObject))
+				}
+			} else if (!eObject.equals(other.eObject)) {
 				return false;
+			}
 			if (eStructuralFeature == null) {
-				if (other.eStructuralFeature != null)
+				if (other.eStructuralFeature != null) {
 					return false;
-			} else if (!eStructuralFeature.equals(other.eStructuralFeature))
+				}
+			} else if (!eStructuralFeature.equals(other.eStructuralFeature)) {
 				return false;
+			}
 			return true;
 		}
 
@@ -111,11 +119,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	@Override
 	public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		if (index == NO_INDEX) {
-			return singleMap.put(entry, value);
-		} else {
-			return manyMap.get(entry).set(index, value);
-		}
+		return index == NO_INDEX ? singleMap.put(entry, value) : manyMap.get(entry).set(index, value);
 	}
 
 	@Override
@@ -166,21 +170,14 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	@Override
 	public boolean isSet(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		if (!feature.isMany()) {
-			return singleMap.containsKey(entry);
-		} else {
-			return manyMap.containsKey(entry);
-		}
+		return !feature.isMany() ? singleMap.containsKey(entry) : manyMap.containsKey(entry);
 	}
 
 	@Override
 	public void unset(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		if (!feature.isMany()) {
-			singleMap.remove(entry);
-		} else {
-			manyMap.remove(entry);
-		}
+		Map<EStoreEntryKey, ?> concernedMap = !feature.isMany() ? singleMap : manyMap;
+		concernedMap.remove(entry);
 	}
 
 	@Override
@@ -222,14 +219,14 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
 		List<Object> res = manyMap.get(entry);
-		return res == null ? true : res.isEmpty();
+		return res == null || res.isEmpty();
 	}
 
 	@Override
 	public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		return list != null ? list.contains(value) : false;
+		return list != null && list.contains(value);
 	}
 
 	@Override
