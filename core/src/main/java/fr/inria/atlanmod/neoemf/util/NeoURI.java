@@ -42,25 +42,32 @@ public class NeoURI extends URI {
 	}
 	
 	public static URI createNeoURI(File file, String scheme) {
+		URI returnValue;
 		URI fileUri = URI.createFileURI(file.getAbsolutePath());
 		if(scheme == null) {
-			return NeoURI.createNeoURI(fileUri);
+			returnValue = NeoURI.createNeoURI(fileUri);
+		} else {
+			returnValue =createNeoURI(fileUri, scheme);
 		}
-		return createNeoURI(fileUri, scheme);
+		return returnValue;
 	}
 	
 	public static URI createNeoURI(URI fileUri, String scheme) {
+		URI returnValue;
 		if(scheme == null) {
-			return createNeoURI(fileUri);
+			returnValue = createNeoURI(fileUri);
+		} else {
+			URI uri = URI.createHierarchicalURI(
+					scheme,
+					fileUri.authority(),
+					fileUri.device(),
+					fileUri.segments(),
+					fileUri.query(),
+					fileUri.fragment()
+			);
+			returnValue = createNeoURI(uri);
 		}
-		URI uri = URI.createHierarchicalURI(
-				scheme, 
-				fileUri.authority(),
-				fileUri.device(),
-				fileUri.segments(),
-				fileUri.query(),
-				fileUri.fragment());
-		return  createNeoURI(uri);
+		return returnValue;
 	}
 	
 	@Override
