@@ -38,7 +38,8 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
 	public void testAddContainmentSubtreeToPersistentResourceTinker() {
 		addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsResourceEStoreImpl.class);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	protected void createResourceContent(PersistentResource r) {
 	    p1 = factory.createPack();
         p1.setName("p1");

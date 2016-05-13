@@ -54,11 +54,13 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAdd() {
         assertThat("Adding valid item to the list returns false", model.getContentObjects().add(mapFactory.createSampleModelContentObject()), is(true));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddAllCollection() {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
@@ -67,6 +69,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddAllCollectionIndex() {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
@@ -75,6 +78,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testClear() {
         model.getContentObjects().clear();
         assertThat("List isn't empty after clean", model.getContentObjects().isEmpty(), is(true));
@@ -86,6 +90,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testContainsAll() {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
@@ -94,6 +99,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testEquals() {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
@@ -152,6 +158,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
+    @SuppressWarnings("unchecked")
     public void testMoveObject() {
         model.getContentObjects().move(0, mapFactory.createSampleModelContentObject());
     }
@@ -167,6 +174,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRemoveAllCollection() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
@@ -175,11 +183,13 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRemoveAllEmptyCollection() {
         model.getContentObjects().removeAll(new ArrayList<>());
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRetainAllCollection() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
@@ -188,16 +198,19 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRetainAllEmptyCollection() {
         model.getContentObjects().retainAll(new ArrayList<>());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
+    @SuppressWarnings("unchecked")
     public void testSetInvalidIndex() {
         model.getContentObjects().set(0, mapFactory.createSampleModelContentObject());
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSetValidIndex() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
@@ -207,6 +220,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test(expected = ClassCastException.class)
+    @SuppressWarnings("unchecked")
     public void testSetInvalidObject() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
@@ -221,6 +235,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSize() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
@@ -235,6 +250,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSubList() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
@@ -249,6 +265,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToArray() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
@@ -264,6 +281,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToArrayParameter() {
         Object[] array = new Object[2];
         Collection<SampleModelContentObject> collection = new ArrayList<>();
@@ -279,6 +297,7 @@ public class TransientEStoreListTest extends AllTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToString() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
