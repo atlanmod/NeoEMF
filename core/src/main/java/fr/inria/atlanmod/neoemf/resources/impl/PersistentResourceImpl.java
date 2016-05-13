@@ -78,7 +78,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 * {@link Resource}
 	 * 
 	 */
-	protected final class DummyRootEObject extends PersistentEObjectImpl {
+	protected static final class DummyRootEObject extends PersistentEObjectImpl {
 		protected static final String ROOT_EOBJECT_ID = "ROOT";
 
 		public DummyRootEObject(Resource.Internal resource) {
