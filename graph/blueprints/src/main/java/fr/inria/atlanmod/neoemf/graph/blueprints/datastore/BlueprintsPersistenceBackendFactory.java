@@ -91,8 +91,8 @@ public class BlueprintsPersistenceBackendFactory extends
 				String savedGraphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
 				String issuedGraphType = options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).toString();
 				if (!savedGraphType.equals(issuedGraphType)) {
-				    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
-					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ")");
+				    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
+					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
 				}
 			}
 

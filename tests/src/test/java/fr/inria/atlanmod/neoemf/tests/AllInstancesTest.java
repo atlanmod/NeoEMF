@@ -64,13 +64,13 @@ public abstract class AllInstancesTest extends AllBackendTest {
             rootPack.getPacks().add(newPack);
             for (int j = 0; j < 10; j++) {
                 PackContent newPackContent = factory.createPackContent();
-                newPackContent.setName("pContent" + i + "-" + j);
+                newPackContent.setName("pContent" + i + '-' + j);
                 newPack.getOwnedContents().add(newPackContent);
                 SpecializedPackContent newSpecializedPackContent = factory.createSpecializedPackContent();
-                newSpecializedPackContent.setName("spContent" + i + "-" + j);
+                newSpecializedPackContent.setName("spContent" + i + '-' + j);
                 newPack.getOwnedContents().add(newSpecializedPackContent);
                 PackContent2 newPackContent2 = factory.createPackContent2();
-                newPackContent2.setName("pContent2" + i + "-" + j);
+                newPackContent2.setName("pContent2" + i + '-' + j);
                 newPack.getOwnedContents().add(newPackContent2);
             }
         }

@@ -156,7 +156,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				if (oldStore.isSet(this, feature)) {
 					if (!feature.isMany()) {
 						if(oldStore.get(this, feature, EStore.NO_INDEX) == null) {
-						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
+						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + '.' + feature.getName() + ')');
 						    // Do nothing
 						}else{
 						eStore.set(this, feature, EStore.NO_INDEX, 
@@ -167,7 +167,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 						int size = oldStore.size(this, feature);
 						for (int i = 0; i < size; i++) {
 							if(oldStore.get(this,feature,i) == null) {
-							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
+							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + '.' + feature.getName() + ')');
 								// Do nothing
 							}else{
 							eStore.add(this, feature, i, 

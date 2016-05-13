@@ -51,8 +51,7 @@ public class NeoEObjectAdapterFactoryImpl {
 			} else {
 				// Compute the interfaces that the proxy has to implement
 				// These are the current interfaces + PersistentEObject
-				List<Class<?>> interfaces = new ArrayList<>();
-				interfaces.addAll(ClassUtils.getAllInterfaces(adaptableObject.getClass()));
+				List<Class<?>> interfaces = new ArrayList<>(ClassUtils.getAllInterfaces(adaptableObject.getClass()));
 				interfaces.add(InternalPersistentEObject.class);
 				// Create the proxy
 				Enhancer enhancer = new Enhancer();
