@@ -30,12 +30,12 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	 * Number of allowed modifications between commits on the underlying db
 	 * for this {@link AutocommitMapResourceEStoreImpl}
 	 */
-	protected final int OPS_BETWEEN_COMMITS;
+	protected final int opsBetweenCommits;
 
 	/**
-	 * Current number of modifications modulo {@link #OPS_BETWEEN_COMMITS}
+	 * Current number of modifications modulo {@link #opsBetweenCommits}
 	 */
-	protected static int opCount = 0;
+	protected int opCount = 0;
 
 	/**
 	 * Constructor for this {@link DB}-based {@link EStore}. Allows to
@@ -48,7 +48,7 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	 */
 	public AutocommitMapResourceEStoreImpl(Resource.Internal resource, DB db, int opsBetweenCommits) {
 		super(resource, db);
-		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
+		this.opsBetweenCommits = opsBetweenCommits;
 	}
 
 	/**
@@ -67,55 +67,44 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		super.add(object, feature, index, value);
-		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
-		if (opCount == 0) {
-			db.commit();
-		}
+		incrementAndCommit();
 	}
 
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		Object returnValue = super.set(object, feature, index, value);
-		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
-		if (opCount == 0) {
-			db.commit();
-		}
+		incrementAndCommit();
 		return returnValue;
 	}
 
 	@Override
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
 		Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
-		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
-		if (opCount == 0) {
-			db.commit();
-		}
+		incrementAndCommit();
 		return returnValue;
 	}
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
 		Object returnValue = super.remove(object, feature, index);
-		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
-		if (opCount == 0) {
-			db.commit();
-		}
+		incrementAndCommit();
 		return returnValue;
 	}
 
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		super.unset(object, feature);
-		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
-		if (opCount == 0) {
-			db.commit();
-		}
+		incrementAndCommit();
 	}
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		super.clear(object, feature);
-		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
+		incrementAndCommit();
+	}
+
+	private void incrementAndCommit() {
+		opCount = (opCount + 1) % opsBetweenCommits;
 		if (opCount == 0) {
 			db.commit();
 		}
