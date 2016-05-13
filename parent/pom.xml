@@ -33,13 +33,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.config.location>config/google_checks.xml</checkstyle.config.location>
         <build.tstamp>${maven.build.timestamp}</build.tstamp>
+        <source-target.version>1.7</source-target.version>
 
-        <!-- Plugins -->
+        <!-- Plugins version -->
 
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
         <maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+        <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
         <build-helper-maven-plugin.version>1.10</build-helper-maven-plugin.version>
@@ -54,12 +56,39 @@
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
         <license-maven-plugin.version>1.8</license-maven-plugin.version>
 
-        <!-- Versions -->
+        <!-- Dependencies version -->
 
-        <neo4j.version>1.9.4</neo4j.version>
-        <mapdb.version>1.0.7</mapdb.version>
+        <blueprints.version>2.4.0</blueprints.version> <!-- 2.6.0 : https://github.com/tinkerpop/blueprints/blob/master/CHANGELOG.textile -->
+        <neo4j.version>1.9.4</neo4j.version> <!-- 3.0.1 : http://neo4j.com/release-notes/ -->
+        <mapdb.version>1.0.7</mapdb.version> <!-- (Non stable yet) 3.0.0-M6 : http://www.mapdb.org/changelog/ -->
 
-        <source-target.version>1.7</source-target.version>
+        <cglib-nodep.version>3.1</cglib-nodep.version> <!-- 3.2.2 -->
+        <jboss-common.version>4.2.2.GA</jboss-common.version>
+        <jboss-common-core.version>2.2.22.GA</jboss-common-core.version> <!-- 2.5.0.Final -->
+        <geronimo-jta-spec.version>1.1.1</geronimo-jta-spec.version>
+        <lucene-core.version>3.6.2</lucene-core.version> <!-- 6.0.0 -->
+        <concurrentlinkedhashmap-lru.version>1.3.1</concurrentlinkedhashmap-lru.version> <!-- 1.4.2 -->
+
+        <guava.version>16.0.1</guava.version> <!-- 19.0 -->
+        <commons-lang.version>2.6</commons-lang.version> <!-- New artifact : commons-lang3 -->
+        <commons-lang3.version>3.4</commons-lang3.version>
+        <commons-configuration.version>1.6</commons-configuration.version> <!-- 1.10 -->
+        <commons-io.version>2.4</commons-io.version> <!-- 2.5 -->
+        <commons-collections.version>3.2.1</commons-collections.version> <!-- New artifact : commons-collections4 -->
+        <commons-collections4.version>4.0</commons-collections4.version> <!-- 4.1 -->
+        <commons-logging.version>1.1.1</commons-logging.version> <!-- 1.2 -->
+        <log4j.version>2.2</log4j.version> <!-- 2.5 -->
+
+        <emf.version>2.11.0-v20150805-0538</emf.version>
+        <emf-ecore.version>2.11.1-v20150805-0538</emf-ecore.version>
+        <emf-codegen.version>2.11.0-v20150806-0404</emf-codegen.version>
+        <emf-ecore-xcore-lib.version>1.1.100</emf-ecore-xcore-lib.version>
+        <xtext-xbase-lib.version>2.9.2</xtext-xbase-lib.version>
+
+        <junit.version>4.11</junit.version> <!-- 4.12 -->
+        <mockito.version>1.8.5</mockito.version> <!-- 1.10.19 -->
+        <hamcrest.version>1.3</hamcrest.version>
+        <imagecomparison.version>0.0.2</imagecomparison.version> <!-- 0.3.2 -->
     </properties>
 
     <dependencyManagement>
@@ -67,19 +96,19 @@
             <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib-nodep</artifactId>
-                <version>3.1</version>
+                <version>${cglib-nodep.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>jboss</groupId>
                 <artifactId>jboss-common</artifactId>
-                <version>4.2.2.GA</version>
+                <version>${jboss-common.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss</groupId>
                 <artifactId>jboss-common-core</artifactId>
-                <version>2.2.22.GA</version>
+                <version>${jboss-common-core.version}</version>
             </dependency>
 
             <!-- MapDB -->
@@ -95,13 +124,13 @@
             <dependency>
                 <groupId>com.tinkerpop.blueprints</groupId>
                 <artifactId>blueprints-core</artifactId>
-                <version>2.4.0</version>
+                <version>${blueprints.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-jta_1.1_spec</artifactId>
-                <version>1.1.1</version>
+                <version>${geronimo-jta-spec.version}</version>
             </dependency>
 
             <dependency>
@@ -131,13 +160,13 @@
             <dependency>
                 <groupId>com.tinkerpop.blueprints</groupId>
                 <artifactId>blueprints-neo4j-graph</artifactId>
-                <version>2.4.0</version>
+                <version>${blueprints.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-core</artifactId>
-                <version>3.6.2</version>
+                <version>${lucene-core.version}</version>
             </dependency>
 
             <dependency>
@@ -151,43 +180,49 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>16.0.1</version>
+                <version>${guava.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
                 <artifactId>concurrentlinkedhashmap-lru</artifactId>
-                <version>1.3.1</version>
+                <version>${concurrentlinkedhashmap-lru.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.6</version>
+                <version>${commons-lang.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
-                <version>1.6</version>
+                <version>${commons-configuration.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>${commons-io.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
-                <version>3.2.1</version>
+                <version>${commons-collections.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>4.0</version>
+                <version>${commons-collections4.version}</version>
             </dependency>
 
             <!-- Logging dependencies -->
@@ -195,19 +230,19 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
-                <version>2.2</version>
+                <version>${log4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
-                <version>2.2</version>
+                <version>${log4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.1.1</version>
+                <version>${commons-logging.version}</version>
             </dependency>
 
             <!-- EMF dependencies -->
@@ -215,43 +250,43 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.common</artifactId>
-                <version>2.11.0-v20150805-0538</version>
+                <version>${emf.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore</artifactId>
-                <version>2.11.1-v20150805-0538</version>
+                <version>${emf-ecore.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-                <version>2.11.1-v20150805-0538</version>
+                <version>${emf-ecore.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
-                <version>1.1.100</version>
+                <version>${emf-ecore-xcore-lib.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.codegen</artifactId>
-                <version>2.11.0-v20150806-0404</version>
+                <version>${emf-codegen.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
-                <version>2.11.0-v20150806-0404</version>
+                <version>${emf-codegen.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.xtext</groupId>
                 <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
-                <version>2.9.1</version>
+                <version>${xtext-xbase-lib.version}</version>
             </dependency>
 
             <!-- Test dependencies -->
@@ -259,7 +294,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -272,7 +307,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
-                <version>1.8.5</version>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -285,14 +320,14 @@
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-all</artifactId>
-                <version>1.3</version>
+                <version>${hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>net.avh4.util</groupId>
                 <artifactId>imagecomparison</artifactId>
-                <version>0.0.2</version>
+                <version>${imagecomparison.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -328,6 +363,12 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
             </plugin>
 
             <plugin>
