@@ -56,38 +56,6 @@ import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 public class PersistentResourceImpl extends ResourceImpl implements PersistentResource {
 
-	/**
-	 * Fake {@link EStructuralFeature} that represents the
-	 * {@link Resource#getContents()} feature.
-	 * 
-	 */
-	protected static class ResourceContentsEStructuralFeature extends EReferenceImpl {
-		protected static final String RESOURCE__CONTENTS__FEATURE_NAME = "eContents";
-
-		public ResourceContentsEStructuralFeature() {
-			setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
-			setLowerBound(0);
-			setName(RESOURCE__CONTENTS__FEATURE_NAME);
-			setEType(new EClassifierImpl() {});
-			setFeatureID(RESOURCE__CONTENTS);
-		}
-	}
-
-	/**
-	 * Dummy {@link EObject} that represents the root entry point for this
-	 * {@link Resource}
-	 * 
-	 */
-	protected static final class DummyRootEObject extends PersistentEObjectImpl {
-		protected static final String ROOT_EOBJECT_ID = "ROOT";
-
-		public DummyRootEObject(Resource.Internal resource) {
-			super();
-			this.id = new StringId(ROOT_EOBJECT_ID);
-			eSetDirectResource(resource);
-		}
-	}
-
 	protected static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
 
 	protected final DummyRootEObject DUMMY_ROOT_EOBJECT = new DummyRootEObject(this);
@@ -270,6 +238,45 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		return eStore;
 	}
 
+	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
+		if (resource != null) {
+			NeoLogger.log(NeoLogger.SEVERITY_INFO, "Shutdown Without Unload of Persistent Resource " + resource.getURI());
+			resource.shutdown();
+		}
+	}
+
+	/**
+	 * Fake {@link EStructuralFeature} that represents the
+	 * {@link Resource#getContents()} feature.
+	 *
+	 */
+	protected static class ResourceContentsEStructuralFeature extends EReferenceImpl {
+		protected static final String RESOURCE__CONTENTS__FEATURE_NAME = "eContents";
+
+		public ResourceContentsEStructuralFeature() {
+			setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
+			setLowerBound(0);
+			setName(RESOURCE__CONTENTS__FEATURE_NAME);
+			setEType(new EClassifierImpl() {});
+			setFeatureID(RESOURCE__CONTENTS);
+		}
+	}
+
+	/**
+	 * Dummy {@link EObject} that represents the root entry point for this
+	 * {@link Resource}
+	 *
+	 */
+	protected static final class DummyRootEObject extends PersistentEObjectImpl {
+		protected static final String ROOT_EOBJECT_ID = "ROOT";
+
+		public DummyRootEObject(Resource.Internal resource) {
+			super();
+			this.id = new StringId(ROOT_EOBJECT_ID);
+			eSetDirectResource(resource);
+		}
+	}
+
 	/**
 	 * A notifying {@link EStoreEList} list implementation for supporting
 	 * {@link Resource#getContents}.
@@ -425,13 +432,6 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			if (isTrackingModification()) {
 				setModified(true);
 			}
-		}
-	}
-
-	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
-		if (resource != null) {
-		    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Shutdown Without Unload of Persistent Resource " + resource.getURI());
-			resource.shutdown();
 		}
 	}
 }

@@ -56,27 +56,6 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	private Index<Vertex> metaclassIndex;
 	private boolean isStarted = true;
-
-	protected class NeoEdge extends IdEdge {
-		public NeoEdge(Edge edge) {
-			super(edge, BlueprintsPersistenceBackend.this);
-		}
-		
-		/**
-		 * {@inheritDoc} <br>
-		 * If the {@link Edge} references a {@link Vertex} with no more incoming
-		 * {@link Edge}, the referenced {@link Vertex} is removed as well
-		 */
-		@Override
-		public void remove() {
-			Vertex referencedVertex = getVertex(Direction.IN);
-			super.remove();
-			if (!referencedVertex.getEdges(Direction.IN).iterator().hasNext()) {
-				// If the Vertex has no more incoming edges remove it from the DB
-				referencedVertex.remove();
-			}
-		}
-	}
 	
 	protected static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
 	protected static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
@@ -380,5 +359,26 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 		}
 		return indexHits;
+	}
+
+	protected class NeoEdge extends IdEdge {
+		public NeoEdge(Edge edge) {
+			super(edge, BlueprintsPersistenceBackend.this);
+		}
+
+		/**
+		 * {@inheritDoc} <br>
+		 * If the {@link Edge} references a {@link Vertex} with no more incoming
+		 * {@link Edge}, the referenced {@link Vertex} is removed as well
+		 */
+		@Override
+		public void remove() {
+			Vertex referencedVertex = getVertex(Direction.IN);
+			super.remove();
+			if (!referencedVertex.getEdges(Direction.IN).iterator().hasNext()) {
+				// If the Vertex has no more incoming edges remove it from the DB
+				referencedVertex.remove();
+			}
+		}
 	}
 }

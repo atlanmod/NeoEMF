@@ -24,66 +24,10 @@ import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
  * 
  */
 public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
-
-	protected class MapKey {
-		protected InternalEObject object;
-		protected EStructuralFeature feature;
-		
-		public MapKey(InternalEObject object, EStructuralFeature feature) {
-			this.object = object;
-			this.feature = feature;
-		}
-		
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((object == null) ? 0 : object.hashCode());
-			result = prime * result + ((feature == null) ? 0 : feature.hashCode());
-			return result;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			MapKey other = (MapKey) obj;
-			if (!getOuterType().equals(other.getOuterType())) {
-				return false;
-			}
-			if (object == null) {
-				if (other.object != null) {
-					return false;
-				}
-			} else if (!object.equals(other.object)) {
-				return false;
-			}
-			if (feature == null) {
-				if (other.feature != null) {
-					return false;
-				}
-			} else if (!feature.equals(other.feature)) {
-				return false;
-			}
-			return true;
-		}
-		
-		private SizeCachingDelegatedEStoreImpl getOuterType() {
-			return SizeCachingDelegatedEStoreImpl.this;
-		}
-	}
 	
-	protected static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
+	private static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
 	
-	protected Map<MapKey, Integer> sizeCache;
+	private Map<MapKey, Integer> sizeCache;
 	
 	
 	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
@@ -140,5 +84,61 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		sizeCache.put(new MapKey(object, feature), 0); 
 		super.clear(object, feature);
+	}
+
+	protected class MapKey {
+		protected InternalEObject object;
+		protected EStructuralFeature feature;
+
+		public MapKey(InternalEObject object, EStructuralFeature feature) {
+			this.object = object;
+			this.feature = feature;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((object == null) ? 0 : object.hashCode());
+			result = prime * result + ((feature == null) ? 0 : feature.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			MapKey other = (MapKey) obj;
+			if (!getOuterType().equals(other.getOuterType())) {
+				return false;
+			}
+			if (object == null) {
+				if (other.object != null) {
+					return false;
+				}
+			} else if (!object.equals(other.object)) {
+				return false;
+			}
+			if (feature == null) {
+				if (other.feature != null) {
+					return false;
+				}
+			} else if (!feature.equals(other.feature)) {
+				return false;
+			}
+			return true;
+		}
+
+		private SizeCachingDelegatedEStoreImpl getOuterType() {
+			return SizeCachingDelegatedEStoreImpl.this;
+		}
 	}
 }

@@ -24,19 +24,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 
-	class InfoThread extends Thread {
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					sleep(20000);
-				} catch (InterruptedException e) {
-				}
-				System.err.println("Founds: " + founds + " / Not Founds: " + notFounds);
-			}
-		}
-	}
-	
 	protected Map<Tuple2<Id, String>, Object> cachedArray;
 	protected long founds;
 	protected long notFounds;
@@ -63,5 +50,18 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 			founds++;
 		}
 		return returnValue;
+	}
+
+	protected class InfoThread extends Thread {
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					sleep(20000);
+				} catch (InterruptedException e) {
+				}
+				System.err.println("Founds: " + founds + " / Not Founds: " + notFounds);
+			}
+		}
 	}
 }

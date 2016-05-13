@@ -75,24 +75,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		this.map = db.getHashMap("NeoEMF");
 		this.instanceOfMap = db.getHashMap(INSTANCE_OF);
 		this.containersMap = db.getHashMap(CONTAINER);
-		this.mapCache = CacheBuilder.newBuilder().maximumSize(100).softValues().build(new CacheLoader<Tuple2<Id, String>, Object>() {
-			@Override
-			public Object load(Tuple2<Id, String> key) throws Exception {
-				Object returnValue;
-				Object value = map.get(key);
-				if (value == null) {
-					returnValue = new ArrayList<>();
-				} else if (value instanceof Object[]) {
-					Object[] array = (Object[]) value;
-					List<Object> list = new ArrayList<>(array.length + 10);
-					CollectionUtils.addAll(list, array);
-					returnValue = list;
-				} else {
-					returnValue = value;
-				}
-				return returnValue;
-			}
-		});
+		this.mapCache = CacheBuilder.newBuilder().maximumSize(100).softValues().build(new Tuple2CacheLoader());
 	}
 
 
@@ -489,5 +472,23 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 			throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
-	
+
+	protected class Tuple2CacheLoader extends CacheLoader<Tuple2<Id, String>, Object> {
+		@Override
+        public Object load(Tuple2<Id, String> key) throws Exception {
+            Object returnValue;
+            Object value = map.get(key);
+            if (value == null) {
+                returnValue = new ArrayList<>();
+            } else if (value instanceof Object[]) {
+                Object[] array = (Object[]) value;
+                List<Object> list = new ArrayList<>(array.length + 10);
+                CollectionUtils.addAll(list, array);
+                returnValue = list;
+            } else {
+                returnValue = value;
+            }
+            return returnValue;
+        }
+	}
 }
