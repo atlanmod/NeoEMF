@@ -13,9 +13,15 @@ package fr.inria.atlanmod.neoemf.datastore;
 
 import fr.inria.atlanmod.neoemf.AllCoreTest;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.*;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.DelegatedResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterLoggingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingDelegatedResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +29,11 @@ import org.junit.Test;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.StringContains.containsString;

@@ -11,16 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
-
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that delegates method calls to an

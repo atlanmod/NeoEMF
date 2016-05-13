@@ -11,16 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.resources.impl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
+import fr.inria.atlanmod.neoemf.core.impl.StringId;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
@@ -41,18 +43,16 @@ import org.eclipse.emf.ecore.impl.EStoreEObjectImpl.EStoreEList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
-import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.NeoURI;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 public class PersistentResourceImpl extends ResourceImpl implements PersistentResource {
 

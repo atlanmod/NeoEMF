@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config;
 
-import java.io.File;
+import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
 
 import org.apache.commons.configuration.Configuration;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
+import java.io.File;
 
 public class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
     

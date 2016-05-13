@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.AllMapTest;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;

@@ -11,17 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.test.commons;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractResourceBuilder {
 

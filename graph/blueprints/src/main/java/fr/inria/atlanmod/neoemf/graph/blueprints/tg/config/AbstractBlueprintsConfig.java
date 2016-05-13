@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.tg.config;
 
-import java.io.File;
-
 import org.apache.commons.configuration.Configuration;
+
+import java.io.File;
 
 public abstract class AbstractBlueprintsConfig {
 

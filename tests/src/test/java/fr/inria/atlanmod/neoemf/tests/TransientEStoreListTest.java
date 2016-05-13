@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;

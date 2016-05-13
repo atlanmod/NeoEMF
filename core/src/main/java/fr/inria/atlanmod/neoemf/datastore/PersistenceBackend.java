@@ -11,11 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-import java.util.Map;
-
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
+import java.util.Map;
 
 public interface PersistenceBackend {
 

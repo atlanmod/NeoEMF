@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceSaveTest;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.Before;

@@ -11,11 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.emf.common.util.EList;
@@ -34,15 +38,10 @@ import org.mapdb.DB;
 import org.mapdb.Fun;
 import org.mapdb.Fun.Tuple2;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 
 public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceEStore {
 

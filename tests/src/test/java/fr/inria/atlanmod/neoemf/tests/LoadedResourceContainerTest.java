@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.junit.Ignore;

@@ -11,7 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
@@ -19,8 +20,7 @@ import org.jboss.util.collection.SoftValueHashMap;
 import org.mapdb.DB;
 import org.mapdb.Fun.Tuple2;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import java.util.Map;
 
 public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 

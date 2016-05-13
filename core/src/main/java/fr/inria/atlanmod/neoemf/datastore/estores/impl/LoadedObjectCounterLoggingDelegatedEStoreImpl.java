@@ -11,20 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+
+import org.apache.logging.log4j.Level;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
+
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.logging.log4j.Level;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
-
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 

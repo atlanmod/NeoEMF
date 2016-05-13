@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 public interface InternalPersistentEObject extends PersistentEObject,
 		InternalEObject {

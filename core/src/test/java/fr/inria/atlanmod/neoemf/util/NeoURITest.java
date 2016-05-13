@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.util;
 import fr.inria.atlanmod.neoemf.AllCoreTest;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;

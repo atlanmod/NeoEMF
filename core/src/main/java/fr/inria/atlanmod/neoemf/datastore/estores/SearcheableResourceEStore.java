@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
-
-import fr.inria.atlanmod.neoemf.core.Id;
 
 /**
  * This interface extends the {@link EStore} interface and allows to establish a

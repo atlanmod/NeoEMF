@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.map.util;
 
-import java.io.File;
-import java.text.MessageFormat;
+import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 
-import fr.inria.atlanmod.neoemf.util.NeoURI;
+import java.io.File;
+import java.text.MessageFormat;
 
 public class NeoMapURI extends NeoURI {
 

@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.List;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 
 import org.eclipse.emf.common.util.URI;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import java.io.File;
+import java.text.MessageFormat;
+import java.util.List;
 
 public class NeoURI extends URI {
 

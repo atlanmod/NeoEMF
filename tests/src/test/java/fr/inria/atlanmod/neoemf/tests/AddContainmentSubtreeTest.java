@@ -1,12 +1,12 @@
 package fr.inria.atlanmod.neoemf.tests;
 
-import org.eclipse.emf.ecore.resource.Resource;
-import org.junit.Test;
-
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+
+import org.eclipse.emf.ecore.resource.Resource;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsSame.sameInstance;

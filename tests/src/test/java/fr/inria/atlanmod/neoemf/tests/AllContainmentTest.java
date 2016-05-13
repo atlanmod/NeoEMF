@@ -11,7 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.*;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContentComment;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
+import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.PackContent;
+
 import org.junit.After;
 import org.junit.Before;
 

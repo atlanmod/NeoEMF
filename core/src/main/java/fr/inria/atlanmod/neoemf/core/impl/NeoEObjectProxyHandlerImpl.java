@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.core.impl;
 
-import java.lang.reflect.Method;
-
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import org.eclipse.emf.ecore.InternalEObject;
+
+import java.lang.reflect.Method;
 
 public class NeoEObjectProxyHandlerImpl implements MethodInterceptor {
 

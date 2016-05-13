@@ -11,21 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.common.util.URI;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.Engine;
-
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
@@ -40,6 +25,21 @@ import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+import org.mapdb.Engine;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MapPersistenceBackendFactory extends
 		AbstractPersistenceBackendFactory {

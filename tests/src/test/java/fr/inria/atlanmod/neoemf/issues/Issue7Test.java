@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.issues;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
+
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

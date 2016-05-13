@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.resources.impl;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 
 public class PersistentResourceFactoryImpl implements PersistentResourceFactory {
 

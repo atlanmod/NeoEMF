@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.AllGraphTest;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;

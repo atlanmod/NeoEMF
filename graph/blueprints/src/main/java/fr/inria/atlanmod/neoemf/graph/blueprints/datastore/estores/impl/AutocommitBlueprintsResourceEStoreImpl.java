@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl;
 
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
-
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 
 public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprintsResourceEStoreImpl {
 

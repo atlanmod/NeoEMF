@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo;
 
-import java.io.Serializable;
-
 import fr.inria.atlanmod.neoemf.core.Id;
+
+import java.io.Serializable;
 
 public class ContainerInfo implements Serializable {
 	

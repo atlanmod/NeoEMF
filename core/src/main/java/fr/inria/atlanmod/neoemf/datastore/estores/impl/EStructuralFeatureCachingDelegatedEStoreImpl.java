@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 
 import org.apache.commons.collections4.map.LRUMap;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import java.util.Map;
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that caches {@link EStructuralFeature}s

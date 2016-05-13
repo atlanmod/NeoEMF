@@ -11,21 +11,19 @@
 
 package fr.inria.atlanmod.neoemf.core.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import net.sf.cglib.core.NamingPolicy;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+
 import net.sf.cglib.proxy.Enhancer;
 
 import org.apache.commons.lang.ClassUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class NeoEObjectAdapterFactoryImpl {
 

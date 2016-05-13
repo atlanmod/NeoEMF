@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 
 import org.eclipse.emf.ecore.EClass;
 import org.mapdb.DB;
 import org.mapdb.Engine;
 
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import java.util.Map;
 
 public class MapPersistenceBackend extends DB implements PersistenceBackend {
 	
