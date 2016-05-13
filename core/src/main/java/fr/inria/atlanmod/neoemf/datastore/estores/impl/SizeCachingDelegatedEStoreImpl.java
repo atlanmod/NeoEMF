@@ -25,9 +25,9 @@ import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
  */
 public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 	
-	private static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
+	protected static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
 	
-	private Map<MapKey, Integer> sizeCache;
+	protected Map<MapKey, Integer> sizeCache;
 	
 	
 	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {

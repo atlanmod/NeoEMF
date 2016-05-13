@@ -116,7 +116,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				} else {
 					eBasicSetContainerFeatureID(
 							InternalEObject.EOPPOSITE_FEATURE_BASE -
-									eInternalContainer().eClass().getFeatureID(containingFeature));
+							eInternalContainer().eClass().getFeatureID(containingFeature));
 				}
 			}
 		}

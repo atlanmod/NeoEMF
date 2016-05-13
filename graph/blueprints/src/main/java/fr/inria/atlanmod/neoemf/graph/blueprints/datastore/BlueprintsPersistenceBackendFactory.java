@@ -147,7 +147,7 @@ public class BlueprintsPersistenceBackendFactory extends
                             upperCaseGraphName));
                     e4.printStackTrace();
                 }
-			}
+            }
 			else {
 			    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Unable to compute graph type name from " + graphType);
 			}
