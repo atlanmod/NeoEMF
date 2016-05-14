@@ -34,6 +34,7 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
@@ -287,7 +288,20 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		if (value == null) {
 			return false;
 		} else {
-			return ArrayUtils.contains(toArray(object, feature), value);
+		    Vertex v = graph.getOrCreateVertex(object);
+		    InternalPersistentEObject eValue = NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class);
+		    if(feature instanceof EReference) {
+		        for(Vertex vOut : v.getVertices(Direction.OUT, feature.getName())) { 
+		            if(vOut.getId().equals(eValue.id().toString())) {
+		                return true;
+		            }
+		        }
+		        return false;
+		    }
+		    else {
+		        // feature is an EAttribute
+		        return ArrayUtils.contains(toArray(object, feature), value);
+		    }
 		}
 	}
 
