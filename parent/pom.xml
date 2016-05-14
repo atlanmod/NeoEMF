@@ -30,33 +30,40 @@
     </licenses>
 
     <properties>
+
+        <!-- Global -->
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.config.location>config/google_checks.xml</checkstyle.config.location>
         <build.tstamp>${maven.build.timestamp}</build.tstamp>
         <source-target.version>1.7</source-target.version>
 
-        <!-- Plugins version -->
+        <!-- Build plugins -->
 
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
         <maven-bundle-plugin.version>2.5.0</maven-bundle-plugin.version>
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-        <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
         <build-helper-maven-plugin.version>1.10</build-helper-maven-plugin.version>
         <xtext-maven-plugin.version>2.9.1</xtext-maven-plugin.version>
-
         <maven-site-plugin.version>3.5.1</maven-site-plugin.version>
+
+        <!-- Report plugins -->
+
         <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
+        <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
         <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
         <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+        <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+        <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
+        <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
         <license-maven-plugin.version>1.8</license-maven-plugin.version>
 
-        <!-- Dependencies version -->
+        <!-- Dependencies -->
 
         <blueprints.version>2.4.0</blueprints.version> <!-- 2.6.0 : https://github.com/tinkerpop/blueprints/blob/master/CHANGELOG.textile -->
         <neo4j.version>1.9.4</neo4j.version> <!-- 3.0.1 : http://neo4j.com/release-notes/ -->
@@ -367,38 +374,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>6.18</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>checkstyle</id>
-                        <configuration>
-                            <consoleOutput>false</consoleOutput>
-                            <failsOnError>false</failsOnError>
-                            <linkXRef>false</linkXRef>
-                        </configuration>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven-jar-plugin.version}</version>
                 <executions>
@@ -431,32 +406,107 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven-pmd-plugin.version}</version>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
-                    <sourceEncoding>UTF-8</sourceEncoding>
-                    <targetJdk>${source-target.version}</targetJdk>
-                    <rulesets>
-                        <ruleset>rulesets/java/basic.xml</ruleset>
-                        <ruleset>rulesets/java/braces.xml</ruleset>
-                        <ruleset>rulesets/java/naming.xml</ruleset>
-                        <ruleset>rulesets/java/codesize.xml</ruleset>
-                        <ruleset>rulesets/java/strings.xml</ruleset>
-                        <ruleset>rulesets/java/optimizations.xml</ruleset>
-                    </rulesets>
+                    <detectLinks>false</detectLinks>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>${maven-jxr-plugin.version}</version>
+                <configuration/>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>jxr</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <configuration/>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>analyze-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>${taglist-maven-plugin.version}</version>
+                <configuration/>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${cobertura-maven-plugin.version}</version>
+                <configuration>
+                    <check/>
+                    <aggregate>true</aggregate>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>cobertura</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven-surefire-report-plugin.version}</version>
+                <configuration/>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report-only</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>google_checks.xml</configLocation>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -467,22 +517,42 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>${findbugs-maven-plugin.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <configuration>
+                    <targetJdk>${source-target.version}</targetJdk>
+                    <rulesets>
+                        <ruleset>rulesets/java/basic.xml</ruleset>
+                        <ruleset>rulesets/java/braces.xml</ruleset>
+                        <ruleset>rulesets/java/naming.xml</ruleset>
+                        <ruleset>rulesets/java/codesize.xml</ruleset>
+                        <ruleset>rulesets/java/strings.xml</ruleset>
+                        <ruleset>rulesets/java/optimizations.xml</ruleset>
+                    </rulesets>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>pmd</report>
+                            <report>cpd</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${cobertura-maven-plugin.version}</version>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs-maven-plugin.version}</version>
+                <configuration/>
             </plugin>
-
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${license-maven-plugin.version}</version>
+                <configuration/>
             </plugin>
         </plugins>
     </reporting>
