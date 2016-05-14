@@ -125,6 +125,9 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerSourceLevel>${source-target.version}</compilerSourceLevel>
+                    <compilerTargetLevel>${source-target.version}</compilerTargetLevel>
                     <languages>
                         <language>
                             <setup>org.eclipse.xtext.ecore.EcoreSupport</setup>
