@@ -123,12 +123,13 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>${maven-bundle-plugin.version}</version>
-                <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+                        <Bundle-ClassPath>
+                            .,
+                            {maven-dependencies}
+                        </Bundle-ClassPath>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources,
                             fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config,
@@ -150,18 +151,11 @@
                             neo4j-kernel,
                             blueprints-neo4j-graph
                         </Embed-Dependency>
-                        <Require-Bundle>fr.inria.atlanmod.neoemf.graph.blueprints</Require-Bundle>
+                        <Require-Bundle>
+                            fr.inria.atlanmod.neoemf.graph.blueprints
+                        </Require-Bundle>
                     </instructions>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <!--<goals>
-                          <goal>manifest</goal>
-                        </goals>-->
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
