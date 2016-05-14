@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -372,8 +373,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	protected void add(InternalEObject object, EReference eReference, int index, EObject value) {
 		Vertex vertex = graph.getOrCreateVertex(object);
-		Vertex referencedVertex = graph.getOrCreateVertex(value);
 		
+		Vertex referencedVertex = graph.getOrCreateVertex(value);
 		// Update the containment reference if needed
 		if (eReference.isContainment()) {
 			updateContainment(eReference, vertex, referencedVertex);
@@ -583,9 +584,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected InternalEObject reifyVertex(Vertex vertex) {
 		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex);
 		if(internalEObject.resource() != resource()) {
-			if(internalEObject.eContainer() == null) {
+			Iterator<Edge> itE = vertex.getEdges(Direction.OUT, CONTAINER).iterator();
+			if(!itE.hasNext()) {
 				Iterator<Vertex> it = vertex.getVertices(Direction.IN,"eContents").iterator();
 				if(it.hasNext()) {
+//					System.out.println("EContents detected for " + internalEObject.eClass().getName());
 					internalEObject.resource(resource());
 				}
 				else {
@@ -602,7 +605,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
 		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex,eClass);
 		if(internalEObject.resource() != resource()) {
-			if(internalEObject.eContainer() == null) {
+			Iterator<Edge> itE = vertex.getEdges(Direction.OUT, CONTAINER).iterator();
+			if(!itE.hasNext()) {
 				Iterator<Vertex> it = vertex.getVertices(Direction.IN,"eContents").iterator();
 				if(it.hasNext()) {
 					internalEObject.resource(resource());

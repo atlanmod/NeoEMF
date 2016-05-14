@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.core.impl;
 
-import java.util.Iterator;
-
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -95,10 +93,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	protected void eBasicSetContainer(InternalEObject newContainer) {
 		eContainer = newContainer;
-//		if(newContainer != null && newContainer.eDirectResource() != resource) {
 		if (newContainer != null && newContainer.eResource() != resource) {
 			resource((Resource.Internal) eContainer.eResource());
-//			resource((Resource.Internal) eContainer.eDirectResource());
 		}
 	}
 	
@@ -158,45 +154,49 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
 				if (oldStore.isSet(this, feature)) {
 					if (!feature.isMany()) {
-						if(oldStore.get(this, feature, EStore.NO_INDEX) == null) {
-						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
+						Object v = oldStore.get(this,feature,EStore.NO_INDEX);
+						if(v == null) {
+//						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
 						    // Do nothing
 						}else{
-						eStore.set(this, feature, EStore.NO_INDEX, 
-								oldStore.get(this, feature, EStore.NO_INDEX));
+							if(feature instanceof EReference) {
+								EReference eRef = (EReference)feature;
+								if(eRef.isContainment()) {
+									InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(v, InternalPersistentEObject.class);
+									if(internalElement.resource() != resource()) {
+										internalElement.resource(resource());
+									}
+								}
+							}
+							eStore.set(this, feature, EStore.NO_INDEX, v);
 						}
 					} else {
 						eStore.clear(this, feature);
 						int size = oldStore.size(this, feature);
 						for (int i = 0; i < size; i++) {
-							if(oldStore.get(this,feature,i) == null) {
-							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
+							Object v = oldStore.get(this,feature,i);
+							if(v == null) {
+//							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
 								// Do nothing
 							}else{
-							eStore.add(this, feature, i, 
-									oldStore.get(this, feature, i));
+								if(feature instanceof EReference) {
+									EReference eRef = (EReference)feature;
+									if(eRef.isContainment()) {
+										InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(v, InternalPersistentEObject.class);
+										if(internalElement.resource() != resource()) {
+											internalElement.resource(resource());
+										}
+									}
+								}
+								eStore.add(this, feature, i, v);
 							}
 						}
 					}
 				}
 			}
 		}
-		/*
-		 * Attach contained objects to the same resource to avoid EStore hierarchy inconsistency
-		 * This is necessary to handle attachment of entire stand-alone sub-tree to a PersistentResource
-		 * (otherwise only the top-level elements of the subtree are added)
-		 */
-		Iterator<EObject> it = this.eContents().iterator();
-		while(it.hasNext()) {
-			InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(it.next(), InternalPersistentEObject.class);
-			if(internalElement.resource() != this.resource) {
-				internalElement.resource(this.resource);
-			}
-
-		}
 	}
 	
-
 	@Override
 	public EStore eStore() {
 		if (eStore == null) {
@@ -204,16 +204,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		}
 		return eStore;
 	}
-	
-//	@Override
-//	public Internal eInternalResource() {
-//		return resource == null ? super.eInternalResource() : resource;
-//	}
-//	
-//	@Override
-//	public Internal eDirectResource() {
-//		return resource == null ? super.eDirectResource() : resource;
-//	}
 	
 	@Override
 	protected boolean eIsCaching() {

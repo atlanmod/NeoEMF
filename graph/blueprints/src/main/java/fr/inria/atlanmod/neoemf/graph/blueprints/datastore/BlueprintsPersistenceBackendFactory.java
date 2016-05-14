@@ -207,10 +207,12 @@ public class BlueprintsPersistenceBackendFactory extends
         ArrayList<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
     	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
     	    // Default store
+    		NeoLogger.log(NeoLogger.SEVERITY_INFO, "Default Store Created");
     	    return new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	}
     	else {
     	    if(storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
+    	    	NeoLogger.log(NeoLogger.SEVERITY_INFO, "Autocommit Store Created");
     	        return new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	    }
     	    else {
