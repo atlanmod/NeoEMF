@@ -34,8 +34,10 @@
         <!-- Global -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <build.tstamp>${maven.build.timestamp}</build.tstamp>
-        <source-target.version>1.7</source-target.version>
 
         <!-- Build plugins -->
 
@@ -346,10 +348,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${source-target.version}</source>
-                    <target>${source-target.version}</target>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -521,7 +519,6 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${maven-pmd-plugin.version}</version>
                 <configuration>
-                    <targetJdk>${source-target.version}</targetJdk>
                     <rulesets>
                         <ruleset>rulesets/java/basic.xml</ruleset>
                         <ruleset>rulesets/java/braces.xml</ruleset>

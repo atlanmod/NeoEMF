@@ -15,11 +15,6 @@
 
     <name>NeoEMF :: Graph :: Blueprints :: Neo4j Wrapper</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <manifest-location>META-INF</manifest-location>
-    </properties>
-
     <dependencies>
 <!--
         <dependency>
@@ -128,13 +123,12 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
                 <version>${maven-bundle-plugin.version}</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <manifestLocation>${manifest-location}</manifestLocation>
                     <instructions>
                         <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>.,{maven-dependencies}<!--,target/classes--></Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources,
                             fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config,
@@ -145,7 +139,7 @@
                             com.tinkerpop.blueprints.impls.neo4j,
                             org.neo4j.*;-split-package:=first
                         </Export-Package>
-                        <Import-Package></Import-Package>
+                        <Import-Package/>
                         <Embed-Dependency>
                             geronimo-jta_1.1_spec,
                             concurrentlinkedhashmap-lru,
