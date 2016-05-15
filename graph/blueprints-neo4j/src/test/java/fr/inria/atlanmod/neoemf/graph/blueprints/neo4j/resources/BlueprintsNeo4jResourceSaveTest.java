@@ -40,7 +40,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     private static final int DEFAULT_PROPERTY_COUNT = 3;
 
     @Override
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         this.testFilePath = TEST_FILENAME;
@@ -48,7 +47,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceNeo4jTypeOption() throws IOException, ConfigurationException {
         options.clear();
@@ -70,7 +68,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
         assertThat("The number of properties in the configuration file is not consistent with the given options", getKeyCount(configuration), equalTo(DEFAULT_PROPERTY_COUNT));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceNoneCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.NONE);
@@ -92,7 +89,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceWeakCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.WEAK);
@@ -114,7 +110,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceSoftCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT);
@@ -136,7 +131,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link  #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceStrongCacheTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.STRONG);
@@ -158,7 +152,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceTrueUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.TRUE);
@@ -180,7 +173,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceTrueBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, true);
@@ -202,7 +194,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceFalseUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFER.FALSE);
@@ -224,7 +215,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceFalseBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS, false);
@@ -247,7 +237,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourcePositiveStringsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY, "64M");
@@ -271,7 +260,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeStringsMappedMemoryOption() throws IOException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY, "-64M");
@@ -286,7 +274,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceNullStringsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY, "0M");
@@ -310,7 +297,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourcePositiveArraysMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY, "64M");
@@ -334,7 +320,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeArraysMappedMemoryOption() throws IOException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY, "-64M");
@@ -350,7 +335,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceNullArraysMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY, "0M");
@@ -373,7 +357,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourcePositiveNodesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY, "64M");
@@ -396,7 +379,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeNodesMappedMemoryOption() throws IOException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY, "-64");
@@ -411,7 +393,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceNullNodesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY, "0M");
@@ -434,7 +415,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourcePositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY, "64M");
@@ -457,7 +437,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativePropertiesMappedMemoryOption() throws IOException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY, "-64M");
@@ -472,7 +451,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceNullPropertiesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY, "0M");
@@ -495,7 +473,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourcePositiveRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY, "64M");
@@ -518,7 +495,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeRelationshipsMappedMemoryOption() throws IOException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY, "-64M");
@@ -533,7 +509,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceNullRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY, "0M");
@@ -556,7 +531,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryPositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY, "64M");
@@ -583,7 +557,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryNegativePropertiesMappedMemoryOption() throws IOException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY, "64M");
@@ -607,7 +580,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphNeo4jResourceAllOptionsValid() throws IOException, ConfigurationException {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE, BlueprintsNeo4jResourceOptions.CACHE_TYPE.SOFT);

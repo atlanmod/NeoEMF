@@ -113,7 +113,6 @@ public class EMapSupportTest extends AllBackendTest {
         putMapKV(tinkerResource);
     }
 
-    @SuppressWarnings("unchecked")
     private void getMapStringStringEmpty(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         assertThat("Map field is not an instance of EMap", model.getMap(), instanceOf(EMap.class));
@@ -122,7 +121,6 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat("EMap is not empty", map, empty());
     }
 
-    @SuppressWarnings("unchecked")
     private void putMapStringString(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         EMap<String, String> map = model.getMap();
@@ -136,7 +134,6 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat("Wrong  value for " + KEY2, map.get(KEY2), is(VALUE2));
     }
 
-    @SuppressWarnings("unchecked")
     private void getMapKVEmpty(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         assertThat("KvMap field is not an instance of EMap", model.getKvMap(), instanceOf(EMap.class));
@@ -145,7 +142,6 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat("KvMap is not empty", map, empty());
     }
 
-    @SuppressWarnings("unchecked")
     private void putMapKV(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         EMap<K, V> map = model.getKvMap();

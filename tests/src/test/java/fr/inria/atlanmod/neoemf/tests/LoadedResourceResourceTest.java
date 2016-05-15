@@ -92,7 +92,7 @@ public class LoadedResourceResourceTest extends AllLoadedResourceTest {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
         assertThat("Wrong eResource value", model.eResource(), sameInstance((Resource) persistentResource));
 
-        SampleModelContentObject modelContent = (SampleModelContentObject) model.getContentObjects().get(0);
+        SampleModelContentObject modelContent = model.getContentObjects().get(0);
         assertThat("Wrong eResource value", modelContent.eResource(), sameInstance((Resource) persistentResource));
     }
 

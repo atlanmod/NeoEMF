@@ -55,15 +55,13 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
 
     protected AbstractPersistenceBackendFactory persistenceBackendFactory;
     protected File testFile;
-    @SuppressWarnings("rawtypes")
-    protected Map options;
+    protected Map<Object, Object> options;
     protected ResourceSet resSet;
     protected Resource resource;
 
-    @SuppressWarnings("rawtypes")
     @Before
     public void setUp() {
-        options = new HashMap();
+        options = new HashMap<>();
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
 
         PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
@@ -116,7 +114,6 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
         assertThat("Too much content in the .properties file", getKeyCount(configuration), equalTo(3));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
         options.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);

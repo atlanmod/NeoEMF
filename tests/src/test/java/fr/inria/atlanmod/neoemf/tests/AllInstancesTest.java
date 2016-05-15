@@ -60,7 +60,6 @@ public abstract class AllInstancesTest extends AllBackendTest {
      *
      * @param r the PersistentResource to fill with the created model
      */
-    @SuppressWarnings("unchecked")
     protected void createResourceContent(PersistentResource r) {
         Pack rootPack = factory.createPack();
         rootPack.setName("root");

@@ -50,11 +50,9 @@ public class AbstractPersistenceBackendFactoryTest extends AllCoreTest {
     private AbstractPersistenceBackendFactory persistenceBackendFactory = mock(AbstractPersistenceBackendFactory.class);
     private SearcheableResourceEStore mockPersistentEStore = mock(SearcheableResourceEStore.class);
     private PersistenceBackend mockPersistentBackend = mock(PersistenceBackend.class);
-    @SuppressWarnings("rawtypes")
-    private Map options = new HashMap();
+    private Map<Object, Object> options = new HashMap<>();
     private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws InvalidDataStoreException {
         when(persistenceBackendFactory.createPersistentBackend(any(File.class), any(Map.class))).thenReturn(mockPersistentBackend);

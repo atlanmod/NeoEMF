@@ -59,11 +59,9 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
     private AbstractPersistenceBackendFactory persistenceBackendFactory;
     private File testFolder;
     private File testFile;
-    @SuppressWarnings("rawtypes")
-    private Map options = new HashMap();
+    private Map<Object, Object> options = new HashMap<>();
     private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws IOException {
         persistenceBackendFactory = new MapPersistenceBackendFactory();

@@ -59,7 +59,6 @@ public class CopyBackendContentTest extends AllBackendTest {
         super.tearDown();
     }
 
-    @SuppressWarnings("unchecked")
     private void createResourceContent(PersistentResource r) {
         SampleModel model = factory.createSampleModel();
         model.setName(MODEL_NAME);
@@ -73,7 +72,6 @@ public class CopyBackendContentTest extends AllBackendTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testCopyBackendMapDB() throws IOException {
         mapResource.save(Collections.emptyMap());
         assertThat("Map resource content is empty", mapResource.getContents(), not(empty()));

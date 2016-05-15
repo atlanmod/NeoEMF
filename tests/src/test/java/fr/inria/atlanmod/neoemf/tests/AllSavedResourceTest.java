@@ -33,7 +33,6 @@ public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
 
     @Override
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         this.factory = MapSampleFactory.eINSTANCE;
         this.ePackage = MapSamplePackage.eINSTANCE;

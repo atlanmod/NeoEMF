@@ -56,11 +56,9 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
 
     protected AbstractPersistenceBackendFactory persistenceBackendFactory;
     protected File testFile;
-    @SuppressWarnings("rawtypes")
-    protected Map options = new HashMap();
+    protected Map<Object, Object> options = new HashMap<>();
     protected List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
