@@ -34,6 +34,7 @@
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Common dependencies -->
@@ -44,20 +45,15 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
--->
+
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
@@ -70,12 +66,10 @@
 
         <!-- Logging dependencies -->
 
-<!--
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
         </dependency>
--->
 
         <!-- EMF dependencies -->
 
@@ -112,25 +106,17 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>
-                            .,
-                            {maven-dependencies}
-                        </Bundle-ClassPath>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.map.resources,
-                            fr.inria.atlanmod.neoemf.map.datastore,
-                            fr.inria.atlanmod.neoemf.map.util
+                            fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>
-                        <Import-Package/>
-                        <Embed-Dependency>
-                            mapdb,
-                            jboss-common,
-                            commons-lang,
-                            commons-io,
-                            commons-collections,
-                            commons-configuration,
-                            commons-logging
-                        </Embed-Dependency>
+                        <_exportcontents>
+                            com.google.common.base,
+                            com.google.common.cache,
+                            com.google.common.collect,
+                            com.google.common.util.concurrent,
+
+                            org.mapdb
+                        </_exportcontents>
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.core
                         </Require-Bundle>

@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 
 import net.sf.cglib.proxy.Enhancer;
 
-import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 

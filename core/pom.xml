@@ -33,15 +33,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
-<!--
+
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
--->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>
@@ -54,7 +49,6 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -73,24 +67,6 @@
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-        </dependency>
--->
-<!--
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.codegen</artifactId>
-        </dependency>
--->
-<!--
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
-        </dependency>
--->
 
         <!-- Test dependencies -->
 
@@ -111,13 +87,7 @@
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>net.avh4.util</groupId>
-            <artifactId>imagecomparison</artifactId>
-            <scope>test</scope>
-        </dependency>
--->
+
     </dependencies>
 
     <build>
@@ -128,26 +98,23 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>
-                            .,
-                            {maven-dependencies}
-                        </Bundle-ClassPath>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
-                        <Import-Package/>
-                        <Embed-Dependency>
-                            cglib-nodep,
-                            log4j-api,
-                            log4j-core,
-                            commons-io,
-                            commons-lang,
-                            guava,
-                            commons-collections4
-                        </Embed-Dependency>
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <_exportcontents>
+                            org.apache.logging.log4j,
+                            org.apache.logging.log4j.util,
+                            org.apache.logging.log4j.message,
+                            org.apache.logging.log4j.spi,
+
+                            net.sf.cglib.proxy,
+                            net.sf.cglib.asm,
+                            net.sf.cglib.core,
+                            net.sf.cglib.transform,
+                            net.sf.cglib.core.internal,
+                        </_exportcontents>
                         <Require-Bundle>
-                            org.eclipse.emf.ecore;visibility:=reexport
+                            org.eclipse.emf.ecore
                         </Require-Bundle>
                     </instructions>
                 </configuration>

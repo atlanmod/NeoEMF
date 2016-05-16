@@ -37,15 +37,11 @@
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Common dependencies -->
-<!--
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
--->
+
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
@@ -57,23 +53,16 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
--->
 
         <!-- Logging dependencies -->
-<!--
+
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
         </dependency>
--->
 
         <!-- EMF dependencies -->
 
@@ -100,13 +89,6 @@
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>net.avh4.util</groupId>
-            <artifactId>imagecomparison</artifactId>
-            <scope>test</scope>
-        </dependency>
--->
     </dependencies>
 
     <build>
@@ -117,33 +99,27 @@
                 <configuration>
                     <instructions>
                         <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>
-                            .,
-                            {maven-dependencies}
-                        </Bundle-ClassPath>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.graph.blueprints.resources,
-                            fr.inria.atlanmod.neoemf.graph.blueprints.tg.config,
-                            fr.inria.atlanmod.neoemf.graph.blueprints.datastore,
-                            fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl,
-                            fr.inria.atlanmod.neoemf.graph.blueprints.util,
-                            org.apache.commons.configuration,
-                            com.tinkerpop.blueprints.*
+                            fr.inria.atlanmod.neoemf.graph.blueprints.*
                         </Export-Package>
-                        <Import-Package/>
-                        <Embed-Dependency>
-                            commons-io,
-                            commons-collections,
-                            commons-lang,
-                            commons-logging,
-                            commons-configuration,
-                            guava,
-                            blueprints-core,
-                            jboss-common-core
-                        </Embed-Dependency>
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <_exportcontents>
+                            com.tinkerpop.blueprints,
+                            com.tinkerpop.blueprints.util.wrappers,
+                            com.tinkerpop.blueprints.util.wrappers.id,
+
+                            org.apache.commons.configuration,
+                            org.apache.commons.configuration.beanutils,
+                            org.apache.commons.configuration.event,
+                            org.apache.commons.configuration.interpol,
+                            org.apache.commons.configuration.reloading,
+                            org.apache.commons.configuration.resolver,
+                            org.apache.commons.configuration.tree,
+                            org.apache.commons.lang.exception,
+                            org.apache.commons.lang.text,
+                            org.apache.commons.logging,
+                        </_exportcontents>
                         <Require-Bundle>
-                            fr.inria.atlanmod.neoemf.core;visibility:=reexport
+                            fr.inria.atlanmod.neoemf.core
                         </Require-Bundle>
                     </instructions>
                 </configuration>
