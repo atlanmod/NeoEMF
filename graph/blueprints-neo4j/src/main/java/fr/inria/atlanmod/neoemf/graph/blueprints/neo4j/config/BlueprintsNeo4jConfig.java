@@ -18,13 +18,15 @@ import org.apache.commons.configuration.Configuration;
 import java.io.File;
 
 public class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
+
+    private static final String BLUEPRINTS_NEO4J_DIRECTORY = "blueprints.neo4j.directory";
     
     public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsNeo4jConfig();
     
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
-        if(currentConfiguration.getString("blueprints.neo4j.directory") == null) {
-            currentConfiguration.addProperty("blueprints.neo4j.directory", dbLocation.getAbsolutePath());
+        if(currentConfiguration.getString(BLUEPRINTS_NEO4J_DIRECTORY) == null) {
+            currentConfiguration.addProperty(BLUEPRINTS_NEO4J_DIRECTORY, dbLocation.getAbsolutePath());
         }
     }
 

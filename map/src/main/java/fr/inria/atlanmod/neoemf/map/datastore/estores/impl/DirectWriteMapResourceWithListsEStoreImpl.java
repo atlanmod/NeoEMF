@@ -54,8 +54,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	protected static final String INSTANCE_OF = "neoInstanceOf";
 	protected static final String CONTAINER = "eContainer";
 
-	@SuppressWarnings("unchecked")
-	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap();
+	protected Map<Object, InternalPersistentEObject> loadedEObjects;
 	
 	protected DB db;
 	
@@ -69,7 +68,9 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	
 	protected LoadingCache<Tuple2<Id, String>, Object> mapCache;
 
+	@SuppressWarnings("unchecked")
 	public DirectWriteMapResourceWithListsEStoreImpl(Resource.Internal resource, DB db) {
+		this.loadedEObjects = new SoftValueHashMap();
 		this.db = db;
 		this.resource = resource;
 		this.map = db.getHashMap("NeoEMF");
@@ -102,11 +103,11 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	protected Object get(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
-		if (!eAttribute.isMany()) {
-			returnValue = parseMapValue(eAttribute, value);
-		} else {
+		if (eAttribute.isMany()) {
 			Object[] array = (Object[]) value;
 			returnValue = parseMapValue(eAttribute, array[index]);
+		} else {
+			returnValue = parseMapValue(eAttribute, value);
 		}
 		return returnValue;
 	}
@@ -114,12 +115,12 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	protected Object get(PersistentEObject object, EReference eReference, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eReference);
-		if (!eReference.isMany()) {
-			returnValue = eObject((Id) value);
-		} else {
+		if (eReference.isMany()) {
 			@SuppressWarnings("unchecked")
 			List<Object> list = (List<Object>) value;
 			returnValue = eObject((Id) list.get(index));
+		} else {
+			returnValue = eObject((Id) value);
 		}
 		return returnValue;
 	}
@@ -142,15 +143,15 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 
 	protected Object set(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
-		if (!eAttribute.isMany()) {
-			Object oldValue = map.put(new Tuple2<>(object.id(), eAttribute.getName()), serializeToMapValue(eAttribute, value));
-			returnValue = parseMapValue(eAttribute, oldValue);
-		} else {
+		if (eAttribute.isMany()) {
 			@SuppressWarnings("unchecked")
 			List<Object> list = (List<Object>) getFromMap(object, eAttribute);
-			Object oldValue = list.get(index); 
+			Object oldValue = list.get(index);
 			list.set(index, serializeToMapValue(eAttribute, value));
 			map.put(new Tuple2<>(object.id(), eAttribute.getName()), list.toArray());
+			returnValue = parseMapValue(eAttribute, oldValue);
+		} else {
+			Object oldValue = map.put(new Tuple2<>(object.id(), eAttribute.getName()), serializeToMapValue(eAttribute, value));
 			returnValue = parseMapValue(eAttribute, oldValue);
 		}
 		return returnValue;
@@ -160,15 +161,15 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		Object returnValue;
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
-		if (!eReference.isMany()) {
-			Object oldId = map.put(new Tuple2<>(object.id(), eReference.getName()), referencedObject.id());
-			returnValue = oldId != null ? eObject((Id) oldId) : null;
-		} else {
+		if (eReference.isMany()) {
 			@SuppressWarnings("unchecked")
 			List<Object> list = (List<Object>) getFromMap(object, eReference);
 			Object oldId = list.get(index);
 			list.set(index, referencedObject.id());
 			map.put(new Tuple2<>(object.id(), eReference.getName()), list.toArray());
+			returnValue = oldId != null ? eObject((Id) oldId) : null;
+		} else {
+			Object oldId = map.put(new Tuple2<>(object.id(), eReference.getName()), referencedObject.id());
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		}
 		return returnValue;
@@ -455,14 +456,14 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
 		Object returnValue = null;
-		if (!feature.isMany()) {
-			returnValue = map.get(new Tuple2<>(object.id(), feature.getName()));
-		} else {
+		if (feature.isMany()) {
 			try {
 				returnValue = mapCache.get(new Tuple2<>(object.id(), feature.getName()));
 			} catch (ExecutionException e) {
 				// Do nothing
 			}
+		} else {
+			returnValue = map.get(new Tuple2<>(object.id(), feature.getName()));
 		}
 		return returnValue;
 	}

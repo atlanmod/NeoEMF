@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.map.util;
 
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.AllMapTest;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 
@@ -56,7 +57,7 @@ public class NeoMapURITest extends AllMapTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
             }
         }
 

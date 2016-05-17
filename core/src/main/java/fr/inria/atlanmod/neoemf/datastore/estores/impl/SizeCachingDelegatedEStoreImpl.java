@@ -29,7 +29,6 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 	
 	protected Map<MapKey, Integer> sizeCache;
 	
-	
 	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		this(eStore, DEFAULT_SIZE_CACHE_SIZE);
 	}
@@ -57,7 +56,6 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 		if (size == null) {
 			size = super.size(object, feature); 
 			sizeCache.put(new MapKey(object, feature), size);
-		}  else {
 		}
 		return size;
 	}

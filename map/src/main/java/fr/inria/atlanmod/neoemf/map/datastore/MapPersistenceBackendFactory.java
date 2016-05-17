@@ -35,9 +35,10 @@ import org.mapdb.DBMaker;
 import org.mapdb.Engine;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,8 +65,12 @@ public class MapPersistenceBackendFactory extends
 			Map<?, ?> options) throws InvalidDataStoreException {
 	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
 	    if (!dbFile.getParentFile().exists()) {
-	        dbFile.getParentFile().mkdirs();
-	    }
+			try {
+				Files.createDirectories(dbFile.getParentFile().toPath());
+			} catch (IOException e) {
+				NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			}
+		}
 	    PropertiesConfiguration neoConfig;
 	    Path neoConfigPath = Paths.get(file.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
         try {
@@ -94,7 +99,7 @@ public class MapPersistenceBackendFactory extends
 		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
 		SearcheableResourceEStore returnValue;
 		@SuppressWarnings("unchecked")
-		List<PersistentResourceOptions.StoreOption> storeOptions = (ArrayList<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
         if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE)) {
             // Default store
 			returnValue = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);

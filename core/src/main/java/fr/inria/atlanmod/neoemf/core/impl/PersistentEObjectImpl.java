@@ -49,12 +49,13 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	 */
 	protected InternalEObject eContainer;
 
-	protected int eContainerFeatureID = UNSETTED_FEATURE_ID;
+	protected int eContainerFeatureID;
 
 	protected EStore eStore;
 
 	public PersistentEObjectImpl() {
 		this.id = new StringId(EcoreUtil.generateUUID());
+		this.eContainerFeatureID = UNSETTED_FEATURE_ID;
 	}
 
 
@@ -153,25 +154,25 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			// with the data stored in the old store
 			for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
 				if (oldStore.isSet(this, feature)) {
-					if (!feature.isMany()) {
-						if(oldStore.get(this, feature, EStore.NO_INDEX) == null) {
-						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + '.' + feature.getName() + ')');
-						    // Do nothing
-						}else{
-						eStore.set(this, feature, EStore.NO_INDEX, 
-								oldStore.get(this, feature, EStore.NO_INDEX));
-						}
-					} else {
+					if (feature.isMany()) {
 						eStore.clear(this, feature);
 						int size = oldStore.size(this, feature);
 						for (int i = 0; i < size; i++) {
-							if(oldStore.get(this,feature,i) == null) {
-							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + '.' + feature.getName() + ')');
+							if (oldStore.get(this, feature, i) == null) {
+								NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier) feature.eContainer()).getName() + '.' + feature.getName() + ')');
 								// Do nothing
-							}else{
-							eStore.add(this, feature, i, 
-									oldStore.get(this, feature, i));
+							} else {
+								eStore.add(this, feature, i,
+										oldStore.get(this, feature, i));
 							}
+						}
+					} else {
+						if (oldStore.get(this, feature, EStore.NO_INDEX) == null) {
+							NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier) feature.eContainer()).getName() + '.' + feature.getName() + ')');
+							// Do nothing
+						} else {
+							eStore.set(this, feature, EStore.NO_INDEX,
+									oldStore.get(this, feature, EStore.NO_INDEX));
 						}
 					}
 				}

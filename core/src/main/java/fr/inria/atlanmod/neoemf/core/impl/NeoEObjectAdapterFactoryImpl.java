@@ -33,19 +33,18 @@ public class NeoEObjectAdapterFactoryImpl {
 	 * {@link WeakHashMap} since the adaptor is no longer needed when the
 	 * original {@link EObject} has been garbage collected
 	 */
-	private static final Map<InternalEObject, InternalPersistentEObject> ADAPTED_OBJECTS = new WeakHashMap<>();
+	protected static final Map<InternalEObject, InternalPersistentEObject> ADAPTED_OBJECTS = new WeakHashMap<>();
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		T returnValue = null;
 		if (adapterType.isInstance(adaptableObject)) {
-			returnValue = (T) adaptableObject;
+			returnValue = adapterType.cast(adaptableObject);
 		} else if (adapterType.isAssignableFrom(InternalPersistentEObject.class) 
 				&& adaptableObject instanceof InternalEObject) {
 
 			EObject eObjectAdapter = ADAPTED_OBJECTS.get(adaptableObject);
 			if (eObjectAdapter != null && adapterType.isAssignableFrom(eObjectAdapter.getClass())) {
-				returnValue = (T) eObjectAdapter;
+				returnValue = adapterType.cast(eObjectAdapter);
 			} else {
 				// Compute the interfaces that the proxy has to implement
 				// These are the current interfaces + PersistentEObject
@@ -55,11 +54,10 @@ public class NeoEObjectAdapterFactoryImpl {
 				Enhancer enhancer = new Enhancer();
 				enhancer.setClassLoader(adaptableObject.getClass().getClassLoader());
 				enhancer.setSuperclass(adaptableObject.getClass());
-				enhancer.setInterfaces(interfaces.toArray(new Class[] {}));
+				enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
 				enhancer.setCallback(new NeoEObjectProxyHandlerImpl((InternalEObject) adaptableObject));
-				T adapter = (T) enhancer.create();
-				ADAPTED_OBJECTS.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  adapter);
-				returnValue = adapter;
+				returnValue = adapterType.cast(enhancer.create());
+				ADAPTED_OBJECTS.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  returnValue);
 			}
 		}
 		return returnValue;

@@ -24,6 +24,7 @@ public interface PersistenceBackend {
 	 * @param options
 	 * @throws InvalidDataStoreException
 	 */
+	//TODO InvalidDataStoreException is never thrown in method implementations
 	void start(Map<?, ?> options) throws InvalidDataStoreException;
 	
 	/**

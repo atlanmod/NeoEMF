@@ -67,10 +67,10 @@ public class AllInstancesTransientTest extends AllInstancesTest {
     }
 
     private void allInstancesTransient(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, false, abstractPackContentCount, packContentCount);
+        allInstancesPersistentTranscient(persistentResource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
     private void allInstancesStrictTransient(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, true, abstractPackContentStrictCount, packContentStrictCount);
+        allInstancesPersistentTranscient(persistentResource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
 }

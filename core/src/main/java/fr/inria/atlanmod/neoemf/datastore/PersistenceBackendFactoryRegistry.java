@@ -18,7 +18,6 @@ public class PersistenceBackendFactoryRegistry {
 	
 	private static Map<String,AbstractPersistenceBackendFactory> factories = new HashMap<>();
 	
-	
 	public static Map<String,AbstractPersistenceBackendFactory> getFactories() {
 		return factories;
 	}

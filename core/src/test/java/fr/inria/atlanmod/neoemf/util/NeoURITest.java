@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.util;
 import fr.inria.atlanmod.neoemf.AllCoreTest;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -56,7 +57,7 @@ public class NeoURITest extends AllCoreTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
             }
         }
 

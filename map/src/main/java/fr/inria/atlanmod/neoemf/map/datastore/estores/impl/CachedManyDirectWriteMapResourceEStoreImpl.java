@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
@@ -60,7 +61,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 					sleep(20000);
 				} catch (InterruptedException e) {
 				}
-				System.err.println("Founds: " + founds + " / Not Founds: " + notFounds);
+				NeoLogger.log(NeoLogger.SEVERITY_INFO, "Founds: " + founds + " / Not Founds: " + notFounds);
 			}
 		}
 	}

@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.AllMapTest;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.AutocommitMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
@@ -36,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -63,11 +65,15 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
     private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         persistenceBackendFactory = new MapPersistenceBackendFactory();
         PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
         testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
-        testFolder.mkdirs();
+        try {
+            Files.createDirectories(testFolder.toPath());
+        } catch (IOException e) {
+            NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+        }
         testFile = new File(testFolder + "/db");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
     }
@@ -82,7 +88,7 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
             }
         }
 

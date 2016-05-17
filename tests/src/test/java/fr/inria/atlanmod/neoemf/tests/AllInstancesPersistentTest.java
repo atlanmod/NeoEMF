@@ -117,11 +117,11 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     }
 
     private void allInstancesPersistent(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, false, abstractPackContentCount, packContentCount);
+        allInstancesPersistentTranscient(persistentResource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
     private void allInstancesStrictPersistent(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, true, abstractPackContentStrictCount, packContentStrictCount);
+        allInstancesPersistentTranscient(persistentResource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
 
 }

@@ -11,11 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.resources;
 
-
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 
 import org.eclipse.emf.ecore.resource.Resource;
-
 
 public interface PersistentResourceFactory extends Resource.Factory {
 

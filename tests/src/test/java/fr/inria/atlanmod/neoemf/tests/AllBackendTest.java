@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
@@ -86,7 +87,7 @@ public abstract class AllBackendTest extends AllTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                    System.err.println(e.getMessage());
+                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
             }
         }
     }

@@ -36,7 +36,7 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	/**
 	 * Current number of modifications modulo {@link #opsBetweenCommits}
 	 */
-	protected int opCount = 0;
+	protected int opCount;
 
 	/**
 	 * Constructor for this {@link DB}-based {@link EStore}. Allows to
@@ -50,6 +50,7 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	public AutocommitMapResourceEStoreImpl(Resource.Internal resource, DB db, int opsBetweenCommits) {
 		super(resource, db);
 		this.opsBetweenCommits = opsBetweenCommits;
+		this.opCount = 0;
 	}
 
 	/**

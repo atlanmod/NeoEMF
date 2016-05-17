@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
-import org.apache.logging.log4j.Level;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -24,18 +23,13 @@ import java.util.Set;
 
 public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 
-    private Set<InternalEObject> loadedObjects = new HashSet<>();
+    protected Set<InternalEObject> loadedObjects;
 
-    public LoadedObjectCounterLoggingDelegatedEStoreImpl(
-            SearcheableResourceEStore eStore) {
+    public LoadedObjectCounterLoggingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
         super(eStore);
-        NeoLogger.log(Level.INFO, "Using LoadedObjectCounter logger");
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                NeoLogger.log(Level.INFO, MessageFormat.format("{0} objects loaded during the execution", loadedObjects.size()));
-            }
-        });
+        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Using LoadedObjectCounter logger");
+        this.loadedObjects = new HashSet<>();
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
     @Override
@@ -173,5 +167,12 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
 //  public EObject eObject(Id id) {
 //      return super.eObject(id);
 //  }
+
+    private class ShutdownHook extends Thread {
+        @Override
+        public void run() {
+            NeoLogger.log(NeoLogger.SEVERITY_INFO, MessageFormat.format("{0} objects loaded during the execution", loadedObjects.size()));
+        }
+    }
 
 }

@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.AllGraphTest;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -83,7 +84,7 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
             }
         }
 
@@ -91,7 +92,6 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
     }
 
     protected int getKeyCount(PropertiesConfiguration configuration) {
-        @SuppressWarnings("unchecked")
         Iterator<String> keyIterator = configuration.getKeys();
         int keyCount = 0;
         while (keyIterator.hasNext()) {

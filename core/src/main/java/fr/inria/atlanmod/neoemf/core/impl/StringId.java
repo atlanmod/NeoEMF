@@ -17,7 +17,7 @@ public class StringId implements Id {
 
 	private static final long serialVersionUID = 1L;
 	
-	String literalId;
+	protected String literalId;
 	
 	public StringId(String literalId) {
 		this.literalId = literalId;

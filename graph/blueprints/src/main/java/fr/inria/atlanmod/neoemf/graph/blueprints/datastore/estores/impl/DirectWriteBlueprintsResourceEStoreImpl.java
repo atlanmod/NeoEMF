@@ -70,10 +70,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected Object get(InternalEObject object, EAttribute eAttribute, int index) {
 		Object returnValue;
 		Vertex vertex = graph.getVertex(object);
-		if (!eAttribute.isMany()) {
-			Object property = vertex.getProperty(eAttribute.getName());
-			returnValue = parseProperty(eAttribute, property);
-		} else {
+		if (eAttribute.isMany()) {
 			Integer size = getSize(vertex, eAttribute);
 			if (index < 0 || index >= size) {
 				throw new IndexOutOfBoundsException();
@@ -81,6 +78,9 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 				Object property = vertex.getProperty(eAttribute.getName() + SEPARATOR + index);
 				returnValue = parseProperty(eAttribute, property);
 			}
+		} else {
+			Object property = vertex.getProperty(eAttribute.getName());
+			returnValue = parseProperty(eAttribute, property);
 		}
 		return returnValue;
 	}
@@ -88,13 +88,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected Object get(InternalEObject object, EReference eReference, int index) {
 		Object returnValue = null;
 		Vertex vertex = graph.getVertex(object);
-		if (!eReference.isMany()) {
-			Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, eReference.getName()).iterator();
-			if (iterator.hasNext()) {
-				Vertex referencedVertex = iterator.next();
-				returnValue = reifyVertex(referencedVertex);
-			}
-		} else {
+		if (eReference.isMany()) {
 			Integer size = getSize(vertex, eReference);
 			if (index < 0 || index >= size) {
 				throw new IndexOutOfBoundsException();
@@ -104,6 +98,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 					Vertex referencedVertex = iterator.next();
 					returnValue = reifyVertex(referencedVertex);
 				}
+			}
+		} else {
+			Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, eReference.getName()).iterator();
+			if (iterator.hasNext()) {
+				Vertex referencedVertex = iterator.next();
+				returnValue = reifyVertex(referencedVertex);
 			}
 		}
 		return returnValue;
@@ -130,11 +130,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected Object set(InternalEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		Vertex vertex = graph.getOrCreateVertex(object);
-		if (!eAttribute.isMany()) {
-			Object property = vertex.getProperty(eAttribute.getName());
-			returnValue = parseProperty(eAttribute, property);
-			vertex.setProperty(eAttribute.getName(), serializeToProperty(eAttribute, value));
-		} else {
+		if (eAttribute.isMany()) {
 			Integer size = getSize(vertex, eAttribute);
 			if (index < 0 || index >= size) {
 				throw new IndexOutOfBoundsException();
@@ -143,6 +139,10 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 				returnValue = vertex.getProperty(propertyName);
 				vertex.setProperty(propertyName, serializeToProperty(eAttribute, value));
 			}
+		} else {
+			Object property = vertex.getProperty(eAttribute.getName());
+			returnValue = parseProperty(eAttribute, property);
+			vertex.setProperty(eAttribute.getName(), serializeToProperty(eAttribute, value));
 		}
 		return returnValue;
 	}
@@ -156,17 +156,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		if (eReference.isContainment()) {
 			updateContainment(eReference, vertex, newReferencedVertex);
 		}
-		
-		if (!eReference.isMany()) {
-			Iterator<Edge> iterator = vertex.getEdges(Direction.OUT, eReference.getName()).iterator();
-			if (iterator.hasNext()) {
-				Edge edge = iterator.next();
-				Vertex referencedVertex = edge.getVertex(Direction.IN);
-				returnValue = reifyVertex(referencedVertex);
-				edge.remove();
-			}
-			vertex.addEdge(eReference.getName(), newReferencedVertex);
-		} else {
+
+		if (eReference.isMany()) {
 			Integer size = getSize(vertex, eReference);
 			if (index < 0 || index >= size) {
 				throw new IndexOutOfBoundsException();
@@ -181,6 +172,15 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 				Edge edge = vertex.addEdge(eReference.getName(), newReferencedVertex);
 				edge.setProperty(POSITION, index);
 			}
+		} else {
+			Iterator<Edge> iterator = vertex.getEdges(Direction.OUT, eReference.getName()).iterator();
+			if (iterator.hasNext()) {
+				Edge edge = iterator.next();
+				Vertex referencedVertex = edge.getVertex(Direction.IN);
+				returnValue = reifyVertex(referencedVertex);
+				edge.remove();
+			}
+			vertex.addEdge(eReference.getName(), newReferencedVertex);
 		}
 		return returnValue;
 	}
@@ -231,29 +231,29 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	protected void unset(InternalEObject object, EAttribute eAttribute) {
 		Vertex vertex = graph.getVertex(object);
-		if (!eAttribute.isMany()) {
-			vertex.removeProperty(eAttribute.getName());
-		} else {
+		if (eAttribute.isMany()) {
 			Integer size = vertex.getProperty(eAttribute.getName() + SEPARATOR + SIZE_LITERAL);
 			for (int i = 0; i < size; i++) {
 				vertex.removeProperty(eAttribute.getName() + SEPARATOR + i);
 			}
 			vertex.removeProperty(eAttribute.getName() + SEPARATOR + SIZE_LITERAL);
+		} else {
+			vertex.removeProperty(eAttribute.getName());
 		}
 	}
 
 	protected void unset(InternalEObject object, EReference eReference) {
 		Vertex vertex = graph.getVertex(object);
-		if (!eReference.isMany()) {
-			Iterator<Edge> iterator = vertex.getEdges(Direction.OUT, eReference.getName()).iterator();
-			if (iterator.hasNext()) {
-				iterator.next().remove();
-			}
-		} else {
+		if (eReference.isMany()) {
 			for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges()) {
 				edge.remove();
 			}
 			vertex.removeProperty(eReference.getName() + SEPARATOR + SIZE_LITERAL);
+		} else {
+			Iterator<Edge> iterator = vertex.getEdges(Direction.OUT, eReference.getName()).iterator();
+			if (iterator.hasNext()) {
+				iterator.next().remove();
+			}
 		}
 	}
 

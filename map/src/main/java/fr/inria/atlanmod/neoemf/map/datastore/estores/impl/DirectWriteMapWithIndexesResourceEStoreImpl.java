@@ -50,8 +50,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 	protected static final String INSTANCE_OF = "neoInstanceOf";
 	protected static final String CONTAINER = "eContainer";
 
-	@SuppressWarnings("unchecked")
-	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap();
+	protected Map<Object, InternalPersistentEObject> loadedEObjects;
 	
 	protected DB db;
 	
@@ -64,7 +63,9 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 	
 	protected Resource.Internal resource;
 
+	@SuppressWarnings("unchecked")
 	public DirectWriteMapWithIndexesResourceEStoreImpl(Resource.Internal resource, DB db) {
+		this.loadedEObjects = new SoftValueHashMap();
 		this.db = db;
 		this.resource = resource;
 		this.map = db.getHashMap("NeoEMF");

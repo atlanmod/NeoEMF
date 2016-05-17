@@ -30,8 +30,13 @@ import java.util.Map;
  */
 public class TransientEStoreImpl implements InternalEObject.EStore {
 
-	protected Map<EStoreEntryKey, Object> singleMap = new HashMap<>();
-	protected Map<EStoreEntryKey, List<Object>> manyMap = new HashMap<>();
+	protected Map<EStoreEntryKey, Object> singleMap;
+	protected Map<EStoreEntryKey, List<Object>> manyMap;
+
+	public TransientEStoreImpl() {
+		singleMap = new HashMap<>();
+		manyMap = new HashMap<>();
+	}
 
 	@Override
 	public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {

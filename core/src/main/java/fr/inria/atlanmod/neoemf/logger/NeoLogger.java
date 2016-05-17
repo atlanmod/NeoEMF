@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 public class NeoLogger {
 
 	public static final Level SEVERITY_ERROR = Level.ERROR;
-	public static final Level SEVERITY_INFO= Level.INFO;
+	public static final Level SEVERITY_INFO = Level.INFO;
 	public static final Level SEVERITY_WARNING = Level.WARN;
 	public static final Level SEVERITY_DEBUG = Level.DEBUG;
 	

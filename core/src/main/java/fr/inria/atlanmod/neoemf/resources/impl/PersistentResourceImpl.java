@@ -58,7 +58,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	protected static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
 
-	protected final DummyRootEObject DUMMY_ROOT_EOBJECT = new DummyRootEObject(this);
+	protected final DummyRootEObject DUMMY_ROOT_EOBJECT;
 
 	protected Map<?, ?> options;
 
@@ -69,24 +69,16 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 */
 	protected PersistenceBackend persistenceBackend;
 	
-	protected boolean isPersistent = false;
+	protected boolean isPersistent;
 
 	public PersistentResourceImpl(URI uri) {
 		super(uri);
+		this.DUMMY_ROOT_EOBJECT = new DummyRootEObject(this);
 		this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
 		this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
 		this.isPersistent = false;
 		// Stop the backend when the application is terminated
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-			    if(persistenceBackend.isStarted()) {
-			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing backend of resource " + PersistentResourceImpl.this.uri);
-					persistenceBackend.stop();
-			        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend of resource " + PersistentResourceImpl.this.uri + " closed");
-			    }
-			}
-		});
+		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 		NeoLogger.log(NeoLogger.SEVERITY_INFO, "Persistent Resource Created");
 	}
 	
@@ -104,12 +96,12 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		if (!isLoaded) {
 			try {
 				isLoading = true;
-				if (!getFile().exists()) {
-					throw new FileNotFoundException(uri.toFileString());
-				} else {
+				if (getFile().exists()) {
 					this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
 					this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
 					this.isPersistent = true;
+				} else {
+					throw new FileNotFoundException(uri.toFileString());
 				}
 				this.options = options;
 				isLoaded = true;
@@ -126,13 +118,11 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		if (this.options != null) {
 			// Check that the save options do not collide with previous load options
 			for (Entry<?, ?> entry : options.entrySet()) {
-				Object key = entry.getKey();
-				Object value = entry.getValue();
-				if (this.options.containsKey(key)
-						&& value != null
-						&& !value.equals(this.options.get(key)))
+				if (this.options.containsKey(entry.getKey())
+						&& entry.getValue() != null
+						&& !entry.getValue().equals(this.options.get(entry.getKey())))
 				{
-					throw new IOException(new InvalidOptionsException(MessageFormat.format("key = {0}; value = {1}", key.toString(), value.toString())));
+					throw new IOException(new InvalidOptionsException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString())));
 				}
 			}
 		}
@@ -150,6 +140,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	
 	@Override
+	// FIXME return of instance of non-static inner class 'ResourceContentsEStoreEList'
 	public EList<EObject> getContents() {
 		return new ResourceContentsEStoreEList<>(DUMMY_ROOT_EOBJECT, ROOT_CONTENTS_ESTRUCTURALFEATURE, eStore());
 	}
@@ -163,14 +154,14 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	@Override
 	public String getURIFragment(EObject eObject) {
 		String returnValue = super.getURIFragment(eObject);
-		if (eObject.eResource() != this) {
-			returnValue = "/-1";
-		} else {
+		if (eObject.eResource() == this) {
 			// Try to adapt as a PersistentEObject and return the ID
 			PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
 			if (persistentEObject != null) {
 				returnValue = persistentEObject.id().toString();
 			}
+		} else {
+			returnValue = "/-1";
 		}
 		return returnValue;
 	}
@@ -268,7 +259,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 *
 	 */
 	protected static final class DummyRootEObject extends PersistentEObjectImpl {
-		protected static final String ROOT_EOBJECT_ID = "ROOT";
+		private static final String ROOT_EOBJECT_ID = "ROOT";
 
 		public DummyRootEObject(Resource.Internal resource) {
 			super();
@@ -369,7 +360,6 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			super.delegateAdd(index, object);
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		protected E delegateRemove(int index) {
 			E object = super.delegateRemove(index);
@@ -433,5 +423,16 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 				setModified(true);
 			}
 		}
+	}
+
+	private class ShutdownHook extends Thread {
+		@Override
+        public void run() {
+            if(persistenceBackend.isStarted()) {
+                NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing backend of resource " + uri);
+                persistenceBackend.stop();
+                NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend of resource " + uri + " closed");
+            }
+        }
 	}
 }

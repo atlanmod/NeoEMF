@@ -17,15 +17,18 @@ import java.io.File;
 
 public class BlueprintsTgConfig extends AbstractBlueprintsConfig {
 
+    private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
+    private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";
+
     public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsTgConfig();
     
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
-        if(currentConfiguration.getString("blueprints.tg.directory") == null) {
-            currentConfiguration.addProperty("blueprints.tg.directory", dbLocation.getAbsolutePath());
+        if(currentConfiguration.getString(BLUEPRINTS_TG_DIRECTORY) == null) {
+            currentConfiguration.addProperty(BLUEPRINTS_TG_DIRECTORY, dbLocation.getAbsolutePath());
         }
-        if(currentConfiguration.getString("blueprints.tg.file-type") == null) {
-            currentConfiguration.addProperty("blueprints.tg.file-type", "GRAPHML");
+        if(currentConfiguration.getString(BLUEPRINTS_TG_FILE_TYPE) == null) {
+            currentConfiguration.addProperty(BLUEPRINTS_TG_FILE_TYPE, "GRAPHML");
         }
     }
     

@@ -29,15 +29,16 @@ import static org.junit.Assert.assertThat;
 
 public abstract class AllInstancesTest extends AllBackendTest {
 
-    protected MapSampleFactory factory;
     // These variables should be updated if createResourceContent is changed
-    protected int packCount = 6;
-    protected int abstractPackContentCount = 150;
-    protected int packContentCount = 100;
-    protected int specializedPackContentCount = 50;
-    protected int packContent2Count = 50;
-    protected int abstractPackContentStrictCount = 0;
-    protected int packContentStrictCount = 50;
+    protected static final int PACK_COUNT = 6;
+    protected static final int ABSTRACT_PACK_CONTENT_COUNT = 150;
+    protected static final int PACK_CONTENT_COUNT = 100;
+    protected static final int SPECIALIZED_PACK_CONTENT_COUNT = 50;
+    protected static final int PACK_CONTENT_2_COUNT = 50;
+    protected static final int ABSTRACT_PACK_CONTENT_STRICT_COUNT = 0;
+    protected static final int PACK_CONTENT_STRICT_COUNT = 50;
+
+    protected MapSampleFactory factory;
 
 
     @Override
@@ -84,7 +85,7 @@ public abstract class AllInstancesTest extends AllBackendTest {
 
     protected void allInstancesPersistentTranscient(PersistentResource persistentResource, boolean strict, int abstractPackContentCount, int packContentCount) {
         EList<EObject> allPacks = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
-        assertThat("Invalid count", allPacks.size(), equalTo(packCount));
+        assertThat("Invalid count", allPacks.size(), equalTo(PACK_COUNT));
 
         EList<EObject> allAbstractPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
         assertThat("Invalid count", allAbstractPackContents.size(), equalTo(abstractPackContentCount));
@@ -93,10 +94,10 @@ public abstract class AllInstancesTest extends AllBackendTest {
         assertThat("Invalid count", allPackContents.size(), equalTo(packContentCount));
 
         EList<EObject> allSpecializedPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
-        assertThat("Invalid count", allSpecializedPackContents.size(), equalTo(specializedPackContentCount));
+        assertThat("Invalid count", allSpecializedPackContents.size(), equalTo(SPECIALIZED_PACK_CONTENT_COUNT));
 
         EList<EObject> allPackContents2 = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
-        assertThat("Invalid count", allPackContents2.size(), equalTo(packContent2Count));
+        assertThat("Invalid count", allPackContents2.size(), equalTo(PACK_CONTENT_2_COUNT));
     }
 
 }

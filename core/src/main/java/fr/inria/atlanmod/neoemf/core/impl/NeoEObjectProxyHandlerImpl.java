@@ -27,6 +27,10 @@ public class NeoEObjectProxyHandlerImpl implements MethodInterceptor {
 		this.internalEObject = internalEObject;
 	}
 
+	public InternalEObject getInternalEObject() {
+		return internalEObject;
+	}
+
 	
 	@Override
 	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {

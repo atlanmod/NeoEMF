@@ -31,8 +31,13 @@ import java.util.Map;
  */
 public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {
 
-	protected Map<EStoreEntryKey, Object> singleMap = Collections.synchronizedMap(new HashMap<EStoreEntryKey, Object>());
-	protected Map<EStoreEntryKey, List<Object>> manyMap = Collections.synchronizedMap(new HashMap<EStoreEntryKey, List<Object>>());
+	protected Map<EStoreEntryKey, Object> singleMap;
+	protected Map<EStoreEntryKey, List<Object>> manyMap;
+
+	public SynchronizedTransientEStoreImpl() {
+		singleMap = Collections.synchronizedMap(new HashMap<EStoreEntryKey, Object>());
+		manyMap = Collections.synchronizedMap(new HashMap<EStoreEntryKey, List<Object>>());
+	}
 
 	@Override
 	public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {

@@ -60,53 +60,50 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		super.add(object, feature, index, value);
 		cache.put(new MapKey(object, feature, index), value);
-		int size = size(object, feature);
-		for (int i = index + 1; i < size; i++) {
-			cache.remove(new MapKey(object, feature, i));
-		}
+		removeFrom(index + 1, object, feature);
 	}
 	
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		int size = size(object, feature);
 		Object returnValue = super.remove(object, feature, index);
-		for (int i = index; i < size; i++) {
-			cache.remove(new MapKey(object, feature, i));
-		}
+		removeFrom(index, object, feature);
 		return returnValue;
 	}
 	
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		int size = size(object, feature);
 		super.clear(object, feature);
-		for (int i = 0; i < size; i++) {
-			cache.remove(new MapKey(object, feature, i));
-		}
+		removeFrom(0, object, feature);
 	}
 	
 	@Override
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
 		Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
-		int size = size(object, feature);
-		for (int i = Math.min(sourceIndex, targetIndex); i < size; i++) {
-			cache.remove(new MapKey(object, feature, i));
-		}
+		removeFrom(Math.min(sourceIndex, targetIndex), object, feature);
 		cache.put(new MapKey(object, feature, targetIndex), returnValue);
 		return returnValue;
 	}
 	
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		if (!feature.isMany()) {
-			cache.remove(new MapKey(object, feature, EStore.NO_INDEX));
-			super.unset(object, feature);
+		if (feature.isMany()) {
+			removeFrom(0, object, feature);
 		} else {
-			int size = size(object, feature);
-			for (int i = 0; i < size; i++) {
-				cache.remove(new MapKey(object, feature, i));
-			}
-			super.unset(object, feature);
+			cache.remove(new MapKey(object, feature, EStore.NO_INDEX));
+		}
+		super.unset(object, feature);
+	}
+
+	/**
+	 * Remove cached elements, from a initial position to the size of an element.
+	 * @param start
+	 * @param object
+	 * @param feature
+     */
+	// FIXME object allocation inside loop is a great place to look for memory leaks and performance issues
+	private void removeFrom(int start, InternalEObject object, EStructuralFeature feature) {
+		for (int i = start; i < size(object, feature); i++) {
+			cache.remove(new MapKey(object, feature, i));
 		}
 	}
 

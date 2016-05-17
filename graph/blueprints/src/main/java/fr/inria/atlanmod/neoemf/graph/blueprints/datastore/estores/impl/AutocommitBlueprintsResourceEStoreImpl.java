@@ -36,7 +36,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	/**
 	 * Current number of modifications modulo {@link #opsBetweenCommits}
 	 */
-	protected int opCount = 0;
+	protected int opCount;
 
 	/**
 	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link EStore}. Allows to
@@ -50,6 +50,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	public AutocommitBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph, int opsBetweenCommits) {
 		super(resource, graph);
 		this.opsBetweenCommits = opsBetweenCommits;
+		this.opCount = 0;
 	}
 
 	/**

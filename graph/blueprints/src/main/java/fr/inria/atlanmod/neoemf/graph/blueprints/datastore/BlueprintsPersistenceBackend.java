@@ -53,13 +53,13 @@ import java.util.Set;
 
 public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 	
-	private Index<Vertex> metaclassIndex;
-	private boolean isStarted = true;
-	
 	protected static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
 	protected static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
 
 	protected static final String INSTANCE_OF = "kyanosInstanceOf";
+
+	private Index<Vertex> metaclassIndex;
+	private boolean isStarted;
 
 	/**
 	 * This {@link Map}&lt;objectID, {@link EObject}> is necessary to maintain a
@@ -75,10 +75,11 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
-		metaclassIndex = getIndex("metaclasses", Vertex.class);
+		this.metaclassIndex = getIndex("metaclasses", Vertex.class);
 		if(metaclassIndex == null) {
 			metaclassIndex = createIndex("metaclasses",Vertex.class);
 		}
+		this.isStarted = true;
 	}
 	
 	@Override
@@ -201,11 +202,13 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 
     @Override
+	// FIXME return of instance of non-static inner class 'NeoEdge'
 	public Edge addEdge(final Object id, final Vertex outVertex, final Vertex inVertex, final String label) {
         return new NeoEdge(getBaseGraph().addEdge(id, ((IdVertex) outVertex).getBaseVertex(), ((IdVertex) inVertex).getBaseVertex(), label));
     }
 
     @Override
+	// FIXME return of instance of non-static inner class 'NeoEdge'
 	public Edge getEdge(final Object id) {
         final Edge edge = getBaseGraph().getEdge(id);
 		return null != edge ? new NeoEdge(edge) : null;
@@ -252,6 +255,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
 						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
 			}
+			// FIXME synchronization on a non-final field
 			synchronized(loadedEObjects) {
 				loadedEObjects.put(id, neoEObject);
 			}
@@ -295,6 +299,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
 						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
 			}
+			// FIXME synchronization on a non-final field
 			synchronized(loadedEObjects) {
 				loadedEObjects.put(id, neoEObject);
 			}
