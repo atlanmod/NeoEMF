@@ -41,6 +41,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	
 	protected Resource.Internal resource;
 	
+	protected boolean isMapped;
+	
 	/**
 	 * The internal cached value of the eContainer. This information should be
 	 * also maintained in the underlying {@link EStore}
@@ -53,6 +55,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 
 	public PersistentEObjectImpl() {
 		this.id = new StringId(EcoreUtil.generateUUID());
+		isMapped = false;
 	}
 	
 
@@ -64,6 +67,16 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	public void id(Id id) {
 		this.id = id;
+	}
+	
+	@Override
+	public boolean isMapped() {
+	    return isMapped;
+	};
+	
+	@Override
+	public void setMapped(boolean mapped) {
+	    this.isMapped = mapped;
 	}
 	
 	/**
@@ -137,8 +150,15 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		return resource;
 	}
 	
+	public static int numberOfNewStoreFeatureSet = 0;
+	public static int numberOfNewStoreEObject = 0;
+	
+	public static int numberOfManyFeatureSet = 0;
+	public static int numberOfSingleFeatureSet = 0;
+	
 	@Override
 	public void resource(Internal resource) {
+	    boolean updated = false;
 		this.resource = resource;
 		EStore oldStore = eStore;
 		// Set the new EStore
@@ -168,6 +188,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 									}
 								}
 							}
+							numberOfNewStoreFeatureSet++;
+							numberOfSingleFeatureSet++;
+							updated = true;
 							eStore.set(this, feature, EStore.NO_INDEX, v);
 						}
 					} else {
@@ -188,6 +211,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 										}
 									}
 								}
+								numberOfNewStoreFeatureSet++;
+								numberOfManyFeatureSet++;
+								updated = true;
 								eStore.add(this, feature, i, v);
 							}
 						}
@@ -195,6 +221,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				}
 			}
 		}
+		if(updated) numberOfNewStoreEObject++;
 	}
 	
 	@Override
@@ -283,7 +310,13 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		        return new EStoreEcoreEMap();
 		    }
 		    else {
-		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
+		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this,feature) {
+		            @Override
+		            public boolean contains(Object object) {
+		                return delegateContains(object);
+		            };
+		        };
+//		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
 		    }
 		} else {
 			return eStore().get(this, feature, EStore.NO_INDEX);

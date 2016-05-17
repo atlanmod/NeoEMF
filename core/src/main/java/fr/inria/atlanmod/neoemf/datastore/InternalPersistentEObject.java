@@ -22,6 +22,10 @@ public interface InternalPersistentEObject extends PersistentEObject,
 
 	public void id(Id id);
 	
+	public boolean isMapped();
+	
+	public void setMapped(boolean mapped);
+	
 	public Resource.Internal resource();
 	
 	public void resource(Resource.Internal resource);

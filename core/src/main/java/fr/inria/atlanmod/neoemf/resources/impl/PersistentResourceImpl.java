@@ -143,6 +143,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 				this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
 				this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
 				this.isPersistent = true;
+				this.DUMMY_ROOT_EOBJECT.setMapped(true);
 			}
 			this.options = options;
 			isLoaded = true;

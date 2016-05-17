@@ -92,6 +92,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * is removed from the {@link Map}.
 	 */
 	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<Object, InternalPersistentEObject>();
+	protected Map<Object, Vertex> loadedVertices = new SoftValueHashMap<Object, Vertex>();
 	protected List<EClass> indexedEClasses = new ArrayList<EClass>();
 	
 	public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
@@ -175,10 +176,22 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getVertex(EObject eObject) {
-		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
-		return getVertex(neoEObject.id().toString());
+		InternalPersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+		if(neoEObject.isMapped()) {
+    		Vertex vertex = loadedVertices.get(neoEObject.id());
+    		if(vertex == null) {
+    		    return getVertex(neoEObject.id().toString());
+    		}
+    		else {
+    		    return vertex;
+    		}
+	    }
+		else {
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Trying to access a non-mapped PersistentEObject");
+		    return null;
+		}
 	}
-
+	
 	/**
 	 * Return the vertex corresponding to the provided {@link EObject}. If no
 	 * vertex corresponds to that {@link EObject}, then the corresponding
@@ -191,8 +204,15 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
 		InternalPersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
-		Vertex vertex = getVertex(neoEObject.id().toString());
-		if (vertex == null) {
+		Vertex vertex = null;
+		if(neoEObject.isMapped()) {
+    		vertex = loadedVertices.get(neoEObject.id());
+    		if(vertex == null) {
+    		    vertex = getVertex(neoEObject.id().toString());
+    		    loadedVertices.put(neoEObject.id(), vertex);
+    		}
+    	}
+		else {
 			vertex = addVertex(neoEObject);
 			EClass eClass = neoEObject.eClass();
 			Iterator<Vertex> metaclassIndexHits = metaclassIndex.get("name", eClass.getName()).iterator();
@@ -206,7 +226,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				indexedEClasses.add(eClass);
 			}
 			vertex.addEdge(INSTANCE_OF, eClassVertex);
+			neoEObject.setMapped(true);
 			loadedEObjects.put(neoEObject.id().toString(), neoEObject);
+			loadedVertices.put(neoEObject.id(), vertex);
 		}
 		return vertex;
 	}
@@ -239,8 +261,6 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
             return new NeoEdge(edge);
     }
     
-    
-
 	public EClass resolveInstanceOf(Vertex vertex) {
 		Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, INSTANCE_OF).iterator();
 		if (iterator.hasNext()) {
@@ -257,9 +277,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
 		Object id = vertex.getId();
 		InternalPersistentEObject neoEObject = null;
-//		synchronized(loadedEObjects) {
-			neoEObject = loadedEObjects.get(id);
-//		}
+		neoEObject = loadedEObjects.get(id);
 		if (neoEObject == null) {
 			if (eClass != null) {
 			    EObject eObject = null;
@@ -276,13 +294,12 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
 				}
 				neoEObject.id(new StringId(id.toString()));
+				neoEObject.setMapped(true);
 			} else {
 				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
 						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
 			}
-			synchronized(loadedEObjects) {
-				loadedEObjects.put(id, neoEObject);
-			}
+			loadedEObjects.put(id, neoEObject);
 		}
 		return neoEObject;
 	}
@@ -299,9 +316,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	public InternalPersistentEObject reifyVertex(Vertex vertex) {
 		Object id = vertex.getId();
 		InternalPersistentEObject neoEObject = null;
-//		synchronized(loadedEObjects) {
-			neoEObject = loadedEObjects.get(id);
-//		}
+		neoEObject = loadedEObjects.get(id);
 		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(vertex);
 			if (eClass != null) {
@@ -319,13 +334,12 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
 				}
 				neoEObject.id(new StringId(id.toString()));
+				neoEObject.setMapped(true);
 			} else {
 				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
 						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
 			}
-			synchronized(loadedEObjects) {
-				loadedEObjects.put(id, neoEObject);
-			}
+			loadedEObjects.put(id, neoEObject);
 		}
 		return neoEObject;
 	}
