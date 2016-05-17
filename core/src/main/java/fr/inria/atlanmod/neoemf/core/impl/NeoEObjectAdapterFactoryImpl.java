@@ -58,7 +58,11 @@ public class NeoEObjectAdapterFactoryImpl {
 				interfaces.add(InternalPersistentEObject.class);
 				// Create the proxy
 				Enhancer enhancer = new Enhancer();
-				enhancer.setClassLoader(adaptableObject.getClass().getClassLoader());
+				/*
+				 * Use the ClassLoader of the type, otherwise it will cause OSGI troubles (like project trying to
+				 * create an InternalPersistentEObject while it does not have a dependency to NeoEMF core)
+				 */
+				enhancer.setClassLoader(adapterType.getClassLoader());
 				enhancer.setSuperclass(adaptableObject.getClass());
 				enhancer.setInterfaces(interfaces.toArray(new Class[] {}));
 				enhancer.setCallback(new NeoEObjectProxyHandlerImpl((InternalEObject) adaptableObject));
