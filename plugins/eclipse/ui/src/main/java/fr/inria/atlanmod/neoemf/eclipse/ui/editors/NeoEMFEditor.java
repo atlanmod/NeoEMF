@@ -87,6 +87,7 @@ public class NeoEMFEditor extends EcoreEditor {
 	@Override
 	  public void createPages()
 	  {
+	    long begin = System.currentTimeMillis();
 	    createModel();
 	    // Only creates the other pages if there is something that can be edited
 	    //
@@ -150,6 +151,8 @@ public class NeoEMFEditor extends EcoreEditor {
 	           updateProblemIndication();
 	         }
 	       });
+	    long end = System.currentTimeMillis();
+	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "NeoEMF Editor Opened in " + (end-begin) + " ms");
 	  }
 	
 	@Override

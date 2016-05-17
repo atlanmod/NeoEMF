@@ -26,4 +26,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  target/classes/,
- lib/commons-configuration-1.6.jar
+ lib/log4j-api-2.2.jar,
+ lib/log4j-core-2.2.jar,
+ lib/commons-configuration-1.6.jar,
+ lib/commons-lang-2.6.jar
