@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprintsResourceEStoreImpl {
 
@@ -24,7 +25,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	 * Default number of allowed modifications (100000) between commits on the
 	 * underlying graph
 	 */
-	protected static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
+	public static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
 	/**
 	 * Number of allowed modifications between commits on the underlying graph
@@ -36,7 +37,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	 * Current number of modifications modulo {@link #OPS_BETWEEN_COMMITS}
 	 */
 	protected static int opCount = 0;
-
+	
 	/**
 	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link EStore}. Allows to
 	 * specify the number of allowed modification on the underlying graph before
@@ -49,6 +50,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	public AutocommitBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph, int opsBetweenCommits) {
 		super(resource, graph);
 		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
+	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Autocommit Store Created (chunk = " + opsBetweenCommits + ")");
 	}
 
 	/**

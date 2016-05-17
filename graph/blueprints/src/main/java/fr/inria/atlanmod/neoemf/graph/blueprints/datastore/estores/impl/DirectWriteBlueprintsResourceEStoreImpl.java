@@ -38,6 +38,7 @@ import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResourceEStore {
 
@@ -54,6 +55,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	public DirectWriteBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this.graph = graph;
 		this.resource = resource;
+        NeoLogger.log(NeoLogger.SEVERITY_INFO, "DirectWrite Store Created");
 	}
 
 	@Override
