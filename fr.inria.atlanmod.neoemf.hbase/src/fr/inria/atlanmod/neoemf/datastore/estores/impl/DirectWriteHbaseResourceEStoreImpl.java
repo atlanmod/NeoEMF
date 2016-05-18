@@ -521,7 +521,8 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 
 	@Override
 	public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-		return indexOf(object, feature, value) != -1;
+		return false;
+		//return indexOf(object, feature, value) != -1;
 	}
 
 
@@ -677,6 +678,10 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			}
 			loadedEObjects.put(id, neoemfEObject);
 		}
+		if (neoemfEObject == null) {
+			MessageFormat.format("Element {0} does not exist", id);
+			return null;
+			}
 		if (neoemfEObject.neoemfResource() != getResource()) {
 			neoemfEObject.neoemfSetResource(getResource());
 		}
