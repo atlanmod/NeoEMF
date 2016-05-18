@@ -48,7 +48,7 @@
         <surefire-plugin.version>2.19.1</surefire-plugin.version>
         <clean-plugin.version>3.0.0</clean-plugin.version>
         <build-helper-plugin.version>1.10</build-helper-plugin.version>
-        <xtext-plugin.version>2.9.1</xtext-plugin.version>
+        <xtext-plugin.version>2.9.2</xtext-plugin.version>
         <site-plugin.version>3.5.1</site-plugin.version>
 
         <!-- Report plugins -->
@@ -67,8 +67,8 @@
 
         <!-- Dependencies -->
 
-        <blueprints.version>2.4.0</blueprints.version>
-        <mapdb.version>1.0.7</mapdb.version>
+        <blueprints.version>2.5.0</blueprints.version> <!-- From 2.4.0 -->
+        <mapdb.version>1.0.9</mapdb.version> <!-- From 1.0.7 -->
 
         <cglib-nodep.version>3.2.2</cglib-nodep.version> <!-- From 3.1 -->
         <jboss-common.version>4.2.2.GA</jboss-common.version>
@@ -362,7 +362,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>${jxr-plugin.version}</version>
-                <configuration/>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -383,7 +382,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>${dependency-plugin.version}</version>
-                <configuration/>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -403,7 +401,28 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
                 <version>${taglist-plugin.version}</version>
-                <configuration/>
+                <configuration>
+                    <tagListOptions>
+                        <tagClasses>
+                            <tagClass>
+                                <tags>
+                                    <tag>
+                                        <matchString>todo</matchString>
+                                        <matchType>ignoreCase</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>fixme</matchString>
+                                        <matchType>ignoreCase</matchType>
+                                    </tag>
+                                    <tag>
+                                        <matchString>deprecated</matchString>
+                                        <matchType>ignoreCase</matchType>
+                                    </tag>
+                                </tags>
+                            </tagClass>
+                        </tagClasses>
+                    </tagListOptions>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -427,7 +446,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>${surefire-report-plugin.version}</version>
-                <configuration/>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -481,14 +499,12 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>${findbugs-plugin.version}</version>
-                <configuration/>
             </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${license-plugin.version}</version>
-                <configuration/>
             </plugin>
         </plugins>
     </reporting>
