@@ -206,7 +206,13 @@ public class BlueprintsPersistenceBackendFactory extends
     	}
     	else {
     	    if(storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
-				returnValue = new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
+    	        if(options.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK)) {
+    	            int autoCommitChunk = Integer.parseInt((String)options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK));
+					returnValue = new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend, autoCommitChunk);
+    	        }
+    	        else {
+					returnValue = new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
+    	        }
     	    }
     	    else {
     	        throw new InvalidDataStoreException();

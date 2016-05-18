@@ -16,9 +16,11 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -33,9 +35,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResourceEStore {
 
@@ -52,6 +55,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	public DirectWriteBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this.graph = graph;
 		this.resource = resource;
+        NeoLogger.log(NeoLogger.SEVERITY_INFO, "DirectWrite Store Created");
 	}
 
 	@Override
@@ -279,7 +283,24 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-		return value != null && ArrayUtils.contains(toArray(object, feature), value);
+		if (value == null) {
+			return false;
+		} else {
+		    Vertex v = graph.getOrCreateVertex(object);
+		    InternalPersistentEObject eValue = NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class);
+		    if(feature instanceof EReference) {
+		        for(Vertex vOut : v.getVertices(Direction.OUT, feature.getName())) {
+		            if(vOut.getId().equals(eValue.id().toString())) {
+		                return true;
+		            }
+		        }
+		        return false;
+		    }
+		    else {
+		        // feature is an EAttribute
+		        return ArrayUtils.contains(toArray(object, feature), value);
+		    }
+		}
 	}
 
 	@Override
@@ -371,8 +392,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	protected void add(InternalEObject object, EReference eReference, int index, EObject value) {
 		Vertex vertex = graph.getOrCreateVertex(object);
+
 		Vertex referencedVertex = graph.getOrCreateVertex(value);
-		
 		// Update the containment reference if needed
 		if (eReference.isContainment()) {
 			updateContainment(eReference, vertex, referencedVertex);
@@ -574,9 +595,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected InternalEObject reifyVertex(Vertex vertex) {
 		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex);
 		if(internalEObject.resource() != resource()) {
-			if(internalEObject.eContainer() == null) {
+			Iterator<Edge> itE = vertex.getEdges(Direction.OUT, CONTAINER).iterator();
+			if(!itE.hasNext()) {
 				Iterator<Vertex> it = vertex.getVertices(Direction.IN,"eContents").iterator();
 				if(it.hasNext()) {
+//					System.out.println("EContents detected for " + internalEObject.eClass().getName());
 					internalEObject.resource(resource());
 				}
 				else {
@@ -593,7 +616,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
 		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex,eClass);
 		if(internalEObject.resource() != resource()) {
-			if(internalEObject.eContainer() == null) {
+			Iterator<Edge> itE = vertex.getEdges(Direction.OUT, CONTAINER).iterator();
+			if(!itE.hasNext()) {
 				Iterator<Vertex> it = vertex.getVertices(Direction.IN,"eContents").iterator();
 				if(it.hasNext()) {
 					internalEObject.resource(resource());

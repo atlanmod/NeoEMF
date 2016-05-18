@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider implements
         ILazyTreeContentProvider, INotifyChangedListener, ITreeContentProvider,
@@ -58,17 +59,24 @@ public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProv
     @Override
     public void updateChildCount(Object element, int currentChildCount) {
         TreeViewer tViewer = (TreeViewer)viewer;
+        int childCount = 0;
         if(element instanceof ResourceSet) {
             ResourceSet rSet = (ResourceSet)element;
-            tViewer.setChildCount(element, rSet.getResources().size());
+            childCount = rSet.getResources().size();
+            NeoLogger.log(NeoLogger.SEVERITY_INFO, "ResourceSet childCount : " + childCount);
+            tViewer.setChildCount(element, childCount);
         }
         if(element instanceof Resource) {
             Resource r = (Resource)element;
-            tViewer.setChildCount(element, r.getContents().size());
+            childCount = r.getContents().size();
+            NeoLogger.log(NeoLogger.SEVERITY_INFO, "Resource childCount : " + childCount);
+            tViewer.setChildCount(element, childCount);
         }
         if(element instanceof PersistentEObject) {
             PersistentEObject e = (PersistentEObject)element;
-            tViewer.setChildCount(element, getChildCount(e));
+            childCount = getChildCount(e);
+            NeoLogger.log(NeoLogger.SEVERITY_INFO, "EObject (" + e.eClass().getName() + ") childCount : " + childCount);
+            tViewer.setChildCount(element, childCount);
         }
     }
     

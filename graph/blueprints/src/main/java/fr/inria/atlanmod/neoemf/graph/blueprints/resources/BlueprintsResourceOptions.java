@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     
     String OPTIONS_BLUEPRINTS_GRAPH_TYPE = "blueprints.graph";
+    String OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK = "autocommit.chunk";
     String OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
     
     enum EStoreGraphOption implements StoreOption {

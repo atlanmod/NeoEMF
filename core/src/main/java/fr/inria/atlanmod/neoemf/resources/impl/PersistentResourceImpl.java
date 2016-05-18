@@ -93,22 +93,23 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	@Override
 	public void load(Map<?, ?> options) throws IOException {
-		if (!isLoaded) {
-			try {
-				isLoading = true;
-				if (getFile().exists()) {
-					this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-					this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
-					this.isPersistent = true;
-				} else {
-					throw new FileNotFoundException(uri.toFileString());
-				}
-				this.options = options;
-				isLoaded = true;
-			} finally {
-				isLoading = false;
-				NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Loaded");
+		try {
+			isLoading = true;
+			if (isLoaded) {
+				return;
+			} else if (!getFile().exists()) {
+				throw new FileNotFoundException(uri.toFileString());
+			} else {
+				this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+				this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
+				this.isPersistent = true;
+				this.DUMMY_ROOT_EOBJECT.setMapped(true);
 			}
+			this.options = options;
+			isLoaded = true;
+		} finally {
+			isLoading = false;
+			NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + this.uri + " Loaded");
 		}
 	}
 

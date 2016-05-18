@@ -42,7 +42,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	protected Id id;
 
 	protected Resource.Internal resource;
-	
+
+	protected boolean isMapped;
+
 	/**
 	 * The internal cached value of the eContainer. This information should be
 	 * also maintained in the underlying {@link EStore}
@@ -56,6 +58,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	public PersistentEObjectImpl() {
 		this.id = new StringId(EcoreUtil.generateUUID());
 		this.eContainerFeatureID = UNSETTED_FEATURE_ID;
+		isMapped = false;
 	}
 
 
@@ -69,6 +72,16 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		this.id = id;
 	}
 	
+	@Override
+	public boolean isMapped() {
+	    return isMapped;
+	};
+
+	@Override
+	public void setMapped(boolean mapped) {
+	    this.isMapped = mapped;
+	}
+
 	/**
 	 * @return InternalEObject the container of the {@link PersistentEObject}
 	 * Do not return the same value as standard EMF implementation if the container
@@ -98,10 +111,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	protected void eBasicSetContainer(InternalEObject newContainer) {
 		eContainer = newContainer;
-//		if(newContainer != null && newContainer.eDirectResource() != resource) {
 		if (newContainer != null && newContainer.eResource() != resource) {
 			resource((Resource.Internal) eContainer.eResource());
-//			resource((Resource.Internal) eContainer.eDirectResource());
 		}
 	}
 	
@@ -138,8 +149,15 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		return resource;
 	}
 	
+	public static int numberOfNewStoreFeatureSet = 0;
+	public static int numberOfNewStoreEObject = 0;
+
+	public static int numberOfManyFeatureSet = 0;
+	public static int numberOfSingleFeatureSet = 0;
+
 	@Override
 	public void resource(Internal resource) {
+	    boolean updated = false;
 		this.resource = resource;
 		EStore oldStore = eStore;
 		// Set the new EStore
@@ -154,44 +172,56 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			// with the data stored in the old store
 			for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
 				if (oldStore.isSet(this, feature)) {
-					if (feature.isMany()) {
+					if (!feature.isMany()) {
+						Object v = oldStore.get(this,feature,EStore.NO_INDEX);
+						if(v == null) {
+//						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
+						    // Do nothing
+						}else{
+							if(feature instanceof EReference) {
+								EReference eRef = (EReference)feature;
+								if(eRef.isContainment()) {
+									InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(v, InternalPersistentEObject.class);
+									if(internalElement.resource() != resource()) {
+										internalElement.resource(resource());
+									}
+								}
+							}
+							numberOfNewStoreFeatureSet++;
+							numberOfSingleFeatureSet++;
+							updated = true;
+							eStore.set(this, feature, EStore.NO_INDEX, v);
+						}
+					} else {
 						eStore.clear(this, feature);
 						int size = oldStore.size(this, feature);
 						for (int i = 0; i < size; i++) {
-							if (oldStore.get(this, feature, i) == null) {
-								NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier) feature.eContainer()).getName() + '.' + feature.getName() + ')');
+							Object v = oldStore.get(this,feature,i);
+							if(v == null) {
+//							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
 								// Do nothing
-							} else {
-								eStore.add(this, feature, i,
-										oldStore.get(this, feature, i));
+							}else{
+								if(feature instanceof EReference) {
+									EReference eRef = (EReference)feature;
+									if(eRef.isContainment()) {
+										InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(v, InternalPersistentEObject.class);
+										if(internalElement.resource() != resource()) {
+											internalElement.resource(resource());
+										}
+									}
+								}
+								numberOfNewStoreFeatureSet++;
+								numberOfManyFeatureSet++;
+								updated = true;
+								eStore.add(this, feature, i, v);
 							}
-						}
-					} else {
-						if (oldStore.get(this, feature, EStore.NO_INDEX) == null) {
-							NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier) feature.eContainer()).getName() + '.' + feature.getName() + ')');
-							// Do nothing
-						} else {
-							eStore.set(this, feature, EStore.NO_INDEX,
-									oldStore.get(this, feature, EStore.NO_INDEX));
 						}
 					}
 				}
 			}
 		}
-		/*
-		 * Attach contained objects to the same resource to avoid EStore hierarchy inconsistency
-		 * This is necessary to handle attachment of entire stand-alone sub-tree to a PersistentResource
-		 * (otherwise only the top-level elements of the subtree are added)
-		 */
-		for (EObject eObject : eContents()) {
-			InternalPersistentEObject internalElement = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
-			if (internalElement.resource() != this.resource) {
-				internalElement.resource(this.resource);
-			}
-
-		}
+		if(updated) numberOfNewStoreEObject++;
 	}
-	
 
 	@Override
 	public EStore eStore() {
@@ -200,17 +230,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		}
 		return eStore;
 	}
-	
-//	@Override
-//	public Internal eInternalResource() {
-//		return resource == null ? super.eInternalResource() : resource;
-//	}
-//	
-//	@Override
-//	public Internal eDirectResource() {
-//		return resource == null ? super.eDirectResource() : resource;
-//	}
-	
+
 	@Override
 	protected boolean eIsCaching() {
 		return false;
@@ -241,7 +261,13 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				returnValue = new EStoreEcoreEMap(eType, feature);
 		    }
 		    else {
-				returnValue = new EStoreEObjectImpl.BasicEStoreEList<>(this, feature);
+				returnValue = new EStoreEObjectImpl.BasicEStoreEList<Object>(this,feature) {
+		            @Override
+		            public boolean contains(Object object) {
+		                return delegateContains(object);
+		            };
+		        };
+//		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
 		    }
 		} else {
 			returnValue = eStore().get(this, feature, EStore.NO_INDEX);

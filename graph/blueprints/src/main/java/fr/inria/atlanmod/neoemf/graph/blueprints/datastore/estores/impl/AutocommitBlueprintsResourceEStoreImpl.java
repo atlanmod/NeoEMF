@@ -25,16 +25,16 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	 * Default number of allowed modifications (100000) between commits on the
 	 * underlying graph
 	 */
-	protected static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
+	public static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
 	/**
 	 * Number of allowed modifications between commits on the underlying graph
 	 * for this {@link AutocommitBlueprintsResourceEStoreImpl}
 	 */
-	protected final int opsBetweenCommits;
+	protected final int OPS_BETWEEN_COMMITS;
 
 	/**
-	 * Current number of modifications modulo {@link #opsBetweenCommits}
+	 * Current number of modifications modulo {@link #OPS_BETWEEN_COMMITS}
 	 */
 	protected int opCount;
 
@@ -49,8 +49,9 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	 */
 	public AutocommitBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph, int opsBetweenCommits) {
 		super(resource, graph);
-		this.opsBetweenCommits = opsBetweenCommits;
 		this.opCount = 0;
+		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
+	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Autocommit Store Created (chunk = " + opsBetweenCommits + ")");
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	}
 
 	private void incrementAndCommit() {
-		opCount = (opCount + 1) % opsBetweenCommits;
+		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
 		if (opCount == 0) {
 			graph.commit();
 		}
