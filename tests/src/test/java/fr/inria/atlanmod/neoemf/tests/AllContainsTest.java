@@ -25,7 +25,7 @@ import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContent
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
- * {@link https://github.com/atlanmod/NeoEMF/issues/30}
+ * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
 public class AllContainsTest extends AllBackendTest {
 
@@ -49,7 +49,7 @@ public class AllContainsTest extends AllBackendTest {
     }
     
     protected void createResourceContent(Resource r, int cCount) {
-        addedContent = new ArrayList<SampleModelContentObject>();
+        addedContent = new ArrayList<>();
         m = factory.createSampleModel();
         m.setName("Model");
         for(int i = 0; i < cCount; i++) {

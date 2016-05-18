@@ -35,10 +35,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
 public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResourceEStore {
 
@@ -283,24 +282,25 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-		if (value == null) {
-			return false;
-		} else {
+		boolean found = false;
+		if (value != null) {
 		    Vertex v = graph.getOrCreateVertex(object);
 		    InternalPersistentEObject eValue = NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class);
 		    if(feature instanceof EReference) {
-		        for(Vertex vOut : v.getVertices(Direction.OUT, feature.getName())) {
-		            if(vOut.getId().equals(eValue.id().toString())) {
-		                return true;
-		            }
-		        }
-		        return false;
-		    }
+				Iterator<Vertex> iterator = v.getVertices(Direction.OUT, feature.getName()).iterator();
+				while (iterator.hasNext() && !found) {
+					Vertex vOut = iterator.next();
+					if (vOut.getId().equals(eValue.id().toString())) {
+						found = true;
+					}
+				}
+			}
 		    else {
 		        // feature is an EAttribute
-		        return ArrayUtils.contains(toArray(object, feature), value);
+				found = ArrayUtils.contains(toArray(object, feature), value);
 		    }
 		}
+		return found;
 	}
 
 	@Override

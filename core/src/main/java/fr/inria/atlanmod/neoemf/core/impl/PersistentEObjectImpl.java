@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 import org.eclipse.emf.common.util.BasicEMap;
@@ -33,9 +32,13 @@ import org.eclipse.emf.ecore.resource.Resource.Internal;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import java.util.Objects;
-
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
+
+	public static int numberOfNewStoreFeatureSet = 0;
+	public static int numberOfNewStoreEObject = 0;
+
+	public static int numberOfManyFeatureSet = 0;
+	public static int numberOfSingleFeatureSet = 0;
 
 	protected static final int UNSETTED_FEATURE_ID = -1;
 
@@ -75,7 +78,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	@Override
 	public boolean isMapped() {
 	    return isMapped;
-	};
+	}
 
 	@Override
 	public void setMapped(boolean mapped) {
@@ -149,12 +152,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		return resource;
 	}
 	
-	public static int numberOfNewStoreFeatureSet = 0;
-	public static int numberOfNewStoreEObject = 0;
-
-	public static int numberOfManyFeatureSet = 0;
-	public static int numberOfSingleFeatureSet = 0;
-
 	@Override
 	public void resource(Internal resource) {
 	    boolean updated = false;
@@ -265,7 +262,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		            @Override
 		            public boolean contains(Object object) {
 		                return delegateContains(object);
-		            };
+		            }
 		        };
 //		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
 		    }

@@ -153,20 +153,18 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getVertex(EObject eObject) {
+		Vertex returnValue = null;
 		InternalPersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 		if(neoEObject.isMapped()) {
-    		Vertex vertex = loadedVertices.get(neoEObject.id());
-    		if(vertex == null) {
-    		    return getVertex(neoEObject.id().toString());
-    		}
-    		else {
-    		    return vertex;
+			returnValue = loadedVertices.get(neoEObject.id());
+    		if(returnValue == null) {
+				returnValue = getVertex(neoEObject.id().toString());
     		}
 	    }
 		else {
 		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Trying to access a non-mapped PersistentEObject");
-		    return null;
 		}
+		return returnValue;
 	}
 
 	/**

@@ -95,21 +95,21 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	public void load(Map<?, ?> options) throws IOException {
 		try {
 			isLoading = true;
-			if (isLoaded) {
-				return;
-			} else if (!getFile().exists()) {
-				throw new FileNotFoundException(uri.toFileString());
-			} else {
-				this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-				this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
-				this.isPersistent = true;
-				this.DUMMY_ROOT_EOBJECT.setMapped(true);
+			if (!isLoaded) {
+				if (getFile().exists()) {
+					this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+					this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
+					this.isPersistent = true;
+					DUMMY_ROOT_EOBJECT.setMapped(true);
+				} else {
+					throw new FileNotFoundException(uri.toFileString());
+				}
+				this.options = options;
+				isLoaded = true;
 			}
-			this.options = options;
-			isLoaded = true;
 		} finally {
 			isLoading = false;
-			NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + this.uri + " Loaded");
+			NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Loaded");
 		}
 	}
 
@@ -362,6 +362,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		}
 
 		@Override
+		@SuppressWarnings("unchecked") // Unchecked cast: 'org.eclipse.emf.ecore.EObject' to 'E'
 		protected E delegateRemove(int index) {
 			E object = super.delegateRemove(index);
 			List<E> hardLinksList = new ArrayList<>();
