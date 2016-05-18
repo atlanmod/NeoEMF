@@ -186,6 +186,13 @@
                 <version>${log4j.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jcl</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
             <!-- EMF dependencies -->
 
             <dependency>
