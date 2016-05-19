@@ -162,7 +162,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
     		}
 	    }
 		else {
-		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Trying to access a non-mapped PersistentEObject");
+		    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Trying to access a non-mapped PersistentEObject");
 		}
 		return returnValue;
 	}
