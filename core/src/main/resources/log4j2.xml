@@ -6,8 +6,11 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Root level="all">
+		<Root level="ALL">
 			<AppenderRef ref="Console"/>
 		</Root>
+		<Logger name="org.apache.commons.configuration" level="ERROR" additivity="false">
+			<AppenderRef ref="Console"/>
+		</Logger>
 	</Loggers>
 </Configuration>
