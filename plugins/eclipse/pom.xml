@@ -20,7 +20,7 @@
     </description>
 
     <properties>
-        <tycho-maven-plugin.version>0.22.0</tycho-maven-plugin.version>
+        <tycho-maven-plugin.version>0.24.0</tycho-maven-plugin.version>
     </properties>
 
     <repositories>
@@ -43,7 +43,7 @@
                         <environment>
                             <os>win32</os>
                             <ws>win32</ws>
-                            <arch>x86</arch>
+                            <arch>x86_64</arch>
                         </environment>
                         <environment>
                             <os>linux</os>
@@ -64,11 +64,26 @@
                 <artifactId>tycho-maven-plugin</artifactId>
                 <version>${tycho-maven-plugin.version}</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <pomDependencies>consider</pomDependencies>
-                </configuration>
             </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-packaging-plugin</artifactId>
+                    <version>${tycho-maven-plugin.version}</version>
+                    <configuration>
+                        <strictBinIncludes>false</strictBinIncludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${dependency-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <modules>
