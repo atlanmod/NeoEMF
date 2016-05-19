@@ -49,6 +49,19 @@
             <artifactId>graph.blueprints</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>graph.blueprints.neo4j</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>map</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+-->
     </dependencies>
 
     <build>
