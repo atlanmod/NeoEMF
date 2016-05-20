@@ -84,7 +84,7 @@ public class BlueprintsResourceSaveTest extends AllGraphTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
+                NeoLogger.warn(e);
             }
         }
 

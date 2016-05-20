@@ -107,11 +107,6 @@
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
                         <_exportcontents>
-                            org.apache.logging.log4j,
-                            org.apache.logging.log4j.util,
-                            org.apache.logging.log4j.message,
-                            org.apache.logging.log4j.spi,
-
                             net.sf.cglib.proxy,
                             net.sf.cglib.asm,
                             net.sf.cglib.core,

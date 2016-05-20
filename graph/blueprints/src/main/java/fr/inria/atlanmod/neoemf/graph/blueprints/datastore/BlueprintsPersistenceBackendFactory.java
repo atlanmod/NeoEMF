@@ -89,7 +89,7 @@ public class BlueprintsPersistenceBackendFactory extends
 				String savedGraphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
 				String issuedGraphType = options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).toString();
 				if (!savedGraphType.equals(issuedGraphType)) {
-				    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
+				    NeoLogger.error("Unable to create graph as type {0}, expected graph type was {1})", issuedGraphType, savedGraphType);
 					throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
 				}
 			}
@@ -124,30 +124,21 @@ public class BlueprintsPersistenceBackendFactory extends
                     Method setGlobalSettingsMethod = configClass.getMethod("setGlobalSettings");
                     setGlobalSettingsMethod.invoke(configClassInstance);
                 } catch (ClassNotFoundException e1) {
-                    NeoLogger.log(NeoLogger.SEVERITY_WARNING,
-                            "Unable to find the configuration class " + configClassQualifiedName);
+                    NeoLogger.warn("Unable to find the configuration class {0}", configClassQualifiedName);
                     e1.printStackTrace();
                 } catch (NoSuchFieldException e2) {
-                    NeoLogger
-                            .log(NeoLogger.SEVERITY_WARNING,
-                                    MessageFormat
-                                            .format("Unable to find the static field eINSTANCE in class Blueprints{0}Config",
-                                                    upperCaseGraphName));
+                    NeoLogger.warn("Unable to find the static field eINSTANCE in class Blueprints{0}Config", upperCaseGraphName);
                     e2.printStackTrace();
                 } catch (NoSuchMethodException e3) {
-                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format(
-                            "Unable to find configuration methods in class Blueprints{0}Config",
-                            upperCaseGraphName));
+                    NeoLogger.error("Unable to find configuration methods in class Blueprints{0}Config", upperCaseGraphName);
                     e3.printStackTrace();
                 } catch (InvocationTargetException | IllegalAccessException e4) {
-                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format(
-                            "An error occured during the exection of a configuration method",
-                            upperCaseGraphName));
+                    NeoLogger.error("An error occurs during the execution of a configuration method", upperCaseGraphName);
                     e4.printStackTrace();
                 }
             }
 			else {
-			    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Unable to compute graph type name from " + graphType);
+			    NeoLogger.warn("Unable to compute graph type name from {0}", graphType);
 			}
 
 			Graph baseGraph;
@@ -159,7 +150,7 @@ public class BlueprintsPersistenceBackendFactory extends
 			if (baseGraph instanceof KeyIndexableGraph) {
 				graphDB = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
 			} else {
-			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Graph type " +file.getAbsolutePath()+" does not support Key Indices");
+			    NeoLogger.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());
 				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
 			}
 			// Save the neoconfig file
@@ -179,14 +170,14 @@ public class BlueprintsPersistenceBackendFactory extends
 				} catch (ConfigurationException e) {
 					// Unable to save configuration, supposedly it's a minor error,
 					// so we log it without rising an exception
-					NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+					NeoLogger.error(e);
 				}
 			}
 			if(neoConfig != null) {
 			    try {
 			        neoConfig.save();
 			    } catch(ConfigurationException e) {
-			        NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			        NeoLogger.error(e);
 			    }
 			}
 		}

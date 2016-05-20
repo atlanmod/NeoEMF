@@ -68,7 +68,7 @@ public class MapPersistenceBackendFactory extends
 			try {
 				Files.createDirectories(dbFile.getParentFile().toPath());
 			} catch (IOException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+				NeoLogger.error(e);
 			}
 		}
 	    PropertiesConfiguration neoConfig;
@@ -84,7 +84,7 @@ public class MapPersistenceBackendFactory extends
 		try {
             neoConfig.save();
         } catch(ConfigurationException e) {
-            NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+            NeoLogger.error(e);
         }
 //		Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
         // [TODO] Check the difference when asyncWriteEnable() is set, it has been desactived for MONDO deliverable but 

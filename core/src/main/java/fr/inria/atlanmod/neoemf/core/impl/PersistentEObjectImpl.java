@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 import org.eclipse.emf.common.util.BasicEMap;
@@ -172,7 +173,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 					if (!feature.isMany()) {
 						Object v = oldStore.get(this,feature,EStore.NO_INDEX);
 						if(v == null) {
-//						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
+						    NeoLogger.debug("A null value has been detected in the old store (Feature {0}.{1})", ((EClassifier)feature.eContainer()).getName(), feature.getName());
 						    // Do nothing
 						}else{
 							if(feature instanceof EReference) {
@@ -195,7 +196,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 						for (int i = 0; i < size; i++) {
 							Object v = oldStore.get(this,feature,i);
 							if(v == null) {
-//							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
+							    NeoLogger.debug("A null value has been detected in the old store (Feature {0}.{1})", ((EClassifier)feature.eContainer()).getName(), feature.getName());
 								// Do nothing
 							}else{
 								if(feature instanceof EReference) {

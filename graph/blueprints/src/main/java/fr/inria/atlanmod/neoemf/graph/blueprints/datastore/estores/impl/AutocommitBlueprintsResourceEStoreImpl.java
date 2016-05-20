@@ -51,7 +51,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 		super(resource, graph);
 		this.opCount = 0;
 		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
-	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Autocommit Store Created (chunk = " + opsBetweenCommits + ')');
+	    NeoLogger.info("Autocommit Store Created (chunk = {0})", opsBetweenCommits);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 		try {
 			graph.commit();
 		} catch (Exception ex) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, ex);
+			NeoLogger.error(ex);
 		}
 		super.finalize();
 	}

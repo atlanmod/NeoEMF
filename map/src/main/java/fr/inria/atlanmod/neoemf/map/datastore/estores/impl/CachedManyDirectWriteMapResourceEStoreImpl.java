@@ -61,7 +61,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 					sleep(20000);
 				} catch (InterruptedException e) {
 				}
-				NeoLogger.log(NeoLogger.SEVERITY_INFO, "Founds: " + founds + " / Not Founds: " + notFounds);
+				NeoLogger.info("Founds: {0} / Not Founds: {1}", founds, notFounds);
 			}
 		}
 	}

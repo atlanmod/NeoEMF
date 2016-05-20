@@ -406,8 +406,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 					}
 					persistentEObject.id(id);
 				} else {
-					NeoLogger.log(NeoLogger.SEVERITY_ERROR,
-							MessageFormat.format("Element {0} does not have an associated EClass", id));
+					NeoLogger.error("Element {0} does not have an associated EClass", id);
 				}
 				loadedEObjects.put(id, persistentEObject);
 			}

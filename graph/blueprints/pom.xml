@@ -57,14 +57,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- Logging dependencies -->
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- EMF dependencies -->
 
         <dependency>

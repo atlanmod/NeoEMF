@@ -57,7 +57,7 @@ public class NeoURITest extends AllCoreTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
+                NeoLogger.warn(e);
             }
         }
 

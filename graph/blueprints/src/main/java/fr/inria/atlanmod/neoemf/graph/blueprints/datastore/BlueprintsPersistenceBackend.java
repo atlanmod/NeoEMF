@@ -162,7 +162,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
     		}
 	    }
 		else {
-		    NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Trying to access a non-mapped PersistentEObject");
+		    NeoLogger.warn("Trying to access a non-mapped PersistentEObject");
 		}
 		return returnValue;
 	}
@@ -269,8 +269,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				neoEObject.id(new StringId(id.toString()));
 				neoEObject.setMapped(true);
 			} else {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
+				NeoLogger.error("Vertex {0} does not have an associated EClass Vertex", id);
 			}
 			loadedEObjects.put(id, neoEObject);
 		}
@@ -309,8 +308,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				neoEObject.id(new StringId(id.toString()));
 				neoEObject.setMapped(true);
 			} else {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-						MessageFormat.format("Vertex {0} does not have an associated EClass Vertex", id));
+				NeoLogger.error("Vertex {0} does not have an associated EClass Vertex", id);
 			}
 			loadedEObjects.put(id, neoEObject);
 		}
@@ -367,7 +365,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 					Iterator<Vertex> instanceVertexIterator = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF).iterator();
 					indexHits.put(ec, instanceVertexIterator);
 			    } else {
-					NeoLogger.log(NeoLogger.SEVERITY_WARNING, "MetaClass '" + ec.getName() + "'not found in index");
+					NeoLogger.warn("MetaClass '{}' not found in index", ec.getName());
 				}
 			}
 		}

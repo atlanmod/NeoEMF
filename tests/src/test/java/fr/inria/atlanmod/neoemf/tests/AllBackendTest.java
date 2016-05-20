@@ -87,7 +87,7 @@ public abstract class AllBackendTest extends AllTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
+                NeoLogger.warn(e);
             }
         }
     }

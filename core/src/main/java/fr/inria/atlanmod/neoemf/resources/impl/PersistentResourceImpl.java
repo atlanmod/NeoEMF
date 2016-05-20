@@ -79,7 +79,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		this.isPersistent = false;
 		// Stop the backend when the application is terminated
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-		NeoLogger.log(NeoLogger.SEVERITY_INFO, "Persistent Resource Created");
+		NeoLogger.info("Persistent Resource Created");
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			}
 		} finally {
 			isLoading = false;
-			NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Loaded");
+			NeoLogger.debug("Persistent Resource {0} Loaded", uri);
 		}
 	}
 
@@ -136,7 +136,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			this.isPersistent = true;
 		}
 		persistenceBackend.save();
-		NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "Persistent Resource " + uri + " Saved");
+		NeoLogger.debug("Persistent Resource {0} Saved", uri);
 	}
 
 	
@@ -178,7 +178,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	    try {
 			returnValue = eStore.getAllInstances(eClass,strict);
 	    } catch(UnsupportedOperationException e) {
-	        NeoLogger.log(NeoLogger.SEVERITY_WARNING, "Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
+	        NeoLogger.warn("Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
 	        Iterator<EObject> it = getAllContents();
 	        EList<EObject> instanceList = new BasicEList<>();
 	        while(it.hasNext()) {
@@ -232,7 +232,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
 		if (resource != null) {
-			NeoLogger.log(NeoLogger.SEVERITY_INFO, "Shutdown Without Unload of Persistent Resource " + resource.getURI());
+			NeoLogger.info("Shutdown Without Unload of Persistent Resource {0}", resource.getURI());
 			resource.shutdown();
 		}
 	}
@@ -431,9 +431,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		@Override
         public void run() {
             if(persistenceBackend.isStarted()) {
-                NeoLogger.log(NeoLogger.SEVERITY_INFO, "Closing backend of resource " + uri);
+                NeoLogger.info("Closing backend of resource {0}", uri);
                 persistenceBackend.stop();
-                NeoLogger.log(NeoLogger.SEVERITY_INFO, "Backend of resource " + uri + " closed");
+                NeoLogger.info("Backend of resource {0} closed", uri);
             }
         }
 	}

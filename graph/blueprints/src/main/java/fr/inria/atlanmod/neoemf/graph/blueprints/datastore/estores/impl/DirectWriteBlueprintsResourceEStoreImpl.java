@@ -54,7 +54,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	public DirectWriteBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this.graph = graph;
 		this.resource = resource;
-        NeoLogger.log(NeoLogger.SEVERITY_INFO, "DirectWrite Store Created");
+        NeoLogger.info("DirectWrite Store Created");
 	}
 
 	@Override

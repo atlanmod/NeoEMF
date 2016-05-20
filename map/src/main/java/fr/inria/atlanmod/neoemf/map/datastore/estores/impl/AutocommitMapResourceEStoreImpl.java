@@ -117,7 +117,7 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 		try {
 			db.commit();
 		} catch (Exception ex) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, ex);
+			NeoLogger.error(ex);
 		}
 		super.finalize();
 	}

@@ -14,27 +14,77 @@ package fr.inria.atlanmod.neoemf.logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.ReflectionUtil;
+
+import java.text.MessageFormat;
 
 public class NeoLogger {
 
-	public static final Level SEVERITY_ERROR = Level.ERROR;
-	public static final Level SEVERITY_INFO = Level.INFO;
-	public static final Level SEVERITY_WARNING = Level.WARN;
-	public static final Level SEVERITY_DEBUG = Level.DEBUG;
-	
-    private static Logger log = LogManager.getRootLogger();
-    
-    public static void log(Level severity, Throwable e) {
-        log.log(severity,
-        		e.getMessage() != null ? e.getMessage() : e.toString(), e);
+    private static final boolean CLASSNAME_NEEDED = false;
+
+    private static final Logger ROOT_LOGGER = LogManager.getLogger();
+
+    public static void debug(String msg) {
+        internalLog(Level.DEBUG, msg, null);
     }
 
-    public static void log(Level severity, String msg, Throwable e) {
-    	log.log(severity, msg, e);
+    public static void debug(String pattern, Object... args) {
+        internalLog(Level.DEBUG, MessageFormat.format(pattern, args), null);
     }
-    
-    public static void log(Level severity, String msg) {
-        log.log(severity, msg);
+
+    public static void info(String msg) {
+        internalLog(Level.INFO, msg, null);
     }
-    
+
+    public static void info(String pattern, Object... args) {
+        internalLog(Level.INFO, MessageFormat.format(pattern, args), null);
+    }
+
+    public static void warn(String msg) {
+        internalLog(Level.WARN, msg, null);
+    }
+
+    public static void warn(String pattern, Object... args) {
+        internalLog(Level.WARN, MessageFormat.format(pattern, args), null);
+    }
+
+    public static void warn(Throwable e) {
+        internalLog(Level.WARN, null, e);
+    }
+
+    public static void error(String msg) {
+        internalLog(Level.ERROR, msg, null);
+    }
+
+    public static void error(String pattern, Object... args) {
+        internalLog(Level.ERROR, MessageFormat.format(pattern, args), null);
+    }
+
+    public static void fatal(Throwable e) {
+        internalLog(Level.FATAL, null, e);
+    }
+
+    public static void fatal(String msg) {
+        internalLog(Level.FATAL, msg, null);
+    }
+
+    public static void fatal(String pattern, Object... args) {
+        internalLog(Level.FATAL, MessageFormat.format(pattern, args), null);
+    }
+
+    public static void error(Throwable e) {
+        internalLog(Level.ERROR, null, e);
+    }
+
+    private static void internalLog(Level level, String msg, Throwable e) {
+        getLogger().log(level, msg, e);
+    }
+
+    private static Logger getLogger() {
+        if (CLASSNAME_NEEDED) {
+            return LogManager.getLogger(ReflectionUtil.getCallerClass(4));
+        } else {
+            return ROOT_LOGGER;
+        }
+    }
 }

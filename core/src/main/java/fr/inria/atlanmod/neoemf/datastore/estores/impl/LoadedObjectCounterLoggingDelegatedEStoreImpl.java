@@ -27,7 +27,7 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
 
     public LoadedObjectCounterLoggingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
         super(eStore);
-        NeoLogger.log(NeoLogger.SEVERITY_INFO, "Using LoadedObjectCounter logger");
+        NeoLogger.info("Using LoadedObjectCounter logger");
         this.loadedObjects = new HashSet<>();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
@@ -171,7 +171,7 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
     private class ShutdownHook extends Thread {
         @Override
         public void run() {
-            NeoLogger.log(NeoLogger.SEVERITY_INFO, MessageFormat.format("{0} objects loaded during the execution", loadedObjects.size()));
+            NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());
         }
     }
 

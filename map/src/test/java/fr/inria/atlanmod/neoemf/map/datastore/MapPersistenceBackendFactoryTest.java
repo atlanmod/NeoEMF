@@ -72,7 +72,7 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
         try {
             Files.createDirectories(testFolder.toPath());
         } catch (IOException e) {
-            NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+            NeoLogger.error(e);
         }
         testFile = new File(testFolder + "/db");
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
@@ -88,7 +88,7 @@ public class MapPersistenceBackendFactoryTest extends AllMapTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                NeoLogger.log(NeoLogger.SEVERITY_WARNING, e);
+                NeoLogger.warn(e);
             }
         }
 
