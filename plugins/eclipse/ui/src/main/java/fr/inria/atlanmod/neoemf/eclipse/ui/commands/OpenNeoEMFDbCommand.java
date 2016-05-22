@@ -83,13 +83,13 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
 		        try {
                     neoConfig = new PropertiesConfiguration(neoConfigFile);
                 } catch (ConfigurationException e1) {
-                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to find neoconfig.properties file");
+                    NeoLogger.error("Unable to find neoconfig.properties file");
                     return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open the editor", e1);
                 }
 		        String backendType = neoConfig.getString(AbstractPersistenceBackendFactory.BACKEND_PROPERTY);
 		        URI uri = null;
 		        if(backendType == null) {
-		            NeoLogger.log(NeoLogger.SEVERITY_ERROR, "neoconfig.properties does not contain " + AbstractPersistenceBackendFactory.BACKEND_PROPERTY + " property");
+		            NeoLogger.error("neoconfig.properties does not contain {0} property", AbstractPersistenceBackendFactory.BACKEND_PROPERTY);
 		            return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor");
 		        } else if(backendType.equals(MapPersistenceBackendFactory.MAPDB_BACKEND)) {
 		            uri = NeoMapURI.createNeoMapURI(new File(folder.getRawLocation().toOSString()));

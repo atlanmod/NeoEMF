@@ -70,10 +70,10 @@ public class NeoEMFEditor extends EcoreEditor {
         try {
             resource.load(options);
 	    } catch(IOException e1) {
-	        NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to create model for the editor");
-	        NeoLogger.log(NeoLogger.SEVERITY_ERROR, e1);
+	        NeoLogger.error("Unable to create model for the editor");
+	        NeoLogger.error(e1);
 	        for(Resource r : editingDomain.getResourceSet().getResources()) {
-	            NeoLogger.log(NeoLogger.SEVERITY_INFO, resource.getURI().toString());
+	            NeoLogger.info(resource.getURI().toString());
 	            if(r instanceof PersistentResource) {
 	                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)resource);
 	            }
@@ -152,12 +152,12 @@ public class NeoEMFEditor extends EcoreEditor {
 	         }
 	       });
 	    long end = System.currentTimeMillis();
-	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "NeoEMF Editor Opened in " + (end-begin) + " ms");
+	    NeoLogger.info("NeoEMF Editor Opened in {0} ms", (end-begin));
 	  }
 	
 	@Override
 	public void dispose() {
-	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Disposing NeoEditor");
+	    NeoLogger.info("Disposing NeoEditor");
         for (Resource resource : editingDomain.getResourceSet().getResources()) {
         	if(resource instanceof PersistentResource) {
         	    PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)resource);
