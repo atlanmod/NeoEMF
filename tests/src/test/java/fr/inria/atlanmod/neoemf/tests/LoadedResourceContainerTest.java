@@ -103,7 +103,7 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
     }
 
     private void getElementsEInternalContainer(PersistentResource persistentResource) {
-        // TODO check if we have to correct it or not (performance issues)
+        // TODO Check if we have to correct it or not (performance issues)
         InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
         assertThat("eInternalContainer must return null if eContainer has not been called", model.eInternalContainer(), nullValue());
 
@@ -112,7 +112,7 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
     }
 
     private void getAllContentsEInternalContainer(PersistentResource persistentResource) {
-        // TODO check if we have to correct it or not (performance issues)
+        // TODO Check if we have to correct it or not (performance issues)
         Iterator<EObject> it = persistentResource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();

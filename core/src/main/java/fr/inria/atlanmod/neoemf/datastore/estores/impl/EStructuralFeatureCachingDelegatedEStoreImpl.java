@@ -100,7 +100,7 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 	 * @param object
 	 * @param feature
      */
-	// FIXME object allocation inside loop is a great place to look for memory leaks and performance issues
+	// FIXME Object allocation inside loop is a great place to look for memory leaks and performance issues
 	private void removeFrom(int start, InternalEObject object, EStructuralFeature feature) {
 		for (int i = start; i < size(object, feature); i++) {
 			cache.remove(new MapKey(object, feature, i));

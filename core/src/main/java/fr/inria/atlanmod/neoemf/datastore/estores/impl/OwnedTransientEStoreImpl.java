@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.InternalEObject;
  * A {@link TransientEStoreImpl} that belongs to a single {@link EObject} owner
  * 
  */
-//TODO: All methods call super methods, is this class really necessary ?
+//TODO All methods call super methods, is this class really necessary ?
 public class OwnedTransientEStoreImpl extends TransientEStoreImpl {
 
 	protected EObject owner;

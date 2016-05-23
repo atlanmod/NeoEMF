@@ -222,13 +222,13 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 
     @Override
-	// FIXME return of instance of non-static inner class 'NeoEdge'
+	// FIXME Return of instance of non-static inner class 'NeoEdge'
 	public Edge addEdge(final Object id, final Vertex outVertex, final Vertex inVertex, final String label) {
         return new NeoEdge(getBaseGraph().addEdge(id, ((IdVertex) outVertex).getBaseVertex(), ((IdVertex) inVertex).getBaseVertex(), label));
     }
 
     @Override
-	// FIXME return of instance of non-static inner class 'NeoEdge'
+	// FIXME Return of instance of non-static inner class 'NeoEdge'
 	public Edge getEdge(final Object id) {
         final Edge edge = getBaseGraph().getEdge(id);
 		return null != edge ? new NeoEdge(edge) : null;

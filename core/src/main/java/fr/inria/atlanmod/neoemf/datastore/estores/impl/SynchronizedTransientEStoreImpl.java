@@ -178,8 +178,7 @@ public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public EObject create(EClass eClass) {
-		// Unimplemented
-		// TODO: In which case is needed?
+		// TODO Unimplemented - In which case is needed?
 		throw new UnsupportedOperationException();
 	}
 

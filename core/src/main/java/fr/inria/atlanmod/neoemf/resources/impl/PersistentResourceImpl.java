@@ -141,7 +141,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	
 	@Override
-	// FIXME return of instance of non-static inner class 'ResourceContentsEStoreEList'
+	// FIXME Return of instance of non-static inner class 'ResourceContentsEStoreEList'
 	public EList<EObject> getContents() {
 		return new ResourceContentsEStoreEList<>(DUMMY_ROOT_EOBJECT, ROOT_CONTENTS_ESTRUCTURALFEATURE, eStore());
 	}
@@ -340,7 +340,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		
 		@Override
 		protected void delegateAdd(int index, Object object) {
-			// FIXME: Maintain a list of hard links to the elements while moving
+			// FIXME Maintain a list of hard links to the elements while moving
 			// them to the new resource. If a garbage collection happens while
 			// traversing the children elements, some unsaved objects that are
 			// referenced from a saved object may be garbage collected before

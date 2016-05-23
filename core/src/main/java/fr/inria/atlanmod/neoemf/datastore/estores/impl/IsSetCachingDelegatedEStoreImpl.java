@@ -100,7 +100,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 		return returnValue;
 	}
 	
-	// TODO: Other methods may be added...
+	// TODO Other methods may be added...
 
 	protected class MapKey {
 		protected InternalEObject object;
