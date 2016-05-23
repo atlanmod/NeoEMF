@@ -30,8 +30,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
 
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
 
@@ -101,6 +101,12 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		} else {
 			return super.eContainer();
 		}
+	}
+	
+	@Override
+	public EList<EObject> eContents() {
+	    EList<EObject> e = NeoEContentsEList.createNeoEContentsEList(this);
+	    return e;
 	}
 	
 	@Override
