@@ -21,8 +21,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.text.MessageFormat;
-
 /**
  * A {@link SearcheableResourceEStore} wrapper that logs every call to its
  * methods in the {@link NeoLogger}

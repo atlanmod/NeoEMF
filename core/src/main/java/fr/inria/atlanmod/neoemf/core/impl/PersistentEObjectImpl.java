@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
 
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
@@ -35,11 +36,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
 
-	public static int numberOfNewStoreFeatureSet = 0;
-	public static int numberOfNewStoreEObject = 0;
+	public static int NUMBER_NEW_STORE_FEATURE_SET = 0;
+	public static int NUMBER_NEW_STORE_EOBJECT = 0;
 
-	public static int numberOfManyFeatureSet = 0;
-	public static int numberOfSingleFeatureSet = 0;
+	public static int NUMBER_MANY_FEATURE_SET = 0;
+	public static int NUMBER_SINGLE_FEATURE_SET = 0;
 
 	protected static final int UNSETTED_FEATURE_ID = -1;
 
@@ -191,8 +192,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 									}
 								}
 							}
-							numberOfNewStoreFeatureSet++;
-							numberOfSingleFeatureSet++;
+							NUMBER_NEW_STORE_FEATURE_SET++;
+							NUMBER_SINGLE_FEATURE_SET++;
 							updated = true;
 							eStore.set(this, feature, EStore.NO_INDEX, v);
 						}
@@ -214,8 +215,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 										}
 									}
 								}
-								numberOfNewStoreFeatureSet++;
-								numberOfManyFeatureSet++;
+								NUMBER_NEW_STORE_FEATURE_SET++;
+								NUMBER_MANY_FEATURE_SET++;
 								updated = true;
 								eStore.add(this, feature, i, v);
 							}
@@ -224,7 +225,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				}
 			}
 		}
-		if(updated) numberOfNewStoreEObject++;
+		if(updated) NUMBER_NEW_STORE_EOBJECT++;
 	}
 
 	@Override

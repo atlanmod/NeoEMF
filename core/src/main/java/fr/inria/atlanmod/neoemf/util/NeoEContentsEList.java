@@ -8,9 +8,11 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.util;
 
-import java.util.List;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -19,8 +21,7 @@ import org.eclipse.emf.ecore.impl.EClassImpl;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import java.util.List;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
     
@@ -35,7 +36,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
             return this;
           }
         };
-        
+
     public static <T> NeoEContentsEList<T> emptyNeoContentsEList() {
         return (NeoEContentsEList<T>)EMPTY_NEO_CONTENTS_ELIST;
     }

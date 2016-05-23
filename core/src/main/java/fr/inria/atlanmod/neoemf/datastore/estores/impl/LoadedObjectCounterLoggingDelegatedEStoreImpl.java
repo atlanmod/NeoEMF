@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 

@@ -8,27 +8,28 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  *******************************************************************************/
+
 package fr.inria.atlanmod.neoemf.tests;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.junit.Test;
 
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
 /**
  * Test class for the contains method, related to performance issue descibed in #30
- * {@link https://github.com/atlanmod/NeoEMF/issues/30}
+ * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
 public class EObjectEContentsTest extends AllBackendTest {
 
@@ -46,8 +47,8 @@ public class EObjectEContentsTest extends AllBackendTest {
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
         ePackage = MapSamplePackage.eINSTANCE;
-        subPacks = new ArrayList<EObject>();
-        packContents = new ArrayList<EObject>();
+        subPacks = new ArrayList<>();
+        packContents = new ArrayList<>();
         super.setUp();
         createPersistentStores();
     }

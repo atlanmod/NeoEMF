@@ -41,7 +41,6 @@ import org.jboss.util.collection.SoftValueHashMap;
 import org.mapdb.DB;
 import org.mapdb.Fun.Tuple2;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
