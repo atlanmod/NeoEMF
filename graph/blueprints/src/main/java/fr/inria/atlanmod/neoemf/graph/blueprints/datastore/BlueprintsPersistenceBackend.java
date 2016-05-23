@@ -310,7 +310,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			} else {
 				NeoLogger.error("Vertex {0} does not have an associated EClass Vertex", id);
 			}
-			loadedEObjects.put(id, neoEObject);
+			synchronized (loadedEObjects) {
+				loadedEObjects.put(id, neoEObject);
+			}
 		}
 		return neoEObject;
 	}

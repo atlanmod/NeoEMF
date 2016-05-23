@@ -109,7 +109,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			}
 		} finally {
 			isLoading = false;
-			NeoLogger.debug("Persistent Resource {0} Loaded", uri);
+			NeoLogger.info("Persistent Resource {0} Loaded", uri);
 		}
 	}
 
@@ -136,7 +136,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			this.isPersistent = true;
 		}
 		persistenceBackend.save();
-		NeoLogger.debug("Persistent Resource {0} Saved", uri);
+		NeoLogger.info("Persistent Resource {0} Saved", uri);
 	}
 
 	

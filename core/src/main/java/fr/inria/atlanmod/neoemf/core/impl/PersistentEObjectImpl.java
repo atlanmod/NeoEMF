@@ -62,7 +62,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	public PersistentEObjectImpl() {
 		this.id = new StringId(EcoreUtil.generateUUID());
 		this.eContainerFeatureID = UNSETTED_FEATURE_ID;
-		isMapped = false;
+		this.isMapped = false;
 	}
 
 
@@ -113,6 +113,12 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	}
 	
 	@Override
+	public EList<EObject> eContents() {
+	    EList<EObject> e = NeoEContentsEList.createNeoEContentsEList(this);
+	    return e;
+	}
+
+	@Override
 	protected void eBasicSetContainer(InternalEObject newContainer) {
 		eContainer = newContainer;
 		if (newContainer != null && newContainer.eResource() != resource) {
@@ -152,7 +158,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	public Internal resource() {
 		return resource;
 	}
-	
+
 	@Override
 	public void resource(Internal resource) {
 	    boolean updated = false;
