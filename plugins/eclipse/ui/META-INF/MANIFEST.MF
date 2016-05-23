@@ -7,7 +7,6 @@ Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin
 Bundle-Vendor: Atlanmod - Inria
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.core.commands,
@@ -25,3 +24,8 @@ Require-Bundle: org.eclipse.core.runtime,
  fr.inria.atlanmod.neoemf.core;bundle-version="0.0.1",
  fr.inria.atlanmod.neoemf.graph.blueprints;bundle-version="0.0.1",
  fr.inria.atlanmod.neoemf.map;bundle-version="0.0.1"
+Bundle-ClassPath: .,
+ commons-configuration.jar,
+ commons-lang.jar,
+ log4j-api.jar,
+ log4j-core.jar

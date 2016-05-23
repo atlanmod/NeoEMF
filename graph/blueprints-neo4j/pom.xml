@@ -22,6 +22,14 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- By default, imports a POM file instead of a JAR, which is not recognized by Eclipe -->
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
+            <version>1.9.6</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Common dependencies -->
 
         <dependency>

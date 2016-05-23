@@ -26,22 +26,4 @@
         <module>fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature</module>
     </modules>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-packaging-plugin</artifactId>
-                <configuration>
-                    <additionalFileSets>
-                        <fileSet>
-                            <directory>${project.basedir}</directory>
-                            <includes>
-                                <include>features.xml</include>
-                            </includes>
-                        </fileSet>
-                    </additionalFileSets>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

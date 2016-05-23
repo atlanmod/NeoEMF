@@ -54,7 +54,7 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -69,17 +69,7 @@
                 <configuration>
                     <additionalFileSets>
                         <fileSet>
-                            <directory>${project.build.directory}/classes/</directory>
-                        </fileSet>
-                        <fileSet>
                             <directory>${project.build.directory}/lib/</directory>
-                        </fileSet>
-                        <fileSet>
-                            <directory>${project.basedir}</directory>
-                            <includes>
-                                <include>plugin.xml</include>
-                                <include>icons</include>
-                            </includes>
                         </fileSet>
                     </additionalFileSets>
                 </configuration>
@@ -98,10 +88,12 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib/</outputDirectory>
                             <excludeTransitive>true</excludeTransitive>
+                            <includeScope>compile</includeScope>
+                            <includeScope>runtime</includeScope>
                             <excludeGroupIds>
-                                p2.eclipse-plugin,
                                 fr.inria.atlanmod.neoemf
                             </excludeGroupIds>
+                            <stripVersion>true</stripVersion>
                         </configuration>
                     </execution>
                 </executions>

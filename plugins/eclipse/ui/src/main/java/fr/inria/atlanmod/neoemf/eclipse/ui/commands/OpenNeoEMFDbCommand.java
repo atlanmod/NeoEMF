@@ -79,7 +79,7 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
                     new MapPersistenceBackendFactory());
 	            System.out.println(folder.getRawLocation().toOSString()+"/"+AbstractPersistenceBackendFactory.NEO_CONFIG_FILE);
 		        File neoConfigFile = new File(folder.getRawLocation().toOSString()+"/"+AbstractPersistenceBackendFactory.NEO_CONFIG_FILE);
-		        PropertiesConfiguration neoConfig = null;
+		        PropertiesConfiguration neoConfig;
 		        try {
                     neoConfig = new PropertiesConfiguration(neoConfigFile);
                 } catch (ConfigurationException e1) {
@@ -99,15 +99,13 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
 		        }
 //		        URI uri= NeoBlueprintsURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
 				URIEditorInput editorInput = new URIEditorInput(uri);
-				if (editorInput != null) {
-					IWorkbench workbench = PlatformUI.getWorkbench();
-					IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-					try {
-						page.openEditor(editorInput, NeoEMFEditor.EDITOR_ID);
-					} catch (PartInitException e) {
-						return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor", e);
-					}
-				}
+				IWorkbench workbench = PlatformUI.getWorkbench();
+				IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+				try {
+                    page.openEditor(editorInput, NeoEMFEditor.EDITOR_ID);
+                } catch (PartInitException e) {
+                    return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor", e);
+                }
 				return Status.OK_STATUS;
 			}
 		}.schedule();

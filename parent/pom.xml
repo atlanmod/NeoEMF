@@ -362,7 +362,7 @@
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package/>
                             <DynamicImport-Package>*</DynamicImport-Package>
-                            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                            <Embed-Dependency>*;scope=compile|runtime;type=!pom</Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>
                     </configuration>
