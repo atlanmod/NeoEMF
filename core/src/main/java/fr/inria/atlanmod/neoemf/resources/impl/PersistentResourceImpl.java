@@ -56,20 +56,20 @@ import java.util.Objects;
 
 public class PersistentResourceImpl extends ResourceImpl implements PersistentResource {
 
-	protected static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
+	private static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
 
-	protected final DummyRootEObject DUMMY_ROOT_EOBJECT;
+	private final DummyRootEObject DUMMY_ROOT_EOBJECT;
 
-	protected Map<?, ?> options;
+	private Map<?, ?> options;
 
-	protected SearcheableResourceEStore eStore;
+	private SearcheableResourceEStore eStore;
 
 	/**
 	 * The underlying {@link PersistenceBackend} that stores the data
 	 */
-	protected PersistenceBackend persistenceBackend;
+	private PersistenceBackend persistenceBackend;
 	
-	protected boolean isPersistent;
+	private boolean isPersistent;
 
 	public PersistentResourceImpl(URI uri) {
 		super(uri);
@@ -179,8 +179,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			returnValue = eStore.getAllInstances(eClass,strict);
 	    } catch(UnsupportedOperationException e) {
 	        NeoLogger.warn("Persistence Backend does not support advanced allInstances() computation, using standard EMF API instead");
-	        Iterator<EObject> it = getAllContents();
 	        EList<EObject> instanceList = new BasicEList<>();
+			Iterator<EObject> it = getAllContents();
 	        while(it.hasNext()) {
 	            EObject eObject = it.next();
 	            if(eClass.isInstance(eObject)) {
@@ -200,7 +200,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	}
 	
 
-	protected void shutdown() {
+	private void shutdown() {
 		persistenceBackend.stop();
 		this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
 		this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
@@ -242,8 +242,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 * {@link Resource#getContents()} feature.
 	 *
 	 */
-	protected static class ResourceContentsEStructuralFeature extends EReferenceImpl {
-		protected static final String RESOURCE__CONTENTS__FEATURE_NAME = "eContents";
+	private static class ResourceContentsEStructuralFeature extends EReferenceImpl {
+		private static final String RESOURCE__CONTENTS__FEATURE_NAME = "eContents";
 
 		public ResourceContentsEStructuralFeature() {
 			setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
@@ -259,12 +259,11 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 * {@link Resource}
 	 *
 	 */
-	protected static final class DummyRootEObject extends PersistentEObjectImpl {
+	private static final class DummyRootEObject extends PersistentEObjectImpl {
 		private static final String ROOT_EOBJECT_ID = "ROOT";
 
 		public DummyRootEObject(Resource.Internal resource) {
-			super();
-			this.id = new StringId(ROOT_EOBJECT_ID);
+			super(new StringId(ROOT_EOBJECT_ID));
 			eSetDirectResource(resource);
 		}
 	}
@@ -276,10 +275,10 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 * @author agomez
 	 * 
 	 */
-	protected class ResourceContentsEStoreEList<E> extends EStoreEObjectImpl.EStoreEList<E> {
+	private class ResourceContentsEStoreEList<E> extends EStoreEObjectImpl.EStoreEList<E> {
 		protected static final long serialVersionUID = 1L;
 
-		protected ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature eStructuralFeature, EStore store) {
+		public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature eStructuralFeature, EStore store) {
 			super(owner, eStructuralFeature, store);
 		}
 
@@ -411,7 +410,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			}
 		}
 
-		protected void loaded() {
+		private void loaded() {
 			if (!isLoaded()) {
 				Notification notification = setLoaded(true);
 				if (notification != null) {
@@ -420,7 +419,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			}
 		}
 
-		protected void modified() {
+		private void modified() {
 			if (isTrackingModification()) {
 				setModified(true);
 			}

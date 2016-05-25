@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Iterables;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
@@ -37,44 +40,46 @@ import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.jboss.util.collection.SoftValueHashMap;
-import org.jboss.util.collection.WeakValueHashMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 
-	protected static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-	protected static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+	private static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+	private static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
 
-	protected static final String INSTANCE_OF = "kyanosInstanceOf";
+	private static final String INSTANCE_OF = "kyanosInstanceOf";
 
 	private Index<Vertex> metaclassIndex;
 	private boolean isStarted;
 
 	/**
-	 * This {@link Map}&lt;objectID, {@link EObject}> is necessary to maintain a
+	 * This {@link Cache}&lt;objectID, {@link EObject}&gt; is necessary to maintain a
 	 * registry of the already loaded {@link Vertex}es, to avoid duplicated
 	 * {@link EObject}s in memory.
 	 * 
-	 * We use a {@link WeakValueHashMap} for saving memory. When the value
+	 * We use a weak key cache for saving memory. When the value
 	 * {@link EObject} is no longer referenced and can be garbage collected it
-	 * is removed from the {@link Map}.
+	 * is removed from the {@link Cache}.
 	 */
-	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<>();
-	protected Map<Object, Vertex> loadedVertices = new SoftValueHashMap<>();
-	protected List<EClass> indexedEClasses = new ArrayList<>();
+	private final Cache<Object, InternalPersistentEObject> loadedEObjectsCache;
+	private final Cache<Object, Vertex> loadedVerticesCache;
+	private List<EClass> indexedEClasses;
 	
 	public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);
+		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
+		this.loadedVerticesCache = CacheBuilder.newBuilder().softValues().build();
+		this.indexedEClasses = new ArrayList<>();
 		this.metaclassIndex = getIndex("metaclasses", Vertex.class);
 		if(metaclassIndex == null) {
 			metaclassIndex = createIndex("metaclasses",Vertex.class);
@@ -110,7 +115,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 	public void initMetaClassesIndex(List<EClass> eClassList) {
 	    for(EClass eClass : eClassList) {
-	        assert !metaclassIndex.get("name", eClass.getName()).iterator().hasNext() : "Index is not consistent";
+	        checkArgument(Iterables.isEmpty(metaclassIndex.get("name", eClass.getName())), "Index is not consistent");
 	        metaclassIndex.put("name", eClass.getName(), getVertex(eClass));
 	    }
 	}
@@ -155,7 +160,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		Vertex returnValue = null;
 		InternalPersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 		if(neoEObject.isMapped()) {
-			returnValue = loadedVertices.get(neoEObject.id());
+			returnValue = loadedVerticesCache.getIfPresent(neoEObject.id());
     		if(returnValue == null) {
 				returnValue = getVertex(neoEObject.id().toString());
     		}
@@ -177,31 +182,27 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
 		InternalPersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
-		Vertex vertex = null;
+		Vertex vertex;
 		if(neoEObject.isMapped()) {
-    		vertex = loadedVertices.get(neoEObject.id());
+    		vertex = loadedVerticesCache.getIfPresent(neoEObject.id());
     		if(vertex == null) {
     		    vertex = getVertex(neoEObject.id().toString());
-    		    loadedVertices.put(neoEObject.id(), vertex);
+    		    loadedVerticesCache.put(neoEObject.id(), vertex);
     		}
     	}
 		else {
 			vertex = addVertex(neoEObject);
 			EClass eClass = neoEObject.eClass();
-			Iterator<Vertex> metaclassIndexHits = metaclassIndex.get("name", eClass.getName()).iterator();
-			Vertex eClassVertex;
-			if(metaclassIndexHits.hasNext()) {
-			    eClassVertex = metaclassIndexHits.next();
-			}
-			else {
+			Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get("name", eClass.getName()), null);
+			if(eClassVertex == null) {
 				eClassVertex = addVertex(eClass);
 				metaclassIndex.put("name", eClass.getName(), eClassVertex);
 				indexedEClasses.add(eClass);
 			}
 			vertex.addEdge(INSTANCE_OF, eClassVertex);
 			neoEObject.setMapped(true);
-			loadedEObjects.put(neoEObject.id().toString(), neoEObject);
-			loadedVertices.put(neoEObject.id(), vertex);
+			loadedEObjectsCache.put(neoEObject.id().toString(), neoEObject);
+			loadedVerticesCache.put(neoEObject.id(), vertex);
 		}
 		return vertex;
 	}
@@ -235,9 +236,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 	public EClass resolveInstanceOf(Vertex vertex) {
 		EClass returnValue = null;
-		Iterator<Vertex> iterator = vertex.getVertices(Direction.OUT, INSTANCE_OF).iterator();
-		if (iterator.hasNext()) {
-			Vertex eClassVertex = iterator.next();
+		Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, INSTANCE_OF), null);
+		if (eClassVertex != null) {
 			String name = eClassVertex.getProperty(ECLASS__NAME);
 			String nsUri = eClassVertex.getProperty(EPACKAGE__NSURI);
 			returnValue = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
@@ -245,12 +245,14 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		return returnValue;
 	}
 
-	
 	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
 		Object id = vertex.getId();
 		InternalPersistentEObject neoEObject;
-		neoEObject = loadedEObjects.get(id);
+		neoEObject = loadedEObjectsCache.getIfPresent(id);
 		if (neoEObject == null) {
+			if (eClass == null) {
+				eClass = resolveInstanceOf(vertex);
+			}
 			if (eClass != null) {
 			    EObject eObject;
 			    if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
@@ -270,7 +272,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			} else {
 				NeoLogger.error("Vertex {0} does not have an associated EClass Vertex", id);
 			}
-			loadedEObjects.put(id, neoEObject);
+			loadedEObjectsCache.put(id, neoEObject);
 		}
 		return neoEObject;
 	}
@@ -285,35 +287,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return
 	 */
 	public InternalPersistentEObject reifyVertex(Vertex vertex) {
-		Object id = vertex.getId();
-		InternalPersistentEObject neoEObject;
-		neoEObject = loadedEObjects.get(id);
-		if (neoEObject == null) {
-			EClass eClass = resolveInstanceOf(vertex);
-			if (eClass != null) {
-			    EObject eObject;
-			    if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
-			        // Dynamic EMF
-			        eObject = PersistenceFactory.eINSTANCE.create(eClass);
-			    } else {
-			        // EObject eObject = EcoreUtil.create(eClass);
-			        eObject = EcoreUtil.create(eClass);
-			    }
-				if (eObject instanceof InternalPersistentEObject) {
-					neoEObject = (InternalPersistentEObject) eObject;
-				} else {
-					neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
-				}
-				neoEObject.id(new StringId(id.toString()));
-				neoEObject.setMapped(true);
-			} else {
-				NeoLogger.error("Vertex {0} does not have an associated EClass Vertex", id);
-			}
-			synchronized (loadedEObjects) {
-				loadedEObjects.put(id, neoEObject);
-			}
-		}
-		return neoEObject;
+		return reifyVertex(vertex, null);
 	}
 	
 	/**
@@ -336,8 +310,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 	
 	@Override
-	public Map<EClass,Iterator<Vertex>> getAllInstances(EClass eClass, boolean strict) {
-		Map<EClass,Iterator<Vertex>> indexHits;
+	public Map<EClass, Iterable<Vertex>> getAllInstances(EClass eClass, boolean strict) {
+		Map<EClass, Iterable<Vertex>> indexHits;
 		if(eClass.isAbstract() && strict) {
 		    // There is no strict instance of an abstract class
 			indexHits = Collections.emptyMap();
@@ -360,11 +334,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			}
 			// Get all the vertices that are indexed with one of the EClass
 			for(EClass ec : eClassToFind) {
-				Iterator<Vertex> metaClassVertexIterator = metaclassIndex.get("name", ec.getName()).iterator();
-				if(metaClassVertexIterator.hasNext()) {
-					Vertex metaClassVertex = metaClassVertexIterator.next();
-					Iterator<Vertex> instanceVertexIterator = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF).iterator();
-					indexHits.put(ec, instanceVertexIterator);
+				Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get("name", ec.getName()), null);
+				if(metaClassVertex != null) {
+					Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
+					indexHits.put(ec, instanceVertexIterable);
 			    } else {
 					NeoLogger.warn("MetaClass '{}' not found in index", ec.getName());
 				}
@@ -373,7 +346,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		return indexHits;
 	}
 
-	protected class NeoEdge extends IdEdge {
+	private class NeoEdge extends IdEdge {
 		public NeoEdge(Edge edge) {
 			super(edge, BlueprintsPersistenceBackend.this);
 		}
@@ -387,7 +360,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		public void remove() {
 			Vertex referencedVertex = getVertex(Direction.IN);
 			super.remove();
-			if (!referencedVertex.getEdges(Direction.IN).iterator().hasNext()) {
+			if (Iterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
 				// If the Vertex has no more incoming edges remove it from the DB
 				referencedVertex.remove();
 			}

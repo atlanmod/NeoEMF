@@ -11,14 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 
-import org.apache.commons.collections4.map.LRUMap;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that caches {@link EStructuralFeature}s
@@ -26,9 +28,9 @@ import java.util.Map;
  */
 public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 	
-	protected static final int DEFAULT_CACHE_SIZE = 10000;
+	private static final int DEFAULT_CACHE_SIZE = 10000;
 	
-	protected Map<MapKey, Object> cache;
+	private final Cache<MapKey, Object> cache;
 	
 	public EStructuralFeatureCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		this(eStore, DEFAULT_CACHE_SIZE);
@@ -36,12 +38,12 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 
 	public EStructuralFeatureCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore, int cacheSize) {
 		super(eStore);
-		this.cache = new LRUMap<>(cacheSize);
+		this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize).build();
 	}
 	
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-		Object returnValue = cache.get(new MapKey(object, feature, index));
+		Object returnValue = cache.getIfPresent(new MapKey(object, feature, index));
 		if (returnValue == null) { 
 			returnValue = super.get(object, feature, index);
 			cache.put(new MapKey(object, feature, index), returnValue);
@@ -89,28 +91,25 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 		if (feature.isMany()) {
 			removeFrom(0, object, feature);
 		} else {
-			cache.remove(new MapKey(object, feature, EStore.NO_INDEX));
+			cache.invalidate(new MapKey(object, feature, EStore.NO_INDEX));
 		}
 		super.unset(object, feature);
 	}
 
 	/**
 	 * Remove cached elements, from a initial position to the size of an element.
-	 * @param start
-	 * @param object
-	 * @param feature
      */
 	// FIXME Object allocation inside loop is a great place to look for memory leaks and performance issues
 	private void removeFrom(int start, InternalEObject object, EStructuralFeature feature) {
 		for (int i = start; i < size(object, feature); i++) {
-			cache.remove(new MapKey(object, feature, i));
+			cache.invalidate(new MapKey(object, feature, i));
 		}
 	}
 
-	protected class MapKey {
-		protected InternalEObject object;
-		protected EStructuralFeature feature;
-		protected int index;
+	private class MapKey {
+		private InternalEObject object;
+		private EStructuralFeature feature;
+		private int index;
 
 		public MapKey(InternalEObject object, EStructuralFeature feature, int index) {
 			this.object = object;
@@ -120,13 +119,7 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 
 		@Override
 		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((feature == null) ? 0 : feature.hashCode());
-			result = prime * result + index;
-			result = prime * result + ((object == null) ? 0 : object.hashCode());
-			return result;
+			return Objects.hash(getOuterType(), feature, index, object);
 		}
 
 		@Override
@@ -134,34 +127,14 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 			if (this == obj) {
 				return true;
 			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
+			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
 			MapKey other = (MapKey) obj;
-			if (!getOuterType().equals(other.getOuterType())) {
-				return false;
-			}
-			if (feature == null) {
-				if (other.feature != null) {
-					return false;
-				}
-			} else if (!feature.equals(other.feature)) {
-				return false;
-			}
-			if (index != other.index) {
-				return false;
-			}
-			if (object == null) {
-				if (other.object != null) {
-					return false;
-				}
-			} else if (!object.equals(other.object)) {
-				return false;
-			}
-			return true;
+			return Objects.equals(getOuterType(), other.getOuterType())
+					&& Objects.equals(object, other.object)
+					&& Objects.equals(feature, other.feature)
+					&& index == other.index;
 		}
 
 		private EStructuralFeatureCachingDelegatedEStoreImpl getOuterType() {

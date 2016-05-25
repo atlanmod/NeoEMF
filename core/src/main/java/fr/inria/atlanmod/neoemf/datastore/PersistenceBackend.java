@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.datastore;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 
 import java.util.Map;
 
@@ -20,9 +19,6 @@ public interface PersistenceBackend {
 
 	/**
 	 * Starts the underlying data store with the given {@code options}
-	 * 
-	 * @param options
-	 * @throws InvalidDataStoreException
 	 */
 	//TODO InvalidDataStoreException is never thrown in method implementations
 	void start(Map<?, ?> options) throws InvalidDataStoreException;
@@ -40,7 +36,7 @@ public interface PersistenceBackend {
 	void stop();
 	
 	/**
-	 * Saves the modifications of the owned {@link EObject}s in the persistence
+	 * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence
 	 * back-end
 	 */
 	void save();

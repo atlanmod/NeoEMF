@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -34,7 +37,6 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.jboss.util.collection.SoftValueHashMap;
 import org.mapdb.DB;
 import org.mapdb.Fun;
 import org.mapdb.Fun.Tuple2;
@@ -46,25 +48,25 @@ import java.util.Objects;
 
 public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableResourceEStore {
 
-	protected static final String INSTANCE_OF = "neoInstanceOf";
-	protected static final String CONTAINER = "eContainer";
+	private static final String INSTANCE_OF = "neoInstanceOf";
+	private static final String CONTAINER = "eContainer";
 
-	protected Map<Object, InternalPersistentEObject> loadedEObjects;
+	private final Cache<Object, InternalPersistentEObject> loadedEObjectsCache;
 	
-	protected DB db;
+	private DB db;
 	
-	protected Map<Tuple3<Id, String, Integer>, Object> map;
-	protected Map<Tuple2<Id, String>, Integer> sizesMap;
+	private Map<Tuple3<Id, String, Integer>, Object> map;
+	private Map<Tuple2<Id, String>, Integer> sizesMap;
 	
-	protected Map<Id, EClassInfo> instanceOfMap;
+	private Map<Id, EClassInfo> instanceOfMap;
 
-	protected Map<Id, ContainerInfo> containersMap;
+	private Map<Id, ContainerInfo> containersMap;
 	
-	protected Resource.Internal resource;
+	private Resource.Internal resource;
 
 	@SuppressWarnings("unchecked")
 	public DirectWriteMapWithIndexesResourceEStoreImpl(Resource.Internal resource, DB db) {
-		this.loadedEObjects = new SoftValueHashMap();
+		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
 		this.db = db;
 		this.resource = resource;
 		this.map = db.getHashMap("NeoEMF");
@@ -301,7 +303,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 	public EObject eObject(Id id) {
 		InternalPersistentEObject persistentEObject = null;
 		if (id != null) {
-			persistentEObject = loadedEObjects.get(id);
+			persistentEObject = loadedEObjectsCache.getIfPresent(id);
 			if (persistentEObject == null) {
 				EClass eClass = resolveInstanceOf(id);
 				if (eClass != null) {
@@ -321,7 +323,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl implements SearcheableR
 				} else {
 					NeoLogger.error("Element {0} does not have an associated EClass", id);
 				}
-				loadedEObjects.put(id, persistentEObject);
+				loadedEObjectsCache.put(id, persistentEObject);
 			}
 			Objects.requireNonNull(persistentEObject);
 			if (persistentEObject.resource() != resource()) {

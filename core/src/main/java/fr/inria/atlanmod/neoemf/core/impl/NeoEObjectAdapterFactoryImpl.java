@@ -11,7 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.core.impl;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 
 import net.sf.cglib.proxy.Enhancer;
@@ -22,27 +24,27 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 public class NeoEObjectAdapterFactoryImpl {
 
+	private NeoEObjectAdapterFactoryImpl() {}
+
 	/**
-	 * {@link WeakHashMap} that stores the EObjects that have been already
-	 * adapted to avoid duplication of {@link PersistentEObject}s. We use a
-	 * {@link WeakHashMap} since the adaptor is no longer needed when the
+	 * {@link Cache} that stores the EObjects that have been already
+	 * adapted to avoid duplication of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s. We use a
+	 * soft value cache since the adaptor is no longer needed when the
 	 * original {@link EObject} has been garbage collected
 	 */
-	protected static final Map<InternalEObject, InternalPersistentEObject> ADAPTED_OBJECTS = new WeakHashMap<>();
+	private static final Cache<InternalEObject, InternalPersistentEObject> ADAPTED_OBJECTS_CACHE = CacheBuilder.newBuilder().weakKeys().build();
 
 	public static <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		T returnValue = null;
 		if (adapterType.isInstance(adaptableObject)) {
 			returnValue = adapterType.cast(adaptableObject);
-		} else if (adapterType.isAssignableFrom(InternalPersistentEObject.class) 
+		} else if (adapterType.isAssignableFrom(InternalPersistentEObject.class)
 				&& adaptableObject instanceof InternalEObject) {
 
-			EObject eObjectAdapter = ADAPTED_OBJECTS.get(adaptableObject);
+			EObject eObjectAdapter = ADAPTED_OBJECTS_CACHE.getIfPresent(adaptableObject);
 			if (eObjectAdapter != null && adapterType.isAssignableFrom(eObjectAdapter.getClass())) {
 				returnValue = adapterType.cast(eObjectAdapter);
 			} else {
@@ -61,7 +63,7 @@ public class NeoEObjectAdapterFactoryImpl {
 				enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
 				enhancer.setCallback(new NeoEObjectProxyHandlerImpl((InternalEObject) adaptableObject));
 				returnValue = adapterType.cast(enhancer.create());
-				ADAPTED_OBJECTS.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  returnValue);
+				ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  returnValue);
 			}
 		}
 		return returnValue;

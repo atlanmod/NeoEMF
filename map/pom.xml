@@ -23,11 +23,6 @@
             <artifactId>mapdb</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-common</artifactId>
-        </dependency>
-
         <!-- Internal dependencies -->
 
         <dependency>
@@ -103,11 +98,6 @@
                             fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>
                         <_exportcontents>
-                            com.google.common.base,
-                            com.google.common.cache,
-                            com.google.common.collect,
-                            com.google.common.util.concurrent,
-
                             org.mapdb
                         </_exportcontents>
                         <Require-Bundle>

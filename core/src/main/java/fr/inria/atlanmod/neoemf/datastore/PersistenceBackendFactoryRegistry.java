@@ -15,17 +15,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PersistenceBackendFactoryRegistry {
+
+	private PersistenceBackendFactoryRegistry() {}
 	
-	private static Map<String,AbstractPersistenceBackendFactory> factories = new HashMap<>();
+	private static final Map<String,AbstractPersistenceBackendFactory> FACTORIES = new HashMap<>();
 	
 	public static Map<String,AbstractPersistenceBackendFactory> getFactories() {
-		return factories;
+		return FACTORIES;
 	}
 	
 	public static AbstractPersistenceBackendFactory getFactoryProvider(String factoryId) {
-		AbstractPersistenceBackendFactory factory = factories.get(factoryId);
+		AbstractPersistenceBackendFactory factory = FACTORIES.get(factoryId);
 		if(factory == null) {
-			throw new RuntimeException("Can not find a factory for the given type " + factoryId);
+			throw new IllegalArgumentException("Can not find a factory for the given type " + factoryId);
 		}
 		return factory;
 	}

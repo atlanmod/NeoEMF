@@ -17,18 +17,17 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * This interface extends the {@link EStore} interface and allows to establish a
- * mapping between {@link Resource}s and {@link EStore}s
+ * This interface extends the {@link InternalEObject.EStore} interface and allows to establish a
+ * mapping between {@link Resource}s and {@link InternalEObject.EStore}s
  * 
  */
 public interface SearcheableResourceEStore extends InternalEObject.EStore {
 
 	/**
-	 * Returns the {@link Resource} to which this {@link EStore} is associated
+	 * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated
 	 * 
 	 * @return
 	 */

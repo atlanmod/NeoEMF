@@ -15,23 +15,23 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * A simple {@link EStore} implementation that uses synchronized collections to
+ * A simple {@link InternalEObject.EStore} implementation that uses synchronized collections to
  * store the data in memory.
  * 
  */
 public class TransientEStoreImpl implements InternalEObject.EStore {
 
-	protected Map<EStoreEntryKey, Object> singleMap;
-	protected Map<EStoreEntryKey, List<Object>> manyMap;
+	private Map<EStoreEntryKey, Object> singleMap;
+	private Map<EStoreEntryKey, List<Object>> manyMap;
 
 	public TransientEStoreImpl() {
 		singleMap = new HashMap<>();
@@ -49,10 +49,8 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 			if (saved != null) {
 				returnValue = saved.get(index);
 			} else {
-			    // The list is empty (since it is not persisted in the
-			    // manyMap object
+			    // The list is empty (since it is not persisted in the manyMap object)
 			    throw new IndexOutOfBoundsException();
-//				return null;
 			}
 		}
 		return returnValue;
@@ -84,10 +82,8 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
         if (saved != null) {
             return saved.remove(index);
         } else {
-            // The list is empty (since it is not persisted in the
-            // manyMap object
+            // The list is empty (since it is not persisted in the manyMap object)
             throw new IndexOutOfBoundsException();
-//          return null;
         }
 	}
 
@@ -175,7 +171,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	public int hashCode(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		// Return the default hasCode value if the list is empty
+		// Return the default hashCode value if the list is empty
 		return list != null ? list.hashCode() : 1;
 	}
 
@@ -196,10 +192,10 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		throw new UnsupportedOperationException();
 	}
 
-	protected class EStoreEntryKey {
+	private class EStoreEntryKey {
 
-		protected InternalEObject eObject;
-		protected EStructuralFeature eStructuralFeature;
+		private InternalEObject eObject;
+		private EStructuralFeature eStructuralFeature;
 
 		public EStoreEntryKey(InternalEObject eObject, EStructuralFeature eStructuralFeature) {
 			this.eObject = eObject;
@@ -208,12 +204,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 		@Override
 		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((eObject == null) ? 0 : eObject.hashCode());
-			result = prime * result + ((eStructuralFeature == null) ? 0 : eStructuralFeature.hashCode());
-			return result;
+			return Objects.hash(getOuterType(), eObject, eStructuralFeature);
 		}
 
 		@Override
@@ -221,31 +212,13 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 			if (this == obj) {
 				return true;
 			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
+			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
 			EStoreEntryKey other = (EStoreEntryKey) obj;
-			if (!getOuterType().equals(other.getOuterType())) {
-				return false;
-			}
-			if (eObject == null) {
-				if (other.eObject != null) {
-					return false;
-				}
-			} else if (!eObject.equals(other.eObject)) {
-				return false;
-			}
-			if (eStructuralFeature == null) {
-				if (other.eStructuralFeature != null) {
-					return false;
-				}
-			} else if (!eStructuralFeature.equals(other.eStructuralFeature)) {
-				return false;
-			}
-			return true;
+			return Objects.equals(getOuterType(), other.getOuterType())
+					&& Objects.equals(eObject, other.eObject)
+					&& Objects.equals(eStructuralFeature, other.eStructuralFeature);
 		}
 
 		private TransientEStoreImpl getOuterType() {

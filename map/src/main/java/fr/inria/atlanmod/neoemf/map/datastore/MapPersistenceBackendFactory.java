@@ -42,6 +42,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class MapPersistenceBackendFactory extends
 		AbstractPersistenceBackendFactory {
 
@@ -56,7 +58,7 @@ public class MapPersistenceBackendFactory extends
 	@Override
 	public SearcheableResourceEStore createTransientEStore(
 			PersistentResource resource, PersistenceBackend backend) {
-		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
+		checkArgument(backend instanceof DB, "Trying to create a Map-based EStore with an invalid backend");
 		return new DirectWriteMapResourceEStoreImpl(resource, (DB)backend);
 	}
 
@@ -96,7 +98,7 @@ public class MapPersistenceBackendFactory extends
 	@Override
 	protected SearcheableResourceEStore internalCreatePersistentEStore(
 			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-		assert backend instanceof DB : "Trying to create a Map-based EStore with an invalid backend";
+		checkArgument(backend instanceof DB, "Trying to create a Map-based EStore with an invalid backend");
 		SearcheableResourceEStore returnValue;
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
@@ -127,8 +129,8 @@ public class MapPersistenceBackendFactory extends
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-	    assert from instanceof MapPersistenceBackend : "The backend to copy is not an instance of MapPersistenceBackend";
-	    assert to instanceof MapPersistenceBackend : "The target copy backend is not an instance of MapPersistenceBackend";
+		checkArgument(from instanceof MapPersistenceBackend, "The backend to copy is not an instance of MapPersistenceBackend");
+		checkArgument(to instanceof MapPersistenceBackend, "The target copy backend is not an instance of MapPersistenceBackend");
 	    MapPersistenceBackend mapFrom = (MapPersistenceBackend)from;
 	    MapPersistenceBackend mapTo = (MapPersistenceBackend)to;
 	    for(Map.Entry<String, Object> entry : mapFrom.getAll().entrySet()) {

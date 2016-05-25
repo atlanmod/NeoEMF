@@ -34,49 +34,54 @@ import org.eclipse.emf.ecore.resource.Resource.Internal;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import java.util.Objects;
+
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
 
-	public static int NUMBER_NEW_STORE_FEATURE_SET = 0;
-	public static int NUMBER_NEW_STORE_EOBJECT = 0;
+	private static int numberNewStoreFeatureSet = 0;
+	private static int numberNewStoreEobject = 0;
 
-	public static int NUMBER_MANY_FEATURE_SET = 0;
-	public static int NUMBER_SINGLE_FEATURE_SET = 0;
+	private static int numberManyFeatureSet = 0;
+	private static int numberSingleFeatureSet = 0;
 
-	protected static final int UNSETTED_FEATURE_ID = -1;
+	private static final int UNSETTED_FEATURE_ID = -1;
 
-	protected Id id;
+	private Id id;
 
-	protected Resource.Internal resource;
+	private Resource.Internal resource;
 
-	protected boolean isMapped;
+	private boolean isMapped;
 
 	/**
 	 * The internal cached value of the eContainer. This information should be
 	 * also maintained in the underlying {@link EStore}
 	 */
-	protected InternalEObject eContainer;
+	private InternalEObject eContainer;
 
-	protected int eContainerFeatureID;
+	private int eContainerFeatureID;
 
-	protected EStore eStore;
+	private EStore eStore;
 
 	public PersistentEObjectImpl() {
-		this.id = new StringId(EcoreUtil.generateUUID());
+		this(new StringId(EcoreUtil.generateUUID()));
+	}
+
+	protected PersistentEObjectImpl(Id id) {
+		this.id = id;
 		this.eContainerFeatureID = UNSETTED_FEATURE_ID;
 		this.isMapped = false;
 	}
-
 
 	@Override
 	public Id id() {
 		return id;
 	}
-	
+
 	@Override
 	public void id(Id id) {
 		this.id = id;
 	}
-	
+
 	@Override
 	public boolean isMapped() {
 	    return isMapped;
@@ -98,7 +103,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	    // it creates an important overhead and performance loss
 		return eContainer == null ? super.eInternalContainer() : eContainer;
 	}
-	
+
 	@Override
 	public EObject eContainer() {
 		EObject returnValue;
@@ -112,11 +117,10 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		}
 		return returnValue;
 	}
-	
+
 	@Override
 	public EList<EObject> eContents() {
-	    EList<EObject> e = NeoEContentsEList.createNeoEContentsEList(this);
-	    return e;
+		return NeoEContentsEList.createNeoEContentsEList(this);
 	}
 
 	@Override
@@ -126,7 +130,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			resource((Resource.Internal) eContainer.eResource());
 		}
 	}
-	
+
 	@Override
 	public int eContainerFeatureID() {
 		if (eContainerFeatureID == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
@@ -144,17 +148,17 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		}
 		return eContainerFeatureID;
 	}
-	
+
 	@Override
 	protected void eBasicSetContainerFeatureID(int newContainerFeatureID) {
 		eContainerFeatureID = newContainerFeatureID;
 	}
-	
+
 	@Override
 	public Resource eResource() {
 		return resource != null ? resource : super.eResource();
 	}
-	
+
 	@Override
 	public Internal resource() {
 		return resource;
@@ -192,8 +196,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 									}
 								}
 							}
-							NUMBER_NEW_STORE_FEATURE_SET++;
-							NUMBER_SINGLE_FEATURE_SET++;
+							numberNewStoreFeatureSet++;
+							numberSingleFeatureSet++;
 							updated = true;
 							eStore.set(this, feature, EStore.NO_INDEX, v);
 						}
@@ -215,8 +219,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 										}
 									}
 								}
-								NUMBER_NEW_STORE_FEATURE_SET++;
-								NUMBER_MANY_FEATURE_SET++;
+								numberNewStoreFeatureSet++;
+								numberManyFeatureSet++;
 								updated = true;
 								eStore.add(this, feature, i, v);
 							}
@@ -225,7 +229,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				}
 			}
 		}
-		if(updated) NUMBER_NEW_STORE_EOBJECT++;
+		if(updated) numberNewStoreEobject++;
 	}
 
 	@Override
@@ -240,7 +244,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	protected boolean eIsCaching() {
 		return false;
 	}
-	
+
 	@Override
 	public void dynamicSet(int dynamicFeatureID, Object value) {
 		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
@@ -255,7 +259,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			eStore().set(this, feature, InternalEObject.EStore.NO_INDEX, value);
 		}
 	}
-	
+
 	@Override
 	public Object dynamicGet(int dynamicFeatureID) {
 		Object returnValue;
@@ -267,52 +271,43 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		    }
 		    else {
 				returnValue = new EStoreEObjectImpl.BasicEStoreEList<Object>(this,feature) {
-		            @Override
+					private static final long serialVersionUID = 1L;
+
+					@Override
 		            public boolean contains(Object object) {
 		                return delegateContains(object);
 		            }
 		        };
-//		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
 		    }
 		} else {
 			returnValue = eStore().get(this, feature, EStore.NO_INDEX);
 		}
 		return returnValue;
 	}
-	
+
 	@Override
 	public void dynamicUnset(int dynamicFeatureID) {
 		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
 		eStore().unset(this, feature);
 	}
-	
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return Objects.hash(id);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		} else {
-			PersistentEObject other = (PersistentEObject) obj;
-			if (id == null) {
-				if (other.id() != null) {
-					return false;
-				}
-			} else if (!id.equals(other.id())) {
-				return false;
-			}
-			return true;
 		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		PersistentEObject other = (PersistentEObject) obj;
+		return Objects.equals(id, other.id());
 	}
-	
+
 	@Override
 	public String toString() {
 	    StringBuilder result = new StringBuilder(getClass().getName());
@@ -346,8 +341,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	private class EStoreEcoreEMap extends EcoreEMap<Object, Object> {
 		private static final long serialVersionUID = 1L;
 
-		public EStoreEcoreEMap(EClassifier eType, EStructuralFeature feature)
-		{
+		public EStoreEcoreEMap(EClassifier eType, EStructuralFeature feature) {
 			super ((EClass)eType, BasicEMap.Entry.class, null);
 			delegateEList = new EntryBasicEStoreEList(feature);
 			size = delegateEList.size();
@@ -361,33 +355,28 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			}
 
 			@Override
-            protected void didAdd(int index, Entry<Object, Object> newObject)
-            {
+            protected void didAdd(int index, Entry<Object, Object> newObject) {
                 doPut(newObject);
             }
 
 			@Override
-            protected void didSet(int index, Entry<Object, Object> newObject, Entry<Object, Object> oldObject)
-            {
+            protected void didSet(int index, Entry<Object, Object> newObject, Entry<Object, Object> oldObject) {
                 didRemove(index, oldObject);
                 didAdd(index, newObject);
             }
 
 			@Override
-            protected void didRemove(int index, Entry<Object, Object> oldObject)
-            {
+            protected void didRemove(int index, Entry<Object, Object> oldObject) {
                 EStoreEcoreEMap.this.doRemove(oldObject);
             }
 
 			@Override
-            protected void didClear(int size, Object [] oldObjects)
-            {
+            protected void didClear(int size, Object [] oldObjects) {
                 EStoreEcoreEMap.this.doClear();
             }
 
 			@Override
-            protected void didMove(int index, Entry<Object, Object> movedObject, int oldIndex)
-            {
+            protected void didMove(int index, Entry<Object, Object> movedObject, int oldIndex) {
                 EStoreEcoreEMap.this.doMove(movedObject);
             }
 		}

@@ -20,20 +20,15 @@ import java.lang.reflect.Method;
 
 public class NeoEObjectProxyHandlerImpl implements MethodInterceptor {
 
-	protected InternalEObject internalEObject;
-	
+	private InternalEObject internalEObject;
+
 	public NeoEObjectProxyHandlerImpl(InternalEObject internalEObject) {
 		super();
 		this.internalEObject = internalEObject;
 	}
 
-	public InternalEObject getInternalEObject() {
-		return internalEObject;
-	}
-
-	
 	@Override
-	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) {
 		throw new UnsupportedOperationException();
 	}
 }

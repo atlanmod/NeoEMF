@@ -11,13 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 
-import org.apache.commons.collections4.map.LRUMap;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that caches the size data
@@ -25,9 +27,9 @@ import java.util.Map;
  */
 public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 	
-	protected static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
+	private static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
 	
-	protected Map<MapKey, Integer> sizeCache;
+	private final Cache<MapKey, Integer> sizeCache;
 	
 	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		this(eStore, DEFAULT_SIZE_CACHE_SIZE);
@@ -35,7 +37,7 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 
 	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore, int sizeCacheSize) {
 		super(eStore);
-		this.sizeCache = new LRUMap<>(sizeCacheSize);
+		this.sizeCache = CacheBuilder.newBuilder().maximumSize(sizeCacheSize).build();
 	}
 	
 	@Override
@@ -46,13 +48,13 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 
 	@Override
 	public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-		Integer size = sizeCache.get(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
 		return size != null ? size == 0 : super.isEmpty(object, feature);
 	}
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		Integer size = sizeCache.get(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
 		if (size == null) {
 			size = super.size(object, feature); 
 			sizeCache.put(new MapKey(object, feature), size);
@@ -62,7 +64,7 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		Integer size = sizeCache.get(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
 		if (size != null) {
 			sizeCache.put(new MapKey(object, feature), size + 1); 
 		} 
@@ -71,7 +73,7 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		Integer size = sizeCache.get(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
 		if (size != null) {
 			sizeCache.put(new MapKey(object, feature), size - 1); 
 		} 
@@ -84,9 +86,9 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 		super.clear(object, feature);
 	}
 
-	protected class MapKey {
-		protected InternalEObject object;
-		protected EStructuralFeature feature;
+	private class MapKey {
+		private InternalEObject object;
+		private EStructuralFeature feature;
 
 		public MapKey(InternalEObject object, EStructuralFeature feature) {
 			this.object = object;
@@ -95,12 +97,7 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 
 		@Override
 		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((object == null) ? 0 : object.hashCode());
-			result = prime * result + ((feature == null) ? 0 : feature.hashCode());
-			return result;
+			return Objects.hash(getOuterType(), object, feature);
 		}
 
 		@Override
@@ -108,31 +105,13 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 			if (this == obj) {
 				return true;
 			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
+			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
 			MapKey other = (MapKey) obj;
-			if (!getOuterType().equals(other.getOuterType())) {
-				return false;
-			}
-			if (object == null) {
-				if (other.object != null) {
-					return false;
-				}
-			} else if (!object.equals(other.object)) {
-				return false;
-			}
-			if (feature == null) {
-				if (other.feature != null) {
-					return false;
-				}
-			} else if (!feature.equals(other.feature)) {
-				return false;
-			}
-			return true;
+			return Objects.equals(getOuterType(), other.getOuterType())
+					&& Objects.equals(object, other.object)
+					&& Objects.equals(feature, other.feature);
 		}
 
 		private SizeCachingDelegatedEStoreImpl getOuterType() {

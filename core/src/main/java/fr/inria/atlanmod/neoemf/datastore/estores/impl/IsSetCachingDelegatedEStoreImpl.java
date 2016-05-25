@@ -11,13 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 
-import org.apache.commons.collections4.map.LRUMap;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that caches the size data
@@ -25,17 +27,17 @@ import java.util.Map;
  */
 public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 	
-	protected static final int DEFAULT_IS_SET_CACHE_SIZE = 10000;
+	private static final int DEFAULT_CACHE_SIZE = 10000;
 	
-	protected Map<MapKey, Boolean> isSetCache;
+	private final Cache<MapKey, Boolean> isSetCache;
 	
 	public IsSetCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
-		this(eStore, DEFAULT_IS_SET_CACHE_SIZE);
+		this(eStore, DEFAULT_CACHE_SIZE);
 	}
 
 	public IsSetCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore, int sizeCacheSize) {
 		super(eStore);
-		this.isSetCache = new LRUMap<>(sizeCacheSize);
+		this.isSetCache = CacheBuilder.newBuilder().maximumSize(sizeCacheSize).build();
 	}
 	
 	@Override
@@ -46,32 +48,32 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		Boolean isSet = isSetCache.get(new MapKey(object, feature));
+		Boolean isSet = isSetCache.getIfPresent(new MapKey(object, feature));
 		return isSet != null ? isSet : eStore.isSet(object, feature);
 	}
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		eStore.add(object, feature, index, value);
-		isSetCache.put(new MapKey(object, feature), true); 
+		isSetCache.put(new MapKey(object, feature), true);
 	}
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		isSetCache.remove(new MapKey(object, feature)); // Remove, next queries will update the right cached value
+		isSetCache.invalidate(new MapKey(object, feature)); // Remove, next queries will update the right cached value
 		return super.remove(object, feature, index);
 	}
 	
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		Object returnValue = eStore.set(object, feature, index, value);
-		isSetCache.put(new MapKey(object, feature), true); 
+		isSetCache.put(new MapKey(object, feature), true);
 		return returnValue;
 	}
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		isSetCache.put(new MapKey(object, feature), false); 
+		isSetCache.put(new MapKey(object, feature), false);
 		eStore.clear(object, feature);
 	}
 	
@@ -102,9 +104,9 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	
 	// TODO Other methods may be added...
 
-	protected class MapKey {
-		protected InternalEObject object;
-		protected EStructuralFeature feature;
+	private class MapKey {
+		private InternalEObject object;
+		private EStructuralFeature feature;
 
 		public MapKey(InternalEObject object, EStructuralFeature feature) {
 			this.object = object;
@@ -113,12 +115,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 
 		@Override
 		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((object == null) ? 0 : object.hashCode());
-			result = prime * result + ((feature == null) ? 0 : feature.hashCode());
-			return result;
+			return Objects.hash(getOuterType(), object, feature);
 		}
 
 		@Override
@@ -126,31 +123,13 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 			if (this == obj) {
 				return true;
 			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
+			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
 			MapKey other = (MapKey) obj;
-			if (!getOuterType().equals(other.getOuterType())) {
-				return false;
-			}
-			if (object == null) {
-				if (other.object != null) {
-					return false;
-				}
-			} else if (!object.equals(other.object)) {
-				return false;
-			}
-			if (feature == null) {
-				if (other.feature != null) {
-					return false;
-				}
-			} else if (!feature.equals(other.feature)) {
-				return false;
-			}
-			return true;
+			return Objects.equals(getOuterType(), other.getOuterType())
+					&& Objects.equals(object, other.object)
+					&& Objects.equals(feature, other.feature);
 		}
 
 		private IsSetCachingDelegatedEStoreImpl getOuterType() {

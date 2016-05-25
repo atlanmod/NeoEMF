@@ -25,7 +25,7 @@ import java.util.List;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
     
-    InternalPersistentEObject owner;
+    private InternalPersistentEObject owner;
     
     public static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = 
         new NeoEContentsEList<Object>(null, (EStructuralFeature[])null)
@@ -37,6 +37,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
           }
         };
 
+    @SuppressWarnings("unchecked") // Unchecked cast
     public static <T> NeoEContentsEList<T> emptyNeoContentsEList() {
         return (NeoEContentsEList<T>)EMPTY_NEO_CONTENTS_ELIST;
     }
@@ -59,6 +60,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     }
     
     @Override
+    @SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'E'
     public E get(int index) {
         if(eStructuralFeatures == null) {
             throw new IndexOutOfBoundsException("index=" + index + ",size=0");

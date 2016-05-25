@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -33,7 +36,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.jboss.util.collection.SoftValueHashMap;
 import org.mapdb.DB;
 import org.mapdb.Fun;
 import org.mapdb.Fun.Tuple2;
@@ -44,31 +46,30 @@ import java.util.Objects;
 
 public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceEStore {
 
-	protected static final String INSTANCE_OF = "neoInstanceOf";
-	protected static final String CONTAINER = "eContainer";
+	private static final String INSTANCE_OF = "neoInstanceOf";
+	private static final String CONTAINER = "eContainer";
 
-	protected Map<Object, InternalPersistentEObject> loadedEObjects;
-	
+	private final Cache<Object, InternalPersistentEObject> loadedEObjectsCache;
+
 	protected DB db;
-	
-	protected Map<Tuple2<Id, String>, Object> map;
-	
-	protected Map<Id, EClassInfo> instanceOfMap;
 
-	protected Map<Id, ContainerInfo> containersMap;
-	
-	protected Resource.Internal resource;
+	private Map<Tuple2<Id, String>, Object> map;
+
+	private Map<Id, EClassInfo> instanceOfMap;
+
+	private Map<Id, ContainerInfo> containersMap;
+
+	private Resource.Internal resource;
 
 	@SuppressWarnings("unchecked")
 	public DirectWriteMapResourceEStoreImpl(Resource.Internal resource, DB db) {
-		this.loadedEObjects = new SoftValueHashMap();
+		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
 		this.db = db;
 		this.resource = resource;
 		this.map = db.getHashMap("NeoEMF");
 		this.instanceOfMap = db.getHashMap(INSTANCE_OF);
 		this.containersMap = db.getHashMap(CONTAINER);
 	}
-
 
 	@Override
 	public Resource.Internal resource() {
@@ -201,7 +202,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		}
 		array = ArrayUtils.add(array, index, referencedObject.id());
 		map.put(Fun.t2(object.id(), eReference.getName()), array);
-		loadedEObjects.put(referencedObject.id(),(InternalPersistentEObject)referencedObject);
+		loadedEObjectsCache.put(referencedObject.id(),(InternalPersistentEObject)referencedObject);
 	}
 
 	@Override
@@ -375,7 +376,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	public EObject eObject(Id id) {
 		InternalPersistentEObject neoEObject = null;
 		if (id != null) {
-			neoEObject = loadedEObjects.get(id);
+			neoEObject = loadedEObjectsCache.getIfPresent(id);
 			if (neoEObject == null) {
 				EClass eClass = resolveInstanceOf(id);
 				if (eClass != null) {
@@ -395,7 +396,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 				} else {
 					NeoLogger.error("Element {0} does not have an associated EClass", id);
 				}
-				loadedEObjects.put(id, neoEObject);
+				loadedEObjectsCache.put(id, neoEObject);
 			}
 			Objects.requireNonNull(neoEObject);
 			if (neoEObject.resource() != resource()) {
@@ -445,5 +446,5 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 			throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
-	
+
 }

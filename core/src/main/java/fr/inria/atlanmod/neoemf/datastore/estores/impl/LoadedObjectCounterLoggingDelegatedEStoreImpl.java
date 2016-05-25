@@ -22,13 +22,13 @@ import java.util.Set;
 
 public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 
-    protected Set<InternalEObject> loadedObjects;
+    private Set<InternalEObject> loadedObjects;
 
     public LoadedObjectCounterLoggingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
         super(eStore);
-        NeoLogger.info("Using LoadedObjectCounter logger");
         this.loadedObjects = new HashSet<>();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        NeoLogger.info("Using LoadedObjectCounter logger");
     }
 
     @Override

@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprintsResourceEStoreImpl {
@@ -25,21 +24,21 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	 * Default number of allowed modifications (100000) between commits on the
 	 * underlying graph
 	 */
-	public static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
+	private static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
 	/**
 	 * Number of allowed modifications between commits on the underlying graph
 	 * for this {@link AutocommitBlueprintsResourceEStoreImpl}
 	 */
-	protected final int OPS_BETWEEN_COMMITS;
+	private final int OPS_BETWEEN_COMMITS;
 
 	/**
 	 * Current number of modifications modulo {@link #OPS_BETWEEN_COMMITS}
 	 */
-	protected int opCount;
+	private int opCount;
 
 	/**
-	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link EStore}. Allows to
+	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link InternalEObject.EStore}. Allows to
 	 * specify the number of allowed modification on the underlying graph before
 	 * calling the {@link BlueprintsPersistenceBackend#commit()} method automatically.
 	 * 
@@ -55,7 +54,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	}
 
 	/**
-	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link EStore}. Allows to
+	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link InternalEObject.EStore}. Allows to
 	 * make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
 	 * graph before calling the {@link BlueprintsPersistenceBackend#commit()} method
 	 * automatically.

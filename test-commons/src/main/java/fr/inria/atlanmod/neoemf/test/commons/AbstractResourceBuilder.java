@@ -25,13 +25,13 @@ import java.util.Map;
 
 public abstract class AbstractResourceBuilder {
 
-    protected EPackage ePackage;
-    
+    private EPackage ePackage;
+
     protected ResourceSet rSet;
     protected URI uri;
     protected Map<Object,Object> resourceOptions;
-    
-    protected boolean isPersistent;
+
+    private boolean isPersistent;
     
     public AbstractResourceBuilder(EPackage ePackage) {
         this.ePackage = ePackage;

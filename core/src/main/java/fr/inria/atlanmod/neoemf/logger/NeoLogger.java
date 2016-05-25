@@ -20,6 +20,10 @@ import java.text.MessageFormat;
 
 public class NeoLogger {
 
+    private static final int CALLER_CLASS_DEPTH = 4;
+
+    private NeoLogger() {}
+
     private static final boolean CLASSNAME_NEEDED = false;
 
     private static final Logger ROOT_LOGGER = LogManager.getLogger();
@@ -82,7 +86,7 @@ public class NeoLogger {
 
     private static Logger getLogger() {
         if (CLASSNAME_NEEDED) {
-            return LogManager.getLogger(ReflectionUtil.getCallerClass(4));
+            return LogManager.getLogger(ReflectionUtil.getCallerClass(CALLER_CLASS_DEPTH));
         } else {
             return ROOT_LOGGER;
         }

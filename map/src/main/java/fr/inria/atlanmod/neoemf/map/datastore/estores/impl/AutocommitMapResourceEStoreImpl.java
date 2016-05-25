@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.mapdb.DB;
 
@@ -25,21 +24,21 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	 * Default number of allowed modifications (100000) between commits on the
 	 * underlying db
 	 */
-	protected static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
+	private static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
 	/**
 	 * Number of allowed modifications between commits on the underlying db
 	 * for this {@link AutocommitMapResourceEStoreImpl}
 	 */
-	protected final int opsBetweenCommits;
+	private final int OPS_BETWEEN_COMMITS;
 
 	/**
-	 * Current number of modifications modulo {@link #opsBetweenCommits}
+	 * Current number of modifications modulo {@link #OPS_BETWEEN_COMMITS}
 	 */
-	protected int opCount;
+	private int opCount;
 
 	/**
-	 * Constructor for this {@link DB}-based {@link EStore}. Allows to
+	 * Constructor for this {@link DB}-based {@link InternalEObject.EStore}. Allows to
 	 * specify the number of allowed modification on the underlying db before
 	 * calling the {@link DB#commit()} method automatically.
 	 * 
@@ -49,12 +48,12 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	 */
 	public AutocommitMapResourceEStoreImpl(Resource.Internal resource, DB db, int opsBetweenCommits) {
 		super(resource, db);
-		this.opsBetweenCommits = opsBetweenCommits;
+		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
 		this.opCount = 0;
 	}
 
 	/**
-	 * Constructor for this {@link DB}-based {@link EStore}. Allows to
+	 * Constructor for this {@link DB}-based {@link InternalEObject.EStore}. Allows to
 	 * make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
 	 * db before calling the {@link DB#commit()} method
 	 * automatically.
@@ -106,7 +105,7 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	}
 
 	private void incrementAndCommit() {
-		opCount = (opCount + 1) % opsBetweenCommits;
+		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
 		if (opCount == 0) {
 			db.commit();
 		}

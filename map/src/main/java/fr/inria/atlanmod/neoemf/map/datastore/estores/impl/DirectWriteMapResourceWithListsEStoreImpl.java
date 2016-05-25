@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -37,7 +38,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.jboss.util.collection.SoftValueHashMap;
 import org.mapdb.DB;
 import org.mapdb.Fun.Tuple2;
 
@@ -50,32 +50,34 @@ import java.util.concurrent.ExecutionException;
 
 public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableResourceEStore {
 
-	protected static final String INSTANCE_OF = "neoInstanceOf";
-	protected static final String CONTAINER = "eContainer";
+	private static final int DEFAULT_CACHE_SIZE = 100;
 
-	protected Map<Object, InternalPersistentEObject> loadedEObjects;
-	
-	protected DB db;
-	
-	protected Map<Tuple2<Id, String>, Object> map;
-	
-	protected Map<Id, EClassInfo> instanceOfMap;
+	private static final String INSTANCE_OF = "neoInstanceOf";
+	private static final String CONTAINER = "eContainer";
 
-	protected Map<Id, ContainerInfo> containersMap;
-	
-	protected Resource.Internal resource;
-	
-	protected LoadingCache<Tuple2<Id, String>, Object> mapCache;
+	private final Cache<Object, InternalPersistentEObject> loadedEObjectsCache;
+
+	private DB db;
+
+	private Map<Tuple2<Id, String>, Object> map;
+
+	private Map<Id, EClassInfo> instanceOfMap;
+
+	private Map<Id, ContainerInfo> containersMap;
+
+	private Resource.Internal resource;
+
+	private final LoadingCache<Tuple2<Id, String>, Object> mapCache;
 
 	@SuppressWarnings("unchecked")
 	public DirectWriteMapResourceWithListsEStoreImpl(Resource.Internal resource, DB db) {
-		this.loadedEObjects = new SoftValueHashMap();
+		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
+		this.mapCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build(new Tuple2CacheLoader());
 		this.db = db;
 		this.resource = resource;
 		this.map = db.getHashMap("NeoEMF");
 		this.instanceOfMap = db.getHashMap(INSTANCE_OF);
 		this.containersMap = db.getHashMap(CONTAINER);
-		this.mapCache = CacheBuilder.newBuilder().maximumSize(100).softValues().build(new Tuple2CacheLoader());
 	}
 
 
@@ -387,7 +389,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 	public EObject eObject(Id id) {
 		InternalPersistentEObject persistentEObject = null;
 		if (id != null) {
-			persistentEObject = loadedEObjects.get(id);
+			persistentEObject = loadedEObjectsCache.getIfPresent(id);
 			if (persistentEObject == null) {
 				EClass eClass = resolveInstanceOf(id);
 				if (eClass != null) {
@@ -407,7 +409,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 				} else {
 					NeoLogger.error("Element {0} does not have an associated EClass", id);
 				}
-				loadedEObjects.put(id, persistentEObject);
+				loadedEObjectsCache.put(id, persistentEObject);
 			}
 			Objects.requireNonNull(persistentEObject);
 			if (persistentEObject.resource() != resource()) {
@@ -472,7 +474,10 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
 		throw new UnsupportedOperationException();
 	}
 
-	protected class Tuple2CacheLoader extends CacheLoader<Tuple2<Id, String>, Object> {
+	private class Tuple2CacheLoader extends CacheLoader<Tuple2<Id, String>, Object> {
+
+		private static final int ARRAY_SIZE_OFFSET = 10;
+
 		@Override
         public Object load(Tuple2<Id, String> key) throws Exception {
             Object returnValue;
@@ -481,7 +486,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
                 returnValue = new ArrayList<>();
             } else if (value instanceof Object[]) {
                 Object[] array = (Object[]) value;
-                List<Object> list = new ArrayList<>(array.length + 10);
+                List<Object> list = new ArrayList<>(array.length + ARRAY_SIZE_OFFSET);
                 CollectionUtils.addAll(list, array);
                 returnValue = list;
             } else {

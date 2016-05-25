@@ -13,11 +13,13 @@ package fr.inria.atlanmod.neoemf.core.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
+import java.util.Objects;
+
 public class StringId implements Id {
 
 	private static final long serialVersionUID = 1L;
-	
-	protected String literalId;
+
+	private String literalId;
 	
 	public StringId(String literalId) {
 		this.literalId = literalId;
@@ -43,13 +45,12 @@ public class StringId implements Id {
 		if(obj == this) {
 			return true;
 		}
-		else if(obj == null || obj.getClass() != getClass()) {
+		if(obj == null || obj.getClass() != getClass()) {
 			return false;
 		}
-		else {
-			return obj.toString().equals(literalId);
-		}
-		
+
+		StringId other = (StringId) obj;
+		return Objects.equals(literalId, other.literalId);
 	}
 	
 	@Override
