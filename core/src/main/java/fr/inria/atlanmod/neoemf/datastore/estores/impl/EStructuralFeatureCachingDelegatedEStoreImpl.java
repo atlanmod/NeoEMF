@@ -88,10 +88,10 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 	
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		if (feature.isMany()) {
-			removeFrom(0, object, feature);
-		} else {
+		if (!feature.isMany()) {
 			cache.invalidate(new MapKey(object, feature, EStore.NO_INDEX));
+		} else {
+			removeFrom(0, object, feature);
 		}
 		super.unset(object, feature);
 	}

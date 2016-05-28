@@ -104,10 +104,10 @@ public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {
 	@Override
 	public void unset(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		if (feature.isMany()) {
-			manyMap.remove(entry);
-		} else {
+		if (!feature.isMany()) {
 			singleMap.remove(entry);
+		} else {
+			manyMap.remove(entry);
 		}
 	}
 
