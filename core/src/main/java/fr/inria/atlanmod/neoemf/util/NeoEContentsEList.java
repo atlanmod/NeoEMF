@@ -67,12 +67,12 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         }
         // Find the feature to look for
         int featureSize = 0;
-        for(int i = 0; i < eStructuralFeatures.length; i++) {
-            int localFeatureSize = owner.eStore().size(owner, eStructuralFeatures[i]);
+        for (EStructuralFeature eStructuralFeature : eStructuralFeatures) {
+            int localFeatureSize = owner.eStore().size(owner, eStructuralFeature);
             featureSize += localFeatureSize;
-            if(featureSize > index) {
+            if (featureSize > index) {
                 // The correct feature has been found
-                return (E)owner.eStore().get(owner, eStructuralFeatures[i], (index-(featureSize-localFeatureSize)));
+                return (E) owner.eStore().get(owner, eStructuralFeature, (index - (featureSize - localFeatureSize)));
             }
         }
         throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);
