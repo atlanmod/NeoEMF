@@ -16,8 +16,9 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class NeoURI extends URI {
 
@@ -31,14 +32,13 @@ public class NeoURI extends URI {
 	}
 
 	public static URI createNeoURI(URI uri) {
-		if(uri.scheme().equals(FILE_SCHEME)) {
-			throw new IllegalArgumentException("Can not create NeoURI from file URI without a valid scheme");
-		}
-		if(PersistenceBackendFactoryRegistry.getFactories().containsKey(uri.scheme())) {
-			return new NeoURI(uri.hashCode(), uri);
-		} else {
-			throw new IllegalArgumentException(MessageFormat.format("Unregistered URI scheme {0}", uri.toString()));
-		}
+		checkArgument(!uri.scheme().equals(FILE_SCHEME),
+				"Can not create NeoURI from file URI without a valid scheme"
+		);
+		checkArgument(PersistenceBackendFactoryRegistry.getFactories().containsKey(uri.scheme()),
+				"Unregistered URI scheme %s", uri.toString()
+		);
+		return new NeoURI(uri.hashCode(), uri);
 	}
 	
 	public static URI createNeoURI(File file, String scheme) {

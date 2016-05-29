@@ -52,7 +52,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PersistentResourceImpl extends ResourceImpl implements PersistentResource {
 
@@ -284,9 +286,10 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 		@Override
 		protected E validate(int index, E object) {
-			if (!canContainNull() && object == null) {
-				throw new IllegalArgumentException("The 'no null' constraint is violated");
-			}
+			checkArgument(
+					canContainNull() || object != null,
+					"The 'no null' constraint is violated"
+			);
 			return object;
 		}
 
@@ -345,7 +348,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			// referenced from a saved object may be garbage collected before
 			// they have been completely stored in the DB
 			List<Object> hardLinksList = new ArrayList<>();
-			InternalPersistentEObject eObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
+			InternalPersistentEObject eObject = checkNotNull(
+					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class)
+			);
 			// Collect all contents
 			hardLinksList.add(object);
 			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
@@ -353,7 +358,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler
 			for (Object element : hardLinksList) {
-				InternalPersistentEObject internalElement = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));
+				InternalPersistentEObject internalElement = checkNotNull(
+						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class)
+				);
 				internalElement.resource(PersistentResourceImpl.this);
 			}
 			super.delegateAdd(index, object);
@@ -364,7 +371,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		protected E delegateRemove(int index) {
 			E object = super.delegateRemove(index);
 			List<E> hardLinksList = new ArrayList<>();
-			InternalPersistentEObject eObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
+			InternalPersistentEObject eObject = checkNotNull(
+					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class)
+			);
 			// Collect all contents
 			hardLinksList.add(object);
 			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add((E)it.next()));
@@ -372,7 +381,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			// We ensure that using the hardLinksList it is not taken out by JIT
 			// compiler
 			for (E element : hardLinksList) {
-				InternalPersistentEObject internalElement = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));
+				InternalPersistentEObject internalElement = checkNotNull(
+						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class)
+				);
 				internalElement.resource(null);
 			}
 			return object;			

@@ -172,8 +172,7 @@ public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject eObject) {
-		// This should never be called.
-		throw new UnsupportedOperationException();
+		throw new IllegalStateException("This method should not be called");
 	}
 
 	@Override

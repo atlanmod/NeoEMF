@@ -37,7 +37,10 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkElementIndex;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 
 public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResourceEStore {
 
@@ -71,41 +74,35 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	}
 
 	protected Object get(InternalEObject object, EAttribute eAttribute, int index) {
-		Object returnValue;
 		Vertex vertex = graph.getVertex(object);
-		if (!eAttribute.isMany()) {
-			Object property = vertex.getProperty(eAttribute.getName());
-			returnValue = parseProperty(eAttribute, property);
-		} else {
-			Integer size = getSize(vertex, eAttribute);
-			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
-			} else {
-				Object property = vertex.getProperty(eAttribute.getName() + SEPARATOR + index);
-				returnValue = parseProperty(eAttribute, property);
-			}
+		String propertyName = eAttribute.getName();
+		if (eAttribute.isMany()) {
+			checkElementIndex(index, getSize(vertex, eAttribute));
+			propertyName += SEPARATOR + index;
 		}
-		return returnValue;
+		return parseProperty(eAttribute, vertex.getProperty(propertyName));
 	}
 
 	protected Object get(InternalEObject object, EReference eReference, int index) {
 		Object returnValue = null;
 		Vertex vertex = graph.getVertex(object);
+		Vertex referencedVertex;
 		if (!eReference.isMany()) {
-			Vertex referencedVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, eReference.getName()), null);
-			if (referencedVertex != null) {
-				returnValue = reifyVertex(referencedVertex);
-			}
+			referencedVertex = Iterables.getOnlyElement(
+					vertex.getVertices(Direction.OUT, eReference.getName()), null
+			);
 		} else {
-			Integer size = getSize(vertex, eReference);
-			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
-			} else {
-				Vertex referencedVertex = Iterables.getOnlyElement(vertex.query().labels(eReference.getName()).direction(Direction.OUT).has(POSITION, index).vertices(), null);
-				if (referencedVertex != null) {
-					returnValue = reifyVertex(referencedVertex);
-				}
-			}
+			checkElementIndex(index, getSize(vertex, eReference));
+			referencedVertex = Iterables.getOnlyElement(
+					vertex.query()
+							.labels(eReference.getName())
+							.direction(Direction.OUT)
+							.has(POSITION, index)
+							.vertices()
+					, null);
+		}
+		if (referencedVertex != null) {
+			returnValue = reifyVertex(referencedVertex);
 		}
 		return returnValue;
 	}
@@ -131,20 +128,16 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected Object set(InternalEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		Vertex vertex = graph.getOrCreateVertex(object);
+		String propertyName = eAttribute.getName();
 		if (!eAttribute.isMany()) {
-			Object property = vertex.getProperty(eAttribute.getName());
+			Object property = vertex.getProperty(propertyName);
 			returnValue = parseProperty(eAttribute, property);
-			vertex.setProperty(eAttribute.getName(), serializeToProperty(eAttribute, value));
 		} else {
-			Integer size = getSize(vertex, eAttribute);
-			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
-			} else {
-				String propertyName = eAttribute.getName() + SEPARATOR + index;
-				returnValue = vertex.getProperty(propertyName);
-				vertex.setProperty(propertyName, serializeToProperty(eAttribute, value));
-			}
+			checkElementIndex(index, getSize(vertex, eAttribute));
+			propertyName += SEPARATOR + index;
+			returnValue = vertex.getProperty(propertyName);
 		}
+		vertex.setProperty(propertyName, serializeToProperty(eAttribute, value));
 		return returnValue;
 	}
 
@@ -159,7 +152,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		}
 
 		if (!eReference.isMany()) {
-			Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, eReference.getName()), null);
+			Edge edge = Iterables.getOnlyElement(
+					vertex.getEdges(Direction.OUT, eReference.getName()), null);
 			if (edge != null) {
 				Vertex referencedVertex = edge.getVertex(Direction.IN);
 				returnValue = reifyVertex(referencedVertex);
@@ -167,18 +161,20 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 			}
 			vertex.addEdge(eReference.getName(), newReferencedVertex);
 		} else {
-			Integer size = getSize(vertex, eReference);
-			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
-			} else {
-				for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).has(POSITION, index).edges()) {
-					Vertex referencedVertex = edge.getVertex(Direction.IN);
-					returnValue = reifyVertex(referencedVertex);
-					edge.remove();
-				}
-				Edge edge = vertex.addEdge(eReference.getName(), newReferencedVertex);
-				edge.setProperty(POSITION, index);
+			checkElementIndex(index, getSize(vertex, eReference));
+			Iterable<Edge> edges = vertex.query()
+					.labels(eReference.getName())
+					.direction(Direction.OUT)
+					.has(POSITION, index)
+					.edges();
+
+			for (Edge edge : edges) {
+				Vertex referencedVertex = edge.getVertex(Direction.IN);
+				returnValue = reifyVertex(referencedVertex);
+				edge.remove();
 			}
+			Edge edge = vertex.addEdge(eReference.getName(), newReferencedVertex);
+			edge.setProperty(POSITION, index);
 		}
 		return returnValue;
 	}
@@ -200,8 +196,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		boolean returnValue = false;
 		Vertex vertex = graph.getVertex(object);
 		if (vertex != null) {
-			String suffix = !eAttribute.isMany() ? "" : SEPARATOR + SIZE_LITERAL;
-			returnValue = null != vertex.getProperty(eAttribute.getName() + suffix);
+			String propertyName = eAttribute.getName();
+			if (eAttribute.isMany()) {
+				propertyName += SEPARATOR + SIZE_LITERAL;
+			}
+			returnValue = null != vertex.getProperty(propertyName);
 		}
 		return returnValue;
 	}
@@ -228,15 +227,15 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	protected void unset(InternalEObject object, EAttribute eAttribute) {
 		Vertex vertex = graph.getVertex(object);
-		if (!eAttribute.isMany()) {
-			vertex.removeProperty(eAttribute.getName());
-		} else {
-			Integer size = vertex.getProperty(eAttribute.getName() + SEPARATOR + SIZE_LITERAL);
+		String propertyName = eAttribute.getName();
+		if (eAttribute.isMany()) {
+			propertyName += SEPARATOR + SIZE_LITERAL;
+			Integer size = vertex.getProperty(propertyName);
 			for (int i = 0; i < size; i++) {
 				vertex.removeProperty(eAttribute.getName() + SEPARATOR + i);
 			}
-			vertex.removeProperty(eAttribute.getName() + SEPARATOR + SIZE_LITERAL);
 		}
+		vertex.removeProperty(propertyName);
 	}
 
 	protected void unset(InternalEObject object, EReference eReference) {
@@ -279,7 +278,9 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		boolean found = false;
 		if (value != null) {
 		    Vertex v = graph.getOrCreateVertex(object);
-		    InternalPersistentEObject eValue = NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class);
+		    InternalPersistentEObject eValue = checkNotNull(
+					NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class)
+			);
 		    if(feature instanceof EReference) {
 				for (Vertex vOut : v.getVertices(Direction.OUT, feature.getName())) {
 					if (vOut.getId().equals(eValue.id().toString())) {
@@ -338,7 +339,9 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 						lastPositionEdge = e;
 					}
 				}
-				resultValue = lastPositionEdge == null ? ArrayUtils.INDEX_NOT_FOUND : (int) lastPositionEdge.getProperty(POSITION);
+				resultValue = lastPositionEdge == null ?
+						ArrayUtils.INDEX_NOT_FOUND :
+						(int) lastPositionEdge.getProperty(POSITION);
 			}
 		}
 	    else {
@@ -363,15 +366,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Integer size = getSize(vertex, eAttribute);
 		size++;
 		setSize(vertex, eAttribute, size);
-		if (index < 0 || index > size) {
-			throw new IndexOutOfBoundsException();
-		} else {
-			for (int i = size - 1; i > index; i--) {
-				Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + (i - 1));
-				vertex.setProperty(eAttribute.getName() + SEPARATOR + i, movingProperty);
-			}
-			vertex.setProperty(eAttribute.getName() + SEPARATOR + index, serializeToProperty(eAttribute, value));
+		checkPositionIndex(index, size);
+		for (int i = size - 1; i > index; i--) {
+			Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + (i - 1));
+			vertex.setProperty(eAttribute.getName() + SEPARATOR + i, movingProperty);
 		}
+		vertex.setProperty(eAttribute.getName() + SEPARATOR + index, serializeToProperty(eAttribute, value));
 	}
 
 	protected void add(InternalEObject object, EReference eReference, int index, EObject value) {
@@ -385,19 +385,23 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 		Integer size = getSize(vertex, eReference);
 		int newSize = size + 1;
-		if (index < 0 || index > newSize) {
-			throw new IndexOutOfBoundsException();
-		} else {
-		    if(index != size) {
-		        // Avoid unnecessary database access
-				for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).interval(POSITION, index, newSize).edges()) {
-					int position = edge.getProperty(POSITION);
-					edge.setProperty(POSITION, position + 1);
-				}
-		    }
-			Edge edge = vertex.addEdge(eReference.getName(), referencedVertex);
-			edge.setProperty(POSITION, index);
+		checkPositionIndex(index, newSize);
+		if(index != size) {
+			Iterable<Edge> edges = vertex.query()
+					.labels(eReference.getName())
+					.direction(Direction.OUT)
+					.interval(POSITION, index, newSize)
+					.edges();
+
+		    // Avoid unnecessary database access
+			for (Edge edge : edges) {
+				int position = edge.getProperty(POSITION);
+				edge.setProperty(POSITION, position + 1);
+			}
 		}
+		Edge edge = vertex.addEdge(eReference.getName(), referencedVertex);
+		edge.setProperty(POSITION, index);
+
 		setSize(vertex, eReference, newSize);
 	}
 
@@ -418,17 +422,14 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Vertex vertex = graph.getVertex(object);
 		Integer size = getSize(vertex, eAttribute);
 		Object returnValue;
-		if (index < 0 || index > size) {
-			throw new IndexOutOfBoundsException();
-		} else {
-			returnValue = parseProperty(eAttribute, vertex.getProperty(eAttribute.getName() + SEPARATOR + index));
-			int newSize = size - 1;
-			for (int i = newSize; i > index; i--) {
-				Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + i);
-				vertex.setProperty(eAttribute.getName() + SEPARATOR + (i - 1), movingProperty);
-			}
-			setSize(vertex, eAttribute, newSize);
+		checkPositionIndex(index, size);
+		returnValue = parseProperty(eAttribute, vertex.getProperty(eAttribute.getName() + SEPARATOR + index));
+		int newSize = size - 1;
+		for (int i = newSize; i > index; i--) {
+			Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + i);
+			vertex.setProperty(eAttribute.getName() + SEPARATOR + (i - 1), movingProperty);
 		}
+		setSize(vertex, eAttribute, newSize);
 		return returnValue;
 	}
 
@@ -440,7 +441,13 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
 		} else {
-			for (Edge edge : vertex.query().labels(referenceName).direction(Direction.OUT).interval(POSITION, index, size).edges()) {
+			Iterable<Edge> edges = vertex.query()
+					.labels(referenceName)
+					.direction(Direction.OUT)
+					.interval(POSITION, index, size)
+					.edges();
+
+			for (Edge edge : edges) {
 				int position = edge.getProperty(POSITION);
 				if (position == index) {
 					Vertex referencedVertex = edge.getVertex(Direction.IN);
@@ -457,8 +464,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 			}
 		}
 		setSize(vertex, eReference, size - 1); // Update size
+		checkNotNull(returnValue);
 		if(eReference.isContainment()) {
-			Objects.requireNonNull(returnValue);
 			returnValue.eBasicSetContainer(null, -1, null);
 			((InternalPersistentEObject)returnValue).resource(null);
 		}
@@ -565,7 +572,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected static Object serializeToProperty(EAttribute eAttribute, Object value) {
 		return value != null ? EcoreUtil.convertToString(eAttribute.getEAttributeType(), value) : null;
 	}
-	
+
 	protected static void updateContainment(EReference eReference, Vertex parentVertex, Vertex childVertex) {
 		for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
 			edge.remove();
@@ -577,7 +584,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	protected InternalEObject reifyVertex(Vertex vertex) {
 		return reifyVertex(vertex, null);
 	}
-	
+
 	protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
 		InternalPersistentEObject internalEObject = graph.reifyVertex(vertex, eClass);
 		if(internalEObject.resource() != resource()) {
@@ -585,9 +592,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 				if(!Iterables.isEmpty(vertex.getVertices(Direction.IN,"eContents"))) {
 					internalEObject.resource(resource());
 				}
-				else {
-					// not part of the resource
-				}
+				// else : not part of the resource
 			}
 			else {
 				internalEObject.resource(resource());

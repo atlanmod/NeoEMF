@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.datastore;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class PersistenceBackendFactoryRegistry {
 
 	private PersistenceBackendFactoryRegistry() {}
@@ -25,11 +27,10 @@ public class PersistenceBackendFactoryRegistry {
 	}
 	
 	public static AbstractPersistenceBackendFactory getFactoryProvider(String factoryId) {
-		AbstractPersistenceBackendFactory factory = FACTORIES.get(factoryId);
-		if(factory == null) {
-			throw new IllegalArgumentException("Can not find a factory for the given type " + factoryId);
-		}
-		return factory;
+		return checkNotNull(
+				FACTORIES.get(factoryId),
+				"Can not find a factory for the given type %s", factoryId
+		) ;
 	}
 	
 }

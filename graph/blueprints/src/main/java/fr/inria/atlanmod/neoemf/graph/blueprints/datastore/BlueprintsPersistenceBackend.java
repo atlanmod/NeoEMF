@@ -47,10 +47,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 
@@ -129,7 +129,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EObject eObject) {
-		PersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+		PersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class)
+		);
 		return addVertex(neoEObject.id().toString());
 	}
 
@@ -158,7 +160,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getVertex(EObject eObject) {
 		Vertex returnValue = null;
-		InternalPersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+		InternalPersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class)
+		);
 		if(neoEObject.isMapped()) {
 			returnValue = loadedVerticesCache.getIfPresent(neoEObject.id());
     		if(returnValue == null) {
@@ -181,7 +185,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
-		InternalPersistentEObject neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+		InternalPersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class)
+		);
 		Vertex vertex;
 		if(neoEObject.isMapped()) {
     		vertex = loadedVerticesCache.getIfPresent(neoEObject.id());
@@ -247,8 +253,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
 		Object id = vertex.getId();
-		InternalPersistentEObject neoEObject;
-		neoEObject = loadedEObjectsCache.getIfPresent(id);
+		InternalPersistentEObject neoEObject = loadedEObjectsCache.getIfPresent(id);
 		if (neoEObject == null) {
 			if (eClass == null) {
 				eClass = resolveInstanceOf(vertex);
@@ -265,7 +270,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				if (eObject instanceof InternalPersistentEObject) {
 					neoEObject = (InternalPersistentEObject) eObject;
 				} else {
-					neoEObject = Objects.requireNonNull(NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+					neoEObject = checkNotNull(
+							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class)
+					);
 				}
 				neoEObject.id(new StringId(id.toString()));
 				neoEObject.setMapped(true);
@@ -339,7 +346,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 					Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
 					indexHits.put(ec, instanceVertexIterable);
 			    } else {
-					NeoLogger.warn("MetaClass '{}' not found in index", ec.getName());
+					NeoLogger.warn("MetaClass '{0}' not found in index", ec.getName() != null ? ec.getName() : "null");
 				}
 			}
 		}
