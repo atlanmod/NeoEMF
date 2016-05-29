@@ -161,7 +161,6 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResou
 
 		@Override
         public Object call() throws Exception {
-			NeoLogger.debug("Init from cache");
             return EStructuralFeatureCachingDelegatedEStoreImpl.super.get(object, feature, index);
         }
 	}

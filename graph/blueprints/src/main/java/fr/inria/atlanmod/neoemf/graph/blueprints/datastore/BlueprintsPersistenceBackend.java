@@ -331,7 +331,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 					Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
 					indexHits.put(ec, instanceVertexIterable);
 			    } else {
-					NeoLogger.warn("MetaClass '{}' not found in index", ec.getName() != null ? ec.getName() : "null");
+					NeoLogger.warn("MetaClass {0} not found in index", ec.getName());
 				}
 			}
 		}
@@ -369,7 +369,6 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 		@Override
         public Vertex call() throws Exception {
-			NeoLogger.debug("Init from cache");
             return getVertex(id.toString());
         }
 	}
@@ -386,8 +385,6 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 		@Override
         public InternalPersistentEObject call() throws Exception {
-			NeoLogger.debug("Init from cache");
-
             InternalPersistentEObject persistentEObject;
             if (eClass != null) {
                 EObject eObject;

@@ -111,7 +111,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			}
 		} finally {
 			isLoading = false;
-			NeoLogger.info("Persistent Resource {0} Loaded", uri);
+			NeoLogger.info("Persistent Resource Loaded : {0} ", uri);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			this.isPersistent = true;
 		}
 		persistenceBackend.save();
-		NeoLogger.info("Persistent Resource {0} Saved", uri);
+		NeoLogger.info("Persistent Resource Saved : {0}", uri);
 	}
 
 	
@@ -234,7 +234,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
 		if (resource != null) {
-			NeoLogger.info("Shutdown Without Unload of Persistent Resource {0}", resource.getURI());
+			NeoLogger.info("Shutdown Without Unload of Persistent Resource : {0}", resource.getURI());
 			resource.shutdown();
 		}
 	}
@@ -435,9 +435,9 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		@Override
         public void run() {
             if(persistenceBackend.isStarted()) {
-                NeoLogger.info("Closing backend of resource {0}", uri);
+                NeoLogger.debug("Closing Backend of Resource : {0}", uri);
                 persistenceBackend.stop();
-                NeoLogger.info("Backend of resource {0} closed", uri);
+                NeoLogger.info("Backend of Resource Closed : {0} ", uri);
             }
         }
 	}
