@@ -42,6 +42,8 @@ import org.mapdb.Fun.Tuple2;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -50,7 +52,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	private static final String INSTANCE_OF = "neoInstanceOf";
 	private static final String CONTAINER = "eContainer";
 
-	private final Cache<Object, InternalPersistentEObject> loadedEObjectsCache;
+	private final Cache<Id, InternalPersistentEObject> loadedEObjectsCache;
 
 	protected DB db;
 
@@ -167,8 +169,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class)
-		);
+				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		return map.containsKey(Fun.t2(neoEObject.id(), feature.getName()));
 	}
 
@@ -249,8 +250,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class)
-		);
+				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		map.remove(Fun.t2(neoEObject.id(), feature.getName()));
 	}
 
@@ -286,8 +286,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 			resultValue = ArrayUtils.indexOf(array, serializeToMapValue((EAttribute) feature, value));
 		} else {
 			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class)
-			);
+					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			resultValue = ArrayUtils.indexOf(array, childEObject.id());
 		}
 		return resultValue;
@@ -305,8 +304,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 			resultValue = ArrayUtils.lastIndexOf(array, serializeToMapValue((EAttribute) feature, value));
 		} else {
 			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class)
-			);
+					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			resultValue = ArrayUtils.lastIndexOf(array, childEObject.id());
 		}
 		return resultValue;
@@ -316,8 +314,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class)
-		);
+				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		map.put(Fun.t2(neoEObject.id(), feature.getName()), new Object[] {});
 	}
 
@@ -355,8 +352,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	public InternalEObject getContainer(InternalEObject object) {
 		InternalEObject returnValue = null;
 		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class)
-		);
+				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		ContainerInfo info = containersMap.get(neoEObject.id());
 		if (info != null) {
 			returnValue = (InternalEObject) eObject(info.containerId);
@@ -368,8 +364,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
 		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class)
-		);
+				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		ContainerInfo info = containersMap.get(neoEObject.id());
 		if (info != null) {
 			EObject container = eObject(info.containerId);
@@ -389,33 +384,13 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	public EObject eObject(Id id) {
 		InternalPersistentEObject neoEObject = null;
 		if (id != null) {
-			neoEObject = loadedEObjectsCache.getIfPresent(id);
-			if (neoEObject == null) {
-				EClass eClass = resolveInstanceOf(id);
-				if (eClass != null) {
-					EObject eObject;
-					if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
-						// Dynamic EMF
-						eObject = PersistenceFactory.eINSTANCE.create(eClass);
-					} else {
-						eObject = EcoreUtil.create(eClass);
-					}
-					if (eObject instanceof InternalPersistentEObject) {
-						neoEObject = (InternalPersistentEObject) eObject;
-					} else {
-						neoEObject = checkNotNull(
-								NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class)
-						);
-					}
-					neoEObject.id(id);
-				} else {
-					NeoLogger.error("Element {0} does not have an associated EClass", id);
+			try {
+				neoEObject = loadedEObjectsCache.get(id, new PersistentEObjectCacheLoader(id));
+				if (neoEObject.resource() != resource()) {
+					neoEObject.resource(resource());
 				}
-				loadedEObjectsCache.put(id, neoEObject);
-			}
-			checkNotNull(neoEObject);
-			if (neoEObject.resource() != resource()) {
-				neoEObject.resource(resource());
+			} catch (ExecutionException e) {
+				NeoLogger.error(e.getCause());
 			}
 		}
 		return neoEObject;
@@ -463,4 +438,38 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		throw new UnsupportedOperationException();
 	}
 
+	private class PersistentEObjectCacheLoader implements Callable<InternalPersistentEObject> {
+
+		private Id id;
+
+		public PersistentEObjectCacheLoader(Id id) {
+			this.id = id;
+		}
+
+		@Override
+		public InternalPersistentEObject call() throws Exception {
+			InternalPersistentEObject persistentEObject;
+			EClass eClass = resolveInstanceOf(id);
+			if (eClass != null) {
+				EObject eObject;
+				if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+					// Dynamic EMF
+					eObject = PersistenceFactory.eINSTANCE.create(eClass);
+				} else {
+					eObject = EcoreUtil.create(eClass);
+				}
+				if (eObject instanceof InternalPersistentEObject) {
+					persistentEObject = (InternalPersistentEObject) eObject;
+				} else {
+					persistentEObject = checkNotNull(
+							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+				}
+				persistentEObject.id(id);
+			} else {
+				// TODO Find a better exception to thrown
+				throw new Exception("Element " + id + " does not have an associated EClass");
+			}
+			return persistentEObject;
+		}
+	}
 }

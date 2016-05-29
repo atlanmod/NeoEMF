@@ -23,6 +23,7 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdVertex;
 
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
@@ -48,6 +49,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -101,7 +104,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	public void stop() {
 		shutdown();
 		isStarted = false;
-		
+
 	}
 	
 	@Override
@@ -159,20 +162,16 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getVertex(EObject eObject) {
-		Vertex returnValue = null;
+		Vertex vertex = null;
 		InternalPersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class)
-		);
+				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 		if(neoEObject.isMapped()) {
-			returnValue = loadedVerticesCache.getIfPresent(neoEObject.id());
-    		if(returnValue == null) {
-				returnValue = getVertex(neoEObject.id().toString());
-    		}
-	    }
+			vertex = getMappedVertex(neoEObject.id());
+		}
 		else {
 		    NeoLogger.warn("Trying to access a non-mapped PersistentEObject");
 		}
-		return returnValue;
+		return vertex;
 	}
 
 	/**
@@ -185,17 +184,12 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 *         when no such vertex exists
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
-		InternalPersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class)
-		);
 		Vertex vertex;
+		InternalPersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 		if(neoEObject.isMapped()) {
-    		vertex = loadedVerticesCache.getIfPresent(neoEObject.id());
-    		if(vertex == null) {
-    		    vertex = getVertex(neoEObject.id().toString());
-    		    loadedVerticesCache.put(neoEObject.id(), vertex);
-    		}
-    	}
+			vertex = getMappedVertex(neoEObject.id());
+		}
 		else {
 			vertex = addVertex(neoEObject);
 			EClass eClass = neoEObject.eClass();
@@ -209,6 +203,16 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			neoEObject.setMapped(true);
 			loadedEObjectsCache.put(neoEObject.id().toString(), neoEObject);
 			loadedVerticesCache.put(neoEObject.id(), vertex);
+		}
+		return vertex;
+	}
+
+	private Vertex getMappedVertex(Id id) {
+		Vertex vertex = null;
+		try {
+			vertex = loadedVerticesCache.get(id, new VertexCacheLoader(id));
+		} catch (ExecutionException e) {
+			NeoLogger.error(e.getCause());
 		}
 		return vertex;
 	}
@@ -252,34 +256,15 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 
 	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
+		InternalPersistentEObject neoEObject = null;
 		Object id = vertex.getId();
-		InternalPersistentEObject neoEObject = loadedEObjectsCache.getIfPresent(id);
-		if (neoEObject == null) {
-			if (eClass == null) {
-				eClass = resolveInstanceOf(vertex);
-			}
-			if (eClass != null) {
-			    EObject eObject;
-			    if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
-			        // Dynamic EMF
-			        eObject = PersistenceFactory.eINSTANCE.create(eClass);
-			    } else {
-			        // EObject eObject = EcoreUtil.create(eClass);
-			        eObject = EcoreUtil.create(eClass);
-			    }
-				if (eObject instanceof InternalPersistentEObject) {
-					neoEObject = (InternalPersistentEObject) eObject;
-				} else {
-					neoEObject = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class)
-					);
-				}
-				neoEObject.id(new StringId(id.toString()));
-				neoEObject.setMapped(true);
-			} else {
-				NeoLogger.error("Vertex {0} does not have an associated EClass Vertex", id);
-			}
-			loadedEObjectsCache.put(id, neoEObject);
+		if (eClass == null) {
+			eClass = resolveInstanceOf(vertex);
+		}
+		try {
+			neoEObject = loadedEObjectsCache.get(id, new PersistantEObjectCacheLoader(id, eClass));
+		} catch (ExecutionException e) {
+			NeoLogger.error(e.getCause());
 		}
 		return neoEObject;
 	}
@@ -289,7 +274,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * guarantees that the same {@link EObject} is returned for a given
 	 * {@link Vertex} in subsequent calls, unless the {@link EObject} returned
 	 * in previous calls has been already garbage collected.
-	 * 
+	 *
 	 * @param vertex
 	 * @return
 	 */
@@ -299,7 +284,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	/**
 	 * Builds the {@code id} used to identify {@link EClass} {@link Vertex}es.
-	 * 
+	 *
 	 * @param eClass
 	 * @return
 	 */
@@ -308,7 +293,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return the list of EClasses that have been indexed.
 	 * This list is needed to support index copy in {@link BlueprintsPersistenceBackendFactory#copyBackend(PersistenceBackend, PersistenceBackend)}
 	 */
@@ -346,7 +331,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 					Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
 					indexHits.put(ec, instanceVertexIterable);
 			    } else {
-					NeoLogger.warn("MetaClass '{0}' not found in index", ec.getName() != null ? ec.getName() : "null");
+					NeoLogger.warn("MetaClass '{}' not found in index", ec.getName() != null ? ec.getName() : "null");
 				}
 			}
 		}
@@ -372,5 +357,61 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 				referencedVertex.remove();
 			}
 		}
+	}
+
+	private class VertexCacheLoader implements Callable<Vertex> {
+
+		private final Id id;
+
+		public VertexCacheLoader(Id id) {
+			this.id = id;
+		}
+
+		@Override
+        public Vertex call() throws Exception {
+			NeoLogger.debug("Init from cache");
+            return getVertex(id.toString());
+        }
+	}
+
+	private class PersistantEObjectCacheLoader implements Callable<InternalPersistentEObject> {
+
+		private final Object id;
+		private final EClass eClass;
+
+		public PersistantEObjectCacheLoader(Object id, EClass eClass) {
+			this.id = id;
+			this.eClass = eClass;
+		}
+
+		@Override
+        public InternalPersistentEObject call() throws Exception {
+			NeoLogger.debug("Init from cache");
+
+            InternalPersistentEObject persistentEObject;
+            if (eClass != null) {
+                EObject eObject;
+                if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+                    // Dynamic EMF
+                    eObject = PersistenceFactory.eINSTANCE.create(eClass);
+                } else {
+                    // EObject eObject = EcoreUtil.create(eClass);
+                    eObject = EcoreUtil.create(eClass);
+                }
+                if (eObject instanceof InternalPersistentEObject) {
+                    persistentEObject = (InternalPersistentEObject) eObject;
+                } else {
+                    persistentEObject = checkNotNull(
+                            NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+                }
+                persistentEObject.id(new StringId(id.toString()));
+                persistentEObject.setMapped(true);
+            } else {
+				// TODO Find a better exception to thrown
+                throw new Exception("Vertex " + id + " does not have an associated EClass Vertex");
+            }
+
+			return persistentEObject;
+        }
 	}
 }

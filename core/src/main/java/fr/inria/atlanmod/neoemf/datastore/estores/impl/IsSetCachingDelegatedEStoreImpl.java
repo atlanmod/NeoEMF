@@ -29,7 +29,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	
 	private static final int DEFAULT_CACHE_SIZE = 10000;
 	
-	private final Cache<MapKey, Boolean> isSetCache;
+	private final Cache<CacheKey, Boolean> isSetCache;
 	
 	public IsSetCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		this(eStore, DEFAULT_CACHE_SIZE);
@@ -43,44 +43,44 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		super.unset(object, feature);
-		isSetCache.put(new MapKey(object, feature), false);
+		isSetCache.put(new CacheKey(object, feature), false);
 	}
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		Boolean isSet = isSetCache.getIfPresent(new MapKey(object, feature));
+		Boolean isSet = isSetCache.getIfPresent(new CacheKey(object, feature));
 		return isSet != null ? isSet : eStore.isSet(object, feature);
 	}
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		eStore.add(object, feature, index, value);
-		isSetCache.put(new MapKey(object, feature), true);
+		isSetCache.put(new CacheKey(object, feature), true);
 	}
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		isSetCache.invalidate(new MapKey(object, feature)); // Remove, next queries will update the right cached value
+		isSetCache.invalidate(new CacheKey(object, feature)); // Remove, next queries will update the right cached value
 		return super.remove(object, feature, index);
 	}
 	
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		Object returnValue = eStore.set(object, feature, index, value);
-		isSetCache.put(new MapKey(object, feature), true);
+		isSetCache.put(new CacheKey(object, feature), true);
 		return returnValue;
 	}
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		isSetCache.put(new MapKey(object, feature), false);
+		isSetCache.put(new CacheKey(object, feature), false);
 		eStore.clear(object, feature);
 	}
 	
 	@Override
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
 		Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
-		isSetCache.put(new MapKey(object, feature), true);
+		isSetCache.put(new CacheKey(object, feature), true);
 		return returnValue;
 	}
 	
@@ -88,7 +88,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
 		boolean returnValue = super.contains(object, feature, value);
 		if (returnValue) {
-			isSetCache.put(new MapKey(object, feature), true);
+			isSetCache.put(new CacheKey(object, feature), true);
 		}
 		return returnValue;
 	}
@@ -97,18 +97,18 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
 		Object returnValue = super.get(object, feature, index);
 		if (returnValue != null) {
-			isSetCache.put(new MapKey(object, feature), true);
+			isSetCache.put(new CacheKey(object, feature), true);
 		}
 		return returnValue;
 	}
 	
 	// TODO Other methods may be added...
 
-	private class MapKey {
+	private class CacheKey {
 		private InternalEObject object;
 		private EStructuralFeature feature;
 
-		public MapKey(InternalEObject object, EStructuralFeature feature) {
+		public CacheKey(InternalEObject object, EStructuralFeature feature) {
 			this.object = object;
 			this.feature = feature;
 		}
@@ -126,7 +126,7 @@ public class IsSetCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl
 			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
-			MapKey other = (MapKey) obj;
+			CacheKey other = (CacheKey) obj;
 			return Objects.equals(getOuterType(), other.getOuterType())
 					&& Objects.equals(object, other.object)
 					&& Objects.equals(feature, other.feature);

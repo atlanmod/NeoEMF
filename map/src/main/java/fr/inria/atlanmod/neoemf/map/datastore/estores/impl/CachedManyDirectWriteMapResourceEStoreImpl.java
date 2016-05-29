@@ -26,6 +26,8 @@ import org.mapdb.Fun.Tuple2;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 
@@ -49,11 +51,28 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	@Override
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
 		Tuple2<Id, String> key = new Tuple2<>(object.id(), feature.getName());
-		Object returnValue = cachedArray.getIfPresent(key);
-		if (returnValue == null) {
-			returnValue = super.getFromMap(object, feature);
-			cachedArray.put(key, returnValue);
+		Object returnValue = null;
+		try {
+			returnValue = cachedArray.get(key, new CacheLoader(object, feature));
+		} catch (ExecutionException e) {
+			NeoLogger.warn(e.getCause());
 		}
 		return returnValue;
+	}
+
+	private class CacheLoader implements Callable<Object> {
+
+		private final PersistentEObject persistentEObject;
+		private final EStructuralFeature feature;
+
+		public CacheLoader(PersistentEObject persistentEObject, EStructuralFeature feature) {
+			this.persistentEObject = persistentEObject;
+			this.feature = feature;
+		}
+
+		@Override
+        public Object call() throws Exception {
+            return CachedManyDirectWriteMapResourceEStoreImpl.super.getFromMap(persistentEObject, feature);
+        }
 	}
 }

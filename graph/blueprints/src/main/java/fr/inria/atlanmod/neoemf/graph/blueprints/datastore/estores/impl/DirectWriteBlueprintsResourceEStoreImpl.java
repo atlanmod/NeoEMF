@@ -279,8 +279,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		if (value != null) {
 		    Vertex v = graph.getOrCreateVertex(object);
 		    InternalPersistentEObject eValue = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class)
-			);
+					NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class));
 		    if(feature instanceof EReference) {
 				for (Vertex vOut : v.getVertices(Direction.OUT, feature.getName())) {
 					if (vOut.getId().equals(eValue.id().toString())) {

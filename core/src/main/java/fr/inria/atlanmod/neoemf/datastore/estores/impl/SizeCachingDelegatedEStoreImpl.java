@@ -29,7 +29,7 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 	
 	private static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
 	
-	private final Cache<MapKey, Integer> sizeCache;
+	private final Cache<CacheKey, Integer> sizeCache;
 	
 	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		this(eStore, DEFAULT_SIZE_CACHE_SIZE);
@@ -43,54 +43,54 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		super.unset(object, feature);
-		sizeCache.put(new MapKey(object, feature), 0);
+		sizeCache.put(new CacheKey(object, feature), 0);
 	}
 
 	@Override
 	public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new CacheKey(object, feature));
 		return size != null ? size == 0 : super.isEmpty(object, feature);
 	}
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new CacheKey(object, feature));
 		if (size == null) {
 			size = super.size(object, feature); 
-			sizeCache.put(new MapKey(object, feature), size);
+			sizeCache.put(new CacheKey(object, feature), size);
 		}
 		return size;
 	}
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new CacheKey(object, feature));
 		if (size != null) {
-			sizeCache.put(new MapKey(object, feature), size + 1); 
+			sizeCache.put(new CacheKey(object, feature), size + 1);
 		} 
 		super.add(object, feature, index, value);
 	}
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		Integer size = sizeCache.getIfPresent(new MapKey(object, feature));
+		Integer size = sizeCache.getIfPresent(new CacheKey(object, feature));
 		if (size != null) {
-			sizeCache.put(new MapKey(object, feature), size - 1); 
+			sizeCache.put(new CacheKey(object, feature), size - 1);
 		} 
 		return super.remove(object, feature, index);
 	}
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		sizeCache.put(new MapKey(object, feature), 0); 
+		sizeCache.put(new CacheKey(object, feature), 0);
 		super.clear(object, feature);
 	}
 
-	private class MapKey {
+	private class CacheKey {
 		private InternalEObject object;
 		private EStructuralFeature feature;
 
-		public MapKey(InternalEObject object, EStructuralFeature feature) {
+		public CacheKey(InternalEObject object, EStructuralFeature feature) {
 			this.object = object;
 			this.feature = feature;
 		}
@@ -108,7 +108,7 @@ public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl 
 			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
-			MapKey other = (MapKey) obj;
+			CacheKey other = (CacheKey) obj;
 			return Objects.equals(getOuterType(), other.getOuterType())
 					&& Objects.equals(object, other.object)
 					&& Objects.equals(feature, other.feature);

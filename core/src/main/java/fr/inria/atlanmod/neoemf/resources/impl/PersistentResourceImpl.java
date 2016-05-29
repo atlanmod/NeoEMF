@@ -349,8 +349,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			// they have been completely stored in the DB
 			List<Object> hardLinksList = new ArrayList<>();
 			InternalPersistentEObject eObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class)
-			);
+					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
 			// Collect all contents
 			hardLinksList.add(object);
 			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
@@ -359,8 +358,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			// compiler
 			for (Object element : hardLinksList) {
 				InternalPersistentEObject internalElement = checkNotNull(
-						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class)
-				);
+						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));
 				internalElement.resource(PersistentResourceImpl.this);
 			}
 			super.delegateAdd(index, object);
@@ -372,8 +370,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			E object = super.delegateRemove(index);
 			List<E> hardLinksList = new ArrayList<>();
 			InternalPersistentEObject eObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class)
-			);
+					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
 			// Collect all contents
 			hardLinksList.add(object);
 			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add((E)it.next()));
@@ -382,8 +379,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			// compiler
 			for (E element : hardLinksList) {
 				InternalPersistentEObject internalElement = checkNotNull(
-						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class)
-				);
+						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));
 				internalElement.resource(null);
 			}
 			return object;			
