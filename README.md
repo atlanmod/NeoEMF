@@ -1,6 +1,6 @@
 # NeoEMF-hbase
 
-A decentralized and distributed implementation of NeoEMF in HBase-0.98.14-hadoop2.
+A decentralized  implementation of NeoEMF in HBase-0.98.14-hadoop2.
 
 This project is part of [NeoEMF](https://github.com/atlanmod/NeoEMF/).
 
