@@ -26,8 +26,8 @@ import java.util.Map;
 
 public abstract class AbstractPersistenceBackendFactory {
 
-    protected static final String NEO_CONFIG_FILE = "neoconfig.properties";
-    protected static final String BACKEND_PROPERTY = "backend";
+    public static final String NEO_CONFIG_FILE = "neoconfig.properties";
+    public static final String BACKEND_PROPERTY = "backend";
 
 	public abstract PersistenceBackend createTransientBackend();
 
