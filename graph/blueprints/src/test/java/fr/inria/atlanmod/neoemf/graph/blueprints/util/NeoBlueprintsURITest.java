@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.util;
 
+import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.graph.blueprints.AllGraphTest;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -32,7 +32,7 @@ import java.util.Date;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class NeoBlueprintsURITest extends AllGraphTest {
+public class NeoBlueprintsURITest extends AllTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

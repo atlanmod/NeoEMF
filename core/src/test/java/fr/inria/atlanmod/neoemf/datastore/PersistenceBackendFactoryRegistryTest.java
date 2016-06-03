@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-import fr.inria.atlanmod.neoemf.AllCoreTest;
+import fr.inria.atlanmod.neoemf.AllTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class PersistenceBackendFactoryRegistryTest extends AllCoreTest {
+public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(AbstractPersistenceBackendFactory.class);
     private AbstractPersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(AbstractPersistenceBackendFactory.class);

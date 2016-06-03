@@ -18,6 +18,8 @@ import org.junit.runner.Description;
 
 public abstract class AllTest {
 
+    private static final int MB = 1024 * 1024;
+
     @Rule
     public TestRule watcher = new TestWatcher() {
         @Override
@@ -31,4 +33,27 @@ public abstract class AllTest {
         }
     };
 
+    protected void printMemoryUsage() {
+        //Getting the runtime reference from system
+        Runtime runtime = Runtime.getRuntime();
+        System.out.println("##### Heap utilization statistics [MB] #####");
+
+        //Print used memory
+        System.out.println(formatMemoryUsage("Used memory", (runtime.totalMemory() - runtime.freeMemory()) / MB));
+
+        //Print free memory
+        System.out.println(formatMemoryUsage("Free memory", runtime.freeMemory() / MB));
+
+        //Print total available memory
+        System.out.println(formatMemoryUsage("Total memory", runtime.totalMemory() / MB));
+
+        //Print Maximum available memory
+        System.out.println(formatMemoryUsage("Max memory", runtime.maxMemory() / MB));
+
+        System.out.println("#####");
+    }
+
+    private String formatMemoryUsage(String msg, long value) {
+        return String.format("   %-12s  :  %4d", msg, value);
+    }
 }

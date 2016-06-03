@@ -13,12 +13,12 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
+import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.AllGraphTest;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
@@ -48,7 +48,7 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class BlueprintsPersistenceBackendFactoryTest extends AllGraphTest {
+public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
