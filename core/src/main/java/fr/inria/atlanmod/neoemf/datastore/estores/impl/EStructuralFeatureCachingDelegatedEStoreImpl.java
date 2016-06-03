@@ -26,7 +26,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper that caches {@link EStructuralFeature}s
+ * A {@link SearcheableResourceEStore} wrapper that caches {@link EStructuralFeature}s.
  * 
  */
 public class EStructuralFeatureCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {

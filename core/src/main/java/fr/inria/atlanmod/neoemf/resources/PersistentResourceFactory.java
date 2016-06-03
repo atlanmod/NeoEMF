@@ -18,5 +18,4 @@ import org.eclipse.emf.ecore.resource.Resource;
 public interface PersistentResourceFactory extends Resource.Factory {
 
 	PersistentResourceFactory eINSTANCE = new PersistentResourceFactoryImpl();
-
 }

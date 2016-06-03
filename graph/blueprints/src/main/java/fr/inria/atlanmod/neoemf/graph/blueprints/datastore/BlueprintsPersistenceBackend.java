@@ -69,7 +69,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * This {@link Cache}&lt;objectID, {@link EObject}&gt; is necessary to maintain a
 	 * registry of the already loaded {@link Vertex}es, to avoid duplicated
 	 * {@link EObject}s in memory.
-	 * 
+	 * <p/>
 	 * We use a weak key cache for saving memory. When the value
 	 * {@link EObject} is no longer referenced and can be garbage collected it
 	 * is removed from the {@link Cache}.
@@ -155,10 +155,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 	/**
 	 * Return the vertex corresponding to the provided {@link EObject}. If no
-	 * vertex corresponds to that {@link EObject}, then return null.
+	 * vertex corresponds to that {@link EObject}, then return {@code null}.
 	 * 
-	 * @param eObject
-	 * @return the vertex referenced by the provided {@link EObject} or null
+	 * @return the vertex referenced by the provided {@link EObject} or {@code null}
 	 *         when no such vertex exists
 	 */
 	public Vertex getVertex(EObject eObject) {
@@ -175,12 +174,22 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 
 	/**
+	 * Returns the vertex corresponding to the provided {@link EClass}. If no
+	 * vertex corresponds to that {@link EClass}, then return {@code null}.
+	 *
+	 * @return the vertex referenced by the provided {@link EClass} or {@code null} when
+	 *         no such vertex exists
+	 */
+	protected Vertex getVertex(EClass eClass) {
+		return getVertex(buildEClassId(eClass));
+	}
+
+	/**
 	 * Return the vertex corresponding to the provided {@link EObject}. If no
 	 * vertex corresponds to that {@link EObject}, then the corresponding
 	 * {@link Vertex} together with its {@code INSTANCE_OF} relationship is created.
 	 * 
-	 * @param eObject
-	 * @return the vertex referenced by the provided {@link EObject} or null
+	 * @return the vertex referenced by the provided {@link EObject} or {@code null}
 	 *         when no such vertex exists
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
@@ -215,18 +224,6 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			NeoLogger.error(e.getCause());
 		}
 		return vertex;
-	}
-	
-	/**
-	 * Returns the vertex corresponding to the provided {@link EClass}. If no
-	 * vertex corresponds to that {@link EClass}, then return null.
-	 * 
-	 * @param eClass
-	 * @return the vertex referenced by the provided {@link EClass} or null when
-	 *         no such vertex exists
-	 */
-	protected Vertex getVertex(EClass eClass) {
-		return getVertex(buildEClassId(eClass));
 	}
 
 	
@@ -270,13 +267,11 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 	
 	/**
-	 * Reifies the given {@link Vertex} as an {@link EObject}. The method
-	 * guarantees that the same {@link EObject} is returned for a given
+	 * Reifies the given {@link Vertex} as an {@link EObject}.
+	 * <p/>
+	 * The method guarantees that the same {@link EObject} is returned for a given
 	 * {@link Vertex} in subsequent calls, unless the {@link EObject} returned
 	 * in previous calls has been already garbage collected.
-	 *
-	 * @param vertex
-	 * @return
 	 */
 	public InternalPersistentEObject reifyVertex(Vertex vertex) {
 		return reifyVertex(vertex, null);
@@ -284,17 +279,14 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	/**
 	 * Builds the {@code id} used to identify {@link EClass} {@link Vertex}es.
-	 *
-	 * @param eClass
-	 * @return
 	 */
 	protected static String buildEClassId(EClass eClass) {
 		return eClass != null ? eClass.getName() + '@' + eClass.getEPackage().getNsURI() : null;
 	}
 	
 	/**
-	 *
-	 * @return the list of EClasses that have been indexed.
+	 * Returns the list of {@link EClass}es that have been indexed.
+	 * <p/>
 	 * This list is needed to support index copy in {@link BlueprintsPersistenceBackendFactory#copyBackend(PersistenceBackend, PersistenceBackend)}
 	 */
 	public List<EClass> getIndexedEClasses() {
@@ -305,15 +297,17 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	public Map<EClass, Iterable<Vertex>> getAllInstances(EClass eClass, boolean strict) {
 		Map<EClass, Iterable<Vertex>> indexHits;
 		if(eClass.isAbstract() && strict) {
-		    // There is no strict instance of an abstract class
+			// There is no strict instance of an abstract class
 			indexHits = Collections.emptyMap();
 		} else {
 			indexHits = new HashMap<>();
 			Set<EClass> eClassToFind = new HashSet<>();
 			eClassToFind.add(eClass);
 			if (!strict) {
-				// Find all the concrete subclasses of the given EClass
-				// (the metaclass index only stores the concrete EClasses)
+				/*
+				 * Find all the concrete subclasses of the given EClass
+				 * (the metaclass index only stores the concrete EClasses)
+				 */
 				EPackage ePackage = eClass.getEPackage();
 				for (EClassifier eClassifier : ePackage.getEClassifiers()) {
 					if (eClassifier instanceof EClass) {
@@ -344,9 +338,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		}
 
 		/**
-		 * {@inheritDoc} <br>
+		 * {@inheritDoc}
+		 * <p/>
 		 * If the {@link Edge} references a {@link Vertex} with no more incoming
-		 * {@link Edge}, the referenced {@link Vertex} is removed as well
+		 * {@link Edge}, the referenced {@link Vertex} is removed as well.
 		 */
 		@Override
 		public void remove() {
@@ -404,7 +399,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
                 persistentEObject.id(new StringId(id.toString()));
                 persistentEObject.setMapped(true);
             } else {
-				// TODO Find a better exception to thrown
+                // TODO Find a better exception to thrown
                 throw new Exception("Vertex " + id + " does not have an associated EClass Vertex");
             }
 

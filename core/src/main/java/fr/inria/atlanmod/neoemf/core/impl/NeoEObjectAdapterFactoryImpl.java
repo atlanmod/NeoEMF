@@ -30,8 +30,9 @@ public class NeoEObjectAdapterFactoryImpl {
 
 	/**
 	 * {@link Cache} that stores the EObjects that have been already
-	 * adapted to avoid duplication of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s. We use a
-	 * soft value cache since the adaptor is no longer needed when the
+	 * adapted to avoid duplication of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+	 * <p/>
+	 * We use a soft value cache since the adaptor is no longer needed when the
 	 * original {@link EObject} has been garbage collected.
 	 */
 	private static final Cache<InternalEObject, InternalPersistentEObject> ADAPTED_OBJECTS_CACHE = CacheBuilder.newBuilder().weakKeys().build();

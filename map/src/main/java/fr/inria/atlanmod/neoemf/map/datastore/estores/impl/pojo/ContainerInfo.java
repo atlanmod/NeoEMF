@@ -27,5 +27,4 @@ public class ContainerInfo implements Serializable {
 		this.containerId = containerId;
 		this.containingFeatureName = containingFeatureName;
 	}
-	
 }

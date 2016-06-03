@@ -16,15 +16,12 @@ import java.io.Serializable;
 public interface Id extends Comparable<Id>, Serializable {
 
     /**
-     * 
-     * @return The String representation of the Id
+     * Returns the {@code String} representation of the {@code Id}.
      */
     String toString();
     
     /**
-     * 
-     * @return the long number of the Id
+     * Returns the {@code long} number of the {@code Id}.
      */
     long toLong();
-
 }

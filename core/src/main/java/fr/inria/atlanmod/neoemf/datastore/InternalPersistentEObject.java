@@ -17,8 +17,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-public interface InternalPersistentEObject extends PersistentEObject,
-		InternalEObject {
+public interface InternalPersistentEObject extends PersistentEObject, InternalEObject {
 
 	void id(Id id);
 	
@@ -29,5 +28,4 @@ public interface InternalPersistentEObject extends PersistentEObject,
 	Resource.Internal resource();
 	
 	void resource(Resource.Internal resource);
-	
 }

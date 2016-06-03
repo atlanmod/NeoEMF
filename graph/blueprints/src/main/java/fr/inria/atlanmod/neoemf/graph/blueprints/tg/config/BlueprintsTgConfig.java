@@ -36,5 +36,4 @@ public class BlueprintsTgConfig extends AbstractBlueprintsConfig {
     public void setGlobalSettings() {
         
     }
-    
 }

@@ -398,10 +398,12 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	
 
 	protected EClass resolveInstanceOf(Id id) {
+		EClass eClass = null;
 		EClassInfo eClassInfo = instanceOfMap.get(id);
-		return eClassInfo != null ?
-				(EClass) Registry.INSTANCE.getEPackage(eClassInfo.nsURI).getEClassifier(eClassInfo.className) :
-				null;
+		if (eClassInfo != null) {
+			eClass = (EClass) Registry.INSTANCE.getEPackage(eClassInfo.nsURI).getEClassifier(eClassInfo.className);
+		}
+		return eClass;
 	}
 	
 	protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {

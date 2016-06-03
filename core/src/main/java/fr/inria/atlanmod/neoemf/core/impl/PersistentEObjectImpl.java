@@ -54,11 +54,11 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 
 	/**
 	 * The internal cached value of the eContainer. This information should be
-	 * also maintained in the underlying {@link EStore}
+	 * also maintained in the underlying {@link EStore}.
 	 */
 	private InternalEObject eContainer;
 
-	private int eContainerFeatureID;
+	private int eContainerFeatureId;
 
 	private EStore eStore;
 
@@ -68,7 +68,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 
 	protected PersistentEObjectImpl(Id id) {
 		this.id = id;
-		this.eContainerFeatureID = UNSETTED_FEATURE_ID;
+		this.eContainerFeatureId = UNSETTED_FEATURE_ID;
 		this.isMapped = false;
 	}
 
@@ -93,14 +93,15 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	}
 
 	/**
-	 * @return InternalEObject the container of the {@link PersistentEObject}
+	 * Returns the container of the {@link PersistentEObject}.
+	 * <p/>
 	 * Do not return the same value as standard EMF implementation if the container
 	 * has not been accessed with the public method {@link #eContainer()} before.
+	 * @return the container of the {@link PersistentEObject}.
 	 */
 	@Override
 	public InternalEObject eInternalContainer() {
-	    // Do not load the container from the eStore here:
-	    // it creates an important overhead and performance loss
+		// Do not load the container from the eStore here: it creates an important overhead and performance loss
 		return eContainer == null ? super.eInternalContainer() : eContainer;
 	}
 
@@ -133,7 +134,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 
 	@Override
 	public int eContainerFeatureID() {
-		if (eContainerFeatureID == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
+		if (eContainerFeatureId == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
 			EReference containingFeature = (EReference) eStore().getContainingFeature(this);
 			if (containingFeature != null) {
 				EReference oppositeFeature = containingFeature.getEOpposite();
@@ -141,17 +142,17 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 					eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
 				} else {
 					eBasicSetContainerFeatureID(
-							InternalEObject.EOPPOSITE_FEATURE_BASE -
-							eInternalContainer().eClass().getFeatureID(containingFeature));
+							InternalEObject.EOPPOSITE_FEATURE_BASE
+									- eInternalContainer().eClass().getFeatureID(containingFeature));
 				}
 			}
 		}
-		return eContainerFeatureID;
+		return eContainerFeatureId;
 	}
 
 	@Override
-	protected void eBasicSetContainerFeatureID(int newContainerFeatureID) {
-		eContainerFeatureID = newContainerFeatureID;
+	protected void eBasicSetContainerFeatureID(int newContainerFeatureId) {
+		eContainerFeatureId = newContainerFeatureId;
 	}
 
 	@Override
@@ -185,7 +186,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 						Object v = oldStore.get(this,feature,EStore.NO_INDEX);
 						if(v == null) {
 						    NeoLogger.debug("A null value has been detected in the old store (Feature {0}.{1})", ((EClassifier)feature.eContainer()).getName(), feature.getName());
-						    // Do nothing
 						}else{
 							if(feature instanceof EReference) {
 								EReference eRef = (EReference)feature;
@@ -208,7 +208,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 							Object v = oldStore.get(this,feature,i);
 							if(v == null) {
 							    NeoLogger.debug("A null value has been detected in the old store (Feature {0}.{1})", ((EClassifier)feature.eContainer()).getName(), feature.getName());
-								// Do nothing
 							}else{
 								if(feature instanceof EReference) {
 									EReference eRef = (EReference)feature;
@@ -229,7 +228,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				}
 			}
 		}
-		if(updated) numberNewStoreEobject++;
+		if (updated) {
+			numberNewStoreEobject++;
+		}
 	}
 
 	@Override
@@ -246,8 +247,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	}
 
 	@Override
-	public void dynamicSet(int dynamicFeatureID, Object value) {
-		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
+	public void dynamicSet(int dynamicFeatureId, Object value) {
+		EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 		if (feature.isMany()) {
 			eStore().unset(this, feature);
 			@SuppressWarnings("rawtypes")
@@ -261,9 +262,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	}
 
 	@Override
-	public Object dynamicGet(int dynamicFeatureID) {
+	public Object dynamicGet(int dynamicFeatureId) {
 		Object returnValue;
-		final EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
+		final EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 		final EClassifier eType = feature.getEType();
 		if (feature.isMany()) {
 		    if(eType.getInstanceClassName() != null && eType.getInstanceClassName().equals("java.util.Map$Entry")) {
@@ -286,8 +287,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	}
 
 	@Override
-	public void dynamicUnset(int dynamicFeatureID) {
-		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
+	public void dynamicUnset(int dynamicFeatureId) {
+		EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 		eStore().unset(this, feature);
 	}
 

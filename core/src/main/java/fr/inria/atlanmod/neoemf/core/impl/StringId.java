@@ -57,5 +57,4 @@ public class StringId implements Id {
 	public int hashCode() {
 	    return literalId.hashCode();
 	}
-
 }

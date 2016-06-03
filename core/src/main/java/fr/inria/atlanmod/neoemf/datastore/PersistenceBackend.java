@@ -18,15 +18,13 @@ import java.util.Map;
 public interface PersistenceBackend {
 
 	/**
-	 * Starts the underlying data store with the given {@code options}
+	 * Starts the underlying data store with the given {@code options}.
 	 */
 	//TODO InvalidDataStoreException is never thrown in method implementations
 	void start(Map<?, ?> options) throws InvalidDataStoreException;
 	
 	/**
 	 * Returns whether the underlying data store has been started or not.
-	 * 
-	 * @return
 	 */
 	boolean isStarted();
 	
@@ -37,18 +35,18 @@ public interface PersistenceBackend {
 	
 	/**
 	 * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence
-	 * back-end
+	 * back-end.
 	 */
 	void save();
 	
 	/**
-	 * Back-end specific computation of allInstances
+	 * Back-end specific computation of {@link org.eclipse.emf.ecore.resource.Resource#getAllContents()}.
 	 * @param eClass the class to compute the instances of
-	 * @param strict true if the lookup searches for strict instances
-	 * @return an Object containing the back-end specific objects corresponding to the instances of the EClass
+	 * @param strict {@code true} if the lookup searches for strict instances
+	 * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the
+	 * {@link EClass}
 	 * @throws UnsupportedOperationException if the back-end does not support allInstances lookup
 	 */
 	Object getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
-	
 }
 

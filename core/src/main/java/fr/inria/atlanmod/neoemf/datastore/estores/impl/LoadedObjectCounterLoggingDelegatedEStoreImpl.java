@@ -152,6 +152,13 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
         return super.getContainingFeature(object);
     }
 
+    private class ShutdownHook extends Thread {
+        @Override
+        public void run() {
+            NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());
+        }
+    }
+
 //  @Override
 //  public EObject create(EClass eClass) {
 //      return super.create(eClass);
@@ -166,12 +173,4 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
 //  public EObject eObject(Id id) {
 //      return super.eObject(id);
 //  }
-
-    private class ShutdownHook extends Thread {
-        @Override
-        public void run() {
-            NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());
-        }
-    }
-
 }

@@ -21,9 +21,10 @@ public class PersistentResourceFactoryImpl implements PersistentResourceFactory 
 
 	@Override
 	public Resource createResource(URI uri) {
-		return PersistenceBackendFactoryRegistry.getFactories().containsKey(uri.scheme()) ?
-				new PersistentResourceImpl(uri) :
-				null;
+		Resource resource = null;
+		if (PersistenceBackendFactoryRegistry.getFactories().containsKey(uri.scheme())) {
+			resource = new PersistentResourceImpl(uri);
+		}
+		return resource;
 	}
-
 }

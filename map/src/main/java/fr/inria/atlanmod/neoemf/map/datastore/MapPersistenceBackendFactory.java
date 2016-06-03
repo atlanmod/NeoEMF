@@ -44,8 +44,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class MapPersistenceBackendFactory extends
-		AbstractPersistenceBackendFactory {
+public class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     public static final String MAPDB_BACKEND = "mapdb";
     
@@ -63,8 +62,7 @@ public class MapPersistenceBackendFactory extends
 	}
 
 	@Override
-	public PersistenceBackend createPersistentBackend(File file,
-			Map<?, ?> options) throws InvalidDataStoreException {
+	public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
 	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
 	    if (!dbFile.getParentFile().exists()) {
 			try {
@@ -88,9 +86,11 @@ public class MapPersistenceBackendFactory extends
         } catch(ConfigurationException e) {
             NeoLogger.error(e);
         }
-//		Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
-        // TODO Check the difference when asyncWriteEnable() is set, it has been desactived for MONDO deliverable but
-        // not well tested
+	    //Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
+	    /*
+         * TODO Check the difference when asyncWriteEnable() is set.
+         * It has been desactived for MONDO deliverable but not well tested
+         */
 	    Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().makeEngine();
         return new MapPersistenceBackend(mapEngine);
 	}
@@ -103,7 +103,7 @@ public class MapPersistenceBackendFactory extends
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
         if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE)) {
-            // Default store
+			// Default store
 			returnValue = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
         }
         else {
@@ -127,7 +127,7 @@ public class MapPersistenceBackendFactory extends
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
+	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
 		checkArgument(from instanceof MapPersistenceBackend, "The backend to copy is not an instance of MapPersistenceBackend");
 		checkArgument(to instanceof MapPersistenceBackend, "The target copy backend is not an instance of MapPersistenceBackend");
@@ -145,5 +145,4 @@ public class MapPersistenceBackendFactory extends
 	        }
 	    }
 	}
-
 }

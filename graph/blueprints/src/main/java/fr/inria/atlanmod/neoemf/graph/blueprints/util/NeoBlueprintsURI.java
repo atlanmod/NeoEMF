@@ -44,5 +44,4 @@ public class NeoBlueprintsURI extends NeoURI {
 	public static URI createNeoGraphURI(File file) {
 		return NeoURI.createNeoURI(file, NEO_GRAPH_SCHEME);
 	}
-	
 }

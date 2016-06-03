@@ -23,13 +23,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that delegates method calls to an
- * internal {@link SearcheableResourceEStore}
- * 
+ * internal {@link SearcheableResourceEStore}.
  */
 public class DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 
 	/**
-	 * The wrapped {@link SearcheableResourceEStore}
+	 * The wrapped {@link SearcheableResourceEStore}.
 	 */
 	protected SearcheableResourceEStore eStore;
 
@@ -143,8 +142,7 @@ public class DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
 	}
 	
 	@Override
-	public EList<EObject> getAllInstances(EClass eClass, boolean strict)
-			throws UnsupportedOperationException {
+	public EList<EObject> getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException {
 		return eStore.getAllInstances(eClass, strict);
 	}
 }

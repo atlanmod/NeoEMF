@@ -22,5 +22,4 @@ public interface PersistenceFactory extends EFactory {
 	
 	@Override
 	PersistentEObject create(EClass eClass);
-
 }

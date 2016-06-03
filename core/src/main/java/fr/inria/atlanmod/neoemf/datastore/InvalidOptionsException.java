@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-
 public class InvalidOptionsException extends Exception {
 
 	private static final long serialVersionUID = 1L;
@@ -30,6 +29,5 @@ public class InvalidOptionsException extends Exception {
 	public InvalidOptionsException(String message, Throwable t) {
 		super(message, t);
 	}
-	
 }
 	

@@ -26,7 +26,7 @@ import java.util.Objects;
 
 /**
  * A simple {@link InternalEObject.EStore} implementation that uses synchronized collections to
- * store the data in memory.
+ * store the data in memory, using {@link Collections#synchronizedMap(Map)}.
  * 
  */
 public class SynchronizedTransientEStoreImpl implements InternalEObject.EStore {

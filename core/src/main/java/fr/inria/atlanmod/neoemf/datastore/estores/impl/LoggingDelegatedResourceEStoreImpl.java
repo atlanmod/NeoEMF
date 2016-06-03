@@ -23,7 +23,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * A {@link SearcheableResourceEStore} wrapper that logs every call to its
- * methods in the {@link NeoLogger}
+ * methods in the {@link NeoLogger}.
  * 
  */
 public class LoggingDelegatedResourceEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {

@@ -22,5 +22,4 @@ public interface MapResourceOptions extends PersistentResourceOptions {
         DIRECT_WRITE_WITH_LISTS,
         DIRECT_WRITE_WITH_INDEXES
     }
-    
 }

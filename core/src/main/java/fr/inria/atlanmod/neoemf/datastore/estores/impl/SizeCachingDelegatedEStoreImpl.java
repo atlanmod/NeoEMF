@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.Objects;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper that caches the size data
+ * A {@link SearcheableResourceEStore} wrapper that caches the size data.
  * 
  */
 public class SizeCachingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {

@@ -60,14 +60,14 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	private static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
 
-	private final DummyRootEObject DUMMY_ROOT_EOBJECT;
+	private final DummyRootEObject dummyRootEObject;
 
 	private Map<?, ?> options;
 
 	private SearcheableResourceEStore eStore;
 
 	/**
-	 * The underlying {@link PersistenceBackend} that stores the data
+	 * The underlying {@link PersistenceBackend} that stores the data.
 	 */
 	private PersistenceBackend persistenceBackend;
 	
@@ -75,7 +75,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	public PersistentResourceImpl(URI uri) {
 		super(uri);
-		this.DUMMY_ROOT_EOBJECT = new DummyRootEObject(this);
+		this.dummyRootEObject = new DummyRootEObject(this);
 		this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
 		this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this,persistenceBackend);
 		this.isPersistent = false;
@@ -85,9 +85,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	}
 	
 	/**
-	 * Returns the graph DB file
-	 * 
-	 * @return
+	 * Returns the database file.
 	 */
 	protected File getFile() {
 		return FileUtils.getFile(NeoURI.createNeoURI(getURI()).toFileString());
@@ -102,7 +100,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 					this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
 					this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
 					this.isPersistent = true;
-					DUMMY_ROOT_EOBJECT.setMapped(true);
+					dummyRootEObject.setMapped(true);
 				} else {
 					throw new FileNotFoundException(uri.toFileString());
 				}
@@ -145,7 +143,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	@Override
 	// FIXME Return of instance of non-static inner class 'ResourceContentsEStoreEList'
 	public EList<EObject> getContents() {
-		return new ResourceContentsEStoreEList<>(DUMMY_ROOT_EOBJECT, ROOT_CONTENTS_ESTRUCTURALFEATURE, eStore());
+		return new ResourceContentsEStoreEList<>(dummyRootEObject, ROOT_CONTENTS_ESTRUCTURALFEATURE, eStore());
 	}
 
 	@Override
@@ -258,7 +256,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	/**
 	 * Dummy {@link EObject} that represents the root entry point for this
-	 * {@link Resource}
+	 * {@link Resource}.
 	 *
 	 */
 	private static final class DummyRootEObject extends PersistentEObjectImpl {
@@ -342,20 +340,24 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		
 		@Override
 		protected void delegateAdd(int index, Object object) {
-			// FIXME Maintain a list of hard links to the elements while moving
-			// them to the new resource. If a garbage collection happens while
-			// traversing the children elements, some unsaved objects that are
-			// referenced from a saved object may be garbage collected before
-			// they have been completely stored in the DB
+			/*
+			 * FIXME Maintain a list of hard links to the elements while moving them to the new resource.
+			 * If a garbage collection happens while traversing the children elements, some unsaved objects that are
+			 * referenced from a saved object may be garbage collected before they have been completely stored in the DB
+			 */
 			List<Object> hardLinksList = new ArrayList<>();
 			InternalPersistentEObject eObject = checkNotNull(
 					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
 			// Collect all contents
 			hardLinksList.add(object);
-			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add(it.next()));
-			// Iterate using the hard links list instead the getAllContents
-			// We ensure that using the hardLinksList it is not taken out by JIT
-			// compiler
+			Iterator<EObject> it = eObject.eAllContents();
+			while (it.hasNext()) {
+				hardLinksList.add(it.next());
+			}
+			/*
+			 * Iterate using the hard links list instead the getAllContents.
+			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
+			 */
 			for (Object element : hardLinksList) {
 				InternalPersistentEObject internalElement = checkNotNull(
 						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));
@@ -373,10 +375,14 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
 			// Collect all contents
 			hardLinksList.add(object);
-			for (Iterator<EObject> it = eObject.eAllContents(); it.hasNext(); hardLinksList.add((E)it.next()));
-			// Iterate using the hard links list instead the getAllContents
-			// We ensure that using the hardLinksList it is not taken out by JIT
-			// compiler
+			Iterator<EObject> it = eObject.eAllContents();
+			while (it.hasNext()) {
+				hardLinksList.add((E) it.next());
+			}
+			/*
+			 * Iterate using the hard links list instead the getAllContents.
+			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
+			 */
 			for (E element : hardLinksList) {
 				InternalPersistentEObject internalElement = checkNotNull(
 						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));

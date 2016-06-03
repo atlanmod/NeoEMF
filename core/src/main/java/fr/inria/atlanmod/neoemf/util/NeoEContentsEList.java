@@ -43,10 +43,16 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     }
     
     public static <T> NeoEContentsEList<T> createNeoEContentsEList(EObject eObject) {
+        NeoEContentsEList<T> contentEList;
         EStructuralFeature[] eStructuralFeatures = ((EClassImpl.FeatureSubsetSupplier) eObject
                 .eClass().getEAllStructuralFeatures()).containments();
-        return eStructuralFeatures == null ? NeoEContentsEList.<T> emptyNeoContentsEList()
-                : new NeoEContentsEList<T>(eObject,eStructuralFeatures);
+        if (eStructuralFeatures == null) {
+            contentEList = NeoEContentsEList.emptyNeoContentsEList();
+        }
+        else {
+            contentEList = new NeoEContentsEList(eObject, eStructuralFeatures);
+        }
+        return contentEList;
     }
     
     public NeoEContentsEList(EObject owner) {
@@ -77,5 +83,4 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         }
         throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);
     }
-    
 }

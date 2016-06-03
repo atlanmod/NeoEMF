@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A simple {@link InternalEObject.EStore} implementation that uses synchronized collections to
+ * A simple {@link InternalEObject.EStore} implementation that uses collections to
  * store the data in memory.
  * 
  */

@@ -62,6 +62,4 @@ public abstract class AbstractPersistenceBackendFactory {
 	protected abstract SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException;
 
 	public abstract void copyBackend(PersistenceBackend from, PersistenceBackend to);
-
-
 }

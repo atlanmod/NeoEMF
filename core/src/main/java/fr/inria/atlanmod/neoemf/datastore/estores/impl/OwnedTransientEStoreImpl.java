@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A {@link TransientEStoreImpl} that belongs to a single {@link EObject} owner
+ * A {@link TransientEStoreImpl} that belongs to a single {@link EObject} owner.
  * 
  */
 //TODO All methods call super methods, is this class really necessary ?

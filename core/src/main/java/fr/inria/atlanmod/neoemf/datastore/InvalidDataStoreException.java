@@ -31,6 +31,5 @@ public class InvalidDataStoreException extends IOException {
 	public InvalidDataStoreException(String message, Throwable t) {
 		super(message, t);
 	}
-	
 }
 	

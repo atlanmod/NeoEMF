@@ -64,8 +64,8 @@ public class NeoLogger {
         internalLog(Level.ERROR, MessageFormat.format(pattern, args), null);
     }
 
-    public static void fatal(Throwable e) {
-        internalLog(Level.FATAL, null, e);
+    public static void error(Throwable e) {
+        internalLog(Level.ERROR, null, e);
     }
 
     public static void fatal(String msg) {
@@ -76,8 +76,8 @@ public class NeoLogger {
         internalLog(Level.FATAL, MessageFormat.format(pattern, args), null);
     }
 
-    public static void error(Throwable e) {
-        internalLog(Level.ERROR, null, e);
+    public static void fatal(Throwable e) {
+        internalLog(Level.FATAL, null, e);
     }
 
     private static void internalLog(Level level, String msg, Throwable e) {

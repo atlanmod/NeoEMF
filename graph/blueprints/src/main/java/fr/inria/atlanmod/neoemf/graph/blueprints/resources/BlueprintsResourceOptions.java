@@ -23,5 +23,4 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
         AUTOCOMMIT,
         DIRECT_WRITE,
     }
-    
 }

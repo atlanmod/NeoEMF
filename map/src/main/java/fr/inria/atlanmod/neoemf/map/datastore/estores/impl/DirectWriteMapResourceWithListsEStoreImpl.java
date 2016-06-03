@@ -513,7 +513,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl implements SearcheableRes
                 }
                 persistentEObject.id(id);
             } else {
-				// TODO Find a better exception to thrown
+                // TODO Find a better exception to thrown
                 throw new Exception("Element " + id + " does not have an associated EClass");
             }
 			return persistentEObject;

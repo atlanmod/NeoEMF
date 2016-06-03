@@ -16,5 +16,4 @@ import org.eclipse.emf.ecore.EObject;
 public interface PersistentEObject extends EObject {
 
     Id id();
-    
 }

@@ -25,5 +25,4 @@ public class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceF
 		eObject.eSetClass(eClass);
 		return eObject;
 	}
-	
 }

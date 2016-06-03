@@ -21,34 +21,28 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * This interface extends the {@link InternalEObject.EStore} interface and allows to establish a
- * mapping between {@link Resource}s and {@link InternalEObject.EStore}s
+ * mapping between {@link Resource}s and {@link InternalEObject.EStore}s.
  * 
  */
 public interface SearcheableResourceEStore extends InternalEObject.EStore {
 
 	/**
-	 * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated
-	 * 
-	 * @return
+	 * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated.
 	 */
 	Resource resource();
 
 	/**
 	 * Returns the resolved {@link EObject} identified by the given
 	 * {@code id} or {@code null} if no {@link EObject} can be resolved.
-	 * 
-	 * @param id
-	 * @return
 	 */
 	EObject eObject(Id id);
 	
 	/**
-	 * Back-end specific computation of allInstances()
-	 * @param eClass the EClass to compute the instances of
-	 * @param strict true if the lookup searches for strict instances
-	 * @return an {@link EList} containing all the EObjects that are instances of the given {@link EClass}
+	 * Back-end specific computation of {@link Resource#getAllContents()}.
+	 * @param eClass the {@link EClass} to compute the instances of
+	 * @param strict {@code true} if the lookup searches for strict instances
+	 * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
 	 * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
 	 */
 	EList<EObject> getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
-	
 }

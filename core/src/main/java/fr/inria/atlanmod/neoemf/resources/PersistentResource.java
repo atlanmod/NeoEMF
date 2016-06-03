@@ -22,25 +22,21 @@ public interface PersistentResource extends Resource, Resource.Internal {
 	InternalEObject.EStore eStore();
 	
 	/**
-	 * <p>
-	 * Computes the set of instances of the given EClass (including its sub-types)
-	 * This method is similar to getAllInstances(myEClass, false);
-	 * </p>
-	 * @param eClass the EClass for which look for instances
-	 * @return all the instances of the given EClass from the resource
+	 * Computes the set of instances of the given {@link EClass} (including its sub-types).
+	 * <p/>
+	 * This method is similar to {@link #getAllInstances(EClass, boolean)} with {@code strict=false}.
+	 * @param eClass the {@link EClass} for which look for instances
+	 * @return all the instances of the given {@link EClass} from the resource
 	 */
 	EList<EObject> getAllInstances(EClass eClass);
 	
 	/**
-	 * <p>
-	 * Computes the set of instances of the given EClass
-	 * </p>
-	 * @param eClass the EClass for which look for instances
+	 * Computes the set of instances of the given {@link EClass}.
+	 * @param eClass the {@link EClass} for which look for instances
 	 * @param strict true if the lookup searches for strict instances
-	 * @return if <b>true</b> then the method returns only 
-     * the strict instances of the given EClass. If <b>false</b> it 
-     * also returns the instances of the sub-types of eClass.
+	 * @return if {@code true} then the method returns only
+     * the strict instances of the given {@link EClass}, otherwise it
+     * also returns the instances of the sub-types of {@code eClass}.
 	 */
 	EList<EObject> getAllInstances(EClass eClass, boolean strict);
-	
 }

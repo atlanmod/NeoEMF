@@ -98,8 +98,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 							.labels(eReference.getName())
 							.direction(Direction.OUT)
 							.has(POSITION, index)
-							.vertices()
-					, null);
+							.vertices(),
+					null);
 		}
 		if (referencedVertex != null) {
 			returnValue = reifyVertex(referencedVertex);
@@ -288,7 +288,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 				}
 			}
 		    else {
-		        // feature is an EAttribute
+				// feature is an EAttribute
 				found = ArrayUtils.contains(toArray(object, feature), value);
 		    }
 		}
@@ -338,9 +338,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 						lastPositionEdge = e;
 					}
 				}
-				resultValue = lastPositionEdge == null ?
-						ArrayUtils.INDEX_NOT_FOUND :
-						(int) lastPositionEdge.getProperty(POSITION);
+				if (lastPositionEdge == null) {
+					resultValue = ArrayUtils.INDEX_NOT_FOUND;
+				}
+				else {
+					resultValue = lastPositionEdge.getProperty(POSITION);
+				}
 			}
 		}
 	    else {
@@ -392,7 +395,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 					.interval(POSITION, index, newSize)
 					.edges();
 
-		    // Avoid unnecessary database access
+			// Avoid unnecessary database access
 			for (Edge edge : edges) {
 				int position = edge.getProperty(POSITION);
 				edge.setProperty(POSITION, position + 1);

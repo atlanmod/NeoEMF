@@ -32,5 +32,4 @@ public class PersistenceBackendFactoryRegistry {
 				"Can not find a factory for the given type %s", factoryId
 		) ;
 	}
-	
 }

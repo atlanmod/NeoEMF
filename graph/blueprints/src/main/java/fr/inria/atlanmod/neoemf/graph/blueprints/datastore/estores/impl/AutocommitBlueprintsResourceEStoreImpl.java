@@ -22,45 +22,39 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 
 	/**
 	 * Default number of allowed modifications (100000) between commits on the
-	 * underlying graph
+	 * underlying graph.
 	 */
 	private static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
 	/**
 	 * Number of allowed modifications between commits on the underlying graph
-	 * for this {@link AutocommitBlueprintsResourceEStoreImpl}
+	 * for this {@link AutocommitBlueprintsResourceEStoreImpl}.
 	 */
-	private final int OPS_BETWEEN_COMMITS;
+	private final int opsBetweenCommits;
 
 	/**
-	 * Current number of modifications modulo {@link #OPS_BETWEEN_COMMITS}
+	 * Current number of modifications modulo {@link #opsBetweenCommits}.
 	 */
 	private int opCount;
 
 	/**
-	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link InternalEObject.EStore}. Allows to
-	 * specify the number of allowed modification on the underlying graph before
+	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link InternalEObject.EStore}.
+	 * <p/>
+	 * Allows to specify the number of allowed modification on the underlying graph before
 	 * calling the {@link BlueprintsPersistenceBackend#commit()} method automatically.
-	 * 
-	 * @param resource
-	 * @param graph
-	 * @param opsBetweenCommits
 	 */
 	public AutocommitBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph, int opsBetweenCommits) {
 		super(resource, graph);
 		this.opCount = 0;
-		this.OPS_BETWEEN_COMMITS = opsBetweenCommits;
+		this.opsBetweenCommits = opsBetweenCommits;
 	    NeoLogger.info("Autocommit Store Created (chunk = {0})", opsBetweenCommits);
 	}
 
 	/**
-	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link InternalEObject.EStore}. Allows to
-	 * make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
-	 * graph before calling the {@link BlueprintsPersistenceBackend#commit()} method
-	 * automatically.
-	 * 
-	 * @param resource
-	 * @param graph
+	 * Constructor for this {@link BlueprintsPersistenceBackend}-based {@link InternalEObject.EStore}.
+	 * <p/>
+	 * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
+	 * graph before calling the {@link BlueprintsPersistenceBackend#commit()} method automatically.
 	 */
 	public AutocommitBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this(resource, graph, OPS_BETWEEN_COMMITS_DEFAULT);
@@ -106,7 +100,7 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	}
 
 	private void incrementAndCommit() {
-		opCount = (opCount + 1) % OPS_BETWEEN_COMMITS;
+		opCount = (opCount + 1) % opsBetweenCommits;
 		if (opCount == 0) {
 			graph.commit();
 		}

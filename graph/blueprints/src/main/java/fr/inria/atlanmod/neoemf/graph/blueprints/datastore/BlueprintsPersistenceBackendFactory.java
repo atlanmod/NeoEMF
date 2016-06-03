@@ -52,7 +52,7 @@ public class BlueprintsPersistenceBackendFactory extends
 	/**
 	 * The configuration file name. This file stores the metadata information
 	 * about the underlying graph, i.e., graph type and other configuration
-	 * options
+	 * options.
 	 */
 	private static final String CONFIG_FILE = "config.properties";
 	public static final String BLUEPRINTS_BACKEND = "blueprints";
@@ -71,7 +71,7 @@ public class BlueprintsPersistenceBackendFactory extends
 	
 	@Override
 	public BlueprintsPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
-		BlueprintsPersistenceBackend graphDB = null;
+		BlueprintsPersistenceBackend graphDb = null;
 		PropertiesConfiguration neoConfig = null;
 		PropertiesConfiguration configuration = null;
 		try {
@@ -150,7 +150,7 @@ public class BlueprintsPersistenceBackendFactory extends
 			    throw new InvalidDataStoreException(e);
 			}
 			if (baseGraph instanceof KeyIndexableGraph) {
-				graphDB = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
+				graphDb = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
 			} else {
 			    NeoLogger.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());
 				throw new InvalidDataStoreException("Graph type "+file.getAbsolutePath()+" does not support Key Indices");
@@ -183,7 +183,7 @@ public class BlueprintsPersistenceBackendFactory extends
 			    }
 			}
 		}
-		return graphDB;
+		return graphDb;
 	}
 	
 	@Override
@@ -194,7 +194,7 @@ public class BlueprintsPersistenceBackendFactory extends
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
     	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
-    	    // Default store
+			// Default store
 			returnValue = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	}
     	else {

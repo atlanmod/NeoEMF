@@ -44,5 +44,4 @@ public class NeoMapURI extends NeoURI {
 	public static URI createNeoMapURI(File file) {
 		return NeoURI.createNeoURI(file, NEO_MAP_SCHEME);
 	}
-	
 }

@@ -25,10 +25,10 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     String OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.relationshipstore.db.mapped_memory";
     
     /**
-     * Possible values for @{see OPTIONS_GRAPH_NEO4J_CACHE_TYPE}
-     * The cache type hpc is not available because the embedded Neo4j the Community Edition
+     * Possible values for @{see OPTIONS_GRAPH_NEO4J_CACHE_TYPE}.
+     * The cache type hpc is not available because the embedded Neo4j the Community Edition.
      */
-    enum CACHE_TYPE {
+    enum CacheType {
         NONE("none"),
         SOFT("soft"),
         WEAK("weak"),
@@ -38,7 +38,7 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
         
         private final String stringValue;
         
-        CACHE_TYPE(String stringValue) {
+        CacheType(String stringValue) {
             this.stringValue = stringValue;
         }
         
@@ -49,15 +49,15 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     }
     
     /**
-     * Possible values for @{see OPTIONS_GRAPH_NEO4J_USE_MEMORY_MAPPED_BUFFER}
+     * Possible values for @{see OPTIONS_GRAPH_NEO4J_USE_MEMORY_MAPPED_BUFFER}.
      */
-    enum USE_MEMORY_MAPPED_BUFFER {
+    enum UseMemoryMappedBuffer {
         TRUE("true"),
         FALSE("false");
         
         private final String stringValue;
         
-        USE_MEMORY_MAPPED_BUFFER(String stringValue) {
+        UseMemoryMappedBuffer(String stringValue) {
             this.stringValue = stringValue;
         }
         
@@ -66,5 +66,4 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
             return stringValue;
         }
     }
-    
 }
