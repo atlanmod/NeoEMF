@@ -487,6 +487,23 @@
                         </tagClasses>
                     </tagListOptions>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>taglist</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
+                        <reports>
+                            <report>taglist</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>
@@ -500,6 +517,16 @@
                 </configuration>
                 <reportSets>
                     <reportSet>
+                        <reports>
+                            <report>cobertura</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
                         <reports>
                             <report>cobertura</report>
                         </reports>
@@ -533,6 +560,13 @@
                             <report>checkstyle</report>
                         </reports>
                     </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>checkstyle-aggregate</report>
+                        </reports>
+                    </reportSet>
                 </reportSets>
             </plugin>
 
@@ -552,6 +586,17 @@
                 </configuration>
                 <reportSets>
                     <reportSet>
+                        <reports>
+                            <report>pmd</report>
+                            <report>cpd</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                        </configuration>
                         <reports>
                             <report>pmd</report>
                             <report>cpd</report>
