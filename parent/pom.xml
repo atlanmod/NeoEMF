@@ -44,7 +44,7 @@
         <bundle-plugin.version>3.0.1</bundle-plugin.version>
         <clean-plugin.version>3.0.0</clean-plugin.version>
         <compiler-plugin.version>3.5.1</compiler-plugin.version>
-        <jar-plugin.version>2.6</jar-plugin.version>
+        <jar-plugin.version>3.0.0</jar-plugin.version>
         <site-plugin.version>3.5.1</site-plugin.version>
         <source-plugin.version>3.0.0</source-plugin.version>
         <surefire-plugin.version>2.19.1</surefire-plugin.version>
@@ -67,19 +67,19 @@
         <!-- Dependencies -->
 
         <!-- DB -->
-        <blueprints.version>2.5.0</blueprints.version> <!-- From 2.4.0 -->
-        <mapdb.version>1.0.9</mapdb.version> <!-- From 1.0.7 -->
+        <blueprints.version>2.5.0</blueprints.version> <!-- 2.6+ : require JDK8 -->
+        <mapdb.version>1.0.9</mapdb.version> <!-- 2+ : require JDK8 -->
 
         <!-- Commons -->
-        <cglib-nodep.version>3.2.2</cglib-nodep.version> <!-- From 3.1 -->
-        <commons-collections.version>4.1</commons-collections.version> <!-- From 3.2.1/4.0 -->
-        <commons-configuration.version>1.10</commons-configuration.version> <!-- From 1.6 -->
-        <commons-io.version>2.5</commons-io.version> <!-- From 2.4 -->
-        <commons-lang.version>3.4</commons-lang.version> <!-- From 2.6 -->
-        <guava.version>19.0</guava.version> <!-- From 16.0.1 -->
+        <cglib-nodep.version>3.2.2</cglib-nodep.version>
+        <commons-collections.version>4.1</commons-collections.version>
+        <commons-configuration.version>1.10</commons-configuration.version>
+        <commons-io.version>2.5</commons-io.version>
+        <commons-lang.version>3.4</commons-lang.version>
+        <guava.version>19.0</guava.version>
 
         <!-- Logging -->
-        <log4j.version>2.5</log4j.version> <!-- From 2.2 -->
+        <log4j.version>2.6</log4j.version>
 
         <!-- EMF -->
         <emf.version>2.11.0-v20150805-0538</emf.version>
@@ -88,8 +88,8 @@
 
         <!-- Test -->
         <hamcrest.version>1.3</hamcrest.version>
-        <junit.version>4.12</junit.version> <!-- From 4.11 -->
-        <mockito.version>1.10.19</mockito.version> <!-- From 1.8.5 -->
+        <junit.version>4.12</junit.version>
+        <mockito.version>1.10.19</mockito.version>
     </properties>
 
     <dependencyManagement>
@@ -333,6 +333,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>${clean-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${dependency-plugin.version}</version>
                 </plugin>
 
                 <plugin>
