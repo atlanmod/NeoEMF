@@ -56,7 +56,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	protected DB db;
 
-	private Map<Tuple2<Id, String>, Object> map;
+	protected Map<Tuple2<Id, String>, Object> map;
 
 	private Map<Id, EClassInfo> instanceOfMap;
 
@@ -65,10 +65,15 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 	private Resource.Internal resource;
 
 	public DirectWriteMapResourceEStoreImpl(Resource.Internal resource, DB db) {
+		this(resource, db, db.getHashMap("NeoEMF"));
+	}
+
+	@SuppressWarnings("unchecked")
+	protected DirectWriteMapResourceEStoreImpl(Resource.Internal resource, DB db, Map<?, ?> map) {
 		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
 		this.db = db;
 		this.resource = resource;
-		this.map = db.getHashMap("NeoEMF");
+		this.map = (Map<Tuple2<Id, String>, Object>) map;
 		this.instanceOfMap = db.getHashMap(INSTANCE_OF);
 		this.containersMap = db.getHashMap(CONTAINER);
 	}
