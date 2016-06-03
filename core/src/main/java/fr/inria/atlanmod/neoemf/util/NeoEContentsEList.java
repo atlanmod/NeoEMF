@@ -27,30 +27,29 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     
     private InternalPersistentEObject owner;
     
-    public static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = 
-        new NeoEContentsEList<Object>(null, (EStructuralFeature[])null)
-        {
-          @Override
-          public List<Object> basicList()
-          {
-            return this;
-          }
-        };
+    private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST =
+            new NeoEContentsEList<Object>(null, (EStructuralFeature[])null)
+            {
+                @Override
+                public List<Object> basicList() {
+                    return this;
+                }
+            };
 
     @SuppressWarnings("unchecked") // Unchecked cast
     public static <T> NeoEContentsEList<T> emptyNeoContentsEList() {
-        return (NeoEContentsEList<T>)EMPTY_NEO_CONTENTS_ELIST;
+        return (NeoEContentsEList<T>) EMPTY_NEO_CONTENTS_ELIST;
     }
     
     public static <T> NeoEContentsEList<T> createNeoEContentsEList(EObject eObject) {
         NeoEContentsEList<T> contentEList;
-        EStructuralFeature[] eStructuralFeatures = ((EClassImpl.FeatureSubsetSupplier) eObject
-                .eClass().getEAllStructuralFeatures()).containments();
+        EStructuralFeature[] eStructuralFeatures =
+                ((EClassImpl.FeatureSubsetSupplier) eObject.eClass().getEAllStructuralFeatures()).containments();
         if (eStructuralFeatures == null) {
             contentEList = NeoEContentsEList.emptyNeoContentsEList();
         }
         else {
-            contentEList = new NeoEContentsEList(eObject, eStructuralFeatures);
+            contentEList = new NeoEContentsEList<>(eObject, eStructuralFeatures);
         }
         return contentEList;
     }
