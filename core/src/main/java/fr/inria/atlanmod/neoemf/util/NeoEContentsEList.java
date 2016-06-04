@@ -24,21 +24,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import java.util.List;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
-    
+
     private InternalPersistentEObject owner;
-    
-    private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST =
-            new NeoEContentsEList<Object>(null, (EStructuralFeature[])null)
-            {
-                @Override
-                public List<Object> basicList() {
-                    return this;
-                }
-            };
+
+    private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
 
     @SuppressWarnings("unchecked") // Unchecked cast
     public static <T> NeoEContentsEList<T> emptyNeoContentsEList() {
-        return (NeoEContentsEList<T>) EMPTY_NEO_CONTENTS_ELIST;
+        return (NeoEContentsEList<T>)EMPTY_NEO_CONTENTS_ELIST;
     }
     
     public static <T> NeoEContentsEList<T> createNeoEContentsEList(EObject eObject) {
@@ -81,5 +74,17 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
             }
         }
         throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);
+    }
+
+    private static class EmptyNeoEContentsEList<T> extends NeoEContentsEList<T> {
+
+        public EmptyNeoEContentsEList() {
+            super(null, null);
+        }
+
+        @Override
+        public List<T> basicList() {
+            return this;
+        }
     }
 }
