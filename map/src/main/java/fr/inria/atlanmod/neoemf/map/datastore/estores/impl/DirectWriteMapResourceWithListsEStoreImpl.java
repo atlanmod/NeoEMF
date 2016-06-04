@@ -18,7 +18,9 @@ import com.google.common.cache.LoadingCache;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.emf.ecore.EAttribute;
@@ -26,7 +28,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.mapdb.DB;
 import org.mapdb.Fun;
 import org.mapdb.Fun.Tuple2;
 
@@ -42,28 +43,28 @@ public class DirectWriteMapResourceWithListsEStoreImpl extends DirectWriteMapRes
 
 	private final LoadingCache<Tuple2<Id, String>, Object> mapCache;
 
-	public DirectWriteMapResourceWithListsEStoreImpl(Resource.Internal resource, DB db) {
-		super(resource, db);
+	public DirectWriteMapResourceWithListsEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
+		super(resource, persistenceBackend);
 		this.mapCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build(new Tuple2CacheLoader());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object get(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
 		if (!eAttribute.isMany()) {
-			returnValue = parseMapValue(eAttribute, value);
+			returnValue = parseProperty(eAttribute, value);
 		} else {
 			List<Object> list = (List<Object>) value;
-			returnValue = parseMapValue(eAttribute, list.get(index));
+			returnValue = parseProperty(eAttribute, list.get(index));
 		}
 		return returnValue;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object get(PersistentEObject object, EReference eReference, int index) {
+	protected Object getWithReference(InternalPersistentEObject object, EReference eReference, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eReference);
 		if (!eReference.isMany()) {
@@ -78,36 +79,36 @@ public class DirectWriteMapResourceWithListsEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object set(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		if (!eAttribute.isMany()) {
-			Object oldValue = map.put(Fun.t2(object.id(), eAttribute.getName()), serializeToMapValue(eAttribute, value));
-			returnValue = parseMapValue(eAttribute, oldValue);
+			Object oldValue = tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
+			returnValue = parseProperty(eAttribute, oldValue);
 		} else {
 
 			List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 			Object oldValue = list.get(index);
-			list.set(index, serializeToMapValue(eAttribute, value));
-			map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
-			returnValue = parseMapValue(eAttribute, oldValue);
+			list.set(index, serializeToProperty(eAttribute, value));
+			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
+			returnValue = parseProperty(eAttribute, oldValue);
 		}
 		return returnValue;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object set(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+	protected Object setWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		Object returnValue;
-		updateContainment(object, eReference, referencedObject);
-		updateInstanceOf(referencedObject);
+		updateContainment(object, eReference, value);
+		updateInstanceOf(value);
 		if (!eReference.isMany()) {
-			Object oldId = map.put(Fun.t2(object.id(), eReference.getName()), referencedObject.id());
+			Object oldId = tuple2Map.put(Fun.t2(object.id(), eReference.getName()), value.id());
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		} else {
 			List<Object> list = (List<Object>) getFromMap(object, eReference);
 			Object oldId = list.get(index);
-			list.set(index, referencedObject.id());
-			map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
+			list.set(index, value.id());
+			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		}
 		return returnValue;
@@ -116,39 +117,39 @@ public class DirectWriteMapResourceWithListsEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected void add(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected void addWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
-		list.add(index, serializeToMapValue(eAttribute, value));
-		map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
+		list.add(index, serializeToProperty(eAttribute, value));
+		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected void add(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+	protected void addWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		list.add(index, referencedObject.id());
-		map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
+		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object remove(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object removeWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		Object oldValue = list.get(index);
 		list.remove(index);
-		map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
-		return parseMapValue(eAttribute, oldValue);
+		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
+		return parseProperty(eAttribute, oldValue);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object remove(PersistentEObject object, EReference eReference, int index) {
+	protected Object removeWithReference(InternalPersistentEObject object, EReference eReference, int index) {
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		Object oldId = list.get(index);
 		list.remove(index);
-		map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
+		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
 		return eObject((Id) oldId);
 	}
 
@@ -169,7 +170,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl extends DirectWriteMapRes
 		if (list== null) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
-			returnValue = list.indexOf(serializeToMapValue((EAttribute) feature, value));
+			returnValue = list.indexOf(serializeToProperty((EAttribute) feature, value));
 		} else {
 			PersistentEObject childEObject = checkNotNull(
 					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
@@ -188,7 +189,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl extends DirectWriteMapRes
 		if (list == null) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
-			returnValue = list.lastIndexOf(serializeToMapValue((EAttribute) feature, value));
+			returnValue = list.lastIndexOf(serializeToProperty((EAttribute) feature, value));
 		} else {
 			PersistentEObject childEObject = checkNotNull(
 					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
@@ -201,14 +202,14 @@ public class DirectWriteMapResourceWithListsEStoreImpl extends DirectWriteMapRes
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		map.put(Fun.t2(persistentEObject.id(), feature.getName()), new ArrayList<>());
+		tuple2Map.put(Fun.t2(persistentEObject.id(), feature.getName()), new ArrayList<>());
 	}
 
 	@Override
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
 		Object returnValue = null;
 		if (!feature.isMany()) {
-			returnValue = map.get(Fun.t2(object.id(), feature.getName()));
+			returnValue = tuple2Map.get(Fun.t2(object.id(), feature.getName()));
 		} else {
 			try {
 				returnValue = mapCache.get(Fun.t2(object.id(), feature.getName()));
@@ -226,7 +227,7 @@ public class DirectWriteMapResourceWithListsEStoreImpl extends DirectWriteMapRes
 		@Override
         public Object load(Tuple2<Id, String> key) throws Exception {
             Object returnValue;
-            Object value = map.get(key);
+            Object value = tuple2Map.get(key);
             if (value == null) {
                 returnValue = new ArrayList<>();
             } else if (value instanceof Object[]) {

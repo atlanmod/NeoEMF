@@ -27,6 +27,7 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.junit.After;
 import org.junit.Before;
@@ -88,8 +89,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
 
     protected PersistenceBackend getInnerBackend(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         assertThat("Invalid call, can not get the inner backend if the given EStore is not a DirectWriteGraphResourceEStoreImpl", store, instanceOf(DirectWriteBlueprintsResourceEStoreImpl.class));
-        Field graphStoreField = DirectWriteBlueprintsResourceEStoreImpl.class.getDeclaredField("graph");
-        graphStoreField.setAccessible(true);
+        Field graphStoreField = FieldUtils.getField(DirectWriteBlueprintsResourceEStoreImpl.class, "persistenceBackend", true);
         return (PersistenceBackend) graphStoreField.get(store);
     }
 

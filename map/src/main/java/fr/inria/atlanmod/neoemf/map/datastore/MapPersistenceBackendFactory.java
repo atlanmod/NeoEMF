@@ -58,7 +58,7 @@ public class MapPersistenceBackendFactory extends AbstractPersistenceBackendFact
 	public SearcheableResourceEStore createTransientEStore(
 			PersistentResource resource, PersistenceBackend backend) {
 		checkArgument(backend instanceof DB, "Trying to create a Map-based EStore with an invalid backend");
-		return new DirectWriteMapResourceEStoreImpl(resource, (DB)backend);
+		return new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
 	}
 
 	@Override

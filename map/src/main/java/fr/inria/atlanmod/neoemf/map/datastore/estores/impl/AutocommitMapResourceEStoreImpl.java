@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -43,8 +44,8 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	 * Allows to specify the number of allowed modification on the underlying db before
 	 * calling the {@link DB#commit()} method automatically.
 	 */
-	public AutocommitMapResourceEStoreImpl(Resource.Internal resource, DB db, int opsBetweenCommits) {
-		super(resource, db);
+	public AutocommitMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend, int opsBetweenCommits) {
+		super(resource, persistenceBackend);
 		this.opsBetweenCommits = opsBetweenCommits;
 		this.opCount = 0;
 	}
@@ -55,8 +56,8 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	 * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
 	 * db before calling the {@link DB#commit()} method automatically.
 	 */
-	public AutocommitMapResourceEStoreImpl(Resource.Internal resource, DB db) {
-		this(resource, db, OPS_BETWEEN_COMMITS_DEFAULT);
+	public AutocommitMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
+		this(resource, persistenceBackend, OPS_BETWEEN_COMMITS_DEFAULT);
 	}
 
 	@Override
@@ -101,14 +102,14 @@ public class AutocommitMapResourceEStoreImpl extends DirectWriteMapResourceEStor
 	private void incrementAndCommit() {
 		opCount = (opCount + 1) % opsBetweenCommits;
 		if (opCount == 0) {
-			db.commit();
+			persistenceBackend.commit();
 		}
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			db.commit();
+			persistenceBackend.commit();
 		} catch (Exception ex) {
 			NeoLogger.error(ex);
 		}

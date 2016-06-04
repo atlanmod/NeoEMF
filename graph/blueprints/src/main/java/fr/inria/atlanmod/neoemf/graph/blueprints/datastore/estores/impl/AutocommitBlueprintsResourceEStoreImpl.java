@@ -102,14 +102,14 @@ public class AutocommitBlueprintsResourceEStoreImpl extends DirectWriteBlueprint
 	private void incrementAndCommit() {
 		opCount = (opCount + 1) % opsBetweenCommits;
 		if (opCount == 0) {
-			graph.commit();
+			persistenceBackend.commit();
 		}
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			graph.commit();
+			persistenceBackend.commit();
 		} catch (Exception ex) {
 			NeoLogger.error(ex);
 		}

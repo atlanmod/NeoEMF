@@ -18,10 +18,10 @@ import com.google.common.cache.CacheStats;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource.Internal;
-import org.mapdb.DB;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.mapdb.Fun.Tuple2;
 
 import java.util.Timer;
@@ -36,8 +36,8 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	private final Cache<Tuple2<Id, String>, Object> cachedArray;
 
 	@SuppressWarnings("unchecked")
-	public CachedManyDirectWriteMapResourceEStoreImpl(Internal resource, DB db) {
-		super(resource, db);
+	public CachedManyDirectWriteMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
+		super(resource, persistenceBackend);
 		cachedArray = CacheBuilder.newBuilder().softValues().recordStats().build();
 		new Timer(true).scheduleAtFixedRate(new TimerTask() {
 			@Override

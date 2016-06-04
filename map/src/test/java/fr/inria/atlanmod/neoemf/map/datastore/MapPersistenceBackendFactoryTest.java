@@ -224,17 +224,17 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
     }
 
     private PersistenceBackend getInnerBackend(DirectWriteMapResourceEStoreImpl store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field mapStoreField = FieldUtils.getField(DirectWriteMapResourceEStoreImpl.class, "db", true);
+        Field mapStoreField = FieldUtils.getField(DirectWriteMapResourceEStoreImpl.class, "persistenceBackend", true);
         return (PersistenceBackend) mapStoreField.get(store);
     }
 
     private PersistenceBackend getInnerBackend(DirectWriteMapResourceWithListsEStoreImpl store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field mapStoreField = FieldUtils.getField(DirectWriteMapResourceWithListsEStoreImpl.class, "db", true);
+        Field mapStoreField = FieldUtils.getField(DirectWriteMapResourceWithListsEStoreImpl.class, "persistenceBackend", true);
         return (PersistenceBackend) mapStoreField.get(store);
     }
 
     private PersistenceBackend getInnerBackend(DirectWriteMapWithIndexesResourceEStoreImpl store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field mapStoreField = FieldUtils.getField(DirectWriteMapWithIndexesResourceEStoreImpl.class, "db", true);
+        Field mapStoreField = FieldUtils.getField(DirectWriteMapWithIndexesResourceEStoreImpl.class, "persistenceBackend", true);
         return (PersistenceBackend) mapStoreField.get(store);
     }
 }

@@ -44,5 +44,5 @@ public interface SearcheableResourceEStore extends InternalEObject.EStore {
 	 * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
 	 * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
 	 */
-	EList<EObject> getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
+	EList<EObject> getAllInstances(EClass eClass, boolean strict);
 }
