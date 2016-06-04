@@ -21,12 +21,11 @@ import java.text.MessageFormat;
 public class NeoLogger {
 
     private static final int CALLER_CLASS_DEPTH = 4;
-
-    private NeoLogger() {}
-
     private static final boolean CLASSNAME_NEEDED = false;
 
     private static final Logger ROOT_LOGGER = LogManager.getLogger();
+
+    private NeoLogger() {}
 
     public static void debug(String msg) {
         internalLog(Level.DEBUG, msg, null);

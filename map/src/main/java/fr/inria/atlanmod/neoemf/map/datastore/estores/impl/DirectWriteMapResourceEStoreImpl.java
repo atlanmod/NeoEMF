@@ -282,7 +282,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		return neoEObject;
 	}
 	
-	protected EClass resolveInstanceOf(Id id) {
+	private EClass resolveInstanceOf(Id id) {
 		EClass eClass = null;
 		EClassInfo eClassInfo = instanceOfMap.get(id);
 		if (eClassInfo != null) {

@@ -217,12 +217,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		return vertex != null ? getSize(vertex, feature) : 0;
 	}
 
-	protected static Integer getSize(Vertex vertex, EStructuralFeature feature) {
+	private Integer getSize(Vertex vertex, EStructuralFeature feature) {
 		Integer size = vertex.getProperty(feature.getName() + SEPARATOR + SIZE_LITERAL);
 		return size != null ? size : 0;
 	}
 
-	protected static void setSize(Vertex vertex, EStructuralFeature feature, int size) {
+	private void setSize(Vertex vertex, EStructuralFeature feature, int size) {
 		vertex.setProperty(feature.getName() + SEPARATOR + SIZE_LITERAL, size);
 	}
 
@@ -442,7 +442,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		return resultValue;
 	}
 
-	protected static void updateContainment(EReference eReference, Vertex parentVertex, Vertex childVertex) {
+	private void updateContainment(EReference eReference, Vertex parentVertex, Vertex childVertex) {
 		for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
 			edge.remove();
 		}
@@ -450,11 +450,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		edge.setProperty(CONTAINING_FEATURE, eReference.getName());
 	}
 
-	protected InternalEObject reifyVertex(Vertex vertex) {
+	private InternalEObject reifyVertex(Vertex vertex) {
 		return reifyVertex(vertex, null);
 	}
 
-	protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
+	private InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
 		InternalPersistentEObject internalEObject = persistenceBackend.reifyVertex(vertex, eClass);
 		if(internalEObject.resource() != resource()) {
 			if(Iterables.isEmpty(vertex.getEdges(Direction.OUT, CONTAINER))) {

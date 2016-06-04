@@ -293,11 +293,11 @@ public abstract class AbstractDirectWriteResourceEStoreImpl<P extends Persistenc
         throw new IllegalStateException("This method should not be called");
     }
 
-    protected static Object parseProperty(EAttribute eAttribute, Object property) {
+    protected Object parseProperty(EAttribute eAttribute, Object property) {
         return property != null ? EcoreUtil.createFromString(eAttribute.getEAttributeType(), property.toString()) : null;
     }
 
-    protected static Object serializeToProperty(EAttribute eAttribute, Object value) {
+    protected Object serializeToProperty(EAttribute eAttribute, Object value) {
         return value != null ? EcoreUtil.convertToString(eAttribute.getEAttributeType(), value) : null;
     }
 }

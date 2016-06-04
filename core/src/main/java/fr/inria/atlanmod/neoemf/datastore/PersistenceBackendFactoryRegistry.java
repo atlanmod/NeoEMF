@@ -19,13 +19,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PersistenceBackendFactoryRegistry {
 
-	private PersistenceBackendFactoryRegistry() {}
-
 	/**
 	 * A map containing all registered {@link AbstractPersistenceBackendFactory backend factory} identified by a uri
 	 * scheme.
 	 */
 	private static final Map<String, AbstractPersistenceBackendFactory> FACTORIES = new HashMap<>();
+
+	private PersistenceBackendFactoryRegistry() {}
 
 	/**
 	 * Returns all registered factories.

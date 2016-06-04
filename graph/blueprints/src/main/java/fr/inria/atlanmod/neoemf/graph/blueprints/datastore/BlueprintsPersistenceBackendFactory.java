@@ -46,8 +46,7 @@ import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class BlueprintsPersistenceBackendFactory extends
-		AbstractPersistenceBackendFactory {
+public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
 	/**
 	 * The configuration file name. This file stores the metadata information
@@ -63,9 +62,10 @@ public class BlueprintsPersistenceBackendFactory extends
 	}
 	
 	@Override
-	public SearcheableResourceEStore createTransientEStore(
-			PersistentResource resource, PersistenceBackend backend) {
-		checkArgument(backend instanceof BlueprintsPersistenceBackend, "Trying to create a Graph-based EStore with an invalid backend");
+	public SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+		checkArgument(backend instanceof BlueprintsPersistenceBackend,
+				"Trying to create a Graph-based EStore with an invalid backend");
+
 		return new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
 	}
 	
@@ -187,9 +187,10 @@ public class BlueprintsPersistenceBackendFactory extends
 	}
 	
 	@Override
-	protected SearcheableResourceEStore internalCreatePersistentEStore(
-			PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-		checkArgument(backend instanceof BlueprintsPersistenceBackend, "Trying to create a Graph-based EStore with an invalid backend");
+	protected SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
+		checkArgument(backend instanceof BlueprintsPersistenceBackend,
+				"Trying to create a Graph-based EStore with an invalid backend");
+
 		SearcheableResourceEStore returnValue;
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
@@ -216,8 +217,11 @@ public class BlueprintsPersistenceBackendFactory extends
 	
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-		checkArgument(from instanceof BlueprintsPersistenceBackend, "Trying to use Graph backend copy on non Graph databases");
-		checkArgument(to instanceof BlueprintsPersistenceBackend, "Trying to use Graph backend copy on non Graph databases");
+		checkArgument(from instanceof BlueprintsPersistenceBackend,
+				"Trying to use Graph backend copy on non Graph databases");
+		checkArgument(to instanceof BlueprintsPersistenceBackend,
+				"Trying to use Graph backend copy on non Graph databases");
+
 		BlueprintsPersistenceBackend bFrom = (BlueprintsPersistenceBackend)from;
 		BlueprintsPersistenceBackend bTo = (BlueprintsPersistenceBackend)to;
 	    GraphHelper.copyGraph(bFrom, bTo);

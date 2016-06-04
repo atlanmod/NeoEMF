@@ -280,7 +280,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	/**
 	 * Builds the {@code id} used to identify {@link EClass} {@link Vertex}es.
 	 */
-	protected static String buildEClassId(EClass eClass) {
+	protected String buildEClassId(EClass eClass) {
 		return eClass != null ? eClass.getName() + '@' + eClass.getEPackage().getNsURI() : null;
 	}
 	

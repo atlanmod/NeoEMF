@@ -34,8 +34,6 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
         WEAK("weak"),
         STRONG("strong");
         
-        
-        
         private final String stringValue;
         
         CacheType(String stringValue) {
