@@ -59,8 +59,8 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         when(persistenceBackendFactory.createPersistentEStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenCallRealMethod();
         when(persistenceBackendFactory.internalCreatePersistentEStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mockPersistentEStore);
 
-        PersistenceBackendFactoryRegistry.getFactories().clear();
-        PersistenceBackendFactoryRegistry.getFactories().put("mock", persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.unregisterAll();
+        PersistenceBackendFactoryRegistry.register("mock", persistenceBackendFactory);
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
     }
 

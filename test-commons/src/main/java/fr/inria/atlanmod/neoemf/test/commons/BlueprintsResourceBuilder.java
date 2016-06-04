@@ -37,8 +37,8 @@ public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
     }
     
     private void initBlueprintsBuilder() {
-        if(!PersistenceBackendFactoryRegistry.getFactories().containsKey(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
-            PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new BlueprintsPersistenceBackendFactory());
+        if(!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new BlueprintsPersistenceBackendFactory());
         }
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
     }

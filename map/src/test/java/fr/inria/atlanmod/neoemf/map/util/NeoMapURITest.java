@@ -44,8 +44,8 @@ public class NeoMapURITest extends AllTest {
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.unregisterAll();
+        PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 

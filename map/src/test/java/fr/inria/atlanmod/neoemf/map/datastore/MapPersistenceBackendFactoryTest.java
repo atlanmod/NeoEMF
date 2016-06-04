@@ -68,7 +68,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
     @Before
     public void setUp() {
         persistenceBackendFactory = new MapPersistenceBackendFactory();
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
         testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         try {
             Files.createDirectories(testFolder.toPath());
@@ -81,7 +81,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
 
     @After
     public void tearDown() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
+        PersistenceBackendFactoryRegistry.unregisterAll();
 
         temporaryFolder.delete();
 

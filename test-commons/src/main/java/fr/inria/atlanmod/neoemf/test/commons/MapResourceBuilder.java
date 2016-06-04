@@ -35,8 +35,8 @@ public class MapResourceBuilder extends AbstractResourceBuilder {
     }
     
     private void initMapBuilder() {
-        if(!PersistenceBackendFactoryRegistry.getFactories().containsKey(NeoMapURI.NEO_MAP_SCHEME)) {
-            PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
+        if(!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, new MapPersistenceBackendFactory());
         }
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
     }

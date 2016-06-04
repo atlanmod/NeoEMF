@@ -44,8 +44,8 @@ public class NeoURITest extends AllTest {
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
-        PersistenceBackendFactoryRegistry.getFactories().put("mock", persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.unregisterAll();
+        PersistenceBackendFactoryRegistry.register("mock", persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 

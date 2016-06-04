@@ -63,7 +63,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
     @Before
     public void setUp() {
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
 
@@ -71,7 +71,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
 
     @After
     public void tearDown() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
+        PersistenceBackendFactoryRegistry.unregisterAll();
 
         temporaryFolder.delete();
 

@@ -44,8 +44,8 @@ public class NeoBlueprintsURITest extends AllTest {
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.unregisterAll();
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 

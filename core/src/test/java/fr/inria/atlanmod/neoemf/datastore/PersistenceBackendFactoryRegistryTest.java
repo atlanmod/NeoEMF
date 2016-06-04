@@ -29,12 +29,12 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
+        PersistenceBackendFactoryRegistry.unregisterAll();
     }
 
     @Test
     public void testSingleAdd() {
-        PersistenceBackendFactoryRegistry.getFactories().put("mock1", persistenceBackendFactory1);
+        PersistenceBackendFactoryRegistry.register("mock1", persistenceBackendFactory1);
         assertThat(PersistenceBackendFactoryRegistry.getFactories().size(), equalTo(1));
 
         AbstractPersistenceBackendFactory registeredFactory = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
@@ -44,8 +44,8 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
     @Test
     public void testMulltipleAdd() {
-        PersistenceBackendFactoryRegistry.getFactories().put("mock1", persistenceBackendFactory1);
-        PersistenceBackendFactoryRegistry.getFactories().put("mock2", persistenceBackendFactory2);
+        PersistenceBackendFactoryRegistry.register("mock1", persistenceBackendFactory1);
+        PersistenceBackendFactoryRegistry.register("mock2", persistenceBackendFactory2);
         assertThat(PersistenceBackendFactoryRegistry.getFactories().size(), equalTo(2));
 
         AbstractPersistenceBackendFactory registeredFactory1 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");

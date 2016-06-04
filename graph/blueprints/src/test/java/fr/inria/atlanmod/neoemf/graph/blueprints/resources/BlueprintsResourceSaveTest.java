@@ -65,7 +65,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
         options = new HashMap<>();
         persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
 
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + new Date().getTime()).toFile();
         resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
@@ -76,7 +76,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
     public void tearDown() {
         resource.unload();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
-        PersistenceBackendFactoryRegistry.getFactories().clear();
+        PersistenceBackendFactoryRegistry.unregisterAll();
 
         temporaryFolder.delete();
 
