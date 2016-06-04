@@ -27,7 +27,7 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.junit.After;
 import org.junit.Before;
