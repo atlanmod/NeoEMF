@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.resource.Resource;
  * methods in the {@link NeoLogger}.
  * 
  */
-public class LoggingDelegatedResourceEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
+public class LoggingDelegatedResourceEStoreImpl extends DelegatedResourceEStoreImpl {
 
 	public LoggingDelegatedResourceEStoreImpl(SearcheableResourceEStore eStore) {
 		super(eStore);

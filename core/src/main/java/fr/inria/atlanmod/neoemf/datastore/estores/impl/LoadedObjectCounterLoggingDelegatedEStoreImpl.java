@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl implements SearcheableResourceEStore {
+public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl {
 
     private Set<InternalEObject> loadedObjects;
 
@@ -32,8 +32,7 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
     }
 
     @Override
-    public Object get(InternalEObject object, EStructuralFeature feature,
-            int index) {
+    public Object get(InternalEObject object, EStructuralFeature feature, int index) {
         loadedObjects.add(object);
         Object result = super.get(object, feature, index);
         if(result instanceof InternalEObject) {
@@ -43,8 +42,7 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
     }
 
     @Override
-    public Object set(InternalEObject object, EStructuralFeature feature,
-            int index, Object value) {
+    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         loadedObjects.add(object);
         return super.set(object, feature, index, value);
     }
@@ -74,43 +72,37 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
     }
 
     @Override
-    public boolean contains(InternalEObject object, EStructuralFeature feature,
-            Object value) {
+    public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
         loadedObjects.add(object);
         return super.contains(object, feature, value);
     }
 
     @Override
-    public int indexOf(InternalEObject object, EStructuralFeature feature,
-            Object value) {
+    public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
         loadedObjects.add(object);
         return super.indexOf(object, feature, value);
     }
 
     @Override
-    public int lastIndexOf(InternalEObject object, EStructuralFeature feature,
-            Object value) {
+    public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
         loadedObjects.add(object);
         return super.lastIndexOf(object, feature, value);
     }
 
     @Override
-    public void add(InternalEObject object, EStructuralFeature feature,
-            int index, Object value) {
+    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         loadedObjects.add(object);
         super.add(object, feature, index, value);
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature,
-            int index) {
+    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
         loadedObjects.add(object);
         return super.remove(object, feature, index);
     }
 
     @Override
-    public Object move(InternalEObject object, EStructuralFeature feature,
-            int targetIndex, int sourceIndex) {
+    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
         loadedObjects.add(object);
         return super.move(object, feature, targetIndex, sourceIndex);
     }
@@ -128,8 +120,7 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
     }
 
     @Override
-    public <T> T[] toArray(InternalEObject object, EStructuralFeature feature,
-            T[] array) {
+    public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
         loadedObjects.add(object);
         return super.toArray(object, feature, array);
     }
@@ -158,19 +149,4 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedReso
             NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());
         }
     }
-
-//  @Override
-//  public EObject create(EClass eClass) {
-//      return super.create(eClass);
-//  }
-
-//  @Override
-//  public Resource resource() {
-//      return super.resource();
-//  }
-
-//  @Override
-//  public EObject eObject(Id id) {
-//      return super.eObject(id);
-//  }
 }
