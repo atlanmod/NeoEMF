@@ -16,8 +16,14 @@ import fr.inria.atlanmod.neoemf.core.impl.PersistenceFactoryImpl;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 
+/**
+ * A factory able to create a {@link PersistentEObject persistent object} from a {@link EClass class}.
+ */
 public interface PersistenceFactory extends EFactory {
-	
+
+	/**
+	 * The default instance of this {@code PersistenceFactory factory}.
+	 */
 	PersistenceFactory eINSTANCE = new PersistenceFactoryImpl();
 	
 	@Override

@@ -13,7 +13,15 @@ package fr.inria.atlanmod.neoemf.core;
 
 import org.eclipse.emf.ecore.EObject;
 
+/**
+ * An {@code EObject object} able to persist in a database.
+ */
 public interface PersistentEObject extends EObject {
 
+    /**
+     * Returns the unique identifier of this persistent object.
+     *
+     * @return the unique identifier
+     */
     Id id();
 }
