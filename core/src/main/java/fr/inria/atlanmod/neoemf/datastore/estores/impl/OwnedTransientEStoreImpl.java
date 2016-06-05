@@ -137,9 +137,4 @@ public class OwnedTransientEStoreImpl extends TransientEStoreImpl {
 		checkArgument(owner == eObject);
 		return super.getContainingFeature(eObject);
 	}
-
-//	@Override
-//	public EObject create(EClass eClass) {
-//		return super.create(eClass);
-//	}
 }

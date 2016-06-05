@@ -24,14 +24,12 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A simple {@link InternalEObject.EStore} implementation that uses collections to
- * store the data in memory.
- * 
+ * A simple {@link InternalEObject.EStore} implementation that uses collections to store the data in memory.
  */
 public class TransientEStoreImpl implements InternalEObject.EStore {
 
-	private Map<EStoreEntryKey, Object> singleMap;
-	private Map<EStoreEntryKey, List<Object>> manyMap;
+	protected Map<EStoreEntryKey, Object> singleMap;
+	protected Map<EStoreEntryKey, List<Object>> manyMap;
 
 	public TransientEStoreImpl() {
 		singleMap = new HashMap<>();
@@ -69,10 +67,14 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		if (saved != null) {
 			saved.add(index, value);
 		} else {
-			List<Object> list = new ArrayList<>();
+			List<Object> list = createValue();
 			list.add(value);
 			manyMap.put(entry, list);
 		}
+	}
+
+	protected List<Object> createValue() {
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -191,7 +193,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		throw new UnsupportedOperationException();
 	}
 
-	private class EStoreEntryKey {
+	protected class EStoreEntryKey {
 
 		private InternalEObject eObject;
 		private EStructuralFeature eStructuralFeature;
