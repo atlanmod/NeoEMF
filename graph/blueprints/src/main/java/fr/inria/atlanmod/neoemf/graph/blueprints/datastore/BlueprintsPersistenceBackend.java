@@ -368,7 +368,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
         }
 	}
 
-	private class PersistantEObjectCacheLoader implements Callable<InternalPersistentEObject> {
+	private static class PersistantEObjectCacheLoader implements Callable<InternalPersistentEObject> {
 
 		private final Object id;
 		private final EClass eClass;
