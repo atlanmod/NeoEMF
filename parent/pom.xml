@@ -45,6 +45,7 @@
         <clean-plugin.version>3.0.0</clean-plugin.version>
         <compiler-plugin.version>3.5.1</compiler-plugin.version>
         <jar-plugin.version>3.0.0</jar-plugin.version>
+        <resource-plugin.version>3.0.0</resource-plugin.version>
         <site-plugin.version>3.5.1</site-plugin.version>
         <source-plugin.version>3.0.0</source-plugin.version>
         <surefire-plugin.version>2.19.1</surefire-plugin.version>
@@ -242,6 +243,24 @@
     </dependencyManagement>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>**/.empty</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <excludes>
+                    <exclude>**/.empty</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -264,6 +283,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
 
             <plugin>
@@ -315,6 +339,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${source-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${resource-plugin.version}</version>
                 </plugin>
 
                 <plugin>
