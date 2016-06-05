@@ -24,4 +24,11 @@ public interface PersistentEObject extends EObject {
      * @return the unique identifier
      */
     Id id();
+
+    /**
+     * Defines the unique identifier of this persistent object.
+     *
+     * @param id a unique identifier
+     */
+    void id(Id id);
 }
