@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import java.lang.reflect.Method;
 
-public class NeoEObjectProxyHandlerImpl implements MethodInterceptor {
+class NeoEObjectProxyHandlerImpl implements MethodInterceptor {
 
 	private InternalEObject internalEObject;
 

@@ -111,13 +111,7 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
-                        <_exportcontents>
-                            net.sf.cglib.proxy,
-                            net.sf.cglib.asm,
-                            net.sf.cglib.core,
-                            net.sf.cglib.transform,
-                            net.sf.cglib.core.internal,
-                        </_exportcontents>
+                        <_exportcontents/>
                         <Require-Bundle>
                             org.eclipse.emf.ecore
                         </Require-Bundle>
