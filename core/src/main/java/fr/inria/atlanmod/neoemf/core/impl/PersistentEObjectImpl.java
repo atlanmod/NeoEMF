@@ -36,6 +36,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
 
 	private static int numberNewStoreFeatureSet = 0;
@@ -183,54 +185,51 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
 				if (oldStore.isSet(this, feature)) {
 					if (!feature.isMany()) {
-						Object v = oldStore.get(this,feature,EStore.NO_INDEX);
-						if(v == null) {
-						    NeoLogger.debug("A null value has been detected in the old store (Feature {0}.{1})", ((EClassifier)feature.eContainer()).getName(), feature.getName());
-						}else{
-							if(feature instanceof EReference) {
-								EReference eRef = (EReference)feature;
-								if(eRef.isContainment()) {
-									InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(v, InternalPersistentEObject.class);
-									if(internalElement.resource() != resource()) {
-										internalElement.resource(resource());
-									}
-								}
-							}
-							numberNewStoreFeatureSet++;
+						Object value = getAdaptedValue(oldStore, feature, EStore.NO_INDEX);
+						updated = value != null;
+						if (updated) {
+							eStore.set(this, feature, EStore.NO_INDEX, value);
 							numberSingleFeatureSet++;
-							updated = true;
-							eStore.set(this, feature, EStore.NO_INDEX, v);
 						}
 					} else {
 						eStore.clear(this, feature);
-						int size = oldStore.size(this, feature);
-						for (int i = 0; i < size; i++) {
-							Object v = oldStore.get(this,feature,i);
-							if(v == null) {
-							    NeoLogger.debug("A null value has been detected in the old store (Feature {0}.{1})", ((EClassifier)feature.eContainer()).getName(), feature.getName());
-							}else{
-								if(feature instanceof EReference) {
-									EReference eRef = (EReference)feature;
-									if(eRef.isContainment()) {
-										InternalPersistentEObject internalElement = NeoEObjectAdapterFactoryImpl.getAdapter(v, InternalPersistentEObject.class);
-										if(internalElement.resource() != resource()) {
-											internalElement.resource(resource());
-										}
-									}
-								}
-								numberNewStoreFeatureSet++;
+						for (int i = 0; i < oldStore.size(this, feature); i++) {
+							Object value = getAdaptedValue(oldStore, feature, i);
+							updated = value != null;
+							if (updated) {
+								eStore.add(this, feature, i, value);
 								numberManyFeatureSet++;
-								updated = true;
-								eStore.add(this, feature, i, v);
 							}
 						}
 					}
 				}
 			}
 		}
+		// FIXME Can be false even if it has been updated : if the last element in a feature hasn't be updated.
 		if (updated) {
 			numberNewStoreEobject++;
 		}
+	}
+
+	private Object getAdaptedValue(EStore store, EStructuralFeature feature, int index) {
+		Object value = store.get(this, feature, index);
+		if (value != null) {
+			if(feature instanceof EReference) {
+				EReference eRef = (EReference)feature;
+				if(eRef.isContainment()) {
+					InternalPersistentEObject internalElement = checkNotNull(
+							NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class));
+					if(internalElement.resource() != resource()) {
+						internalElement.resource(resource());
+					}
+				}
+			}
+			numberNewStoreFeatureSet++;
+		}
+		else {
+			NeoLogger.debug("A null value has been detected in the old store (Feature {0}.{1})", ((EClassifier)feature.eContainer()).getName(), feature.getName());
+		}
+		return value;
 	}
 
 	@Override
