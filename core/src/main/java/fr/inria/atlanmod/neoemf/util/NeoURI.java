@@ -33,11 +33,10 @@ public class NeoURI extends URI {
 
 	public static URI createNeoURI(URI uri) {
 		checkArgument(!uri.scheme().equals(FILE_SCHEME),
-				"Can not create NeoURI from file URI without a valid scheme"
-		);
+				"Can not create NeoURI from file URI without a valid scheme");
 		checkArgument(PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()),
-				"Unregistered URI scheme %s", uri.toString()
-		);
+				"Unregistered URI scheme %s", uri.toString());
+
 		return new NeoURI(uri.hashCode(), uri);
 	}
 	
