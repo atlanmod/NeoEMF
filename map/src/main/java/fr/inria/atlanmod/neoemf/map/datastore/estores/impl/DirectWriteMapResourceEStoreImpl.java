@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
@@ -46,7 +46,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourceEStoreImpl<MapPersistenceBackend> {
+public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourceEStore<MapPersistenceBackend> {
 
 	private static final String INSTANCE_OF = "neoInstanceOf";
 	private static final String CONTAINER = "eContainer";

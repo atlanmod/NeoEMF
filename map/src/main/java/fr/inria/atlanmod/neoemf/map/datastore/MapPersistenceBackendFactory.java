@@ -16,12 +16,12 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceWithListsEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithIndexesResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithListsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -113,7 +113,7 @@ public class MapPersistenceBackendFactory extends AbstractPersistenceBackendFact
 			eStore = new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
         else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_LISTS)) {
-			eStore = new DirectWriteMapResourceWithListsEStoreImpl(resource, (MapPersistenceBackend) backend);
+			eStore = new DirectWriteMapWithListsResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
         else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_INDEXES)) {
 			eStore = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
@@ -121,7 +121,7 @@ public class MapPersistenceBackendFactory extends AbstractPersistenceBackendFact
         // Autocommit
         if (eStore != null) {
 			if(storeOptions != null && storeOptions.contains(EStoreMapOption.AUTOCOMMIT)) {
-				eStore = new AutocommitResourceEStoreImpl(eStore);
+				eStore = new AutocommitEStoreImpl(eStore);
             }
         } else {
             throw new InvalidDataStoreException();

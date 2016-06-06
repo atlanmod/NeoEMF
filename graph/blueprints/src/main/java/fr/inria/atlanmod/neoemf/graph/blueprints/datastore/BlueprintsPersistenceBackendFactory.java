@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.EStoreGraphOption;
@@ -205,10 +205,10 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
     	    if(storeOptions != null && storeOptions.contains(EStoreGraphOption.AUTOCOMMIT)) {
     	        if(options.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK)) {
     	            int autoCommitChunk = Integer.parseInt((String)options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK));
-					eStore = new AutocommitResourceEStoreImpl(eStore, autoCommitChunk);
+					eStore = new AutocommitEStoreImpl(eStore, autoCommitChunk);
     	        }
     	        else {
-					eStore = new AutocommitResourceEStoreImpl(eStore);
+					eStore = new AutocommitEStoreImpl(eStore);
     	        }
     	    }
     	} else {

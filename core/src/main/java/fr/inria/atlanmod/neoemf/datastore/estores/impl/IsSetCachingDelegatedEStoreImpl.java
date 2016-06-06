@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject;
  * A {@link SearcheableResourceEStore} wrapper that caches the presence of a value.
  * 
  */
-public class IsSetCachingDelegatedEStoreImpl extends AbstractCachingDelegatedResourceEStoreImpl<Boolean> {
+public class IsSetCachingDelegatedEStoreImpl extends AbstractCachingDelegatedEStore<Boolean> {
 	
 	public IsSetCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		super(eStore);

@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 
-public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWriteResourceEStoreImpl<BlueprintsPersistenceBackend> {
+public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWriteResourceEStore<BlueprintsPersistenceBackend> {
 
 	private static final String SEPARATOR = ":";
 	private static final String POSITION = "position";

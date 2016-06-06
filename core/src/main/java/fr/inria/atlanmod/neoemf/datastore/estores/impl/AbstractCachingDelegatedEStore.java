@@ -24,36 +24,36 @@ import java.util.Objects;
 /**
  * A {@link SearcheableResourceEStore} wrapper able to cache values.
  *
- * @param <T> the type of cached values
+ * @param <V> the type of cached values
  */
-abstract class AbstractCachingDelegatedResourceEStoreImpl<T> extends DelegatedResourceEStoreImpl {
+public abstract class AbstractCachingDelegatedEStore<V> extends AbstractDelegatedEStore<SearcheableResourceEStore> {
 
     private static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
 
-    protected final Cache<CacheKey, T> cache;
+    private final Cache<CacheKey, V> cache;
 
-    public AbstractCachingDelegatedResourceEStoreImpl(SearcheableResourceEStore eStore) {
+    public AbstractCachingDelegatedEStore(SearcheableResourceEStore eStore) {
         this(eStore, DEFAULT_SIZE_CACHE_SIZE);
     }
 
-    public AbstractCachingDelegatedResourceEStoreImpl(SearcheableResourceEStore eStore, int cacheSize) {
+    public AbstractCachingDelegatedEStore(SearcheableResourceEStore eStore, int cacheSize) {
         super(eStore);
         this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize).build();
     }
 
-    protected T getValueFromCache(InternalEObject object, EStructuralFeature feature) {
+    protected V getValueFromCache(InternalEObject object, EStructuralFeature feature) {
         return cache.getIfPresent(new CacheKey(object, feature));
     }
 
-    protected T getValueFromCache(InternalEObject object, EStructuralFeature feature, int index) {
+    protected V getValueFromCache(InternalEObject object, EStructuralFeature feature, int index) {
         return cache.getIfPresent(new CacheKey(object, feature, index));
     }
 
-    protected void cacheValue(InternalEObject object, EStructuralFeature feature, T value) {
+    protected void cacheValue(InternalEObject object, EStructuralFeature feature, V value) {
         cache.put(new CacheKey(object, feature), value);
     }
 
-    protected void cacheValue(InternalEObject object, EStructuralFeature feature, int index, T value) {
+    protected void cacheValue(InternalEObject object, EStructuralFeature feature, int index, V value) {
         cache.put(new CacheKey(object, feature, index), value);
     }
 
@@ -65,7 +65,7 @@ abstract class AbstractCachingDelegatedResourceEStoreImpl<T> extends DelegatedRe
         cache.invalidate(new CacheKey(object, feature, index));
     }
 
-    private class CacheKey {
+    private static class CacheKey {
         private final InternalEObject object;
         private final EStructuralFeature feature;
         private final int index;
@@ -82,7 +82,7 @@ abstract class AbstractCachingDelegatedResourceEStoreImpl<T> extends DelegatedRe
 
         @Override
         public int hashCode() {
-            return Objects.hash(getOuterType(), feature, index, object);
+            return Objects.hash(feature, index, object);
         }
 
         @Override
@@ -95,14 +95,9 @@ abstract class AbstractCachingDelegatedResourceEStoreImpl<T> extends DelegatedRe
             }
             @SuppressWarnings("unchecked")
             CacheKey other = (CacheKey) obj;
-            return Objects.equals(getOuterType(), other.getOuterType())
-                    && Objects.equals(object, other.object)
+            return Objects.equals(object, other.object)
                     && Objects.equals(feature, other.feature)
                     && (index == other.index || index == InternalEObject.EStore.NO_INDEX);
-        }
-
-        private AbstractCachingDelegatedResourceEStoreImpl<?> getOuterType() {
-            return AbstractCachingDelegatedResourceEStoreImpl.this;
         }
     }
 }

@@ -13,11 +13,11 @@ package fr.inria.atlanmod.neoemf.datastore;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.DelegatedResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDelegatedEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterLoggingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingDelegatedResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,10 +69,8 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
     }
 
     private SearcheableResourceEStore getChildStore(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        assertThat("Invalid call, can not get the child store if the given one is not a DelegatedResourceEStoreImpl", store, instanceOf(DelegatedResourceEStoreImpl.class));
-        Field childStoreField = DelegatedResourceEStoreImpl.class.getDeclaredField("eStore");
-        childStoreField.setAccessible(true);
-        return (SearcheableResourceEStore) childStoreField.get(store);
+        assertThat("Invalid call, can not get the child store if the given one is not a DelegatedResourceEStoreImpl", store, instanceOf(AbstractDelegatedEStore.class));
+        return ((AbstractDelegatedEStore<?>) store).getEStore();
     }
 
     @Test
@@ -102,7 +99,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
 
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store, instanceOf(LoggingDelegatedResourceEStoreImpl.class));
+        assertThat(store, instanceOf(LoggingDelegatedEStoreImpl.class));
 
         SearcheableResourceEStore childStore = getChildStore(store);
         assertThat(childStore, instanceOf(SearcheableResourceEStore.class));
@@ -151,7 +148,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link LoggingDelegatedResourceEStoreImpl}
+     * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link LoggingDelegatedEStoreImpl}
      */
     @Test
     public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
@@ -159,7 +156,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
 
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store, instanceOf(LoggingDelegatedResourceEStoreImpl.class));
+        assertThat(store, instanceOf(LoggingDelegatedEStoreImpl.class));
 
         SearcheableResourceEStore loggingChildStore = getChildStore(store);
         assertThat(loggingChildStore, instanceOf(IsSetCachingDelegatedEStoreImpl.class));
@@ -215,7 +212,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
      * 4 stores : {@link EStructuralFeatureCachingDelegatedEStoreImpl}, {@link IsSetCachingDelegatedEStoreImpl},
-     * {@link LoggingDelegatedResourceEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
+     * {@link LoggingDelegatedEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
      */
     @Test
     public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
@@ -225,7 +222,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
 
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store, instanceOf(LoggingDelegatedResourceEStoreImpl.class));
+        assertThat(store, instanceOf(LoggingDelegatedEStoreImpl.class));
 
         SearcheableResourceEStore loggingChildStore = getChildStore(store);
         assertThat(loggingChildStore, instanceOf(SizeCachingDelegatedEStoreImpl.class));

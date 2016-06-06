@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends DelegatedResourceEStoreImpl {
+public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends AbstractDelegatedEStore<SearcheableResourceEStore> {
 
     private Set<InternalEObject> loadedObjects;
 

@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject;
  * A {@link SearcheableResourceEStore} wrapper that caches the size data.
  * 
  */
-public class SizeCachingDelegatedEStoreImpl extends AbstractCachingDelegatedResourceEStoreImpl<Integer> {
+public class SizeCachingDelegatedEStoreImpl extends AbstractCachingDelegatedEStore<Integer> {
 	
 	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		super(eStore);

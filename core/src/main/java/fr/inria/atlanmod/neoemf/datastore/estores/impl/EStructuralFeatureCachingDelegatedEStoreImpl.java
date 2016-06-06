@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject;
  * A {@link SearcheableResourceEStore} wrapper that caches {@link EStructuralFeature structural features}.
  * 
  */
-public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachingDelegatedResourceEStoreImpl<Object> {
+public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachingDelegatedEStore<Object> {
 	
 	public EStructuralFeatureCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
 		super(eStore);

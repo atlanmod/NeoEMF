@@ -28,13 +28,13 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 
-public abstract class AbstractDirectWriteResourceEStoreImpl<P extends PersistenceBackend> implements DirectWriteResourceEStore {
+public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBackend> implements DirectWriteResourceEStore {
 
     private Resource.Internal resource;
 
     protected P persistenceBackend;
 
-    public AbstractDirectWriteResourceEStoreImpl(Resource.Internal resource, P persistenceBackend) {
+    public AbstractDirectWriteResourceEStore(Resource.Internal resource, P persistenceBackend) {
         this.resource = resource;
         this.persistenceBackend = persistenceBackend;
     }

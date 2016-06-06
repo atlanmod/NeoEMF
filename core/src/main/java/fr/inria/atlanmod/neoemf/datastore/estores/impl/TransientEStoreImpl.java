@@ -28,8 +28,8 @@ import java.util.Objects;
  */
 public class TransientEStoreImpl implements InternalEObject.EStore {
 
-	protected Map<EStoreEntryKey, Object> singleMap;
-	protected Map<EStoreEntryKey, List<Object>> manyMap;
+	protected Map<EStoreKey, Object> singleMap;
+	protected Map<EStoreKey, List<Object>> manyMap;
 
 	public TransientEStoreImpl() {
 		singleMap = new HashMap<>();
@@ -39,7 +39,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	@Override
 	public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
 		Object returnValue;
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		if (index == NO_INDEX) {
 			returnValue = singleMap.get(entry);
 		} else {
@@ -56,13 +56,13 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		return index == NO_INDEX ? singleMap.put(entry, value) : manyMap.get(entry).set(index, value);
 	}
 
 	@Override
 	public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> saved = manyMap.get(entry);
 		if (saved != null) {
 			saved.add(index, value);
@@ -79,7 +79,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> saved = manyMap.get(entry);
         if (saved != null) {
             return saved.remove(index);
@@ -91,7 +91,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public Object move(InternalEObject eObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		Object movedObject = list.remove(sourceIndex);
 		list.add(targetIndex, movedObject);
@@ -100,7 +100,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public void clear(InternalEObject eObject, EStructuralFeature feature) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		if (list != null) {
 			list.clear();
@@ -109,69 +109,69 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 	@Override
 	public boolean isSet(InternalEObject eObject, EStructuralFeature feature) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		return !feature.isMany() ? singleMap.containsKey(entry) : manyMap.containsKey(entry);
 	}
 
 	@Override
 	public void unset(InternalEObject eObject, EStructuralFeature feature) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
-		Map<EStoreEntryKey, ?> concernedMap = !feature.isMany() ? singleMap : manyMap;
+		EStoreKey entry = new EStoreKey(eObject, feature);
+		Map<EStoreKey, ?> concernedMap = !feature.isMany() ? singleMap : manyMap;
 		concernedMap.remove(entry);
 	}
 
 	@Override
 	public int size(InternalEObject eObject, EStructuralFeature feature) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		return list != null ? list.size() : 0;
 	}
 
 	@Override
 	public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		return list != null ? list.indexOf(value) : -1;
 	}
 
 	@Override
 	public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		return list != null ? list.lastIndexOf(value) : -1;
 	}
 
 	@Override
 	public Object[] toArray(InternalEObject eObject, EStructuralFeature feature) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		return list != null ? list.toArray() : new Object[] {};
 	}
 
 	@Override
 	public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		return list != null ? list.toArray(array) : Arrays.copyOf(array, 0);
 	}
 
 	@Override
 	public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> res = manyMap.get(entry);
 		return res == null || res.isEmpty();
 	}
 
 	@Override
 	public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		return list != null && list.contains(value);
 	}
 
 	@Override
 	public int hashCode(InternalEObject eObject, EStructuralFeature feature) {
-		EStoreEntryKey entry = new EStoreEntryKey(eObject, feature);
+		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		// Return the default hashCode value if the list is empty
 		return list != null ? list.hashCode() : 1;
@@ -193,19 +193,19 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		throw new UnsupportedOperationException();
 	}
 
-	protected class EStoreEntryKey {
+	private static class EStoreKey {
 
 		private InternalEObject eObject;
 		private EStructuralFeature eStructuralFeature;
 
-		public EStoreEntryKey(InternalEObject eObject, EStructuralFeature eStructuralFeature) {
+		public EStoreKey(InternalEObject eObject, EStructuralFeature eStructuralFeature) {
 			this.eObject = eObject;
 			this.eStructuralFeature = eStructuralFeature;
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(getOuterType(), eObject, eStructuralFeature);
+			return Objects.hash(eObject, eStructuralFeature);
 		}
 
 		@Override
@@ -216,22 +216,9 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
-			EStoreEntryKey other = (EStoreEntryKey) obj;
-			return Objects.equals(getOuterType(), other.getOuterType())
-					&& Objects.equals(eObject, other.eObject)
+			EStoreKey other = (EStoreKey) obj;
+			return Objects.equals(eObject, other.eObject)
 					&& Objects.equals(eStructuralFeature, other.eStructuralFeature);
-		}
-
-		private TransientEStoreImpl getOuterType() {
-			return TransientEStoreImpl.this;
-		}
-
-		public InternalEObject getEObject() {
-			return eObject;
-		}
-
-		public EStructuralFeature getEStructuralFeature() {
-			return eStructuralFeature;
 		}
 	}
 }

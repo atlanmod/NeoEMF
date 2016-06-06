@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
@@ -149,7 +149,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitResourceEStoreImpl.class));
+        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));

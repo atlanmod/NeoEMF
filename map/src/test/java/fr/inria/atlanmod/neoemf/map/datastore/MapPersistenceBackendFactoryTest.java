@@ -18,12 +18,12 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceWithListsEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithIndexesResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithListsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
@@ -152,7 +152,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceWithListsEStoreImpl.class));
+        assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapWithListsResourceEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
@@ -178,7 +178,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitResourceEStoreImpl.class));
+        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreImpl.class));
 
         PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));

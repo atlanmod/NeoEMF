@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterLoggingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingDelegatedResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
@@ -50,7 +50,7 @@ public abstract class AbstractPersistenceBackendFactory {
 	            eStore = new SizeCachingDelegatedEStoreImpl(eStore);
 	        }
 	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.LOGGING)) {
-	            eStore = new LoggingDelegatedResourceEStoreImpl(eStore);
+	            eStore = new LoggingDelegatedEStoreImpl(eStore);
 	        }
 	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING)) {
 	            eStore = new LoadedObjectCounterLoggingDelegatedEStoreImpl(eStore);
