@@ -20,10 +20,12 @@ import com.tinkerpop.blueprints.util.GraphHelper;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.AutocommitBlueprintsResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.EStoreGraphOption;
 import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -191,28 +193,28 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
 		checkArgument(backend instanceof BlueprintsPersistenceBackend,
 				"Trying to create a Graph-based EStore with an invalid backend");
 
-		SearcheableResourceEStore returnValue;
+		DirectWriteResourceEStore eStore = null;
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
-    	if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE)) {
-			// Default store
-			returnValue = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
+		// Store
+		if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(EStoreGraphOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreGraphOption.AUTOCOMMIT))) {
+			eStore = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	}
-    	else {
-    	    if(storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
+		// Autocommit
+    	if(eStore != null) {
+    	    if(storeOptions != null && storeOptions.contains(EStoreGraphOption.AUTOCOMMIT)) {
     	        if(options.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK)) {
     	            int autoCommitChunk = Integer.parseInt((String)options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK));
-					returnValue = new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend, autoCommitChunk);
+					eStore = new AutocommitResourceEStoreImpl(eStore, autoCommitChunk);
     	        }
     	        else {
-					returnValue = new AutocommitBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
+					eStore = new AutocommitResourceEStoreImpl(eStore);
     	        }
     	    }
-    	    else {
-    	        throw new InvalidDataStoreException();
-    	    }
+    	} else {
+	        throw new InvalidDataStoreException();
     	}
-		return returnValue;
+		return eStore;
 	}
 	
 	@Override

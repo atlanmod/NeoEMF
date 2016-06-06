@@ -14,14 +14,15 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.AutocommitMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceWithListsEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithIndexesResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
+import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
@@ -101,31 +102,31 @@ public class MapPersistenceBackendFactory extends AbstractPersistenceBackendFact
 		checkArgument(backend instanceof DB,
 				"Trying to create a Map-based EStore with an invalid backend");
 
-		SearcheableResourceEStore returnValue;
+		DirectWriteResourceEStore eStore = null;
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
-        if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE)) {
-			// Default store
-			returnValue = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+		// Store
+		if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreMapOption.AUTOCOMMIT))) {
+			eStore = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
         }
-        else {
-            if(storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT)) {
-				returnValue = new AutocommitMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
-            }
-            else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.CACHED_MANY)) {
-				returnValue = new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
-            }
-            else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_LISTS)) {
-				returnValue = new DirectWriteMapResourceWithListsEStoreImpl(resource, (MapPersistenceBackend)backend);
-            }
-            else if(storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_INDEXES)) {
-				returnValue = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
-            }
-            else {
-                throw new InvalidDataStoreException();
-            }
+        else if (storeOptions.contains(EStoreMapOption.CACHED_MANY)) {
+			eStore = new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
-		return returnValue;
+        else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_LISTS)) {
+			eStore = new DirectWriteMapResourceWithListsEStoreImpl(resource, (MapPersistenceBackend) backend);
+        }
+        else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_INDEXES)) {
+			eStore = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
+        }
+        // Autocommit
+        if (eStore != null) {
+			if(storeOptions != null && storeOptions.contains(EStoreMapOption.AUTOCOMMIT)) {
+				eStore = new AutocommitResourceEStoreImpl(eStore);
+            }
+        } else {
+            throw new InvalidDataStoreException();
+        }
+		return eStore;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 
-public abstract class AbstractDirectWriteResourceEStoreImpl<P extends PersistenceBackend> implements SearcheableResourceEStore {
+public abstract class AbstractDirectWriteResourceEStoreImpl<P extends PersistenceBackend> implements DirectWriteResourceEStore {
 
     private Resource.Internal resource;
 
@@ -37,6 +37,11 @@ public abstract class AbstractDirectWriteResourceEStoreImpl<P extends Persistenc
     public AbstractDirectWriteResourceEStoreImpl(Resource.Internal resource, P persistenceBackend) {
         this.resource = resource;
         this.persistenceBackend = persistenceBackend;
+    }
+
+    @Override
+    public P getPersistenceBackend() {
+        return persistenceBackend;
     }
 
     @Override

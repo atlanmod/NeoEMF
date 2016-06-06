@@ -16,9 +16,10 @@ import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.AutocommitMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceWithListsEStoreImpl;
@@ -28,7 +29,6 @@ import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,7 +37,6 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,7 +110,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore eStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat(innerBackend, sameInstance(transientBackend));
     }
 
@@ -129,7 +128,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, Collections.emptyMap());
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
@@ -142,7 +141,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
@@ -155,7 +154,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceWithListsEStoreImpl.class));
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceWithListsEStoreImpl) eStore);
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
@@ -168,7 +167,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapWithIndexesResourceEStoreImpl.class));
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapWithIndexesResourceEStoreImpl) eStore);
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
@@ -179,9 +178,9 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invaild EStore created", eStore, instanceOf(AutocommitMapResourceEStoreImpl.class));
+        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitResourceEStoreImpl.class));
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
@@ -194,7 +193,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat("Invalid EStore created", eStore, instanceOf(CachedManyDirectWriteMapResourceEStoreImpl.class));
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteMapResourceEStoreImpl) eStore);
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
         assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
     }
 
@@ -223,18 +222,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         }
     }
 
-    private PersistenceBackend getInnerBackend(DirectWriteMapResourceEStoreImpl store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field mapStoreField = FieldUtils.getField(DirectWriteMapResourceEStoreImpl.class, "persistenceBackend", true);
-        return (PersistenceBackend) mapStoreField.get(store);
-    }
-
-    private PersistenceBackend getInnerBackend(DirectWriteMapResourceWithListsEStoreImpl store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field mapStoreField = FieldUtils.getField(DirectWriteMapResourceWithListsEStoreImpl.class, "persistenceBackend", true);
-        return (PersistenceBackend) mapStoreField.get(store);
-    }
-
-    private PersistenceBackend getInnerBackend(DirectWriteMapWithIndexesResourceEStoreImpl store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field mapStoreField = FieldUtils.getField(DirectWriteMapWithIndexesResourceEStoreImpl.class, "persistenceBackend", true);
-        return (PersistenceBackend) mapStoreField.get(store);
+    private PersistenceBackend getInnerBackend(DirectWriteResourceEStore store) {
+        return store.getPersistenceBackend();
     }
 }
