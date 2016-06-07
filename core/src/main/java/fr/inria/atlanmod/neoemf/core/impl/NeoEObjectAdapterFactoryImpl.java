@@ -15,6 +15,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import net.sf.cglib.proxy.Enhancer;
 
@@ -54,6 +55,10 @@ public class NeoEObjectAdapterFactoryImpl {
 	 * @throws NullPointerException if the {@code type} is {@code null}
      */
 	public static <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
+		if (adaptableObject == null) {
+			NeoLogger.warn("Trying to create an adapter for a null object");
+			return null;
+		}
 		checkNotNull(adapterType);
 
 		Object adapter = null;
@@ -65,6 +70,10 @@ public class NeoEObjectAdapterFactoryImpl {
 				adapter = createAdapter(adaptableObject, adapterType);
 				ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  adapter);
 			}
+		}
+
+		if (adapter == null) {
+			NeoLogger.warn("Unable to create a {0} adapter for this object of type {1}", adapterType.getSimpleName(), adaptableObject.getClass().getSimpleName());
 		}
 		return adapterType.cast(adapter);
 	}
