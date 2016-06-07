@@ -200,19 +200,25 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			vertex = getMappedVertex(neoEObject.id());
 		}
 		else {
-			vertex = addVertex(neoEObject);
-			EClass eClass = neoEObject.eClass();
-			Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get("name", eClass.getName()), null);
-			if(eClassVertex == null) {
-				eClassVertex = addVertex(eClass);
-				metaclassIndex.put("name", eClass.getName(), eClassVertex);
-				indexedEClasses.add(eClass);
-			}
-			vertex.addEdge(INSTANCE_OF, eClassVertex);
-			neoEObject.setMapped(true);
-			loadedEObjectsCache.put(neoEObject.id().toString(), neoEObject);
-			loadedVerticesCache.put(neoEObject.id(), vertex);
+			vertex = createVertex(neoEObject);
 		}
+		return vertex;
+	}
+
+	private Vertex createVertex(final InternalPersistentEObject persistentEObject) {
+		Vertex vertex = addVertex(persistentEObject);
+		EClass eClass = persistentEObject.eClass();
+
+		Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get("name", eClass.getName()), null);
+		if(eClassVertex == null) {
+			eClassVertex = addVertex(eClass);
+			metaclassIndex.put("name", eClass.getName(), eClassVertex);
+			indexedEClasses.add(eClass);
+		}
+		vertex.addEdge(INSTANCE_OF, eClassVertex);
+		persistentEObject.setMapped(true);
+		loadedEObjectsCache.put(persistentEObject.id().toString(), persistentEObject);
+		loadedVerticesCache.put(persistentEObject.id(), vertex);
 		return vertex;
 	}
 
@@ -226,7 +232,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		return vertex;
 	}
 
-	
+
 
     @Override
 	// FIXME Return of instance of non-static inner class 'NeoEdge'
