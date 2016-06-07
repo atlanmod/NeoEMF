@@ -58,6 +58,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PersistentResourceImpl extends ResourceImpl implements PersistentResource {
 
+	private static final String URI_UNKNOWN = "/-1";
+
 	private static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
 
 	private final DummyRootEObject dummyRootEObject;
@@ -156,7 +158,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	public String getURIFragment(EObject eObject) {
 		String returnValue = super.getURIFragment(eObject);
 		if (eObject.eResource() != this) {
-			returnValue = "/-1";
+			returnValue = URI_UNKNOWN;
 		} else {
 			// Try to adapt as a PersistentEObject and return the ID
 			PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
@@ -243,12 +245,12 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	 *
 	 */
 	private static class ResourceContentsEStructuralFeature extends EReferenceImpl {
-		private static final String RESOURCE__CONTENTS__FEATURE_NAME = "eContents";
+		private static final String CONTENTS = "eContents";
 
 		public ResourceContentsEStructuralFeature() {
 			setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
 			setLowerBound(0);
-			setName(RESOURCE__CONTENTS__FEATURE_NAME);
+			setName(CONTENTS);
 			setEType(new EClassifierImpl() {});
 			setFeatureID(RESOURCE__CONTENTS);
 		}

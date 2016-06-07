@@ -61,6 +61,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	private static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
 
 	private static final String INSTANCE_OF = "kyanosInstanceOf";
+	private static final String METACLASSES = "metaclasses";
+	private static final String NAME = "name";
 
 	private Index<Vertex> metaclassIndex;
 	private boolean isStarted;
@@ -83,9 +85,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
 		this.loadedVerticesCache = CacheBuilder.newBuilder().softValues().build();
 		this.indexedEClasses = new ArrayList<>();
-		this.metaclassIndex = getIndex("metaclasses", Vertex.class);
+		this.metaclassIndex = getIndex(METACLASSES, Vertex.class);
 		if(metaclassIndex == null) {
-			metaclassIndex = createIndex("metaclasses",Vertex.class);
+			metaclassIndex = createIndex(METACLASSES,Vertex.class);
 		}
 		this.isStarted = true;
 	}
@@ -118,8 +120,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 	public void initMetaClassesIndex(List<EClass> eClassList) {
 	    for(EClass eClass : eClassList) {
-	        checkArgument(Iterables.isEmpty(metaclassIndex.get("name", eClass.getName())), "Index is not consistent");
-	        metaclassIndex.put("name", eClass.getName(), getVertex(eClass));
+	        checkArgument(Iterables.isEmpty(metaclassIndex.get(NAME, eClass.getName())), "Index is not consistent");
+	        metaclassIndex.put(NAME, eClass.getName(), getVertex(eClass));
 	    }
 	}
 	
@@ -133,8 +135,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	protected Vertex addVertex(EObject eObject) {
 		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class)
-		);
+				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
 		return addVertex(persistentEObject.id().toString());
 	}
 
@@ -209,10 +210,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		Vertex vertex = addVertex(persistentEObject);
 		EClass eClass = persistentEObject.eClass();
 
-		Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get("name", eClass.getName()), null);
+		Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, eClass.getName()), null);
 		if(eClassVertex == null) {
 			eClassVertex = addVertex(eClass);
-			metaclassIndex.put("name", eClass.getName(), eClassVertex);
+			metaclassIndex.put(NAME, eClass.getName(), eClassVertex);
 			indexedEClasses.add(eClass);
 		}
 		vertex.addEdge(INSTANCE_OF, eClassVertex);
@@ -326,7 +327,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			}
 			// Get all the vertices that are indexed with one of the EClass
 			for(EClass ec : eClassToFind) {
-				Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get("name", ec.getName()), null);
+				Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, ec.getName()), null);
 				if(metaClassVertex != null) {
 					Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
 					indexHits.put(ec, instanceVertexIterable);

@@ -45,10 +45,10 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 
 	private static final String SEPARATOR = ":";
 	private static final String POSITION = "position";
-	private static final String SIZE_LITERAL = "size";
-
 	private static final String CONTAINER = "eContainer";
+	private static final String CONTENTS = "eContents";
 	private static final String CONTAINING_FEATURE = "containingFeature";
+	private static final String SIZE_LITERAL = "size";
 
 	public DirectWriteBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		super(resource, graph);
@@ -458,7 +458,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		InternalPersistentEObject internalEObject = persistenceBackend.reifyVertex(vertex, eClass);
 		if(internalEObject.resource() != resource()) {
 			if(Iterables.isEmpty(vertex.getEdges(Direction.OUT, CONTAINER))) {
-				if(!Iterables.isEmpty(vertex.getVertices(Direction.IN,"eContents"))) {
+				if(!Iterables.isEmpty(vertex.getVertices(Direction.IN, CONTENTS))) {
 					internalEObject.resource(resource());
 				}
 				// else : not part of the resource

@@ -58,6 +58,8 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
 	private static final String CONFIG_FILE = "config.properties";
 	public static final String BLUEPRINTS_BACKEND = "blueprints";
 
+	private static final String GRAPH_SEPERATOR = "\\.";
+
 	@Override
 	public PersistenceBackend createTransientBackend() {
 		return new BlueprintsPersistenceBackend(new TinkerGraph());
@@ -110,7 +112,7 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
 				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
 			}
 			
-			String[] segments = graphType.split("\\.");
+			String[] segments = graphType.split(GRAPH_SEPERATOR);
 			if(segments.length >= 2) {
     			String graphName = segments[segments.length - 2];
     			String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0))+graphName.substring(1);
