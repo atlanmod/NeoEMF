@@ -132,10 +132,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EObject eObject) {
-		PersistentEObject neoEObject = checkNotNull(
+		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class)
 		);
-		return addVertex(neoEObject.id().toString());
+		return addVertex(persistentEObject.id().toString());
 	}
 
 	/**
@@ -162,10 +162,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getVertex(EObject eObject) {
 		Vertex vertex = null;
-		InternalPersistentEObject neoEObject = checkNotNull(
+		InternalPersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
-		if(neoEObject.isMapped()) {
-			vertex = getMappedVertex(neoEObject.id());
+		if(persistentEObject.isMapped()) {
+			vertex = getMappedVertex(persistentEObject.id());
 		}
 		else {
 		    NeoLogger.warn("Trying to access a non-mapped PersistentEObject");
@@ -194,13 +194,13 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
 		Vertex vertex;
-		InternalPersistentEObject neoEObject = checkNotNull(
+		InternalPersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
-		if(neoEObject.isMapped()) {
-			vertex = getMappedVertex(neoEObject.id());
+		if(persistentEObject.isMapped()) {
+			vertex = getMappedVertex(persistentEObject.id());
 		}
 		else {
-			vertex = createVertex(neoEObject);
+			vertex = createVertex(persistentEObject);
 		}
 		return vertex;
 	}
@@ -259,17 +259,17 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 
 	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
-		InternalPersistentEObject neoEObject = null;
+		InternalPersistentEObject persistentEObject = null;
 		Object id = vertex.getId();
 		if (eClass == null) {
 			eClass = resolveInstanceOf(vertex);
 		}
 		try {
-			neoEObject = loadedEObjectsCache.get(id, new PersistantEObjectCacheLoader(id, eClass));
+			persistentEObject = loadedEObjectsCache.get(id, new PersistantEObjectCacheLoader(id, eClass));
 		} catch (ExecutionException e) {
 			NeoLogger.error(e.getCause());
 		}
-		return neoEObject;
+		return persistentEObject;
 	}
 	
 	/**
