@@ -28,12 +28,12 @@ import java.util.Objects;
  */
 public abstract class AbstractCachingDelegatedEStore<V> extends AbstractDelegatedEStore<SearcheableResourceEStore> {
 
-    private static final int DEFAULT_SIZE_CACHE_SIZE = 10000;
+    private static final int DEFAULT_CACHE_SIZE = 10000;
 
     private final Cache<CacheKey, V> cache;
 
     public AbstractCachingDelegatedEStore(SearcheableResourceEStore eStore) {
-        this(eStore, DEFAULT_SIZE_CACHE_SIZE);
+        this(eStore, DEFAULT_CACHE_SIZE);
     }
 
     public AbstractCachingDelegatedEStore(SearcheableResourceEStore eStore, int cacheSize) {

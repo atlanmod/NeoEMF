@@ -16,6 +16,10 @@
 
     <name>NeoEMF :: Tests</name>
 
+    <properties>
+        <config-path>${project.parent.basedir}</config-path>
+    </properties>
+
     <dependencies>
 
         <!-- Common dependencies -->

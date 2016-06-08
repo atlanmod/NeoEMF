@@ -18,6 +18,7 @@
     <description>NeoEMF Test Commons</description>
 
     <properties>
+        <config-path>${project.parent.basedir}</config-path>
         <generated-sources.location>${project.basedir}/src/main/java-gen/</generated-sources.location>
         <models.location>${project.basedir}/src/main/resources</models.location>
     </properties>

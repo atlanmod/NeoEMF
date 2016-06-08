@@ -17,6 +17,10 @@
     <name>NeoEMF :: Map</name>
     <description>Map implementation of the core component.</description>
 
+    <properties>
+        <config-path>${project.parent.basedir}</config-path>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.mapdb</groupId>

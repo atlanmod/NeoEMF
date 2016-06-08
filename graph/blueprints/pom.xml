@@ -20,6 +20,10 @@
         informations).
     </description>
 
+    <properties>
+        <config-path>${project.parent.parent.basedir}</config-path>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>

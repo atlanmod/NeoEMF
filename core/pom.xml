@@ -21,6 +21,10 @@
         solution to work properly).
     </description>
 
+    <properties>
+        <config-path>${project.parent.basedir}</config-path>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>cglib</groupId>
