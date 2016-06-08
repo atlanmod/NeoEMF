@@ -22,6 +22,7 @@
     </scm>
 
     <modules>
+        <module>parent</module>
 		<module>core</module>
         <module>graph</module>
         <module>map</module>
