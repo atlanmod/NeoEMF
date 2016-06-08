@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -22,7 +24,7 @@ import java.util.Set;
 
 public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends AbstractDelegatedEStore<SearcheableResourceEStore> {
 
-    private Set<InternalEObject> loadedObjects;
+    private Set<Id> loadedObjects;
 
     public LoadedObjectCounterLoggingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
         super(eStore);
@@ -33,114 +35,120 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends AbstractDeleg
 
     @Override
     public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         Object result = super.get(object, feature, index);
-        if(result instanceof InternalEObject) {
-            loadedObjects.add((InternalEObject)result);
-        }
+        setAsLoaded(result);
         return result;
     }
 
     @Override
     public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.set(object, feature, index, value);
     }
 
     @Override
     public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.isSet(object, feature);
     }
 
     @Override
     public void unset(InternalEObject object, EStructuralFeature feature) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         super.unset(object, feature);
     }
 
     @Override
     public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.isEmpty(object, feature);
     }
 
     @Override
     public int size(InternalEObject object, EStructuralFeature feature) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.size(object, feature);
     }
 
     @Override
     public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.contains(object, feature, value);
     }
 
     @Override
     public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.indexOf(object, feature, value);
     }
 
     @Override
     public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.lastIndexOf(object, feature, value);
     }
 
     @Override
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         super.add(object, feature, index, value);
     }
 
     @Override
     public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.remove(object, feature, index);
     }
 
     @Override
     public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.move(object, feature, targetIndex, sourceIndex);
     }
 
     @Override
     public void clear(InternalEObject object, EStructuralFeature feature) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         super.clear(object, feature);
     }
 
     @Override
     public Object[] toArray(InternalEObject object, EStructuralFeature feature) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.toArray(object, feature);
     }
 
     @Override
     public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.toArray(object, feature, array);
     }
 
     @Override
     public int hashCode(InternalEObject object, EStructuralFeature feature) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.hashCode(object, feature);
     }
 
     @Override
     public InternalEObject getContainer(InternalEObject object) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.getContainer(object);
     }
 
     @Override
     public EStructuralFeature getContainingFeature(InternalEObject object) {
-        loadedObjects.add(object);
+        setAsLoaded(object);
         return super.getContainingFeature(object);
+    }
+
+    private void setAsLoaded(Object object) {
+        if (object instanceof InternalPersistentEObject) {
+            loadedObjects.add(((InternalPersistentEObject) object).id());
+        } else {
+            NeoLogger.debug("Not an InternalPersistentEObject : This object will be ignored in the final count.");
+        }
     }
 
     private class ShutdownHook extends Thread {

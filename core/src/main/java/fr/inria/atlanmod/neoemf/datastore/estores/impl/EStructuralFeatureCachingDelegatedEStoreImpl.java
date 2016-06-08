@@ -32,8 +32,9 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachin
 	
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-		Object returnValue = super.get(object, feature, index);
-		if (returnValue != null) {
+		Object returnValue = getValueFromCache(object, feature, index);
+		if (returnValue == null) {
+			returnValue = super.get(object, feature, index);
 			cacheValue(object, feature, index, returnValue);
 		}
 		return returnValue;
@@ -50,26 +51,26 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachin
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		super.add(object, feature, index, value);
 		cacheValue(object, feature, index, value);
-		invalidateFrom(index + 1, object, feature);
+		invalidateValues(object, feature, index + 1);
 	}
 	
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
 		Object returnValue = super.remove(object, feature, index);
-		invalidateFrom(index, object, feature);
+		invalidateValues(object, feature, index);
 		return returnValue;
 	}
 	
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		super.clear(object, feature);
-		invalidateFrom(0, object, feature);
+		invalidateValues(object, feature, 0);
 	}
 	
 	@Override
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
 		Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
-		invalidateFrom(Math.min(sourceIndex, targetIndex), object, feature);
+		invalidateValues(object, feature, Math.min(sourceIndex, targetIndex));
 		cacheValue(object, feature, targetIndex, returnValue);
 		return returnValue;
 	}
@@ -79,7 +80,7 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachin
 		if (!feature.isMany()) {
 			invalidateValue(object, feature);
 		} else {
-			invalidateFrom(0, object, feature);
+			invalidateValues(object, feature, 0);
 		}
 		super.unset(object, feature);
 	}
@@ -87,8 +88,8 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachin
 	/**
 	 * Remove cached elements, from a initial position to the size of an element.
      */
-	private void invalidateFrom(int start, InternalEObject object, EStructuralFeature feature) {
-		for (int i = start; i < size(object, feature); i++) {
+	private void invalidateValues(InternalEObject object, EStructuralFeature feature, int startIndex) {
+		for (int i = startIndex; i < size(object, feature); i++) {
 			invalidateValue(object, feature, i);
 		}
 	}

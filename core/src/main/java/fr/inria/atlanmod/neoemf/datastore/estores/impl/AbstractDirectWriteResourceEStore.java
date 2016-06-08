@@ -145,7 +145,8 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         if (feature instanceof EAttribute) {
             return containsWithAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
-            return containsWithReference(eObject, (EReference) feature, value);
+            PersistentEObject referencedEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
+            return containsWithReference(eObject, (EReference) feature, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
@@ -155,7 +156,7 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         throw new UnsupportedOperationException();
     }
 
-    protected boolean containsWithReference(InternalPersistentEObject object, EReference eReference, Object value) {
+    protected boolean containsWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
@@ -165,7 +166,8 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         if(feature instanceof EAttribute) {
             return indexOfWithAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
-            return indexOfWithReference(eObject, (EReference) feature, value);
+            PersistentEObject referencedEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
+            return indexOfWithReference(eObject, (EReference) feature, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
@@ -175,7 +177,7 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         throw new UnsupportedOperationException();
     }
 
-    protected int indexOfWithReference(InternalPersistentEObject object, EReference eReference, Object value) {
+    protected int indexOfWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
@@ -185,7 +187,8 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         if(feature instanceof EAttribute) {
             return lastIndexOfWithAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
-            return lastIndexOfWithReference(eObject, (EReference) feature, value);
+            PersistentEObject referencedEObject = NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class);
+            return lastIndexOfWithReference(eObject, (EReference) feature, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
@@ -195,7 +198,7 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         throw new UnsupportedOperationException();
     }
 
-    protected int lastIndexOfWithReference(InternalPersistentEObject object, EReference eReference, Object value) {
+    protected int lastIndexOfWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 

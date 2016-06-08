@@ -18,7 +18,6 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
@@ -232,12 +231,10 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected boolean containsWithReference(InternalPersistentEObject object, EReference eReference, Object value) {
-		InternalPersistentEObject eValue = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class));
+	protected boolean containsWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
 		Vertex v = persistenceBackend.getOrCreateVertex(object);
 		for (Vertex vOut : v.getVertices(Direction.OUT, eReference.getName())) {
-			if (vOut.getId().equals(eValue.id().toString())) {
+			if (vOut.getId().equals(value.id().toString())) {
 				return true;
 			}
 		}
@@ -250,10 +247,10 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected int indexOfWithReference(InternalPersistentEObject object, EReference eReference, Object value) {
+	protected int indexOfWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
 	    if (value != null) {
 			Vertex inVertex = persistenceBackend.getVertex(object);
-			Vertex outVertex = persistenceBackend.getVertex((EObject) value);
+			Vertex outVertex = persistenceBackend.getVertex(value);
 			for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
 				if (e.getVertex(Direction.OUT).equals(inVertex)) {
 					return e.getProperty(POSITION);
@@ -269,13 +266,13 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected int lastIndexOfWithReference(InternalPersistentEObject object, EReference eReference, Object value) {
+	protected int lastIndexOfWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
 		int resultValue;
 		if (value == null) {
 			resultValue = ArrayUtils.INDEX_NOT_FOUND;
 		} else {
 			Vertex inVertex = persistenceBackend.getVertex(object);
-			Vertex outVertex = persistenceBackend.getVertex((EObject) value);
+			Vertex outVertex = persistenceBackend.getVertex(value);
 			Edge lastPositionEdge = null;
 			for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
 				if (e.getVertex(Direction.OUT).equals(inVertex)

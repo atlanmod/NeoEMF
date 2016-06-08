@@ -97,7 +97,9 @@ public abstract class AbstractCachingDelegatedEStore<V> extends AbstractDelegate
             CacheKey other = (CacheKey) obj;
             return Objects.equals(object, other.object)
                     && Objects.equals(feature, other.feature)
-                    && (index == other.index || index == InternalEObject.EStore.NO_INDEX);
+                    && (index == other.index
+                        || index == InternalEObject.EStore.NO_INDEX
+                        || other.index == InternalEObject.EStore.NO_INDEX);
         }
     }
 }

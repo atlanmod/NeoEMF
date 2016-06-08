@@ -14,18 +14,9 @@ package fr.inria.atlanmod.neoemf.core.impl;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.eclipse.emf.ecore.InternalEObject;
-
 import java.lang.reflect.Method;
 
 class NeoEObjectProxyHandlerImpl implements MethodInterceptor {
-
-	private InternalEObject internalEObject;
-
-	public NeoEObjectProxyHandlerImpl(InternalEObject internalEObject) {
-		super();
-		this.internalEObject = internalEObject;
-	}
 
 	@Override
 	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) {

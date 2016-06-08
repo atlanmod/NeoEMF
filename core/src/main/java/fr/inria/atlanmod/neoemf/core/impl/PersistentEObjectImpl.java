@@ -40,11 +40,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
 
-	private static int numberNewStoreFeatureSet = 0;
-	private static int numberNewStoreEobject = 0;
+	private static int numberNewStoreFeatureSet;
+	private static int numberNewStoreEobject;
 
-	private static int numberManyFeatureSet = 0;
-	private static int numberSingleFeatureSet = 0;
+	private static int numberManyFeatureSet;
+	private static int numberSingleFeatureSet;
 
 	private static final int UNSETTED_FEATURE_ID = -1;
 

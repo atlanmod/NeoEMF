@@ -104,7 +104,7 @@ public class NeoEObjectAdapterFactoryImpl {
 		proxy.setClassLoader(adapterType.getClassLoader());
 		proxy.setSuperclass(adaptableObject.getClass());
 		proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
-		proxy.setCallback(new NeoEObjectProxyHandlerImpl((InternalEObject) adaptableObject));
+		proxy.setCallback(new NeoEObjectProxyHandlerImpl());
 		return proxy.create();
 	}
 }
