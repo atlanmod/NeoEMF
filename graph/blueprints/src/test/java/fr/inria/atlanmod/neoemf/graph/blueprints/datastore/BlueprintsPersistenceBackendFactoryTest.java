@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
@@ -54,7 +54,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
 
     private static final String TEST_FILENAME = "graphPersistenceBackendFactoryTestFile";
 
-    protected AbstractPersistenceBackendFactory persistenceBackendFactory;
+    protected PersistenceBackendFactory persistenceBackendFactory;
     protected File testFile;
     protected Map<Object, Object> options = new HashMap<>();
     protected List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();

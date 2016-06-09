@@ -9,9 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.datastore;
+package fr.inria.atlanmod.neoemf.datastore.impl;
 
 import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDelegatedEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
@@ -42,9 +46,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test cases for the only non-abstract method in {@link AbstractPersistenceBackendFactory#createPersistentEStore(PersistentResource, PersistenceBackend, Map)}
+ * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentEStore(PersistentResource, PersistenceBackend, Map)}
  */
 public class AbstractPersistenceBackendFactoryTest extends AllTest {
+
+    private static final String SEARCHEABLE_RESOURCE_ESTORE_NAME = SearcheableResourceEStore.class.getSimpleName();
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = mock(AbstractPersistenceBackendFactory.class);
     private SearcheableResourceEStore mockPersistentEStore = mock(SearcheableResourceEStore.class);
@@ -78,7 +84,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, Collections.emptyMap());
         assertThat(store, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(store.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(store.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     @Test
@@ -91,7 +97,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore childStore = getChildStore(store);
         assertThat(childStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(childStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(childStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     @Test
@@ -104,7 +110,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore childStore = getChildStore(store);
         assertThat(childStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(childStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(childStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     @Test
@@ -117,7 +123,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore childStore = getChildStore(store);
         assertThat(childStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(childStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(childStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     @Test
@@ -130,7 +136,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore childStore = getChildStore(store);
         assertThat(childStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(childStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(childStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     @Test
@@ -143,11 +149,11 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore childStore = getChildStore(store);
         assertThat(childStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(childStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(childStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
      * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link LoggingDelegatedEStoreImpl}
      */
     @Test
@@ -164,11 +170,11 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore isSetCachingChildStore = getChildStore(loggingChildStore);
         assertThat(isSetCachingChildStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(isSetCachingChildStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(isSetCachingChildStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
      * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
      */
     @Test
@@ -185,11 +191,11 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore isSetCachingChildStore = getChildStore(sizeCachingChildStore);
         assertThat(isSetCachingChildStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(isSetCachingChildStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(isSetCachingChildStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
      * 2 stores : {@link SizeCachingDelegatedEStoreImpl} and {@link EStructuralFeatureCachingDelegatedEStoreImpl}
      */
     @Test
@@ -206,11 +212,11 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore eStructuralFeatureCachingChildStore = getChildStore(sizeCachingChildStore);
         assertThat(eStructuralFeatureCachingChildStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(eStructuralFeatureCachingChildStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(eStructuralFeatureCachingChildStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
     /**
-     * Test store containment order (depend on the instantiation policy defined in {@link AbstractPersistenceBackendFactory}
+     * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
      * 4 stores : {@link EStructuralFeatureCachingDelegatedEStoreImpl}, {@link IsSetCachingDelegatedEStoreImpl},
      * {@link LoggingDelegatedEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
      */
@@ -236,7 +242,7 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         SearcheableResourceEStore isSetCachingChildStore = getChildStore(eStructuralFeatureCachingChildStore);
         assertThat(isSetCachingChildStore, instanceOf(SearcheableResourceEStore.class));
         // Ensure this is the mock that is returned by checking the real class name
-        assertThat(isSetCachingChildStore.getClass().getSimpleName(), containsString("SearcheableResourceEStore"));
+        assertThat(isSetCachingChildStore.getClass().getSimpleName(), containsString(SEARCHEABLE_RESOURCE_ESTORE_NAME));
     }
 
 }

@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
@@ -58,7 +58,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
 
     private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
 
-    private AbstractPersistenceBackendFactory persistenceBackendFactory;
+    private PersistenceBackendFactory persistenceBackendFactory;
     private File testFolder;
     private File testFile;
     private Map<Object, Object> options = new HashMap<>();
@@ -198,7 +198,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
     }
 
     /**
-     * Test if {@link AbstractPersistenceBackendFactory#copyBackend} creates the persistent
+     * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent
      * data stores from the transient ones. Only empty backends are tested.
      *
      * @throws InvalidDataStoreException

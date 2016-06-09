@@ -9,8 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.datastore;
+package fr.inria.atlanmod.neoemf.datastore.impl;
 
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
@@ -20,21 +23,12 @@ import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStor
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractPersistenceBackendFactory {
+public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
-    public static final String NEO_CONFIG_FILE = "neoconfig.properties";
-    public static final String BACKEND_PROPERTY = "backend";
-
-	public abstract PersistenceBackend createTransientBackend();
-
-	public abstract SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend);
-
-	public abstract PersistenceBackend createPersistentBackend(File file, Map<?,?> options) throws InvalidDataStoreException;
-
+	@Override
 	public SearcheableResourceEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 	    SearcheableResourceEStore eStore = internalCreatePersistentEStore(resource, backend, options);
 	    @SuppressWarnings("unchecked")
@@ -60,6 +54,4 @@ public abstract class AbstractPersistenceBackendFactory {
 	}
 
 	protected abstract SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException;
-
-	public abstract void copyBackend(PersistenceBackend from, PersistenceBackend to);
 }

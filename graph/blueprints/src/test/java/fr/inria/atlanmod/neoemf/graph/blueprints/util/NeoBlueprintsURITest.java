@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.util;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -39,7 +39,7 @@ public class NeoBlueprintsURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoGraphURITestFile";
 
-    private AbstractPersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
+    private PersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
     private File testFile;
 
     @Before

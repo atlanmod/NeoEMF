@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.map.util;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
@@ -39,7 +39,7 @@ public class NeoMapURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoMapURITestFile";
 
-    private AbstractPersistenceBackendFactory persistenceBackendFactory = new MapPersistenceBackendFactory();
+    private PersistenceBackendFactory persistenceBackendFactory = new MapPersistenceBackendFactory();
     private File testFile;
 
     @Before

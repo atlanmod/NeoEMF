@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.resources;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
@@ -54,7 +54,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
 
     protected String configFileName = "/config.properties";
 
-    protected AbstractPersistenceBackendFactory persistenceBackendFactory;
+    protected PersistenceBackendFactory persistenceBackendFactory;
     protected File testFile;
     protected Map<Object, Object> options;
     protected ResourceSet resSet;

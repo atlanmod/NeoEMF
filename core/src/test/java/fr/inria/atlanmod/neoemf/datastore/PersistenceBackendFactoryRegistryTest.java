@@ -24,8 +24,8 @@ import static org.junit.Assert.assertThat;
 
 public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
-    private AbstractPersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(AbstractPersistenceBackendFactory.class);
-    private AbstractPersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(AbstractPersistenceBackendFactory.class);
+    private PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
+    private PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
 
     @Before
     public void setUp() {
@@ -37,7 +37,7 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
         PersistenceBackendFactoryRegistry.register("mock1", persistenceBackendFactory1);
         assertThat(PersistenceBackendFactoryRegistry.getFactories().size(), equalTo(1));
 
-        AbstractPersistenceBackendFactory registeredFactory = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
+        PersistenceBackendFactory registeredFactory = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
         assertThat(registeredFactory, notNullValue());
         assertThat(registeredFactory, sameInstance(persistenceBackendFactory1));
     }
@@ -48,11 +48,11 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
         PersistenceBackendFactoryRegistry.register("mock2", persistenceBackendFactory2);
         assertThat(PersistenceBackendFactoryRegistry.getFactories().size(), equalTo(2));
 
-        AbstractPersistenceBackendFactory registeredFactory1 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
+        PersistenceBackendFactory registeredFactory1 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
         assertThat(registeredFactory1, notNullValue());
         assertThat(registeredFactory1, sameInstance(persistenceBackendFactory1));
 
-        AbstractPersistenceBackendFactory registeredFactory2 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock2");
+        PersistenceBackendFactory registeredFactory2 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock2");
         assertThat(registeredFactory2, notNullValue());
         assertThat(registeredFactory2, sameInstance(persistenceBackendFactory2));
     }

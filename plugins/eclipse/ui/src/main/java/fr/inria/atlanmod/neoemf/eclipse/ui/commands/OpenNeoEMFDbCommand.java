@@ -34,7 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
 
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
@@ -77,8 +77,8 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
                     new BlueprintsPersistenceBackendFactory());
 		        PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME,
                     new MapPersistenceBackendFactory());
-	            System.out.println(folder.getRawLocation().toOSString()+"/"+AbstractPersistenceBackendFactory.NEO_CONFIG_FILE);
-		        File neoConfigFile = new File(folder.getRawLocation().toOSString()+"/"+AbstractPersistenceBackendFactory.NEO_CONFIG_FILE);
+	            System.out.println(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
+		        File neoConfigFile = new File(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
 		        PropertiesConfiguration neoConfig;
 		        try {
                     neoConfig = new PropertiesConfiguration(neoConfigFile);
@@ -86,10 +86,10 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
                     NeoLogger.error("Unable to find neoconfig.properties file");
                     return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open the editor", e1);
                 }
-		        String backendType = neoConfig.getString(AbstractPersistenceBackendFactory.BACKEND_PROPERTY);
+		        String backendType = neoConfig.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
 		        URI uri = null;
 		        if(backendType == null) {
-		            NeoLogger.error("neoconfig.properties does not contain {0} property", AbstractPersistenceBackendFactory.BACKEND_PROPERTY);
+		            NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
 		            return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor");
 		        } else if(backendType.equals(MapPersistenceBackendFactory.MAPDB_BACKEND)) {
 		            uri = NeoMapURI.createNeoMapURI(new File(folder.getRawLocation().toOSString()));

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -39,7 +39,7 @@ public class NeoURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoURITestFile";
 
-    private AbstractPersistenceBackendFactory persistenceBackendFactory = Mockito.mock(AbstractPersistenceBackendFactory.class);
+    private PersistenceBackendFactory persistenceBackendFactory = Mockito.mock(PersistenceBackendFactory.class);
     private File testFile;
 
     @Before
