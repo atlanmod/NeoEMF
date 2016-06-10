@@ -121,6 +121,12 @@
             <!-- Commons -->
 
             <dependency>
+                <groupId>com.fasterxml</groupId>
+                <artifactId>aalto-xml</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib-nodep</artifactId>
                 <version>${cglib-nodep.version}</version>
@@ -192,12 +198,6 @@
                 <artifactId>org.eclipse.emf.ecore</artifactId>
                 <version>${emf-ecore.version}</version>
                 <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.emf</groupId>
-                <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-                <version>${emf-ecore.version}</version>
             </dependency>
 
             <dependency>
