@@ -105,7 +105,6 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>
