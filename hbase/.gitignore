@@ -3,4 +3,6 @@
 /lib/javadocs
 /lib/sources
 /lib
-/bin
+*~
+/target/
+/META-INF/MANIFEST.MF
