@@ -19,6 +19,7 @@ import com.tinkerpop.blueprints.util.GraphHelper;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
@@ -48,7 +49,13 @@ import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+
+	private static PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();
+
+	public static PersistenceBackendFactory getInstance() {
+		return INSTANCE;
+	}
 
 	/**
 	 * The configuration file name. This file stores the metadata information
@@ -59,6 +66,9 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
 	public static final String BLUEPRINTS_BACKEND = "blueprints";
 
 	private static final String GRAPH_SEPERATOR = "\\.";
+
+	private BlueprintsPersistenceBackendFactory() {
+	}
 
 	@Override
 	public PersistenceBackend createTransientBackend() {

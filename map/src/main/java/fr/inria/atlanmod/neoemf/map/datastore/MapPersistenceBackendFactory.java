@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
@@ -45,9 +46,18 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+
+	private static PersistenceBackendFactory INSTANCE = new MapPersistenceBackendFactory();
+
+	public static PersistenceBackendFactory getInstance() {
+		return INSTANCE;
+	}
 
     public static final String MAPDB_BACKEND = "mapdb";
+
+	private MapPersistenceBackendFactory() {
+	}
     
 	@Override
 	public PersistenceBackend createTransientBackend() {

@@ -50,7 +50,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 
 /**
  * This is a simple wizard for creating a new dynamic model file.
@@ -134,12 +134,10 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 					try {
 						// Create a resource set
 						//
-					    PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-				                new BlueprintsPersistenceBackendFactory());
+					    PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 					    
 						ResourceSet resourceSet = new ResourceSetImpl();
-						resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-				                new PersistentResourceFactoryImpl());
+						resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.eINSTANCE);
 						resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(true));
 						
 						// Create a resource for this file.

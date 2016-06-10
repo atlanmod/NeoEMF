@@ -66,7 +66,7 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
 
     @Before
     public void setUp() {
-        persistenceBackendFactory = new MapPersistenceBackendFactory();
+        persistenceBackendFactory = MapPersistenceBackendFactory.getInstance();
         PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
         testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         try {

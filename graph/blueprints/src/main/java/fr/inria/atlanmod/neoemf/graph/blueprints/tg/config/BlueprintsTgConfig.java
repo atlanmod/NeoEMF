@@ -15,12 +15,15 @@ import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
-public class BlueprintsTgConfig extends AbstractBlueprintsConfig {
+public final class BlueprintsTgConfig extends AbstractBlueprintsConfig {
+
+    public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsTgConfig();
 
     private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
     private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";
 
-    public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsTgConfig();
+    private BlueprintsTgConfig() {
+    }
     
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {

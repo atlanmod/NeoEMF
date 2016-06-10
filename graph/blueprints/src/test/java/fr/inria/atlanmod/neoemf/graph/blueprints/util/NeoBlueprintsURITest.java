@@ -39,7 +39,7 @@ public class NeoBlueprintsURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoGraphURITestFile";
 
-    private PersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
+    private PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
     private File testFile;
 
     @Before

@@ -17,7 +17,16 @@ import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
-public class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
+public final class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
+
+	private static PersistenceFactory INSTANCE = new PersistenceFactoryImpl();
+
+	public static PersistenceFactory getInstance() {
+		return INSTANCE;
+	}
+
+	private PersistenceFactoryImpl() {
+	}
 	
 	@Override
 	public InternalPersistentEObject create(EClass eClass) {

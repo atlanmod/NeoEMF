@@ -34,9 +34,9 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 public class NeoEMFEditor extends EcoreEditor {
@@ -45,10 +45,8 @@ public class NeoEMFEditor extends EcoreEditor {
 	
 	public NeoEMFEditor() {
 	    super();
-	    this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                new PersistentResourceFactoryImpl());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap()
-                .put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
+	    this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.eINSTANCE);
+        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.eINSTANCE);
     }
 	
 	@Override

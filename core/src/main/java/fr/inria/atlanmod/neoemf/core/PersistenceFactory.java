@@ -24,7 +24,7 @@ public interface PersistenceFactory extends EFactory {
 	/**
 	 * The default instance of this {@code PersistenceFactory factory}.
 	 */
-	PersistenceFactory eINSTANCE = new PersistenceFactoryImpl();
+	PersistenceFactory eINSTANCE = PersistenceFactoryImpl.getInstance();
 	
 	@Override
 	PersistentEObject create(EClass eClass);

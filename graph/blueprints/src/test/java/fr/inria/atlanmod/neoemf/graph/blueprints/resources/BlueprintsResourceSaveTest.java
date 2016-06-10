@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -63,12 +63,12 @@ public class BlueprintsResourceSaveTest extends AllTest {
     @Before
     public void setUp() {
         options = new HashMap<>();
-        persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
+        persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
 
         PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + new Date().getTime()).toFile();
         resSet = new ResourceSetImpl();
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, new PersistentResourceFactoryImpl());
+        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.eINSTANCE);
         resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(testFile));
     }
 

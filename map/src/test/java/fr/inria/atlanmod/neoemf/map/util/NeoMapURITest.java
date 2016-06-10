@@ -39,7 +39,7 @@ public class NeoMapURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoMapURITestFile";
 
-    private PersistenceBackendFactory persistenceBackendFactory = new MapPersistenceBackendFactory();
+    private PersistenceBackendFactory persistenceBackendFactory = MapPersistenceBackendFactory.getInstance();
     private File testFile;
 
     @Before
