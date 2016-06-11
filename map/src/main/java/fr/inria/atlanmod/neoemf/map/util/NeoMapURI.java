@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 public class NeoMapURI extends NeoURI {
 
-public static final String NEO_MAP_SCHEME = "neo-map";
+    public static final String NEO_MAP_SCHEME = "neo-map";
 	
 	protected NeoMapURI(int hashCode, URI internalURI) {
 		super(hashCode,internalURI);
