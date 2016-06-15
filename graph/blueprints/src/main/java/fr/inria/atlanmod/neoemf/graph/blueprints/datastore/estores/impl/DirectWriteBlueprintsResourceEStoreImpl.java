@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
