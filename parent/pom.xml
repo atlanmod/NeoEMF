@@ -21,6 +21,11 @@
         <url>http://www.emn.fr/z-info/atlanmod/index.php/Main_Page</url>
     </organization>
 
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/atlanmod/NeoEMF/issues</url>
+    </issueManagement>
+
     <licenses>
         <license>
             <name>Eclipse Public License - v 1.0</name>
@@ -53,6 +58,7 @@
         <xtext-plugin.version>2.9.2</xtext-plugin.version>
 
         <!-- Report -->
+        <changes-plugin.version>2.12</changes-plugin.version>
         <checkstyle-plugin.version>2.17</checkstyle-plugin.version>
         <cobertura-plugin.version>2.7</cobertura-plugin.version>
         <dependency-plugin.version>2.10</dependency-plugin.version>
@@ -324,6 +330,23 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-changes</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>changes-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Xms256m -Xmx1g -XX:PermSize=512m</argLine>
@@ -384,8 +407,8 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>${dependency-plugin.version}</version>
+                    <artifactId>maven-changes-plugin</artifactId>
+                    <version>${changes-plugin.version}</version>
                 </plugin>
 
                 <plugin>
@@ -429,6 +452,29 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>${project-info-reports-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>${changes-plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <aggregated>true</aggregated>
+                        </configuration>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>

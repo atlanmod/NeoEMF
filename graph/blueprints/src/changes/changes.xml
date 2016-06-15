@@ -1,0 +1,31 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+
+    <!-- For details on the structure : https://maven.apache.org/plugins/maven-changes-plugin/changes.html -->
+
+    <properties>
+        <title>NeoEMF :: Blueprints</title>
+    </properties>
+
+    <body>
+        <release version="0.0.2" date="2016-06-27" description="Subsequent release">
+            <action dev="jruiz" type="add">
+                Added additional documentation on how to configure the plugin.
+            </action>
+            <action dev="aramirez" type="fix" issue="MPJIRA-11">
+                Enable retrieving component-specific issues.
+            </action>
+            <action dev="jruiz" type="remove" due-to="Allan Ramirez" due-to-email="aramirez@exist.com">
+                The element type " link " must be terminated by the matching end-tag.
+                Deleted the erroneous code.
+            </action>
+        </release>
+
+        <release version="0.0.1" date="2013-01-01" description="First release">
+            <action dev="jruiz" type="update">
+                A lot of stuff
+            </action>
+        </release>
+    </body>
+</document>
