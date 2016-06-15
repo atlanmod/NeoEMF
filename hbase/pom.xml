@@ -24,6 +24,35 @@
 
     <dependencies>
         
+	    <dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-client</artifactId>
+			<version>0.98.13-hadoop2</version>
+		</dependency>
+	
+		<dependency>
+		    <groupId>org.apache.hbase</groupId>
+		    <artifactId>hbase-common</artifactId>
+		    <version>0.98.13-hadoop2</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.hbase</groupId>
+		    <artifactId>hbase-hadoop-compat</artifactId>
+		    <version>0.98.13-hadoop2</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.hadoop</groupId>
+		    <artifactId>hadoop-common</artifactId>
+		    <version>2.6.0</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-common-core</artifactId>
+        </dependency>
+        
         <!-- Internal dependencies -->
 
         <dependency>
@@ -65,7 +94,7 @@
                     <instructions>
                         <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                        <Export-Package></Export-Package>
+                        <Export-Package>fr.inria.atlanmod.neoemf.hbase.*</Export-Package>
                         <Import-Package></Import-Package>
                         <Embed-Dependency></Embed-Dependency>
                         <Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>
