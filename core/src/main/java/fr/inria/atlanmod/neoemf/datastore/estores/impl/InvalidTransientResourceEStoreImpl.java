@@ -10,12 +10,21 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
-public class InvalidTransientEStoreImpl extends TransientEStoreImpl {
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+
+/**
+ * Utility class which can be used by backend-specific implementations that
+ * does not provide a transient layer.
+ */
+public class InvalidTransientResourceEStoreImpl implements SearcheableResourceEStore {
 
     @Override
     public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
@@ -122,6 +131,31 @@ public class InvalidTransientEStoreImpl extends TransientEStoreImpl {
     
     @Override
     public void unset(InternalEObject eObject, EStructuralFeature feature) {
+        throw new UnsupportedOperationException(
+                "The backend you are using does not provide a transient layer, you must save/load your resource before using it");
+    }
+
+    @Override
+    public int hashCode(InternalEObject object, EStructuralFeature feature) {
+        throw new UnsupportedOperationException(
+                "The backend you are using does not provide a transient layer, you must save/load your resource before using it");
+    }
+
+    @Override
+    public Resource resource() {
+        throw new UnsupportedOperationException(
+                "The backend you are using does not provide a transient layer, you must save/load your resource before using it");
+    }
+
+    @Override
+    public EObject eObject(Id id) {
+        throw new UnsupportedOperationException(
+                "The backend you are using does not provide a transient layer, you must save/load your resource before using it");
+    }
+
+    @Override
+    public EList<EObject> getAllInstances(EClass eClass, boolean strict)
+            throws UnsupportedOperationException {
         throw new UnsupportedOperationException(
                 "The backend you are using does not provide a transient layer, you must save/load your resource before using it");
     }
