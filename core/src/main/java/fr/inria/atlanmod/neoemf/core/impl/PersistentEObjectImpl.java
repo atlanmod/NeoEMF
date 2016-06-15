@@ -13,12 +13,14 @@ package fr.inria.atlanmod.neoemf.core.impl;
 
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -156,15 +158,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		return resource;
 	}
 	
-	public static int numberOfNewStoreFeatureSet = 0;
-	public static int numberOfNewStoreEObject = 0;
-	
-	public static int numberOfManyFeatureSet = 0;
-	public static int numberOfSingleFeatureSet = 0;
-	
 	@Override
 	public void resource(Internal resource) {
-	    boolean updated = false;
 		this.resource = resource;
 		EStore oldStore = eStore;
 		// Set the new EStore
@@ -182,7 +177,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 					if (!feature.isMany()) {
 						Object v = oldStore.get(this,feature,EStore.NO_INDEX);
 						if(v == null) {
-//						    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
 						    // Do nothing
 						}else{
 							if(feature instanceof EReference) {
@@ -194,9 +188,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 									}
 								}
 							}
-							numberOfNewStoreFeatureSet++;
-							numberOfSingleFeatureSet++;
-							updated = true;
 							eStore.set(this, feature, EStore.NO_INDEX, v);
 						}
 					} else {
@@ -205,7 +196,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 						for (int i = 0; i < size; i++) {
 							Object v = oldStore.get(this,feature,i);
 							if(v == null) {
-//							    NeoLogger.log(NeoLogger.SEVERITY_DEBUG, "A null value has been detected in the old store (Feature " + ((EClassifier)feature.eContainer()).getName() + "." + feature.getName() + ")");
 								// Do nothing
 							}else{
 								if(feature instanceof EReference) {
@@ -217,9 +207,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 										}
 									}
 								}
-								numberOfNewStoreFeatureSet++;
-								numberOfManyFeatureSet++;
-								updated = true;
 								eStore.add(this, feature, i, v);
 							}
 						}
@@ -227,7 +214,6 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				}
 			}
 		}
-		if(updated) numberOfNewStoreEObject++;
 	}
 	
 	@Override
@@ -247,11 +233,13 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	public void dynamicSet(int dynamicFeatureID, Object value) {
 		EStructuralFeature feature = eDynamicFeature(dynamicFeatureID);
 		if (feature.isMany()) {
+		    // TODO this operation should be atomic
+		    // Reset the old value in case the operation fails in the middle
 			eStore().unset(this, feature);
 			@SuppressWarnings("rawtypes")
 			EList collection = (EList) value;
 			for (int index = 0; index < collection.size(); index++) {
-				eStore().set(this, feature, index, value);
+				eStore().set(this, feature, index, collection.get(index));
 			}
 		} else {
 			eStore().set(this, feature, InternalEObject.EStore.NO_INDEX, value);
@@ -317,12 +305,41 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		    }
 		    else {
 		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this,feature) {
+		            
+		            private static final long serialVersionUID = 1L;
+		            
+		            /**
+		             * Override the default implementation which relies on size() to compute
+		             * the insertion index by providing a custom NO_INDEX features, meaning that
+		             * the back-end has to append the result to the existing list
+		             * 
+		             * This behavior allows fast write operation on back-ends which would otherwise 
+		             * need to deserialize the underlying list to add the element at the specified index
+		             */
+		            @Override
+		            public boolean add(Object object)
+		            {
+		              if (isUnique() && contains(object))
+		              {
+		                return false;
+		              }
+		              else
+		              {
+		                if (eStructuralFeature instanceof EAttribute) { 
+		                addUnique(object);
+		                } else {
+		                    int index = size() == 0 ? 0 : EStore.NO_INDEX;
+		                    addUnique(index, object);
+		                }
+		                return true;
+		              }
+		            }
+		            
 		            @Override
 		            public boolean contains(Object object) {
 		                return delegateContains(object);
 		            };
 		        };
-//		        return new EStoreEObjectImpl.BasicEStoreEList<Object>(this, feature);
 		    }
 		} else {
 			return eStore().get(this, feature, EStore.NO_INDEX);
