@@ -77,7 +77,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		} else {
 			Integer size = getSize(vertex, eAttribute);
 			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid get index " + index);
+				throw new IndexOutOfBoundsException("Invalid get index " + index);
 			} else {
 				Object property = vertex.getProperty(eAttribute.getName() + SEPARATOR + index);
 				return parseProperty(eAttribute, property);
@@ -98,7 +99,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		} else {
 			Integer size = getSize(vertex, eReference);
 			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid get index " + index);
+				throw new IndexOutOfBoundsException("Invalid get index " + index);
 			} else {
 				Iterator<Vertex> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).has(POSITION, index).vertices().iterator();
 				if (iterator.hasNext()) {
@@ -139,7 +141,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		} else {
 			Integer size = getSize(vertex, eAttribute);
 			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid set index " + index);
+				throw new IndexOutOfBoundsException("Invalid set index " + index);
 			} else {
 				String propertyName = eAttribute.getName() + SEPARATOR + index;
 				returnValue = vertex.getProperty(propertyName);
@@ -171,7 +174,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		} else {
 			Integer size = getSize(vertex, eReference);
 			if (index < 0 || index >= size) {
-				throw new IndexOutOfBoundsException();
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid set index " + index);
+				throw new IndexOutOfBoundsException("Invalid set index " + index);
 			} else {
 				Iterator<Edge> iterator = vertex.query().labels(eReference.getName()).direction(Direction.OUT).has(POSITION, index).edges().iterator();
 				if (iterator.hasNext()) {
@@ -377,7 +381,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		size++;
 		setSize(vertex, eAttribute, size);
 		if (index < 0 || index > size) {
-			throw new IndexOutOfBoundsException();
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid add index " + index);
+			throw new IndexOutOfBoundsException("Invalid add index " + index);
 		} else {
 			for (int i = size - 1; i > index; i--) {
 				Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + (i - 1));
@@ -399,7 +404,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Integer size = getSize(vertex, eReference);
 		int newSize = size + 1;
 		if (index < 0 || index > newSize) {
-			throw new IndexOutOfBoundsException();
+	        NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid add index " + index);
+			throw new IndexOutOfBoundsException("Invalid add index " + index);
 		} else {
 		    if(index != size) {
 		        // Avoid unnecessary database access
@@ -435,7 +441,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Integer size = getSize(vertex, eAttribute);
 		Object returnValue = null;
 		if (index < 0 || index > size) {
-			throw new IndexOutOfBoundsException();
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid remove index " + index);
+			throw new IndexOutOfBoundsException("Invalid remove index " + index);
 		} else {
 			returnValue = parseProperty(eAttribute, vertex.getProperty(eAttribute.getName() + SEPARATOR + index));
 			int newSize = size - 1;
@@ -454,7 +461,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 		Integer size = getSize(vertex, eReference);
 		InternalEObject returnValue = null;
 		if (index < 0 || index > size) {
-			throw new IndexOutOfBoundsException();
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid remove index " + index);
+			throw new IndexOutOfBoundsException("Invalid remove index " + index);
 		} else {
 			Iterator<Edge> iterator = vertex.query().labels(referenceName).direction(Direction.OUT).interval(POSITION, index, size).edges().iterator();
 			while (iterator.hasNext()) {
