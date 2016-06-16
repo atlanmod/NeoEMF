@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -187,6 +188,12 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+	    if(index == EStore.NO_INDEX) {
+	        // Handle NO_INDEX index, which represent direct-append feature
+            // The call to size should not cause an overhead because it would have
+            // been done in regular addUnique() otherwise
+	        add(object, feature, size(object, feature), value);
+	    }
 		PersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
 		if (feature instanceof EAttribute) {
 			add(neoEObject, (EAttribute) feature, index, value);
