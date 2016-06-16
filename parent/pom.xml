@@ -51,6 +51,7 @@
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
         <license-maven-plugin.version>1.8</license-maven-plugin.version>
+        <javadoc-maven-plugin.version>2.10.4</javadoc-maven-plugin.version>
 
         <!-- Versions -->
 
@@ -427,6 +428,33 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${license-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc-maven-plugin.version}</version>
+                <configuration>
+                    <detectLinks>false</detectLinks>
+                    <failOnError>false</failOnError>
+                    <quiet>true</quiet>
+                    <excludePackageNames>
+                        fr.inria.atlanmod.neoemf.test.commons.models.*
+                    </excludePackageNames>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>
