@@ -376,6 +376,20 @@
                     <argLine>-Xms1g -Xmx1g</argLine>
                 </configuration>
             </plugin>
+
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc-maven-plugin.version}</version>
+                <configuration>
+                    <detectLinks>false</detectLinks>
+                    <failOnError>false</failOnError>
+                    <quiet>true</quiet>
+                    <excludePackageNames>
+                        fr.inria.atlanmod.neoemf.test.commons.models.*
+                    </excludePackageNames>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -428,33 +442,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${license-maven-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${javadoc-maven-plugin.version}</version>
-                <configuration>
-                    <detectLinks>false</detectLinks>
-                    <failOnError>false</failOnError>
-                    <quiet>true</quiet>
-                    <excludePackageNames>
-                        fr.inria.atlanmod.neoemf.test.commons.models.*
-                    </excludePackageNames>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                    </reportSet>
-                    <reportSet>
-                        <id>aggregate</id>
-                        <inherited>false</inherited>
-                        <reports>
-                            <report>aggregate</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
             </plugin>
         </plugins>
     </reporting>
