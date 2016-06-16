@@ -67,6 +67,7 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		this.map = db.getHashMap("NeoEMF");
 		this.instanceOfMap = db.getHashMap(INSTANCE_OF);
 		this.containersMap = db.getHashMap(CONTAINER);
+		NeoLogger.log(NeoLogger.SEVERITY_INFO, "DirectWriteMapResourceEStore Created");
 	}
 
 
@@ -93,8 +94,14 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		if (!eAttribute.isMany()) {
 			return parseMapValue(eAttribute, value);
 		} else {
-			Object[] array = (Object[]) value;
-			return parseMapValue(eAttribute, array[index]);
+		    try {
+    			Object[] array = (Object[]) value;
+    			return parseMapValue(eAttribute, array[index]);
+		    } catch(IndexOutOfBoundsException e) {
+		        NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid get index " + index);
+		        NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+		        throw e;
+		    }
 		}
 	}
 
@@ -103,8 +110,14 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		if (!eReference.isMany()) {
 			return eObject((Id) value);
 		} else {
-			Object[] array = (Object[]) value;
-			return eObject((Id) array[index]);
+		    try {
+		        Object[] array = (Object[]) value;
+		        return eObject((Id) array[index]);
+		    } catch(IndexOutOfBoundsException e) {
+		        NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid get index " + index);
+		        NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+		        throw e;
+		    }
 		}
 	}
 
@@ -128,8 +141,15 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 			return parseMapValue(eAttribute, oldValue);
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eAttribute);
-			Object oldValue = array[index]; 
-			array[index] = serializeToMapValue(eAttribute, value);
+			Object oldValue = null;
+			try {
+			    oldValue = array[index]; 
+			    array[index] = serializeToMapValue(eAttribute, value);
+			} catch(IndexOutOfBoundsException e) {
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR,"Invalid set index " + index);
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			    throw e;
+			}
 			map.put(Fun.t2(object.id(), eAttribute.getName()), array);
 			return parseMapValue(eAttribute, oldValue);
 		}
@@ -143,10 +163,17 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 			return oldId != null ? eObject((Id) oldId) : null;
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eReference);
-			Object oldId = array[index];
-			array[index] = referencedObject.id();
+			Object oldId = null;
+			try {
+    			oldId = array[index];
+    			array[index] = referencedObject.id();
+			} catch(IndexOutOfBoundsException e) {
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid set index " + index);
+			    NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			    throw e;
+			}
 			map.put(Fun.t2(object.id(), eReference.getName()), array);
-			return oldId != null ? eObject((Id) oldId) : null;
+            return oldId != null ? eObject((Id) oldId) : null;
 		}
 	}
 
@@ -176,7 +203,13 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		if (array == null) {
 			array = new Object[] {};
 		}
-		array = ArrayUtils.add(array, index, serializeToMapValue(eAttribute, value));
+		try {
+		    array = ArrayUtils.add(array, index, serializeToMapValue(eAttribute, value));
+		} catch(IndexOutOfBoundsException e) {
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid add index " + index);
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+		    throw e;
+		}
 		map.put(Fun.t2(object.id(), eAttribute.getName()), array);
 	}
 
@@ -187,7 +220,13 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 		if (array == null) {
 			array = new Object[] {};
 		}
-		array = ArrayUtils.add(array, index, referencedObject.id());
+		try {
+		    array = ArrayUtils.add(array, index, referencedObject.id());
+		} catch(IndexOutOfBoundsException e) {
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid add index " + index);
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+		    throw e;
+		}
 		map.put(Fun.t2(object.id(), eReference.getName()), array);
 		loadedEObjects.put(referencedObject.id(),(InternalPersistentEObject)referencedObject);
 	}
@@ -206,16 +245,30 @@ public class DirectWriteMapResourceEStoreImpl implements SearcheableResourceESto
 
 	protected Object remove(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object[] array = (Object[]) getFromMap(object, eAttribute);
-		Object oldValue = array[index];
-		array = ArrayUtils.remove(array, index);
+		Object oldValue = null;
+		try {
+    		oldValue = array[index];
+    		array = ArrayUtils.remove(array, index);
+		} catch(IndexOutOfBoundsException e) {
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid remove index " + index);
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+		    throw e;
+		}
 		map.put(Fun.t2(object.id(), eAttribute.getName()), array);
 		return parseMapValue(eAttribute, oldValue);
 	}
 
 	protected Object remove(PersistentEObject object, EReference eReference, int index) {
 		Object[] array = (Object[]) getFromMap(object, eReference);
-		Object oldId = array[index];
-		array = ArrayUtils.remove(array, index);
+		Object oldId = null;
+		try {
+		    oldId = array[index];
+		    array = ArrayUtils.remove(array, index);
+		} catch(IndexOutOfBoundsException e) {
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid remove index " + index);
+		    NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+		    throw e;
+		}
 		map.put(Fun.t2(object.id(), eReference.getName()), array);
 		return eObject((Id)oldId);
 
