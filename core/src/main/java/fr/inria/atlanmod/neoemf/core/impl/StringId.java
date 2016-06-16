@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.core.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import java.util.Objects;
 
 public class StringId implements Id {
@@ -20,6 +22,10 @@ public class StringId implements Id {
 	private static final long serialVersionUID = 1L;
 
 	private String literalId;
+
+	public static Id generate() {
+		return new StringId(EcoreUtil.generateUUID());
+	}
 	
 	public StringId(String literalId) {
 		this.literalId = literalId;

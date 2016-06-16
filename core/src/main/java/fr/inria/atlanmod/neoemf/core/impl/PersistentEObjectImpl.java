@@ -32,7 +32,6 @@ import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
 import org.eclipse.emf.ecore.util.EcoreEMap;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
 
@@ -65,7 +64,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	private EStore eStore;
 
 	public PersistentEObjectImpl() {
-		this(new StringId(EcoreUtil.generateUUID()));
+		this(StringId.generate());
 	}
 
 	protected PersistentEObjectImpl(Id id) {
