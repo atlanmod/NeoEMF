@@ -32,16 +32,16 @@ public class NeoHBaseUtil {
 
 		private static ResourceUtil INSTANCE;
 
+		public static ResourceUtil getInstance() {
+			if (INSTANCE == null) {
+				INSTANCE = new ResourceUtil();
+			}
+			return INSTANCE;
+		}
+
 		private Configuration conf = HBaseConfiguration.create();
 
 		private ResourceUtil() {
-		}
-		
-		public static ResourceUtil getInstance() {
-			if (INSTANCE == null) {
-				INSTANCE = new ResourceUtil(); 
-			}
-			return INSTANCE;
 		}
 		
 		/**

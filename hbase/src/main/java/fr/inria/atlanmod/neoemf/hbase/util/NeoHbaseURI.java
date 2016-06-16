@@ -26,9 +26,9 @@ public class NeoHBaseURI extends NeoURI {
         super(hashCode,internalURI);
     }
     
-    public static URI createNeoHbaseURI(URI uri) {
+    public static URI createNeoHBaseURI(URI uri) {
         if(NeoURI.FILE_SCHEME.equals(uri.scheme())) {
-            return createNeoHbaseURI(FileUtils.getFile(uri.toFileString()));
+            return createNeoHBaseURI(FileUtils.getFile(uri.toFileString()));
         }
         else if(NEO_HBASE_SCHEME.equals(uri.scheme())) {
             return NeoURI.createNeoURI(uri);
@@ -38,7 +38,7 @@ public class NeoHBaseURI extends NeoURI {
         }
     }
     
-    public static URI createNeoHbaseURI(File file) {
+    public static URI createNeoHBaseURI(File file) {
         return NeoURI.createNeoURI(file, NEO_HBASE_SCHEME);
     }
 }

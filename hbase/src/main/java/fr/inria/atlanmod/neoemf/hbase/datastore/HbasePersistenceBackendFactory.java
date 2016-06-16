@@ -37,34 +37,32 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
-        NeoLogger.warn("NeoEMF/HBase does not provide a transient layer, you must " +
-                "save/load your resource before using it");
+        NeoLogger.warn(
+                "NeoEMF/HBase does not provide a transient layer, you must save/load your resource before using it");
         return new InvalidTransientResourceEStoreImpl();
     }
 
     @Override
-    public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options)
-            throws InvalidDataStoreException {
+    public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
         // TODO Externalise the backend implementation from the HBase EStores.
         return new HBasePersistenceBackend();
     }
 
     @Override
-    protected SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource,
-            PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+    protected SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
             if(options.containsKey(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY)) {
                 if(Boolean.TRUE.equals(options.get(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY))) {
                     // Create a read-only EStore
-                    return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new ReadOnlyHBaseResourceEStoreImpl(resource)));
+                    return embedInDefaultWrapper(new ReadOnlyHBaseResourceEStoreImpl(resource));
                 }
                 else {
                     // Create a default EStore
-                    return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHBaseResourceEStoreImpl(resource)));
+                    return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImpl(resource));
                 }
             } else {
                 // Create a default EStore
-                return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHBaseResourceEStoreImpl(resource)));
+                return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImpl(resource));
             }
         } catch(Exception e) {
             throw new InvalidDataStoreException(e);
@@ -74,5 +72,9 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
+    }
+
+    private SearcheableResourceEStore embedInDefaultWrapper(SearcheableResourceEStore eStore) {
+        return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(eStore));
     }
 }
