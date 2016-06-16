@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
 
@@ -28,7 +27,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -40,12 +38,6 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
-
-	private static int numberNewStoreFeatureSet;
-	private static int numberNewStoreEobject;
-
-	private static int numberManyFeatureSet;
-	private static int numberSingleFeatureSet;
 
 	private static final int UNSETTED_FEATURE_ID = -1;
 
@@ -219,7 +211,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		}
 		return value;
 	}
-	
+
 	@Override
 	public EStore eStore() {
 		if (eStore == null) {
@@ -227,18 +219,20 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 		}
 		return eStore;
 	}
-	
+
 	@Override
 	protected boolean eIsCaching() {
 		return false;
 	}
-	
+
 	@Override
 	public void dynamicSet(int dynamicFeatureId, Object value) {
 		EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 		if (feature.isMany()) {
-		    // TODO this operation should be atomic
-		    // Reset the old value in case the operation fails in the middle
+		    /*
+		     * TODO This operation should be atomic.
+		     * Reset the old value in case the operation fails in the middle
+		     */
 			eStore().unset(this, feature);
 			@SuppressWarnings("rawtypes")
 			EList collection = (EList) value;
@@ -260,39 +254,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 				returnValue = new EStoreEcoreEMap(eType, feature);
 		    }
 		    else {
-				returnValue = new EStoreEObjectImpl.BasicEStoreEList<Object>(this,feature) {
-					private static final long serialVersionUID = 1L;
-
-					/**
-					 * Override the default implementation which relies on size() to compute
-					 * the insertion index by providing a custom NO_INDEX features, meaning that
-					 * the back-end has to append the result to the existing list
-					 *
-					 * This behavior allows fast write operation on back-ends which would otherwise
-					 * need to deserialize the underlying list to add the element at the specified index
-					 */
-					@Override
-					public boolean add(Object object)
-					{
-						if (isUnique() && contains(object)) {
-							return false;
-						}
-						else {
-							if (eStructuralFeature instanceof EAttribute) {
-								addUnique(object);
-							} else {
-								int index = size() == 0 ? 0 : EStore.NO_INDEX;
-								addUnique(index, object);
-							}
-							return true;
-						}
-					}
-
-					@Override
-		            public boolean contains(Object object) {
-		                return delegateContains(object);
-		            }
-		        };
+				returnValue = new EStoreEcoreEList(feature);
 		    }
 		} else {
 			returnValue = eStore().get(this, feature, EStore.NO_INDEX);
@@ -394,6 +356,45 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
             protected void didMove(int index, Entry<Object, Object> movedObject, int oldIndex) {
                 EStoreEcoreEMap.this.doMove(movedObject);
             }
+		}
+	}
+
+	private class EStoreEcoreEList extends EStoreEObjectImpl.BasicEStoreEList<Object> {
+
+		private static final long serialVersionUID = 1L;
+
+		public EStoreEcoreEList(EStructuralFeature feature) {
+			super(PersistentEObjectImpl.this, feature);
+		}
+
+		/**
+         * Override the default implementation which relies on size() to compute
+         * the insertion index by providing a custom NO_INDEX features, meaning that
+         * the back-end has to append the result to the existing list
+         *
+         * This behavior allows fast write operation on back-ends which would otherwise
+         * need to deserialize the underlying list to add the element at the specified index
+         */
+        @Override
+        public boolean add(Object object)
+        {
+            if (isUnique() && contains(object)) {
+                return false;
+            }
+            else {
+                if (eStructuralFeature instanceof EAttribute) {
+                    addUnique(object);
+                } else {
+                    int index = size() == 0 ? 0 : EStore.NO_INDEX;
+                    addUnique(index, object);
+                }
+                return true;
+            }
+        }
+
+		@Override
+		public boolean contains(Object object) {
+			return delegateContains(object);
 		}
 	}
 }

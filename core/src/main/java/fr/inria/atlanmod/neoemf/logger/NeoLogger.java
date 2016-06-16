@@ -67,6 +67,10 @@ public class NeoLogger {
         internalLog(Level.ERROR, null, e);
     }
 
+    public static void error(Throwable e, String pattern, Object... args) {
+        internalLog(Level.ERROR, MessageFormat.format(pattern, args), e);
+    }
+
     public static void fatal(String msg) {
         internalLog(Level.FATAL, msg, null);
     }

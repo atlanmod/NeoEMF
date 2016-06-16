@@ -60,7 +60,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		Vertex vertex = persistenceBackend.getVertex(object);
 		String propertyName = eAttribute.getName();
 		if (eAttribute.isMany()) {
-			checkElementIndex(index, getSize(vertex, eAttribute), "Invalid get index %s", index);
+			checkElementIndex(index, getSize(vertex, eAttribute), "Invalid get index " + index);
 			propertyName += SEPARATOR + index;
 		}
 		return parseProperty(eAttribute, vertex.getProperty(propertyName));
@@ -76,7 +76,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 					vertex.getVertices(Direction.OUT, eReference.getName()), null
 			);
 		} else {
-			checkElementIndex(index, getSize(vertex, eReference), "Invalid get index %s", index);
+			checkElementIndex(index, getSize(vertex, eReference), "Invalid get index " + index);
 			referencedVertex = Iterables.getOnlyElement(
 					vertex.query()
 							.labels(eReference.getName())
@@ -295,16 +295,18 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	@Override
 	protected void addWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if(index == EStore.NO_INDEX) {
-			// Handle NO_INDEX index, which represent direct-append feature
-			// The call to size should not cause an overhead because it would have
-			// been done in regular addUnique() otherwise
-			add(object, feature, index, size(object, feature));
+			/*
+			 * Handle NO_INDEX index, which represent direct-append feature.
+			 * The call to size should not cause an overhead because it would have been done in regular
+			 * addUnique() otherwise.
+			 */
+			add(object, eAttribute, index, size(object, eAttribute));
 		}
 		Vertex vertex = persistenceBackend.getOrCreateVertex(object);
 		Integer size = getSize(vertex, eAttribute);
 		size++;
 		setSize(vertex, eAttribute, size);
-		checkPositionIndex(index, size, "Invalid add index %s", index);
+		checkPositionIndex(index, size, "Invalid add index " + index);
 		for (int i = size - 1; i > index; i--) {
 			Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + (i - 1));
 			vertex.setProperty(eAttribute.getName() + SEPARATOR + i, movingProperty);
@@ -315,12 +317,15 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	@Override
 	protected void addWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if(index == EStore.NO_INDEX) {
-			// Handle NO_INDEX index, which represent direct-append feature
-			// The call to size should not cause an overhead because it would have
-			// been done in regular addUnique() otherwise
-			add(object, feature, index, size(object, feature));
+			/*
+			 * Handle NO_INDEX index, which represent direct-append feature.
+			 * The call to size should not cause an overhead because it would have been done in regular
+			 * addUnique() otherwise.
+			 */
+			add(object, eReference, index, size(object, eReference));
 		}
 		Vertex vertex = persistenceBackend.getOrCreateVertex(object);
+
 		Vertex referencedVertex = persistenceBackend.getOrCreateVertex(value);
 		// Update the containment reference if needed
 		if (eReference.isContainment()) {
@@ -329,7 +334,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 
 		Integer size = getSize(vertex, eReference);
 		int newSize = size + 1;
-		checkPositionIndex(index, newSize, "Invalid add index %s", index);
+		checkPositionIndex(index, newSize, "Invalid add index " + index);
 		if(index != size) {
 			Iterable<Edge> edges = vertex.query()
 					.labels(eReference.getName())
@@ -354,7 +359,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		Vertex vertex = persistenceBackend.getVertex(object);
 		Integer size = getSize(vertex, eAttribute);
 		Object returnValue;
-		checkPositionIndex(index, size, "Invalid remove index %s", index);
+		checkPositionIndex(index, size, "Invalid remove index " + index);
+
 		returnValue = parseProperty(eAttribute, vertex.getProperty(eAttribute.getName() + SEPARATOR + index));
 		int newSize = size - 1;
 		for (int i = newSize; i > index; i--) {
@@ -371,7 +377,8 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		String referenceName = eReference.getName();
 		Integer size = getSize(vertex, eReference);
 		InternalEObject returnValue = null;
-		checkPositionIndex(index, size, "Invalid remove index %s", index);
+		checkPositionIndex(index, size, "Invalid remove index " + index);
+
 		Iterable<Edge> edges = vertex.query()
 				.labels(referenceName)
 				.direction(Direction.OUT)

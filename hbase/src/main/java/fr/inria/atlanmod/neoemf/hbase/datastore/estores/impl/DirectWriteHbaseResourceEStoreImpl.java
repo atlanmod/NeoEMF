@@ -10,11 +10,17 @@
  ******************************************************************************/
 package fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.StringId;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -26,9 +32,10 @@ import org.apache.hadoop.hbase.client.Append;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.protobuf.generated.ZooKeeperProtos;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -40,56 +47,46 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.jboss.util.collection.SoftValueHashMap;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.hbase.util.NeoHbaseUtil;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
-public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceEStore {
+public class DirectWriteHBaseResourceEStoreImpl implements SearcheableResourceEStore {
 
-
-	protected static final byte[] PROPERTY_FAMILY =				Bytes.toBytes("p");
-	protected static final byte[] TYPE_FAMILY = 				Bytes.toBytes("t");
-	protected static final byte[] METAMODEL_QUALIFIER =			Bytes.toBytes("m");
-	protected static final byte[] ECLASS_QUALIFIER = 			Bytes.toBytes("e");
-	protected static final byte[] CONTAINMENT_FAMILY = 			Bytes.toBytes("c");
-	protected static final byte[] CONTAINER_QUALIFIER = 		Bytes.toBytes("n");
-	protected static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
+	private static final byte[] PROPERTY_FAMILY =				Bytes.toBytes("p");
+	private static final byte[] TYPE_FAMILY = 					Bytes.toBytes("t");
+	private static final byte[] METAMODEL_QUALIFIER =			Bytes.toBytes("m");
+	private static final byte[] ECLASS_QUALIFIER = 				Bytes.toBytes("e");
+	private static final byte[] CONTAINMENT_FAMILY = 			Bytes.toBytes("c");
+	private static final byte[] CONTAINER_QUALIFIER = 			Bytes.toBytes("n");
+	private static final byte[] CONTAINING_FEATURE_QUALIFIER = 	Bytes.toBytes("g");
 	
-
 	private static final int ATTEMP_TIMES_DEFAULT = 10;
 	private static final long SLEEP_DEFAULT = 1L;
-	
 
-	
-	protected Map<Object, InternalPersistentEObject> loadedEObjects = new SoftValueHashMap<Object, InternalPersistentEObject>();
+	private static Configuration conf = HBaseConfiguration.create();
+
+	private Cache<Object, InternalPersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
 	
 	//protected Connection connection;
 	
-	protected HTable table;
+	private HTable table;
 	
-	protected Resource.Internal resource;
-	
-	protected static Configuration conf = HBaseConfiguration.create();
+	private Resource.Internal resource;
 
-
-	public DirectWriteHbaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
+	public DirectWriteHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
 
 		this.resource = resource;
 		
 		conf.set("hbase.zookeeper.quorum", resource.getURI().host());
 		conf.set("hbase.zookeeper.property.clientPort", resource.getURI().port() != null ? resource.getURI().port() : "2181");
 		
-		TableName tableName = TableName.valueOf(NeoHbaseUtil.formatURI(resource.getURI()));
+		TableName tableName = TableName.valueOf(NeoHBaseUtil.formatURI(resource.getURI()));
 		@SuppressWarnings("resource")
 		HBaseAdmin admin = new HBaseAdmin(conf);
-		if (! admin.tableExists(tableName)) {
+		if (!admin.tableExists(tableName)) {
 			HTableDescriptor desc = new HTableDescriptor(tableName);
 			HColumnDescriptor propertyFamily = new HColumnDescriptor(PROPERTY_FAMILY);
 			HColumnDescriptor typeFamily = new HColumnDescriptor(TYPE_FAMILY);
@@ -99,7 +96,6 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			desc.addFamily(containmentFamily);
 			admin.createTable(desc);
 		}
-		
 		table = new HTable(conf, tableName);
 	}
 
@@ -137,7 +133,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			return eObject(new StringId((String) value));
 		} else {
 			String[] array = (String[]) value;
-			return eObject(new StringId((String)array[index]));
+			return eObject(new StringId(array[index]));
 		}
 	}
 
@@ -155,7 +151,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 
 	protected Object set(InternalEObject object, EAttribute eAttribute, int index, Object value) {
 	    InternalPersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
-		Object oldValue = isSet((InternalEObject) object, eAttribute) ? get(object, eAttribute, index) :  null;
+		Object oldValue = isSet(object, eAttribute) ? get(object, eAttribute, index) :  null;
 		try {
 			if (!eAttribute.isMany()) {
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
@@ -173,11 +169,11 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 						Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add( 
 									PROPERTY_FAMILY,
 									Bytes.toBytes(eAttribute.getName()),
-									NeoHbaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value))));
+									NeoHBaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value))));
 						passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 												   PROPERTY_FAMILY,
 												   Bytes.toBytes(eAttribute.getName()),
-												   array == null ? null :NeoHbaseUtil.EncoderUtil.toBytes(array),
+												   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 												   put);
 						if (!passed) {
 							if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -188,21 +184,17 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 						} while (!passed);	
 					
 				} catch (IOException e) {
-					NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-							MessageFormat.format("Unable to set ''{0}'' to ''{1}'' for element ''{2}''", value, eAttribute.getName(), object));
+					NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}''", value, eAttribute.getName(), object);
 				}catch (TimeoutException e) {
-					NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-							MessageFormat.format("Unable to set ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT));
+					NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT);
 					e.printStackTrace();
 				} catch (InterruptedException e) {
-					NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-							MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+					NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
 					e.printStackTrace();
 				}
 			}
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to set information for element ''{0}''", object));
+			NeoLogger.error("Unable to set information for element ''{0}''", object);
 		} 
 		return oldValue;
 	}
@@ -228,12 +220,11 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
 				put.add(PROPERTY_FAMILY, 
 						Bytes.toBytes(eReference.getName()), 
-						NeoHbaseUtil.EncoderUtil.toBytesReferences(array));
+						NeoHBaseUtil.EncoderUtil.toBytesReferences(array));
 				table.put(put);
 			}
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to set information for element ''{0}''", object));
+			NeoLogger.error("Unable to set information for element ''{0}''", object);
 		}
 		return oldValue;
 	}
@@ -247,8 +238,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
 			return value != null;
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to get information for element ''{0}''", neoEObject));
+			NeoLogger.error("Unable to get information for element ''{0}''", neoEObject);
 		}
 		return false;
 	}
@@ -278,14 +268,14 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add( 
 							PROPERTY_FAMILY,
 							Bytes.toBytes(eAttribute.getName()),
-							NeoHbaseUtil.EncoderUtil.toBytes( index < 0 ? 
+							NeoHBaseUtil.EncoderUtil.toBytes( index < 0 ?
 									(String[])ArrayUtils.add(array, serializeValue(eAttribute, value)) : 
 										(String[])ArrayUtils.add(array, serializeValue(eAttribute, value))
 											));
 				passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eAttribute.getName()),
-										   array == null ? null :NeoHbaseUtil.EncoderUtil.toBytes(array),
+										   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 										   put);
 				if (!passed) {
 					if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -296,15 +286,12 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				} while (!passed);
 			
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", value, eAttribute.getName(), object));
+			NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", value, eAttribute.getName(), object);
 		}catch (TimeoutException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT));
+			NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT);
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+			NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -333,12 +320,12 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 					Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add(
 									  PROPERTY_FAMILY,
 									  Bytes.toBytes(eReference.getName()),
-									  NeoHbaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.add(array, index, neoReferencedEObject.id().toString())));
+									  NeoHBaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.add(array, index, neoReferencedEObject.id().toString())));
 					
 					passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 											   PROPERTY_FAMILY,
 											   Bytes.toBytes(eReference.getName()),
-											   array == null ? null : NeoHbaseUtil.EncoderUtil.toBytesReferences(array),
+											   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
 											   put);
 					if (!passed) {
 						if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -350,15 +337,12 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			}
 			
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", referencedObject, eReference.getName(), object));
+			NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", referencedObject, eReference.getName(), object);
 		} catch (TimeoutException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", referencedObject, eReference.getName(), object, ATTEMP_TIMES_DEFAULT));
+			NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", referencedObject, eReference.getName(), object, ATTEMP_TIMES_DEFAULT);
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+			NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -373,8 +357,8 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		Append append = new Append(Bytes.toBytes(object.id().toString()));
 		append.add(PROPERTY_FAMILY, 
 					Bytes.toBytes(eReference.getName()), 
-					atEnd ? Bytes.toBytes(NeoHbaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT + neoReferencedEObject.id().toString()) :
-							Bytes.toBytes(neoReferencedEObject.id().toString() + NeoHbaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT)
+					atEnd ? Bytes.toBytes(NeoHBaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT + neoReferencedEObject.id().toString()) :
+							Bytes.toBytes(neoReferencedEObject.id().toString() + NeoHBaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT)
 							);
 		
 		table.append(append);
@@ -382,7 +366,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		// TODO nothing guarantees that the index is still the same 
+		// TODO Nothing guarantees that the index is still the same.
 		if (feature instanceof EAttribute) {
 			return remove(object, (EAttribute) feature, index);
 		} else if (feature instanceof EReference) {
@@ -407,11 +391,11 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add( 
 							PROPERTY_FAMILY,
 							Bytes.toBytes(eAttribute.getName()),
-							NeoHbaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.remove(array, index)));
+							NeoHBaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.remove(array, index)));
 				passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eAttribute.getName()),
-										   array == null ? null :NeoHbaseUtil.EncoderUtil.toBytes(array),
+										   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 										   put);
 				if (!passed) {
 					if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -423,15 +407,12 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				} while (!passed);	
 			
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to delete ''{0}'' to ''{1}'' for element ''{2}''", oldValue, eAttribute.getName(), object));
+			NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}''", oldValue, eAttribute.getName(), object);
 		}catch (TimeoutException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to delete ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", oldValue, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT));
+			NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", oldValue, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT);
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+			NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -454,12 +435,12 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add(
 								  PROPERTY_FAMILY,
 								  Bytes.toBytes(eReference.getName()),
-								  NeoHbaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.remove(array, index)));
+								  NeoHBaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.remove(array, index)));
 				
 				passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eReference.getName()),
-										   array == null ? null : NeoHbaseUtil.EncoderUtil.toBytesReferences(array),
+										   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
 										   put);
 				
 				if (!passed) {
@@ -472,15 +453,12 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				} while (!passed);
 			
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to delete ''{0}[{1}''] for element ''{2}''", eReference.getName(), index, object));
+			NeoLogger.error("Unable to delete ''{0}[{1}''] for element ''{2}''", eReference.getName(), index, object);
 		} catch (TimeoutException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to delete ''{0}[{1}''] for element ''{2}''", eReference.getName(), index, object));
+			NeoLogger.error("Unable to delete ''{0}[{1}''] for element ''{2}''", eReference.getName(), index, object);
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage()));
+			NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
 			e.printStackTrace();
 		}
 		
@@ -503,8 +481,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			delete.deleteColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()));
 			table.delete(delete);
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to get containment information for {0}", neoEObject));
+			NeoLogger.error("Unable to get containment information for {0}", neoEObject);
 		}
 	}
 
@@ -564,11 +541,10 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		InternalPersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
 		try {
 			Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
-			put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), NeoHbaseUtil.EncoderUtil.toBytes(new String[] {}));
+			put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), NeoHBaseUtil.EncoderUtil.toBytes(new String[] {}));
 			table.put(put);
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to get containment information for {0}", neoEObject));
+			NeoLogger.error("Unable to get containment information for {0}", neoEObject);
 		}
 	}
 
@@ -621,8 +597,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			}
 			
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to get containment information for {0}", neoEObject));
+			NeoLogger.error("Unable to get containment information for {0}", neoEObject);
 		}
 		return null;
 	}
@@ -643,8 +618,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			}
 			
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to get containment information for {0}", neoEObject));
+			NeoLogger.error("Unable to get containment information for {0}", neoEObject);
 		}
 		return null;
 	}
@@ -662,7 +636,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 		if (id == null) {
 			return null;
 		}
-		InternalPersistentEObject neoEObject = loadedEObjects.get(id);
+		InternalPersistentEObject neoEObject = loadedEObjects.getIfPresent(id);
 		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(id);
 			if (eClass != null) {
@@ -674,8 +648,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				}
 				neoEObject.id(id);
 			} else {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-						MessageFormat.format("Element {0} does not have an associated EClass", id));
+				NeoLogger.error("Element {0} does not have an associated EClass", id);
 			}
 			loadedEObjects.put(id, neoEObject);
 		}
@@ -696,12 +669,10 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			String nsURI = Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER));
 			String className = Bytes.toString(result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER));
 			if (nsURI != null && className != null) {
-				EClass eClass = (EClass) Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
-				return eClass;
+				return (EClass) Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
 			}
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to get instance of information for {0}", id));
+			NeoLogger.error("Unable to get instance of information for {0}", id);
 		}
 		return null;
 	}
@@ -727,8 +698,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				table.put(put);
 
 			} catch (IOException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-						MessageFormat.format("Unable to update containment information for {0}", object));
+				NeoLogger.error("Unable to update containment information for {0}", object);
 			}
 		}
 	}
@@ -742,8 +712,7 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 			table.checkAndPut(Bytes.toBytes(object.id().toString()), TYPE_FAMILY, ECLASS_QUALIFIER, null, put);
 
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-					MessageFormat.format("Unable to update containment information for {0}", object));
+			NeoLogger.error("Unable to update containment information for {0}", object);
 		}
 	}
 
@@ -757,11 +726,8 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 	}
 	
 	/**
-	 * Gets the {@link EStructuralFeature} {@code feature} from the
-	 * {@link Table} for the {@link NeoEMFEObject} {@code object}
+	 * Gets the {@link EStructuralFeature} {@code feature} from the {@link ZooKeeperProtos.Table} for the {@link PersistentEObject object}
 	 * 
-	 * @param object
-	 * @param feature
 	 * @return The value of the {@code feature}. It can be a {@link String} for
 	 *         single-valued {@link EStructuralFeature}s or a {@link String}[]
 	 *         for many-valued {@link EStructuralFeature}s
@@ -775,11 +741,11 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
 				return Bytes.toString(value);
 			} else {
 				if (feature instanceof EAttribute) 
-					return NeoHbaseUtil.EncoderUtil.toStrings(value);
-					return NeoHbaseUtil.EncoderUtil.toStringsReferences(value);
+					return NeoHBaseUtil.EncoderUtil.toStrings(value);
+					return NeoHBaseUtil.EncoderUtil.toStringsReferences(value);
 			}
 		} catch (IOException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object));
+			NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
 		}
 		return null;
 	}
@@ -790,6 +756,4 @@ public class DirectWriteHbaseResourceEStoreImpl implements SearcheableResourceES
             throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
-
-
 }

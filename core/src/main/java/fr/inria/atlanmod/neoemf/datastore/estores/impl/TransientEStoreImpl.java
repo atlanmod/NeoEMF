@@ -65,10 +65,12 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> saved = manyMap.get(entry);
 		if (saved != null) {
-		    if(index == EStore.NO_INDEX) {
-		        // Handle NO_INDEX index, which represent direct-append feature
-	            // The call to size should not cause an overhead because it would have
-	            // been done in regular addUnique() otherwise
+		    if(index == InternalEObject.EStore.NO_INDEX) {
+		        /*
+		         * Handle NO_INDEX index, which represent direct-append feature.
+		         * The call to size should not cause an overhead because it would have been done in regular
+		         * addUnique() otherwise.
+		         */
 		        saved.add(size(eObject, feature),value);
 		    }
 		    else {

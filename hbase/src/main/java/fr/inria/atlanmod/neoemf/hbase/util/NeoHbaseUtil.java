@@ -1,12 +1,10 @@
 package fr.inria.atlanmod.neoemf.hbase.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.text.MessageFormat;
-import java.util.Iterator;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.protobuf.ServiceException;
+
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -18,27 +16,28 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.common.util.URI;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.Iterator;
 
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-
-
-public class NeoHbaseUtil {
+public class NeoHBaseUtil {
 
     public static int UUID_LENGTH = 23;
     
 	public static class ResourceUtil {
-		
-		Configuration conf = HBaseConfiguration.create();
-		
-		public static  ResourceUtil INSTANCE = getInstance();
 
-		public ResourceUtil () {
-			
+		private static ResourceUtil INSTANCE;
+
+		private Configuration conf = HBaseConfiguration.create();
+
+		private ResourceUtil() {
 		}
 		
-		private static ResourceUtil getInstance() {
+		public static ResourceUtil getInstance() {
 			if (INSTANCE == null) {
 				INSTANCE = new ResourceUtil(); 
 			}
@@ -46,66 +45,48 @@ public class NeoHbaseUtil {
 		}
 		
 		/**
-		 * Deletes a table if exist 
-		 * @param modelURI
-		 * @return {@value true} if deleted, {@value false} otherwise
+		 * Deletes a table if exist
+		 * @return {@code true} if deleted, {@code false} otherwise
 		 * @throws IOException
 		 */
 		public boolean deleteResourceIfExists (URI modelURI) throws IOException {
-			{ 
-				// setting up the configuration according to the URI
-				conf.set("hbase.zookeeper.quorum", modelURI.host());
-				conf.set("hbase.zookeeper.property.clientPort", modelURI.port() != null ? modelURI.port() : "2181");
-				
-				// checking HBase availability
-				
-				try {
-					HBaseAdmin.checkHBaseAvailable(conf);
-				} catch (MasterNotRunningException e) {
-					NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-							MessageFormat.format("The Master node is not running, details below \n {0}", e.getLocalizedMessage()));
-					
-				} catch (ZooKeeperConnectionException e){
-					NeoLogger.log(NeoLogger.SEVERITY_ERROR, 
-							MessageFormat.format("zooKeeper connexion failed using the following configuration:\n hbase.zookeeper.quorum:{0}\nhbase.zookeeper.property.clientPort:{1}", e.getLocalizedMessage(), conf.get("hbase.zookeeper.property.clientPort")));
 
-				} catch (IOException e) {
-					// Log this 
-					e.printStackTrace();
-				} catch (Exception e) {
-					// Log this 
-					e.printStackTrace();
-				}
-				
+			// Setting up the configuration according to the URI
+			conf.set("hbase.zookeeper.quorum", modelURI.host());
+			conf.set("hbase.zookeeper.property.clientPort", modelURI.port() != null ? modelURI.port() : "2181");
+
+			// Checking HBase availability
+			try {
+				HBaseAdmin.checkHBaseAvailable(conf);
+			} catch (MasterNotRunningException e) {
+				NeoLogger.error("The Master node is not running, details below \n {0}", e.getLocalizedMessage());
+			} catch (ZooKeeperConnectionException e){
+				NeoLogger.error("zooKeeper connexion failed using the following configuration:\n hbase.zookeeper.quorum:{0}\nhbase.zookeeper.property.clientPort:{1}", e.getLocalizedMessage(), conf.get("hbase.zookeeper.property.clientPort"));
+			} catch (IOException | ServiceException e) {
+				NeoLogger.error(e);
 			}
-			
+
 			//Connection resourceConnection = ConnectionFactory.createConnection(conf);
 			@SuppressWarnings("resource")
 			HBaseAdmin admin = new HBaseAdmin(conf);
 			String cloneURI = formatURI (modelURI);
 			TableName tableName = TableName.valueOf(cloneURI);
-			NeoLogger.log(NeoLogger.SEVERITY_INFO, "Delete table if exists");
+			NeoLogger.error("Delete table if exists");
 			try {	
-			if (admin.tableExists(tableName)) {
-				
-				if (! admin.isTableDisabled(tableName)) {
-					admin.disableTable(tableName);
-				}
-				
-				admin.deleteTable(tableName);
-				
-				NeoLogger.log(NeoLogger.SEVERITY_INFO, "Table has been deleted");
-				return true;
+			    if (admin.tableExists(tableName)) {
+                    if (! admin.isTableDisabled(tableName)) {
+                        admin.disableTable(tableName);
+                    }
+                    admin.deleteTable(tableName);
+                    NeoLogger.info("Table has been deleted");
+                    return true;
 				}	
 			} catch (IOException e) {
-				e.printStackTrace();
+				NeoLogger.error(e);
 				throw e;
 			}
 			return false;
-			
 		}
-
-		
 	}
 	
 	public static String formatURI(URI modelURI) {
@@ -115,15 +96,8 @@ public class NeoHbaseUtil {
 			 if (i != modelURI.segmentCount() -1 )
 				 strBld.append("_");
 		}
-		
 		return strBld.toString();
 	}
-	
-	/**
-	 * 
-	 * @author Amine  BENELALLAM
-	 *
-	 */
 	
 	public static class EncoderUtil {
 		
@@ -148,13 +122,13 @@ public class NeoHbaseUtil {
 			return null;
 		}
 
-
 		public static byte[] toBytesReferences (String[] strings) {
 			if (strings != null) {
 				return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes();
 			}
 			return null;
 		}
+
 		public static byte[] toBytes(String[] strings) {
 			try {
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -164,13 +138,12 @@ public class NeoHbaseUtil {
 				objectOutputStream.close();
 				return byteArrayOutputStream.toByteArray();
 			} catch (IOException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format("Unable to convert ''{0}'' to byte[]", strings.toString()));
+				NeoLogger.error("Unable to convert ''{0}'' to byte[]", Arrays.toString(strings));
 			}
 			return null;
 		}
 
 		public static String[] toStrings(byte[] bytes) {
-			
 			if (bytes == null) {
 				return null;
 			}
@@ -181,17 +154,14 @@ public class NeoHbaseUtil {
 			try {
 				objectInputStream = new ObjectInputStream(byteArrayInputStream);
 				result = (String[]) objectInputStream.readObject();
-
 			} catch (IOException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, MessageFormat.format("Unable to convert ''{0}'' to String[]", bytes.toString()));
+				NeoLogger.error("Unable to convert ''{0}'' to String[]", Arrays.toString(bytes));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} finally {
 				IOUtils.closeQuietly(objectInputStream);
 			}
 			return result;
-
 		}
 	}
-	
 }

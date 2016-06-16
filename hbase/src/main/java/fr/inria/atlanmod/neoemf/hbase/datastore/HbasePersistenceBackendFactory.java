@@ -10,23 +10,23 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
-import java.io.File;
-import java.util.Map;
-
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.InvalidTransientResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHbaseResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHbaseResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
-public class HbasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+import java.io.File;
+import java.util.Map;
+
+public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     public static final String HBASE_BACKEND = "hbase";
     
@@ -36,16 +36,16 @@ public class HbasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     }
 
     @Override
-    public SearcheableResourceEStore createTransientEStore(PersistentResource resource,
-            PersistenceBackend backend) {
-        NeoLogger.log(NeoLogger.SEVERITY_WARNING, "NeoEMF/HBase does not provide a transient layer, you must save/load your resource before using it");
+    public SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+        NeoLogger.warn("NeoEMF/HBase does not provide a transient layer, you must " +
+                "save/load your resource before using it");
         return new InvalidTransientResourceEStoreImpl();
     }
 
     @Override
     public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options)
             throws InvalidDataStoreException {
-        // TODO Externalise the backend implementation from the HBase EStores
+        // TODO Externalise the backend implementation from the HBase EStores.
         return new HBasePersistenceBackend();
     }
 
@@ -56,15 +56,15 @@ public class HbasePersistenceBackendFactory extends AbstractPersistenceBackendFa
             if(options.containsKey(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY)) {
                 if(Boolean.TRUE.equals(options.get(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY))) {
                     // Create a read-only EStore
-                    return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new ReadOnlyHbaseResourceEStoreImpl(resource)));
+                    return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new ReadOnlyHBaseResourceEStoreImpl(resource)));
                 }
                 else {
                     // Create a default EStore
-                    return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHbaseResourceEStoreImpl(resource)));
+                    return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHBaseResourceEStoreImpl(resource)));
                 }
             } else {
                 // Create a default EStore
-                return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHbaseResourceEStoreImpl(resource)));
+                return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(new DirectWriteHBaseResourceEStoreImpl(resource)));
             }
         } catch(Exception e) {
             throw new InvalidDataStoreException(e);
@@ -73,8 +73,6 @@ public class HbasePersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        // TODO Auto-generated method stub
-        NeoLogger.log(NeoLogger.SEVERITY_WARNING, "NeoEMF/HBase does not support copy backend feature");;
+        NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
-
 }

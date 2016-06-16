@@ -77,6 +77,8 @@
         <!-- DB -->
         <blueprints.version>2.5.0</blueprints.version> <!-- 2.6+ : require JDK8 -->
         <mapdb.version>1.0.9</mapdb.version> <!-- 2+ : require JDK8 -->
+        <hbase.version>0.98.13-hadoop2</hbase.version>
+        <hadoop.version>2.6.0</hadoop.version>
 
         <!-- Commons -->
         <cglib-nodep.version>3.2.2</cglib-nodep.version>
@@ -85,6 +87,7 @@
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
         <guava.version>19.0</guava.version>
+        <woodstox.version>5.0.2</woodstox.version>
 
         <!-- Logging -->
         <log4j.version>2.6</log4j.version>
@@ -124,12 +127,38 @@
                 <version>${mapdb.version}</version>
             </dependency>
 
+            <!-- Hadoop -->
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-client</artifactId>
+                <version>${hbase.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-common</artifactId>
+                <version>${hbase.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-hadoop-compat</artifactId>
+                <version>${hbase.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>
+
             <!-- Commons -->
 
             <dependency>
                 <groupId>com.fasterxml.woodstox</groupId>
                 <artifactId>woodstox-core</artifactId>
-                <version>5.0.2</version>
+                <version>${woodstox.version}</version>
             </dependency>
 
             <dependency>
@@ -356,7 +385,6 @@
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${javadoc-maven-plugin.version}</version>
                 <configuration>
                     <detectLinks>false</detectLinks>
                     <failOnError>false</failOnError>
@@ -411,6 +439,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${javadoc-plugin.version}</version>
                 </plugin>
 
                 <plugin>

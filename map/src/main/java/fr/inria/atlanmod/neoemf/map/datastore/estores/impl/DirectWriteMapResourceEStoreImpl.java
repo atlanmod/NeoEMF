@@ -81,10 +81,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		if (eAttribute.isMany()) {
 			try {
 				Object[] array = (Object[]) value;
-				returnValue = parseMapValue(eAttribute, array[index]);
+				returnValue = parseProperty(eAttribute, array[index]);
 			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid get index " + index);
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+				NeoLogger.error(e, "Invalid get index {0}", index);
 				throw e;
 			}
 		} else {
@@ -102,8 +101,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 				Object[] array = (Object[]) value;
 				returnValue = eObject((Id) array[index]);
 			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid get index " + index);
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+				NeoLogger.error(e, "Invalid get index {0}", index);
 				throw e;
 			}
 		} else {
@@ -120,13 +118,12 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 			returnValue = parseProperty(eAttribute, oldValue);
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eAttribute);
-			Object oldValue = null;
+			Object oldValue;
 			try {
 				oldValue = array[index];
-				array[index] = serializeToMapValue(eAttribute, value);
+				array[index] = serializeToProperty(eAttribute, value);
 			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR,"Invalid set index " + index);
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+				NeoLogger.error(e, "Invalid set index {0}", index);
 				throw e;
 			}
 			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
@@ -145,13 +142,12 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eReference);
-			Object oldId = null;
+			Object oldId;
 			try {
 				oldId = array[index];
-				array[index] = referencedObject.id();
+				array[index] = value.id();
 			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid set index " + index);
-				NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+				NeoLogger.error(e, "Invalid set index {0}", index);
 				throw e;
 			}
 			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
@@ -171,20 +167,21 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	protected void addWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if(index == EStore.NO_INDEX) {
-			// Handle NO_INDEX index, which represent direct-append feature
-			// The call to size should not cause an overhead because it would have
-			// been done in regular addUnique() otherwise
-			add(object, feature, size(object, feature), value);
+			/*
+			 * Handle NO_INDEX index, which represent direct-append feature.
+			 * The call to size should not cause an overhead because it would have been done in regular
+			 * addUnique() otherwise.
+			 */
+			add(object, eAttribute, size(object, eAttribute), value);
 		}
 		Object[] array = (Object[]) getFromMap(object, eAttribute);
 		if (array == null) {
 			array = new Object[] {};
 		}
 		try {
-			array = ArrayUtils.add(array, index, serializeToMapValue(eAttribute, value));
+			array = ArrayUtils.add(array, index, serializeToProperty(eAttribute, value));
 		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid add index " + index);
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			NeoLogger.error(e, "Invalid add index {0}", index);
 			throw e;
 		}
 		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
@@ -193,10 +190,12 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	protected void addWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if(index == EStore.NO_INDEX) {
-			// Handle NO_INDEX index, which represent direct-append feature
-			// The call to size should not cause an overhead because it would have
-			// been done in regular addUnique() otherwise
-			add(object, feature, size(object, feature), value);
+			/*
+			 * Handle NO_INDEX index, which represent direct-append feature.
+			 * The call to size should not cause an overhead because it would have been done in regular
+			 * addUnique() otherwise.
+			 */
+			add(object, eReference, size(object, eReference), value);
 		}
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
@@ -205,10 +204,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 			array = new Object[] {};
 		}
 		try {
-			array = ArrayUtils.add(array, index, referencedObject.id());
+			array = ArrayUtils.add(array, index, value.id());
 		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid add index " + index);
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			NeoLogger.error(e, "Invalid add index {0}", index);
 			throw e;
 		}
 		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
@@ -218,13 +216,12 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	protected Object removeWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
 		Object[] array = (Object[]) getFromMap(object, eAttribute);
-		Object oldValue = null;
+		Object oldValue;
 		try {
 			oldValue = array[index];
 			array = ArrayUtils.remove(array, index);
 		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid remove index " + index);
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			NeoLogger.error(e, "Invalid remove index {0}", index);
 			throw e;
 		}
 		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
@@ -234,13 +231,12 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	protected Object removeWithReference(InternalPersistentEObject object, EReference eReference, int index) {
 		Object[] array = (Object[]) getFromMap(object, eReference);
-		Object oldId = null;
+		Object oldId;
 		try {
 			oldId = array[index];
 			array = ArrayUtils.remove(array, index);
 		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Invalid remove index " + index);
-			NeoLogger.log(NeoLogger.SEVERITY_ERROR, e);
+			NeoLogger.error(e, "Invalid remove index {0}", index);
 			throw e;
 		}
 		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
