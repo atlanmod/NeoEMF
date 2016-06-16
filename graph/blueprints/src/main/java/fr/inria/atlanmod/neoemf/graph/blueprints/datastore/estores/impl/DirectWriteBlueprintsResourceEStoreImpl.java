@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Map;
@@ -51,7 +52,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 
 	public DirectWriteBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		super(resource, graph);
-        NeoLogger.info("DirectWrite Store Created");
+        NeoLogger.info("DirectWriteBlueprintsResourceEStore Created");
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		Vertex vertex = persistenceBackend.getVertex(object);
 		String propertyName = eAttribute.getName();
 		if (eAttribute.isMany()) {
-			checkElementIndex(index, getSize(vertex, eAttribute));
+			checkElementIndex(index, getSize(vertex, eAttribute), "Invalid get index %s", index);
 			propertyName += SEPARATOR + index;
 		}
 		return parseProperty(eAttribute, vertex.getProperty(propertyName));
@@ -75,7 +76,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 					vertex.getVertices(Direction.OUT, eReference.getName()), null
 			);
 		} else {
-			checkElementIndex(index, getSize(vertex, eReference));
+			checkElementIndex(index, getSize(vertex, eReference), "Invalid get index %s", index);
 			referencedVertex = Iterables.getOnlyElement(
 					vertex.query()
 							.labels(eReference.getName())
@@ -293,11 +294,17 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 
 	@Override
 	protected void addWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+		if(index == EStore.NO_INDEX) {
+			// Handle NO_INDEX index, which represent direct-append feature
+			// The call to size should not cause an overhead because it would have
+			// been done in regular addUnique() otherwise
+			add(object, feature, index, size(object, feature));
+		}
 		Vertex vertex = persistenceBackend.getOrCreateVertex(object);
 		Integer size = getSize(vertex, eAttribute);
 		size++;
 		setSize(vertex, eAttribute, size);
-		checkPositionIndex(index, size);
+		checkPositionIndex(index, size, "Invalid add index %s", index);
 		for (int i = size - 1; i > index; i--) {
 			Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + (i - 1));
 			vertex.setProperty(eAttribute.getName() + SEPARATOR + i, movingProperty);
@@ -307,8 +314,13 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 
 	@Override
 	protected void addWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+		if(index == EStore.NO_INDEX) {
+			// Handle NO_INDEX index, which represent direct-append feature
+			// The call to size should not cause an overhead because it would have
+			// been done in regular addUnique() otherwise
+			add(object, feature, index, size(object, feature));
+		}
 		Vertex vertex = persistenceBackend.getOrCreateVertex(object);
-
 		Vertex referencedVertex = persistenceBackend.getOrCreateVertex(value);
 		// Update the containment reference if needed
 		if (eReference.isContainment()) {
@@ -317,7 +329,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 
 		Integer size = getSize(vertex, eReference);
 		int newSize = size + 1;
-		checkPositionIndex(index, newSize);
+		checkPositionIndex(index, newSize, "Invalid add index %s", index);
 		if(index != size) {
 			Iterable<Edge> edges = vertex.query()
 					.labels(eReference.getName())
@@ -342,7 +354,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		Vertex vertex = persistenceBackend.getVertex(object);
 		Integer size = getSize(vertex, eAttribute);
 		Object returnValue;
-		checkPositionIndex(index, size);
+		checkPositionIndex(index, size, "Invalid remove index %s", index);
 		returnValue = parseProperty(eAttribute, vertex.getProperty(eAttribute.getName() + SEPARATOR + index));
 		int newSize = size - 1;
 		for (int i = newSize; i > index; i--) {
@@ -359,29 +371,26 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		String referenceName = eReference.getName();
 		Integer size = getSize(vertex, eReference);
 		InternalEObject returnValue = null;
-		if (index < 0 || index > size) {
-			throw new IndexOutOfBoundsException();
-		} else {
-			Iterable<Edge> edges = vertex.query()
-					.labels(referenceName)
-					.direction(Direction.OUT)
-					.interval(POSITION, index, size)
-					.edges();
+		checkPositionIndex(index, size, "Invalid remove index %s", index);
+		Iterable<Edge> edges = vertex.query()
+				.labels(referenceName)
+				.direction(Direction.OUT)
+				.interval(POSITION, index, size)
+				.edges();
 
-			for (Edge edge : edges) {
-				int position = edge.getProperty(POSITION);
-				if (position == index) {
-					Vertex referencedVertex = edge.getVertex(Direction.IN);
-					returnValue = reifyVertex(referencedVertex);
-					edge.remove();
-					if (eReference.isContainment()) {
-						for (Edge conEdge : referencedVertex.getEdges(Direction.OUT, CONTAINER)) {
-							conEdge.remove();
-						}
+		for (Edge edge : edges) {
+			int position = edge.getProperty(POSITION);
+			if (position == index) {
+				Vertex referencedVertex = edge.getVertex(Direction.IN);
+				returnValue = reifyVertex(referencedVertex);
+				edge.remove();
+				if (eReference.isContainment()) {
+					for (Edge conEdge : referencedVertex.getEdges(Direction.OUT, CONTAINER)) {
+						conEdge.remove();
 					}
-				} else {
-					edge.setProperty(POSITION, position - 1);
 				}
+			} else {
+				edge.setProperty(POSITION, position - 1);
 			}
 		}
 		setSize(vertex, eReference, size - 1); // Update size

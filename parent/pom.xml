@@ -63,7 +63,7 @@
         <cobertura-plugin.version>2.7</cobertura-plugin.version>
         <dependency-plugin.version>2.10</dependency-plugin.version>
         <findbugs-plugin.version>3.0.3</findbugs-plugin.version>
-        <javadoc-plugin.version>2.10.3</javadoc-plugin.version>
+        <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
         <jxr-plugin.version>2.5</jxr-plugin.version>
         <license-plugin.version>1.8</license-plugin.version>
         <pmd-plugin.version>3.6</pmd-plugin.version>
@@ -350,6 +350,20 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Xms256m -Xmx1g -XX:PermSize=512m</argLine>
+                </configuration>
+            </plugin>
+
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc-maven-plugin.version}</version>
+                <configuration>
+                    <detectLinks>false</detectLinks>
+                    <failOnError>false</failOnError>
+                    <quiet>true</quiet>
+                    <excludePackageNames>
+                        fr.inria.atlanmod.neoemf.test.commons.models.*
+                    </excludePackageNames>
                 </configuration>
             </plugin>
         </plugins>
