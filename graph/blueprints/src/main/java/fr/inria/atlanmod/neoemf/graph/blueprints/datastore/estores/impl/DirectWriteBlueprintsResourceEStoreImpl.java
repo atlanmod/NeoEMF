@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -54,7 +55,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 	public DirectWriteBlueprintsResourceEStoreImpl(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
 		this.graph = graph;
 		this.resource = resource;
-        NeoLogger.log(NeoLogger.SEVERITY_INFO, "DirectWrite Store Created");
+        NeoLogger.log(NeoLogger.SEVERITY_INFO, "DirectWriteBlueprintsResourceEStore Created");
 	}
 
 	@Override
@@ -365,6 +366,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl implements SearcheableResou
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+	    if(index == EStore.NO_INDEX) {
+	        // Handle NO_INDEX index, which represent direct-append feature
+	        // The call to size should not cause an overhead because it would have
+	        // been done in regular addUnique() otherwise
+	        add(object, feature, index, size(object, feature));
+	    }
 		if (feature instanceof EAttribute) {
 			add(object, (EAttribute) feature, index, value);
 		} else if (feature instanceof EReference) {
