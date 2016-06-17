@@ -19,9 +19,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 public final class PersistentResourceFactoryImpl implements PersistentResourceFactory {
 
-	private static PersistentResourceFactory INSTANCE = new PersistentResourceFactoryImpl();
+	private static PersistentResourceFactory INSTANCE;
 
 	public static PersistentResourceFactory getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new PersistentResourceFactoryImpl();
+		}
 		return INSTANCE;
 	}
 

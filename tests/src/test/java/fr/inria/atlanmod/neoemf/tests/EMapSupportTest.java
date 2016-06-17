@@ -12,11 +12,11 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.K;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.V;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
 
 import org.eclipse.emf.common.util.EMap;
 import org.junit.After;

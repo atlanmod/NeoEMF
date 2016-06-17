@@ -25,7 +25,7 @@ import java.util.List;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
 
-    private InternalPersistentEObject owner;
+    private final InternalPersistentEObject owner;
 
     private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
 

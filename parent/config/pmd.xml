@@ -10,7 +10,7 @@
 
     <!-- Exclude generated source -->
 
-    <exclude-pattern>.*/neoemf/test/commons/mapSample/.*</exclude-pattern>
+    <exclude-pattern>.*/neoemf/tests/models/.*</exclude-pattern>
 
     <!-- Rulesets -->
 

@@ -68,15 +68,15 @@ public class DirectWriteHBaseResourceEStoreImpl implements SearcheableResourceES
 	private static final int ATTEMP_TIMES_DEFAULT = 10;
 	private static final long SLEEP_DEFAULT = 1L;
 
-	private static Configuration conf = HBaseConfiguration.create();
+	private static final Configuration conf = HBaseConfiguration.create();
 
-	private Cache<Object, InternalPersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
+	private final Cache<Object, InternalPersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
 	
 	//protected Connection connection;
 	
 	private HTable table;
 	
-	private Resource.Internal resource;
+	private final Resource.Internal resource;
 
 	public DirectWriteHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
 

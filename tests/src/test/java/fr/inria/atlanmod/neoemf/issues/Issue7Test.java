@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.issues;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 
 import org.junit.Test;
 

@@ -205,8 +205,8 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 
 	private static class EStoreKey {
 
-		private InternalEObject eObject;
-		private EStructuralFeature eStructuralFeature;
+		private final InternalEObject eObject;
+		private final EStructuralFeature eStructuralFeature;
 
 		public EStoreKey(InternalEObject eObject, EStructuralFeature eStructuralFeature) {
 			this.eObject = eObject;

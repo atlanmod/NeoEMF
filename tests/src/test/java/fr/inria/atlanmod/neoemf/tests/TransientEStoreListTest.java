@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.TransientEStoreImpl;
 import fr.inria.atlanmod.neoemf.issues.Issue7Test;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.junit.Before;
 import org.junit.Test;

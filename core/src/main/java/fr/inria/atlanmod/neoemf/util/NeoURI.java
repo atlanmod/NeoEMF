@@ -24,7 +24,7 @@ public class NeoURI extends URI {
 
 	protected static final String FILE_SCHEME = "file";
 
-	private URI internalUri;
+	private final URI internalUri;
 	
 	protected NeoURI(int hashCode, URI internalUri) {
 		super(hashCode);

@@ -21,7 +21,7 @@ public class StringId implements Id {
 
 	private static final long serialVersionUID = 1L;
 
-	private String literalId;
+	private final String literalId;
 
 	public static Id generate() {
 		return new StringId(EcoreUtil.generateUUID());

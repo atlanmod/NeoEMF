@@ -65,17 +65,17 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 	private final String UNSUP_MSG =
 			"Unable to write to resource with URI {0}. Make sure that the resource is not read-only";
 
-	private static Configuration conf = HBaseConfiguration.create();
+	private static final Configuration conf = HBaseConfiguration.create();
 
-	private Cache<Object, InternalPersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
+	private final Cache<Object, InternalPersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
 
-	private Cache<EStoreEntryKey, Object> featuresMap = CacheBuilder.newBuilder().softValues().build();
+	private final Cache<EStoreEntryKey, Object> featuresMap = CacheBuilder.newBuilder().softValues().build();
 
 	//protected Connection connection;
 
 	private HTable table;
 
-	private Resource.Internal resource;
+	private final Resource.Internal resource;
 
 	public ReadOnlyHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
 
@@ -443,8 +443,8 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	private class EStoreEntryKey {
 
-		private String eObject;
-		private EStructuralFeature eStructuralFeature;
+		private final String eObject;
+		private final EStructuralFeature eStructuralFeature;
 
 		public EStoreEntryKey(String eObject, EStructuralFeature eStructuralFeature) {
 			this.eObject = eObject;

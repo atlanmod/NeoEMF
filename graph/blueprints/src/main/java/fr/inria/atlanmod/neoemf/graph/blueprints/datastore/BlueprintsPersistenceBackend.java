@@ -78,7 +78,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	private final Cache<Object, InternalPersistentEObject> loadedEObjectsCache;
 	private final Cache<Object, Vertex> loadedVerticesCache;
-	private List<EClass> indexedEClasses;
+	private final List<EClass> indexedEClasses;
 	
 	public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
 		super(baseGraph);

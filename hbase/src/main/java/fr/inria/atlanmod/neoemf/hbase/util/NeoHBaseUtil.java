@@ -26,7 +26,7 @@ import java.util.Iterator;
 
 public class NeoHBaseUtil {
 
-    public static int UUID_LENGTH = 23;
+    public static final int UUID_LENGTH = 23;
     
 	public static class ResourceUtil {
 
@@ -39,7 +39,7 @@ public class NeoHBaseUtil {
 			return INSTANCE;
 		}
 
-		private Configuration conf = HBaseConfiguration.create();
+		private final Configuration conf = HBaseConfiguration.create();
 
 		private ResourceUtil() {
 		}

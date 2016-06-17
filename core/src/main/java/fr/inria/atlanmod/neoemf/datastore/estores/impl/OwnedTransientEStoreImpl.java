@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 //TODO All methods call super methods, is this class really necessary ?
 public class OwnedTransientEStoreImpl extends TransientEStoreImpl {
 
-	private EObject owner;
+	private final EObject owner;
 
 	public OwnedTransientEStoreImpl(EObject owner) {
 		this.owner = owner;

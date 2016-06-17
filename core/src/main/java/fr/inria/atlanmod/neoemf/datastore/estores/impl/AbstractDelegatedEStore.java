@@ -30,7 +30,7 @@ public abstract class AbstractDelegatedEStore<S extends SearcheableResourceEStor
 	/**
 	 * The wrapped {@link SearcheableResourceEStore}.
 	 */
-	private S eStore;
+	private final S eStore;
 
 	public AbstractDelegatedEStore(S eStore) {
 		this.eStore = eStore;
