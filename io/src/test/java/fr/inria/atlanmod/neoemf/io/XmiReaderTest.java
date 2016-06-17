@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
-import fr.inria.atlanmod.neoemf.io.impl.InternalXmlHandler;
+import fr.inria.atlanmod.neoemf.io.internal.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.io.internal.InternalXmlHandler;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;

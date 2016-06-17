@@ -9,11 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.impl;
+package fr.inria.atlanmod.neoemf.io.internal;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.io.Handler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class AbstractInternalHandler extends AbstractNotifier implements Handler {
+public abstract class AbstractInternalHandler extends AbstractInternalNotifier implements InternalHandler {
 
     private Map<String, Id> idRegistry;
 

@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-public interface Notifier {
+public interface Notifier<T extends Handler> {
 
     /**
      * Add an {@link Handler handler} that will be notified.
      *
      * @param handler the handler to add
      */
-    void addHandler(Handler handler);
+    void addHandler(T handler);
 
     /**
      * Defines if this notifier has at least one {@link Handler handler} to notify.

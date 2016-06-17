@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.impl.AbstractNotifier;
+import fr.inria.atlanmod.neoemf.io.internal.AbstractInternalNotifier;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.codehaus.stax2.XMLInputFactory2;
@@ -26,13 +26,14 @@ import javax.xml.stream.events.XMLEvent;
 /**
  *
  */
-public class XmiStreamReader extends AbstractNotifier implements Reader {
+public class XmiStreamReader extends AbstractInternalNotifier implements Reader {
 
     private final XMLInputFactory2 factory;
 
     private String defaultPrefix;
 
     public XmiStreamReader() {
+        super();
         this.factory = (XMLInputFactory2) XMLInputFactory2.newFactory();
         this.factory.configureForSpeed();
         this.factory.setProperty(XMLInputFactory2.SUPPORT_DTD, false);

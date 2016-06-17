@@ -11,10 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+
 /**
  *
  */
-public class ConsoleHandler implements Handler {
+public class ConsoleHandler implements InternalHandler {
 
     private String name;
 

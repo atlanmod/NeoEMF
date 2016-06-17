@@ -9,9 +9,8 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.impl;
+package fr.inria.atlanmod.neoemf.io.internal;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
 
 import java.util.HashSet;
@@ -20,16 +19,16 @@ import java.util.Set;
 /**
  *
  */
-public abstract class AbstractNotifier implements Notifier {
+public abstract class AbstractInternalNotifier implements Notifier<InternalHandler> {
 
-    private Set<Handler> handlers;
+    private Set<InternalHandler> handlers;
 
-    public AbstractNotifier() {
+    public AbstractInternalNotifier() {
         this.handlers = new HashSet<>();
     }
 
     @Override
-    public void addHandler(Handler handler) {
+    public void addHandler(InternalHandler handler) {
         handlers.add(handler);
     }
 
@@ -39,37 +38,37 @@ public abstract class AbstractNotifier implements Notifier {
     }
 
     protected final void notifyStartDocument() {
-        for (Handler h : handlers) {
+        for (InternalHandler h : handlers) {
             h.handleStartDocument();
         }
     }
 
     protected final void notifyStartElement(String namespace, String localName) {
-        for (Handler h : handlers) {
+        for (InternalHandler h : handlers) {
             h.handleStartElement(namespace, localName);
         }
     }
 
     protected final void notifyAttribute(String namespace, String localName, String value) {
-        for (Handler h : handlers) {
+        for (InternalHandler h : handlers) {
             h.handleAttribute(namespace, localName, value);
         }
     }
 
     protected final void notifyReference(String namespace, String localName, String reference) {
-        for (Handler h : handlers) {
+        for (InternalHandler h : handlers) {
             h.handleReference(namespace, localName, reference);
         }
     }
 
     protected final void notifyEndElement() {
-        for (Handler h : handlers) {
+        for (InternalHandler h : handlers) {
             h.handleEndElement();
         }
     }
 
     protected final void notifyEndDocument() {
-        for (Handler h : handlers) {
+        for (InternalHandler h : handlers) {
             h.handleEndDocument();
         }
     }

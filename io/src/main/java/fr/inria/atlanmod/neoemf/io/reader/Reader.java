@@ -12,13 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.Notifier;
+import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 import java.io.File;
 
 /**
  *
  */
-public interface Reader extends Notifier {
+public interface Reader extends Notifier<InternalHandler> {
 
     void read(File file) throws Exception;
 }
