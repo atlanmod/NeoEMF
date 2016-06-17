@@ -48,9 +48,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-	private static PersistenceBackendFactory INSTANCE = new MapPersistenceBackendFactory();
+	private static PersistenceBackendFactory INSTANCE;
 
 	public static PersistenceBackendFactory getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new MapPersistenceBackendFactory();
+		}
 		return INSTANCE;
 	}
 

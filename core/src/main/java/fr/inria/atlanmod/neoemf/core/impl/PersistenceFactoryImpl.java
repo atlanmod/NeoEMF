@@ -19,9 +19,12 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 public final class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
 
-	private static PersistenceFactory INSTANCE = new PersistenceFactoryImpl();
+	private static PersistenceFactory INSTANCE;
 
 	public static PersistenceFactory getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new PersistenceFactoryImpl();
+		}
 		return INSTANCE;
 	}
 

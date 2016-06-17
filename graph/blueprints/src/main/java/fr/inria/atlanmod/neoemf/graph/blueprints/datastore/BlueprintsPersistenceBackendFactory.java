@@ -51,9 +51,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-	private static PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();
+	private static PersistenceBackendFactory INSTANCE;
 
 	public static PersistenceBackendFactory getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new BlueprintsPersistenceBackendFactory();
+		}
 		return INSTANCE;
 	}
 
