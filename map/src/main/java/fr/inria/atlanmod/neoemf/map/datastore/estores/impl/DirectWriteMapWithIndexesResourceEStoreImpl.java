@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 
-	private Map<Tuple3<Id, String, Integer>, Object> tuple3Map;
+	private final Map<Tuple3<Id, String, Integer>, Object> tuple3Map;
 
 	public DirectWriteMapWithIndexesResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
 		super(resource, persistenceBackend, persistenceBackend.getHashMap("SIZES"));
