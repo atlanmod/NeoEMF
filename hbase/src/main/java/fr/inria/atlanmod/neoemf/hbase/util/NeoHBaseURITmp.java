@@ -18,11 +18,11 @@ import org.eclipse.emf.common.util.URI;
 import java.io.File;
 import java.text.MessageFormat;
 
-public class NeoHBaseURI extends NeoURI {
+public class NeoHBaseURITmp extends NeoURI {
 
     public static final String NEO_HBASE_SCHEME = "neo-hbase";
     
-    protected NeoHBaseURI(int hashCode, URI internalURI) {
+    protected NeoHBaseURITmp(int hashCode, URI internalURI) {
         super(hashCode,internalURI);
     }
     
