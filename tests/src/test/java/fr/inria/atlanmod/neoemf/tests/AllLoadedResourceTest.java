@@ -16,10 +16,10 @@ import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;

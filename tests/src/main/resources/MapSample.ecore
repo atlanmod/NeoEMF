@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mapSample" nsURI="com.mapSample" nsPrefix="mapSample">
+  <eClassifiers xsi:type="ecore:EClass" name="SampleModel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="map" upperBound="-1" eType="#//StringToStringMap"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="kvMap" upperBound="-1"
+        eType="#//KToVMap" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contentObjects" upperBound="-1"
+        eType="#//SampleModelContentObject" containment="true" eOpposite="#//SampleModelContentObject/parent"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StringToStringMap" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="K">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kInt" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="V">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vInt" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="KToVMap" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" lowerBound="1" eType="#//K"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//V"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SampleModelContentObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//SampleModel"
+        eOpposite="#//SampleModel/contentObjects"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Pack">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="packs" upperBound="-1"
+        eType="#//Pack" containment="true" eOpposite="#//Pack/parentPack"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentPack" eType="#//Pack"
+        eOpposite="#//Pack/packs"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownedContents" upperBound="-1"
+        eType="#//AbstractPackContent" containment="true" eOpposite="#//AbstractPackContent/parentPack"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nonContainmentRefComments"
+        upperBound="-1" eType="#//AbstractPackContentComment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractPackContent" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentPack" eType="#//Pack"
+        eOpposite="#//Pack/ownedContents"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containmentNoOppositeRefComment"
+        upperBound="-1" eType="#//AbstractPackContentComment" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PackContent" eSuperTypes="#//AbstractPackContent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SpecializedPackContent" eSuperTypes="#//PackContent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PackContent2" eSuperTypes="#//AbstractPackContent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractPackContentComment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>

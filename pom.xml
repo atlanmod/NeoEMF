@@ -28,7 +28,6 @@
         <module>map</module>
         <module>hbase</module>
         <module>io</module>
-		<module>test-commons</module>
 		<module>tests</module>
     </modules>
 

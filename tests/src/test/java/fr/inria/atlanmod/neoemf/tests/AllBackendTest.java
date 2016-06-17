@@ -15,8 +15,6 @@ import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
-import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
-import fr.inria.atlanmod.neoemf.test.commons.MapResourceBuilder;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
