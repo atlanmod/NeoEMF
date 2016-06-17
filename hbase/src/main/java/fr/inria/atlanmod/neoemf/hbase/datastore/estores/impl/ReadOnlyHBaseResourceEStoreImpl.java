@@ -265,7 +265,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 	@Override
 	public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
 		int size = size(object, feature);
-		T[] result = null;
+		T[] result;
 		if (array.length < size) {
 			result = Arrays.copyOf(array, size);
 		}
@@ -353,14 +353,20 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 					neoEObject = (InternalPersistentEObject) eObject;
 				}
 				else {
-					neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class);
+					neoEObject = checkNotNull(
+							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
 				}
 				neoEObject.id(id);
 			}
 			else {
 				NeoLogger.error("Element {0} does not have an associated EClass", id);
 			}
-			loadedEObjects.put(id, neoEObject);
+			if (neoEObject == null) {
+				MessageFormat.format("Element {0} does not exist", id);
+				return null;
+			} else {
+				loadedEObjects.put(id, neoEObject);
+			}
 		}
 		if (neoEObject.resource() != resource()) {
 			neoEObject.resource(resource());
