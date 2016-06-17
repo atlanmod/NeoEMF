@@ -46,6 +46,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 
 public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourceEStore<MapPersistenceBackend> {
 
@@ -79,13 +80,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
 		if (eAttribute.isMany()) {
-			try {
-				Object[] array = (Object[]) value;
-				returnValue = parseProperty(eAttribute, array[index]);
-			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.error(e, "Invalid get index {0}", index);
-				throw e;
-			}
+			Object[] array = (Object[]) value;
+			checkPositionIndex(index, array.length, "Invalid get index " + index);
+			returnValue = parseProperty(eAttribute, array[index]);
 		} else {
 			returnValue = parseProperty(eAttribute, value);
 		}
@@ -97,13 +94,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		Object returnValue;
 		Object value = getFromMap(object, eReference);
 		if (eReference.isMany()) {
-			try {
-				Object[] array = (Object[]) value;
-				returnValue = eObject((Id) array[index]);
-			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.error(e, "Invalid get index {0}", index);
-				throw e;
-			}
+			Object[] array = (Object[]) value;
+			checkPositionIndex(index, array.length, "Invalid get index " + index);
+			returnValue = eObject((Id) array[index]);
 		} else {
 			returnValue = eObject((Id) value);
 		}
@@ -118,14 +111,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 			returnValue = parseProperty(eAttribute, oldValue);
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eAttribute);
-			Object oldValue;
-			try {
-				oldValue = array[index];
-				array[index] = serializeToProperty(eAttribute, value);
-			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.error(e, "Invalid set index {0}", index);
-				throw e;
-			}
+			checkPositionIndex(index, array.length, "Invalid set index " + index);
+			Object oldValue = array[index];
+			array[index] = serializeToProperty(eAttribute, value);
 			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
 			returnValue = parseProperty(eAttribute, oldValue);
 		}
@@ -142,14 +130,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eReference);
-			Object oldId;
-			try {
-				oldId = array[index];
-				array[index] = value.id();
-			} catch(IndexOutOfBoundsException e) {
-				NeoLogger.error(e, "Invalid set index {0}", index);
-				throw e;
-			}
+			checkPositionIndex(index, array.length, "Invalid set index " + index);
+			Object oldId = array[index];
+			array[index] = value.id();
 			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		}
@@ -178,12 +161,8 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		if (array == null) {
 			array = new Object[] {};
 		}
-		try {
-			array = ArrayUtils.add(array, index, serializeToProperty(eAttribute, value));
-		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.error(e, "Invalid add index {0}", index);
-			throw e;
-		}
+		checkPositionIndex(index, array.length, "Invalid add index " + index);
+		array = ArrayUtils.add(array, index, serializeToProperty(eAttribute, value));
 		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
 	}
 
@@ -203,12 +182,8 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		if (array == null) {
 			array = new Object[] {};
 		}
-		try {
-			array = ArrayUtils.add(array, index, value.id());
-		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.error(e, "Invalid add index {0}", index);
-			throw e;
-		}
+		checkPositionIndex(index, array.length, "Invalid add index " + index);
+		array = ArrayUtils.add(array, index, value.id());
 		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
 		loadedEObjectsCache.put(value.id(),(InternalPersistentEObject)value);
 	}
@@ -216,14 +191,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	protected Object removeWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
 		Object[] array = (Object[]) getFromMap(object, eAttribute);
-		Object oldValue;
-		try {
-			oldValue = array[index];
-			array = ArrayUtils.remove(array, index);
-		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.error(e, "Invalid remove index {0}", index);
-			throw e;
-		}
+		checkPositionIndex(index, array.length, "Invalid remove index " + index);
+		Object oldValue = array[index];
+		array = ArrayUtils.remove(array, index);
 		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
 		return parseProperty(eAttribute, oldValue);
 	}
@@ -231,14 +201,9 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	protected Object removeWithReference(InternalPersistentEObject object, EReference eReference, int index) {
 		Object[] array = (Object[]) getFromMap(object, eReference);
-		Object oldId;
-		try {
-			oldId = array[index];
-			array = ArrayUtils.remove(array, index);
-		} catch(IndexOutOfBoundsException e) {
-			NeoLogger.error(e, "Invalid remove index {0}", index);
-			throw e;
-		}
+		checkPositionIndex(index, array.length, "Invalid remove index " + index);
+		Object oldId = array[index];
+		array = ArrayUtils.remove(array, index);
 		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
 		return eObject((Id)oldId);
 	}
