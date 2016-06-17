@@ -17,22 +17,22 @@ import fr.inria.atlanmod.neoemf.datastore.estores.impl.InvalidTransientResourceE
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImplTmp;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImplTmp;
-import fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptionsTmp;
+import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 import java.io.File;
 import java.util.Map;
 
-public class HBasePersistenceBackendFactoryTmp extends AbstractPersistenceBackendFactory {
+public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     public static final String HBASE_BACKEND = "hbase";
     
     @Override
     public PersistenceBackend createTransientBackend() {
-        return new HBasePersistenceBackendTmp();
+        return new HBasePersistenceBackend();
     }
 
     @Override
@@ -45,24 +45,24 @@ public class HBasePersistenceBackendFactoryTmp extends AbstractPersistenceBacken
     @Override
     public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
         // TODO Externalise the backend implementation from the HBase EStores.
-        return new HBasePersistenceBackendTmp();
+        return new HBasePersistenceBackend();
     }
 
     @Override
     protected SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
-            if(options.containsKey(HBaseResourceOptionsTmp.OPTIONS_HBASE_READ_ONLY)) {
-                if(Boolean.TRUE.equals(options.get(HBaseResourceOptionsTmp.OPTIONS_HBASE_READ_ONLY))) {
+            if(options.containsKey(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY)) {
+                if(Boolean.TRUE.equals(options.get(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY))) {
                     // Create a read-only EStore
-                    return embedInDefaultWrapper(new ReadOnlyHBaseResourceEStoreImplTmp(resource));
+                    return embedInDefaultWrapper(new ReadOnlyHBaseResourceEStoreImpl(resource));
                 }
                 else {
                     // Create a default EStore
-                    return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImplTmp(resource));
+                    return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImpl(resource));
                 }
             } else {
                 // Create a default EStore
-                return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImplTmp(resource));
+                return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImpl(resource));
             }
         } catch(Exception e) {
             throw new InvalidDataStoreException(e);

@@ -24,7 +24,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class NeoHBaseUtilTmp {
+public class NeoHBaseUtil {
 
     public static int UUID_LENGTH = 23;
     

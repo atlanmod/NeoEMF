@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtilTmp;
+import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -53,7 +53,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
-public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourceEStore {
+public class DirectWriteHBaseResourceEStoreImpl implements SearcheableResourceEStore {
 
 	private static final byte[] PROPERTY_FAMILY =				Bytes.toBytes("p");
 	private static final byte[] TYPE_FAMILY = 					Bytes.toBytes("t");
@@ -76,14 +76,14 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 	
 	private Resource.Internal resource;
 
-	public DirectWriteHBaseResourceEStoreImplTmp(Resource.Internal resource) throws IOException {
+	public DirectWriteHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
 
 		this.resource = resource;
 		
 		conf.set("hbase.zookeeper.quorum", resource.getURI().host());
 		conf.set("hbase.zookeeper.property.clientPort", resource.getURI().port() != null ? resource.getURI().port() : "2181");
 		
-		TableName tableName = TableName.valueOf(NeoHBaseUtilTmp.formatURI(resource.getURI()));
+		TableName tableName = TableName.valueOf(NeoHBaseUtil.formatURI(resource.getURI()));
 		@SuppressWarnings("resource")
 		HBaseAdmin admin = new HBaseAdmin(conf);
 		if (!admin.tableExists(tableName)) {
@@ -169,11 +169,11 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 						Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add( 
 									PROPERTY_FAMILY,
 									Bytes.toBytes(eAttribute.getName()),
-									NeoHBaseUtilTmp.EncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value))));
+									NeoHBaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value))));
 						passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 												   PROPERTY_FAMILY,
 												   Bytes.toBytes(eAttribute.getName()),
-												   array == null ? null : NeoHBaseUtilTmp.EncoderUtil.toBytes(array),
+												   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 												   put);
 						if (!passed) {
 							if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -220,7 +220,7 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
 				put.add(PROPERTY_FAMILY, 
 						Bytes.toBytes(eReference.getName()), 
-						NeoHBaseUtilTmp.EncoderUtil.toBytesReferences(array));
+						NeoHBaseUtil.EncoderUtil.toBytesReferences(array));
 				table.put(put);
 			}
 		} catch (IOException e) {
@@ -268,14 +268,14 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add( 
 							PROPERTY_FAMILY,
 							Bytes.toBytes(eAttribute.getName()),
-							NeoHBaseUtilTmp.EncoderUtil.toBytes( index < 0 ?
+							NeoHBaseUtil.EncoderUtil.toBytes( index < 0 ?
 									(String[])ArrayUtils.add(array, serializeValue(eAttribute, value)) : 
 										(String[])ArrayUtils.add(array, serializeValue(eAttribute, value))
 											));
 				passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eAttribute.getName()),
-										   array == null ? null : NeoHBaseUtilTmp.EncoderUtil.toBytes(array),
+										   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 										   put);
 				if (!passed) {
 					if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -320,12 +320,12 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 					Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add(
 									  PROPERTY_FAMILY,
 									  Bytes.toBytes(eReference.getName()),
-									  NeoHBaseUtilTmp.EncoderUtil.toBytesReferences((String[]) ArrayUtils.add(array, index, neoReferencedEObject.id().toString())));
+									  NeoHBaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.add(array, index, neoReferencedEObject.id().toString())));
 					
 					passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 											   PROPERTY_FAMILY,
 											   Bytes.toBytes(eReference.getName()),
-											   array == null ? null : NeoHBaseUtilTmp.EncoderUtil.toBytesReferences(array),
+											   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
 											   put);
 					if (!passed) {
 						if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -357,8 +357,8 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 		Append append = new Append(Bytes.toBytes(object.id().toString()));
 		append.add(PROPERTY_FAMILY, 
 					Bytes.toBytes(eReference.getName()), 
-					atEnd ? Bytes.toBytes(NeoHBaseUtilTmp.EncoderUtil.VALUE_SEPERATOR_DEFAULT + neoReferencedEObject.id().toString()) :
-							Bytes.toBytes(neoReferencedEObject.id().toString() + NeoHBaseUtilTmp.EncoderUtil.VALUE_SEPERATOR_DEFAULT)
+					atEnd ? Bytes.toBytes(NeoHBaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT + neoReferencedEObject.id().toString()) :
+							Bytes.toBytes(neoReferencedEObject.id().toString() + NeoHBaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT)
 							);
 		
 		table.append(append);
@@ -391,11 +391,11 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add( 
 							PROPERTY_FAMILY,
 							Bytes.toBytes(eAttribute.getName()),
-							NeoHBaseUtilTmp.EncoderUtil.toBytes((String[]) ArrayUtils.remove(array, index)));
+							NeoHBaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.remove(array, index)));
 				passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eAttribute.getName()),
-										   array == null ? null : NeoHBaseUtilTmp.EncoderUtil.toBytes(array),
+										   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 										   put);
 				if (!passed) {
 					if (attemp > ATTEMP_TIMES_DEFAULT) 
@@ -435,12 +435,12 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 				Put put = new Put(Bytes.toBytes(neoEObject.id().toString())).add(
 								  PROPERTY_FAMILY,
 								  Bytes.toBytes(eReference.getName()),
-								  NeoHBaseUtilTmp.EncoderUtil.toBytesReferences((String[]) ArrayUtils.remove(array, index)));
+								  NeoHBaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.remove(array, index)));
 				
 				passed = table.checkAndPut(Bytes.toBytes(neoEObject.id().toString()), 
 										   PROPERTY_FAMILY,
 										   Bytes.toBytes(eReference.getName()),
-										   array == null ? null : NeoHBaseUtilTmp.EncoderUtil.toBytesReferences(array),
+										   array == null ? null : NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
 										   put);
 				
 				if (!passed) {
@@ -541,7 +541,7 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 		InternalPersistentEObject neoEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
 		try {
 			Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
-			put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), NeoHBaseUtilTmp.EncoderUtil.toBytes(new String[] {}));
+			put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), NeoHBaseUtil.EncoderUtil.toBytes(new String[] {}));
 			table.put(put);
 		} catch (IOException e) {
 			NeoLogger.error("Unable to get containment information for {0}", neoEObject);
@@ -741,8 +741,8 @@ public class DirectWriteHBaseResourceEStoreImplTmp implements SearcheableResourc
 				return Bytes.toString(value);
 			} else {
 				if (feature instanceof EAttribute) 
-					return NeoHBaseUtilTmp.EncoderUtil.toStrings(value);
-					return NeoHBaseUtilTmp.EncoderUtil.toStringsReferences(value);
+					return NeoHBaseUtil.EncoderUtil.toStrings(value);
+					return NeoHBaseUtil.EncoderUtil.toStringsReferences(value);
 			}
 		} catch (IOException e) {
 			NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);

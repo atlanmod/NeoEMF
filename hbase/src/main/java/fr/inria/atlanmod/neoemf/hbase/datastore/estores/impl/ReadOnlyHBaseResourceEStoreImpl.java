@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtilTmp;
+import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -52,7 +52,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class ReadOnlyHBaseResourceEStoreImplTmp implements SearcheableResourceEStore {
+public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStore {
 
 	private static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 	private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
@@ -77,7 +77,7 @@ public class ReadOnlyHBaseResourceEStoreImplTmp implements SearcheableResourceES
 
 	private Resource.Internal resource;
 
-	public ReadOnlyHBaseResourceEStoreImplTmp(Resource.Internal resource) throws IOException {
+	public ReadOnlyHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
 
 		this.resource = resource;
 
@@ -85,7 +85,7 @@ public class ReadOnlyHBaseResourceEStoreImplTmp implements SearcheableResourceES
 		conf.set("hbase.zookeeper.property.clientPort",
 				resource.getURI().port() != null ? resource.getURI().port() : "2181");
 
-		TableName tableName = TableName.valueOf(NeoHBaseUtilTmp.formatURI(resource.getURI()));
+		TableName tableName = TableName.valueOf(NeoHBaseUtil.formatURI(resource.getURI()));
 		@SuppressWarnings("resource")
 		HBaseAdmin admin = new HBaseAdmin(conf);
 
@@ -477,7 +477,7 @@ public class ReadOnlyHBaseResourceEStoreImplTmp implements SearcheableResourceES
 		}
 
 		private SearcheableResourceEStore getOuterType() {
-			return ReadOnlyHBaseResourceEStoreImplTmp.this;
+			return ReadOnlyHBaseResourceEStoreImpl.this;
 		}
 
 		public String getEObject() {
@@ -508,10 +508,10 @@ public class ReadOnlyHBaseResourceEStoreImplTmp implements SearcheableResourceES
 				}
 				else {
 					if (feature instanceof EAttribute) {
-						return NeoHBaseUtilTmp.EncoderUtil.toStrings(value);
+						return NeoHBaseUtil.EncoderUtil.toStrings(value);
 					}
 					else {
-						return NeoHBaseUtilTmp.EncoderUtil.toStringsReferences(value);
+						return NeoHBaseUtil.EncoderUtil.toStringsReferences(value);
 					}
 				}
 		}
