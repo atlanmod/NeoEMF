@@ -17,6 +17,10 @@
     <name>NeoEMF :: HBase</name>
     <description>HBase implementation of the core component.</description>
 
+    <properties>
+        <config-path>${project.parent.basedir}</config-path>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.hbase</groupId>
