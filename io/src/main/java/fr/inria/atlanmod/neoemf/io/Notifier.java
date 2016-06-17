@@ -26,4 +26,11 @@ public interface Notifier<T extends Handler> {
      * @return {@code true} if this notifier has at least one handler to notify.
      */
     boolean hasHandler();
+
+    /**
+     * Returns an immutable collection of registered handlers.
+     *
+     * @return an immutable collection
+     */
+    Iterable<T> getHandlers();
 }

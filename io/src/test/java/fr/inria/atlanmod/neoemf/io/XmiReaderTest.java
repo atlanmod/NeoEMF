@@ -12,10 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.io.internal.AbstractInternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.InternalXmlHandler;
-import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.junit.Before;
@@ -37,15 +34,11 @@ public class XmiReaderTest extends AllTest {
     private static final String HEAVY_XMI = "/org.eclipse.jdt.core.xmi";
     private static final String MONSTER_XMI = "/org.eclipse.jdt.source.all.xmi";
 
-    private Reader reader;
+    private PersistenceHandler handlerConsole;
 
     @Before
     public void setUp() throws Exception {
-        AbstractInternalHandler internalHandler = new InternalXmlHandler();
-        internalHandler.addHandler(new ConsoleHandler("console1"));
-
-        reader = new XmiStreamReader();
-        reader.addHandler(internalHandler);
+        handlerConsole = new ConsoleHandler("console1");
     }
 
     @Test
@@ -80,12 +73,12 @@ public class XmiReaderTest extends AllTest {
         read(xmi);
     }
 
-    public void read(File file) throws Exception {
+    private void read(File file) throws Exception {
         try {
-            reader.read(file);
+            IOManager.importFromFile(file, XmiStreamReader.class, handlerConsole);
         } catch (Exception e) {
             NeoLogger.error(e);
-            fail(e.getMessage());
+            throw e;
         }
     }
 }

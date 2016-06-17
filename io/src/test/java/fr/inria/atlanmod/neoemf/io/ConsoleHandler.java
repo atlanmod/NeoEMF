@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.core.Id;
 
 /**
  *
  */
-public class ConsoleHandler implements InternalHandler {
+public class ConsoleHandler implements PersistenceHandler {
 
     private String name;
 
@@ -30,23 +30,23 @@ public class ConsoleHandler implements InternalHandler {
     }
 
     @Override
-    public void handleStartElement(String namespace, String localName) {
-        System.out.println("[" + name +  "] Element : " + namespace + ":" + localName);
+    public void handleStartElement(Id id, String namespace, String localName) {
+        //System.out.println("[" + name +  "] " + id + " - Element : " + namespace + ":" + localName);
     }
 
     @Override
-    public void handleAttribute(String namespace, String localName, String value) {
-        System.out.println("[" + name +  "]  - Attribute : " + namespace + ":" + localName + " = " + value);
+    public void handleAttribute(Id id, String namespace, String localName, String value) {
+        //System.out.println("[" + name +  "] " + id + " - Attribute : " + namespace + ":" + localName + " = " + value);
     }
 
     @Override
-    public void handleReference(String namespace, String localName, String reference) {
-        System.out.println("[" + name +  "]  - Reference : " + namespace + ":" + localName + " = " + reference);
+    public void handleReference(Id id, String namespace, String localName, Id idReference) {
+        //System.out.println("[" + name +  "] " + id + " - Reference : " + namespace + ":" + localName + " -> " +idReference);
     }
 
     @Override
-    public void handleEndElement() {
-        //System.out.println("[" + name +  "] End of element");
+    public void handleEndElement(Id id) {
+        //System.out.println("[" + name +  "] " + id + " - End of element");
     }
 
     @Override

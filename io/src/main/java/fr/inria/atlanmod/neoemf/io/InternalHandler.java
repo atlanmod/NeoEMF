@@ -9,10 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.internal;
-
-import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.Notifier;
+package fr.inria.atlanmod.neoemf.io;
 
 /**
  * A structural handler that receives and uses events sent from a {@link Notifier} where it has to be registered by
@@ -21,17 +18,12 @@ import fr.inria.atlanmod.neoemf.io.Notifier;
 public interface InternalHandler extends Handler {
 
     /**
-     * Handle the start of a document.
-     */
-    void handleStartDocument();
-
-    /**
      * Handle the start of an element.
      *
      * @param namespace the namespace of the element
      * @param localName the name of the element in its namespace
      */
-    void handleStartElement(String namespace, String localName);
+    void handleStartElement(String prefix, String namespace, String localName, String reference) throws Exception;
 
     /**
      * Handle an attribute in the current element.
@@ -42,7 +34,7 @@ public interface InternalHandler extends Handler {
      * @param localName the name of the attribute in its namespace
      * @param value     the value of the attribute
      */
-    void handleAttribute(String namespace, String localName, String value);
+    void handleAttribute(String namespace, String localName, String value) throws Exception;
 
     /**
      * Handle a reference from the current element to another element.
@@ -53,15 +45,10 @@ public interface InternalHandler extends Handler {
      * @param localName the name of the attribute in its namespace
      * @param reference the value of the attribute
      */
-    void handleReference(String namespace, String localName, String reference);
+    void handleReference(String namespace, String localName, String reference) throws Exception;
 
     /**
      * Handle the end of the current element.
      */
-    void handleEndElement();
-
-    /**
-     * Handle the end of a document.
-     */
-    void handleEndDocument();
+    void handleEndElement() throws Exception;
 }

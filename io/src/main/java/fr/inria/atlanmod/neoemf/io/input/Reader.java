@@ -9,10 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.reader;
+package fr.inria.atlanmod.neoemf.io.input;
 
 import fr.inria.atlanmod.neoemf.io.Notifier;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.io.InternalHandler;
 
 import java.io.File;
 
@@ -20,6 +21,8 @@ import java.io.File;
  *
  */
 public interface Reader extends Notifier<InternalHandler> {
+
+    Class<? extends AbstractInternalHandler> getHandlerClass();
 
     void read(File file) throws Exception;
 }

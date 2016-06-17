@@ -9,9 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.reader;
+package fr.inria.atlanmod.neoemf.io.input.xmi;
 
-import fr.inria.atlanmod.neoemf.io.internal.AbstractInternalNotifier;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalNotifier;
+import fr.inria.atlanmod.neoemf.io.input.Reader;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.codehaus.stax2.XMLInputFactory2;
@@ -20,7 +22,6 @@ import org.codehaus.stax2.XMLStreamReader2;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 /**
@@ -35,8 +36,7 @@ public class XmiStreamReader extends AbstractInternalNotifier implements Reader 
     public XmiStreamReader() {
         super();
         this.factory = (XMLInputFactory2) XMLInputFactory2.newFactory();
-        this.factory.configureForSpeed();
-        this.factory.setProperty(XMLInputFactory2.SUPPORT_DTD, false);
+        this.factory.configureForLowMemUsage();
         this.defaultPrefix = "xmi";
     }
 
@@ -52,7 +52,12 @@ public class XmiStreamReader extends AbstractInternalNotifier implements Reader 
         this.defaultPrefix = prefix;
     }
 
-    public void read(File file) throws XMLStreamException, IOException {
+    @Override
+    public Class<? extends AbstractInternalHandler> getHandlerClass() {
+        return XmiHandler.class;
+    }
+
+    public void read(File file) throws Exception {
         if (!hasHandler()) {
             NeoLogger.error("This notifier hasn't any handler.");
             return;
@@ -74,15 +79,17 @@ public class XmiStreamReader extends AbstractInternalNotifier implements Reader 
         notifyEndDocument();
     }
 
-    private void startElement(XMLStreamReader2 stream) throws IOException {
+    private void startElement(XMLStreamReader2 stream) throws Exception {
         if (stream.getNamespaceCount() > 0) {
             checkXmi(stream);
         }
-        notifyStartElement(getNamespaceElement(stream), stream.getLocalName());
+
+        String prefix = getPrefixElement(stream);
+        notifyStartElement(prefix, stream.getNamespaceURI(prefix), stream.getLocalName());
         attribute(stream);
     }
 
-    private void attribute(XMLStreamReader2 stream) {
+    private void attribute(XMLStreamReader2 stream) throws Exception {
         if (stream.getAttributeCount() > 0) {
             for (int i = 0; i < stream.getAttributeCount(); i++) {
                 String namespace = getNamespaceAttribute(stream, stream.getAttributeNamespace(i));
@@ -100,8 +107,8 @@ public class XmiStreamReader extends AbstractInternalNotifier implements Reader 
         }
     }
 
-    private String getNamespaceElement(XMLStreamReader2 stream) {
-        return stream.getPrefix().isEmpty() ? stream.getNamespaceURI(defaultPrefix) : stream.getNamespaceURI();
+    private String getPrefixElement(XMLStreamReader2 stream) {
+        return stream.getPrefix().isEmpty() ? defaultPrefix : stream.getPrefix();
     }
 
     private String getNamespaceAttribute(XMLStreamReader2 stream, String namespace) {
