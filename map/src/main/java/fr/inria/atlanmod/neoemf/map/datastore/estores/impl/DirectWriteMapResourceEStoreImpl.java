@@ -55,11 +55,11 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	private final Cache<Id, InternalPersistentEObject> loadedEObjectsCache;
 
-	protected Map<Tuple2<Id, String>, Object> tuple2Map;
+	protected final Map<Tuple2<Id, String>, Object> tuple2Map;
 
-	private Map<Id, EClassInfo> instanceOfMap;
+	private final Map<Id, EClassInfo> instanceOfMap;
 
-	private Map<Id, ContainerInfo> containersMap;
+	private final Map<Id, ContainerInfo> containersMap;
 
 	public DirectWriteMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
 		this(resource, persistenceBackend, persistenceBackend.getHashMap("NeoEMF"));
@@ -345,7 +345,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	private class PersistentEObjectCacheLoader implements Callable<InternalPersistentEObject> {
 
-		private Id id;
+		private final Id id;
 
 		public PersistentEObjectCacheLoader(Id id) {
 			this.id = id;

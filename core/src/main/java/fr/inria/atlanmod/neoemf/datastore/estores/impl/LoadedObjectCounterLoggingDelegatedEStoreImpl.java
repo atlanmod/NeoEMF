@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends AbstractDelegatedEStore<SearcheableResourceEStore> {
 
-    private Set<Id> loadedObjects;
+    private final Set<Id> loadedObjects;
 
     public LoadedObjectCounterLoggingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
         super(eStore);

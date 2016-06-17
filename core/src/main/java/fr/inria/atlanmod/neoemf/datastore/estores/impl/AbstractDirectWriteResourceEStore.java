@@ -30,9 +30,9 @@ import java.util.Arrays;
 
 public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBackend> implements DirectWriteResourceEStore {
 
-    private Resource.Internal resource;
+    private final Resource.Internal resource;
 
-    protected P persistenceBackend;
+    protected final P persistenceBackend;
 
     public AbstractDirectWriteResourceEStore(Resource.Internal resource, P persistenceBackend) {
         this.resource = resource;
