@@ -94,7 +94,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	
 	@Override
 	public void start(Map<?, ?> options) throws InvalidDataStoreException {
-		// TODO Auto-generated method stub	
+
 	}
 	
 	@Override

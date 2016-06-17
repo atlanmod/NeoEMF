@@ -59,37 +59,37 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("Performance issues")
     public void testGetElementsEInternalContainerMapDB() {
         getElementsEInternalContainer(mapResource);
     }
 
     @Test
-    @Ignore
+    @Ignore("Performance issues")
     public void testGetElementsEInternalContainerNeo4j() {
         getElementsEInternalContainer(neo4jResource);
     }
 
     @Test
-    @Ignore
+    @Ignore("Performance issues")
     public void testGetElementsEInternalContainerTinker() {
         getElementsEInternalContainer(tinkerResource);
     }
 
     @Test
-    @Ignore
+    @Ignore("Performance issues")
     public void testGetAllContentsEInternalContainerMapDB() {
         getAllContentsEInternalContainer(mapResource);
     }
 
     @Test
-    @Ignore
+    @Ignore("Performance issues")
     public void testGetAllContentsEInternalContainerNeo4j() {
         getAllContentsEInternalContainer(neo4jResource);
     }
 
     @Test
-    @Ignore
+    @Ignore("Performance issues")
     public void testGetAllContentsEInternalContainerTinker() {
         getAllContentsEInternalContainer(tinkerResource);
     }

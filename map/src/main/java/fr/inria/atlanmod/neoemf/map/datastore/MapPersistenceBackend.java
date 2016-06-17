@@ -28,7 +28,7 @@ public class MapPersistenceBackend extends DB implements PersistenceBackend {
 	
 	@Override
 	public void start(Map<?, ?> options) throws InvalidDataStoreException {
-		// TODO Auto-generated method stub
+
 	}
 
 	@Override
