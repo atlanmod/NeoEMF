@@ -57,8 +57,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 
-	private static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-	private static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+	public static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+	public static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
 
 	private static final String INSTANCE_OF = "kyanosInstanceOf";
 	private static final String METACLASSES = "metaclasses";
