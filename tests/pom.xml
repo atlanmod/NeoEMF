@@ -97,6 +97,12 @@
         </dependency>
 
         <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
