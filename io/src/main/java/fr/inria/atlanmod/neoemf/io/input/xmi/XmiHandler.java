@@ -11,12 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
-import com.google.common.base.Predicate;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Sets;
 
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -81,8 +80,10 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleEndElement() throws Exception {
-        // FIXME Huge performance issues for cleaning
-        new CacheCleaner(getXPath(tags.getLast())).start();
+        /*
+         * TODO Remove keys like the actual XPath to remove children from cache.
+         * Remove with a Predicate is not an option : huge performance issues
+         */
 
         tags.removeLast();
 
@@ -91,8 +92,14 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleEndDocument() throws Exception {
-        // TODO Notify threads that this process is over and that they can stop.
-        xPathCountCache.invalidateAll();
+        long uncleanedNumber = xPathCountCache.size();
+        if(uncleanedNumber > 0) {
+            NeoLogger.warn("Some elements have not been cleaned ({0})", uncleanedNumber);
+            //for (String e : unlinkedElement.asMap().keySet()) {
+            //    NeoLogger.warn(" > " + e);
+            //}
+            xPathCountCache.invalidateAll();
+        }
 
         super.handleEndDocument();
     }
@@ -128,27 +135,5 @@ public class XmiHandler extends AbstractInternalHandler {
         }
 
         return modifiedReference;
-    }
-
-    private class CacheCleaner extends Thread {
-
-        private final String xPath;
-
-        public CacheCleaner(String xPath) {
-            this.xPath = xPath;
-        }
-
-        @Override
-        public void run() {
-            xPathCountCache.invalidateAll(Sets.filter(xPathCountCache.asMap().keySet(), new InvalideKeyPredicate()));
-        }
-
-        private class InvalideKeyPredicate implements Predicate<String> {
-
-            @Override
-            public boolean apply(String input) {
-                return input.startsWith(xPath);
-            }
-        }
     }
 }

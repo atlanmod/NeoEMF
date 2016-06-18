@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.input;
 
+import fr.inria.atlanmod.neoemf.io.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
-import fr.inria.atlanmod.neoemf.io.InternalHandler;
 
 import java.io.File;
 

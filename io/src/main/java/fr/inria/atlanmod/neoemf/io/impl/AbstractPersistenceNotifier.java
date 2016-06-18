@@ -2,7 +2,6 @@ package fr.inria.atlanmod.neoemf.io.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractNotifier;
 
 /**
  *
