@@ -384,7 +384,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Xms256m -Xmx1g -XX:PermSize=512m</argLine>
+                    <argLine>-Xms256m -Xmx1g -XX:PermSize=512m -XX:-UseGCOverheadLimit</argLine>
                 </configuration>
             </plugin>
 
