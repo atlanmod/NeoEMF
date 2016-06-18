@@ -27,13 +27,13 @@ import javax.xml.stream.events.XMLEvent;
 /**
  *
  */
-public class XmiStreamReader extends AbstractInternalNotifier implements Reader {
+public class XmiStaxReader extends AbstractInternalNotifier implements Reader {
 
     private final XMLInputFactory2 factory;
 
     private String defaultPrefix;
 
-    public XmiStreamReader() {
+    public XmiStaxReader() {
         super();
         this.factory = (XMLInputFactory2) XMLInputFactory2.newFactory();
         this.factory.configureForLowMemUsage();
