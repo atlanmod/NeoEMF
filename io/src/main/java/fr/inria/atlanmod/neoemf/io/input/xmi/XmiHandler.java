@@ -11,10 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
+import com.google.common.base.Predicate;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Sets;
 
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -79,12 +82,25 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleEndElement() throws Exception {
-        String xPath = tags.removeLast();
-
-        // TODO Invalidate deleted children values, not the actual
-        //xPathCountCache.invalidate(getXPath(xPath));
+        xPathCountCache.invalidateAll(Sets.filter(xPathCountCache.asMap().keySet(), new InvalideKeyPredicate(getXPath(tags.getLast()))));
+        tags.removeLast();
 
         super.handleEndElement();
+    }
+
+    @Override
+    public void handleEndDocument() throws Exception {
+        // TODO Is the cache considers invalidated keys, but not yet cleaned?
+        long uncleanedNumber = xPathCountCache.size();
+        if (uncleanedNumber > 0) {
+            NeoLogger.warn("Some elements have not been cleaned ({0})", uncleanedNumber);
+            //for (String e : xPathCountCache.asMap().keySet()) {
+            //    NeoLogger.warn(" > " + e);
+            //}
+            xPathCountCache.invalidateAll();
+        }
+
+        super.handleEndDocument();
     }
 
     private String getXPath(String localName) {
@@ -118,5 +134,19 @@ public class XmiHandler extends AbstractInternalHandler {
         }
 
         return modifiedReference;
+    }
+
+    private static class InvalideKeyPredicate implements Predicate<String> {
+
+        private String xPath;
+
+        public InvalideKeyPredicate(String xPath) {
+            this.xPath = xPath;
+        }
+
+        @Override
+        public boolean apply(String input) {
+            return input.startsWith(xPath);
+        }
     }
 }

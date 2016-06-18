@@ -86,12 +86,13 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
 
     @Override
     public void handleEndDocument() throws Exception {
-        if(unlinkedElement.size() > 0) {
-            long unlinkedNumber = unlinkedElement.size();
-            NeoLogger.warn("Some elements have not been linked ({0}) :", unlinkedNumber);
-            for (String e : unlinkedElement.asMap().keySet()) {
-                NeoLogger.warn(" > " + e);
-            }
+        // TODO Is the cache considers invalidated keys, but not yet cleaned?
+        long unlinkedNumber = unlinkedElement.size();
+        if(unlinkedNumber > 0) {
+            NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
+            //for (String e : unlinkedElement.asMap().keySet()) {
+            //    NeoLogger.warn(" > " + e);
+            //}
             unlinkedElement.invalidateAll();
         }
 
