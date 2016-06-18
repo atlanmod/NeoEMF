@@ -22,7 +22,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
 
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
@@ -44,9 +43,7 @@ public class XmiSaxReader extends AbstractInternalNotifier implements Reader {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
-        SAXParser parser = factory.newSAXParser();
-
-        parser.parse(file, new XmiSaxHandler());
+        factory.newSAXParser().parse(file, new XmiSaxHandler());
     }
 
     private class XmiSaxHandler extends DefaultHandler {

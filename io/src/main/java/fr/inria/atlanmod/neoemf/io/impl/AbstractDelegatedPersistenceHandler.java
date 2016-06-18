@@ -8,7 +8,7 @@ import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
  */
 public abstract class AbstractDelegatedPersistenceHandler implements PersistenceHandler {
 
-    protected PersistenceHandler handler;
+    private final PersistenceHandler handler;
 
     public AbstractDelegatedPersistenceHandler(PersistenceHandler handler) {
         this.handler = handler;
