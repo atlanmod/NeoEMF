@@ -29,9 +29,10 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     @Override
     public void handleAttribute(Id id, String namespace, String localName, String value) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
+
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
-        // TODO Probably some stuff before setting attribute
+        // TODO Probably some stuff before setting attribute. Index ?
 
         vertex.setProperty(localName, value);
 
@@ -46,7 +47,7 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
         checkNotNull(referencedVertex, "Unable to find a referenced element with Id = " + id.toString());
 
-        // TODO Probably some stuff before adding edge
+        // TODO Probably some stuff before adding edge. Index ?
 
         vertex.addEdge(localName, referencedVertex);
 
