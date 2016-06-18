@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.input.Reader;
+import fr.inria.atlanmod.neoemf.io.input.xmi.XmiSaxReader;
+import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStaxReader;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.junit.Before;
@@ -21,61 +22,91 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.fail;
+public class XmiReaderTest extends AllIOTest {
 
-/**
- *
- */
-public class XmiReaderTest extends AllTest {
-
-    private static final String THIN_XMI = "/fr.inria.atlanmod.kyanos.tests.xmi";
-    private static final String LIGHT_XMI = "/fr.inria.atlanmod.neo4emf.neo4jresolver.xmi";
-    private static final String MEDIUM_XMI = "/org.eclipse.gmt.modisco.java.kyanos.xmi";
-    private static final String HEAVY_XMI = "/org.eclipse.jdt.core.xmi";
-    private static final String MONSTER_XMI = "/org.eclipse.jdt.source.all.xmi";
-
-    private PersistenceHandler handlerConsole;
+    private PersistenceHandler counterHandler;
 
     @Before
     public void setUp() throws Exception {
-        handlerConsole = new ConsoleHandler("console1");
+        counterHandler = new CounterHandler(new VoidHandler(), "counter1");
     }
 
     @Test
-    public void readThin() throws Exception {
-        File xmi = new File(XmiReaderTest.class.getResource(THIN_XMI).getFile());
-        read(xmi);
+    public void readThinWithSax() throws Exception {
+        readWithSax(getThinXmi());
     }
 
     @Test
-    public void readLight() throws Exception {
-        File xmi = new File(XmiReaderTest.class.getResource(LIGHT_XMI).getFile());
-        read(xmi);
+    public void readLightWithSax() throws Exception {
+        readWithSax(getLightXmi());
     }
 
     @Test
-    public void readMedium() throws Exception {
-        File xmi = new File(XmiReaderTest.class.getResource(MEDIUM_XMI).getFile());
-        read(xmi);
+    public void readMediumWithSax() throws Exception {
+        readWithSax(getMediumXmi());
     }
 
     @Test
-    @Ignore
-    public void readHeavy() throws Exception {
-        File xmi = new File(XmiReaderTest.class.getResource(HEAVY_XMI).getFile());
-        read(xmi);
+    @Ignore("XMI file not present in commit")
+    public void readHeavyWithSax() throws Exception {
+        readWithSax(getHeavyXmi());
     }
 
     @Test
-    @Ignore
-    public void readMonster() throws Exception {
-        File xmi = new File(XmiReaderTest.class.getResource(MONSTER_XMI).getFile());
-        read(xmi);
+    @Ignore("XMI file not present in commit")
+    public void readMonsterWithSax() throws Exception {
+        readWithSax(getMonsterXmi());
     }
 
-    private void read(File file) throws Exception {
+    @Test
+    public void readThinWithStax() throws Exception {
+        readWithStax(getThinXmi());
+    }
+
+    @Test
+    public void readLightWithStax() throws Exception {
+        readWithStax(getLightXmi());
+    }
+
+    @Test
+    public void readMediumWithStax() throws Exception {
+        readWithStax(getMediumXmi());
+    }
+
+    @Test
+    @Ignore("Stax reader is not optimized / XMI file not present in commit")
+    public void readHeavyWithStax() throws Exception {
+        readWithStax(getHeavyXmi());
+    }
+
+    @Test
+    @Ignore("Stax reader is not optimized / XMI file not present in commit")
+    public void readMonsterWithStax() throws Exception {
+        readWithStax(getMonsterXmi());
+    }
+
+    /**
+     * Reads a file with a StAX reader.
+     * <p/>
+     * For now, it is not optimized and crash due to too many characters in attributes for big files.
+     */
+    private void readWithStax(File file) throws Exception {
+        read(file, XmiStaxReader.class);
+    }
+
+    /**
+     * Reads a file with a SAX reader.
+     */
+    private void readWithSax(File file) throws Exception {
+        read(file, XmiSaxReader.class);
+    }
+
+    /**
+     * Reads a file with the given {@link Reader reader type}.
+     */
+    private void read(File file, Class<? extends Reader> reader) throws Exception {
         try {
-            IOManager.importFromFile(file, XmiStreamReader.class, handlerConsole);
+            IOManager.importFromFile(file, reader, counterHandler);
         } catch (Exception e) {
             NeoLogger.error(e);
             throw e;
