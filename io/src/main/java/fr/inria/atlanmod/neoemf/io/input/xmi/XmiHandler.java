@@ -81,7 +81,9 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleEndElement() throws Exception {
+        // FIXME Huge performance issues for cleaning
         new CacheCleaner(getXPath(tags.getLast())).start();
+
         tags.removeLast();
 
         super.handleEndElement();
