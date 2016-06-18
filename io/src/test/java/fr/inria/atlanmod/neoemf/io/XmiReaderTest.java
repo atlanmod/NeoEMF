@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.neoemf.io.input.Reader;
 import fr.inria.atlanmod.neoemf.io.input.xmi.XmiSaxReader;
 import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStaxReader;
+import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
+import fr.inria.atlanmod.neoemf.io.mock.MuteHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.junit.Before;
@@ -28,7 +30,7 @@ public class XmiReaderTest extends AllIOTest {
 
     @Before
     public void setUp() throws Exception {
-        counterHandler = new CounterHandler(new VoidHandler(), "counter1");
+        counterHandler = new CounterHandler(new MuteHandler(), "counter1");
     }
 
     @Test
@@ -59,16 +61,19 @@ public class XmiReaderTest extends AllIOTest {
     }
 
     @Test
+    @Ignore("Stax reader is not optimized")
     public void readThinWithStax() throws Exception {
         readWithStax(getThinXmi());
     }
 
     @Test
+    @Ignore("Stax reader is not optimized")
     public void readLightWithStax() throws Exception {
         readWithStax(getLightXmi());
     }
 
     @Test
+    @Ignore("Stax reader is not optimized")
     public void readMediumWithStax() throws Exception {
         readWithStax(getMediumXmi());
     }

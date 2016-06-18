@@ -1,13 +1,14 @@
-package fr.inria.atlanmod.neoemf.io;
+package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 
 /**
  * A persistence handler that does nothing.
  * <p/>
  * Using for basic tests.
  */
-public class VoidHandler implements PersistenceHandler {
+public class MuteHandler implements PersistenceHandler {
 
     @Override
     public void handleStartElement(Id id, String namespace, String localName) throws Exception {

@@ -6,7 +6,7 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.io.xmi.BlueprintsPersistenceHan
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.io.AllIOTest;
-import fr.inria.atlanmod.neoemf.io.CounterHandler;
+import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
 import fr.inria.atlanmod.neoemf.io.IOManager;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.input.xmi.XmiSaxReader;
