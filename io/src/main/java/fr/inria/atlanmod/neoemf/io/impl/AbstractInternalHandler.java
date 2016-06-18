@@ -57,9 +57,9 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
         Id id = registerId(checkNotNull(reference));
 
         idStack.addLast(id);
-        tryLink(reference, id);
-
         notifyStartElement(id, namespace, localName);
+
+        tryLink(reference, id);
     }
 
     @Override
@@ -88,12 +88,11 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
     public void handleEndDocument() throws Exception {
         if(unlinkedElement.size() > 0) {
             long unlinkedNumber = unlinkedElement.size();
-            NeoLogger.error("Some elements have not been linked ({0}) :", unlinkedNumber);
+            NeoLogger.warn("Some elements have not been linked ({0}) :", unlinkedNumber);
             for (String e : unlinkedElement.asMap().keySet()) {
-                System.out.println(e);
+                NeoLogger.warn(" > " + e);
             }
             unlinkedElement.invalidateAll();
-            throw new Exception("Some elements have not been linked (" + unlinkedNumber + ")");
         }
 
         notifyEndDocument();
