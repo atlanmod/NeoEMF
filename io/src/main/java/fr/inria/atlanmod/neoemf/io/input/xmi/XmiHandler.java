@@ -11,14 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.io.input.xmi.util.TreePath;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,10 +26,15 @@ public class XmiHandler extends AbstractInternalHandler {
     private static final String XPATH_START_EXPR = "//@";
     private static final String XPATH_START_ELT = "/@";
     private static final String XPATH_INDEX_SEPARATOR = ".";
-    private static final Pattern NODE_WITHOUT_INDEX = Pattern.compile("((@\\w+)(?!\\.\\d+)(\\/|\\z))");
 
-    private final Cache<String, Integer> xPathCountCache;
-    private final Deque<String> tags;
+    /**
+     * Pattern for detecting nodes which have no index in their path.
+     * <p/>
+     * Example : {@code .../@nodename/...} instead of {@code .../@nodename.0/...}
+     */
+    private static final Pattern PATTERN_NODE_WITHOUT_INDEX = Pattern.compile("((@\\w+)(?!\\.\\d+)(\\/|\\z))");
+
+    private final TreePath paths;
 
     /**
      * The start of an XPath expression in this {@code XmiHandler}.
@@ -42,8 +43,7 @@ public class XmiHandler extends AbstractInternalHandler {
     private String expressionStart;
 
     public XmiHandler() {
-        this.xPathCountCache = CacheBuilder.newBuilder().build();
-        this.tags = new ArrayDeque<>();
+        this.paths = new TreePath();
     }
 
     @Override
@@ -53,83 +53,47 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleStartElement(String prefix, String namespace, String localName, String reference) throws Exception {
-        String xPath = getXPath(localName);
+        String path = paths.getPath(localName);
 
         // Increments the number of occurence for this path
-        Integer count = xPathCountCache.getIfPresent(xPath);
-        if (count == null) {
-            count = 0;
-        } else {
-            count += 1;
-        }
-        xPathCountCache.put(xPath, count);
+        Integer count = paths.createOrIncrement(path);
 
         if (expressionStart == null) {
-            expressionStart = xPath + XPATH_INDEX_SEPARATOR + count + XPATH_START_ELT;
+            expressionStart = path + XPATH_INDEX_SEPARATOR + count + XPATH_START_ELT;
         }
 
-        tags.addLast(localName);
-
-        super.handleStartElement(prefix, namespace, localName, xPath + XPATH_INDEX_SEPARATOR + count);
+        super.handleStartElement(prefix, namespace, localName, path + XPATH_INDEX_SEPARATOR + count);
     }
 
     @Override
     public void handleReference(String namespace, String localName, String reference) throws Exception {
-        super.handleReference(namespace, localName, formatXPath(reference));
+        super.handleReference(namespace, localName, formatPath(reference));
     }
 
     @Override
     public void handleEndElement() throws Exception {
-        /*
-         * TODO Remove keys like the actual XPath to remove children from cache.
-         * Remove with a Predicate is not an option : huge performance issues
-         */
-
-        tags.removeLast();
+        paths.clearLast();
 
         super.handleEndElement();
     }
 
     @Override
     public void handleEndDocument() throws Exception {
-        long uncleanedNumber = xPathCountCache.size();
-        if(uncleanedNumber > 0) {
-            NeoLogger.warn("Some elements have not been cleaned ({0})", uncleanedNumber);
-            //for (String e : unlinkedElement.asMap().keySet()) {
-            //    NeoLogger.warn(" > " + e);
-            //}
-            xPathCountCache.invalidateAll();
+        int size = paths.size();
+
+        if (size > 1) {
+            NeoLogger.warn("Some elements have not been cleaned ({0})", size);
         }
 
         super.handleEndDocument();
     }
 
-    private String getXPath(String localName) {
-        StringBuilder str = new StringBuilder(XPATH_START_ELT);
-        boolean first = true;
-        for (String tag : tags) {
-            if (first) {
-                str.append(tag);
-            }
-            else {
-                str.append(XPATH_START_ELT).append(tag);
-            }
-            String xPathWithoutIndex = str.toString();
-            str.append(XPATH_INDEX_SEPARATOR).append(xPathCountCache.getIfPresent(xPathWithoutIndex));
-            first = false;
-        }
-        if (localName != null) {
-            str.append(first ? "" : XPATH_START_ELT).append(localName);
-        }
-        return str.toString();
-    }
-
-    private String formatXPath(String xPath) {
+    private String formatPath(String path) {
         // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
-        String modifiedReference = xPath.replaceFirst(XPATH_START_EXPR, expressionStart);
+        String modifiedReference = path.replaceFirst(XPATH_START_EXPR, expressionStart);
 
         // Replace elements which has not index
-        Matcher matcher = NODE_WITHOUT_INDEX.matcher(modifiedReference);
+        Matcher matcher = PATTERN_NODE_WITHOUT_INDEX.matcher(modifiedReference);
         while(matcher.find()) {
             modifiedReference = matcher.replaceAll("$2.0$3");
         }
