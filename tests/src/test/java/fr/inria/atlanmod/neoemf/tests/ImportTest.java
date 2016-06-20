@@ -63,7 +63,6 @@ public class ImportTest extends AllIOTest {
     @Test
     @Ignore("XMI file not present in commit")
     public void testImportNeo4jMonster() throws Exception {
-        // FIXME JVM crashed when loading this file
         testImportWithSax(getMonsterXmi(), getNeo4jHandler());
     }
 

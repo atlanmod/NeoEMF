@@ -56,7 +56,7 @@ public class XmiHandler extends AbstractInternalHandler {
         String path = paths.getPath(localName);
 
         // Increments the number of occurence for this path
-        Integer count = paths.createOrIncrement(path);
+        Integer count = paths.createOrIncrement(localName);
 
         if (expressionStart == null) {
             expressionStart = path + XPATH_INDEX_SEPARATOR + count + XPATH_START_ELT;
@@ -79,8 +79,7 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleEndDocument() throws Exception {
-        int size = paths.size();
-
+        long size = paths.size();
         if (size > 1) {
             NeoLogger.warn("Some elements have not been cleaned ({0})", size);
         }
