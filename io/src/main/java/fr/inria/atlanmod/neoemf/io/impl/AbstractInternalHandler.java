@@ -11,20 +11,23 @@
 
 package fr.inria.atlanmod.neoemf.io.impl;
 
+import com.google.common.base.Charsets;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
+import fr.inria.atlanmod.neoemf.io.AlreadyExistingId;
 import fr.inria.atlanmod.neoemf.io.InternalHandler;
+import fr.inria.atlanmod.neoemf.io.UnknownReferencedId;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -35,16 +38,24 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AbstractInternalHandler extends AbstractPersistenceNotifier implements InternalHandler {
 
-    private final Map<String, Id> idRegistry;
+    private static final HashFunction HASHER = Hashing.murmur3_32();
 
     private final Deque<Id> idStack;
 
-    private final Cache<String, List<UnlinkedElement>> unlinkedElement;
+    private final Cache<String, List<UnlinkedElement>> unlinkedElements;
+
+    private final Cache<String, Id> conflictedIds;
+
+    private long conflits = 0;
 
     protected AbstractInternalHandler() {
-        this.idRegistry = new HashMap<>();
         this.idStack = new ArrayDeque<>();
-        this.unlinkedElement = CacheBuilder.newBuilder().build();
+        this.unlinkedElements = CacheBuilder.newBuilder().build();
+        this.conflictedIds = CacheBuilder.newBuilder().build();
+    }
+
+    private static Id hashId(String reference) {
+        return new StringId(HASHER.newHasher().putString(reference, Charsets.UTF_8).hash().toString());
     }
 
     @Override
@@ -54,10 +65,33 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
 
     @Override
     public void handleStartElement(String prefix, String namespace, String localName, String reference) throws Exception {
-        Id id = registerId(checkNotNull(reference));
+        checkNotNull(reference);
+
+        boolean retry;
+
+        // Hash reference a first time
+        Id id = hashId(reference);
+
+        do {
+            try {
+                // Try to persist with the current Id
+                notifyStartElement(id, namespace, localName);
+                retry = false;
+            }
+            catch (AlreadyExistingId e) {
+                // Id is already present in the backend : try with another Id
+                conflits++;
+                NeoLogger.warn("Conflict with Id = " + id);
+
+                // Hash reference another time + Store (or update) in cache
+                id = hashId(id.toString());
+                conflictedIds.put(reference, id);
+
+                retry = true;
+            }
+        } while (retry);
 
         idStack.addLast(id);
-        notifyStartElement(id, namespace, localName);
 
         tryLink(reference, id);
     }
@@ -71,12 +105,11 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
     public void handleReference(String namespace, String localName, String reference) throws Exception {
         Id idReference = getId(reference);
 
-        if (idReference == null) {
-            addUnlinked(new UnlinkedElement(idStack.getLast(), namespace, localName, reference));
-            return;
+        try {
+            notifyReference(idStack.getLast(), namespace, localName, idReference);
+        } catch (UnknownReferencedId e) {
+            addUnlinked(reference, new UnlinkedElement(idStack.getLast(), namespace, localName));
         }
-
-        notifyReference(idStack.getLast(), namespace, localName, idReference);
     }
 
     @Override
@@ -86,14 +119,16 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
 
     @Override
     public void handleEndDocument() throws Exception {
-        long unlinkedNumber = unlinkedElement.size();
+        long unlinkedNumber = unlinkedElements.size();
         if(unlinkedNumber > 0) {
             NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
-            //for (String e : unlinkedElement.asMap().keySet()) {
+            //for (String e : unlinkedElements.asMap().keySet()) {
             //    NeoLogger.warn(" > " + e);
             //}
-            unlinkedElement.invalidateAll();
+            unlinkedElements.invalidateAll();
         }
+
+        NeoLogger.info("{0} key conflicts", conflits);
 
         notifyEndDocument();
     }
@@ -106,25 +141,18 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
      * @return the registered {@code Id} of the given reference, or {@code null} if the reference is not registered.
      */
     private Id getId(String reference) {
-        return idRegistry.get(reference);
+        Id id = conflictedIds.getIfPresent(reference);
+        if (id != null) {
+            NeoLogger.warn("Get from conflit cache : " + id);
+            return id;
+        } else {
+            return hashId(reference);
+        }
     }
 
-    /**
-     * Register a reference and return its newly created {@link Id id}.
-     *
-     * @param reference the reference to register
-     *
-     * @return the newly create {@code Id} of the registered reference
-     */
-    private Id registerId(String reference) {
-        Id id = StringId.generate();
-        idRegistry.put(reference, id);
-        return id;
-    }
-
-    private void addUnlinked(UnlinkedElement element) throws ExecutionException {
+    private void addUnlinked(String reference, UnlinkedElement element) throws ExecutionException {
         try {
-            List<UnlinkedElement> unlinkedElementsList = unlinkedElement.get(element.reference,
+            List<UnlinkedElement> unlinkedElementsList = unlinkedElements.get(reference,
                     new Callable<List<UnlinkedElement>>() {
                         @Override
                         public List<UnlinkedElement> call() throws Exception {
@@ -139,12 +167,12 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
         }
     }
     private void tryLink(String reference, Id id) throws Exception {
-        List<UnlinkedElement> unlinkedElementList = unlinkedElement.getIfPresent(reference);
+        List<UnlinkedElement> unlinkedElementList = unlinkedElements.getIfPresent(reference);
         if (unlinkedElementList != null) {
             for (UnlinkedElement e : unlinkedElementList) {
                 notifyReference(e.id, e.namespace, e.localName, id);
             }
-            unlinkedElement.invalidate(reference);
+            unlinkedElements.invalidate(reference);
         }
     }
 
@@ -156,13 +184,11 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
         public final Id id;
         public final String namespace;
         public final String localName;
-        public final String reference;
 
-        public UnlinkedElement(Id id, String namespace, String localName, String reference) {
+        public UnlinkedElement(Id id, String namespace, String localName) {
             this.id = id;
             this.namespace = namespace;
             this.localName = localName;
-            this.reference = reference;
         }
     }
 }

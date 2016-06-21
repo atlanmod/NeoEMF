@@ -4,6 +4,8 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.io.AlreadyExistingId;
+import fr.inria.atlanmod.neoemf.io.UnknownReferencedId;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -19,7 +21,12 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
 
     @Override
     public void handleStartElement(Id id, String namespace, String localName) throws Exception {
-        Vertex vertex = getPersistenceBackend().addVertex(id.toString());
+        Vertex vertex;
+        try {
+            vertex = getPersistenceBackend().addVertex(id.toString());
+        } catch (IllegalArgumentException e) {
+            throw new AlreadyExistingId();
+        }
         vertex.setProperty(BlueprintsPersistenceBackend.ECLASS__NAME, localName);
         vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE__NSURI, namespace);
 
@@ -42,9 +49,12 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     @Override
     public void handleReference(Id id, String namespace, String localName, Id idReference) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
-        Vertex referencedVertex = getPersistenceBackend().getVertex(idReference.toString());
-
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
+
+        Vertex referencedVertex = getPersistenceBackend().getVertex(idReference.toString());
+        if (referencedVertex == null) {
+            throw new UnknownReferencedId();
+        }
         checkNotNull(referencedVertex, "Unable to find a referenced element with Id = " + id.toString());
 
         // TODO Probably some stuff before adding edge. Index ?
