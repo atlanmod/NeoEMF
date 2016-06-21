@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.io.input.xmi;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import fr.inria.atlanmod.neoemf.io.MalformedReference;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -41,6 +42,7 @@ public class XmiHandler extends AbstractInternalHandler {
      * Example : {@code .../@nodename/...} instead of {@code .../@nodename.0/...}
      */
     private static final Pattern PATTERN_NODE_WITHOUT_INDEX = Pattern.compile("((@\\w+)(?!\\.\\d+)(\\/|\\z))");
+    private static final String PATTERN_WELL_FORMED_REF = "(\\/@\\w+\\.\\d+)+";
 
     private final TreePath paths;
 
@@ -60,7 +62,7 @@ public class XmiHandler extends AbstractInternalHandler {
     }
 
     @Override
-    public void handleStartElement(String prefix, String namespace, String localName, String reference) throws Exception {
+    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
         String path = paths.getPath(localName);
 
         // Increments the number of occurence for this path
@@ -70,12 +72,18 @@ public class XmiHandler extends AbstractInternalHandler {
             expressionStart = path + XPATH_INDEX_SEPARATOR + count + XPATH_START_ELT;
         }
 
-        super.handleStartElement(prefix, namespace, localName, path + XPATH_INDEX_SEPARATOR + count);
+        super.handleStartElement(namespace, localName, path + XPATH_INDEX_SEPARATOR + count);
     }
 
     @Override
     public void handleReference(String namespace, String localName, String reference) throws Exception {
-        super.handleReference(namespace, localName, formatPath(reference));
+        reference = formatPath(reference);
+
+        if (!Pattern.matches(PATTERN_WELL_FORMED_REF, reference)) {
+            throw new MalformedReference();
+        }
+
+        super.handleReference(namespace, localName, reference);
     }
 
     @Override

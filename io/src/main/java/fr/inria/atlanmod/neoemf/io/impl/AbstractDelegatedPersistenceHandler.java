@@ -1,6 +1,5 @@
 package fr.inria.atlanmod.neoemf.io.impl;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 
 /**
@@ -20,23 +19,23 @@ public abstract class AbstractDelegatedPersistenceHandler implements Persistence
     }
 
     @Override
-    public void handleStartElement(Id id, String namespace, String localName) throws Exception {
-        handler.handleStartElement(id, namespace, localName);
+    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
+        handler.handleStartElement(namespace, localName, reference);
     }
 
     @Override
-    public void handleAttribute(Id id, String namespace, String localName, String value) throws Exception {
-        handler.handleAttribute(id, namespace, localName, value);
+    public void handleAttribute(String namespace, String localName, String value) throws Exception {
+        handler.handleAttribute(namespace, localName, value);
     }
 
     @Override
-    public void handleReference(Id id, String namespace, String localName, Id idReference) throws Exception {
-        handler.handleReference(id, namespace, localName, idReference);
+    public void handleReference(String namespace, String localName, String reference) throws Exception {
+        handler.handleReference(namespace, localName, reference);
     }
 
     @Override
-    public void handleEndElement(Id id) throws Exception {
-        handler.handleEndElement(id);
+    public void handleEndElement() throws Exception {
+        handler.handleEndElement();
     }
 
     @Override

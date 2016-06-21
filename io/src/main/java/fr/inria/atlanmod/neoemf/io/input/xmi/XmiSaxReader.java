@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
+import fr.inria.atlanmod.neoemf.io.MalformedReference;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalNotifier;
 import fr.inria.atlanmod.neoemf.io.input.Reader;
@@ -72,7 +73,7 @@ public class XmiSaxReader extends AbstractInternalNotifier implements Reader {
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
         {
             try {
-                notifyStartElement(qName.split(":")[0], uri, localName);
+                notifyStartElement(uri, localName, null);
 
                 if (attributes.getLength() > 0) {
                     for (int i = 0; i < attributes.getLength(); i++) {
@@ -80,9 +81,16 @@ public class XmiSaxReader extends AbstractInternalNotifier implements Reader {
                         String value = attributes.getValue(i);
 
                         // Check if value is an XPath reference
-                        if (value.startsWith("//@")) {
-                            for (String ref : value.split(" ")) {
-                                notifyReference(namespace, attributes.getLocalName(i), ref.trim());
+                        if (value.startsWith("//@") && !value.startsWith("//@Improve:")) {
+                            try {
+                                for (String reference : value.split(" ")) {
+                                    reference = reference.trim();
+                                    notifyReference(namespace, attributes.getLocalName(i), reference);
+                                }
+                            }
+                            catch (MalformedReference e) {
+                                NeoLogger.warn("Malformed reference : {0}", value);
+                                notifyAttribute(namespace, attributes.getLocalName(i), value);
                             }
                         } else {
                             notifyAttribute(namespace, attributes.getLocalName(i), value);

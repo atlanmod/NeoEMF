@@ -1,6 +1,5 @@
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 
 /**
@@ -11,22 +10,22 @@ import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 public class MuteHandler implements PersistenceHandler {
 
     @Override
-    public void handleStartElement(Id id, String namespace, String localName) throws Exception {
+    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
 
     }
 
     @Override
-    public void handleAttribute(Id id, String namespace, String localName, String value) throws Exception {
+    public void handleAttribute(String namespace, String localName, String value) throws Exception {
 
     }
 
     @Override
-    public void handleReference(Id id, String namespace, String localName, Id idReference) throws Exception {
+    public void handleReference(String namespace, String localName, String reference) throws Exception {
 
     }
 
     @Override
-    public void handleEndElement(Id id) throws Exception {
+    public void handleEndElement() throws Exception {
 
     }
 

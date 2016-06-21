@@ -17,38 +17,4 @@ package fr.inria.atlanmod.neoemf.io;
  */
 public interface InternalHandler extends Handler {
 
-    /**
-     * Handle the start of an element.
-     *
-     * @param namespace the namespace of the element
-     * @param localName the name of the element in its namespace
-     */
-    void handleStartElement(String prefix, String namespace, String localName, String reference) throws Exception;
-
-    /**
-     * Handle an attribute in the current element.
-     * <p/>
-     * An attribute is a simple key/value.
-     *
-     * @param namespace the namespace of the attribute
-     * @param localName the name of the attribute in its namespace
-     * @param value     the value of the attribute
-     */
-    void handleAttribute(String namespace, String localName, String value) throws Exception;
-
-    /**
-     * Handle a reference from the current element to another element.
-     * <p/>
-     * A reference is an attribute which is link to another element.
-     *
-     * @param namespace the namespace of the attribute
-     * @param localName the name of the attribute in its namespace
-     * @param reference the value of the attribute
-     */
-    void handleReference(String namespace, String localName, String reference) throws Exception;
-
-    /**
-     * Handle the end of the current element.
-     */
-    void handleEndElement() throws Exception;
 }

@@ -2,14 +2,14 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.io.xmi.BlueprintsPersistenceHandler;
+import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceHandler;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.io.AllIOTest;
-import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
 import fr.inria.atlanmod.neoemf.io.IOManager;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.input.xmi.XmiSaxReader;
+import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 

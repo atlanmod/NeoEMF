@@ -1,8 +1,12 @@
-package fr.inria.atlanmod.neoemf.graph.blueprints.io.xmi;
+package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingId;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedId;
@@ -15,12 +19,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
+    private static final HashFunction HASHER = Hashing.md5();
+
     public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
     }
 
     @Override
-    public void handleStartElement(Id id, String namespace, String localName) throws Exception {
+    protected Id hashId(String reference) {
+        return new StringId(HASHER.newHasher().putString(reference, Charsets.UTF_8).hash().toString());
+    }
+
+    @Override
+    protected void addElement(Id id, String namespace, String localName) throws Exception {
         Vertex vertex;
         try {
             vertex = getPersistenceBackend().addVertex(id.toString());
@@ -29,12 +40,10 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         }
         vertex.setProperty(BlueprintsPersistenceBackend.ECLASS__NAME, localName);
         vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE__NSURI, namespace);
-
-        super.handleStartElement(id, namespace, localName);
     }
 
     @Override
-    public void handleAttribute(Id id, String namespace, String localName, String value) throws Exception {
+    protected void addAttribute(Id id, String namespace, String localName, String value) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
 
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
@@ -42,12 +51,10 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         // TODO Probably some stuff before setting attribute. Index ?
 
         vertex.setProperty(localName, value);
-
-        super.handleAttribute(id, namespace, localName, value);
     }
 
     @Override
-    public void handleReference(Id id, String namespace, String localName, Id idReference) throws Exception {
+    protected void addReference(Id id, String namespace, String localName, Id idReference) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
@@ -55,12 +62,9 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         if (referencedVertex == null) {
             throw new UnknownReferencedId();
         }
-        checkNotNull(referencedVertex, "Unable to find a referenced element with Id = " + id.toString());
 
         // TODO Probably some stuff before adding edge. Index ?
 
         vertex.addEdge(localName, referencedVertex);
-
-        super.handleReference(id, namespace, localName, idReference);
     }
 }

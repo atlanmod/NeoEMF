@@ -39,6 +39,30 @@ public abstract class AbstractNotifier<T extends Handler> implements Notifier<T>
         }
     }
 
+    protected final void notifyStartElement(String namespace, String localName, String reference) throws Exception {
+        for (T h : getHandlers()) {
+            h.handleStartElement(namespace, localName, reference);
+        }
+    }
+
+    protected final void notifyAttribute(String namespace, String localName, String value) throws Exception {
+        for (T h : getHandlers()) {
+            h.handleAttribute(namespace, localName, value);
+        }
+    }
+
+    protected final void notifyReference(String namespace, String localName, String reference) throws Exception {
+        for (T h : getHandlers()) {
+            h.handleReference(namespace, localName, reference);
+        }
+    }
+
+    protected final void notifyEndElement() throws Exception {
+        for (T h : getHandlers()) {
+            h.handleEndElement();
+        }
+    }
+
     protected final void notifyEndDocument() throws Exception {
         for (T h : getHandlers()) {
             h.handleEndDocument();

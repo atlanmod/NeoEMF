@@ -85,7 +85,7 @@ public class XmiStaxReader extends AbstractInternalNotifier implements Reader {
         }
 
         String prefix = getPrefixElement(stream);
-        notifyStartElement(prefix, stream.getNamespaceURI(prefix), stream.getLocalName());
+        notifyStartElement(stream.getNamespaceURI(prefix), stream.getLocalName(), null);
         attribute(stream);
     }
 

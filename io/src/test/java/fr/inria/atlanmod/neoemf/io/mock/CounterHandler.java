@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -50,21 +49,21 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
     }
 
     @Override
-    public void handleStartElement(Id id, String namespace, String localName) throws Exception {
+    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
         elementCount++;
-        super.handleStartElement(id, namespace, localName);
+        super.handleStartElement(namespace, localName, reference);
     }
 
     @Override
-    public void handleAttribute(Id id, String namespace, String localName, String value) throws Exception {
+    public void handleAttribute(String namespace, String localName, String value) throws Exception {
         attributeCount++;
-        super.handleAttribute(id, namespace, localName, value);
+        super.handleAttribute(namespace, localName, value);
     }
 
     @Override
-    public void handleReference(Id id, String namespace, String localName, Id idReference) throws Exception {
+    public void handleReference(String namespace, String localName, String reference) throws Exception {
         referenceCount++;
-        super.handleReference(id, namespace, localName, idReference);
+        super.handleReference(namespace, localName, reference);
     }
 
     @Override
