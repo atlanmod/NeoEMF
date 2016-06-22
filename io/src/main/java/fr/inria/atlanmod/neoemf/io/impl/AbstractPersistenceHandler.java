@@ -76,8 +76,6 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract void addReference(Id id, String nsUri, String name, int index, Id idReference) throws Exception;
 
-    protected abstract void addMetaClass(Id id, String nsUri, String name) throws Exception;
-
     protected abstract void linkElementToMetaClass(Id id, Id metaClassId);
 
     @Override
@@ -134,7 +132,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             do {
                 try {
                     // Try to persist with the current Id
-                    addMetaClass(metaClassId, nsUri, name);
+                    addElement(metaClassId, nsUri, name);
                     metaclassesCache.put(nsUri + ":" + name, metaClassId);
                     retry = false;
                 }

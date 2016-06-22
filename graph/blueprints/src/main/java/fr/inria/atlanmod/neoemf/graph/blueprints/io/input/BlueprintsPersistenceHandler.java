@@ -63,8 +63,6 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         size++;
         setSize(vertex, name, size);
 
-        // TODO Move element according to the index ?
-
         // TODO Serialize value to property
 
         vertex.setProperty(name + ":" + index, value);
@@ -86,23 +84,8 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         size++;
         setSize(vertex, name, size);
 
-        // TODO Move element according to the index ?
-
         Edge edge = vertex.addEdge(name, referencedVertex);
         edge.setProperty("position", index);
-    }
-
-    @Override
-    protected void addMetaClass(Id id, String nsUri, String name) throws Exception {
-        Vertex vertex;
-        try {
-            vertex = getPersistenceBackend().addVertex(id.toString());
-        } catch (IllegalArgumentException e) {
-            throw new AlreadyExistingIdException();
-        }
-
-        vertex.setProperty(BlueprintsPersistenceBackend.ECLASS__NAME, name);
-        vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE__NSURI, nsUri);
     }
 
     private static Integer getSize(Vertex vertex, String name) {
