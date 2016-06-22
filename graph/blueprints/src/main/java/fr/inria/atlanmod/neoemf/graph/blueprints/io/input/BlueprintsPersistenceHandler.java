@@ -60,9 +60,6 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
         int size = getSize(vertex, name);
-
-        // FIXME Temporarily take the actual size of the attribute as its index
-        index = size;
         size++;
         setSize(vertex, name, size);
 
@@ -86,9 +83,6 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         // TODO Update the containment reference if needed
 
         int size = getSize(vertex, name);
-
-        // FIXME Temporarily take the actual size of the reference as its index
-        index = size;
         size++;
         setSize(vertex, name, size);
 

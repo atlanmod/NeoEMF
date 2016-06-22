@@ -33,9 +33,10 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     private static final String TYPE_ATTR = "xsi:type";
 
-    /**
-     * Processes an attribute and notify handlers.
-     */
+    protected void processElement(String uri, String name, String reference) throws Exception {
+        notifyStartElement(uri, name, null);
+    }
+
     protected void processAttribute(String qName, String nsUri, String name, String value) throws Exception {
         if (isMetaClass(qName)) {
             try {
@@ -54,9 +55,6 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
     }
 
-    /**
-     * Processes an attribute as a multi-reference attribute and notify handlers.
-     */
     private void processReferences(String nsUri, String name, Iterable<String> references) throws Exception {
         int index = 0;
         for (String ref : references) {
