@@ -34,7 +34,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final String TYPE_ATTR = "xsi:type";
 
     protected void processElement(String uri, String name, String reference) throws Exception {
-        notifyStartElement(uri, name, null);
+        notifyStartElement(uri, name, reference);
     }
 
     protected void processAttribute(String qName, String nsUri, String name, String value) throws Exception {

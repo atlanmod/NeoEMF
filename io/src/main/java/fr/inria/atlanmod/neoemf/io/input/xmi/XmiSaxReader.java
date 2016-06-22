@@ -86,6 +86,15 @@ public class XmiSaxReader extends AbstractXmiReader {
         }
 
         @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            String characters = String.valueOf(ch, start, length);
+
+            if (!characters.trim().isEmpty()) {
+                // TODO Processes CDATA
+            }
+        }
+
+        @Override
         public void endElement(String uri, String name, String qName) throws SAXException {
             try {
                 XmiSaxReader.this.notifyEndElement();
