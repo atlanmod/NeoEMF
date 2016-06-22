@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.input.Reader;
 import fr.inria.atlanmod.neoemf.io.input.xmi.XmiSaxReader;
-import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStaxReader;
 import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
 import fr.inria.atlanmod.neoemf.io.mock.MuteHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -24,7 +23,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-public class XmiReaderTest extends AllIOTest {
+public class XmiSaxReaderTest extends AllIOTest {
 
     private PersistenceHandler counterHandler;
 
@@ -58,45 +57,6 @@ public class XmiReaderTest extends AllIOTest {
     @Ignore("XMI file not present in commit")
     public void readMonsterWithSax() throws Exception {
         readWithSax(getMonsterXmi());
-    }
-
-    @Test
-    @Ignore("Stax reader is not optimized")
-    public void readThinWithStax() throws Exception {
-        readWithStax(getThinXmi());
-    }
-
-    @Test
-    @Ignore("Stax reader is not optimized")
-    public void readLightWithStax() throws Exception {
-        readWithStax(getLightXmi());
-    }
-
-    @Test
-    @Ignore("Stax reader is not optimized")
-    public void readMediumWithStax() throws Exception {
-        readWithStax(getMediumXmi());
-    }
-
-    @Test
-    @Ignore("Stax reader is not optimized / XMI file not present in commit")
-    public void readHeavyWithStax() throws Exception {
-        readWithStax(getHeavyXmi());
-    }
-
-    @Test
-    @Ignore("Stax reader is not optimized / XMI file not present in commit")
-    public void readMonsterWithStax() throws Exception {
-        readWithStax(getMonsterXmi());
-    }
-
-    /**
-     * Reads a file with a StAX reader.
-     * <p/>
-     * For now, it is not optimized and crash due to too many characters in attributes for big files.
-     */
-    private void readWithStax(File file) throws Exception {
-        read(file, XmiStaxReader.class);
     }
 
     /**

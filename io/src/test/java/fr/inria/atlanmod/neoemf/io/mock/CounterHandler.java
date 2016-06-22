@@ -49,21 +49,21 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
     }
 
     @Override
-    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
+    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
         elementCount++;
-        super.handleStartElement(namespace, localName, reference);
+        super.handleStartElement(nsUri, name, reference);
     }
 
     @Override
-    public void handleAttribute(String namespace, String localName, String value) throws Exception {
+    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
         attributeCount++;
-        super.handleAttribute(namespace, localName, value);
+        super.handleAttribute(nsUri, name, index, value);
     }
 
     @Override
-    public void handleReference(String namespace, String localName, String reference) throws Exception {
+    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
         referenceCount++;
-        super.handleReference(namespace, localName, reference);
+        super.handleReference(nsUri, name, index, reference);
     }
 
     @Override

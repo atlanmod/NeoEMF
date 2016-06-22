@@ -13,33 +13,40 @@ public interface Handler {
     /**
      * Handle the start of an element.
      *
-     * @param namespace the namespace of the element
-     * @param localName the name of the element in its namespace
+     * @param nsUri the nsUri of the element
+     * @param name the name of the element in its nsUri
      * @param reference the reference identifier of the element
      */
-    void handleStartElement(String namespace, String localName, String reference) throws Exception;
+    void handleStartElement(String nsUri, String name, String reference) throws Exception;
+
+    /**
+     * Handle a metaclass in the current element.
+     * @param nsUri the nsUri URI of the metaclass
+     * @param name the name of the metaclass
+     */
+    void handleMetaClass(String nsUri, String name) throws Exception;
 
     /**
      * Handle an attribute in the current element.
      * <p/>
      * An attribute is a simple key/value.
      *
-     * @param namespace the namespace of the attribute
-     * @param localName the name of the attribute in its namespace
+     * @param nsUri the nsUri of the attribute
+     * @param name the name of the attribute in its nsUri
      * @param value     the value of the attribute
      */
-    void handleAttribute(String namespace, String localName, String value) throws Exception;
+    void handleAttribute(String nsUri, String name, int index, String value) throws Exception;
 
     /**
      * Handle a reference from the current element to another element.
      * <p/>
      * A reference is an attribute which is link to another element.
      *
-     * @param namespace the namespace of the reference
-     * @param localName the name of the reference in its namespace
+     * @param nsUri the nsUri of the reference
+     * @param name the name of the reference in its nsUri
      * @param reference the referenced element identifier
      */
-    void handleReference(String namespace, String localName, String reference) throws Exception;
+    void handleReference(String nsUri, String name, int index, String reference) throws Exception;
 
     /**
      * Handle the end of the current element.

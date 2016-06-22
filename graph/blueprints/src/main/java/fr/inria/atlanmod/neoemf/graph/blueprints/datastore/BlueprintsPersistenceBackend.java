@@ -59,10 +59,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
 	public static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
 	public static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
-
-	private static final String INSTANCE_OF = "kyanosInstanceOf";
-	private static final String METACLASSES = "metaclasses";
-	private static final String NAME = "name";
+	public static final String INSTANCE_OF = "kyanosInstanceOf";
+	public static final String METACLASSES = "metaclasses";
+	public static final String NAME = "name";
 
 	private Index<Vertex> metaclassIndex;
 	private boolean isStarted;

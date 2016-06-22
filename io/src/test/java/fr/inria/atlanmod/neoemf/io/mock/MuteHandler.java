@@ -10,17 +10,22 @@ import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 public class MuteHandler implements PersistenceHandler {
 
     @Override
-    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
+    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
 
     }
 
     @Override
-    public void handleAttribute(String namespace, String localName, String value) throws Exception {
+    public void handleMetaClass(String nsUri, String name) throws Exception {
 
     }
 
     @Override
-    public void handleReference(String namespace, String localName, String reference) throws Exception {
+    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
+
+    }
+
+    @Override
+    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
 
     }
 

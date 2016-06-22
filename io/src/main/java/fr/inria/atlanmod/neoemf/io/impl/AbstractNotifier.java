@@ -39,21 +39,27 @@ public abstract class AbstractNotifier<T extends Handler> implements Notifier<T>
         }
     }
 
-    protected final void notifyStartElement(String namespace, String localName, String reference) throws Exception {
+    protected final void notifyStartElement(String nsUri, String name, String reference) throws Exception {
         for (T h : getHandlers()) {
-            h.handleStartElement(namespace, localName, reference);
+            h.handleStartElement(nsUri, name, reference);
         }
     }
 
-    protected final void notifyAttribute(String namespace, String localName, String value) throws Exception {
+    protected final void notifyMetaClass(String nsUri, String name) throws Exception {
         for (T h : getHandlers()) {
-            h.handleAttribute(namespace, localName, value);
+            h.handleMetaClass(nsUri, name);
         }
     }
 
-    protected final void notifyReference(String namespace, String localName, String reference) throws Exception {
+    protected final void notifyAttribute(String nsUri, String name, int index, String value) throws Exception {
         for (T h : getHandlers()) {
-            h.handleReference(namespace, localName, reference);
+            h.handleAttribute(nsUri, name, index, value);
+        }
+    }
+
+    protected final void notifyReference(String nsUri, String name, int index, String reference) throws Exception {
+        for (T h : getHandlers()) {
+            h.handleReference(nsUri, name, index, reference);
         }
     }
 

@@ -11,10 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
-import fr.inria.atlanmod.neoemf.io.MalformedReference;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalNotifier;
-import fr.inria.atlanmod.neoemf.io.input.Reader;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.xml.sax.Attributes;
@@ -28,7 +25,7 @@ import javax.xml.parsers.SAXParserFactory;
 /**
  *
  */
-public class XmiSaxReader extends AbstractInternalNotifier implements Reader {
+public class XmiSaxReader extends AbstractXmiReader {
 
     @Override
     public Class<? extends AbstractInternalHandler> getHandlerClass() {
@@ -56,6 +53,47 @@ public class XmiSaxReader extends AbstractInternalNotifier implements Reader {
             }
             catch (Exception e) {
                 NeoLogger.error(e);
+                throw new SAXException(e);
+            }
+        }
+
+        @Override
+        public void startPrefixMapping(String prefix, String uri) throws SAXException {
+            processNamespace(prefix, uri);
+        }
+
+        @Override
+        public void startElement(String uri, String name, String qName, Attributes attributes) throws SAXException
+        {
+            try {
+                notifyStartElement(uri, name, null);
+
+                if (attributes.getLength() > 0) {
+                    for (int i = 0; i < attributes.getLength(); i++) {
+                        String attrQName = attributes.getQName(i);
+
+                        String attrNamespace = attributes.getURI(i);
+                        String attrLocalName = attributes.getLocalName(i);
+                        String attrValue = attributes.getValue(i);
+
+                        processAttribute(attrQName, attrNamespace, attrLocalName, attrValue);
+                    }
+                }
+            }
+            catch (Exception e) {
+                NeoLogger.error(e);
+                throw new SAXException(e);
+            }
+        }
+
+        @Override
+        public void endElement(String uri, String name, String qName) throws SAXException {
+            try {
+                XmiSaxReader.this.notifyEndElement();
+            }
+            catch (Exception e) {
+                NeoLogger.error(e);
+                throw new SAXException(e);
             }
         }
 
@@ -66,50 +104,7 @@ public class XmiSaxReader extends AbstractInternalNotifier implements Reader {
             }
             catch (Exception e) {
                 NeoLogger.error(e);
-            }
-        }
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-        {
-            try {
-                notifyStartElement(uri, localName, null);
-
-                if (attributes.getLength() > 0) {
-                    for (int i = 0; i < attributes.getLength(); i++) {
-                        String namespace = attributes.getURI(i);
-                        String value = attributes.getValue(i);
-
-                        // Check if value is an XPath reference
-                        if (value.startsWith("//@") && !value.startsWith("//@Improve:")) {
-                            try {
-                                for (String reference : value.split(" ")) {
-                                    reference = reference.trim();
-                                    notifyReference(namespace, attributes.getLocalName(i), reference);
-                                }
-                            }
-                            catch (MalformedReference e) {
-                                NeoLogger.warn("Malformed reference : {0}", value);
-                                notifyAttribute(namespace, attributes.getLocalName(i), value);
-                            }
-                        } else {
-                            notifyAttribute(namespace, attributes.getLocalName(i), value);
-                        }
-                    }
-                }
-            }
-            catch (Exception e) {
-                NeoLogger.error(e);
-            }
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
-            try {
-                XmiSaxReader.this.notifyEndElement();
-            }
-            catch (Exception e) {
-                NeoLogger.error(e);
+                throw new SAXException(e);
             }
         }
     }

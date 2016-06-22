@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.io.input.xmi;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import fr.inria.atlanmod.neoemf.io.MalformedReference;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -41,8 +40,8 @@ public class XmiHandler extends AbstractInternalHandler {
      * <p/>
      * Example : {@code .../@nodename/...} instead of {@code .../@nodename.0/...}
      */
-    private static final Pattern PATTERN_NODE_WITHOUT_INDEX = Pattern.compile("((@\\w+)(?!\\.\\d+)(\\/|\\z))");
-    private static final String PATTERN_WELL_FORMED_REF = "(\\/@\\w+\\.\\d+)+";
+    private static final Pattern PATTERN_NODE_WITHOUT_INDEX =
+            Pattern.compile("((@\\w+)(?!\\.\\d+)(/|\\z))", Pattern.UNICODE_CASE);
 
     private final TreePath paths;
 
@@ -62,28 +61,27 @@ public class XmiHandler extends AbstractInternalHandler {
     }
 
     @Override
-    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
-        String path = paths.getPath(localName);
+    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
+        String path = paths.getPath(name);
 
         // Increments the number of occurence for this path
-        Integer count = paths.createOrIncrement(localName);
+        Integer count = paths.createOrIncrement(name);
 
         if (expressionStart == null) {
             expressionStart = path + XPATH_INDEX_SEPARATOR + count + XPATH_START_ELT;
         }
 
-        super.handleStartElement(namespace, localName, path + XPATH_INDEX_SEPARATOR + count);
+        super.handleStartElement(nsUri, name, path + XPATH_INDEX_SEPARATOR + count);
     }
 
     @Override
-    public void handleReference(String namespace, String localName, String reference) throws Exception {
-        reference = formatPath(reference);
+    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
+        super.handleAttribute(nsUri, name, index, value);
+    }
 
-        if (!Pattern.matches(PATTERN_WELL_FORMED_REF, reference)) {
-            throw new MalformedReference();
-        }
-
-        super.handleReference(namespace, localName, reference);
+    @Override
+    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
+        super.handleReference(nsUri, name, index, formatPath(reference));
     }
 
     @Override
@@ -138,11 +136,11 @@ public class XmiHandler extends AbstractInternalHandler {
 
         /**
          * Gets the XPath of the current element.
-         * @param localName the last element of the path
+         * @param name the last element of the path
          * @return a String representing the XPath of the element
          */
-        public String getPath(String localName) {
-            checkNotNull(localName);
+        public String getPath(String name) {
+            checkNotNull(name);
             StringBuilder str = new StringBuilder(XPATH_START_ELT);
             boolean first = true;
             for (Node node : currentPath) {
@@ -152,22 +150,22 @@ public class XmiHandler extends AbstractInternalHandler {
                 str.append(node.getKey()).append(XPATH_INDEX_SEPARATOR).append(node.getValue());
                 first = false;
             }
-            str.append(first ? "" : XPATH_START_ELT).append(localName);
+            str.append(first ? "" : XPATH_START_ELT).append(name);
             return str.toString();
         }
 
 
-        public Integer createOrIncrement(String localName) {
+        public Integer createOrIncrement(String name) {
             // Get the current Node or the root Node if no element exists
             Node node = currentPath.isEmpty() ? dummyRoot : currentPath.getLast();
 
-            if (node.hasChild(localName)) {
+            if (node.hasChild(name)) {
                 // Try to get and increment the node if it exists
-                node = node.getChild(localName);
+                node = node.getChild(name);
                 node.incrementValue();
             } else {
                 // The node doesn't exist : we create him
-                node = node.addChild(new Node(localName));
+                node = node.addChild(new Node(name));
             }
             // Define the node as the current node in path
             currentPath.addLast(node);

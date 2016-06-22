@@ -19,18 +19,23 @@ public abstract class AbstractDelegatedPersistenceHandler implements Persistence
     }
 
     @Override
-    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
-        handler.handleStartElement(namespace, localName, reference);
+    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
+        handler.handleStartElement(nsUri, name, reference);
     }
 
     @Override
-    public void handleAttribute(String namespace, String localName, String value) throws Exception {
-        handler.handleAttribute(namespace, localName, value);
+    public void handleMetaClass(String nsUri, String name) throws Exception {
+        handler.handleMetaClass(nsUri, name);
     }
 
     @Override
-    public void handleReference(String namespace, String localName, String reference) throws Exception {
-        handler.handleReference(namespace, localName, reference);
+    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
+        handler.handleAttribute(nsUri, name, index, value);
+    }
+
+    @Override
+    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
+        handler.handleReference(nsUri, name, index, reference);
     }
 
     @Override

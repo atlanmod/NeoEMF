@@ -3,13 +3,14 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.io.AlreadyExistingId;
-import fr.inria.atlanmod.neoemf.io.UnknownReferencedId;
+import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
+import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,40 +32,91 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     }
 
     @Override
-    protected void addElement(Id id, String namespace, String localName) throws Exception {
+    protected void addElement(Id id, String nsUri, String name) throws Exception {
         Vertex vertex;
         try {
             vertex = getPersistenceBackend().addVertex(id.toString());
         } catch (IllegalArgumentException e) {
-            throw new AlreadyExistingId();
+            throw new AlreadyExistingIdException();
         }
-        vertex.setProperty(BlueprintsPersistenceBackend.ECLASS__NAME, localName);
-        vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE__NSURI, namespace);
+        vertex.setProperty(BlueprintsPersistenceBackend.ECLASS__NAME, name);
+        vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE__NSURI, nsUri);
     }
 
     @Override
-    protected void addAttribute(Id id, String namespace, String localName, String value) throws Exception {
+    protected void linkElementToMetaClass(Id id, Id metaClassId) {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
-
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
-        // TODO Probably some stuff before setting attribute. Index ?
+        Vertex metaClassVertex = getPersistenceBackend().getVertex(metaClassId.toString());
+        checkNotNull(vertex, "Unable to find metaclass with Id = " + metaClassId.toString());
 
-        vertex.setProperty(localName, value);
+        vertex.addEdge(BlueprintsPersistenceBackend.INSTANCE_OF, metaClassVertex);
     }
 
     @Override
-    protected void addReference(Id id, String namespace, String localName, Id idReference) throws Exception {
+    protected void addAttribute(Id id, String nsUri, String name, int index, String value) throws Exception {
+        Vertex vertex = getPersistenceBackend().getVertex(id.toString());
+        checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
+
+        int size = getSize(vertex, name);
+
+        // FIXME Temporarily take the actual size of the attribute as its index
+        index = size;
+        size++;
+        setSize(vertex, name, size);
+
+        // TODO Move element according to the index ?
+
+        // TODO Serialize value to property
+
+        vertex.setProperty(name + ":" + index, value);
+    }
+
+    @Override
+    protected void addReference(Id id, String nsUri, String name, int index, Id idReference) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
         Vertex referencedVertex = getPersistenceBackend().getVertex(idReference.toString());
         if (referencedVertex == null) {
-            throw new UnknownReferencedId();
+            throw new UnknownReferencedIdException();
         }
 
-        // TODO Probably some stuff before adding edge. Index ?
+        // TODO Update the containment reference if needed
 
-        vertex.addEdge(localName, referencedVertex);
+        int size = getSize(vertex, name);
+
+        // FIXME Temporarily take the actual size of the reference as its index
+        index = size;
+        size++;
+        setSize(vertex, name, size);
+
+        // TODO Move element according to the index ?
+
+        Edge edge = vertex.addEdge(name, referencedVertex);
+        edge.setProperty("position", index);
+    }
+
+    @Override
+    protected void addMetaClass(Id id, String nsUri, String name) throws Exception {
+        Vertex vertex;
+        try {
+            vertex = getPersistenceBackend().addVertex(id.toString());
+        } catch (IllegalArgumentException e) {
+            throw new AlreadyExistingIdException();
+        }
+
+        vertex.setProperty(BlueprintsPersistenceBackend.ECLASS__NAME, name);
+        vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE__NSURI, nsUri);
+    }
+
+    private static Integer getSize(Vertex vertex, String name) {
+        Integer size = vertex.getProperty(name + ":size");
+        return size != null ? size : 0;
+    }
+
+    private static void setSize(Vertex vertex, String name, int size) {
+        vertex.setProperty(name + ":size", size);
     }
 }

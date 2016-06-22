@@ -5,9 +5,9 @@ import com.google.common.cache.CacheBuilder;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.io.AlreadyExistingId;
+import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.UnknownReferencedId;
+import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -45,6 +45,11 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private final Cache<String, Id> conflictedIdsCache;
 
     /**
+     *
+     */
+    private final Cache<String, Id> metaclassesCache;
+
+    /**
      * Number of conflicts during the analysis of a document.
      */
     private long conflits = 0;
@@ -56,6 +61,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         this.unlinkedElements = CacheBuilder.newBuilder().build();
         this.idsCache = CacheBuilder.newBuilder().maximumSize(ID_CACHE_SIZE).build();
         this.conflictedIdsCache = CacheBuilder.newBuilder().build();
+        this.metaclassesCache = CacheBuilder.newBuilder().build();
     }
 
     protected P getPersistenceBackend() {
@@ -64,11 +70,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract Id hashId(String reference);
 
-    protected abstract void addElement(Id id, String namespace, String localName) throws Exception;
+    protected abstract void addElement(Id id, String nsUri, String name) throws Exception;
 
-    protected abstract void addAttribute(Id id, String namespace, String localName, String value) throws Exception;
+    protected abstract void addAttribute(Id id, String nsUri, String name, int index, String value) throws Exception;
 
-    protected abstract void addReference(Id id, String namespace, String localName, Id idReference) throws Exception;
+    protected abstract void addReference(Id id, String nsUri, String name, int index, Id idReference) throws Exception;
+
+    protected abstract void addMetaClass(Id id, String nsUri, String name) throws Exception;
+
+    protected abstract void linkElementToMetaClass(Id id, Id metaClassId);
 
     @Override
     public void handleStartDocument() throws Exception {
@@ -76,7 +86,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void handleStartElement(String namespace, String localName, String reference) throws Exception {
+    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
         checkNotNull(reference);
 
         boolean retry;
@@ -87,10 +97,10 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         do {
             try {
                 // Try to persist with the current Id
-                addElement(id, namespace, localName);
+                addElement(id, nsUri, name);
                 retry = false;
             }
-            catch (AlreadyExistingId e) {
+            catch (AlreadyExistingIdException e) {
                 // Id is already present in the backend : try with another Id
                 conflits++;
                 NeoLogger.warn("Conflict with Id " + id);
@@ -111,21 +121,51 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void handleAttribute(String namespace, String localName, String value) throws Exception {
-        addAttribute(idStack.getLast(), namespace, localName, value);
+    public void handleMetaClass(String nsUri, String name) throws Exception {
+        Id metaClassId = metaclassesCache.getIfPresent(nsUri + ":" + name);
+
+        // If metaclass doesn't already exist, we create it
+        if (metaClassId == null) {
+            boolean retry;
+
+            // Hash reference a first time
+            metaClassId = hashId(nsUri + ":" + name);
+
+            do {
+                try {
+                    // Try to persist with the current Id
+                    addMetaClass(metaClassId, nsUri, name);
+                    metaclassesCache.put(nsUri + ":" + name, metaClassId);
+                    retry = false;
+                }
+                catch (AlreadyExistingIdException e) {
+                    // Hash reference another time + Store (or update) in cache
+                    metaClassId = hashId(metaClassId.toString());
+                    retry = true;
+                }
+            }
+            while (retry);
+        }
+
+        linkElementToMetaClass(idStack.getLast(), metaClassId);
+    }
+
+    @Override
+    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
+        addAttribute(idStack.getLast(), nsUri, name, index, value);
 
         incrementAndCommit();
     }
 
     @Override
-    public void handleReference(String namespace, String localName, String reference) throws Exception {
+    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
         Id currentId = idStack.getLast();
         Id idReference = getId(reference);
 
         try {
-            addReference(currentId, namespace, localName, idReference);
-        } catch (UnknownReferencedId e) {
-            addUnlinked(reference, new UnlinkedElement(currentId, namespace, localName));
+            addReference(currentId, nsUri, name, index, idReference);
+        } catch (UnknownReferencedIdException e) {
+            addUnlinked(reference, new UnlinkedElement(currentId, nsUri, name, index));
         }
 
         incrementAndCommit();
@@ -186,7 +226,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         if (unlinkedElementList != null) {
             for (UnlinkedElement e : unlinkedElementList) {
-                addReference(e.id, e.namespace, e.localName, id);
+                addReference(e.id, e.nsUri, e.name, e.index, id);
             }
             unlinkedElements.invalidate(reference);
         }
@@ -205,13 +245,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private class UnlinkedElement {
 
         public final Id id;
-        public final String namespace;
-        public final String localName;
+        public final String nsUri;
+        public final String name;
+        public final int index;
 
-        public UnlinkedElement(Id id, String namespace, String localName) {
+        public UnlinkedElement(Id id, String nsUri, String name, int index) {
             this.id = id;
-            this.namespace = namespace;
-            this.localName = localName;
+            this.nsUri = nsUri;
+            this.name = name;
+            this.index = index;
         }
     }
 }

@@ -33,6 +33,6 @@ public abstract class AllIOTest extends AllTest {
     }
 
     private File getResourceFile(String path) {
-        return new File(XmiReaderTest.class.getResource(path).getFile());
+        return new File(XmiSaxReaderTest.class.getResource(path).getFile());
     }
 }
