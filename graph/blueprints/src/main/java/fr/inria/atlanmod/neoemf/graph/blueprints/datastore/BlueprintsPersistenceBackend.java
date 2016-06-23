@@ -57,8 +57,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 
-	public static final String ECLASS__NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-	public static final String EPACKAGE__NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+	public static final String ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+	public static final String EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
 	public static final String INSTANCE_OF = "kyanosInstanceOf";
 	public static final String METACLASSES = "metaclasses";
 	public static final String NAME = "name";
@@ -148,8 +148,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	protected Vertex addVertex(EClass eClass) {
 		Vertex vertex = addVertex(buildEClassId(eClass));
-		vertex.setProperty(ECLASS__NAME, eClass.getName());
-		vertex.setProperty(EPACKAGE__NSURI, eClass.getEPackage().getNsURI());
+		vertex.setProperty(ECLASS_NAME, eClass.getName());
+		vertex.setProperty(EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
 		return vertex;
 	}
 
@@ -251,8 +251,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		EClass returnValue = null;
 		Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, INSTANCE_OF), null);
 		if (eClassVertex != null) {
-			String name = eClassVertex.getProperty(ECLASS__NAME);
-			String nsUri = eClassVertex.getProperty(EPACKAGE__NSURI);
+			String name = eClassVertex.getProperty(ECLASS_NAME);
+			String nsUri = eClassVertex.getProperty(EPACKAGE_NSURI);
 			returnValue = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
 		}
 		return returnValue;

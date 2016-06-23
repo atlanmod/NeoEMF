@@ -1,8 +1,5 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
 
-import com.google.common.base.Charsets;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
@@ -11,6 +8,7 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
+import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -20,15 +18,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
-    private static final HashFunction HASHER = Hashing.md5();
-
     public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
     }
 
     @Override
     protected Id hashId(String reference) {
-        return new StringId(HASHER.newHasher().putString(reference, Charsets.UTF_8).hash().toString());
+        String hash = HasherFactory.md5().hash(reference).toString();
+        return new StringId(hash);
     }
 
     @Override
@@ -39,8 +36,8 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         } catch (IllegalArgumentException e) {
             throw new AlreadyExistingIdException();
         }
-        vertex.setProperty(BlueprintsPersistenceBackend.ECLASS__NAME, name);
-        vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE__NSURI, nsUri);
+        vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
+        vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, nsUri);
     }
 
     @Override
