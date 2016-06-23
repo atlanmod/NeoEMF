@@ -22,10 +22,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.fasterxml.woodstox</groupId>
-            <artifactId>woodstox-core</artifactId>
-        </dependency>
 
         <!-- Internal dependencies -->
 
@@ -34,22 +30,6 @@
             <artifactId>core</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- EMF dependencies -->
-
-        <!-- TODO Added because Ecore is not known for Id generation for an unknown reason. May be removed -->
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- TODO Added because Ecore is not known for Id generation for an unknown reason. May be removed -->
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- Test dependencies -->
