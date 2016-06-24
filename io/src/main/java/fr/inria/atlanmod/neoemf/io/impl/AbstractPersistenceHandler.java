@@ -42,6 +42,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     private final Deque<Id> idStack;
 
+    /**
+     * Cache of unlinked elements, waiting until their reference is created.
+     */
     // TODO Create a better structure to keep unlinked elements (Heap space issues)
     private final Cache<String, List<UnlinkedElement>> unlinkedElements;
 
@@ -56,14 +59,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private final Cache<String, Id> conflictedIdsCache;
 
     /**
-     *
+     * Cache of registered metaclasses.
      */
     private final Cache<String, Id> metaclassesCache;
-
-    /**
-     * Number of conflicts during the analysis of a document.
-     */
-    private long conflits = 0;
 
     public AbstractPersistenceHandler(P persistenceBackend) {
         this.persistenceBackend = persistenceBackend;
@@ -111,7 +109,6 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             }
             catch (AlreadyExistingIdException e) {
                 // Id is already present in the backend : try with another Id
-                conflits++;
                 NeoLogger.warn("Conflict with Id " + id);
 
                 // Hash reference another time + Store (or update) in cache
@@ -131,20 +128,22 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     @Override
     public void handleMetaClass(String nsUri, String name) throws Exception {
-        Id metaClassId = metaclassesCache.getIfPresent(nsUri + ":" + name);
+        String metaclassKey = nsUri + ":" + name;
+
+        Id metaClassId = metaclassesCache.getIfPresent(metaclassKey);
 
         // If metaclass doesn't already exist, we create it
         if (metaClassId == null) {
             boolean retry;
 
             // Hash reference a first time
-            metaClassId = hashId(nsUri + ":" + name);
+            metaClassId = hashId(metaclassKey);
 
             do {
                 try {
                     // Try to persist with the current Id
                     addElement(metaClassId, nsUri, name);
-                    metaclassesCache.put(nsUri + ":" + name, metaClassId);
+                    metaclassesCache.put(metaclassKey, metaClassId);
                     retry = false;
                 }
                 catch (AlreadyExistingIdException e) {
@@ -196,7 +195,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             unlinkedElements.invalidateAll();
         }
 
-        NeoLogger.info("{0} key conflicts", conflits);
+        NeoLogger.info("{0} key conflicts", conflictedIdsCache.size());
 
         persistenceBackend.save();
     }
@@ -220,6 +219,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         return id;
     }
 
+    /**
+     * Defines an element as unlinked and stores it in a cache until the referenced element will be created.
+     *
+     * @param reference the reference of the targetted element
+     * @param element the element to store
+     */
     private void addUnlinked(String reference, UnlinkedElement element) {
         List<UnlinkedElement> unlinkedElementsList = unlinkedElements.getIfPresent(reference);
 
@@ -230,6 +235,13 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         unlinkedElementsList.add(element);
     }
+
+    /**
+     * Tries to link elements that have not been linked at their creation.
+     *
+     * @param reference the reference of the targetted element
+     * @param id the identifier of the targetted element
+     */
     private void tryLink(String reference, Id id) throws Exception {
         List<UnlinkedElement> unlinkedElementList = unlinkedElements.getIfPresent(reference);
 
@@ -241,6 +253,10 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         }
     }
 
+    /**
+     * Increments the operation counter, and commit the persistence backend if the number of operation is equals to
+     * {@code OPS_BETWEEN_COMMITS_DEFAULT}.
+     */
     private void incrementAndCommit() {
         opCount = (opCount + 1) % OPS_BETWEEN_COMMITS_DEFAULT;
         if (opCount == 0) {
