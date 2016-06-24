@@ -61,7 +61,7 @@ public class XmiHandler extends AbstractInternalHandler {
     }
 
     @Override
-    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
+    public void handleStartElement(String nsUri, String name, String id) throws Exception {
         String path = paths.getPath(name);
 
         // Increments the number of occurence for this path
@@ -80,8 +80,8 @@ public class XmiHandler extends AbstractInternalHandler {
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
-        super.handleReference(nsUri, name, index, formatPath(reference));
+    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
+        super.handleReference(nsUri, name, index, formatPath(idReference));
     }
 
     @Override

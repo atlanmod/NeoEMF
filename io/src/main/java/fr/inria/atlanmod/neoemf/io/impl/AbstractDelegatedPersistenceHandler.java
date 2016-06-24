@@ -30,8 +30,8 @@ public abstract class AbstractDelegatedPersistenceHandler implements Persistence
     }
 
     @Override
-    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
-        handler.handleStartElement(nsUri, name, reference);
+    public void handleStartElement(String nsUri, String name, String id) throws Exception {
+        handler.handleStartElement(nsUri, name, id);
     }
 
     @Override
@@ -45,8 +45,8 @@ public abstract class AbstractDelegatedPersistenceHandler implements Persistence
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
-        handler.handleReference(nsUri, name, index, reference);
+    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
+        handler.handleReference(nsUri, name, index, idReference);
     }
 
     @Override

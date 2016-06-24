@@ -26,9 +26,9 @@ public interface Handler {
      *
      * @param nsUri the nsUri of the element
      * @param name the name of the element in its nsUri
-     * @param reference the reference identifier of the element
+     * @param id the identifier of the element
      */
-    void handleStartElement(String nsUri, String name, String reference) throws Exception;
+    void handleStartElement(String nsUri, String name, String id) throws Exception;
 
     /**
      * Handle a metaclass in the current element.
@@ -55,9 +55,9 @@ public interface Handler {
      *
      * @param nsUri the nsUri of the reference
      * @param name the name of the reference in its nsUri
-     * @param reference the referenced element identifier
+     * @param idReference the referenced element identifier
      */
-    void handleReference(String nsUri, String name, int index, String reference) throws Exception;
+    void handleReference(String nsUri, String name, int index, String idReference) throws Exception;
 
     /**
      * Handle the end of the current element.

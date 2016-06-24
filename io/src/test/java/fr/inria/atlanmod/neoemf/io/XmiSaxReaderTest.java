@@ -63,13 +63,13 @@ public class XmiSaxReaderTest extends AllIOTest {
      * Reads a file with a SAX reader.
      */
     private void readWithSax(File file) throws Exception {
-        read(file, XmiSaxReader.class);
+        read(file, new XmiSaxReader());
     }
 
     /**
      * Reads a file with the given {@link Reader reader type}.
      */
-    private void read(File file, Class<? extends Reader> reader) throws Exception {
+    private void read(File file, Reader reader) throws Exception {
         try {
             IOManager.importFromFile(file, reader, counterHandler);
         } catch (Exception e) {

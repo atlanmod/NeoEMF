@@ -33,4 +33,18 @@ public interface Notifier<T extends Handler> {
      * @return an immutable collection
      */
     Iterable<T> getHandlers();
+
+    void notifyStartDocument() throws Exception;
+
+    void notifyStartElement(String nsUri, String name, String reference) throws Exception;
+
+    void notifyMetaClass(String nsUri, String name) throws Exception;
+
+    void notifyAttribute(String nsUri, String name, int index, String value) throws Exception;
+
+    void notifyReference(String nsUri, String name, int index, String reference) throws Exception;
+
+    void notifyEndElement() throws Exception;
+
+    void notifyEndDocument() throws Exception;
 }

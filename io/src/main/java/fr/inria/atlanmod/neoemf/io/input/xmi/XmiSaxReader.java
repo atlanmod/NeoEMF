@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
-import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.io.InternalHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.xml.sax.Attributes;
@@ -28,8 +28,8 @@ import javax.xml.parsers.SAXParserFactory;
 public class XmiSaxReader extends AbstractXmiReader {
 
     @Override
-    public Class<? extends AbstractInternalHandler> getHandlerClass() {
-        return XmiHandler.class;
+    public InternalHandler newHandler() {
+        return new XmiHandler();
     }
 
     public void read(File file) throws Exception {
@@ -66,7 +66,7 @@ public class XmiSaxReader extends AbstractXmiReader {
         public void startElement(String uri, String name, String qName, Attributes attributes) throws SAXException
         {
             try {
-                processElement(uri, name, null);
+                processElement(uri, name);
 
                 int attrLength = attributes.getLength();
                 if (attrLength > 0) {

@@ -16,6 +16,8 @@ import com.google.common.base.Splitter;
 import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
+import org.xml.sax.Attributes;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,16 +27,24 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractXmiReader extends AbstractReader {
 
+    private static final String XSI_NS = "xsi";
+    private static final String XMI_NS = "xmi";
+
+    private static final String TYPE_ATTR = XSI_NS + ":type";
+
+    private static final String ID_ATTR = XMI_NS + ":id";
+
     private static final Pattern PATTERN_WELL_FORMED_REF =
             Pattern.compile("(/{1,2}@\\w+(\\.\\d+)?[ ]?)+", Pattern.UNICODE_CASE);
 
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
-    private static final String TYPE_ATTR = "xsi:type";
+    protected void processElement(String uri, String name) throws Exception {
 
-    protected void processElement(String uri, String name, String reference) throws Exception {
-        notifyStartElement(uri, name, reference);
+        // TODO If element has the `xmi:id` attribute, send it as the identifier of the element
+
+        notifyStartElement(uri, name, null);
     }
 
     protected void processAttribute(String qName, String nsUri, String name, String value) throws Exception {
@@ -80,6 +90,15 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     private boolean isMetaClass(String value) {
         return TYPE_ATTR.equals(value);
+    }
+
+    private boolean hasIdentifier(Attributes attributes) {
+        for (int i = 0; i < attributes.getLength(); i++) {
+            if (attributes.getQName(i).equals(ID_ATTR)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<String> getReferences(String value) {

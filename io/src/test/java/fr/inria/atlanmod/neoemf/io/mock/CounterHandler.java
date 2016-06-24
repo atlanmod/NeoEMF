@@ -49,9 +49,9 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
     }
 
     @Override
-    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
+    public void handleStartElement(String nsUri, String name, String id) throws Exception {
         elementCount++;
-        super.handleStartElement(nsUri, name, reference);
+        super.handleStartElement(nsUri, name, id);
     }
 
     @Override
@@ -61,9 +61,9 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
+    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
         referenceCount++;
-        super.handleReference(nsUri, name, index, reference);
+        super.handleReference(nsUri, name, index, idReference);
     }
 
     @Override

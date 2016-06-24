@@ -24,8 +24,8 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
     }
 
     @Override
-    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
-        notifyStartElement(nsUri, name, reference);
+    public void handleStartElement(String nsUri, String name, String id) throws Exception {
+        notifyStartElement(nsUri, name, id);
     }
 
     @Override
@@ -39,8 +39,8 @@ public abstract class AbstractInternalHandler extends AbstractPersistenceNotifie
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
-        notifyReference(nsUri, name, index, reference);
+    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
+        notifyReference(nsUri, name, index, idReference);
     }
 
     @Override

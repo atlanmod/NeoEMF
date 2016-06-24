@@ -15,6 +15,6 @@ package fr.inria.atlanmod.neoemf.io;
  * A structural handler that receives and uses events sent from a {@link Notifier} where it has to be registered by
  * the {@link Notifier#addHandler(Handler)} method.
  */
-public interface InternalHandler extends Handler {
+public interface InternalHandler extends Handler, Notifier<PersistenceHandler> {
 
 }

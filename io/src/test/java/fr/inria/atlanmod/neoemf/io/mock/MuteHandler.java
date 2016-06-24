@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 public class MuteHandler implements PersistenceHandler {
 
     @Override
-    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
+    public void handleStartElement(String nsUri, String name, String id) throws Exception {
 
     }
 
@@ -36,7 +36,7 @@ public class MuteHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
+    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
 
     }
 

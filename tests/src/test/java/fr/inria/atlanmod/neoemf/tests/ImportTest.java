@@ -96,7 +96,7 @@ public class ImportTest extends AllIOTest {
 
     private void testImportWithSax(File file, PersistenceHandler persistenceHandler) throws Exception {
         try {
-            IOManager.importFromFile(file, XmiSaxReader.class, persistenceHandler);
+            IOManager.importFromFile(file, new XmiSaxReader(), persistenceHandler);
         } catch (Exception e) {
             NeoLogger.error(e);
             throw e;

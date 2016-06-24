@@ -44,43 +44,50 @@ public abstract class AbstractNotifier<T extends Handler> implements Notifier<T>
         return Collections.unmodifiableSet(handlers);
     }
 
-    protected final void notifyStartDocument() throws Exception {
+    @Override
+    public final void notifyStartDocument() throws Exception {
         for (T h : getHandlers()) {
             h.handleStartDocument();
         }
     }
 
-    protected final void notifyStartElement(String nsUri, String name, String reference) throws Exception {
+    @Override
+    public final void notifyStartElement(String nsUri, String name, String reference) throws Exception {
         for (T h : getHandlers()) {
             h.handleStartElement(nsUri, name, reference);
         }
     }
 
-    protected final void notifyMetaClass(String nsUri, String name) throws Exception {
+    @Override
+    public final void notifyMetaClass(String nsUri, String name) throws Exception {
         for (T h : getHandlers()) {
             h.handleMetaClass(nsUri, name);
         }
     }
 
-    protected final void notifyAttribute(String nsUri, String name, int index, String value) throws Exception {
+    @Override
+    public final void notifyAttribute(String nsUri, String name, int index, String value) throws Exception {
         for (T h : getHandlers()) {
             h.handleAttribute(nsUri, name, index, value);
         }
     }
 
-    protected final void notifyReference(String nsUri, String name, int index, String reference) throws Exception {
+    @Override
+    public final void notifyReference(String nsUri, String name, int index, String reference) throws Exception {
         for (T h : getHandlers()) {
             h.handleReference(nsUri, name, index, reference);
         }
     }
 
-    protected final void notifyEndElement() throws Exception {
+    @Override
+    public final void notifyEndElement() throws Exception {
         for (T h : getHandlers()) {
             h.handleEndElement();
         }
     }
 
-    protected final void notifyEndDocument() throws Exception {
+    @Override
+    public final void notifyEndDocument() throws Exception {
         for (T h : getHandlers()) {
             h.handleEndDocument();
         }
