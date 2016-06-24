@@ -51,8 +51,11 @@ public class XmiHandler extends AbstractInternalHandler {
      */
     private String expressionStart;
 
+    private boolean hasIds;
+
     public XmiHandler() {
         this.paths = new TreePath();
+        this.hasIds = false;
     }
 
     @Override
@@ -62,16 +65,26 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleStartElement(String nsUri, String name, String id) throws Exception {
-        String path = paths.getPath(name);
-
-        // Increments the number of occurence for this path
-        Integer count = paths.createOrIncrement(name);
-
-        if (expressionStart == null) {
-            expressionStart = path + XPATH_INDEX_SEPARATOR + count + XPATH_START_ELT;
+        if (id != null) {
+            hasIds = true;
         }
 
-        super.handleStartElement(nsUri, name, path + XPATH_INDEX_SEPARATOR + count);
+        if (!hasIds) {
+            // Processes the id from the path of the element in XML tree
+            String path = paths.getPath(name);
+
+            // Increments the number of occurence for this path
+            Integer count = paths.createOrIncrement(name);
+
+            // Defines the id as '<path>.<index>'
+            id = path + XPATH_INDEX_SEPARATOR + count;
+
+            // Defines the XPath start of all elements from the root element
+            if (expressionStart == null) {
+                expressionStart = id + XPATH_START_ELT;
+            }
+        }
+        super.handleStartElement(nsUri, name, id);
     }
 
     @Override
@@ -81,21 +94,31 @@ public class XmiHandler extends AbstractInternalHandler {
 
     @Override
     public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
-        super.handleReference(nsUri, name, index, formatPath(idReference));
+        if (!hasIds) {
+            // Format the reference according internal XPath management
+            idReference = formatPath(idReference);
+        }
+
+        super.handleReference(nsUri, name, index, idReference);
     }
 
     @Override
     public void handleEndElement() throws Exception {
-        paths.clearLast();
+        if (!hasIds) {
+            // Removes children of the last element
+            paths.clearLast();
+        }
 
         super.handleEndElement();
     }
 
     @Override
     public void handleEndDocument() throws Exception {
-        long size = paths.size();
-        if (size > 1) {
-            NeoLogger.warn("Some elements have not been cleaned ({0})", size);
+        if (!hasIds) {
+            long size = paths.size();
+            if (size > 1) {
+                NeoLogger.warn("Some elements have not been cleaned ({0})", size);
+            }
         }
 
         super.handleEndDocument();
@@ -105,7 +128,7 @@ public class XmiHandler extends AbstractInternalHandler {
         // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
         String modifiedReference = path.replaceFirst(XPATH_START_EXPR, expressionStart);
 
-        // Replace elements which has not index
+        // Replace elements which has not index : all elements must have an index (default = 0)
         Matcher matcher = PATTERN_NODE_WITHOUT_INDEX.matcher(modifiedReference);
         while(matcher.find()) {
             modifiedReference = matcher.replaceAll("$2.0$3");
@@ -120,8 +143,6 @@ public class XmiHandler extends AbstractInternalHandler {
     }
 
     private static class TreePath {
-        private static final String XPATH_START_ELT = "/@";
-        private static final String XPATH_INDEX_SEPARATOR = ".";
 
         /**
          * The root of this tree. This does not represent the root node path.
