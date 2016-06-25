@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.HashMultimap;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
@@ -22,9 +23,7 @@ import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,7 +45,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * Cache of unlinked elements, waiting until their reference is created.
      */
     // TODO Create a better structure to keep unlinked elements (Heap space issues)
-    private final Cache<String, List<UnlinkedElement>> unlinkedElements;
+    private final HashMultimap<String, UnlinkedElement> unlinkedElements;
 
     /**
      * Cache of recently processed {@code Id}.
@@ -67,7 +66,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         this.persistenceBackend = persistenceBackend;
         this.opCount = 0;
         this.idStack = new ArrayDeque<>();
-        this.unlinkedElements = CacheBuilder.newBuilder().build();
+        this.unlinkedElements = HashMultimap.create();
         this.idsCache = CacheBuilder.newBuilder().maximumSize(ID_CACHE_SIZE).build();
         this.conflictedIdsCache = CacheBuilder.newBuilder().build();
         this.metaclassesCache = CacheBuilder.newBuilder().build();
@@ -192,7 +191,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             for (String e : unlinkedElements.asMap().keySet()) {
                 NeoLogger.warn(" > " + e);
             }
-            unlinkedElements.invalidateAll();
+            unlinkedElements.clear();
         }
 
         NeoLogger.info("{0} key conflicts", conflictedIdsCache.size());
@@ -226,14 +225,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @param element the element to store
      */
     private void addUnlinked(String reference, UnlinkedElement element) {
-        List<UnlinkedElement> unlinkedElementsList = unlinkedElements.getIfPresent(reference);
-
-        if (unlinkedElementsList == null) {
-            unlinkedElementsList = new ArrayList<>();
-            unlinkedElements.put(reference, unlinkedElementsList);
-        }
-
-        unlinkedElementsList.add(element);
+        unlinkedElements.put(reference, element);
     }
 
     /**
@@ -243,13 +235,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @param id the identifier of the targetted element
      */
     private void tryLink(String reference, Id id) throws Exception {
-        List<UnlinkedElement> unlinkedElementList = unlinkedElements.getIfPresent(reference);
-
-        if (unlinkedElementList != null) {
-            for (UnlinkedElement e : unlinkedElementList) {
-                addReference(e.id, e.nsUri, e.name, e.index, id);
-            }
-            unlinkedElements.invalidate(reference);
+        for (UnlinkedElement e : unlinkedElements.removeAll(reference)) {
+            addReference(e.id, e.nsUri, e.name, e.index, id);
         }
     }
 
