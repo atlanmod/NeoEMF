@@ -66,18 +66,7 @@ public class XmiSaxReader extends AbstractXmiReader {
         public void startElement(String uri, String name, String qName, Attributes attributes) throws SAXException
         {
             try {
-                processElement(uri, name);
-
-                int attrLength = attributes.getLength();
-                if (attrLength > 0) {
-                    for (int i = 0; i < attrLength; i++) {
-                        processAttribute(
-                                attributes.getQName(i),
-                                attributes.getURI(i),
-                                attributes.getLocalName(i),
-                                attributes.getValue(i));
-                    }
-                }
+                processElement(uri, name, attributes);
             }
             catch (Exception e) {
                 NeoLogger.error(e);

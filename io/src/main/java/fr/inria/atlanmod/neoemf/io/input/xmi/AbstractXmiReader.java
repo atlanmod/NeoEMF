@@ -40,10 +40,35 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
-    protected void processElement(String uri, String name) throws Exception {
+    private boolean isRoot = true;
+
+    protected void processElement(String uri, String name, Attributes attributes) throws Exception {
 
         // TODO If element has the `xmi:id` attribute, send it as the identifier of the element
 
+        if (isRoot) {
+            System.out.println("Is root : " + uri + ":" + name);
+            isRoot = false;
+            notifyStartElement(uri, name, null);
+        }
+        else {
+            processFeature(uri, name);
+        }
+
+        int attrLength = attributes.getLength();
+        if (attrLength > 0) {
+            for (int i = 0; i < attrLength; i++) {
+                processAttribute(
+                        attributes.getQName(i),
+                        attributes.getURI(i),
+                        attributes.getLocalName(i),
+                        attributes.getValue(i));
+            }
+        }
+    }
+
+    protected void processFeature(String uri, String name) throws Exception {
+        // TODO Process feature from EPackage information
         notifyStartElement(uri, name, null);
     }
 
