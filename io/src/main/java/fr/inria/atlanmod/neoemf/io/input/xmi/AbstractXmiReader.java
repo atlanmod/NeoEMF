@@ -21,13 +21,11 @@ import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,17 +44,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
-    protected final Map<String, EPackage> ePackages;
-
-    protected AbstractXmiReader(Map<String, EPackage> ePackages) {
-        this.ePackages = ePackages;
-    }
-
-    protected void processElement(String qName, String uri, String name, Attributes attributes) throws Exception {
+    protected void processElement(String uri, String localName, Attributes attributes) throws Exception {
 
         ClassifierElement element = new ClassifierElement();
-        element.setNamespace(new Namespace(getPrefix(qName), uri));
-        element.setLocalName(name);
+        element.setNamespace(Namespace.Registry.getInstance().getFromUri(uri));
+        element.setLocalName(localName);
 
         List<Feature> features = new ArrayList<>();
 
@@ -67,7 +59,6 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 features.addAll(processAttribute(
                         element,
                         getPrefix(attributes.getQName(i)),
-                        attributes.getURI(i),
                         attributes.getLocalName(i),
                         attributes.getValue(i)));
             }
@@ -100,20 +91,22 @@ public abstract class AbstractXmiReader extends AbstractReader {
         return prefix;
     }
 
-    private List<Feature> processAttribute(ClassifierElement element, String prefix, String nsUri, String locaName, String value) throws Exception {
-        // xsi:type
-        if (TYPE_ATTR.equals(prefix + ":" + locaName)) {
-            processMetaClass(element, value);
-            return Collections.emptyList();
+    private List<Feature> processAttribute(ClassifierElement element, String prefix, String locaName, String value) throws Exception {
+        if (prefix != null) {
+            // xsi:type
+            if (TYPE_ATTR.equals(prefix + ":" + locaName)) {
+                processMetaClass(element, value);
+                return Collections.emptyList();
+            }
+
+            // xmi:id
+            if (ID_ATTR.equals(prefix + ":" + locaName)) {
+                element.setId(value);
+                return Collections.emptyList();
+            }
         }
 
-        // xmi:id
-        if (ID_ATTR.equals(prefix + ":" + locaName)) {
-            element.setId(value);
-            return Collections.emptyList();
-        }
-
-        Namespace ns = new Namespace(prefix, nsUri);
+        Namespace ns = Namespace.Registry.getInstance().getFromPrefix(prefix);
 
         Iterable<String> references = getReferences(value);
         if (references != null) {
@@ -154,7 +147,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
             NamedElement metaClass = new NamedElement();
-            metaClass.setNamespace(new Namespace(m.group(1), getNsUri(m.group(1))));
+            metaClass.setNamespace(Namespace.Registry.getInstance().getFromPrefix(m.group(1)));
             metaClass.setLocalName(m.group(2));
             element.setMetaclass(metaClass);
         } else {

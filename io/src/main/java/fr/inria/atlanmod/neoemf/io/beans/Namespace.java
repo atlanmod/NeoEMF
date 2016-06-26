@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.beans;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 /**
  *
  */
@@ -20,7 +23,7 @@ public class Namespace {
 
     private final String uri;
 
-    public Namespace(String prefix, String uri) {
+    private Namespace(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
     }
@@ -31,5 +34,46 @@ public class Namespace {
 
     public String getUri() {
         return uri;
+    }
+
+    public static class Registry {
+
+        private static Registry INSTANCE;
+
+        public static Registry getInstance() {
+            if (INSTANCE == null) {
+                INSTANCE = new Registry();
+            }
+            return INSTANCE;
+        }
+
+        private Cache<String, Namespace> namespacesByPrefix;
+
+        private Cache<String, Namespace> namespacesByUri;
+
+        private Registry() {
+            namespacesByPrefix = CacheBuilder.newBuilder().build();
+            namespacesByUri = CacheBuilder.newBuilder().build();
+        }
+
+        public Namespace getFromPrefix(String prefix) {
+            if (prefix == null) {
+                return null;
+            }
+            return namespacesByPrefix.getIfPresent(prefix);
+        }
+
+        public Namespace getFromUri(String uri) {
+            if (uri == null) {
+                return null;
+            }
+            return namespacesByUri.getIfPresent(uri);
+        }
+
+        public void register(String prefix, String uri) {
+            Namespace ns = new Namespace(prefix, uri);
+            namespacesByPrefix.put(prefix, ns);
+            namespacesByUri.put(uri, ns);
+        }
     }
 }

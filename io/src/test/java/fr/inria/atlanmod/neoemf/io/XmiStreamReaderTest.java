@@ -12,19 +12,15 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.input.Reader;
-import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
 import fr.inria.atlanmod.neoemf.io.mock.DummyPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public class XmiStreamReaderTest extends AllIOTest {
 
@@ -66,18 +62,16 @@ public class XmiStreamReaderTest extends AllIOTest {
      * Reads a file with a SAX reader.
      */
     private void readWithSax(File file) throws Exception {
-        Map<String, EPackage> ePackages = new HashMap<>();
-        ePackages.put("java", getJavaEPackage());
-
-        read(file, new XmiStreamReader(ePackages));
+        read(file);
     }
 
     /**
      * Reads a file with the given {@link Reader reader type}.
      */
-    private void read(File file, Reader reader) throws Exception {
+    private void read(File file) throws Exception {
+        registerJavaEPackage();
         try {
-            IOManager.importXmi(file, reader, counterHandler);
+            IOFactory.importXmi(file, counterHandler);
         } catch (Exception e) {
             NeoLogger.error(e);
             throw e;

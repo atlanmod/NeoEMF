@@ -26,18 +26,11 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Map;
 
 /**
  *
  */
 public class EcoreProcessor extends AbstractInternalProcessor {
-
-    /**
-     * Map containing all declared {@link EPackage} for parsing.
-     */
-    // TODO Use a EPackage.Registry
-    private final Map<String, EPackage> ePackages;
 
     /**
      * Stack containing previous {@link EClass}.
@@ -59,9 +52,8 @@ public class EcoreProcessor extends AbstractInternalProcessor {
      */
     private boolean wasAttribute;
 
-    public EcoreProcessor(Map<String, EPackage> ePackages, InternalHandler handler) {
+    public EcoreProcessor(InternalHandler handler) {
         super(handler);
-        this.ePackages = ePackages;
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
         this.wasAttribute = false;
@@ -72,11 +64,12 @@ public class EcoreProcessor extends AbstractInternalProcessor {
         EClass eClass;
         EPackage ePackage;
 
+        Namespace ns = element.getNamespace();
+
         // Is root
-        if (element.getNamespace().getPrefix() != null) {
+        if (ns != null) {
             // Retreives the EPackage from NS prefix
-            ePackage = ePackages.get(element.getNamespace().getPrefix());
-            Namespace ns = new Namespace(ePackage.getNsPrefix(), ePackage.getNsURI());
+            ePackage = (EPackage) EPackage.Registry.INSTANCE.get(ns.getPrefix());
 
             // Gets the current EClass
             eClass = (EClass) ePackage.getEClassifier(element.getLocalName());
@@ -108,7 +101,7 @@ public class EcoreProcessor extends AbstractInternalProcessor {
 
             // Gets the EPackage from it
             ePackage = parentEClass.getEPackage();
-            Namespace ns = new Namespace(ePackage.getNsPrefix(), ePackage.getNsURI());
+            ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
 
             // Gets the structural feature from the parent, according the its local name
             EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(element.getLocalName());
@@ -186,6 +179,24 @@ public class EcoreProcessor extends AbstractInternalProcessor {
 
             waitingAttribute = null;
         }
+    }
+
+    @Override
+    public void handleAttribute(Attribute attribute) throws Exception {
+        if (attribute.getNamespace() == null) {
+            EPackage ePackage = classesStack.getLast().getEPackage();
+            attribute.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
+        }
+        super.handleAttribute(attribute);
+    }
+
+    @Override
+    public void handleReference(Reference reference) throws Exception {
+        if (reference.getNamespace() == null) {
+            EPackage ePackage = classesStack.getLast().getEPackage();
+            reference.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
+        }
+        super.handleReference(reference);
     }
 
     @Override

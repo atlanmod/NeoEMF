@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.input.Reader;
+import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 import java.io.File;
@@ -19,15 +20,17 @@ import java.io.File;
 /**
  *
  */
-public class IOManager {
+public class IOFactory {
 
-    private IOManager() {
+    private IOFactory() {
     }
 
-    public static void importXmi(File file, Reader reader, PersistenceHandler persistenceHandler) throws Exception {
+    public static void importXmi(File file, PersistenceHandler persistenceHandler) throws Exception {
         if (!file.getName().endsWith(".xmi")) {
             throw new IllegalArgumentException("Only XMI files can be read.");
         }
+
+        Reader reader = new XmiStreamReader();
 
         InternalHandler internalHandler = reader.newHandler();
         internalHandler.addHandler(persistenceHandler);

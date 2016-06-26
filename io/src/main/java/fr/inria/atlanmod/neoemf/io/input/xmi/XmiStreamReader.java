@@ -17,13 +17,11 @@ import fr.inria.atlanmod.neoemf.io.internal.impl.InternalHandlerImpl;
 import fr.inria.atlanmod.neoemf.io.internal.impl.XPathProcessor;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
-import java.util.Map;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -32,13 +30,9 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class XmiStreamReader extends AbstractXmiReader {
 
-    public XmiStreamReader(Map<String, EPackage> ePackages) {
-        super(ePackages);
-    }
-
     @Override
     public InternalHandler newHandler() {
-        return new EcoreProcessor(ePackages, new XPathProcessor(new InternalHandlerImpl()));
+        return new EcoreProcessor(new XPathProcessor(new InternalHandlerImpl()));
     }
 
     public void read(File file) throws Exception {
@@ -75,7 +69,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         public void startElement(String uri, String name, String qName, Attributes attributes) throws SAXException
         {
             try {
-                processElement(qName, uri, name, attributes);
+                processElement(uri, name, attributes);
             }
             catch (Exception e) {
                 NeoLogger.error(e);

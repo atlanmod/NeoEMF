@@ -26,6 +26,8 @@ import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
 import java.io.File;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public abstract class AllIOTest extends AllTest {
 
     private static final String THIN_XMI = "/fr.inria.atlanmod.kyanos.tests.xmi";
@@ -56,8 +58,9 @@ public abstract class AllIOTest extends AllTest {
         return getResourceFile(MONSTER_XMI);
     }
 
-    protected EPackage getJavaEPackage() {
+    protected void registerJavaEPackage() {
         File file = getResourceFile(JAVA_ECORE);
+        String prefix = "java";
 
         EPackage ePackage = null;
 
@@ -75,7 +78,9 @@ public abstract class AllIOTest extends AllTest {
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
-        return ePackage;
+        checkNotNull(ePackage, "EPackage '" + prefix + "' does not exist.");
+
+        EPackage.Registry.INSTANCE.put("java", ePackage);
     }
 
     private File getResourceFile(String path) {
