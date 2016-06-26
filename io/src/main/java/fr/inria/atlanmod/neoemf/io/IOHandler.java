@@ -11,10 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.neoemf.io.beans.Attribute;
+import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Reference;
+
 /**
  * A basic handler.
  */
-public interface Handler {
+public interface IOHandler {
 
     /**
      * Handle the start of a document.
@@ -23,41 +27,22 @@ public interface Handler {
 
     /**
      * Handle the start of an element.
-     *
-     * @param nsUri the nsUri of the element
-     * @param name the name of the element in its nsUri
-     * @param id the identifier of the element
      */
-    void handleStartElement(String nsUri, String name, String id) throws Exception;
-
-    /**
-     * Handle a metaclass in the current element.
-     * @param nsUri the nsUri URI of the metaclass
-     * @param name the name of the metaclass
-     */
-    void handleMetaClass(String nsUri, String name) throws Exception;
+    void handleStartElement(ClassifierElement element) throws Exception;
 
     /**
      * Handle an attribute in the current element.
      * <p/>
      * An attribute is a simple key/value.
-     *
-     * @param nsUri the nsUri of the attribute
-     * @param name the name of the attribute in its nsUri
-     * @param value     the value of the attribute
      */
-    void handleAttribute(String nsUri, String name, int index, String value) throws Exception;
+    void handleAttribute(Attribute attribute) throws Exception;
 
     /**
      * Handle a reference from the current element to another element.
      * <p/>
      * A reference is an attribute which is link to another element.
-     *
-     * @param nsUri the nsUri of the reference
-     * @param name the name of the reference in its nsUri
-     * @param idReference the referenced element identifier
      */
-    void handleReference(String nsUri, String name, int index, String idReference) throws Exception;
+    void handleReference(Reference reference) throws Exception;
 
     /**
      * Handle the end of the current element.

@@ -9,13 +9,15 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.impl;
-
-import fr.inria.atlanmod.neoemf.io.InternalHandler;
+package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
  *
  */
-public abstract class AbstractInternalNotifier extends AbstractNotifier<InternalHandler> {
+public class Reference extends Feature {
 
+    @Override
+    public boolean isReference() {
+        return true;
+    }
 }

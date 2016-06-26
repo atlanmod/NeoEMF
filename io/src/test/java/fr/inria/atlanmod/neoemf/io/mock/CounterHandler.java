@@ -12,6 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.beans.Attribute;
+import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -45,25 +48,29 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
     public void handleStartDocument() throws Exception {
         NeoLogger.info("[" + name +  "] Document parsing...");
         start = Instant.now();
+
         super.handleStartDocument();
     }
 
     @Override
-    public void handleStartElement(String nsUri, String name, String id) throws Exception {
+    public void handleStartElement(ClassifierElement element) throws Exception {
         elementCount++;
-        super.handleStartElement(nsUri, name, id);
+
+        super.handleStartElement(element);
     }
 
     @Override
-    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
+    public void handleAttribute(Attribute attribute) throws Exception {
         attributeCount++;
-        super.handleAttribute(nsUri, name, index, value);
+
+        super.handleAttribute(attribute);
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
+    public void handleReference(Reference reference) throws Exception {
         referenceCount++;
-        super.handleReference(nsUri, name, index, idReference);
+
+        super.handleReference(reference);
     }
 
     @Override
@@ -73,6 +80,7 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
         NeoLogger.info("[" + name +  "]  - Elements   : " + elementCount);
         NeoLogger.info("[" + name +  "]  - Attributes : " + attributeCount);
         NeoLogger.info("[" + name +  "]  - References : " + referenceCount);
+
         super.handleEndDocument();
     }
 }

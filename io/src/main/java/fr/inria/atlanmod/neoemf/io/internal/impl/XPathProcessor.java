@@ -9,12 +9,14 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.input.xmi;
+package fr.inria.atlanmod.neoemf.io.internal.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalHandler;
+import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -28,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  *
  */
-public class XmiHandler extends AbstractInternalHandler {
+public class XPathProcessor extends AbstractInternalProcessor {
 
     private static final String XPATH_START_EXPR = "//@";
     private static final String XPATH_END_EXPR = "/";
@@ -46,60 +48,54 @@ public class XmiHandler extends AbstractInternalHandler {
     private final TreePath paths;
 
     /**
-     * The start of an XPath expression in this {@code XmiHandler}.
+     * The start of an XPath expression in this {@code XPathProcessor}.
      * This variable is necessary to replace the malformed XPath reference in XMI files
      */
     private String expressionStart;
 
     private boolean hasIds;
 
-    public XmiHandler() {
+    public XPathProcessor(InternalHandler handler) {
+        super(handler);
         this.paths = new TreePath();
         this.hasIds = false;
     }
 
     @Override
-    public void handleStartDocument() throws Exception {
-        super.handleStartDocument();
-    }
-
-    @Override
-    public void handleStartElement(String nsUri, String name, String id) throws Exception {
-        if (id != null) {
+    public void handleStartElement(ClassifierElement element) throws Exception {
+        if (element.getId() != null) {
             hasIds = true;
         }
 
         if (!hasIds) {
             // Processes the id from the path of the element in XML tree
-            String path = paths.getPath(name);
+            String path = paths.getPath(element.getLocalName());
 
             // Increments the number of occurence for this path
-            Integer count = paths.createOrIncrement(name);
+            Integer count = paths.createOrIncrement(element.getLocalName());
 
             // Defines the id as '<path>.<index>'
-            id = path + XPATH_INDEX_SEPARATOR + count;
+            String id = path + XPATH_INDEX_SEPARATOR + count;
 
             // Defines the XPath start of all elements from the root element
             if (expressionStart == null) {
                 expressionStart = id + XPATH_START_ELT;
             }
+
+            element.setId(id);
         }
-        super.handleStartElement(nsUri, name, id);
+
+        super.handleStartElement(element);
     }
 
     @Override
-    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
-        super.handleAttribute(nsUri, name, index, value);
-    }
-
-    @Override
-    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
+    public void handleReference(Reference reference) throws Exception {
         if (!hasIds) {
             // Format the reference according internal XPath management
-            idReference = formatPath(idReference);
+            reference.setValue(formatPath(reference.getValue()));
         }
 
-        super.handleReference(nsUri, name, index, idReference);
+        super.handleReference(reference);
     }
 
     @Override

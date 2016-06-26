@@ -9,11 +9,14 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io;
+package fr.inria.atlanmod.neoemf.io.internal;
+
+import fr.inria.atlanmod.neoemf.io.IONotifier;
 
 /**
  *
  */
-public interface PersistenceHandler extends IOHandler {
+public interface InternalNotifier extends IONotifier<InternalHandler> {
 
+    void notifyCharacters(String characters) throws Exception;
 }

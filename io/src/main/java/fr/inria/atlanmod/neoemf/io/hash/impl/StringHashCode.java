@@ -9,11 +9,23 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io;
+package fr.inria.atlanmod.neoemf.io.hash.impl;
+
+import fr.inria.atlanmod.neoemf.io.hash.HashCode;
 
 /**
  *
  */
-public interface PersistenceHandler extends IOHandler {
+class StringHashCode implements HashCode {
 
+    private final String hashCode;
+
+    public StringHashCode(String hashCode) {
+        this.hashCode = hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return hashCode;
+    }
 }

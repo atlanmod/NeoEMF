@@ -39,8 +39,8 @@ public class Md5Hasher implements Hasher {
 
     @Override
     public HashCode hash(String value) {
-        byte[] hash = hashFunction.newHasher().putString(value, Charsets.UTF_8).hash().asBytes();
+        String hash = hashFunction.newHasher().putString(value, Charsets.UTF_8).hash().toString();
 
-        return new BytesHashCode(hash);
+        return new StringHashCode(hash);
     }
 }

@@ -12,24 +12,27 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.input.Reader;
-import fr.inria.atlanmod.neoemf.io.input.xmi.XmiSaxReader;
+import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
-import fr.inria.atlanmod.neoemf.io.mock.MuteHandler;
+import fr.inria.atlanmod.neoemf.io.mock.DummyPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
+import org.eclipse.emf.ecore.EPackage;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
-public class XmiSaxReaderTest extends AllIOTest {
+public class XmiStreamReaderTest extends AllIOTest {
 
     private PersistenceHandler counterHandler;
 
     @Before
     public void setUp() throws Exception {
-        counterHandler = new CounterHandler(new MuteHandler(), "counter1");
+        counterHandler = new CounterHandler(new DummyPersistenceHandler(), "counter1");
     }
 
     @Test
@@ -63,7 +66,10 @@ public class XmiSaxReaderTest extends AllIOTest {
      * Reads a file with a SAX reader.
      */
     private void readWithSax(File file) throws Exception {
-        read(file, new XmiSaxReader());
+        Map<String, EPackage> ePackages = new HashMap<>();
+        ePackages.put("java", getJavaEPackage());
+
+        read(file, new XmiStreamReader(ePackages));
     }
 
     /**
@@ -71,7 +77,7 @@ public class XmiSaxReaderTest extends AllIOTest {
      */
     private void read(File file, Reader reader) throws Exception {
         try {
-            IOManager.importFromFile(file, reader, counterHandler);
+            IOManager.importXmi(file, reader, counterHandler);
         } catch (Exception e) {
             NeoLogger.error(e);
             throw e;

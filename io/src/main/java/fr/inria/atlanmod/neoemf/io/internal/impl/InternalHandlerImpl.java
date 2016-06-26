@@ -9,51 +9,51 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.impl;
+package fr.inria.atlanmod.neoemf.io.internal.impl;
 
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 /**
  *
  */
-public abstract class AbstractDelegatedPersistenceHandler implements PersistenceHandler {
-
-    private final PersistenceHandler handler;
-
-    public AbstractDelegatedPersistenceHandler(PersistenceHandler handler) {
-        this.handler = handler;
-    }
+public class InternalHandlerImpl extends AbstractPersistenceNotifier implements InternalHandler {
 
     @Override
     public void handleStartDocument() throws Exception {
-        handler.handleStartDocument();
+        notifyStartDocument();
     }
 
     @Override
     public void handleStartElement(ClassifierElement element) throws Exception {
-        handler.handleStartElement(element);
+        notifyStartElement(element);
     }
 
     @Override
     public void handleAttribute(Attribute attribute) throws Exception {
-        handler.handleAttribute(attribute);
+        notifyAttribute(attribute);
     }
 
     @Override
     public void handleReference(Reference reference) throws Exception {
-        handler.handleReference(reference);
+        notifyReference(reference);
     }
 
     @Override
     public void handleEndElement() throws Exception {
-        handler.handleEndElement();
+        notifyEndElement();
     }
 
     @Override
     public void handleEndDocument() throws Exception {
-        handler.handleEndDocument();
+        notifyEndDocument();
+    }
+
+    @Override
+    public void handleCharacters(String characters) throws Exception {
+        // Do nothing
     }
 }

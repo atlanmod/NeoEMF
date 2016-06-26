@@ -9,23 +9,27 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.hash.impl;
-
-import fr.inria.atlanmod.neoemf.io.hash.HashCode;
+package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
  *
  */
-class BytesHashCode implements HashCode {
+public class Namespace {
 
-    private final byte[] bytes;
+    private final String prefix;
 
-    public BytesHashCode(byte[] bytes) {
-        this.bytes = bytes;
+    private final String uri;
+
+    public Namespace(String prefix, String uri) {
+        this.prefix = prefix;
+        this.uri = uri;
     }
 
-    @Override
-    public String toString() {
-        return new String(bytes);
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getUri() {
+        return uri;
     }
 }

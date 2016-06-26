@@ -13,12 +13,21 @@ package fr.inria.atlanmod.neoemf.io.input.xmi;
 
 import com.google.common.base.Splitter;
 
+import fr.inria.atlanmod.neoemf.io.beans.Attribute;
+import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Feature;
+import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
+import fr.inria.atlanmod.neoemf.io.beans.Namespace;
+import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
+import org.eclipse.emf.ecore.EPackage;
 import org.xml.sax.Attributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,12 +36,9 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractXmiReader extends AbstractReader {
 
-    private static final String XSI_NS = "xsi";
-    private static final String XMI_NS = "xmi";
+    private static final String ID_ATTR = "xmi:id";
 
-    private static final String TYPE_ATTR = XSI_NS + ":type";
-
-    private static final String ID_ATTR = XMI_NS + ":id";
+    private static final String TYPE_ATTR = "xsi:type";
 
     private static final Pattern PATTERN_WELL_FORMED_REF =
             Pattern.compile("(/{1,2}@\\w+(\\.\\d+)?[ ]?)+", Pattern.UNICODE_CASE);
@@ -40,90 +46,120 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
-    private boolean isRoot = true;
+    protected final Map<String, EPackage> ePackages;
 
-    protected void processElement(String uri, String name, Attributes attributes) throws Exception {
+    protected AbstractXmiReader(Map<String, EPackage> ePackages) {
+        this.ePackages = ePackages;
+    }
 
-        // TODO If element has the `xmi:id` attribute, send it as the identifier of the element
+    protected void processElement(String qName, String uri, String name, Attributes attributes) throws Exception {
 
-        if (isRoot) {
-            System.out.println("Is root : " + uri + ":" + name);
-            isRoot = false;
-            notifyStartElement(uri, name, null);
-        }
-        else {
-            processFeature(uri, name);
-        }
+        ClassifierElement element = new ClassifierElement();
+        element.setNamespace(new Namespace(getPrefix(qName), uri));
+        element.setLocalName(name);
 
+        List<Feature> features = new ArrayList<>();
+
+        // Processes attributes / Check "xmi:id" and "xsi:type"
         int attrLength = attributes.getLength();
         if (attrLength > 0) {
             for (int i = 0; i < attrLength; i++) {
-                processAttribute(
-                        attributes.getQName(i),
+                features.addAll(processAttribute(
+                        element,
+                        getPrefix(attributes.getQName(i)),
                         attributes.getURI(i),
                         attributes.getLocalName(i),
-                        attributes.getValue(i));
+                        attributes.getValue(i)));
+            }
+        }
+
+        notifyStartElement(element);
+
+        // Send attributes and references
+        for (Feature f : features) {
+            if (f.isAttribute()) {
+                notifyAttribute((Attribute) f);
+            } else {
+                notifyReference((Reference) f);
             }
         }
     }
 
-    protected void processFeature(String uri, String name) throws Exception {
-        // TODO Process feature from EPackage information
-        notifyStartElement(uri, name, null);
+    private static String getPrefix(String qName) {
+        String prefix = null;
+
+        if (qName == null) {
+            return null;
+        }
+
+        List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(qName);
+        if (splittedName.size() > 1) {
+            prefix = splittedName.get(0);
+        }
+
+        return prefix;
     }
 
-    protected void processAttribute(String qName, String nsUri, String name, String value) throws Exception {
-        if (isMetaClass(qName)) {
-            try {
-                processMetaClass(value);
-                return;
-            } catch (IllegalArgumentException e) {
-                NeoLogger.warn(e);
-            }
+    private List<Feature> processAttribute(ClassifierElement element, String prefix, String nsUri, String locaName, String value) throws Exception {
+        // xsi:type
+        if (TYPE_ATTR.equals(prefix + ":" + locaName)) {
+            processMetaClass(element, value);
+            return Collections.emptyList();
         }
+
+        // xmi:id
+        if (ID_ATTR.equals(prefix + ":" + locaName)) {
+            element.setId(value);
+            return Collections.emptyList();
+        }
+
+        Namespace ns = new Namespace(prefix, nsUri);
 
         Iterable<String> references = getReferences(value);
         if (references != null) {
-            processReferences(nsUri, name, references);
-        } else {
-            notifyAttribute(nsUri, name, 0, value);
+            return processReferences(ns, locaName, references);
+        }
+        else {
+            List<Feature> features = new ArrayList<>();
+
+            Feature feature = new Attribute();
+            feature.setNamespace(ns);
+            feature.setLocalName(locaName);
+            feature.setIndex(0);
+            feature.setValue(value);
+            features.add(feature);
+
+            return features;
         }
     }
 
-    private void processReferences(String nsUri, String name, Iterable<String> references) throws Exception {
+    private List<Feature> processReferences(Namespace ns, String name, Iterable<String> references) throws Exception {
+        List<Feature> features = new ArrayList<>();
+
         int index = 0;
         for (String ref : references) {
-            notifyReference(nsUri, name, index, ref);
+            Feature feature = new Reference();
+            feature.setNamespace(ns);
+            feature.setLocalName(name);
+            feature.setIndex(index);
+            feature.setValue(ref);
+            features.add(feature);
             index++;
         }
+
+        return features;
     }
 
-    private void processMetaClass(String prefixedValue) throws Exception {
-        String nsUsi;
-        String name;
-
+    private void processMetaClass(ClassifierElement element, String prefixedValue) throws Exception {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
-            nsUsi = getNsUri(m.group(1));
-            name = m.group(2);
+            NamedElement metaClass = new NamedElement();
+            metaClass.setNamespace(new Namespace(m.group(1), getNsUri(m.group(1))));
+            metaClass.setLocalName(m.group(2));
+            element.setMetaclass(metaClass);
         } else {
             throw new IllegalArgumentException();
         }
-
-        notifyMetaClass(nsUsi, name);
-    }
-
-    private boolean isMetaClass(String value) {
-        return TYPE_ATTR.equals(value);
-    }
-
-    private boolean hasIdentifier(Attributes attributes) {
-        for (int i = 0; i < attributes.getLength(); i++) {
-            if (attributes.getQName(i).equals(ID_ATTR)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private List<String> getReferences(String value) {
@@ -140,5 +176,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
 
         return isReference ? references : null;
+    }
+
+    protected void processCharacters(String characters) throws Exception {
+        notifyCharacters(characters);
     }
 }

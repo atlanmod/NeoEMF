@@ -32,6 +32,18 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- EMF dependencies -->
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
+        </dependency>
+
         <!-- Test dependencies -->
 
         <dependency>
@@ -43,6 +55,12 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
             <scope>test</scope>
         </dependency>
 

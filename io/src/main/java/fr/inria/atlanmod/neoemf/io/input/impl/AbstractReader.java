@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.io.input.impl;
 
 import com.google.common.collect.HashBiMap;
 
-import fr.inria.atlanmod.neoemf.io.impl.AbstractInternalNotifier;
 import fr.inria.atlanmod.neoemf.io.input.Reader;
+import fr.inria.atlanmod.neoemf.io.internal.impl.AbstractInternalNotifier;
 
 /**
  *

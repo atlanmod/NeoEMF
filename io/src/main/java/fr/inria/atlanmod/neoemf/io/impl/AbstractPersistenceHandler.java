@@ -20,6 +20,10 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
+import fr.inria.atlanmod.neoemf.io.beans.Attribute;
+import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
+import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -84,7 +88,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract void addReference(Id id, String nsUri, String name, int index, Id idReference) throws Exception;
 
-    protected abstract void linkElementToMetaClass(Id id, Id metaClassId);
+    protected abstract void setMetaClass(Id id, Id metaClassId);
 
     @Override
     public void handleStartDocument() throws Exception {
@@ -92,18 +96,18 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void handleStartElement(String nsUri, String name, String reference) throws Exception {
-        checkNotNull(reference);
+    public void handleStartElement(ClassifierElement element) throws Exception {
+        checkNotNull(element.getId());
 
         boolean retry;
 
         // Hash reference a first time
-        Id id = hashId(reference);
+        Id id = hashId(element.getId());
 
         do {
             try {
                 // Try to persist with the current Id
-                addElement(id, nsUri, name);
+                addElement(id, element.getNamespace().getUri(), element.getClassName());
                 retry = false;
             }
             catch (AlreadyExistingIdException e) {
@@ -112,23 +116,24 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
                 // Hash reference another time + Store (or update) in cache
                 id = hashId(id.toString());
-                conflictedIdsCache.put(reference, id);
+                conflictedIdsCache.put(element.getId(), id);
 
                 retry = true;
             }
         } while (retry);
 
         idStack.addLast(id);
+        tryLink(element.getId(), id);
+
+        createMetaClass(element.getMetaclass());
 
         incrementAndCommit();
-
-        tryLink(reference, id);
     }
 
-    @Override
-    public void handleMetaClass(String nsUri, String name) throws Exception {
-        String metaclassKey = nsUri + ":" + name;
+    private void createMetaClass(NamedElement metaClass) throws Exception {
+        String metaclassKey = metaClass.getNamespace().getUri() + ':' + metaClass.getLocalName();
 
+        // Gets from cache
         Id metaClassId = metaclassesCache.getIfPresent(metaclassKey);
 
         // If metaclass doesn't already exist, we create it
@@ -141,7 +146,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             do {
                 try {
                     // Try to persist with the current Id
-                    addElement(metaClassId, nsUri, name);
+                    addElement(metaClassId, metaClass.getNamespace().getUri(), metaClass.getLocalName());
                     metaclassesCache.put(metaclassKey, metaClassId);
                     retry = false;
                 }
@@ -154,25 +159,38 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             while (retry);
         }
 
-        linkElementToMetaClass(idStack.getLast(), metaClassId);
+        setMetaClass(idStack.getLast(), metaClassId);
     }
 
     @Override
-    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
-        addAttribute(idStack.getLast(), nsUri, name, index, value);
+    public void handleAttribute(Attribute attribute) throws Exception {
+        Id currentId;
+        if (attribute.getId() == null) {
+            currentId = idStack.getLast();
+        } else {
+            currentId = getId(attribute.getId());
+        }
+
+        addAttribute(currentId, attribute.getNamespace().getUri(), attribute.getLocalName(), attribute.getIndex(), attribute.getValue());
 
         incrementAndCommit();
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String reference) throws Exception {
-        Id currentId = idStack.getLast();
-        Id idReference = getId(reference);
+    public void handleReference(Reference reference) throws Exception {
+        Id currentId;
+        if (reference.getId() == null) {
+            currentId = idStack.getLast();
+        } else {
+            currentId = getId(reference.getId());
+        }
+
+        Id idReference = getId(reference.getValue());
 
         try {
-            addReference(currentId, nsUri, name, index, idReference);
+            addReference(currentId, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex(), idReference);
         } catch (UnknownReferencedIdException e) {
-            addUnlinked(reference, new UnlinkedElement(currentId, nsUri, name, index));
+            addUnlinked(reference.getValue(), new UnlinkedElement(currentId, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex()));
         }
 
         incrementAndCommit();

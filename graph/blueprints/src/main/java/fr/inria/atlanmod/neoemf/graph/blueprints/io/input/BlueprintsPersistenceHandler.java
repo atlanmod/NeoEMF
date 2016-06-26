@@ -22,6 +22,8 @@ import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 
+import org.eclipse.emf.ecore.InternalEObject;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -52,7 +54,7 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     }
 
     @Override
-    protected void linkElementToMetaClass(Id id, Id metaClassId) {
+    protected void setMetaClass(Id id, Id metaClassId) {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
@@ -68,10 +70,13 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
         int size = getSize(vertex, name);
+
+        if (index == InternalEObject.EStore.NO_INDEX) {
+            index = size;
+        }
+
         size++;
         setSize(vertex, name, size);
-
-        // TODO Serialize value to property
 
         vertex.setProperty(name + ":" + index, value);
     }
@@ -89,6 +94,11 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         // TODO Update the containment reference if needed
 
         int size = getSize(vertex, name);
+
+        if (index == InternalEObject.EStore.NO_INDEX) {
+            index = size;
+        }
+
         size++;
         setSize(vertex, name, size);
 

@@ -19,11 +19,12 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOpt
 import fr.inria.atlanmod.neoemf.io.AllIOTest;
 import fr.inria.atlanmod.neoemf.io.IOManager;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.input.xmi.XmiSaxReader;
+import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
+import org.eclipse.emf.ecore.EPackage;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -95,8 +96,12 @@ public class ImportTest extends AllIOTest {
     }
 
     private void testImportWithSax(File file, PersistenceHandler persistenceHandler) throws Exception {
+
+        Map<String, EPackage> ePackages = new HashMap<>();
+        ePackages.put("java", getJavaEPackage());
+
         try {
-            IOManager.importFromFile(file, new XmiSaxReader(), persistenceHandler);
+            IOManager.importXmi(file, new XmiStreamReader(ePackages), persistenceHandler);
         } catch (Exception e) {
             NeoLogger.error(e);
             throw e;

@@ -9,11 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io;
+package fr.inria.atlanmod.neoemf.io.internal;
 
 /**
  *
  */
-public interface PersistenceHandler extends IOHandler {
+public interface InternalProcessor extends InternalHandler {
 
 }

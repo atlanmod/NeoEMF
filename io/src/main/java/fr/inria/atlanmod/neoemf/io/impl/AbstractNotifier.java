@@ -11,8 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.impl;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.Notifier;
+import fr.inria.atlanmod.neoemf.io.IOHandler;
+import fr.inria.atlanmod.neoemf.io.IONotifier;
+import fr.inria.atlanmod.neoemf.io.beans.Attribute;
+import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,7 +24,7 @@ import java.util.Set;
 /**
  *
  */
-public abstract class AbstractNotifier<T extends Handler> implements Notifier<T> {
+public abstract class AbstractNotifier<T extends IOHandler> implements IONotifier<T> {
 
     private Set<T> handlers;
 
@@ -52,30 +55,23 @@ public abstract class AbstractNotifier<T extends Handler> implements Notifier<T>
     }
 
     @Override
-    public final void notifyStartElement(String nsUri, String name, String reference) throws Exception {
+    public final void notifyStartElement(ClassifierElement element) throws Exception {
         for (T h : getHandlers()) {
-            h.handleStartElement(nsUri, name, reference);
+            h.handleStartElement(element);
         }
     }
 
     @Override
-    public final void notifyMetaClass(String nsUri, String name) throws Exception {
+    public final void notifyAttribute(Attribute attribute) throws Exception {
         for (T h : getHandlers()) {
-            h.handleMetaClass(nsUri, name);
+            h.handleAttribute(attribute);
         }
     }
 
     @Override
-    public final void notifyAttribute(String nsUri, String name, int index, String value) throws Exception {
+    public final void notifyReference(Reference reference) throws Exception {
         for (T h : getHandlers()) {
-            h.handleAttribute(nsUri, name, index, value);
-        }
-    }
-
-    @Override
-    public final void notifyReference(String nsUri, String name, int index, String reference) throws Exception {
-        for (T h : getHandlers()) {
-            h.handleReference(nsUri, name, index, reference);
+            h.handleReference(reference);
         }
     }
 

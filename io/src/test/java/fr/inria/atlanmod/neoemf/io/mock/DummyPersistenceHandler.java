@@ -12,46 +12,44 @@
 package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.beans.Attribute;
+import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
  * A persistence handler that does nothing.
  * <p/>
  * Using for basic tests.
  */
-public class MuteHandler implements PersistenceHandler {
+public class DummyPersistenceHandler implements PersistenceHandler {
 
     @Override
-    public void handleStartElement(String nsUri, String name, String id) throws Exception {
-
+    public void handleStartDocument() throws Exception {
+        // Do nothing
     }
 
     @Override
-    public void handleMetaClass(String nsUri, String name) throws Exception {
-
+    public void handleStartElement(ClassifierElement element) throws Exception {
+        // Do nothing
     }
 
     @Override
-    public void handleAttribute(String nsUri, String name, int index, String value) throws Exception {
-
+    public void handleAttribute(Attribute attribute) throws Exception {
+        // Do nothing
     }
 
     @Override
-    public void handleReference(String nsUri, String name, int index, String idReference) throws Exception {
-
+    public void handleReference(Reference reference) throws Exception {
+        // Do nothing
     }
 
     @Override
     public void handleEndElement() throws Exception {
-
-    }
-
-    @Override
-    public void handleStartDocument() throws Exception {
-
+        // Do nothing
     }
 
     @Override
     public void handleEndDocument() throws Exception {
-
+        // Do nothing
     }
 }

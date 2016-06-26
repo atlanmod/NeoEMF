@@ -9,51 +9,56 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.impl;
+package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractDelegatedPersistenceHandler;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 /**
  *
  */
-public abstract class AbstractDelegatedPersistenceHandler implements PersistenceHandler {
+public class VerboseHandler extends AbstractDelegatedPersistenceHandler {
 
-    private final PersistenceHandler handler;
-
-    public AbstractDelegatedPersistenceHandler(PersistenceHandler handler) {
-        this.handler = handler;
+    public VerboseHandler(PersistenceHandler handler) {
+        super(handler);
     }
 
     @Override
     public void handleStartDocument() throws Exception {
-        handler.handleStartDocument();
+        NeoLogger.debug("Starting document");
+
+        super.handleStartDocument();
     }
 
     @Override
     public void handleStartElement(ClassifierElement element) throws Exception {
-        handler.handleStartElement(element);
+        NeoLogger.debug(element.getNamespace().getPrefix() + ":" + element.getLocalName() + " @ " + element.getClassName() + " -> " + element.getMetaclass().getLocalName() + " = " + element.getId());
+
+        super.handleStartElement(element);
     }
 
     @Override
     public void handleAttribute(Attribute attribute) throws Exception {
-        handler.handleAttribute(attribute);
+        NeoLogger.debug("   " + attribute.getLocalName() + " (" + attribute.getIndex() + ") = " + attribute.getValue());
+
+        super.handleAttribute(attribute);
     }
 
     @Override
     public void handleReference(Reference reference) throws Exception {
-        handler.handleReference(reference);
-    }
+        NeoLogger.debug("   " + reference.getLocalName() + " (" + reference.getIndex() + ") = " + reference.getValue());
 
-    @Override
-    public void handleEndElement() throws Exception {
-        handler.handleEndElement();
+        super.handleReference(reference);
     }
 
     @Override
     public void handleEndDocument() throws Exception {
-        handler.handleEndDocument();
+        NeoLogger.debug("Ending document");
+
+        super.handleEndDocument();
     }
 }

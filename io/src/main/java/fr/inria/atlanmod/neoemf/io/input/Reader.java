@@ -11,15 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.io.input;
 
-import fr.inria.atlanmod.neoemf.io.InternalHandler;
-import fr.inria.atlanmod.neoemf.io.Notifier;
+import fr.inria.atlanmod.neoemf.io.IONotifier;
+import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 import java.io.File;
 
 /**
  *
  */
-public interface Reader extends Notifier<InternalHandler> {
+public interface Reader extends IONotifier<InternalHandler> {
 
     InternalHandler newHandler();
 
