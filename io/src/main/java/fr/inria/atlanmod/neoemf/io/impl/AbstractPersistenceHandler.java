@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
     private static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
-    private static final int ID_CACHE_SIZE = 10000;
+    private static final int ID_CACHE_SIZE = 5000;
 
     private int opCount;
 
@@ -86,7 +86,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract void addAttribute(Id id, String nsUri, String name, int index, String value) throws Exception;
 
-    protected abstract void addReference(Id id, String nsUri, String name, int index, Id idReference) throws Exception;
+    protected abstract void addReference(Id id, String nsUri, String name, int index, boolean containment, Id idReference) throws Exception;
 
     protected abstract void setMetaClass(Id id, Id metaClassId);
 
@@ -178,19 +178,19 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     @Override
     public void handleReference(Reference reference) throws Exception {
-        Id currentId;
+        Id id;
         if (reference.getId() == null) {
-            currentId = idStack.getLast();
+            id = idStack.getLast();
         } else {
-            currentId = getId(reference.getId());
+            id = getId(reference.getId());
         }
 
         Id idReference = getId(reference.getValue());
 
         try {
-            addReference(currentId, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex(), idReference);
+            addReference(id, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex(), reference.isContainment(), idReference);
         } catch (UnknownReferencedIdException e) {
-            addUnlinked(reference.getValue(), new UnlinkedElement(currentId, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex()));
+            addUnlinked(reference.getValue(), new UnlinkedElement(id, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex(), reference.isContainment()));
         }
 
         incrementAndCommit();
@@ -254,7 +254,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private void tryLink(String reference, Id id) throws Exception {
         for (UnlinkedElement e : unlinkedElements.removeAll(reference)) {
-            addReference(e.id, e.nsUri, e.name, e.index, id);
+            addReference(e.id, e.nsUri, e.name, e.index, e.containment, id);
         }
     }
 
@@ -278,12 +278,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         public final String nsUri;
         public final String name;
         public final int index;
+        public final boolean containment;
 
-        public UnlinkedElement(Id id, String nsUri, String name, int index) {
+        public UnlinkedElement(Id id, String nsUri, String name, int index, boolean containment) {
             this.id = id;
             this.nsUri = nsUri;
             this.name = name;
             this.index = index;
+            this.containment = containment;
         }
     }
 }

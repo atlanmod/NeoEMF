@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
 
+import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
@@ -30,6 +31,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  */
 public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
+
+    private static final char SEPARATOR = ':';
+    private static final String POSITION = "position";
+    private static final String CONTAINER = "eContainer";
+    private static final String CONTAINING_FEATURE = "containingFeature";
+    private static final String SIZE_LITERAL = "size";
 
     public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
@@ -78,11 +85,11 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         size++;
         setSize(vertex, name, size);
 
-        vertex.setProperty(name + ":" + index, value);
+        vertex.setProperty(formatKeyValue(name, index), value);
     }
 
     @Override
-    protected void addReference(Id id, String nsUri, String name, int index, Id idReference) throws Exception {
+    protected void addReference(Id id, String nsUri, String name, int index, boolean containment, Id idReference) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
@@ -91,7 +98,10 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
             throw new UnknownReferencedIdException();
         }
 
-        // TODO Update the containment reference if needed
+        // Update the containment reference if needed
+        if (containment) {
+            updateContainment(name, vertex, referencedVertex);
+        }
 
         int size = getSize(vertex, name);
 
@@ -103,15 +113,28 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         setSize(vertex, name, size);
 
         Edge edge = vertex.addEdge(name, referencedVertex);
-        edge.setProperty("position", index);
+        edge.setProperty(POSITION, index);
+    }
+
+    private static void updateContainment(String localName, Vertex parentVertex, Vertex childVertex) {
+        for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
+            edge.remove();
+        }
+
+        Edge edge = childVertex.addEdge(CONTAINER, parentVertex);
+        edge.setProperty(CONTAINING_FEATURE, localName);
     }
 
     private static Integer getSize(Vertex vertex, String name) {
-        Integer size = vertex.getProperty(name + ":size");
+        Integer size = vertex.getProperty(formatKeyValue(name, SIZE_LITERAL));
         return size != null ? size : 0;
     }
 
     private static void setSize(Vertex vertex, String name, int size) {
-        vertex.setProperty(name + ":size", size);
+        vertex.setProperty(formatKeyValue(name, SIZE_LITERAL), size);
+    }
+
+    private static String formatKeyValue(String key, Object value) {
+        return key + SEPARATOR + value;
     }
 }

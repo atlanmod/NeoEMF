@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.util.ArrayDeque;
@@ -104,10 +105,12 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
 
             // Is an attribute
             if (eStructuralFeature instanceof EAttribute) {
+                EAttribute eAttribute = (EAttribute) eStructuralFeature;
+
                 // Creates an attribute
                 Attribute attr = new Attribute();
                 attr.setNamespace(ns);
-                attr.setLocalName(eStructuralFeature.getName());
+                attr.setLocalName(eAttribute.getName());
 
                 // Waiting a plain text value
                 this.waitingAttribute = attr;
@@ -116,8 +119,10 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
 
             // Is a reference
             else {
+                EReference eReference = (EReference) eStructuralFeature;
+
                 // Gets the type the reference
-                eClass = (EClass) eStructuralFeature.getEType();
+                eClass = (EClass) eReference.getEType();
 
                 NamedElement metaClass = classifier.getMetaclass();
                 // Checks that the metaclass is a subtype of the reference type : if true, use it instead of supertype
@@ -148,9 +153,10 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
                 // Create a reference from the parent to this element, with the given local name
                 Reference ref = new Reference();
                 ref.setNamespace(ns);
-                ref.setLocalName(eStructuralFeature.getName());
+                ref.setLocalName(eReference.getName());
                 ref.setId(idsStack.getLast());
                 ref.setValue(currentId);
+                ref.setContainment(eReference.isContainment());
                 handleReference(ref);
 
                 // Save EClass and identifier
@@ -183,8 +189,15 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
 
     @Override
     public void handleReference(Reference reference) throws Exception {
+        EClass eClass = classesStack.getLast();
+
+        // Update containment value
+        EReference eReference = (EReference) eClass.getEStructuralFeature(reference.getLocalName());
+        reference.setContainment(eReference.isContainment());
+
+        // Update namespace if not already present
         if (reference.getNamespace() == null) {
-            EPackage ePackage = classesStack.getLast().getEPackage();
+            EPackage ePackage = eClass.getEPackage();
             reference.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
         }
         super.handleReference(reference);

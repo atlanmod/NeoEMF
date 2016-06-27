@@ -16,8 +16,18 @@ package fr.inria.atlanmod.neoemf.io.beans;
  */
 public class Reference extends StructuralFeature {
 
+    private boolean containment;
+
     @Override
     public boolean isReference() {
         return true;
+    }
+
+    public boolean isContainment() {
+        return containment;
+    }
+
+    public void setContainment(boolean containment) {
+        this.containment = containment;
     }
 }
