@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * An {@link InternalHandler internal handler} that analyses XML elements in order to create and to process XPath
  * references.
  */
-public class XPathHandler extends AbstractDelegatedInternalHandler {
+public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHandler {
 
     private static final String XPATH_START_EXPR = "//@";
     private static final String XPATH_END_EXPR = "/";
@@ -49,14 +49,14 @@ public class XPathHandler extends AbstractDelegatedInternalHandler {
     private final TreePath paths;
 
     /**
-     * The start of an XPath expression in this {@code XPathHandler}.
+     * The start of an XPath expression in this {@code XPathDelegatedInternalHandler}.
      * This variable is necessary to replace the malformed XPath reference in XMI files
      */
     private String expressionStart;
 
     private boolean hasIds;
 
-    public XPathHandler(InternalHandler handler) {
+    public XPathDelegatedInternalHandler(InternalHandler handler) {
         super(handler);
         this.paths = new TreePath();
         this.hasIds = false;

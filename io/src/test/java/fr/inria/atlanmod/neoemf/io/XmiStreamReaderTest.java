@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.neoemf.io.impl.CounterDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.input.Reader;
-import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
 import fr.inria.atlanmod.neoemf.io.mock.DummyPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -28,7 +28,7 @@ public class XmiStreamReaderTest extends AllIOTest {
 
     @Before
     public void setUp() throws Exception {
-        counterHandler = new CounterHandler(new DummyPersistenceHandler(), "counter1");
+        counterHandler = new CounterDelegatedPersistenceHandler(new DummyPersistenceHandler(), "counter1");
     }
 
     @Test

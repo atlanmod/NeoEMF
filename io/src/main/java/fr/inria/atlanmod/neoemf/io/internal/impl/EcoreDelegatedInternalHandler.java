@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * An {@link InternalHandler internal handler} that creates and links simple elements to an Ecore structure.
  */
-public class EcoreHandler extends AbstractDelegatedInternalHandler {
+public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHandler {
 
     /**
      * Stack containing previous {@link EClass}.
@@ -55,7 +55,7 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
      */
     private boolean lastWasAttribute;
 
-    public EcoreHandler(InternalHandler handler) {
+    public EcoreDelegatedInternalHandler(InternalHandler handler) {
         super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();

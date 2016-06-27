@@ -9,34 +9,32 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.mock;
+package fr.inria.atlanmod.neoemf.io.impl;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
 /**
- * A persistence handler that counts the number of different element, and gives the time to process.
- * <p/>
- * Using for basic tests.
+ * A delegated {@link PersistenceHandler persistence handler} that counts the number of different element, and gives the
+ * time to process.
  */
-public class CounterHandler extends AbstractDelegatedPersistenceHandler {
+public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersistenceHandler {
 
     private Instant start;
 
-    private String name;
+    private final String name;
 
     private long elementCount;
     private long attributeCount;
     private long referenceCount;
 
-    public CounterHandler(PersistenceHandler handler, String name) {
+    public CounterDelegatedPersistenceHandler(PersistenceHandler handler, String name) {
         super(handler);
         this.name = name;
         this.elementCount = 0;
@@ -46,7 +44,7 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
 
     @Override
     public void handleStartDocument() throws Exception {
-        NeoLogger.info("[" + name +  "] Document parsing...");
+        NeoLogger.info("[" + name +  "] Document analysis in progress...");
         start = Instant.now();
 
         super.handleStartDocument();
@@ -76,10 +74,12 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
     @Override
     public void handleEndDocument() throws Exception {
         Instant end = Instant.now();
-        NeoLogger.info("[" + name +  "] Document parsed in " + new Duration(start, end));
-        NeoLogger.info("[" + name +  "]  - Elements   : " + elementCount);
-        NeoLogger.info("[" + name +  "]  - Attributes : " + attributeCount);
-        NeoLogger.info("[" + name +  "]  - References : " + referenceCount);
+        Duration duration = new Duration(start, end);
+
+        NeoLogger.info("[{0}] Document analysis done in {1}", name, duration);
+        NeoLogger.info("[{0}]  - Elements   : {1}", name, elementCount);
+        NeoLogger.info("[{0}]  - Attributes : {1}", name, attributeCount);
+        NeoLogger.info("[{0}]  - References : {1}", name, referenceCount);
 
         super.handleEndDocument();
     }

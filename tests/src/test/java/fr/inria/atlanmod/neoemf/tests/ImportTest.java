@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOpt
 import fr.inria.atlanmod.neoemf.io.AllIOTest;
 import fr.inria.atlanmod.neoemf.io.IOFactory;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.mock.CounterHandler;
+import fr.inria.atlanmod.neoemf.io.impl.CounterDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
@@ -90,7 +90,7 @@ public class ImportTest extends AllIOTest {
         BlueprintsPersistenceBackend neo4jBackend = (BlueprintsPersistenceBackend)
                 BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
 
-        return new CounterHandler(new BlueprintsPersistenceHandler(neo4jBackend), "counter1");
+        return new CounterDelegatedPersistenceHandler(new BlueprintsPersistenceHandler(neo4jBackend), "counter1");
     }
 
     private void testImportWithSax(File file, PersistenceHandler persistenceHandler) throws Exception {
