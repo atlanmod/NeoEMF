@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -180,27 +181,75 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
 
     @Override
     public void handleAttribute(Attribute attribute) throws Exception {
-        if (attribute.getNamespace() == null) {
-            EPackage ePackage = classesStack.getLast().getEPackage();
-            attribute.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
+        EClass eClass = classesStack.getLast();
+        EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(attribute.getLocalName());
+
+        // Checks that the attribute is well a attribute
+        if (eStructuralFeature instanceof EAttribute) {
+            if (attribute.getNamespace() == null) {
+                EPackage ePackage = eClass.getEPackage();
+                attribute.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
+            }
+            super.handleAttribute(attribute);
         }
-        super.handleAttribute(attribute);
+
+        // Otherwise redirect to the reference handler
+        else if (eStructuralFeature instanceof EReference) {
+            NeoLogger.warn("Feature misinterpreted during the analysis : " +
+                    "the attribute \"" + attribute.getLocalName() + "\" is a reference.");
+
+            Reference reference = new Reference();
+            reference.setNamespace(attribute.getNamespace());
+            reference.setIndex(attribute.getIndex());
+            reference.setLocalName(attribute.getLocalName());
+            reference.setId(attribute.getId());
+            reference.setValue(attribute.getValue());
+
+            handleReference(reference);
+        }
+
+        else {
+            NeoLogger.warn("Attribute \"" + eClass.getName() + '#' + attribute.getLocalName() + "\" does not exist in the metamodel. It will be ignored");
+        }
     }
 
     @Override
     public void handleReference(Reference reference) throws Exception {
         EClass eClass = classesStack.getLast();
+        EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(reference.getLocalName());
 
-        // Update containment value
-        EReference eReference = (EReference) eClass.getEStructuralFeature(reference.getLocalName());
-        reference.setContainment(eReference.isContainment());
+        // Checks that the reference is well a reference
+        if (eStructuralFeature instanceof EReference) {
+            // Update containment value
+            EReference eReference = (EReference) eStructuralFeature;
+            reference.setContainment(eReference.isContainment());
 
-        // Update namespace if not already present
-        if (reference.getNamespace() == null) {
-            EPackage ePackage = eClass.getEPackage();
-            reference.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
+            // Update namespace if not already present
+            if (reference.getNamespace() == null) {
+                EPackage ePackage = eClass.getEPackage();
+                reference.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
+            }
+            super.handleReference(reference);
         }
-        super.handleReference(reference);
+
+        // Otherwise redirect to the attribute handler
+        else if (eStructuralFeature instanceof EAttribute) {
+            NeoLogger.warn("Feature misinterpreted during the analysis : " +
+                    "the reference \"" + reference.getLocalName() + "\" is an attribute.");
+
+            Attribute attribute = new Attribute();
+            attribute.setNamespace(reference.getNamespace());
+            attribute.setIndex(reference.getIndex());
+            attribute.setLocalName(reference.getLocalName());
+            attribute.setId(reference.getId());
+            attribute.setValue(reference.getValue());
+
+            handleAttribute(attribute);
+        }
+
+        else {
+            NeoLogger.warn("Reference \"" + eClass.getName() + '#' + reference.getLocalName() + "\" does not exist in the metamodel. It will be ignored");
+        }
     }
 
     @Override
