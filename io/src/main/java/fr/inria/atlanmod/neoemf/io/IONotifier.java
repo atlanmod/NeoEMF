@@ -16,8 +16,9 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
+ * A object able to notify {@link IOHandler handlers}.
  *
- * @param <T>
+ * @param <T> the type of handlers
  */
 public interface IONotifier<T extends IOHandler> {
 
@@ -42,15 +43,41 @@ public interface IONotifier<T extends IOHandler> {
      */
     Iterable<T> getHandlers();
 
+    /**
+     * Notifies that start of an action.
+     *
+     * @see #notifyEndDocument()
+     */
     void notifyStartDocument() throws Exception;
 
+    /**
+     * Notifies that start of a new element.
+     *
+     * @see #notifyEndElement()
+     */
     void notifyStartElement(Classifier classifier) throws Exception;
 
+    /**
+     * Notifies a new attribute.
+     */
     void notifyAttribute(Attribute attribute) throws Exception;
 
+    /**
+     * Notifies a new reference.
+     */
     void notifyReference(Reference reference) throws Exception;
 
+    /**
+     * Notifies the end of the current element.
+     *
+     * @see #notifyStartElement(Classifier)
+     */
     void notifyEndElement() throws Exception;
 
+    /**
+     * Notifies the end of the current action.
+     *
+     * @see #notifyStartDocument()
+     */
     void notifyEndDocument() throws Exception;
 }

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
- *
+ * A {link StructuralFeature structural feature} of a simple key/value pair.
  */
 public class Attribute extends StructuralFeature {
 

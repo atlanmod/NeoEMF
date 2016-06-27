@@ -32,4 +32,11 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
     protected void processNamespace(String prefix, String uri) {
         Namespace.Registry.getInstance().register(prefix, uri);
     }
+
+    @Override
+    public void notifyEndDocument() throws Exception {
+        Namespace.Registry.getInstance().clean();
+
+        super.notifyEndDocument();
+    }
 }

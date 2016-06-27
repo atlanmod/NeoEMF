@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.io.hash.HashCode;
 import fr.inria.atlanmod.neoemf.io.hash.Hasher;
 
 /**
- *
+ * A {@link Hasher hasher} using the {@code MD5} algorithm.
  */
 public class Md5Hasher implements Hasher {
 

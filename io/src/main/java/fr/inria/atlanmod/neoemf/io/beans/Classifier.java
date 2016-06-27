@@ -12,14 +12,12 @@
 package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
- *
+ * A {@link NamedElement} which can be typed.
  */
 public class Classifier extends NamedElement {
 
     private String id;
-
     private String className;
-
     private NamedElement metaclass;
 
     public String getId() {

@@ -12,12 +12,11 @@
 package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
- *
+ * A simple element identified by a {@link Namespace namespace} and its name inside it.
  */
 public class NamedElement {
 
     private Namespace namespace;
-
     private String localName;
 
     public NamedElement() {

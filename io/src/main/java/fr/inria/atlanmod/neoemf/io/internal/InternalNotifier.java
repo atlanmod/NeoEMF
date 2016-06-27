@@ -14,9 +14,12 @@ package fr.inria.atlanmod.neoemf.io.internal;
 import fr.inria.atlanmod.neoemf.io.IONotifier;
 
 /**
- *
+ * An {@link IONotifier notifier} that notifies {@link InternalHandler internal handlers}.
  */
 public interface InternalNotifier extends IONotifier<InternalHandler> {
 
+    /**
+     * Notifies a new set of characters.
+     */
     void notifyCharacters(String characters) throws Exception;
 }

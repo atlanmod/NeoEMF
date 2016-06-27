@@ -12,9 +12,16 @@
 package fr.inria.atlanmod.neoemf.io.hash;
 
 /**
- *
+ * An object able to calculate the {@link HashCode hashcode} of a value.
  */
 public interface Hasher {
 
+    /**
+     * Calculates the {@link HashCode hashcode} of the given {@code value}.
+     *
+     * @param value the value to has
+     *
+     * @return an hashcode
+     */
     HashCode hash(String value);
 }

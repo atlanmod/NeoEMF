@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An {@link InternalHandler internal handler} that analyses XML elements in order to create and process XPath
+ * An {@link InternalHandler internal handler} that analyses XML elements in order to create and to process XPath
  * references.
  */
 public class XPathHandler extends AbstractDelegatedInternalHandler {

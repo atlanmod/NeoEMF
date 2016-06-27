@@ -14,10 +14,15 @@ package fr.inria.atlanmod.neoemf.io.hash;
 import fr.inria.atlanmod.neoemf.io.hash.impl.Md5Hasher;
 
 /**
- *
+ * A factory of {@link Hasher hashers}.
  */
 public class HasherFactory {
 
+    /**
+     * Returns an instance of a {@link Hasher hasher} using {@code MD5}.
+     *
+     * @return an instance of a {@link Hasher hasher} using {@code MD5}
+     */
     public static Hasher md5() {
         return Md5Hasher.getInstance();
     }

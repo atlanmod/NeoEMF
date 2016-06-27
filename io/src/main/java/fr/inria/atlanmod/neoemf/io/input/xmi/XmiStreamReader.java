@@ -26,7 +26,9 @@ import java.io.File;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
- *
+ * A XMI {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} that uses stream for reading.
+ * <p/>
+ * It uses a SAX implementation of XML parsing.
  */
 public class XmiStreamReader extends AbstractXmiReader {
 

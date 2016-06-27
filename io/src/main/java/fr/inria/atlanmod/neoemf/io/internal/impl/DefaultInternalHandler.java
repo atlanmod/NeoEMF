@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.io.impl.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 /**
- * A simple {@link InternalHandler handler} that notifies registered {@link PersistenceHandler persistence handler}.
+ * A simple {@link InternalHandler handler} that notifies registered {@link PersistenceHandler persistence handlers}.
  */
 public class DefaultInternalHandler extends AbstractNotifier<PersistenceHandler> implements InternalHandler {
 
@@ -55,6 +55,6 @@ public class DefaultInternalHandler extends AbstractNotifier<PersistenceHandler>
 
     @Override
     public void handleCharacters(String characters) throws Exception {
-        // Do nothing
+        // Do nothing : Persistence handlers do not have to deal with characters
     }
 }

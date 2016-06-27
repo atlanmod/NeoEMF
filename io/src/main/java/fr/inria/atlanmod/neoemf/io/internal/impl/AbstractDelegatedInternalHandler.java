@@ -18,7 +18,8 @@ import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 /**
- * An abstract implementation of an {@link InternalHandler internal handler}.
+ * An abstract implementation of an {@link InternalHandler internal handler} that delegates all methods to its
+ * embedded handler.
  */
 public class AbstractDelegatedInternalHandler implements InternalHandler {
 
@@ -27,6 +28,8 @@ public class AbstractDelegatedInternalHandler implements InternalHandler {
     protected AbstractDelegatedInternalHandler(InternalHandler internalHandler) {
         this.internalHandler = internalHandler;
     }
+
+    // Handler methods
 
     @Override
     public void handleStartDocument() throws Exception {
@@ -62,6 +65,8 @@ public class AbstractDelegatedInternalHandler implements InternalHandler {
     public void handleEndDocument() throws Exception {
         internalHandler.handleEndDocument();
     }
+
+    // Notifier methods
 
     @Override
     public void addHandler(PersistenceHandler persistenceHandler) {

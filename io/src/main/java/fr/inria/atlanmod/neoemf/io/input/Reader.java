@@ -17,7 +17,9 @@ import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import java.io.File;
 
 /**
- *
+ * A {@link IONotifier notifier} able to read a file.
+ * </p>
+ * It correspond to the head of the parsing process in case of an import.
  */
 public interface Reader extends IONotifier<InternalHandler> {
 

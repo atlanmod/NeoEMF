@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.beans;
 import org.eclipse.emf.ecore.InternalEObject;
 
 /**
- *
+ * A simple structural feature which can be either a reference or an attribute.
  */
 public abstract class StructuralFeature extends NamedElement {
 
@@ -52,10 +52,20 @@ public abstract class StructuralFeature extends NamedElement {
         this.value = value;
     }
 
+    /**
+     * Defines if this structural element is a {@link Reference reference}.
+     *
+     * @return {@code true} if this structural element is a reference.
+     */
     public boolean isReference() {
         return false;
     }
 
+    /**
+     * Defines if this structural element is a {@link Attribute attribute}.
+     *
+     * @return {@code true} if this structural element is a attribute.
+     */
     public boolean isAttribute() {
         return false;
     }

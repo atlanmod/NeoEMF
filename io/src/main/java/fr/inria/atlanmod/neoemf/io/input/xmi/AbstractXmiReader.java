@@ -31,20 +31,42 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * An abstract implementation of a {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} able to process {@code
+ * XMI} files.
  */
 public abstract class AbstractXmiReader extends AbstractReader {
 
+    /**
+     * The attribute key representing the identifier of an element.
+     */
     private static final String ID_ATTR = "xmi:id";
 
+    /**
+     * The attribute key representing the metaclass of an element.
+     */
     private static final String TYPE_ATTR = "xsi:type";
 
+    /**
+     * A regex pattern of an attribute containing one or several references (XPath reference).
+     * <p/>
+     * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
+     * <p/>
+     * Multiple references must be seperated by a space
+     */
     private static final Pattern PATTERN_WELL_FORMED_REF =
             Pattern.compile("(/{1,2}@\\w+(\\.\\d+)?[ ]?)+", Pattern.UNICODE_CASE);
 
+    /**
+     * A regex pattern of a prefixed value.
+     * <p/>
+     * Example of recognized strings : {@code "&lt;prefix&gt;:&lt;name&gt;"}
+     */
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
+    /**
+     * Processes a new element and send a notification to handlers.
+     */
     protected void processElement(String uri, String localName, Attributes attributes) throws Exception {
         Classifier element = new Classifier();
         element.setNamespace(Namespace.Registry.getInstance().getFromUri(uri));
@@ -77,21 +99,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
     }
 
-    private static String getPrefix(String qName) {
-        String prefix = null;
+    /**
+     * Processes an attribute
 
-        if (qName == null) {
-            return null;
-        }
-
-        List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(qName);
-        if (splittedName.size() > 1) {
-            prefix = splittedName.get(0);
-        }
-
-        return prefix;
-    }
-
+     * @return a list of {@link StructuralFeature structural features} that can be empty.
+     */
     private List<StructuralFeature> processAttribute(Classifier element, String prefix, String locaName, String value) throws Exception {
         if (prefix != null) {
             // xsi:type
@@ -124,23 +136,34 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
     }
 
+    /**
+     * Processes a list of {@code references} and returns a list of {@link Reference}.
+
+     * @return a list of {@link Reference} from the given {@code references}
+     */
     private List<StructuralFeature> processReferences(Namespace ns, String name, List<String> references) throws Exception {
         List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
 
         int index = 0;
-        for (String ref : references) {
-            StructuralFeature structuralFeature = new Reference();
-            structuralFeature.setNamespace(ns);
-            structuralFeature.setLocalName(name);
-            structuralFeature.setIndex(index);
-            structuralFeature.setValue(ref);
-            structuralFeatures.add(structuralFeature);
+        for (String s : references) {
+            Reference ref = new Reference();
+            ref.setNamespace(ns);
+            ref.setLocalName(name);
+            ref.setIndex(index);
+            ref.setValue(s);
+            structuralFeatures.add(ref);
             index++;
         }
 
         return structuralFeatures;
     }
 
+    /**
+     * Processes a metaclass attribute from the given {@code prefixedValue}, and defines is as the metaclass of the
+     * given {@code element}.
+     *
+     * @see #PATTERN_PREFIXED_VALUE
+     */
     private void processMetaClass(Classifier element, String prefixedValue) throws Exception {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
@@ -153,12 +176,25 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
     }
 
-    private List<String> getReferences(String value) {
-        if (value.trim().isEmpty()) {
+    protected void processCharacters(String characters) throws Exception {
+        notifyCharacters(characters);
+    }
+
+    /**
+     * Returns a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
+     * does not match with {@link #PATTERN_WELL_FORMED_REF}.
+     *
+     * @return a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
+     * does not match with {@link #PATTERN_WELL_FORMED_REF}
+     *
+     * @see #PATTERN_WELL_FORMED_REF
+     */
+    private static List<String> getReferences(String attribute) {
+        if (attribute.trim().isEmpty()) {
             return null;
         }
 
-        List<String> references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(value);
+        List<String> references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
 
         boolean isReference = true;
         for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
@@ -169,7 +205,22 @@ public abstract class AbstractXmiReader extends AbstractReader {
         return isReference ? references : null;
     }
 
-    protected void processCharacters(String characters) throws Exception {
-        notifyCharacters(characters);
+    /**
+     * Returns the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix.
+     * @return the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix
+     */
+    private static String getPrefix(String prefixedValue) {
+        String prefix = null;
+
+        if (prefixedValue == null) {
+            return null;
+        }
+
+        List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
+        if (splittedName.size() > 1) {
+            prefix = splittedName.get(0);
+        }
+
+        return prefix;
     }
 }

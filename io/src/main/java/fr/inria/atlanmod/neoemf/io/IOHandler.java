@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
- *
+ * A object able to handle notifications sent by a {@link IONotifier notifier}.
  */
 public interface IOHandler {
 

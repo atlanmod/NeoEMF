@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * An abstract implementation of a {@link IONotifier notifier}.
  */
 public abstract class AbstractNotifier<T extends IOHandler> implements IONotifier<T> {
 
@@ -48,42 +48,42 @@ public abstract class AbstractNotifier<T extends IOHandler> implements IONotifie
     }
 
     @Override
-    public final void notifyStartDocument() throws Exception {
+    public void notifyStartDocument() throws Exception {
         for (T h : getHandlers()) {
             h.handleStartDocument();
         }
     }
 
     @Override
-    public final void notifyStartElement(Classifier classifier) throws Exception {
+    public void notifyStartElement(Classifier classifier) throws Exception {
         for (T h : getHandlers()) {
             h.handleStartElement(classifier);
         }
     }
 
     @Override
-    public final void notifyAttribute(Attribute attribute) throws Exception {
+    public void notifyAttribute(Attribute attribute) throws Exception {
         for (T h : getHandlers()) {
             h.handleAttribute(attribute);
         }
     }
 
     @Override
-    public final void notifyReference(Reference reference) throws Exception {
+    public void notifyReference(Reference reference) throws Exception {
         for (T h : getHandlers()) {
             h.handleReference(reference);
         }
     }
 
     @Override
-    public final void notifyEndElement() throws Exception {
+    public void notifyEndElement() throws Exception {
         for (T h : getHandlers()) {
             h.handleEndElement();
         }
     }
 
     @Override
-    public final void notifyEndDocument() throws Exception {
+    public void notifyEndDocument() throws Exception {
         for (T h : getHandlers()) {
             h.handleEndDocument();
         }

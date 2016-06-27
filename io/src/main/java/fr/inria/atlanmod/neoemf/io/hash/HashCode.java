@@ -12,7 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.hash;
 
 /**
+ * A simple hashcode.
  *
+ * @see Hasher#hash(String)
  */
 public interface HashCode {
 

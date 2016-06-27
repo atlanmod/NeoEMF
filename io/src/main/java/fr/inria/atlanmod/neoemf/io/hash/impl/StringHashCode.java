@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.hash.impl;
 import fr.inria.atlanmod.neoemf.io.hash.HashCode;
 
 /**
- *
+ * A hashcode with a {@link String} representation.
  */
 class StringHashCode implements HashCode {
 
