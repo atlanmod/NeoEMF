@@ -28,9 +28,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- *
+ * An {@link InternalHandler internal handler} that creates and links simple elements to an Ecore structure.
  */
-public class EcoreProcessor extends AbstractInternalProcessor {
+public class EcoreHandler extends AbstractDelegatedInternalHandler {
 
     /**
      * Stack containing previous {@link EClass}.
@@ -52,7 +52,7 @@ public class EcoreProcessor extends AbstractInternalProcessor {
      */
     private boolean wasAttribute;
 
-    public EcoreProcessor(InternalHandler handler) {
+    public EcoreHandler(InternalHandler handler) {
         super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();

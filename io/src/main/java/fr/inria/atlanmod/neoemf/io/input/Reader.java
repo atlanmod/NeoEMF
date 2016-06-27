@@ -21,7 +21,17 @@ import java.io.File;
  */
 public interface Reader extends IONotifier<InternalHandler> {
 
+    /**
+     * Creates a series of internal handlers in order to build and analyze the read struture.
+     *
+     * @return an internal handler, or several embedded
+     */
     InternalHandler newHandler();
 
+    /**
+     * Reads a file and notifies {@link InternalHandler internal handlers}.
+     *
+     * @param file the file to read
+     */
     void read(File file) throws Exception;
 }

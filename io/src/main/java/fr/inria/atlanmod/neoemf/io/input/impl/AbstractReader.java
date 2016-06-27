@@ -13,13 +13,22 @@ package fr.inria.atlanmod.neoemf.io.input.impl;
 
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.input.Reader;
+import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.AbstractInternalNotifier;
 
 /**
- *
+ * An abstract implementation of a {@link Reader reader} that notifies {@link InternalHandler internal handlers}.
  */
 public abstract class AbstractReader extends AbstractInternalNotifier implements Reader {
 
+    /**
+     * Processes a {@link Namespace} declaration.
+     *
+     * @param prefix the prefix
+     * @param uri the uri associated with the {@code prefix}
+     *
+     * @see fr.inria.atlanmod.neoemf.io.beans.Namespace.Registry#register(String, String)
+     */
     protected void processNamespace(String prefix, String uri) {
         Namespace.Registry.getInstance().register(prefix, uri);
     }

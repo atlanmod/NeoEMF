@@ -15,6 +15,10 @@ import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
+/**
+ *
+ * @param <T>
+ */
 public interface IONotifier<T extends IOHandler> {
 
     /**

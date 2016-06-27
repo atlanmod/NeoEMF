@@ -11,16 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.io.internal.impl;
 
+import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 /**
- *
+ * A simple {@link InternalHandler handler} that notifies registered {@link PersistenceHandler persistence handler}.
  */
-public class InternalHandlerImpl extends AbstractPersistenceNotifier implements InternalHandler {
+public class InternalHandlerImpl extends AbstractNotifier<PersistenceHandler> implements InternalHandler {
 
     @Override
     public void handleStartDocument() throws Exception {

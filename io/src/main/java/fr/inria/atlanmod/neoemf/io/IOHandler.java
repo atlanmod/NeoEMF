@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
- * A basic handler.
+ *
  */
 public interface IOHandler {
 

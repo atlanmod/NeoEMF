@@ -16,16 +16,15 @@ import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.InternalProcessor;
 
 /**
- *
+ * An abstract implementation of an {@link InternalHandler internal handler}.
  */
-public class AbstractInternalProcessor implements InternalProcessor {
+public class AbstractDelegatedInternalHandler implements InternalHandler {
 
     private final InternalHandler internalHandler;
 
-    protected AbstractInternalProcessor(InternalHandler internalHandler) {
+    protected AbstractDelegatedInternalHandler(InternalHandler internalHandler) {
         this.internalHandler = internalHandler;
     }
 

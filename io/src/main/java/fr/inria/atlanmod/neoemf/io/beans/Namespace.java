@@ -36,6 +36,9 @@ public class Namespace {
         return uri;
     }
 
+    /**
+     * Registry of all declared {@link Namespace namespaces}.
+     */
     public static class Registry {
 
         private static Registry INSTANCE;

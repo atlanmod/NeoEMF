@@ -28,9 +28,10 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- *
+ * An {@link InternalHandler internal handler} that analyses XML elements in order to create and process XPath
+ * references.
  */
-public class XPathProcessor extends AbstractInternalProcessor {
+public class XPathHandler extends AbstractDelegatedInternalHandler {
 
     private static final String XPATH_START_EXPR = "//@";
     private static final String XPATH_END_EXPR = "/";
@@ -48,14 +49,14 @@ public class XPathProcessor extends AbstractInternalProcessor {
     private final TreePath paths;
 
     /**
-     * The start of an XPath expression in this {@code XPathProcessor}.
+     * The start of an XPath expression in this {@code XPathHandler}.
      * This variable is necessary to replace the malformed XPath reference in XMI files
      */
     private String expressionStart;
 
     private boolean hasIds;
 
-    public XPathProcessor(InternalHandler handler) {
+    public XPathHandler(InternalHandler handler) {
         super(handler);
         this.paths = new TreePath();
         this.hasIds = false;
