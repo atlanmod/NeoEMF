@@ -11,14 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.io.impl;
 
+import com.google.common.base.Stopwatch;
+
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-
-import org.joda.time.Duration;
-import org.joda.time.Instant;
 
 /**
  * A delegated {@link PersistenceHandler persistence handler} that counts the number of different element, and gives the
@@ -26,7 +25,7 @@ import org.joda.time.Instant;
  */
 public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersistenceHandler {
 
-    private Instant start;
+    private Stopwatch stopWatch;
 
     private final String name;
 
@@ -45,7 +44,7 @@ public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersist
     @Override
     public void handleStartDocument() throws Exception {
         NeoLogger.info("[" + name +  "] Document analysis in progress...");
-        start = Instant.now();
+        stopWatch = Stopwatch.createStarted();
 
         super.handleStartDocument();
     }
@@ -73,10 +72,7 @@ public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersist
 
     @Override
     public void handleEndDocument() throws Exception {
-        Instant end = Instant.now();
-        Duration duration = new Duration(start, end);
-
-        NeoLogger.info("[{0}] Document analysis done in {1}", name, duration);
+        NeoLogger.info("[{0}] Document analysis done in {1}", name, stopWatch.stop());
         NeoLogger.info("[{0}]  - Elements   : {1}", name, elementCount);
         NeoLogger.info("[{0}]  - Attributes : {1}", name, attributeCount);
         NeoLogger.info("[{0}]  - References : {1}", name, referenceCount);

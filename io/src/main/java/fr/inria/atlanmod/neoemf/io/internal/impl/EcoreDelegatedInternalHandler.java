@@ -102,8 +102,8 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Otherwise redirect to the reference handler
         else if (eStructuralFeature instanceof EReference) {
             NeoLogger.warn(
-                    "Feature misinterpreted during the analysis : the attribute {0} is an reference",
-                    attribute.getLocalName());
+                    "Feature misinterpreted during the analysis : {0}:{1} is a reference. Value = {2}",
+                    eClass.getName(), attribute.getLocalName(), attribute.getValue());
 
             handleReference(Reference.from(attribute));
         }
@@ -111,7 +111,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Not a feature of this class
         else {
             NeoLogger.warn(
-                    "Attribute {0}:{1} does not exist in the metamodel. It will be ignored",
+                    "Feature {0}:{1} does not exist in the metamodel. It will be ignored",
                     eClass.getName(), attribute.getLocalName());
         }
     }
@@ -138,8 +138,8 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Otherwise redirect to the attribute handler
         else if (eStructuralFeature instanceof EAttribute) {
             NeoLogger.warn(
-                    "Feature misinterpreted during the analysis : the reference {0} is an attribute",
-                    reference.getLocalName());
+                    "Feature misinterpreted during the analysis : {0}:{1} is an attribute. Value = {2}",
+                    eClass.getName(), reference.getLocalName(), reference.getValue());
 
             handleAttribute(Attribute.from(reference));
         }
@@ -147,7 +147,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Not a feature of this class
         else {
             NeoLogger.warn(
-                    "Reference {0}:{1} does not exist in the metamodel. It will be ignored",
+                    "Feature {0}:{1} does not exist in the metamodel. It will be ignored",
                     eClass.getName(), reference.getLocalName());
         }
     }

@@ -23,12 +23,6 @@
 
     <dependencies>
 
-        <!-- Integrated with JDK8 -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
-
         <!-- Internal dependencies -->
 
         <dependency>
