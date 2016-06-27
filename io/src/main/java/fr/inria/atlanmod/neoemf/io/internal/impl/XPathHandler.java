@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.internal.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -63,17 +63,17 @@ public class XPathHandler extends AbstractDelegatedInternalHandler {
     }
 
     @Override
-    public void handleStartElement(ClassifierElement element) throws Exception {
-        if (element.getId() != null) {
+    public void handleStartElement(Classifier classifier) throws Exception {
+        if (classifier.getId() != null) {
             hasIds = true;
         }
 
         if (!hasIds) {
             // Processes the id from the path of the element in XML tree
-            String path = paths.getPath(element.getLocalName());
+            String path = paths.getPath(classifier.getLocalName());
 
             // Increments the number of occurence for this path
-            Integer count = paths.createOrIncrement(element.getLocalName());
+            Integer count = paths.createOrIncrement(classifier.getLocalName());
 
             // Defines the id as '<path>.<index>'
             String id = path + XPATH_INDEX_SEPARATOR + count;
@@ -83,10 +83,10 @@ public class XPathHandler extends AbstractDelegatedInternalHandler {
                 expressionStart = id + XPATH_START_ELT;
             }
 
-            element.setId(id);
+            classifier.setId(id);
         }
 
-        super.handleStartElement(element);
+        super.handleStartElement(classifier);
     }
 
     @Override

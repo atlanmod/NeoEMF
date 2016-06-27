@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
@@ -44,7 +44,7 @@ public interface IONotifier<T extends IOHandler> {
 
     void notifyStartDocument() throws Exception;
 
-    void notifyStartElement(ClassifierElement element) throws Exception;
+    void notifyStartElement(Classifier classifier) throws Exception;
 
     void notifyAttribute(Attribute attribute) throws Exception;
 

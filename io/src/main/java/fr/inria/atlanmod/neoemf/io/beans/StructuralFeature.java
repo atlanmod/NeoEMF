@@ -11,14 +11,22 @@
 
 package fr.inria.atlanmod.neoemf.io.beans;
 
+import org.eclipse.emf.ecore.InternalEObject;
+
 /**
  *
  */
-public abstract class Feature extends NamedElement {
+public abstract class StructuralFeature extends NamedElement {
+
+    private static final int DEFAULT_INDEX = InternalEObject.EStore.NO_INDEX;
 
     private String id;
     private int index;
     private String value;
+
+    public StructuralFeature() {
+        this.index = DEFAULT_INDEX;
+    }
 
     public String getId() {
         return id;

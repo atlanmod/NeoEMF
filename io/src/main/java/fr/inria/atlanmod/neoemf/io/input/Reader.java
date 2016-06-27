@@ -26,7 +26,7 @@ public interface Reader extends IONotifier<InternalHandler> {
      *
      * @return an internal handler, or several embedded
      */
-    InternalHandler newHandler();
+    InternalHandler newDefaultHandler();
 
     /**
      * Reads a file and notifies {@link InternalHandler internal handlers}.

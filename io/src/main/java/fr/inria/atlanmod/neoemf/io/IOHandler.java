@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
@@ -28,7 +28,7 @@ public interface IOHandler {
     /**
      * Handle the start of an element.
      */
-    void handleStartElement(ClassifierElement element) throws Exception;
+    void handleStartElement(Classifier classifier) throws Exception;
 
     /**
      * Handle an attribute in the current element.

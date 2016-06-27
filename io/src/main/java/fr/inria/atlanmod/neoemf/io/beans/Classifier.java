@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.beans;
 /**
  *
  */
-public class ClassifierElement extends NamedElement {
+public class Classifier extends NamedElement {
 
     private String id;
 

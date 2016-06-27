@@ -12,13 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
-import fr.inria.atlanmod.neoemf.io.beans.Feature;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.beans.StructuralFeature;
 import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
 
 import org.xml.sax.Attributes;
@@ -45,18 +46,18 @@ public abstract class AbstractXmiReader extends AbstractReader {
             Pattern.compile("(\\w+):(\\w+)");
 
     protected void processElement(String uri, String localName, Attributes attributes) throws Exception {
-
-        ClassifierElement element = new ClassifierElement();
+        Classifier element = new Classifier();
         element.setNamespace(Namespace.Registry.getInstance().getFromUri(uri));
         element.setLocalName(localName);
 
-        List<Feature> features = new ArrayList<>();
+        int attrLength = attributes.getLength();
+
+        List<StructuralFeature> structuralFeatures = new ArrayList<>(attrLength);
 
         // Processes attributes / Check "xmi:id" and "xsi:type"
-        int attrLength = attributes.getLength();
         if (attrLength > 0) {
             for (int i = 0; i < attrLength; i++) {
-                features.addAll(processAttribute(
+                structuralFeatures.addAll(processAttribute(
                         element,
                         getPrefix(attributes.getQName(i)),
                         attributes.getLocalName(i),
@@ -67,11 +68,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
         notifyStartElement(element);
 
         // Send attributes and references
-        for (Feature f : features) {
-            if (f.isAttribute()) {
-                notifyAttribute((Attribute) f);
+        for (StructuralFeature feature : structuralFeatures) {
+            if (feature.isAttribute()) {
+                notifyAttribute((Attribute) feature);
             } else {
-                notifyReference((Reference) f);
+                notifyReference((Reference) feature);
             }
         }
     }
@@ -91,7 +92,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
         return prefix;
     }
 
-    private List<Feature> processAttribute(ClassifierElement element, String prefix, String locaName, String value) throws Exception {
+    private List<StructuralFeature> processAttribute(Classifier element, String prefix, String locaName, String value) throws Exception {
         if (prefix != null) {
             // xsi:type
             if (TYPE_ATTR.equals(prefix + ":" + locaName)) {
@@ -108,42 +109,39 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
         Namespace ns = Namespace.Registry.getInstance().getFromPrefix(prefix);
 
-        Iterable<String> references = getReferences(value);
+        List<String> references = getReferences(value);
         if (references != null) {
             return processReferences(ns, locaName, references);
         }
         else {
-            List<Feature> features = new ArrayList<>();
+            StructuralFeature structuralFeature = new Attribute();
+            structuralFeature.setNamespace(ns);
+            structuralFeature.setLocalName(locaName);
+            structuralFeature.setIndex(0);
+            structuralFeature.setValue(value);
 
-            Feature feature = new Attribute();
-            feature.setNamespace(ns);
-            feature.setLocalName(locaName);
-            feature.setIndex(0);
-            feature.setValue(value);
-            features.add(feature);
-
-            return features;
+            return Lists.newArrayList(structuralFeature);
         }
     }
 
-    private List<Feature> processReferences(Namespace ns, String name, Iterable<String> references) throws Exception {
-        List<Feature> features = new ArrayList<>();
+    private List<StructuralFeature> processReferences(Namespace ns, String name, List<String> references) throws Exception {
+        List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
 
         int index = 0;
         for (String ref : references) {
-            Feature feature = new Reference();
-            feature.setNamespace(ns);
-            feature.setLocalName(name);
-            feature.setIndex(index);
-            feature.setValue(ref);
-            features.add(feature);
+            StructuralFeature structuralFeature = new Reference();
+            structuralFeature.setNamespace(ns);
+            structuralFeature.setLocalName(name);
+            structuralFeature.setIndex(index);
+            structuralFeature.setValue(ref);
+            structuralFeatures.add(structuralFeature);
             index++;
         }
 
-        return features;
+        return structuralFeatures;
     }
 
-    private void processMetaClass(ClassifierElement element, String prefixedValue) throws Exception {
+    private void processMetaClass(Classifier element, String prefixedValue) throws Exception {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
             NamedElement metaClass = new NamedElement();
@@ -151,7 +149,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
             metaClass.setLocalName(m.group(2));
             element.setMetaclass(metaClass);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
         }
     }
 

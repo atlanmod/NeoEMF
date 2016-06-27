@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.impl;
 import fr.inria.atlanmod.neoemf.io.IOHandler;
 import fr.inria.atlanmod.neoemf.io.IONotifier;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 import java.util.Collections;
@@ -55,9 +55,9 @@ public abstract class AbstractNotifier<T extends IOHandler> implements IONotifie
     }
 
     @Override
-    public final void notifyStartElement(ClassifierElement element) throws Exception {
+    public final void notifyStartElement(Classifier classifier) throws Exception {
         for (T h : getHandlers()) {
-            h.handleStartElement(element);
+            h.handleStartElement(classifier);
         }
     }
 

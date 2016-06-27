@@ -20,6 +20,14 @@ public class NamedElement {
 
     private String localName;
 
+    public NamedElement() {
+    }
+
+    public NamedElement(Namespace namespace, String localName) {
+        this.namespace = namespace;
+        this.localName = localName;
+    }
+
     public Namespace getNamespace() {
         return namespace;
     }

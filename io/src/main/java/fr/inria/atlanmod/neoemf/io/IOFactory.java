@@ -25,16 +25,17 @@ public class IOFactory {
     private IOFactory() {
     }
 
-    public static void importXmi(File file, PersistenceHandler persistenceHandler) throws Exception {
+    public static void importXmi(File file, PersistenceHandler... persistenceHandlers) throws Exception {
         if (!file.getName().endsWith(".xmi")) {
             throw new IllegalArgumentException("Only XMI files can be read.");
         }
 
         Reader reader = new XmiStreamReader();
 
-        InternalHandler internalHandler = reader.newHandler();
-        internalHandler.addHandler(persistenceHandler);
-        reader.addHandler(internalHandler);
+        InternalHandler internalHandler = reader.newDefaultHandler();
+        for (PersistenceHandler p : persistenceHandlers) {
+            internalHandler.addHandler(p);
+        }
 
         reader.read(file);
     }

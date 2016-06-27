@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.beans;
 /**
  *
  */
-public class Reference extends Feature {
+public class Reference extends StructuralFeature {
 
     @Override
     public boolean isReference() {

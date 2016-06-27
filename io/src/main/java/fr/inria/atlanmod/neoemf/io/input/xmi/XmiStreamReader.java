@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.io.input.xmi;
 
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.io.internal.impl.DefaultInternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.EcoreHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.InternalHandlerImpl;
 import fr.inria.atlanmod.neoemf.io.internal.impl.XPathHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -31,8 +31,10 @@ import javax.xml.parsers.SAXParserFactory;
 public class XmiStreamReader extends AbstractXmiReader {
 
     @Override
-    public InternalHandler newHandler() {
-        return new EcoreHandler(new XPathHandler(new InternalHandlerImpl()));
+    public InternalHandler newDefaultHandler() {
+        InternalHandler defaultHandler = new EcoreHandler(new XPathHandler(new DefaultInternalHandler()));
+        addHandler(defaultHandler);
+        return defaultHandler;
     }
 
     public void read(File file) throws Exception {

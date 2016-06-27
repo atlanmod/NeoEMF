@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.beans;
 /**
  *
  */
-public class Attribute extends Feature {
+public class Attribute extends StructuralFeature {
 
     @Override
     public boolean isAttribute() {

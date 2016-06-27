@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.impl;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
@@ -33,8 +33,8 @@ public abstract class AbstractDelegatedPersistenceHandler implements Persistence
     }
 
     @Override
-    public void handleStartElement(ClassifierElement element) throws Exception {
-        handler.handleStartElement(element);
+    public void handleStartElement(Classifier classifier) throws Exception {
+        handler.handleStartElement(classifier);
     }
 
     @Override

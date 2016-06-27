@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -96,18 +96,18 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void handleStartElement(ClassifierElement element) throws Exception {
-        checkNotNull(element.getId());
+    public void handleStartElement(Classifier classifier) throws Exception {
+        checkNotNull(classifier.getId());
 
         boolean retry;
 
         // Hash reference a first time
-        Id id = hashId(element.getId());
+        Id id = hashId(classifier.getId());
 
         do {
             try {
                 // Try to persist with the current Id
-                addElement(id, element.getNamespace().getUri(), element.getClassName());
+                addElement(id, classifier.getNamespace().getUri(), classifier.getClassName());
                 retry = false;
             }
             catch (AlreadyExistingIdException e) {
@@ -116,16 +116,16 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
                 // Hash reference another time + Store (or update) in cache
                 id = hashId(id.toString());
-                conflictedIdsCache.put(element.getId(), id);
+                conflictedIdsCache.put(classifier.getId(), id);
 
                 retry = true;
             }
         } while (retry);
 
         idStack.addLast(id);
-        tryLink(element.getId(), id);
+        tryLink(classifier.getId(), id);
 
-        createMetaClass(element.getMetaclass());
+        createMetaClass(classifier.getMetaclass());
 
         incrementAndCommit();
     }

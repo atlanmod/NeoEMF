@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -53,10 +53,10 @@ public class CounterHandler extends AbstractDelegatedPersistenceHandler {
     }
 
     @Override
-    public void handleStartElement(ClassifierElement element) throws Exception {
+    public void handleStartElement(Classifier classifier) throws Exception {
         elementCount++;
 
-        super.handleStartElement(element);
+        super.handleStartElement(classifier);
     }
 
     @Override

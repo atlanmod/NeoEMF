@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.internal.impl;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
@@ -34,8 +34,8 @@ public class AbstractDelegatedInternalHandler implements InternalHandler {
     }
 
     @Override
-    public void handleStartElement(ClassifierElement element) throws Exception {
-        internalHandler.handleStartElement(element);
+    public void handleStartElement(Classifier classifier) throws Exception {
+        internalHandler.handleStartElement(classifier);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class AbstractDelegatedInternalHandler implements InternalHandler {
     }
 
     @Override
-    public void notifyStartElement(ClassifierElement element) throws Exception {
-        internalHandler.notifyStartElement(element);
+    public void notifyStartElement(Classifier classifier) throws Exception {
+        internalHandler.notifyStartElement(classifier);
     }
 
     @Override

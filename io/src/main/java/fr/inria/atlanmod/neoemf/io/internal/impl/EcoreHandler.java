@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.internal.impl;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.ClassifierElement;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -60,11 +59,11 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
     }
 
     @Override
-    public void handleStartElement(ClassifierElement element) throws Exception {
+    public void handleStartElement(Classifier classifier) throws Exception {
         EClass eClass;
         EPackage ePackage;
 
-        Namespace ns = element.getNamespace();
+        Namespace ns = classifier.getNamespace();
 
         // Is root
         if (ns != null) {
@@ -72,27 +71,24 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
             ePackage = (EPackage) EPackage.Registry.INSTANCE.get(ns.getPrefix());
 
             // Gets the current EClass
-            eClass = (EClass) ePackage.getEClassifier(element.getLocalName());
+            eClass = (EClass) ePackage.getEClassifier(classifier.getLocalName());
 
             // Defines the metaclass of the current element if not present
-            if (element.getMetaclass() == null) {
-                NamedElement metaClass = new NamedElement();
-                metaClass.setNamespace(ns);
-                metaClass.setLocalName(eClass.getName());
-                element.setMetaclass(metaClass);
+            if (classifier.getMetaclass() == null) {
+                classifier.setMetaclass(new NamedElement(ns, eClass.getName()));
             }
 
             // Defines the classname of the current element
-            element.setClassName(eClass.getName());
+            classifier.setClassName(eClass.getName());
 
             // Notifies next handlers
-            super.handleStartElement(element);
+            super.handleStartElement(classifier);
 
             // Saves the current EClass
             classesStack.addLast(eClass);
 
             // Gets the identifier of the element created by next handlers, and save it
-            idsStack.addLast(element.getId());
+            idsStack.addLast(classifier.getId());
         }
         // Is a feature of parent
         else {
@@ -104,7 +100,7 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
             ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
 
             // Gets the structural feature from the parent, according the its local name
-            EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(element.getLocalName());
+            EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
 
             // Is an attribute
             if (eStructuralFeature instanceof EAttribute) {
@@ -112,7 +108,6 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
                 Attribute attr = new Attribute();
                 attr.setNamespace(ns);
                 attr.setLocalName(eStructuralFeature.getName());
-                attr.setIndex(InternalEObject.EStore.NO_INDEX);
 
                 // Waiting a plain text value
                 this.waitingAttribute = attr;
@@ -124,7 +119,7 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
                 // Gets the type the reference
                 eClass = (EClass) eStructuralFeature.getEType();
 
-                NamedElement metaClass = element.getMetaclass();
+                NamedElement metaClass = classifier.getMetaclass();
                 // Checks that the metaclass is a subtype of the reference type : if true, use it instead of supertype
                 if (metaClass != null) {
                     EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.getLocalName());
@@ -138,26 +133,22 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
                 }
                 // If not present, create the metaclass
                 else {
-
-                    metaClass = new NamedElement();
-                    metaClass.setNamespace(ns);
-                    metaClass.setLocalName(eClass.getName());
-                    element.setMetaclass(metaClass);
+                    metaClass = new NamedElement(ns, eClass.getName());
+                    classifier.setMetaclass(metaClass);
                 }
 
                 // Defines the class name and the namespace of the element
-                element.setClassName(eClass.getName());
-                element.setNamespace(ns);
+                classifier.setClassName(eClass.getName());
+                classifier.setNamespace(ns);
 
                 // Notify next handlers of new element, and retreive its identifier
-                super.handleStartElement(element);
-                String currentId = element.getId();
+                super.handleStartElement(classifier);
+                String currentId = classifier.getId();
 
                 // Create a reference from the parent to this element, with the given local name
                 Reference ref = new Reference();
                 ref.setNamespace(ns);
                 ref.setLocalName(eStructuralFeature.getName());
-                ref.setIndex(InternalEObject.EStore.NO_INDEX);
                 ref.setId(idsStack.getLast());
                 ref.setValue(currentId);
                 handleReference(ref);
