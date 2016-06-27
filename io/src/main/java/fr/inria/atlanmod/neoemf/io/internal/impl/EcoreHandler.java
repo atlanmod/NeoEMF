@@ -28,6 +28,8 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An {@link InternalHandler internal handler} that creates and links simple elements to an Ecore structure.
  */
@@ -51,126 +53,30 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
     /**
      * Defines if the previous element was an attribute, or not.
      */
-    private boolean wasAttribute;
+    private boolean lastWasAttribute;
 
     public EcoreHandler(InternalHandler handler) {
         super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
-        this.wasAttribute = false;
+        this.lastWasAttribute = false;
     }
 
     @Override
     public void handleStartElement(Classifier classifier) throws Exception {
-        EClass eClass;
-        EPackage ePackage;
-
-        Namespace ns = classifier.getNamespace();
-
         // Is root
-        if (ns != null) {
-            // Retreives the EPackage from NS prefix
-            ePackage = (EPackage) EPackage.Registry.INSTANCE.get(ns.getPrefix());
-
-            // Gets the current EClass
-            eClass = (EClass) ePackage.getEClassifier(classifier.getLocalName());
-
-            // Defines the metaclass of the current element if not present
-            if (classifier.getMetaclass() == null) {
-                classifier.setMetaclass(new NamedElement(ns, eClass.getName()));
-            }
-
-            // Defines the classname of the current element
-            classifier.setClassName(eClass.getName());
-
-            // Notifies next handlers
-            super.handleStartElement(classifier);
-
-            // Saves the current EClass
-            classesStack.addLast(eClass);
-
-            // Gets the identifier of the element created by next handlers, and save it
-            idsStack.addLast(classifier.getId());
+        if (classesStack.isEmpty()) {
+            createRootObject(classifier);
         }
         // Is a feature of parent
         else {
-            // Retreive the parent EClass
-            EClass parentEClass = classesStack.getLast();
-
-            // Gets the EPackage from it
-            ePackage = parentEClass.getEPackage();
-            ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
-
-            // Gets the structural feature from the parent, according the its local name
-            EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
-
-            // Is an attribute
-            if (eStructuralFeature instanceof EAttribute) {
-                EAttribute eAttribute = (EAttribute) eStructuralFeature;
-
-                // Creates an attribute
-                Attribute attr = new Attribute();
-                attr.setNamespace(ns);
-                attr.setLocalName(eAttribute.getName());
-
-                // Waiting a plain text value
-                this.waitingAttribute = attr;
-                wasAttribute = true;
-            }
-
-            // Is a reference
-            else {
-                EReference eReference = (EReference) eStructuralFeature;
-
-                // Gets the type the reference
-                eClass = (EClass) eReference.getEType();
-
-                NamedElement metaClass = classifier.getMetaclass();
-                // Checks that the metaclass is a subtype of the reference type : if true, use it instead of supertype
-                if (metaClass != null) {
-                    EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.getLocalName());
-
-                    if (eClass.isSuperTypeOf(subEClass)) {
-                        eClass = subEClass;
-                    }
-                    else {
-                        throw new Exception(subEClass.getName() + " is not a subclass of " + eClass.getName());
-                    }
-                }
-                // If not present, create the metaclass
-                else {
-                    metaClass = new NamedElement(ns, eClass.getName());
-                    classifier.setMetaclass(metaClass);
-                }
-
-                // Defines the class name and the namespace of the element
-                classifier.setClassName(eClass.getName());
-                classifier.setNamespace(ns);
-
-                // Notify next handlers of new element, and retreive its identifier
-                super.handleStartElement(classifier);
-                String currentId = classifier.getId();
-
-                // Create a reference from the parent to this element, with the given local name
-                Reference ref = new Reference();
-                ref.setNamespace(ns);
-                ref.setLocalName(eReference.getName());
-                ref.setId(idsStack.getLast());
-                ref.setValue(currentId);
-                ref.setContainment(eReference.isContainment());
-                handleReference(ref);
-
-                // Save EClass and identifier
-                classesStack.addLast(eClass);
-                idsStack.addLast(currentId);
-            }
+            handleFeature(classifier);
         }
     }
 
     @Override
     public void handleCharacters(String characters) throws Exception {
-
-        // Defines the value of the waiting attribute
+        // Defines the value of the waiting attribute, if exists
         if (waitingAttribute != null) {
             waitingAttribute.setValue(characters);
             super.handleAttribute(waitingAttribute);
@@ -187,29 +93,26 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
         // Checks that the attribute is well a attribute
         if (eStructuralFeature instanceof EAttribute) {
             if (attribute.getNamespace() == null) {
-                EPackage ePackage = eClass.getEPackage();
-                attribute.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
+                Namespace ns = Namespace.Registry.getInstance().getFromPrefix(eClass.getEPackage().getNsPrefix());
+                attribute.setNamespace(ns);
             }
             super.handleAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
         else if (eStructuralFeature instanceof EReference) {
-            NeoLogger.warn("Feature misinterpreted during the analysis : " +
-                    "the attribute \"" + attribute.getLocalName() + "\" is a reference.");
+            NeoLogger.warn(
+                    "Feature misinterpreted during the analysis : the attribute {0} is an reference",
+                    attribute.getLocalName());
 
-            Reference reference = new Reference();
-            reference.setNamespace(attribute.getNamespace());
-            reference.setIndex(attribute.getIndex());
-            reference.setLocalName(attribute.getLocalName());
-            reference.setId(attribute.getId());
-            reference.setValue(attribute.getValue());
-
-            handleReference(reference);
+            handleReference(Reference.from(attribute));
         }
 
+        // Not a feature of this class
         else {
-            NeoLogger.warn("Attribute \"" + eClass.getName() + '#' + attribute.getLocalName() + "\" does not exist in the metamodel. It will be ignored");
+            NeoLogger.warn(
+                    "Attribute {0}:{1} does not exist in the metamodel. It will be ignored",
+                    eClass.getName(), attribute.getLocalName());
         }
     }
 
@@ -234,33 +137,147 @@ public class EcoreHandler extends AbstractDelegatedInternalHandler {
 
         // Otherwise redirect to the attribute handler
         else if (eStructuralFeature instanceof EAttribute) {
-            NeoLogger.warn("Feature misinterpreted during the analysis : " +
-                    "the reference \"" + reference.getLocalName() + "\" is an attribute.");
+            NeoLogger.warn(
+                    "Feature misinterpreted during the analysis : the reference {0} is an attribute",
+                    reference.getLocalName());
 
-            Attribute attribute = new Attribute();
-            attribute.setNamespace(reference.getNamespace());
-            attribute.setIndex(reference.getIndex());
-            attribute.setLocalName(reference.getLocalName());
-            attribute.setId(reference.getId());
-            attribute.setValue(reference.getValue());
-
-            handleAttribute(attribute);
+            handleAttribute(Attribute.from(reference));
         }
 
+        // Not a feature of this class
         else {
-            NeoLogger.warn("Reference \"" + eClass.getName() + '#' + reference.getLocalName() + "\" does not exist in the metamodel. It will be ignored");
+            NeoLogger.warn(
+                    "Reference {0}:{1} does not exist in the metamodel. It will be ignored",
+                    eClass.getName(), reference.getLocalName());
         }
     }
 
     @Override
     public void handleEndElement() throws Exception {
-        if (!wasAttribute) {
+        if (!lastWasAttribute) {
             classesStack.removeLast();
             idsStack.removeLast();
 
             super.handleEndElement();
         }
 
-        wasAttribute = false;
+        lastWasAttribute = false;
+    }
+
+    /**
+     * Creates the root element from the given {@code classifier}.
+     */
+    private void createRootObject(Classifier classifier) throws Exception {
+        Namespace ns = checkNotNull(classifier.getNamespace(),
+                "The root element must have a namespace");
+
+        // Retreives the EPackage from NS prefix
+        EPackage ePackage = checkNotNull((EPackage) EPackage.Registry.INSTANCE.get(ns.getPrefix()),
+                "EPackage " + ns.getPrefix() + " is not registered.");
+
+        // Gets the current EClass
+        EClass eClass = (EClass) ePackage.getEClassifier(classifier.getLocalName());
+
+        // Defines the metaclass of the current element if not present
+        if (classifier.getMetaclass() == null) {
+            classifier.setMetaclass(new NamedElement(ns, eClass.getName()));
+        }
+
+        // Defines the classname of the current element
+        classifier.setClassName(eClass.getName());
+
+        // Notifies next handlers
+        super.handleStartElement(classifier);
+
+        // Saves the current EClass
+        classesStack.addLast(eClass);
+
+        // Gets the identifier of the element created by next handlers, and save it
+        idsStack.addLast(classifier.getId());
+    }
+
+    private void handleFeature(Classifier classifier) throws Exception {
+        // Retreive the parent EClass
+        EClass parentEClass = classesStack.getLast();
+
+        // Gets the EPackage from it
+        EPackage ePackage = parentEClass.getEPackage();
+        Namespace ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
+
+        // Gets the structural feature from the parent, according the its local name
+        EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
+
+        if (eStructuralFeature instanceof EAttribute) {
+            handleAttribute(classifier, ns, (EAttribute) eStructuralFeature);
+        }
+        else if (eStructuralFeature instanceof EReference) {
+            handleReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
+        }
+        else {
+            NeoLogger.warn(
+                    "Feature {0}:{1} does not exist in the metamodel. It will be ignored",
+                    parentEClass.getName(), classifier.getLocalName());
+        }
+    }
+
+    private void handleAttribute(Classifier classifier, Namespace ns, EAttribute eAttribute) {
+        Attribute attr = new Attribute();
+        attr.setNamespace(ns);
+        attr.setLocalName(eAttribute.getName());
+
+        // Waiting a plain text value
+        this.waitingAttribute = attr;
+        lastWasAttribute = true;
+    }
+
+    private void handleReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {
+        // Gets the type the reference or gets the type from the registered metaclass
+        EClass eClass = getEClass(classifier, ns, (EClass) eReference.getEType(), ePackage);
+
+        // Defines the class name and the namespace of the element
+        classifier.setClassName(eClass.getName());
+        classifier.setNamespace(ns);
+
+        // Notify next handlers of new element, and retreive its identifier
+        super.handleStartElement(classifier);
+        String currentId = classifier.getId();
+
+        // Create a reference from the parent to this element, with the given local name
+        Reference ref = new Reference();
+        ref.setNamespace(ns);
+        ref.setLocalName(eReference.getName());
+        ref.setId(idsStack.getLast());
+        ref.setValue(currentId);
+        ref.setContainment(eReference.isContainment());
+        super.handleReference(ref);
+
+        // Save EClass and identifier
+        classesStack.addLast(eClass);
+        idsStack.addLast(currentId);
+    }
+
+    private EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
+        NamedElement metaClass = classifier.getMetaclass();
+
+        if (metaClass != null) {
+            EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.getLocalName());
+
+            // Checks that the metaclass is a subtype of the reference type.
+            // If true, use it instead of supertype
+            if (eClass.isSuperTypeOf(subEClass)) {
+                eClass = subEClass;
+            }
+            else {
+                throw new Exception(subEClass.getName() + " is not a subclass of " + eClass.getName());
+            }
+        }
+
+        // If not present, create the metaclass from the current class
+        else {
+            metaClass = new NamedElement(ns, eClass.getName());
+            classifier.setMetaclass(metaClass);
+        }
+
+        return eClass;
     }
 }
