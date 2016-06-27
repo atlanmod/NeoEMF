@@ -84,9 +84,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract void addElement(Id id, String nsUri, String name) throws Exception;
 
-    protected abstract void addAttribute(Id id, String nsUri, String name, int index, String value) throws Exception;
+    protected abstract void addAttribute(Id id, String name, int index, String value) throws Exception;
 
-    protected abstract void addReference(Id id, String nsUri, String name, int index, boolean containment, Id idReference) throws Exception;
+    protected abstract void addReference(Id id, String name, int index, boolean containment, Id idReference) throws Exception;
 
     protected abstract void setMetaClass(Id id, Id metaClassId);
 
@@ -171,7 +171,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             currentId = getId(attribute.getId());
         }
 
-        addAttribute(currentId, attribute.getNamespace().getUri(), attribute.getLocalName(), attribute.getIndex(), attribute.getValue());
+        addAttribute(currentId, attribute.getLocalName(), attribute.getIndex(), attribute.getValue());
 
         incrementAndCommit();
     }
@@ -188,9 +188,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         Id idReference = getId(reference.getValue());
 
         try {
-            addReference(id, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex(), reference.isContainment(), idReference);
+            addReference(id, reference.getLocalName(), reference.getIndex(), reference.isContainment(), idReference);
         } catch (UnknownReferencedIdException e) {
-            addUnlinked(reference.getValue(), new UnlinkedElement(id, reference.getNamespace().getUri(), reference.getLocalName(), reference.getIndex(), reference.isContainment()));
+            addUnlinked(reference.getValue(), new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isContainment()));
         }
 
         incrementAndCommit();
@@ -254,7 +254,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private void tryLink(String reference, Id id) throws Exception {
         for (UnlinkedElement e : unlinkedElements.removeAll(reference)) {
-            addReference(e.id, e.nsUri, e.name, e.index, e.containment, id);
+            addReference(e.id, e.name, e.index, e.containment, id);
         }
     }
 
@@ -275,14 +275,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private class UnlinkedElement {
 
         public final Id id;
-        public final String nsUri;
         public final String name;
         public final int index;
         public final boolean containment;
 
-        public UnlinkedElement(Id id, String nsUri, String name, int index, boolean containment) {
+        public UnlinkedElement(Id id, String name, int index, boolean containment) {
             this.id = id;
-            this.nsUri = nsUri;
             this.name = name;
             this.index = index;
             this.containment = containment;

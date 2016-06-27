@@ -38,6 +38,11 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     private static final String CONTAINING_FEATURE = "containingFeature";
     private static final String SIZE_LITERAL = "size";
 
+    private static final Id ROOT_ID = new StringId("ROOT");
+    private static final String ROOT_FEATURE_NAME = "IS_ROOT";
+
+    private boolean isRoot = true;
+
     public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
     }
@@ -50,6 +55,10 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
 
     @Override
     protected void addElement(Id id, String nsUri, String name) throws Exception {
+        if (isRoot) {
+            getPersistenceBackend().addVertex(ROOT_ID.toString());
+        }
+
         Vertex vertex;
         try {
             vertex = getPersistenceBackend().addVertex(id.toString());
@@ -58,6 +67,11 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         }
         vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
         vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, nsUri);
+
+        if (isRoot) {
+            addReference(id, ROOT_FEATURE_NAME, 0, false, ROOT_ID);
+            isRoot = false;
+        }
     }
 
     @Override
@@ -72,7 +86,7 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     }
 
     @Override
-    protected void addAttribute(Id id, String nsUri, String name, int index, String value) throws Exception {
+    protected void addAttribute(Id id, String name, int index, String value) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
@@ -89,7 +103,7 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     }
 
     @Override
-    protected void addReference(Id id, String nsUri, String name, int index, boolean containment, Id idReference) throws Exception {
+    protected void addReference(Id id, String name, int index, boolean containment, Id idReference) throws Exception {
         Vertex vertex = getPersistenceBackend().getVertex(id.toString());
         checkNotNull(vertex, "Unable to find an element with Id = " + id.toString());
 
