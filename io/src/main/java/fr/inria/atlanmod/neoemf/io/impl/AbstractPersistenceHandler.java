@@ -36,8 +36,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
-    private static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
-    private static final int ID_CACHE_SIZE = 5000;
+    private static final int OPS_BETWEEN_COMMITS_DEFAULT = 50000;
+    protected static final int DEFAULT_CACHE_SIZE = 10000;
 
     private int opCount;
 
@@ -71,7 +71,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         this.opCount = 0;
         this.idStack = new ArrayDeque<>();
         this.unlinkedElements = HashMultimap.create();
-        this.idsCache = CacheBuilder.newBuilder().maximumSize(ID_CACHE_SIZE).build();
+        this.idsCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
         this.conflictedIdsCache = CacheBuilder.newBuilder().build();
         this.metaclassesCache = CacheBuilder.newBuilder().build();
     }
@@ -88,7 +88,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract void addReference(Id id, String name, int index, boolean containment, Id idReference) throws Exception;
 
-    protected abstract void setMetaClass(Id id, Id metaClassId);
+    protected abstract void setMetaClass(Id id, Id metaClassId) throws Exception;
 
     @Override
     public void handleStartDocument() throws Exception {
