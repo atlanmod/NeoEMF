@@ -36,8 +36,7 @@ public class VerboseHandler extends AbstractDelegatedPersistenceHandler {
 
     @Override
     public void handleStartElement(Classifier classifier) throws Exception {
-        NeoLogger.debug(classifier.getNamespace().getPrefix() + ":" + classifier.getLocalName() + " @ " + classifier.getClassName() + " -> " + classifier
-                .getMetaclass().getLocalName() + " = " + classifier.getId());
+        NeoLogger.debug(classifier.getNamespace().getPrefix() + ":" + classifier.getLocalName() + " @ " + classifier.getClassName() + " -> " + classifier.getMetaClassifier().getLocalName() + " = " + classifier.getId());
 
         super.handleStartElement(classifier);
     }

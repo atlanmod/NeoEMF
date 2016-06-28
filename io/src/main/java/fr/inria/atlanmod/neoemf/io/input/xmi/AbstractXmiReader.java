@@ -16,8 +16,8 @@ import com.google.common.collect.Lists;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
+import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
-import fr.inria.atlanmod.neoemf.io.beans.NamespacedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.beans.StructuralFeature;
 import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
@@ -159,8 +159,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private void processMetaClass(Classifier element, String prefixedValue) throws Exception {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
-            NamespacedElement metaClass = new NamespacedElement(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
-            element.setMetaclass(metaClass);
+            MetaClassifier metaClassifier = new MetaClassifier(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
+            element.setMetaClassifier(metaClassifier);
         } else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
         }

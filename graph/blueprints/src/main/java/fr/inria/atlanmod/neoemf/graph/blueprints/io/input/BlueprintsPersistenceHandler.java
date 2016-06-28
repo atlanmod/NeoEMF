@@ -20,8 +20,10 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
+import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -39,9 +41,9 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     private static final String SIZE_LITERAL = "size";
 
     private static final Id ROOT_ID = new StringId("ROOT");
-    private static final String ROOT_FEATURE_NAME = "IS_ROOT";
+    private static final String ROOT_FEATURE_NAME = "eContents";
 
-    private boolean isRoot = true;
+    private boolean isFirstElement = true;
 
     public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
@@ -54,9 +56,17 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     }
 
     @Override
-    protected void addElement(Id id, String nsUri, String name) throws Exception {
-        if (isRoot) {
-            getPersistenceBackend().addVertex(ROOT_ID.toString());
+    protected void addElement(Id id, String nsUri, String name, boolean root) throws Exception {
+        if (isFirstElement) {
+            // Create the 'ROOT' node with the default metaclass
+            MetaClassifier metaClassifier = MetaClassifier.getDefault();
+
+            Vertex vertex = getPersistenceBackend().addVertex(ROOT_ID.toString());
+            vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, metaClassifier.getLocalName());
+            vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, metaClassifier.getNamespace().getUri());
+            isFirstElement = false;
+
+            NeoLogger.debug("Create the 'ROOT' node : {0}:{1}", metaClassifier.getNamespace().getUri(), metaClassifier.getLocalName());
         }
 
         Vertex vertex;
@@ -68,9 +78,10 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
         vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, nsUri);
 
-        if (isRoot) {
-            addReference(id, ROOT_FEATURE_NAME, 0, false, ROOT_ID);
-            isRoot = false;
+        if (root) {
+            // Add the current element as content of the 'ROOT' node
+            NeoLogger.debug("Defines {0}:{1} as content of the 'ROOT' node", nsUri, name);
+            addReference(ROOT_ID, ROOT_FEATURE_NAME, -1, false, id);
         }
     }
 

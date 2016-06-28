@@ -19,6 +19,12 @@ import com.google.common.cache.CacheBuilder;
  */
 public class Namespace {
 
+    private static final Namespace DEFAULT = new Namespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
+
+    public static Namespace getDefault() {
+        return DEFAULT;
+    }
+
     private final String prefix;
     private final String uri;
 

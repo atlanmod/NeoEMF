@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.NamespacedElement;
+import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -82,7 +82,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract Id hashId(String reference);
 
-    protected abstract void addElement(Id id, String nsUri, String name) throws Exception;
+    protected abstract void addElement(Id id, String nsUri, String name, boolean root) throws Exception;
 
     protected abstract void addAttribute(Id id, String name, int index, String value) throws Exception;
 
@@ -107,7 +107,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         do {
             try {
                 // Try to persist with the current Id
-                addElement(id, classifier.getNamespace().getUri(), classifier.getClassName());
+                addElement(id, classifier.getNamespace().getUri(), classifier.getClassName(), classifier.isRoot());
                 retry = false;
             }
             catch (AlreadyExistingIdException e) {
@@ -125,13 +125,13 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         idStack.addLast(id);
         tryLink(classifier.getId(), id);
 
-        createMetaClass(classifier.getMetaclass());
+        createMetaClass(classifier.getMetaClassifier());
 
         incrementAndCommit();
     }
 
-    private void createMetaClass(NamespacedElement metaClass) throws Exception {
-        String metaclassKey = metaClass.getNamespace().getUri() + ':' + metaClass.getLocalName();
+    private void createMetaClass(MetaClassifier metaClassifier) throws Exception {
+        String metaclassKey = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
 
         // Gets from cache
         Id metaClassId = metaclassesCache.getIfPresent(metaclassKey);
@@ -146,7 +146,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             do {
                 try {
                     // Try to persist with the current Id
-                    addElement(metaClassId, metaClass.getNamespace().getUri(), metaClass.getLocalName());
+                    addElement(metaClassId, metaClassifier.getNamespace().getUri(), metaClassifier.getLocalName(), false);
                     metaclassesCache.put(metaclassKey, metaClassId);
                     retry = false;
                 }
@@ -189,11 +189,19 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         try {
             addReference(id, reference.getLocalName(), reference.getIndex(), reference.isContainment(), idReference);
+
+            //NeoLogger.debug("Create reference : {0} > {1}", id, idReference);
+
+            Reference opposite = reference.getOpposite();
+            if (opposite != null) {
+                //NeoLogger.debug("Create the opposite reference : {0} > {1}", idReference, id);
+                addReference(idReference, opposite.getLocalName(), opposite.getIndex(), opposite.isContainment(), id);
+            }
+
+            incrementAndCommit();
         } catch (UnknownReferencedIdException e) {
             addUnlinked(reference.getValue(), new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isContainment()));
         }
-
-        incrementAndCommit();
     }
 
     @Override
