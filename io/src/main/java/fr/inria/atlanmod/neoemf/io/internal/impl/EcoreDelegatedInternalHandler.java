@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.io.internal.impl;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
+import fr.inria.atlanmod.neoemf.io.beans.NamespacedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -67,6 +67,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Is root
         if (classesStack.isEmpty()) {
             createRootObject(classifier);
+            classifier.setRoot(true);
         }
         // Is a feature of parent
         else {
@@ -92,10 +93,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Checks that the attribute is well a attribute
         if (eStructuralFeature instanceof EAttribute) {
-            if (attribute.getNamespace() == null) {
-                Namespace ns = Namespace.Registry.getInstance().getFromPrefix(eClass.getEPackage().getNsPrefix());
-                attribute.setNamespace(ns);
-            }
             super.handleAttribute(attribute);
         }
 
@@ -127,11 +124,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
             EReference eReference = (EReference) eStructuralFeature;
             reference.setContainment(eReference.isContainment());
 
-            // Update namespace if not already present
-            if (reference.getNamespace() == null) {
-                EPackage ePackage = eClass.getEPackage();
-                reference.setNamespace(Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix()));
-            }
             super.handleReference(reference);
         }
 
@@ -180,7 +172,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Defines the metaclass of the current element if not present
         if (classifier.getMetaclass() == null) {
-            classifier.setMetaclass(new NamedElement(ns, eClass.getName()));
+            classifier.setMetaclass(new NamespacedElement(ns, eClass.getName()));
         }
 
         // Defines the classname of the current element
@@ -208,7 +200,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
 
         if (eStructuralFeature instanceof EAttribute) {
-            handleAttribute(classifier, ns, (EAttribute) eStructuralFeature);
+            handleAttribute(classifier, (EAttribute) eStructuralFeature);
         }
         else if (eStructuralFeature instanceof EReference) {
             handleReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
@@ -220,10 +212,8 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         }
     }
 
-    private void handleAttribute(Classifier classifier, Namespace ns, EAttribute eAttribute) {
-        Attribute attr = new Attribute();
-        attr.setNamespace(ns);
-        attr.setLocalName(eAttribute.getName());
+    private void handleAttribute(Classifier classifier, EAttribute eAttribute) {
+        Attribute attr = new Attribute(eAttribute.getName());
 
         // Waiting a plain text value
         this.waitingAttribute = attr;
@@ -243,9 +233,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         String currentId = classifier.getId();
 
         // Create a reference from the parent to this element, with the given local name
-        Reference ref = new Reference();
-        ref.setNamespace(ns);
-        ref.setLocalName(eReference.getName());
+        Reference ref = new Reference(eReference.getName());
         ref.setId(idsStack.getLast());
         ref.setValue(currentId);
         ref.setContainment(eReference.isContainment());
@@ -257,7 +245,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     }
 
     private EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
-        NamedElement metaClass = classifier.getMetaclass();
+        NamespacedElement metaClass = classifier.getMetaclass();
 
         if (metaClass != null) {
             EClass subEClass = (EClass) ePackage.getEClassifier(metaClass.getLocalName());
@@ -274,7 +262,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // If not present, create the metaclass from the current class
         else {
-            metaClass = new NamedElement(ns, eClass.getName());
+            metaClass = new NamespacedElement(ns, eClass.getName());
             classifier.setMetaclass(metaClass);
         }
 

@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
+import fr.inria.atlanmod.neoemf.io.beans.NamespacedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -130,7 +130,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         incrementAndCommit();
     }
 
-    private void createMetaClass(NamedElement metaClass) throws Exception {
+    private void createMetaClass(NamespacedElement metaClass) throws Exception {
         String metaclassKey = metaClass.getNamespace().getUri() + ':' + metaClass.getLocalName();
 
         // Gets from cache

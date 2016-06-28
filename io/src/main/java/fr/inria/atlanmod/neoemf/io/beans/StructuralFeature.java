@@ -24,7 +24,8 @@ public abstract class StructuralFeature extends NamedElement {
     private int index;
     private String value;
 
-    public StructuralFeature() {
+    public StructuralFeature(String localName) {
+        super(localName);
         this.index = DEFAULT_INDEX;
     }
 

@@ -12,13 +12,20 @@
 package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
- * A {@link NamedElement} which can be typed.
+ * A {@link NamespacedElement} which can be typed.
  */
-public class Classifier extends NamedElement {
+public class Classifier extends NamespacedElement {
 
     private String id;
     private String className;
-    private NamedElement metaclass;
+    private NamespacedElement metaclass;
+
+    private boolean root;
+
+    public Classifier(Namespace namespace, String localName) {
+        super(namespace, localName);
+        this.root = false;
+    }
 
     public String getId() {
         return id;
@@ -36,11 +43,19 @@ public class Classifier extends NamedElement {
         this.className = className;
     }
 
-    public NamedElement getMetaclass() {
+    public NamespacedElement getMetaclass() {
         return metaclass;
     }
 
-    public void setMetaclass(NamedElement metaclass) {
+    public void setMetaclass(NamespacedElement metaclass) {
         this.metaclass = metaclass;
+    }
+
+    public boolean isRoot() {
+        return root;
+    }
+
+    public void setRoot(boolean root) {
+        this.root = root;
     }
 }

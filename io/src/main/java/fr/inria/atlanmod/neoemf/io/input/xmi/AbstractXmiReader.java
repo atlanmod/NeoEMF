@@ -16,8 +16,8 @@ import com.google.common.collect.Lists;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.NamedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
+import fr.inria.atlanmod.neoemf.io.beans.NamespacedElement;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.beans.StructuralFeature;
 import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
@@ -68,9 +68,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * Processes a new element and send a notification to handlers.
      */
     protected void processElement(String uri, String localName, Attributes attributes) throws Exception {
-        Classifier element = new Classifier();
-        element.setNamespace(Namespace.Registry.getInstance().getFromUri(uri));
-        element.setLocalName(localName);
+        Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
 
         int attrLength = attributes.getLength();
 
@@ -119,16 +117,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
             }
         }
 
-        Namespace ns = Namespace.Registry.getInstance().getFromPrefix(prefix);
-
         List<String> references = getReferences(value);
         if (references != null) {
-            return processReferences(ns, locaName, references);
+            return processReferences(locaName, references);
         }
         else {
-            StructuralFeature structuralFeature = new Attribute();
-            structuralFeature.setNamespace(ns);
-            structuralFeature.setLocalName(locaName);
+            StructuralFeature structuralFeature = new Attribute(locaName);
             structuralFeature.setIndex(0);
             structuralFeature.setValue(value);
 
@@ -141,14 +135,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
      * @return a list of {@link Reference} from the given {@code references}
      */
-    private List<StructuralFeature> processReferences(Namespace ns, String name, List<String> references) throws Exception {
+    private List<StructuralFeature> processReferences(String localName, List<String> references) throws Exception {
         List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
 
         int index = 0;
         for (String s : references) {
-            Reference ref = new Reference();
-            ref.setNamespace(ns);
-            ref.setLocalName(name);
+            Reference ref = new Reference(localName);
             ref.setIndex(index);
             ref.setValue(s);
             structuralFeatures.add(ref);
@@ -167,9 +159,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private void processMetaClass(Classifier element, String prefixedValue) throws Exception {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
-            NamedElement metaClass = new NamedElement();
-            metaClass.setNamespace(Namespace.Registry.getInstance().getFromPrefix(m.group(1)));
-            metaClass.setLocalName(m.group(2));
+            NamespacedElement metaClass = new NamespacedElement(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
             element.setMetaclass(metaClass);
         } else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);

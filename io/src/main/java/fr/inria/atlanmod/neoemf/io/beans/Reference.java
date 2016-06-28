@@ -18,6 +18,13 @@ public class Reference extends StructuralFeature {
 
     private boolean containment;
 
+    private Reference opposite;
+
+    public Reference(String localName) {
+        super(localName);
+        this.containment = false;
+    }
+
     @Override
     public boolean isReference() {
         return true;
@@ -31,12 +38,18 @@ public class Reference extends StructuralFeature {
         this.containment = containment;
     }
 
+    public Reference getOpposite() {
+        return opposite;
+    }
+
+    public void setOpposite(Reference opposite) {
+        this.opposite = opposite;
+    }
+
     public static Reference from(Attribute attribute) {
-        Reference reference = new Reference();
-        reference.setNamespace(attribute.getNamespace());
-        reference.setIndex(attribute.getIndex());
-        reference.setLocalName(attribute.getLocalName());
+        Reference reference = new Reference(attribute.getLocalName());
         reference.setId(attribute.getId());
+        reference.setIndex(attribute.getIndex());
         reference.setValue(attribute.getValue());
         return reference;
     }

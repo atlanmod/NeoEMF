@@ -12,21 +12,22 @@
 package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
- * An element which has a name.
+ * A simple element identified by a {@link Namespace namespace} and its name inside it.
  */
-public class NamedElement {
+public class NamespacedElement extends NamedElement {
 
-    private String localName;
+    private Namespace namespace;
 
-    public NamedElement(String localName) {
-        this.localName = localName;
+    public NamespacedElement(Namespace namespace, String localName) {
+        super(localName);
+        this.namespace = namespace;
     }
 
-    public String getLocalName() {
-        return localName;
+    public Namespace getNamespace() {
+        return namespace;
     }
 
-    public void setLocalName(String localName) {
-        this.localName = localName;
+    public void setNamespace(Namespace namespace) {
+        this.namespace = namespace;
     }
 }
