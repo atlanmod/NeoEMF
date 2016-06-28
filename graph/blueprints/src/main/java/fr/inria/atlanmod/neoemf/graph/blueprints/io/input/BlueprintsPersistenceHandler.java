@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
+import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
@@ -43,8 +44,6 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     private static final Id ROOT_ID = new StringId("ROOT");
     private static final String ROOT_FEATURE_NAME = "eContents";
 
-    private boolean isFirstElement = true;
-
     public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
     }
@@ -56,19 +55,14 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     }
 
     @Override
+    public void handleStartDocument() throws Exception {
+        createRootVertex();
+
+        super.handleStartDocument();
+    }
+
+    @Override
     protected void addElement(Id id, String nsUri, String name, boolean root) throws Exception {
-        if (isFirstElement) {
-            // Create the 'ROOT' node with the default metaclass
-            MetaClassifier metaClassifier = MetaClassifier.getDefault();
-
-            Vertex vertex = getPersistenceBackend().addVertex(ROOT_ID.toString());
-            vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, metaClassifier.getLocalName());
-            vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, metaClassifier.getNamespace().getUri());
-            isFirstElement = false;
-
-            NeoLogger.debug("Create the 'ROOT' node : {0}:{1}", metaClassifier.getNamespace().getUri(), metaClassifier.getLocalName());
-        }
-
         Vertex vertex;
         try {
             vertex = getPersistenceBackend().addVertex(id.toString());
@@ -80,9 +74,34 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
 
         if (root) {
             // Add the current element as content of the 'ROOT' node
-            NeoLogger.debug("Defines {0}:{1} as content of the 'ROOT' node", nsUri, name);
-            addReference(ROOT_ID, ROOT_FEATURE_NAME, -1, false, id);
+            NeoLogger.debug(
+                    "{0}:{1} defined as content of {2} vertex",
+                    nsUri, name, ROOT_ID);
+
+            addReference(ROOT_ID, ROOT_FEATURE_NAME, InternalEObject.EStore.NO_INDEX, false, id);
         }
+    }
+
+    private void createRootVertex() throws Exception {
+        // Create the 'ROOT' node with the default metaclass
+        MetaClassifier metaClassifier = MetaClassifier.getDefault();
+
+        Classifier rootClassifier = new Classifier(
+                metaClassifier.getNamespace(),
+                metaClassifier.getLocalName());
+
+        rootClassifier.setClassName(metaClassifier.getLocalName());
+        rootClassifier.setRoot(false);
+        rootClassifier.setMetaClassifier(metaClassifier);
+
+        Id id = createElement(rootClassifier, ROOT_ID);
+        Id metaClassId = getOrCreateMetaClass(metaClassifier);
+
+        setMetaClass(id, metaClassId);
+
+        NeoLogger.debug(
+                "{0} vertex created : {1}:{2}",
+                ROOT_ID, metaClassifier.getNamespace().getUri(), metaClassifier.getLocalName());
     }
 
     @Override
@@ -93,6 +112,7 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         Vertex metaClassVertex = getPersistenceBackend().getVertex(metaClassId.toString());
         checkNotNull(vertex, "Unable to find metaclass with Id = " + metaClassId.toString());
 
+        //NeoLogger.debug("Defines {0} as a instance of {1}", id, metaClassVertex.getProperty(BlueprintsPersistenceBackend.ECLASS_NAME));
         vertex.addEdge(BlueprintsPersistenceBackend.INSTANCE_OF, metaClassVertex);
     }
 
