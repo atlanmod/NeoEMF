@@ -248,6 +248,14 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         ref.setId(idsStack.getLast());
         ref.setValue(currentId);
         ref.setContainment(eReference.isContainment());
+
+        EReference eOpposite = eReference.getEOpposite();
+        if (eOpposite != null) {
+            Reference opposite = new Reference(eOpposite.getName());
+            opposite.setContainment(opposite.isContainment());
+            ref.setOpposite(opposite);
+        }
+
         super.handleReference(ref);
 
         // Save EClass and identifier
