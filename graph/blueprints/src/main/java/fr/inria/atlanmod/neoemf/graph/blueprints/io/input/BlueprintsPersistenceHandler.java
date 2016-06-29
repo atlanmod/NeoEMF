@@ -25,7 +25,7 @@ import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandlerConflict;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.InternalEObject;
@@ -36,7 +36,7 @@ import java.util.concurrent.Callable;
 /**
  *
  */
-public class BlueprintsPersistenceHandlerConflict extends AbstractPersistenceHandlerConflict<BlueprintsPersistenceBackend> {
+public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
     private static final char SEPARATOR = ':';
     private static final String POSITION = "position";
@@ -49,7 +49,7 @@ public class BlueprintsPersistenceHandlerConflict extends AbstractPersistenceHan
 
     private final Cache<Id, Vertex> loadedVertices;
 
-    public BlueprintsPersistenceHandlerConflict(BlueprintsPersistenceBackend persistenceBackend) {
+    public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
         loadedVertices = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }

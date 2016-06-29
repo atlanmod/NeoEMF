@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -33,8 +34,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AbstractPersistenceHandlerNoConflict<P extends PersistenceBackend> implements PersistenceHandler {
 
-    private static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
-    protected static final int DEFAULT_CACHE_SIZE = 50000;
+    private static final int OPS_BETWEEN_COMMITS_DEFAULT = 50000;
+    protected static final int DEFAULT_CACHE_SIZE = getSizeCache();
 
     private int opCount;
 
@@ -233,5 +234,16 @@ public abstract class AbstractPersistenceHandlerNoConflict<P extends Persistence
         if (opCount == 0) {
             persistenceBackend.save();
         }
+    }
+
+    private static int getSizeCache() {
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1000; // Xmx value in kB
+        int factor = 20; //% du Xmx
+
+        int cacheSize = (int) (maxMemory * factor / 100);
+
+        NeoLogger.info("Caches size defined to {0,number,integer}", cacheSize);
+
+        return cacheSize;
     }
 }
