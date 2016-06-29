@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * An handler able to persist newly created data in a {@link PersistenceBackend persistence backend}.
  */
-public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
+public abstract class AbstractPersistenceHandlerConflict<P extends PersistenceBackend> implements PersistenceHandler {
 
     private static final int OPS_BETWEEN_COMMITS_DEFAULT = 50000;
     protected static final int DEFAULT_CACHE_SIZE = 10000;
@@ -54,26 +54,28 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Cache of recently processed {@code Id}.
      */
-    private final Cache<String, Id> idsCache;
+    private final Cache<String, Id> idCache;
 
     /**
      * Cache of conflited {@code Id}.
      */
-    private final Cache<String, Id> conflictedIdsCache;
+    private final Cache<String, Id> conflictedIdCache;
 
     /**
      * Cache of registered metaclasses.
      */
-    private final Cache<String, Id> metaclassesCache;
+    private final Cache<String, Id> metaclassCache;
 
-    public AbstractPersistenceHandler(P persistenceBackend) {
+    public AbstractPersistenceHandlerConflict(P persistenceBackend) {
         this.persistenceBackend = persistenceBackend;
         this.opCount = 0;
         this.idStack = new ArrayDeque<>();
+
+        this.idCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        this.metaclassCache = CacheBuilder.newBuilder().build();
+
         this.unlinkedElements = HashMultimap.create();
-        this.idsCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
-        this.conflictedIdsCache = CacheBuilder.newBuilder().build();
-        this.metaclassesCache = CacheBuilder.newBuilder().build();
+        this.conflictedIdCache = CacheBuilder.newBuilder().build();
     }
 
     protected P getPersistenceBackend() {
@@ -153,7 +155,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
                 // Hash reference another time + Store (or update) in cache
                 id = hashId(id.toString());
-                conflictedIdsCache.put(classifier.getId(), id);
+                conflictedIdCache.put(classifier.getId(), id);
 
                 retry = true;
             }
@@ -176,7 +178,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         String metaClassKey = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
 
         // Gets from cache
-        Id metaClassId = metaclassesCache.getIfPresent(metaClassKey);
+        Id metaClassId = metaclassCache.getIfPresent(metaClassKey);
 
         // If metaclass doesn't already exist, we create it
         if (metaClassId == null) {
@@ -194,7 +196,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                             metaClassifier.getLocalName(),
                             false);
 
-                    metaclassesCache.put(metaClassKey, metaClassId);
+                    metaclassCache.put(metaClassKey, metaClassId);
                     retry = false;
                 }
                 catch (AlreadyExistingIdException e) {
@@ -276,7 +278,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             unlinkedElements.clear();
         }
 
-        NeoLogger.info("{0} key conflicts", conflictedIdsCache.size());
+        NeoLogger.info("{0} key conflicts", conflictedIdCache.size());
 
         persistenceBackend.save();
     }
@@ -289,12 +291,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @return the registered {@code Id} of the given reference, or {@code null} if the reference is not registered.
      */
     protected Id getId(final String reference) {
-        Id id = conflictedIdsCache.getIfPresent(reference);
+        Id id = conflictedIdCache.getIfPresent(reference);
         if (id == null) {
-            id = idsCache.getIfPresent(reference);
+            id = idCache.getIfPresent(reference);
             if (id == null) {
                 id = hashId(reference);
-                idsCache.put(reference, id);
+                idCache.put(reference, id);
             }
         }
         return id;
