@@ -386,6 +386,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Xms256m -Xmx1g -XX:PermSize=512m -XX:+UseConcMarkSweepGC</argLine>
+                    <failIfNoTests>false</failIfNoTests>
                 </configuration>
             </plugin>
 
