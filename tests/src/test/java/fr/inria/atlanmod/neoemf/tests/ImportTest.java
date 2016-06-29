@@ -65,7 +65,7 @@ public class ImportTest extends AllIOTest {
     }
 
     @Test
-    //@Ignore("XMI file not present in commit")
+    @Ignore("XMI file not present in commit")
     public void testImportNeo4jSet4() throws Exception {
         testImportWithSax(getSet4(), getNeo4jHandler());
     }
