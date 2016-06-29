@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.impl.CounterDelegatedPersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.input.Reader;
 import fr.inria.atlanmod.neoemf.io.mock.DummyPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -24,54 +23,44 @@ import java.io.File;
 
 public class XmiStreamReaderTest extends AllIOTest {
 
-    private PersistenceHandler counterHandler;
+    private PersistenceHandler dummyPersistenceHandler;
 
     @Before
     public void setUp() throws Exception {
-        counterHandler = new CounterDelegatedPersistenceHandler(new DummyPersistenceHandler(), "counter1");
+        dummyPersistenceHandler = new CounterDelegatedPersistenceHandler(new DummyPersistenceHandler(), "dummy1");
     }
 
     @Test
-    public void readThinWithSax() throws Exception {
-        readWithSax(getThinXmi());
+    public void readSet1() throws Exception {
+        read(getSet1());
     }
 
     @Test
-    public void readLightWithSax() throws Exception {
-        readWithSax(getLightXmi());
+    public void readSet2() throws Exception {
+        read(getSet2());
     }
 
     @Test
-    public void readMediumWithSax() throws Exception {
-        readWithSax(getMediumXmi());
-    }
-
-    @Test
-    @Ignore("XMI file not present in commit")
-    public void readHeavyWithSax() throws Exception {
-        readWithSax(getHeavyXmi());
+    public void readSet3() throws Exception {
+        read(getSet3());
     }
 
     @Test
     @Ignore("XMI file not present in commit")
-    public void readMonsterWithSax() throws Exception {
-        readWithSax(getMonsterXmi());
+    public void readSet4() throws Exception {
+        read(getSet4());
     }
 
-    /**
-     * Reads a file with a SAX reader.
-     */
-    private void readWithSax(File file) throws Exception {
-        read(file);
+    @Test
+    @Ignore("XMI file not present in commit")
+    public void readSet5() throws Exception {
+        read(getSet5());
     }
 
-    /**
-     * Reads a file with the given {@link Reader reader type}.
-     */
     private void read(File file) throws Exception {
         registerJavaEPackage();
         try {
-            IOFactory.importXmi(file, counterHandler);
+            IOFactory.importXmi(file, dummyPersistenceHandler);
         } catch (Exception e) {
             NeoLogger.error(e);
             throw e;

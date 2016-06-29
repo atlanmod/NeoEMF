@@ -50,30 +50,30 @@ public class ImportTest extends AllIOTest {
     }
 
     @Test
-    public void testImportNeo4jThin() throws Exception {
-        testImportWithSax(getThinXmi(), getNeo4jHandler());
+    public void testImportNeo4jSet1() throws Exception {
+        testImportWithSax(getSet1(), getNeo4jHandler());
     }
 
     @Test
-    public void testImportNeo4jLight() throws Exception {
-        testImportWithSax(getLightXmi(), getNeo4jHandler());
+    public void testImportNeo4jSet2() throws Exception {
+        testImportWithSax(getSet2(), getNeo4jHandler());
     }
 
     @Test
-    public void testImportNeo4jMedium() throws Exception {
-        testImportWithSax(getMediumXmi(), getNeo4jHandler());
+    public void testImportNeo4jSet3() throws Exception {
+        testImportWithSax(getSet3(), getNeo4jHandler());
+    }
+
+    @Test
+    //@Ignore("XMI file not present in commit")
+    public void testImportNeo4jSet4() throws Exception {
+        testImportWithSax(getSet4(), getNeo4jHandler());
     }
 
     @Test
     @Ignore("XMI file not present in commit")
-    public void testImportNeo4jHeavy() throws Exception {
-        testImportWithSax(getHeavyXmi(), getNeo4jHandler());
-    }
-
-    @Test
-    @Ignore("XMI file not present in commit")
-    public void testImportNeo4jMonster() throws Exception {
-        testImportWithSax(getMonsterXmi(), getNeo4jHandler());
+    public void testImportNeo4jSet5() throws Exception {
+        testImportWithSax(getSet5(), getNeo4jHandler());
     }
 
     private PersistenceHandler getNeo4jHandler() throws Exception {

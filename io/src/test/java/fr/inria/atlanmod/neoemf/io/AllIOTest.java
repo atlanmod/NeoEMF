@@ -38,23 +38,23 @@ public abstract class AllIOTest extends AllTest {
 
     private static final String JAVA_ECORE = "/metamodel/java.ecore";
 
-    protected File getThinXmi() {
+    protected File getSet1() {
         return getResourceFile(THIN_XMI);
     }
 
-    protected File getLightXmi() {
+    protected File getSet2() {
         return getResourceFile(LIGHT_XMI);
     }
 
-    protected File getMediumXmi() {
+    protected File getSet3() {
         return getResourceFile(MEDIUM_XMI);
     }
 
-    protected File getHeavyXmi() {
+    protected File getSet4() {
         return getResourceFile(HEAVY_XMI);
     }
 
-    protected File getMonsterXmi() {
+    protected File getSet5() {
         return getResourceFile(MONSTER_XMI);
     }
 
