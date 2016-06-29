@@ -97,18 +97,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Otherwise redirect to the reference handler
         else if (eStructuralFeature instanceof EReference) {
-            NeoLogger.warn(
-                    "Feature misinterpreted during the analysis : {0}:{1} is a reference. Value = {2}",
-                    eClass.getName(), attribute.getLocalName(), attribute.getValue());
-
             handleReference(Reference.from(attribute));
-        }
-
-        // Not a feature of this class
-        else {
-            NeoLogger.warn(
-                    "Feature {0}:{1} does not exist in the metamodel. It will be ignored",
-                    eClass.getName(), attribute.getLocalName());
         }
     }
 
@@ -135,18 +124,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Otherwise redirect to the attribute handler
         else if (eStructuralFeature instanceof EAttribute) {
-            NeoLogger.warn(
-                    "Feature misinterpreted during the analysis : {0}:{1} is an attribute. Value = {2}",
-                    eClass.getName(), reference.getLocalName(), reference.getValue());
-
             handleAttribute(Attribute.from(reference));
-        }
-
-        // Not a feature of this class
-        else {
-            NeoLogger.warn(
-                    "Feature {0}:{1} does not exist in the metamodel. It will be ignored",
-                    eClass.getName(), reference.getLocalName());
         }
     }
 
@@ -213,11 +191,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         }
         else if (eStructuralFeature instanceof EReference) {
             handleReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
-        }
-        else {
-            NeoLogger.warn(
-                    "Feature {0}:{1} does not exist in the metamodel. It will be ignored",
-                    parentEClass.getName(), classifier.getLocalName());
         }
     }
 

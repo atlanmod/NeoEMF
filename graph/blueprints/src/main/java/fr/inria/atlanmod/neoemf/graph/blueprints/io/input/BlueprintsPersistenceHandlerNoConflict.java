@@ -24,7 +24,6 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandlerNoConflict;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -72,10 +71,6 @@ public class BlueprintsPersistenceHandlerNoConflict extends AbstractPersistenceH
 
         if (root) {
             // Add the current element as content of the 'ROOT' node
-            NeoLogger.debug(
-                    "{0}:{1} defined as content of {2} vertex",
-                    nsUri, name, ROOT_ID);
-
             addReference(ROOT_ID, ROOT_FEATURE_NAME, InternalEObject.EStore.NO_INDEX, false, id);
         }
     }
@@ -158,10 +153,6 @@ public class BlueprintsPersistenceHandlerNoConflict extends AbstractPersistenceH
         Id metaClassId = getOrCreateMetaClass(metaClassifier);
 
         setMetaClass(id, metaClassId);
-
-        NeoLogger.debug(
-                "{0} vertex created : {1}:{2}",
-                ROOT_ID, metaClassifier.getNamespace().getUri(), metaClassifier.getLocalName());
     }
 
     private static void updateContainment(String localName, Vertex parentVertex, Vertex childVertex) {

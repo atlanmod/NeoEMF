@@ -87,6 +87,9 @@ public class ImportTest extends AllIOTest {
 
         options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
 
+        options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE,
+                BlueprintsNeo4jResourceOptions.CacheType.NONE);
+
         BlueprintsPersistenceBackend neo4jBackend = (BlueprintsPersistenceBackend)
                 BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
 

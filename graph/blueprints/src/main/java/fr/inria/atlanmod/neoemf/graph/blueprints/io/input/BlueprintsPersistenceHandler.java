@@ -26,7 +26,6 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -81,10 +80,6 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
 
         if (root) {
             // Add the current element as content of the 'ROOT' node
-            NeoLogger.debug(
-                    "{0}:{1} defined as content of {2} vertex",
-                    nsUri, name, ROOT_ID);
-
             addReference(ROOT_ID, ROOT_FEATURE_NAME, InternalEObject.EStore.NO_INDEX, false, id);
         }
     }
@@ -105,7 +100,6 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
             throw new NoSuchElementException("Unable to find metaclass with Id = " + metaClassId.toString());
         }
 
-        //NeoLogger.debug("Defines {0} as a instance of {1}", id, metaClassVertex.getProperty(BlueprintsPersistenceBackend.ECLASS_NAME));
         vertex.addEdge(BlueprintsPersistenceBackend.INSTANCE_OF, metaClassVertex);
     }
 
@@ -189,10 +183,6 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         Id metaClassId = getOrCreateMetaClass(metaClassifier);
 
         setMetaClass(id, metaClassId);
-
-        NeoLogger.debug(
-                "{0} vertex created : {1}:{2}",
-                ROOT_ID, metaClassifier.getNamespace().getUri(), metaClassifier.getLocalName());
     }
 
     private static void updateContainment(String localName, Vertex parentVertex, Vertex childVertex) {

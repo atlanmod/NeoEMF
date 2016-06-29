@@ -354,13 +354,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     private static int getSizeCache() {
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1000; // Xmx value in kB
-        int factor = 5; //% du Xmx
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000; //Xmx value in GB
+        int offset = 10000; //elements by Gb of RAM
 
-        int cacheSize = (int) (maxMemory * factor / 100);
-
-        NeoLogger.info("Caches size defined to {0,number,integer}", cacheSize);
-
-        return cacheSize;
+        return (int) (maxMemory * offset);
     }
 }

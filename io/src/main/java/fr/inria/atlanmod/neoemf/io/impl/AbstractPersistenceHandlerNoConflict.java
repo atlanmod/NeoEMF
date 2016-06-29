@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -237,13 +236,9 @@ public abstract class AbstractPersistenceHandlerNoConflict<P extends Persistence
     }
 
     private static int getSizeCache() {
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1000; // Xmx value in kB
-        int factor = 10; //% du Xmx
+        long maxMemory = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000; //Xmx value in GB
+        int offset = 20000; //elements by Gb of RAM
 
-        int cacheSize = (int) (maxMemory * factor / 100);
-
-        NeoLogger.info("Caches size defined to {0,number,integer}", cacheSize);
-
-        return cacheSize;
+        return (int) (maxMemory * offset);
     }
 }
