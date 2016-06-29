@@ -238,7 +238,7 @@ public abstract class AbstractPersistenceHandlerNoConflict<P extends Persistence
 
     private static int getSizeCache() {
         long maxMemory = Runtime.getRuntime().maxMemory() / 1000; // Xmx value in kB
-        int factor = 20; //% du Xmx
+        int factor = 10; //% du Xmx
 
         int cacheSize = (int) (maxMemory * factor / 100);
 
