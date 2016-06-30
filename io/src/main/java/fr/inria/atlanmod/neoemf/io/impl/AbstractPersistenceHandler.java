@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
@@ -28,6 +27,7 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.NoSuchElementException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -37,45 +37,48 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
     private static final int OPS_BETWEEN_COMMITS_DEFAULT = 50000;
-    protected static final int DEFAULT_CACHE_SIZE = getSizeCache();
+    protected static final int DEFAULT_CACHE_SIZE = 10000;
 
     private int opCount;
 
     private final P persistenceBackend;
 
-    private final Deque<Id> idStack;
-
-    /**
-     * Cache of unlinked elements, waiting until their reference is created.
-     */
-    // TODO Create a better structure to keep unlinked elements (Heap space issues)
-    private final HashMultimap<String, UnlinkedElement> unlinkedElements;
+    private final Deque<Id> elementIdStack;
 
     /**
      * Cache of recently processed {@code Id}.
      */
-    private final Cache<String, Id> idCache;
-
-    /**
-     * Cache of conflited {@code Id}.
-     */
-    private final Cache<String, Id> conflictedIdCache;
+    private final Cache<String, Id> elementIdCache;
 
     /**
      * Cache of registered metaclasses.
      */
-    private final Cache<String, Id> metaclassCache;
+    private final Cache<String, Id> metaclassIdCache;
 
-    public AbstractPersistenceHandler(P persistenceBackend) {
+    /**
+     * Cache of unlinked elements, waiting until their reference is created.
+     * <p/>
+     * In case of conflict detection only.
+     */
+    private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
+
+    /**
+     * Cache of conflited {@code Id}.
+     * <p/>
+     * In case of conflict detection only.
+     */
+    private final Cache<String, Id> conflictElementIdCache;
+
+    protected AbstractPersistenceHandler(P persistenceBackend) {
         this.persistenceBackend = persistenceBackend;
         this.opCount = 0;
-        this.idStack = new ArrayDeque<>();
+        this.elementIdStack = new ArrayDeque<>();
 
-        this.idCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
-        this.metaclassCache = CacheBuilder.newBuilder().build();
+        this.elementIdCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        this.metaclassIdCache = CacheBuilder.newBuilder().build();
 
-        this.unlinkedElements = HashMultimap.create();
-        this.conflictedIdCache = CacheBuilder.newBuilder().build();
+        this.unlinkedElementsMap = HashMultimap.create();
+        this.conflictElementIdCache = CacheBuilder.newBuilder().build();
     }
 
     protected P getPersistenceBackend() {
@@ -104,120 +107,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         setMetaClass(id, metaClassId);
 
-        idStack.addLast(id);
-        tryLink(classifier.getId(), id);
-    }
-
-    /**
-     * Creates an element from the given {@code classifier} with the given {@code id}, and returns the given {@code id}
-
-     * @return the given {@code id}
-     */
-    protected Id createElement(final Classifier classifier, final Id id) throws Exception {
-        checkNotNull(id);
-
-        addElement(id,
-                classifier.getNamespace().getUri(),
-                classifier.getClassName(),
-                classifier.isRoot());
-
-        incrementAndCommit();
-
-        return id;
-    }
-
-    /**
-     * Creates an element from the given {@code classifier} and returns its {@link Id identifier}.
-
-     * @return the {@link Id identifier} of the newly created element
-     */
-    protected Id createElement(final Classifier classifier) throws Exception {
-        checkNotNull(classifier.getId());
-
-        boolean retry = false;
-
-        // Hash reference a first time
-        Id id = hashId(classifier.getId());
-
-        do {
-            try {
-                // Try to persist with the current Id
-                addElement(id,
-                        classifier.getNamespace().getUri(),
-                        classifier.getClassName(),
-                        classifier.isRoot());
-
-                retry = false;
-            }
-            catch (AlreadyExistingIdException e) {
-                // Id is already present in the backend : try with another Id
-                NeoLogger.warn("Conflict with Id " + id);
-
-                // Hash reference another time + Store (or update) in cache
-                id = hashId(id.toString());
-                conflictedIdCache.put(classifier.getId(), id);
-
-                retry = true;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        } while (retry);
-
-        incrementAndCommit();
-
-        return id;
-    }
-
-    /**
-     * Creates a metaclass form the given {@code metaClassifier} and returns its {@link Id}.
-
-     * @return the {@link Id} of the newly created metaclass
-     */
-    protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) throws Exception {
-        String metaClassKey = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
-
-        // Gets from cache
-        Id metaClassId = metaclassCache.getIfPresent(metaClassKey);
-
-        // If metaclass doesn't already exist, we create it
-        if (metaClassId == null) {
-            boolean retry;
-
-            // Hash reference a first time
-            metaClassId = hashId(metaClassKey);
-
-            do {
-                try {
-                    // Try to persist with the current Id
-                    addElement(
-                            metaClassId,
-                            metaClassifier.getNamespace().getUri(),
-                            metaClassifier.getLocalName(),
-                            false);
-
-                    metaclassCache.put(metaClassKey, metaClassId);
-                    retry = false;
-                }
-                catch (AlreadyExistingIdException e) {
-                    // Hash reference another time + Store (or update) in cache
-                    metaClassId = hashId(metaClassId.toString());
-                    retry = true;
-                }
-            }
-            while (retry);
-        }
-
-        incrementAndCommit();
-
-        return metaClassId;
+        elementIdStack.addLast(id);
     }
 
     @Override
     public void handleAttribute(final Attribute attribute) throws Exception {
         Id id;
         if (attribute.getId() == null) {
-            id = idStack.getLast();
+            id = elementIdStack.getLast();
         } else {
             id = getId(attribute.getId());
         }
@@ -234,7 +131,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     public void handleReference(final Reference reference) throws Exception {
         Id id;
         if (reference.getId() == null) {
-            id = idStack.getLast();
+            id = elementIdStack.getLast();
         } else {
             id = getId(reference.getId());
         }
@@ -248,39 +145,130 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                     reference.isContainment(),
                     idReference);
 
-            //NeoLogger.debug("Create reference : {0} > {1}", id, idReference);
-
             Reference opposite = reference.getOpposite();
             if (opposite != null) {
-                //NeoLogger.debug("Create the opposite reference : {0} > {1}", idReference, id);
-                addReference(idReference, opposite.getLocalName(), opposite.getIndex(), opposite.isContainment(), id);
+                addReference(idReference,
+                        opposite.getLocalName(),
+                        opposite.getIndex(),
+                        opposite.isContainment(),
+                        id);
             }
 
             incrementAndCommit();
-        } catch (UnknownReferencedIdException e) {
-            addUnlinked(reference.getValue(), new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isContainment()));
+        } catch (NoSuchElementException e) {
+            // Referenced element does not exist : we save it in a cache
+            unlinkedElementsMap.put(
+                    reference.getValue(),
+                    new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isContainment()));
         }
     }
 
     @Override
     public void handleEndElement() throws Exception {
-        idStack.removeLast();
+        elementIdStack.removeLast();
     }
 
     @Override
     public void handleEndDocument() throws Exception {
-        long unlinkedNumber = unlinkedElements.size();
+        long unlinkedNumber = unlinkedElementsMap.size();
         if(unlinkedNumber > 0) {
             NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
-            for (String e : unlinkedElements.asMap().keySet()) {
+            for (String e : unlinkedElementsMap.asMap().keySet()) {
                 NeoLogger.warn(" > " + e);
             }
-            unlinkedElements.clear();
+            unlinkedElementsMap.clear();
         }
 
-        NeoLogger.info("{0} key conflicts", conflictedIdCache.size());
+        long conflictedId = conflictElementIdCache.size();
+        if (conflictedId > 0) {
+            NeoLogger.info("{0} key conflicts", conflictElementIdCache.size());
+            conflictElementIdCache.invalidateAll();
+        }
 
         persistenceBackend.save();
+    }
+
+    /**
+     * Creates an element from the given {@code classifier} with the given {@code id}, and returns the given {@code id}.
+     * <p/>
+     * If {@code id} is {@code null}, it is calculated by the {@link #hashId(String)} method.
+
+     * @return the given {@code id}
+     */
+    protected Id createElement(final Classifier classifier, final Id id) throws Exception {
+        checkNotNull(id);
+
+        addElement(id,
+                classifier.getNamespace().getUri(),
+                classifier.getClassName(),
+                classifier.isRoot());
+
+        incrementAndCommit();
+
+        tryLink(classifier.getId(), id);
+
+        return id;
+    }
+
+    private Id createElement(final Classifier classifier) throws Exception {
+        checkNotNull(classifier.getId());
+
+        Id id = hashId(classifier.getId());
+        boolean conflict = false;
+
+        do {
+            try {
+                createElement(classifier, id);
+                elementIdCache.put(classifier.getId(), id);
+            }
+            catch (AlreadyExistingIdException e) {
+                // Id already exists in the backend : try another
+                id = hashId(id.toString());
+                conflictElementIdCache.put(classifier.getId(), id);
+                conflict = true;
+            }
+        } while (conflict);
+
+        return id;
+    }
+
+    /**
+     * Creates a metaclass form the given {@code metaClassifier} and returns its {@link Id}.
+
+     * @return the {@link Id} of the newly created metaclass
+     */
+    protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) throws Exception {
+        String metaClassKey = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
+
+        // Gets from cache
+        Id metaClassId = metaclassIdCache.getIfPresent(metaClassKey);
+
+        // If metaclass doesn't already exist, we create it
+        if (metaClassId == null) {
+            metaClassId = hashId(metaClassKey);
+            boolean conflict = false;
+
+            do {
+                try {
+                    addElement(
+                            metaClassId,
+                            metaClassifier.getNamespace().getUri(),
+                            metaClassifier.getLocalName(),
+                            false);
+
+                    metaclassIdCache.put(metaClassKey, metaClassId);
+                }
+                catch (AlreadyExistingIdException e) {
+                    metaClassId = hashId(metaClassId.toString());
+                    conflict = true;
+                }
+            }
+            while (conflict);
+        }
+
+        incrementAndCommit();
+
+        return metaClassId;
     }
 
     /**
@@ -291,25 +279,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @return the registered {@code Id} of the given reference, or {@code null} if the reference is not registered.
      */
     protected Id getId(final String reference) {
-        Id id = conflictedIdCache.getIfPresent(reference);
+        Id id = conflictElementIdCache.getIfPresent(reference);
         if (id == null) {
-            id = idCache.getIfPresent(reference);
+            id = elementIdCache.getIfPresent(reference);
             if (id == null) {
                 id = hashId(reference);
-                idCache.put(reference, id);
+                elementIdCache.put(reference, id);
             }
         }
         return id;
-    }
-
-    /**
-     * Defines an element as unlinked and stores it in a cache until the referenced element will be created.
-     *
-     * @param reference the reference of the targetted element
-     * @param element the element to store
-     */
-    private void addUnlinked(final String reference, final UnlinkedElement element) {
-        unlinkedElements.put(reference, element);
     }
 
     /**
@@ -319,7 +297,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @param id the identifier of the targetted element
      */
     private void tryLink(final String reference, final Id id) throws Exception {
-        for (UnlinkedElement e : unlinkedElements.removeAll(reference)) {
+        for (UnlinkedElement e : unlinkedElementsMap.removeAll(reference)) {
             addReference(e.id, e.name, e.index, e.containment, id);
         }
     }
@@ -351,12 +329,5 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             this.index = index;
             this.containment = containment;
         }
-    }
-
-    private static int getSizeCache() {
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000; //Xmx value in GB
-        int offset = 10000; //elements by Gb of RAM
-
-        return (int) (maxMemory * offset);
     }
 }

@@ -22,6 +22,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -53,7 +57,20 @@ public class XmiStreamReader extends AbstractXmiReader {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
-        factory.newSAXParser().parse(file, new XmiSaxHandler());
+
+        InputStream stream = new FileInputStream(file);
+
+        // Log progress timer
+        Timer logProgressTimer = new Timer(true);
+        logProgressTimer.schedule(new LogProgressTimer(stream, file.length()), 10000, 30000);
+
+        try {
+            factory.newSAXParser().parse(stream, new XmiSaxHandler());
+        } catch (SAXException e) {
+            throw new Exception(e);
+        }
+
+        logProgressTimer.cancel();
     }
 
     private class XmiSaxHandler extends DefaultHandler {
@@ -119,6 +136,29 @@ public class XmiStreamReader extends AbstractXmiReader {
             catch (Exception e) {
                 NeoLogger.error(e);
                 throw new SAXException(e);
+            }
+        }
+    }
+
+    private class LogProgressTimer extends TimerTask {
+
+        private final InputStream stream;
+        private final long total;
+
+        private LogProgressTimer(InputStream stream, long total) {
+            this.stream = stream;
+            this.total = total;
+        }
+
+        @Override
+        public void run() {
+            try {
+                NeoLogger.debug(
+                        "Progress : {0, number, #0.0%}",
+                        (double) (total - stream.available()) / (double) total);
+            }
+            catch (Exception e) {
+                // No nothing
             }
         }
     }

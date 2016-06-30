@@ -11,9 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceHandlerNoConflict;
+import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceHandlerFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.io.AllIOTest;
@@ -49,34 +50,81 @@ public class ImportTest extends AllIOTest {
         neo4jFile = temporaryFolder.getRoot().toPath().resolve("import-Neo4j" + timestamp).toFile();
     }
 
+    /*
+     * Without key conflict detection
+     */
+
+    @Test
+    public void testImportNeo4jNotConflictsResolverSet1() throws Exception {
+        testImportWithSax(getSet1(), createNeo4jNoConflictResolverHandler());
+    }
+
+    @Test
+    public void testImportNeo4jNotConflictsResolverSet2() throws Exception {
+        testImportWithSax(getSet2(), createNeo4jNoConflictResolverHandler());
+    }
+
+    @Test
+    public void testImportNeo4jNotConflictsResolverSet3() throws Exception {
+        testImportWithSax(getSet3(), createNeo4jNoConflictResolverHandler());
+    }
+
+    @Test
+    @Ignore("XMI file not present in commit")
+    public void testImportNeo4jNotConflictsResolverSet4() throws Exception {
+        testImportWithSax(getSet4(), createNeo4jNoConflictResolverHandler());
+    }
+
+    @Test
+    @Ignore("XMI file not present in commit")
+    public void testImportNeo4jNotConflictsResolverSet5() throws Exception {
+        testImportWithSax(getSet5(), createNeo4jNoConflictResolverHandler());
+    }
+
+    /*
+     * With key conflict detection tests
+     */
+
     @Test
     public void testImportNeo4jSet1() throws Exception {
-        testImportWithSax(getSet1(), getNeo4jHandler());
+        testImportWithSax(getSet1(), createNeo4jHandler());
     }
 
     @Test
     public void testImportNeo4jSet2() throws Exception {
-        testImportWithSax(getSet2(), getNeo4jHandler());
+        testImportWithSax(getSet2(), createNeo4jHandler());
     }
 
     @Test
     public void testImportNeo4jSet3() throws Exception {
-        testImportWithSax(getSet3(), getNeo4jHandler());
+        testImportWithSax(getSet3(), createNeo4jHandler());
     }
 
     @Test
-    @Ignore("XMI file not present in commit")
+    @Ignore("XMI file not present in commit / Heap space")
     public void testImportNeo4jSet4() throws Exception {
-        testImportWithSax(getSet4(), getNeo4jHandler());
+        testImportWithSax(getSet4(), createNeo4jHandler());
     }
 
     @Test
-    @Ignore("XMI file not present in commit")
+    @Ignore("XMI file not present in commit / Heap space")
     public void testImportNeo4jSet5() throws Exception {
-        testImportWithSax(getSet5(), getNeo4jHandler());
+        testImportWithSax(getSet5(), createNeo4jHandler());
     }
 
-    private PersistenceHandler getNeo4jHandler() throws Exception {
+    private PersistenceHandler createNeo4jNoConflictResolverHandler() throws InvalidDataStoreException {
+        return new CounterDelegatedPersistenceHandler(
+                BlueprintsPersistenceHandlerFactory.createPersistenceHandler(createNeo4jPersistenceBackend(), false),
+                "blueprints1");
+    }
+
+    private PersistenceHandler createNeo4jHandler() throws InvalidDataStoreException {
+        return new CounterDelegatedPersistenceHandler(
+                BlueprintsPersistenceHandlerFactory.createPersistenceHandler(createNeo4jPersistenceBackend(), true),
+                "blueprints1");
+    }
+
+    private BlueprintsPersistenceBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
         Map<String, Object> options = new HashMap<>();
 
         List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
@@ -90,10 +138,8 @@ public class ImportTest extends AllIOTest {
         options.put(BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE,
                 BlueprintsNeo4jResourceOptions.CacheType.NONE);
 
-        BlueprintsPersistenceBackend neo4jBackend = (BlueprintsPersistenceBackend)
+        return (BlueprintsPersistenceBackend)
                 BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
-
-        return new CounterDelegatedPersistenceHandler(new BlueprintsPersistenceHandlerNoConflict(neo4jBackend), "blueprints1");
     }
 
     private void testImportWithSax(File file, PersistenceHandler persistenceHandler) throws Exception {

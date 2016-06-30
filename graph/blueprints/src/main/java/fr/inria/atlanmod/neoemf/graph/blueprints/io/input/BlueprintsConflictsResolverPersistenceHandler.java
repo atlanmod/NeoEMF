@@ -21,7 +21,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
-import fr.inria.atlanmod.neoemf.io.UnknownReferencedIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
@@ -33,9 +32,13 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 
 /**
- *
+ * A {@link fr.inria.atlanmod.neoemf.io.PersistenceHandler persistence handler} for a
+ * {@link BlueprintsPersistenceBackend Blueprints persistence backend}.
+ * <p/>
+ * <b>NOTE :</b> This handler has a key conflicts resolution feature, but it consumes much more memory than a backend
+ * without conflicts resolution. Make sure you have enough memory to avoid heap space.
  */
-public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
+class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
     private static final char SEPARATOR = ':';
     private static final String POSITION = "position";
@@ -46,17 +49,16 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
     private static final Id ROOT_ID = new StringId("ROOT");
     private static final String ROOT_FEATURE_NAME = "eContents";
 
-    private final Cache<Id, Vertex> loadedVertices;
+    protected final Cache<Id, Vertex> loadedVertices;
 
-    public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
+    public BlueprintsConflictsResolverPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
         loadedVertices = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
     protected Id hashId(String reference) {
-        String hash = HasherFactory.md5().hash(reference).toString();
-        return new StringId(hash);
+        return new StringId(HasherFactory.md5().hash(reference).toString());
     }
 
     @Override
@@ -68,13 +70,15 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
 
     @Override
     protected void addElement(Id id, String nsUri, String name, boolean root) throws Exception {
-        Vertex vertex;
-        try {
-            vertex = getPersistenceBackend().addVertex(id.toString());
-            loadedVertices.put(id, vertex);
-        } catch (IllegalArgumentException e) {
-            throw new AlreadyExistingIdException();
+        Vertex vertex = createVertex(id);
+
+        // Checks if the Vertex is not already defined
+        if (vertex.getProperty(BlueprintsPersistenceBackend.ECLASS_NAME) != null) {
+            throw new IllegalArgumentException(
+                    "An element with the same Id (" + id.toString() + ") is already defined. " +
+                            "Use a handler with a conflicts resolution feature instead.");
         }
+
         vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
         vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, nsUri);
 
@@ -86,31 +90,15 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
 
     @Override
     protected void setMetaClass(Id id, Id metaClassId) throws Exception {
-        Vertex vertex;
-        try {
-            vertex = getVertex(id);
-        } catch (Exception e) {
-            throw new NoSuchElementException("Unable to find an element with Id = " + id.toString());
-        }
-
-        Vertex metaClassVertex;
-        try {
-            metaClassVertex = getVertex(metaClassId);
-        } catch (Exception e) {
-            throw new NoSuchElementException("Unable to find metaclass with Id = " + metaClassId.toString());
-        }
+        Vertex vertex = getVertex(id);
+        Vertex metaClassVertex = getVertex(metaClassId);
 
         vertex.addEdge(BlueprintsPersistenceBackend.INSTANCE_OF, metaClassVertex);
     }
 
     @Override
     protected void addAttribute(Id id, String name, int index, String value) throws Exception {
-        Vertex vertex;
-        try {
-            vertex = getVertex(id);
-        } catch (Exception e) {
-            throw new NoSuchElementException("Unable to find an element with Id = " + id.toString());
-        }
+        Vertex vertex = getVertex(id);
 
         int size = getSize(vertex, name);
 
@@ -126,19 +114,8 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
 
     @Override
     protected void addReference(Id id, String name, int index, boolean containment, Id idReference) throws Exception {
-        Vertex vertex;
-        try {
-            vertex = getVertex(id);
-        } catch (Exception e) {
-            throw new NoSuchElementException("Unable to find an element with Id = " + id.toString());
-        }
-
-        Vertex referencedVertex;
-        try {
-            referencedVertex = getVertex(idReference);
-        } catch (Exception e) {
-            throw new UnknownReferencedIdException();
-        }
+        Vertex vertex = getVertex(id);
+        Vertex referencedVertex = getVertex(idReference);
 
         // Update the containment reference if needed
         if (containment) {
@@ -158,13 +135,30 @@ public class BlueprintsPersistenceHandler extends AbstractPersistenceHandler<Blu
         edge.setProperty(POSITION, index);
     }
 
-    private Vertex getVertex(final Id id) throws Exception {
-        return loadedVertices.get(id, new Callable<Vertex>() {
-            @Override
-            public Vertex call() throws Exception {
-                return getPersistenceBackend().getVertex(id.toString());
-            }
-        });
+    protected Vertex getVertex(final Id id) throws Exception {
+        try {
+            return loadedVertices.get(id, new Callable<Vertex>() {
+                @Override
+                public Vertex call() throws Exception {
+                    return getPersistenceBackend().getVertex(id.toString());
+                }
+            });
+        } catch (Exception e) {
+            throw new NoSuchElementException("Unable to find an element with Id '" + id.toString() + "'");
+        }
+    }
+
+    protected Vertex createVertex(final Id id) throws Exception {
+        try {
+            return loadedVertices.get(id, new Callable<Vertex>() {
+                @Override
+                public Vertex call() throws Exception {
+                    return getPersistenceBackend().addVertex(id.toString());
+                }
+            });
+        } catch (Exception e) {
+            throw new AlreadyExistingIdException("Already existing Id '" + id.toString() + "'");
+        }
     }
 
     private void createRootVertex() throws Exception {
