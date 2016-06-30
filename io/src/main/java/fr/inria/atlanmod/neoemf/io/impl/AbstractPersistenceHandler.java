@@ -36,8 +36,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
-    private static final int OPS_BETWEEN_COMMITS_DEFAULT = 50000;
-    protected static final int DEFAULT_CACHE_SIZE = 10000;
+    private static final int OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
+    protected static final int DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
 
     private int opCount;
 
@@ -79,6 +79,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         this.unlinkedElementsMap = HashMultimap.create();
         this.conflictElementIdCache = CacheBuilder.newBuilder().build();
+
+        NeoLogger.info("Autocommit Blueprints Handler created (chunk = {0})", OPS_BETWEEN_COMMITS_DEFAULT);
     }
 
     protected P getPersistenceBackend() {
@@ -145,6 +147,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                     reference.isContainment(),
                     idReference);
 
+            incrementAndCommit();
+
             Reference opposite = reference.getOpposite();
             if (opposite != null) {
                 addReference(idReference,
@@ -152,9 +156,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                         opposite.getIndex(),
                         opposite.isContainment(),
                         id);
-            }
 
-            incrementAndCommit();
+                incrementAndCommit();
+            }
         } catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
             unlinkedElementsMap.put(
@@ -311,6 +315,22 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         if (opCount == 0) {
             persistenceBackend.save();
         }
+    }
+
+    /**
+     * Adapts the given {@code value} according to the max memory.
+     * <p/>
+     * The formulas can be improved, for sure.
+     */
+    private static int adaptFromMemory(int value) {
+        double maxMemoryGB = Math.round(Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000);
+
+        double factor = maxMemoryGB;
+        if (maxMemoryGB > 1) {
+            factor *= 2;
+        }
+
+        return (int) (value * factor);
     }
 
     /**
