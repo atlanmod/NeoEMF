@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.tests;
+package fr.inria.atlanmod.neoemf.bench;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
@@ -17,9 +17,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistence
 import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceHandlerFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.io.AllIOTest;
 import fr.inria.atlanmod.neoemf.io.IOFactory;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.bench.AllInputBench;
 import fr.inria.atlanmod.neoemf.io.impl.CounterDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
@@ -37,7 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ImportTest extends AllIOTest {
+//@Ignore
+public class ImportBench extends AllInputBench {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -55,29 +56,29 @@ public class ImportTest extends AllIOTest {
      */
 
     @Test
-    public void testImportNeo4jNotConflictsResolverSet1() throws Exception {
+    public void benchNeo4jNotConflictsResolverSet1() throws Exception {
         testImportWithSax(getSet1(), createNeo4jNoConflictResolverHandler());
     }
 
     @Test
-    public void testImportNeo4jNotConflictsResolverSet2() throws Exception {
+    public void benchNeo4jNotConflictsResolverSet2() throws Exception {
         testImportWithSax(getSet2(), createNeo4jNoConflictResolverHandler());
     }
 
     @Test
-    public void testImportNeo4jNotConflictsResolverSet3() throws Exception {
+    public void benchNeo4jNotConflictsResolverSet3() throws Exception {
         testImportWithSax(getSet3(), createNeo4jNoConflictResolverHandler());
     }
 
     @Test
     @Ignore("XMI file not present in commit")
-    public void testImportNeo4jNotConflictsResolverSet4() throws Exception {
+    public void benchNeo4jNotConflictsResolverSet4() throws Exception {
         testImportWithSax(getSet4(), createNeo4jNoConflictResolverHandler());
     }
 
     @Test
     @Ignore("XMI file not present in commit")
-    public void testImportNeo4jNotConflictsResolverSet5() throws Exception {
+    public void benchNeo4jNotConflictsResolverSet5() throws Exception {
         testImportWithSax(getSet5(), createNeo4jNoConflictResolverHandler());
     }
 
@@ -87,31 +88,31 @@ public class ImportTest extends AllIOTest {
 
     @Test
     @Ignore
-    public void testImportNeo4jSet1() throws Exception {
+    public void benchNeo4jSet1() throws Exception {
         testImportWithSax(getSet1(), createNeo4jHandler());
     }
 
     @Test
     @Ignore
-    public void testImportNeo4jSet2() throws Exception {
+    public void benchNeo4jSet2() throws Exception {
         testImportWithSax(getSet2(), createNeo4jHandler());
     }
 
     @Test
     @Ignore
-    public void testImportNeo4jSet3() throws Exception {
+    public void benchNeo4jSet3() throws Exception {
         testImportWithSax(getSet3(), createNeo4jHandler());
     }
 
     @Test
     @Ignore("XMI file not present in commit / Heap space")
-    public void testImportNeo4jSet4() throws Exception {
+    public void benchNeo4jSet4() throws Exception {
         testImportWithSax(getSet4(), createNeo4jHandler());
     }
 
     @Test
     @Ignore("XMI file not present in commit / Heap space")
-    public void testImportNeo4jSet5() throws Exception {
+    public void benchNeo4jSet5() throws Exception {
         testImportWithSax(getSet5(), createNeo4jHandler());
     }
 

@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.io.bench.XmiStreamReaderBench;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -23,39 +24,32 @@ import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
+import org.junit.After;
+import org.junit.Before;
 
 import java.io.File;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class AllIOTest extends AllTest {
-
-    private static final String THIN_XMI = "/fr.inria.atlanmod.kyanos.tests.xmi";
-    private static final String LIGHT_XMI = "/fr.inria.atlanmod.neo4emf.neo4jresolver.xmi";
-    private static final String MEDIUM_XMI = "/org.eclipse.gmt.modisco.java.kyanos.xmi";
-    private static final String HEAVY_XMI = "/org.eclipse.jdt.core.xmi";
-    private static final String MONSTER_XMI = "/org.eclipse.jdt.source.all.xmi";
+/**
+ *
+ */
+public abstract class AllInputTest extends AllTest {
 
     private static final String JAVA_ECORE = "/metamodel/java.ecore";
 
-    protected File getSet1() {
-        return getResourceFile(THIN_XMI);
+    @Before
+    public void setUp() throws Exception {
+
     }
 
-    protected File getSet2() {
-        return getResourceFile(LIGHT_XMI);
+    @After
+    public void tearDown() throws Exception {
+
     }
 
-    protected File getSet3() {
-        return getResourceFile(MEDIUM_XMI);
-    }
-
-    protected File getSet4() {
-        return getResourceFile(HEAVY_XMI);
-    }
-
-    protected File getSet5() {
-        return getResourceFile(MONSTER_XMI);
+    protected File getResourceFile(String path) {
+        return new File(XmiStreamReaderBench.class.getResource(path).getFile());
     }
 
     protected void registerJavaEPackage() {
@@ -81,9 +75,5 @@ public abstract class AllIOTest extends AllTest {
         checkNotNull(ePackage, "EPackage '" + prefix + "' does not exist.");
 
         EPackage.Registry.INSTANCE.put("java", ePackage);
-    }
-
-    private File getResourceFile(String path) {
-        return new File(XmiStreamReaderTest.class.getResource(path).getFile());
     }
 }

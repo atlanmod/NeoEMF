@@ -9,8 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io;
+package fr.inria.atlanmod.neoemf.io.bench;
 
+import fr.inria.atlanmod.neoemf.io.IOFactory;
+import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.impl.CounterDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.DummyPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -21,7 +23,8 @@ import org.junit.Test;
 
 import java.io.File;
 
-public class XmiStreamReaderTest extends AllIOTest {
+//@Ignore
+public class XmiStreamReaderBench extends AllInputBench {
 
     private PersistenceHandler dummyPersistenceHandler;
 
@@ -31,36 +34,36 @@ public class XmiStreamReaderTest extends AllIOTest {
     }
 
     @Test
-    public void readSet1() throws Exception {
-        read(getSet1());
+    public void benchSet1() throws Exception {
+        readXmi(getSet1(), dummyPersistenceHandler);
     }
 
     @Test
-    public void readSet2() throws Exception {
-        read(getSet2());
+    public void benchSet2() throws Exception {
+        readXmi(getSet2(), dummyPersistenceHandler);
     }
 
     @Test
-    public void readSet3() throws Exception {
-        read(getSet3());
-    }
-
-    @Test
-    @Ignore("XMI file not present in commit")
-    public void readSet4() throws Exception {
-        read(getSet4());
+    public void benchSet3() throws Exception {
+        readXmi(getSet3(), dummyPersistenceHandler);
     }
 
     @Test
     @Ignore("XMI file not present in commit")
-    public void readSet5() throws Exception {
-        read(getSet5());
+    public void benchSet4() throws Exception {
+        readXmi(getSet4(), dummyPersistenceHandler);
     }
 
-    private void read(File file) throws Exception {
+    @Test
+    @Ignore("XMI file not present in commit")
+    public void benchSet5() throws Exception {
+        readXmi(getSet5(), dummyPersistenceHandler);
+    }
+
+    private void readXmi(File file, PersistenceHandler persistenceHandler) throws Exception {
         registerJavaEPackage();
         try {
-            IOFactory.importXmi(file, dummyPersistenceHandler);
+            IOFactory.importXmi(file, persistenceHandler);
         } catch (Exception e) {
             NeoLogger.error(e);
             throw e;

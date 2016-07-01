@@ -387,6 +387,16 @@
                 <configuration>
                     <argLine>-Xms256m -Xmx1g -XX:PermSize=512m -XX:+UseConcMarkSweepGC</argLine>
                     <failIfNoTests>false</failIfNoTests>
+                    <runOrder>random</runOrder>
+                    <includes>
+                        <!-- Include tests -->
+                        <include>**/Test*.java</include>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestCase.java</include>
+
+                        <!-- Include benchmarks -->
+                        <!--<include>**/*Bench.java</include>-->
+                    </includes>
                 </configuration>
             </plugin>
 
