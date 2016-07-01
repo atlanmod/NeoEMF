@@ -86,16 +86,19 @@ public class ImportTest extends AllIOTest {
      */
 
     @Test
+    @Ignore
     public void testImportNeo4jSet1() throws Exception {
         testImportWithSax(getSet1(), createNeo4jHandler());
     }
 
     @Test
+    @Ignore
     public void testImportNeo4jSet2() throws Exception {
         testImportWithSax(getSet2(), createNeo4jHandler());
     }
 
     @Test
+    @Ignore
     public void testImportNeo4jSet3() throws Exception {
         testImportWithSax(getSet3(), createNeo4jHandler());
     }

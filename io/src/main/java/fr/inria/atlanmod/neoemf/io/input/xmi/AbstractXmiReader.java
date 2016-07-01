@@ -47,6 +47,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final String TYPE_ATTR = "xsi:type";
 
     /**
+     * The attribute key representing the version of the parsed XMI file.
+     */
+    private static final String XMI_VERSION_ATTR = "xmi:version";
+
+    /**
      * A regex pattern of an attribute containing one or several references (XPath reference).
      * <p/>
      * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
@@ -104,15 +109,22 @@ public abstract class AbstractXmiReader extends AbstractReader {
      */
     private List<StructuralFeature> processAttribute(Classifier element, String prefix, String locaName, String value) throws Exception {
         if (prefix != null) {
+            final String prefixedValue = prefix + ':' + locaName;
+
             // xsi:type
-            if (TYPE_ATTR.equals(prefix + ":" + locaName)) {
+            if (TYPE_ATTR.equals(prefixedValue)) {
                 processMetaClass(element, value);
                 return Collections.emptyList();
             }
 
             // xmi:id
-            if (ID_ATTR.equals(prefix + ":" + locaName)) {
+            if (ID_ATTR.equals(prefixedValue)) {
                 element.setId(value);
+                return Collections.emptyList();
+            }
+
+            if (XMI_VERSION_ATTR.equals(prefixedValue)) {
+                // Do nothing
                 return Collections.emptyList();
             }
         }

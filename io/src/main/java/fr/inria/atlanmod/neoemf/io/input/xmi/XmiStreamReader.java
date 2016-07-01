@@ -60,17 +60,18 @@ public class XmiStreamReader extends AbstractXmiReader {
 
         InputStream stream = new FileInputStream(file);
 
-        // Log progress timer
         Timer logProgressTimer = new Timer(true);
-        logProgressTimer.schedule(new LogProgressTimer(stream, file.length()), 10000, 30000);
 
         try {
+            // Log progress timer
+            logProgressTimer.schedule(new LogProgressTimer(stream, file.length()), 10000, 30000);
+
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
         } catch (SAXException e) {
             throw new Exception(e);
+        } finally {
+            logProgressTimer.cancel();
         }
-
-        logProgressTimer.cancel();
     }
 
     private class XmiSaxHandler extends DefaultHandler {
@@ -84,6 +85,8 @@ public class XmiStreamReader extends AbstractXmiReader {
                 NeoLogger.error(e);
                 throw new SAXException(e);
             }
+
+            logProgress(0);
         }
 
         @Override
@@ -130,6 +133,8 @@ public class XmiStreamReader extends AbstractXmiReader {
 
         @Override
         public void endDocument() throws SAXException {
+            logProgress(100);
+
             try {
                 XmiStreamReader.this.notifyEndDocument();
             }
@@ -140,7 +145,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
     }
 
-    private class LogProgressTimer extends TimerTask {
+    private static class LogProgressTimer extends TimerTask {
 
         private final InputStream stream;
         private final long total;
@@ -153,13 +158,15 @@ public class XmiStreamReader extends AbstractXmiReader {
         @Override
         public void run() {
             try {
-                NeoLogger.debug(
-                        "Progress : {0, number, #0.0%}",
-                        (double) (total - stream.available()) / (double) total);
+                logProgress((double) (total - stream.available()) / (double) total * 100d);
             }
             catch (Exception e) {
                 // No nothing
             }
         }
+    }
+
+    private static void logProgress(double percent) {
+        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
     }
 }
