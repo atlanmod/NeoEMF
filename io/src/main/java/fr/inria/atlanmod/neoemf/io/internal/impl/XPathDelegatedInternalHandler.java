@@ -15,6 +15,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
+import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -68,22 +69,23 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             hasIds = true;
         }
 
-        if (!hasIds) {
-            // Processes the id from the path of the element in XML tree
-            String path = paths.getPath(classifier.getLocalName());
+        // Processes the id from the path of the element in XML tree
+        String path = paths.getPath(classifier.getLocalName());
 
-            // Increments the number of occurence for this path
-            Integer count = paths.createOrIncrement(classifier.getLocalName());
+        // Increments the number of occurence for this path
+        Integer count = paths.createOrIncrement(classifier.getLocalName());
 
-            // Defines the id as '<path>.<index>'
-            String id = path + XPATH_INDEX_SEPARATOR + count;
+        // Defines the id as '<path>.<index>'
+        String id = path + XPATH_INDEX_SEPARATOR + count;
 
-            // Defines the XPath start of all elements from the root element
-            if (expressionStart == null) {
-                expressionStart = id + XPATH_START_ELT;
-            }
+        // Defines the XPath start of all elements from the root element
+        if (expressionStart == null) {
+            expressionStart = id + XPATH_START_ELT;
+        }
 
-            classifier.setId(id);
+        // Defines the new identifier as identifier of the classifier if it not already exist
+        if (classifier.getId() == null) {
+            classifier.setId(Identifier.generated(id));
         }
 
         super.handleStartElement(classifier);

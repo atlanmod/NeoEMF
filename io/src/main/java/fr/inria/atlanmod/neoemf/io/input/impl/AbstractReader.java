@@ -16,10 +16,14 @@ import fr.inria.atlanmod.neoemf.io.input.Reader;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.AbstractInternalNotifier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An abstract implementation of a {@link Reader reader} that notifies {@link InternalHandler internal handlers}.
  */
 public abstract class AbstractReader extends AbstractInternalNotifier implements Reader {
+
+    private static char SEPARATOR = ':';
 
     /**
      * Processes a {@link Namespace} declaration.
@@ -38,5 +42,11 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
         Namespace.Registry.getInstance().clean();
 
         super.notifyEndDocument();
+    }
+
+    protected static String format(String prefix, String value) {
+        checkNotNull(value);
+
+        return (prefix != null ? prefix + SEPARATOR : "") + value;
     }
 }

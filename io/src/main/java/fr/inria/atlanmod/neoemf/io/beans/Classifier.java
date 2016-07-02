@@ -16,7 +16,7 @@ package fr.inria.atlanmod.neoemf.io.beans;
  */
 public class Classifier extends MetaClassifier {
 
-    private String id;
+    private Identifier id;
     private String className;
     private MetaClassifier metaClassifier;
 
@@ -27,11 +27,11 @@ public class Classifier extends MetaClassifier {
         this.root = false;
     }
 
-    public String getId() {
+    public Identifier getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Identifier id) {
         this.id = id;
     }
 

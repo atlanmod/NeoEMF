@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
+import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
@@ -36,20 +37,29 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractXmiReader extends AbstractReader {
 
+    protected static final String XSI_NS = "xsi";
+
+    protected static final String XMI_NS = "xmi";
+
     /**
      * The attribute key representing the identifier of an element.
      */
-    private static final String ID_ATTR = "xmi:id";
+    private static final String XMI_ID = format(XMI_NS, "id");
+
+    /**
+     * The attribute key representing the identifier of an element.
+     */
+    private static final String XMI_IDREF = format(XMI_NS, "idref");
 
     /**
      * The attribute key representing the metaclass of an element.
      */
-    private static final String TYPE_ATTR = "xsi:type";
+    private static final String XMI_XSI_TYPE = format("(" + XMI_NS + "|" + XSI_NS + ")", "type");
 
     /**
      * The attribute key representing the version of the parsed XMI file.
      */
-    private static final String XMI_VERSION_ATTR = "xmi:version";
+    private static final String XMI_VERSION_ATTR = format(XMI_NS , "version");
 
     /**
      * A regex pattern of an attribute containing one or several references (XPath reference).
@@ -112,14 +122,14 @@ public abstract class AbstractXmiReader extends AbstractReader {
             final String prefixedValue = prefix + ':' + locaName;
 
             // xsi:type
-            if (TYPE_ATTR.equals(prefixedValue)) {
+            if (prefixedValue.matches(XMI_XSI_TYPE)) {
                 processMetaClass(element, value);
                 return Collections.emptyList();
             }
 
             // xmi:id
-            if (ID_ATTR.equals(prefixedValue)) {
-                element.setId(value);
+            if (XMI_ID.equals(prefixedValue)) {
+                element.setId(Identifier.original(value));
                 return Collections.emptyList();
             }
 

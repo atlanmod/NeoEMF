@@ -29,6 +29,8 @@ import java.util.TimerTask;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A XMI {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} that uses stream for reading.
  * <p/>
@@ -50,8 +52,13 @@ public class XmiStreamReader extends AbstractXmiReader {
 
     public void read(File file) throws Exception {
         if (!hasHandler()) {
-            NeoLogger.error("This notifier hasn't any handler.");
-            return;
+            throw new IllegalStateException("This notifier hasn't any handler");
+        }
+
+        checkNotNull(file);
+
+        if (!file.exists()) {
+            throw new IllegalArgumentException("The file " + file.toPath() + " doesn't exist");
         }
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -68,13 +75,19 @@ public class XmiStreamReader extends AbstractXmiReader {
 
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
         } catch (SAXException e) {
-            throw new Exception(e);
+            if (e.getException() != null) {
+                throw e.getException();
+            } else {
+                throw e;
+            }
         } finally {
             logProgressTimer.cancel();
         }
     }
 
     private class XmiSaxHandler extends DefaultHandler {
+
+        private String xmiUri;
 
         @Override
         public void startDocument() throws SAXException {
@@ -91,12 +104,21 @@ public class XmiStreamReader extends AbstractXmiReader {
 
         @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException {
+            if (prefix.equals(XMI_NS)) {
+                xmiUri = uri;
+            }
+
             processNamespace(prefix, uri);
         }
 
         @Override
         public void startElement(String uri, String name, String qName, Attributes attributes) throws SAXException
         {
+            // Ignore XMI elements
+            if (uri.equals(xmiUri)) {
+                return;
+            }
+
             try {
                 processElement(uri, name, attributes);
             }
@@ -122,6 +144,11 @@ public class XmiStreamReader extends AbstractXmiReader {
 
         @Override
         public void endElement(String uri, String name, String qName) throws SAXException {
+            // Ignore XMI elements
+            if (uri.equals(xmiUri)) {
+                return;
+            }
+
             try {
                 XmiStreamReader.this.notifyEndElement();
             }

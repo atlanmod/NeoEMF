@@ -172,7 +172,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         classesStack.addLast(eClass);
 
         // Gets the identifier of the element created by next handlers, and save it
-        idsStack.addLast(classifier.getId());
+        idsStack.addLast(classifier.getId().getValue());
     }
 
     private void handleFeature(Classifier classifier) throws Exception {
@@ -214,7 +214,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Notify next handlers of new element, and retreive its identifier
         super.handleStartElement(classifier);
-        String currentId = classifier.getId();
+        String currentId = classifier.getId().getValue();
 
         // Create a reference from the parent to this element, with the given local name
         Reference ref = new Reference(eReference.getName());

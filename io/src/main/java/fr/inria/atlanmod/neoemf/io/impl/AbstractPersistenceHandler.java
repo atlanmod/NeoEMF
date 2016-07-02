@@ -209,7 +209,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         incrementAndCommit();
 
-        tryLink(classifier.getId(), id);
+        tryLink(classifier.getId().getValue(), id);
 
         return id;
     }
@@ -217,18 +217,18 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private Id createElement(final Classifier classifier) throws Exception {
         checkNotNull(classifier.getId());
 
-        Id id = hashId(classifier.getId());
+        Id id = hashId(classifier.getId().getValue());
         boolean conflict = false;
 
         do {
             try {
                 createElement(classifier, id);
-                elementIdCache.put(classifier.getId(), id);
+                elementIdCache.put(classifier.getId().getValue(), id);
             }
             catch (AlreadyExistingIdException e) {
                 // Id already exists in the backend : try another
                 id = hashId(id.toString());
-                conflictElementIdCache.put(classifier.getId(), id);
+                conflictElementIdCache.put(classifier.getId().getValue(), id);
                 conflict = true;
             }
         } while (conflict);
