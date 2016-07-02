@@ -61,7 +61,7 @@ public class XmiStreamReaderBench extends AllInputBench {
     }
 
     private void readXmi(File file, PersistenceHandler persistenceHandler) throws Exception {
-        registerJavaEPackage();
+        registerEPackageFromEcore("java");
         try {
             IOFactory.importXmi(file, persistenceHandler);
         } catch (Exception e) {

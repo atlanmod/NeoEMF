@@ -17,11 +17,11 @@ import java.io.File;
 
 public abstract class AllInputBench extends AllInputTest {
 
-    private static final String THIN_XMI = "/bench/fr.inria.atlanmod.kyanos.tests.xmi";
-    private static final String LIGHT_XMI = "/bench/fr.inria.atlanmod.neo4emf.neo4jresolver.xmi";
-    private static final String MEDIUM_XMI = "/bench/org.eclipse.gmt.modisco.java.kyanos.xmi";
-    private static final String HEAVY_XMI = "/bench/org.eclipse.jdt.core.xmi";
-    private static final String MONSTER_XMI = "/bench/org.eclipse.jdt.source.all.xmi";
+    private static final String THIN_XMI = "/xmi/bench/fr.inria.atlanmod.kyanos.tests.xmi";
+    private static final String LIGHT_XMI = "/xmi/bench/fr.inria.atlanmod.neo4emf.neo4jresolver.xmi";
+    private static final String MEDIUM_XMI = "/xmi/bench/org.eclipse.gmt.modisco.java.kyanos.xmi";
+    private static final String HEAVY_XMI = "/xmi/bench/org.eclipse.jdt.core.xmi";
+    private static final String MONSTER_XMI = "/xmi/bench/org.eclipse.jdt.source.all.xmi";
 
     protected File getSet1() {
         return getResourceFile(THIN_XMI);

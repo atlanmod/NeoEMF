@@ -147,7 +147,7 @@ public class ImportBench extends AllInputBench {
     }
 
     private void testImportWithSax(File file, PersistenceHandler persistenceHandler) throws Exception {
-        registerJavaEPackage();
+        registerEPackageFromEcore("java");
 
         try {
             IOFactory.importXmi(file, persistenceHandler);

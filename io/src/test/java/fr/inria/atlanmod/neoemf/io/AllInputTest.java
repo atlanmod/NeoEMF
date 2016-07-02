@@ -36,7 +36,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AllInputTest extends AllTest {
 
-    private static final String JAVA_ECORE = "/metamodel/java.ecore";
+    private static final String ECORE = "ecore";
+    private static final String ECORE_PATH = "/ecore/{name}." + ECORE;
 
     @Before
     public void setUp() throws Exception {
@@ -52,13 +53,12 @@ public abstract class AllInputTest extends AllTest {
         return new File(XmiStreamReaderBench.class.getResource(path).getFile());
     }
 
-    protected void registerJavaEPackage() {
-        File file = getResourceFile(JAVA_ECORE);
-        String prefix = "java";
+    protected void registerEPackageFromEcore(String name) {
+        File file = getResourceFile(ECORE_PATH.replaceAll("\\{name\\}", name));
 
         EPackage ePackage = null;
 
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(ECORE, new EcoreResourceFactoryImpl());
 
         ResourceSet rs = new ResourceSetImpl();
 
@@ -72,8 +72,8 @@ public abstract class AllInputTest extends AllTest {
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
-        checkNotNull(ePackage, "EPackage '" + prefix + "' does not exist.");
+        checkNotNull(ePackage, "EPackage '" + name + "' does not exist.");
 
-        EPackage.Registry.INSTANCE.put("java", ePackage);
+        EPackage.Registry.INSTANCE.put(name, ePackage);
     }
 }
