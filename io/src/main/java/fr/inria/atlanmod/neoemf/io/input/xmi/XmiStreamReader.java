@@ -101,7 +101,6 @@ public class XmiStreamReader extends AbstractXmiReader {
                 processStartDocument();
             }
             catch (Exception e) {
-                NeoLogger.error(e);
                 throw new SAXException(e);
             }
 
@@ -129,7 +128,6 @@ public class XmiStreamReader extends AbstractXmiReader {
                 processStartElement(uri, name, attributes);
             }
             catch (Exception e) {
-                NeoLogger.error(e);
                 throw new SAXException(e);
             }
         }
@@ -143,7 +141,6 @@ public class XmiStreamReader extends AbstractXmiReader {
                 }
             }
             catch (Exception e) {
-                NeoLogger.error(e);
                 throw new SAXException(e);
             }
         }
@@ -159,7 +156,6 @@ public class XmiStreamReader extends AbstractXmiReader {
                 processEndElement(uri, name);
             }
             catch (Exception e) {
-                NeoLogger.error(e);
                 throw new SAXException(e);
             }
         }
@@ -172,7 +168,6 @@ public class XmiStreamReader extends AbstractXmiReader {
                 processEndDocument();
             }
             catch (Exception e) {
-                NeoLogger.error(e);
                 throw new SAXException(e);
             }
         }
