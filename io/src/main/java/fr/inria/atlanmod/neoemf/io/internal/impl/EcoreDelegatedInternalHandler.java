@@ -54,13 +54,13 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     /**
      * Defines if the previous element was an attribute, or not.
      */
-    private boolean lastWasAttribute;
+    private boolean ignoreCleaning;
 
     public EcoreDelegatedInternalHandler(InternalHandler handler) {
         super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
-        this.lastWasAttribute = false;
+        this.ignoreCleaning = false;
     }
 
     @Override
@@ -131,14 +131,14 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
     @Override
     public void handleEndElement() throws Exception {
-        if (!lastWasAttribute) {
+        if (!ignoreCleaning) {
             classesStack.removeLast();
             idsStack.removeLast();
 
             super.handleEndElement();
+        } else {
+            ignoreCleaning = false;
         }
-
-        lastWasAttribute = false;
     }
 
     /**
@@ -201,8 +201,8 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         }
 
         // Waiting a plain text value
-        this.waitingAttribute = new Attribute(eAttribute.getName());
-        lastWasAttribute = true;
+        waitingAttribute = new Attribute(eAttribute.getName());
+        ignoreCleaning = true;
     }
 
     private void handleReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {

@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.beans.StructuralFeature;
 import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.xml.sax.Attributes;
 
@@ -61,6 +62,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final String XMI_VERSION_ATTR = format(XMI_NS , "version");
 
     /**
+     * The attribute key representing a link to another document.
+     */
+    private static final String PROXY = "href";
+
+    /**
      * A regex pattern of an attribute containing one or several references (XPath reference).
      * <p/>
      * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
@@ -78,7 +84,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
-    private boolean isIdRef = false;
+    private boolean ignoreElement = false;
 
     /**
      * Processes a new element and send a notification to handlers.
@@ -98,8 +104,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
                         attributes.getLocalName(i),
                         attributes.getValue(i));
 
-                if (isIdRef) {
-                    //No need to go further, the reference has been notified
+                if (ignoreElement) {
+                    //No need to go further
                     return;
                 }
 
@@ -167,14 +173,16 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 Reference reference = new Reference(classifier.getLocalName());
                 reference.setIdReference(Identifier.original(value));
                 notifyReference(reference);
-
-                isIdRef = true;
+                ignoreElement = true;
                 isSpecialFeature = true;
             }
             else if (XMI_VERSION_ATTR.equals(prefixedValue)) { // xmi:version
-                // Do nothing
+                NeoLogger.info("XMI version : " + value);
                 isSpecialFeature = true;
             }
+        } else if (PROXY.equals(localName)) {
+            NeoLogger.warn("'" + classifier.getLocalName() + "' is an external reference to " + value + ". This feature is not supported yet.");
+            ignoreElement = true;
         }
 
         return isSpecialFeature;
@@ -229,10 +237,10 @@ public abstract class AbstractXmiReader extends AbstractReader {
     }
 
     protected void processEndElement(String uri, String localName) throws Exception {
-        if (!isIdRef) {
+        if (!ignoreElement) {
             notifyEndElement();
         } else {
-            isIdRef = false;
+            ignoreElement = false;
         }
     }
 
