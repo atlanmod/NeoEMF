@@ -69,23 +69,25 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             hasIds = true;
         }
 
-        // Processes the id from the path of the element in XML tree
-        String path = paths.getPath(classifier.getLocalName());
+        if (!hasIds) {
+            // Processes the id from the path of the element in XML tree
+            String path = paths.getPath(classifier.getLocalName());
 
-        // Increments the number of occurence for this path
-        Integer count = paths.createOrIncrement(classifier.getLocalName());
+            // Increments the number of occurence for this path
+            Integer count = paths.createOrIncrement(classifier.getLocalName());
 
-        // Defines the id as '<path>.<index>'
-        String id = path + XPATH_INDEX_SEPARATOR + count;
+            // Defines the id as '<path>.<index>'
+            String id = path + XPATH_INDEX_SEPARATOR + count;
 
-        // Defines the XPath start of all elements from the root element
-        if (expressionStart == null) {
-            expressionStart = id + XPATH_START_ELT;
-        }
+            // Defines the XPath start of all elements from the root element
+            if (expressionStart == null) {
+                expressionStart = id + XPATH_START_ELT;
+            }
 
-        // Defines the new identifier as identifier of the classifier if it not already exist
-        if (classifier.getId() == null) {
-            classifier.setId(Identifier.generated(id));
+            // Defines the new identifier as identifier of the classifier if it not already exist
+            if (classifier.getId() == null) {
+                classifier.setId(Identifier.generated(id));
+            }
         }
 
         super.handleStartElement(classifier);

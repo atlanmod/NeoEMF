@@ -39,7 +39,7 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
 
     @Override
     public void notifyEndDocument() throws Exception {
-        Namespace.Registry.getInstance().clean();
+        //Namespace.Registry.getInstance().clean();
 
         super.notifyEndDocument();
     }

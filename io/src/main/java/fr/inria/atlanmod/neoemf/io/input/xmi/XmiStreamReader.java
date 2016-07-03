@@ -150,7 +150,7 @@ public class XmiStreamReader extends AbstractXmiReader {
             }
 
             try {
-                XmiStreamReader.this.notifyEndElement();
+                processEndElement(uri, name);
             }
             catch (Exception e) {
                 NeoLogger.error(e);

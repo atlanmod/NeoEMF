@@ -26,7 +26,6 @@ import fr.inria.atlanmod.neoemf.io.input.impl.AbstractReader;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,6 +78,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
+    private boolean isIdRef = false;
+
     /**
      * Processes a new element and send a notification to handlers.
      */
@@ -92,11 +93,19 @@ public abstract class AbstractXmiReader extends AbstractReader {
         // Processes attributes / Check "xmi:id" and "xsi:type"
         if (attrLength > 0) {
             for (int i = 0; i < attrLength; i++) {
-                structuralFeatures.addAll(processAttribute(
-                        element,
+                List<StructuralFeature> features = processAttribute(element,
                         getPrefix(attributes.getQName(i)),
                         attributes.getLocalName(i),
-                        attributes.getValue(i)));
+                        attributes.getValue(i));
+
+                if (isIdRef) {
+                    //No need to go further, the reference has been notified
+                    return;
+                }
+
+                if (features != null && !features.isEmpty()) {
+                    structuralFeatures.addAll(features);
+                }
             }
         }
 
@@ -124,18 +133,27 @@ public abstract class AbstractXmiReader extends AbstractReader {
             // xsi:type
             if (prefixedValue.matches(XMI_XSI_TYPE)) {
                 processMetaClass(element, value);
-                return Collections.emptyList();
+                return null;
             }
 
             // xmi:id
             if (XMI_ID.equals(prefixedValue)) {
                 element.setId(Identifier.original(value));
-                return Collections.emptyList();
+                return null;
+            }
+
+            if (XMI_IDREF.equals(prefixedValue)) {
+                //It's not a feature of the current element, but a reference of the previous
+                Reference reference = new Reference(locaName);
+                reference.setValue(value);
+                notifyReference(reference);
+                isIdRef = true;
+                return null;
             }
 
             if (XMI_VERSION_ATTR.equals(prefixedValue)) {
                 // Do nothing
-                return Collections.emptyList();
+                return null;
             }
         }
 
@@ -190,6 +208,14 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     protected void processCharacters(String characters) throws Exception {
         notifyCharacters(characters);
+    }
+
+    protected void processEndElement(String uri, String localName) throws Exception {
+        if (!isIdRef) {
+            notifyEndElement();
+        } else {
+            isIdRef = false;
+        }
     }
 
     /**
