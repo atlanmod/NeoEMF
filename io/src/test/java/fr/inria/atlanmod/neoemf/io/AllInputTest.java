@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.bench.XmiStreamReaderBench;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 
@@ -26,7 +25,6 @@ import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
-import org.junit.Before;
 
 import java.io.File;
 
@@ -46,20 +44,18 @@ public abstract class AllInputTest extends AllTest {
 
     protected String sample;
 
-    @Before
-    public void setUp() throws Exception {
-        Namespace.Registry.getInstance().clean();
-        persistanceHandler = read(sample);
-    }
-
-    protected abstract StructuralPersistanceHandler read(String filePath) throws Exception;
-
     protected File getResourceFile(String path) {
         return new File(XmiStreamReaderBench.class.getResource(path).getFile());
     }
 
-    protected void registerEPackageFromEcore(String name) {
-        File file = getResourceFile(ECORE_PATH.replaceAll("\\{name\\}", name));
+    /**
+     * Registers a EPackage in {@link org.eclipse.emf.ecore.EPackage.Registry} according to its {@code prefix} and
+     * {@code uri}, from an Ecore file.
+     * <p/>
+     * The targetted Ecore file must be present in {@code /resources/ecore}.
+     */
+    protected void registerEPackageFromEcore(String prefix, String uri) {
+        File file = getResourceFile(ECORE_PATH.replaceAll("\\{name\\}", prefix));
 
         EPackage ePackage = null;
 
@@ -77,8 +73,8 @@ public abstract class AllInputTest extends AllTest {
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
-        checkNotNull(ePackage, "EPackage '" + name + "' does not exist.");
+        checkNotNull(ePackage, "EPackage '" + prefix + "' does not exist.");
 
-        EPackage.Registry.INSTANCE.put(name, ePackage);
+        EPackage.Registry.INSTANCE.put(uri, ePackage);
     }
 }

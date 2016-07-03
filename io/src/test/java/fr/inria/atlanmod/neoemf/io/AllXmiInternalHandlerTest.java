@@ -23,6 +23,8 @@ import fr.inria.atlanmod.neoemf.io.internal.impl.XPathDelegatedInternalHandler;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 
+import org.junit.Before;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -33,6 +35,12 @@ import static org.hamcrest.core.IsNull.nullValue;
  *
  */
 public class AllXmiInternalHandlerTest extends AllInputTest {
+
+    @Before
+    public void setUp() throws Exception {
+        Namespace.Registry.getInstance().clean();
+        persistanceHandler = read(sample);
+    }
 
     protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id, final String className, final boolean root) {
         assertThat(mock.getLocalName(), equalTo(name));
@@ -69,8 +77,7 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
         assertThat(attribute.getValue(), equalTo(value));
     }
 
-    @Override
-    protected StructuralPersistanceHandler read(String filePath) throws Exception {
+    private StructuralPersistanceHandler read(String filePath) throws Exception {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
         XmiStreamReader reader = new XmiStreamReader();

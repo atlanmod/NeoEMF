@@ -147,7 +147,7 @@ public class ImportBench extends AllInputBench {
     }
 
     private void testImportWithSax(File file, PersistenceHandler persistenceHandler) throws Exception {
-        registerEPackageFromEcore("java");
+        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
 
         try {
             IOFactory.importXmi(file, persistenceHandler);

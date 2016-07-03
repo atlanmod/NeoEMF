@@ -11,25 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.bench;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
-import org.eclipse.emf.ecore.util.ExtendedMetaData;
-import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
+import fr.inria.atlanmod.neoemf.io.AllInputTest;
 
 import java.io.File;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-public abstract class AllInputBench {
-
-    private static final String ECORE = "ecore";
-    private static final String ECORE_PATH = "/ecore/{name}." + ECORE;
+public abstract class AllInputBench extends AllInputTest {
 
     private static final String THIN_XMI = "/xmi/bench/fr.inria.atlanmod.kyanos.tests.xmi";
     private static final String LIGHT_XMI = "/xmi/bench/fr.inria.atlanmod.neo4emf.neo4jresolver.xmi";
@@ -55,33 +41,5 @@ public abstract class AllInputBench {
 
     protected File getSet5() {
         return getResourceFile(MONSTER_XMI);
-    }
-
-    protected File getResourceFile(String path) {
-        return new File(XmiStreamReaderBench.class.getResource(path).getFile());
-    }
-
-    protected void registerEPackageFromEcore(String name) {
-        File file = getResourceFile(ECORE_PATH.replaceAll("\\{name\\}", name));
-
-        EPackage ePackage = null;
-
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(ECORE, new EcoreResourceFactoryImpl());
-
-        ResourceSet rs = new ResourceSetImpl();
-
-        final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(rs.getPackageRegistry());
-        rs.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
-
-        Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
-        EObject eObject = r.getContents().get(0);
-        if (eObject instanceof EPackage) {
-            ePackage = (EPackage)eObject;
-            rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
-        }
-
-        checkNotNull(ePackage, "EPackage '" + name + "' does not exist.");
-
-        EPackage.Registry.INSTANCE.put(name, ePackage);
     }
 }

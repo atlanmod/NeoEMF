@@ -149,8 +149,8 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
                 "The root element must have a namespace");
 
         // Retreives the EPackage from NS prefix
-        EPackage ePackage = checkNotNull((EPackage) EPackage.Registry.INSTANCE.get(ns.getPrefix()),
-                "EPackage " + ns.getPrefix() + " is not registered.");
+        EPackage ePackage = checkNotNull((EPackage) EPackage.Registry.INSTANCE.get(ns.getUri()),
+                "EPackage " + ns.getUri() + " is not registered.");
 
         // Gets the current EClass
         EClass eClass = (EClass) ePackage.getEClassifier(classifier.getLocalName());

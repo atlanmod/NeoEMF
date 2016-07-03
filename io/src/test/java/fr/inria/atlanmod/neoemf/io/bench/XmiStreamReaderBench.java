@@ -60,14 +60,8 @@ public class XmiStreamReaderBench extends AllInputBench {
         readXmi(getSet5(), dummyPersistenceHandler);
     }
 
-    @Test
-    public void benchUml() throws Exception {
-        registerEPackageFromEcore("uml");
-        readXmi(getResourceFile("/xmi/bench/uml-20131001.xmi"), dummyPersistenceHandler);
-    }
-
     private void readXmi(File file, PersistenceHandler persistenceHandler) throws Exception {
-        registerEPackageFromEcore("java");
+        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         try {
             IOFactory.importXmi(file, persistenceHandler);
         } catch (Exception e) {
