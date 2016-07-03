@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.input;
 import fr.inria.atlanmod.neoemf.io.IONotifier;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
-import java.io.File;
+import java.io.InputStream;
 
 /**
  * A {@link IONotifier notifier} able to read a file.
@@ -31,9 +31,9 @@ public interface Reader extends IONotifier<InternalHandler> {
     InternalHandler newDefaultHandler();
 
     /**
-     * Reads a file and notifies {@link InternalHandler internal handlers}.
+     * Reads a stream and notifies {@link InternalHandler internal handlers}.
      *
-     * @param file the file to read
+     * @param stream the stream to read
      */
-    void read(File file) throws Exception;
+    void read(InputStream stream) throws Exception;
 }

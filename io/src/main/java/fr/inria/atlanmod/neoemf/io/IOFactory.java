@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  *
@@ -30,6 +32,10 @@ public class IOFactory {
             throw new IllegalArgumentException("Only XMI files can be read.");
         }
 
+        importXmi(new FileInputStream(file), persistenceHandlers);
+    }
+
+    public static void importXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws Exception {
         Reader reader = new XmiStreamReader();
 
         InternalHandler internalHandler = reader.newDefaultHandler();
@@ -37,7 +43,6 @@ public class IOFactory {
             internalHandler.addHandler(p);
         }
 
-        reader.read(file);
+        reader.read(stream);
     }
-
 }

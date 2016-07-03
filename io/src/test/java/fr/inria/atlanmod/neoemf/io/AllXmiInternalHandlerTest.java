@@ -23,8 +23,6 @@ import fr.inria.atlanmod.neoemf.io.internal.impl.XPathDelegatedInternalHandler;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 
-import java.io.File;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -84,7 +82,7 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
         internalHandler.addHandler(persistanceHandler);
 
         reader.addHandler(internalHandler);
-        reader.read(new File(XmiStreamReaderTest.class.getResource(filePath).getFile()));
+        reader.read(XmiStreamReaderTest.class.getResourceAsStream(filePath));
 
         return persistanceHandler;
     }

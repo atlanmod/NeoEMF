@@ -23,8 +23,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AbstractReader extends AbstractInternalNotifier implements Reader {
 
-    private static char SEPARATOR = ':';
-
     protected void processStartDocument() throws Exception {
         notifyStartDocument();
     }
@@ -48,6 +46,6 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
     protected static String format(String prefix, String value) {
         checkNotNull(value);
 
-        return (prefix != null ? prefix + SEPARATOR : "") + value;
+        return (prefix != null ? prefix + ':' : "") + value;
     }
 }

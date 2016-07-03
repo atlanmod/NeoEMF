@@ -21,8 +21,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,28 +54,22 @@ public class XmiStreamReader extends AbstractXmiReader {
         return defaultHandler;
     }
 
-    public void read(File file) throws Exception {
+    public void read(InputStream stream) throws Exception {
         if (!hasHandler()) {
             throw new IllegalStateException("This notifier hasn't any handler");
         }
 
-        checkNotNull(file);
-
-        if (!file.exists()) {
-            throw new IllegalArgumentException("The file " + file.toPath() + " doesn't exist");
-        }
+        checkNotNull(stream);
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
 
-        InputStream stream = new FileInputStream(file);
-
         Timer logProgressTimer = new Timer(true);
 
         try {
             // Log progress timer
-            logProgressTimer.schedule(new LogProgressTimer(stream, file.length()), 10000, 30000);
+            logProgressTimer.schedule(new LogProgressTimer(stream, stream.available()), 10000, 30000);
 
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
         } catch (SAXException e) {
