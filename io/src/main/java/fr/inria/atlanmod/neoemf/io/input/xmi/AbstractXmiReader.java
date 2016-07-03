@@ -164,7 +164,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
             }
             else if (XMI_IDREF.equals(prefixedValue)) { // xmi:idref
                 //It's not a feature of the current element, but a reference of the previous
-                Reference reference = new Reference(localName);
+                Reference reference = new Reference(classifier.getLocalName());
                 reference.setIdReference(Identifier.original(value));
                 notifyReference(reference);
 
