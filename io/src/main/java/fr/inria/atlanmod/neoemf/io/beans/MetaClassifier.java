@@ -36,4 +36,9 @@ public class MetaClassifier extends NamedElement {
     public void setNamespace(Namespace namespace) {
         this.namespace = namespace;
     }
+
+    @Override
+    public String toString() {
+        return namespace.getPrefix() + ':' + getLocalName();
+    }
 }

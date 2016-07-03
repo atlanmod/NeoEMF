@@ -39,4 +39,9 @@ public class Identifier {
     public boolean isGenerated() {
         return generated;
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }
