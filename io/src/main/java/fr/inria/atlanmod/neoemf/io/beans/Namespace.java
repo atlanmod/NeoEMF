@@ -70,6 +70,10 @@ public class Namespace {
             namespacesByUri = CacheBuilder.newBuilder().build();
         }
 
+        public Iterable<String> getPrefixes() {
+            return namespacesByPrefix.asMap().keySet();
+        }
+
         /**
          * Returns a {@link Namespace namespace} identified by the given {@code prefix}, or {@code null} if no
          * namespace is registered with this {@code prefix}.
