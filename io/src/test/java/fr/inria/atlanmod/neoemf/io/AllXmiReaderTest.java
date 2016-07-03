@@ -67,7 +67,7 @@ public abstract class AllXmiReaderTest extends AllInputTest {
         assertThat(attribute.getValue(), equalTo(value));
     }
 
-    private StructuralPersistanceHandler read(String filePath) throws Exception {
+    protected StructuralPersistanceHandler read(String filePath) throws Exception {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
         XmiStreamReader reader = new XmiStreamReader();
