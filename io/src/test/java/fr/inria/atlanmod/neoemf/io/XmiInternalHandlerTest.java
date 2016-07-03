@@ -42,7 +42,9 @@ public class XmiInternalHandlerTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the elements and their children are properly read.
+     * Check that the elements are properly processed.
+     * <p/>
+     * All elements must have an id and a class name.
      */
     @Test
     public void testElementsAndChildren() throws Exception {
@@ -91,7 +93,7 @@ public class XmiInternalHandlerTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the attributes are properly read.
+     * Check that the attributes are properly processed.
      */
     @Test
     public void testAttributes() throws Exception {
@@ -151,8 +153,10 @@ public class XmiInternalHandlerTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the XPath references are properly read.
-     * Several references can be present in only one XML attribute.
+     * Check that the {@code XPath} references/id are properly processed.
+     * <p/>
+     * Containment and inverse reference must have been created.
+     * References previously detected as attributes, are now well placed.
      */
     @Test
     public void testReferences() throws Exception {
@@ -218,7 +222,7 @@ public class XmiInternalHandlerTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the metaclasses ('xsi:type' or 'xmi:type') are properly read.
+     * Check that the metaclasses ({@code xsi:type} or {@code xmi:type}) are properly processed.
      */
     @Test
     public void testMetaClasses() throws Exception {

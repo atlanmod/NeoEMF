@@ -58,7 +58,6 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
 
     /**
      * Check that the elements (and the 'xmi:id' attribute) and their children are properly read.
-     *
      */
     @Test
     public void testElementsAndChildrenWithId() throws Exception {

@@ -41,8 +41,9 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the elements (and the 'xmi:id' attribute) and their children are properly read.
-     *
+     * Check that the elements are properly processed.
+     * <p/>
+     * All elements must have an id and a class name.
      */
     @Test
     public void testElementsAndChildrenWithId() throws Exception {
@@ -87,8 +88,7 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the attributes are properly read.
-     * Most references are recognized as attributes, until the next step...
+     * Check that the attributes are properly processed.
      */
     @Test
     public void testAttributesWithId() throws Exception {
@@ -146,8 +146,10 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the 'xmi:idref' references are properly read.
-     * Most are not recognized as references yet
+     * Check that the {@code xmi:idref} references are properly processed.
+     * <p/>
+     * Containments and inverse references must have been created.
+     * References previously detected as attributes, are now well placed.
      */
     @Test
     public void testReferencesWithId() throws Exception {
@@ -212,7 +214,7 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
     }
 
     /**
-     * Check that the metaclasses ('xsi:type' or 'xmi:type') are properly read.
+     * Check that the metaclasses ({@code xsi:type} or {@code xmi:type}) are properly processed.
      */
     @Test
     public void testMetaClassesWithId() throws Exception {
