@@ -12,7 +12,9 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.bench.XmiStreamReaderBench;
+import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -24,7 +26,6 @@ import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
-import org.junit.After;
 import org.junit.Before;
 
 import java.io.File;
@@ -39,15 +40,19 @@ public abstract class AllInputTest extends AllTest {
     private static final String ECORE = "ecore";
     private static final String ECORE_PATH = "/ecore/{name}." + ECORE;
 
+    protected static final int UNKNOWN_INDEX = -1;
+
+    protected StructuralPersistanceHandler persistanceHandler;
+
+    protected String sample;
+
     @Before
     public void setUp() throws Exception {
-
+        Namespace.Registry.getInstance().clean();
+        persistanceHandler = read(sample);
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-    }
+    protected abstract StructuralPersistanceHandler read(String filePath) throws Exception;
 
     protected File getResourceFile(String path) {
         return new File(XmiStreamReaderBench.class.getResource(path).getFile());

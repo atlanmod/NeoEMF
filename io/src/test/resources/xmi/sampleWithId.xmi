@@ -23,7 +23,7 @@
                 </ownedOperation>
             </packagedElement>
             <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="0x1f502_77" name="a">
-                <classifier  xmi:idref="0x1f502_4"/>
+                <classifier xmi:type="uml:Class" xmi:idref="0x1f502_4"/>
             </packagedElement>
             <packagedElement xmi:type="uml:Collaboration" xmi:id="COLLABORATION_0x1f402_12" name="machine">
                 <ownedBehavior xmi:type="uml:Interaction" xmi:id="INTERACTION_0x1f402_12" name="machine">
