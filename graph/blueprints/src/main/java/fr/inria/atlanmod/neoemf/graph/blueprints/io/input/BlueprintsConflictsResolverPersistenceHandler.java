@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
+import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 
@@ -168,6 +169,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
                 metaClassifier.getNamespace(),
                 metaClassifier.getLocalName());
 
+        rootClassifier.setId(Identifier.generated(ROOT_ID.toString()));
         rootClassifier.setClassName(metaClassifier.getLocalName());
         rootClassifier.setRoot(false);
         rootClassifier.setMetaClassifier(metaClassifier);

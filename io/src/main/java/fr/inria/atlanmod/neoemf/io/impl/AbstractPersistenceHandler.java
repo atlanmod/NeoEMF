@@ -219,18 +219,20 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private Id createElement(final Classifier classifier) throws Exception {
         checkNotNull(classifier.getId());
 
+        String idValue = classifier.getId().getValue();
+
         Id id = createId(classifier.getId());
         boolean conflict = false;
 
         do {
             try {
                 createElement(classifier, id);
-                elementIdCache.put(classifier.getId().getValue(), id);
+                elementIdCache.put(idValue, id);
             }
             catch (AlreadyExistingIdException e) {
                 // Id already exists in the backend : try another
                 id = createId(Identifier.generated(id.toString()));
-                conflictElementIdCache.put(classifier.getId().getValue(), id);
+                conflictElementIdCache.put(idValue, id);
                 conflict = true;
             }
         } while (conflict);
@@ -244,28 +246,27 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @return the {@link Id} of the newly created metaclass
      */
     protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) throws Exception {
-        String metaClassKey = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
+        String idValue = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
 
         // Gets from cache
-        Id metaClassId = metaclassIdCache.getIfPresent(metaClassKey);
+        Id id = metaclassIdCache.getIfPresent(idValue);
 
         // If metaclass doesn't already exist, we create it
-        if (metaClassId == null) {
-            metaClassId = createId(Identifier.generated(metaClassKey));
+        if (id == null) {
+            id = createId(Identifier.generated(idValue));
             boolean conflict = false;
 
             do {
                 try {
-                    addElement(
-                            metaClassId,
+                    addElement(id,
                             metaClassifier.getNamespace().getUri(),
                             metaClassifier.getLocalName(),
                             false);
 
-                    metaclassIdCache.put(metaClassKey, metaClassId);
+                    metaclassIdCache.put(idValue, id);
                 }
                 catch (AlreadyExistingIdException e) {
-                    metaClassId = createId(Identifier.generated(metaClassId.toString()));
+                    id = createId(Identifier.generated(id.toString()));
                     conflict = true;
                 }
             }
@@ -274,7 +275,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         incrementAndCommit();
 
-        return metaClassId;
+        return id;
     }
 
     /**
