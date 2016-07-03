@@ -83,17 +83,17 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * Processes a new element and send a notification to handlers.
      */
-    protected void processElement(String uri, String localName, Attributes attributes) throws Exception {
+    protected void processStartElement(String uri, String localName, Attributes attributes) throws Exception {
         Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
 
         int attrLength = attributes.getLength();
 
         List<StructuralFeature> structuralFeatures = new ArrayList<>(attrLength);
 
-        // Processes attributes / Check "xmi:id" and "xsi:type"
+        // Processes features
         if (attrLength > 0) {
             for (int i = 0; i < attrLength; i++) {
-                List<StructuralFeature> features = processAttribute(element,
+                List<StructuralFeature> features = processFeatures(element,
                         getPrefix(attributes.getQName(i)),
                         attributes.getLocalName(i),
                         attributes.getValue(i));
@@ -126,48 +126,66 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
      * @return a list of {@link StructuralFeature structural features} that can be empty.
      */
-    private List<StructuralFeature> processAttribute(Classifier element, String prefix, String locaName, String value) throws Exception {
+    private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
+        List<StructuralFeature> features = null;
+
+        if (!processSpecialFeatures(classifier, prefix, localName, value)) {
+            List<String> references = getReferences(value);
+            if (references != null) {
+                features = processReferences(localName, references);
+            }
+            else {
+                features = processAttributes(localName, value);
+            }
+        }
+
+        return features;
+    }
+
+    /**
+     * Processes a special feature as 'xsi:type', 'xmi:id' or 'xmi:idref'.
+     *
+     * @return {@code true} if the given feature is a special feature
+     */
+    private boolean processSpecialFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
+        boolean isSpecialFeature = false;
+
+        // A special feature always has a prefix
         if (prefix != null) {
-            final String prefixedValue = prefix + ':' + locaName;
+            final String prefixedValue = prefix + ':' + localName;
 
-            // xsi:type
-            if (prefixedValue.matches(XMI_XSI_TYPE)) {
-                processMetaClass(element, value);
-                return null;
+            if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type
+                processMetaClass(classifier, value);
+                isSpecialFeature = true;
             }
-
-            // xmi:id
-            if (XMI_ID.equals(prefixedValue)) {
-                element.setId(Identifier.original(value));
-                return null;
+            else if (XMI_ID.equals(prefixedValue)) { // xmi:id
+                classifier.setId(Identifier.original(value));
+                isSpecialFeature = true;
             }
-
-            if (XMI_IDREF.equals(prefixedValue)) {
+            else if (XMI_IDREF.equals(prefixedValue)) { // xmi:idref
                 //It's not a feature of the current element, but a reference of the previous
-                Reference reference = new Reference(locaName);
-                reference.setValue(value);
+                Reference reference = new Reference(localName);
+                reference.setIdReference(Identifier.original(value));
                 notifyReference(reference);
+
                 isIdRef = true;
-                return null;
+                isSpecialFeature = true;
             }
-
-            if (XMI_VERSION_ATTR.equals(prefixedValue)) {
+            else if (XMI_VERSION_ATTR.equals(prefixedValue)) { // xmi:version
                 // Do nothing
-                return null;
+                isSpecialFeature = true;
             }
         }
 
-        List<String> references = getReferences(value);
-        if (references != null) {
-            return processReferences(locaName, references);
-        }
-        else {
-            StructuralFeature structuralFeature = new Attribute(locaName);
-            structuralFeature.setIndex(0);
-            structuralFeature.setValue(value);
+        return isSpecialFeature;
+    }
 
-            return Lists.newArrayList(structuralFeature);
-        }
+    private List<StructuralFeature> processAttributes(String localName, String value) {
+        Attribute attribute = new Attribute(localName);
+        attribute.setIndex(0);
+        attribute.setValue(value);
+
+        return Lists.newArrayList((StructuralFeature) attribute);
     }
 
     /**
@@ -182,7 +200,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
         for (String s : references) {
             Reference ref = new Reference(localName);
             ref.setIndex(index);
-            ref.setValue(s);
+            ref.setIdReference(Identifier.generated(s));
             structuralFeatures.add(ref);
             index++;
         }
@@ -228,19 +246,23 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @see #PATTERN_WELL_FORMED_REF
      */
     private static List<String> getReferences(String attribute) {
-        if (attribute.trim().isEmpty()) {
-            return null;
+        List<String> references = null;
+
+        if (!attribute.trim().isEmpty()) {
+            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
+
+            boolean isReference = true;
+            for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
+                String ref = references.get(i);
+                isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
+            }
+
+            if (!isReference) {
+                references = null;
+            }
         }
 
-        List<String> references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
-
-        boolean isReference = true;
-        for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
-            String ref = references.get(i);
-            isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
-        }
-
-        return isReference ? references : null;
+        return references;
     }
 
     /**
@@ -250,13 +272,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static String getPrefix(String prefixedValue) {
         String prefix = null;
 
-        if (prefixedValue == null) {
-            return null;
-        }
-
-        List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
-        if (splittedName.size() > 1) {
-            prefix = splittedName.get(0);
+        if (prefixedValue != null) {
+            List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
+            if (splittedName.size() > 1) {
+                prefix = splittedName.get(0);
+            }
         }
 
         return prefix;

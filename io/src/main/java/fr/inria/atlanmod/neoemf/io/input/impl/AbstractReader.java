@@ -25,6 +25,10 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
 
     private static char SEPARATOR = ':';
 
+    protected void processStartDocument() throws Exception {
+        notifyStartDocument();
+    }
+
     /**
      * Processes a {@link Namespace} declaration.
      *
@@ -37,11 +41,8 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
         Namespace.Registry.getInstance().register(prefix, uri);
     }
 
-    @Override
-    public void notifyEndDocument() throws Exception {
-        //Namespace.Registry.getInstance().clean();
-
-        super.notifyEndDocument();
+    protected void processEndDocument() throws Exception {
+        notifyEndDocument();
     }
 
     protected static String format(String prefix, String value) {

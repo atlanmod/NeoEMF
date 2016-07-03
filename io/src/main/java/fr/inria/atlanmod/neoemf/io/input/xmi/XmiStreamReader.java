@@ -38,6 +38,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class XmiStreamReader extends AbstractXmiReader {
 
+    private boolean showProgress = true;
+
+    public void setShowProgress(boolean showProgress) {
+        this.showProgress = showProgress;
+    }
+
     @Override
     public InternalHandler newDefaultHandler() {
         InternalHandler defaultHandler;
@@ -92,7 +98,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         @Override
         public void startDocument() throws SAXException {
             try {
-                XmiStreamReader.this.notifyStartDocument();
+                processStartDocument();
             }
             catch (Exception e) {
                 NeoLogger.error(e);
@@ -120,7 +126,7 @@ public class XmiStreamReader extends AbstractXmiReader {
             }
 
             try {
-                processElement(uri, name, attributes);
+                processStartElement(uri, name, attributes);
             }
             catch (Exception e) {
                 NeoLogger.error(e);
@@ -163,7 +169,7 @@ public class XmiStreamReader extends AbstractXmiReader {
             logProgress(100);
 
             try {
-                XmiStreamReader.this.notifyEndDocument();
+                processEndDocument();
             }
             catch (Exception e) {
                 NeoLogger.error(e);
@@ -172,7 +178,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
     }
 
-    private static class LogProgressTimer extends TimerTask {
+    private class LogProgressTimer extends TimerTask {
 
         private final InputStream stream;
         private final long total;
@@ -193,7 +199,9 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
     }
 
-    private static void logProgress(double percent) {
-        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
+    private void logProgress(double percent) {
+        if (showProgress) {
+            NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
+        }
     }
 }

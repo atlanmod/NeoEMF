@@ -20,20 +20,19 @@ public abstract class StructuralFeature extends NamedElement {
 
     private static final int DEFAULT_INDEX = InternalEObject.EStore.NO_INDEX;
 
-    private String id;
+    private Identifier id;
     private int index;
-    private String value;
 
     public StructuralFeature(String localName) {
         super(localName);
         this.index = DEFAULT_INDEX;
     }
 
-    public String getId() {
+    public Identifier getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Identifier id) {
         this.id = id;
     }
 
@@ -43,14 +42,6 @@ public abstract class StructuralFeature extends NamedElement {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     /**

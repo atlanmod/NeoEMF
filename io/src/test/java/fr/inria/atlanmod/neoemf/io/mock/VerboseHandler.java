@@ -50,7 +50,7 @@ public class VerboseHandler extends AbstractDelegatedPersistenceHandler {
 
     @Override
     public void handleReference(Reference reference) throws Exception {
-        NeoLogger.debug("   " + reference.getLocalName() + " (" + reference.getIndex() + ") = " + reference.getValue());
+        NeoLogger.debug("   " + reference.getLocalName() + " (" + reference.getIndex() + ") = " + reference.getIdReference().getValue());
 
         super.handleReference(reference);
     }

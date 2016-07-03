@@ -97,7 +97,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
     public void handleReference(Reference reference) throws Exception {
         if (!hasIds) {
             // Format the reference according internal XPath management
-            reference.setValue(formatPath(reference.getValue()));
+            reference.setIdReference(Identifier.generated(formatPath(reference.getIdReference().getValue())));
         }
 
         super.handleReference(reference);

@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.io.internal.impl;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
+import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
@@ -43,7 +44,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     /**
      * Stack containing previous identifier.
      */
-    private final Deque<String> idsStack;
+    private final Deque<Identifier> idsStack;
 
     /**
      * Attribute waiting a value (via {@link #handleCharacters(String)}.
@@ -172,7 +173,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         classesStack.addLast(eClass);
 
         // Gets the identifier of the element created by next handlers, and save it
-        idsStack.addLast(classifier.getId().getValue());
+        idsStack.addLast(classifier.getId());
     }
 
     private void handleFeature(Classifier classifier) throws Exception {
@@ -214,12 +215,12 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Notify next handlers of new element, and retreive its identifier
         super.handleStartElement(classifier);
-        String currentId = classifier.getId().getValue();
+        Identifier currentId = classifier.getId();
 
         // Create a reference from the parent to this element, with the given local name
         Reference ref = new Reference(eReference.getName());
         ref.setId(idsStack.getLast());
-        ref.setValue(currentId);
+        ref.setIdReference(currentId);
         ref.setContainment(eReference.isContainment());
 
         EReference eOpposite = eReference.getEOpposite();

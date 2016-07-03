@@ -21,8 +21,10 @@ import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
+import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -87,7 +89,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         return persistenceBackend;
     }
 
-    protected abstract Id hashId(String reference);
+    protected abstract Id getId(String reference);
 
     protected abstract void addElement(Id id, String nsUri, String name, boolean root) throws Exception;
 
@@ -118,7 +120,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         if (attribute.getId() == null) {
             id = elementIdStack.getLast();
         } else {
-            id = getId(attribute.getId());
+            id = getOrCreateId(attribute.getId());
         }
 
         addAttribute(id,
@@ -135,10 +137,10 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         if (reference.getId() == null) {
             id = elementIdStack.getLast();
         } else {
-            id = getId(reference.getId());
+            id = getOrCreateId(reference.getId());
         }
 
-        Id idReference = getId(reference.getValue());
+        Id idReference = getOrCreateId(reference.getIdReference());
 
         try {
             addReference(id,
@@ -162,7 +164,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         } catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
             unlinkedElementsMap.put(
-                    reference.getValue(),
+                    reference.getIdReference().getValue(),
                     new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isContainment()));
         }
     }
@@ -195,7 +197,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Creates an element from the given {@code classifier} with the given {@code id}, and returns the given {@code id}.
      * <p/>
-     * If {@code id} is {@code null}, it is calculated by the {@link #hashId(String)} method.
+     * If {@code id} is {@code null}, it is calculated by the {@link #getId(String)} method.
 
      * @return the given {@code id}
      */
@@ -217,7 +219,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private Id createElement(final Classifier classifier) throws Exception {
         checkNotNull(classifier.getId());
 
-        Id id = hashId(classifier.getId().getValue());
+        Id id = createId(classifier.getId());
         boolean conflict = false;
 
         do {
@@ -227,7 +229,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             }
             catch (AlreadyExistingIdException e) {
                 // Id already exists in the backend : try another
-                id = hashId(id.toString());
+                id = createId(Identifier.generated(id.toString()));
                 conflictElementIdCache.put(classifier.getId().getValue(), id);
                 conflict = true;
             }
@@ -249,7 +251,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
         // If metaclass doesn't already exist, we create it
         if (metaClassId == null) {
-            metaClassId = hashId(metaClassKey);
+            metaClassId = createId(Identifier.generated(metaClassKey));
             boolean conflict = false;
 
             do {
@@ -263,7 +265,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                     metaclassIdCache.put(metaClassKey, metaClassId);
                 }
                 catch (AlreadyExistingIdException e) {
-                    metaClassId = hashId(metaClassId.toString());
+                    metaClassId = createId(Identifier.generated(metaClassId.toString()));
                     conflict = true;
                 }
             }
@@ -276,22 +278,33 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Get the {@link Id id} of the given reference.
+     * Get the {@link Id id} of the given identifier.
      *
-     * @param reference the reference
+     * @param identifier the identifier
      *
-     * @return the registered {@code Id} of the given reference, or {@code null} if the reference is not registered.
+     * @return the registered {@code Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
-    protected Id getId(final String reference) {
-        Id id = conflictElementIdCache.getIfPresent(reference);
+    private Id getOrCreateId(final Identifier identifier) {
+        Id id = conflictElementIdCache.getIfPresent(identifier.getValue());
         if (id == null) {
-            id = elementIdCache.getIfPresent(reference);
+            id = elementIdCache.getIfPresent(identifier.getValue());
             if (id == null) {
-                id = hashId(reference);
-                elementIdCache.put(reference, id);
+                id = createId(identifier);
+                elementIdCache.put(identifier.getValue(), id);
             }
         }
         return id;
+    }
+
+    private Id createId(final Identifier identifier) {
+        String idValue = identifier.getValue();
+
+        // If identifier has been generated we hash it, otherwise we use the original
+        if (identifier.isGenerated()) {
+            idValue = HasherFactory.md5().hash(idValue).toString();
+        }
+
+        return getId(idValue);
     }
 
     /**

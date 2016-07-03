@@ -23,7 +23,6 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistence
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
-import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 
 import org.eclipse.emf.ecore.InternalEObject;
@@ -57,8 +56,8 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     }
 
     @Override
-    protected Id hashId(String reference) {
-        return new StringId(HasherFactory.md5().hash(reference).toString());
+    protected Id getId(final String reference) {
+        return new StringId(reference);
     }
 
     @Override
@@ -69,7 +68,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     }
 
     @Override
-    protected void addElement(Id id, String nsUri, String name, boolean root) throws Exception {
+    protected void addElement(final Id id, final String nsUri, final String name, final boolean root) throws Exception {
         Vertex vertex = createVertex(id);
 
         // Checks if the Vertex is not already defined
@@ -89,7 +88,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     }
 
     @Override
-    protected void setMetaClass(Id id, Id metaClassId) throws Exception {
+    protected void setMetaClass(final Id id, final Id metaClassId) throws Exception {
         Vertex vertex = getVertex(id);
         Vertex metaClassVertex = getVertex(metaClassId);
 
@@ -97,7 +96,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     }
 
     @Override
-    protected void addAttribute(Id id, String name, int index, String value) throws Exception {
+    protected void addAttribute(final Id id, final String name, int index, final String value) throws Exception {
         Vertex vertex = getVertex(id);
 
         int size = getSize(vertex, name);
@@ -113,7 +112,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     }
 
     @Override
-    protected void addReference(Id id, String name, int index, boolean containment, Id idReference) throws Exception {
+    protected void addReference(final Id id, final String name, int index, final boolean containment, final Id idReference) throws Exception {
         Vertex vertex = getVertex(id);
         Vertex referencedVertex = getVertex(idReference);
 
@@ -179,7 +178,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         setMetaClass(id, metaClassId);
     }
 
-    private static void updateContainment(String localName, Vertex parentVertex, Vertex childVertex) {
+    private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {
         for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
             edge.remove();
         }
@@ -188,16 +187,16 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         edge.setProperty(CONTAINING_FEATURE, localName);
     }
 
-    private static Integer getSize(Vertex vertex, String name) {
+    private static Integer getSize(final Vertex vertex, final String name) {
         Integer size = vertex.getProperty(formatKeyValue(name, SIZE_LITERAL));
         return size != null ? size : 0;
     }
 
-    private static void setSize(Vertex vertex, String name, int size) {
+    private static void setSize(final Vertex vertex, final String name, final int size) {
         vertex.setProperty(formatKeyValue(name, SIZE_LITERAL), size);
     }
 
-    private static String formatKeyValue(String key, Object value) {
+    private static String formatKeyValue(final String key, final Object value) {
         return key + SEPARATOR + value;
     }
 }

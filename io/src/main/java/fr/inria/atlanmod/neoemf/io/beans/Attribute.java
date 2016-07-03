@@ -16,6 +16,16 @@ package fr.inria.atlanmod.neoemf.io.beans;
  */
 public class Attribute extends StructuralFeature {
 
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public Attribute(String localName) {
         super(localName);
     }
@@ -29,7 +39,7 @@ public class Attribute extends StructuralFeature {
         Attribute attribute = new Attribute(reference.getLocalName());
         attribute.setId(reference.getId());
         attribute.setIndex(reference.getIndex());
-        attribute.setValue(reference.getValue());
+        attribute.setValue(reference.getIdReference().getValue());
         return attribute;
     }
 }
