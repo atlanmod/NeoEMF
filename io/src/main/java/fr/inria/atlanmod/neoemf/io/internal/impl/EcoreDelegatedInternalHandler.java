@@ -189,14 +189,14 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
 
         if (eStructuralFeature instanceof EAttribute) {
-            handleAttribute(classifier, (EAttribute) eStructuralFeature);
+            handleFeatureAsAttribute(classifier, (EAttribute) eStructuralFeature);
         }
         else if (eStructuralFeature instanceof EReference) {
-            handleReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
+            handleFeatureAsReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
         }
     }
 
-    private void handleAttribute(Classifier classifier, EAttribute eAttribute) {
+    private void handleFeatureAsAttribute(Classifier classifier, EAttribute eAttribute) {
         if (waitingAttribute != null) {
             NeoLogger.warn("An attribute still waiting for a value. It wiil be ignored");
         }
@@ -206,7 +206,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         ignoreCleaning = true;
     }
 
-    private void handleReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {
+    private void handleFeatureAsReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {
         // Gets the type the reference or gets the type from the registered metaclass
         EClass eClass = getEClass(classifier, ns, (EClass) eReference.getEType(), ePackage);
 
@@ -217,18 +217,20 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         Identifier currentId = classifier.getId();
 
         // Create a reference from the parent to this element, with the given local name
-        Reference ref = new Reference(eReference.getName());
-        ref.setId(idsStack.getLast());
-        ref.setIdReference(currentId);
+        if (eReference.isContainment()) {
+            Reference ref = new Reference(eReference.getName());
+            ref.setId(idsStack.getLast());
+            ref.setIdReference(currentId);
 
-        handleReference(ref);
+            handleReference(ref);
+        }
 
         // Save EClass and identifier
         classesStack.addLast(eClass);
         idsStack.addLast(currentId);
     }
 
-    private EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
+    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
         MetaClassifier metaClassifier = classifier.getMetaClassifier();
 
         if (metaClassifier != null) {
