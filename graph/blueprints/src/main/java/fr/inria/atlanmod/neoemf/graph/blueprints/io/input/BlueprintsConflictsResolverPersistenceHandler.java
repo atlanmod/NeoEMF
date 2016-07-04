@@ -119,13 +119,6 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         Vertex vertex = getVertex(id);
         Vertex referencedVertex = getVertex(idReference);
 
-//        for (Vertex v : vertex.getVertices(Direction.OUT, name)) {
-//            if (v.getId().equals(referencedVertex.getId())) {
-//                NeoLogger.info("Already existing edge " + id);
-//                return;
-//            }
-//        }
-
         // Update the containment reference if needed
         if (containment) {
             updateContainment(name, vertex, referencedVertex);

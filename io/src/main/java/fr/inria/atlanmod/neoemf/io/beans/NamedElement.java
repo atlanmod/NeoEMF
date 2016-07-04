@@ -26,10 +26,6 @@ public class NamedElement {
         return localName;
     }
 
-    public void setLocalName(String localName) {
-        this.localName = localName;
-    }
-
     @Override
     public String toString() {
         return localName;

@@ -60,17 +60,12 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
         assertThat(metaClassifier.getNamespace(), is(ns));
     }
 
-    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment, final String oppositeName) {
+    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
         assertThat(reference.getLocalName(), equalTo(name));
         assertThat(reference.getIndex(), is(index));
         assertThat(reference.getIdReference().getValue(), equalTo(idReference));
         assertThat(reference.isContainment(), is(containment));
         assertThat(reference.isMany(), is(many));
-//        if (oppositeName == null) {
-//            assertThat(reference.getOpposite(), nullValue());
-//        } else {
-//            assertThat(reference.getOpposite().getLocalName(), equalTo(oppositeName));
-//        }
     }
 
     protected void assertValidAttribute(final Attribute attribute, final String name, final int index, final Object value) {

@@ -18,7 +18,6 @@ public class Reference extends StructuralFeature {
 
     private Identifier idReference;
     private boolean containment;
-    private Reference opposite;
 
     public Reference(String localName) {
         super(localName);
@@ -44,14 +43,6 @@ public class Reference extends StructuralFeature {
 
     public void setContainment(boolean containment) {
         this.containment = containment;
-    }
-
-    public Reference getOpposite() {
-        return opposite;
-    }
-
-    public void setOpposite(Reference opposite) {
-        this.opposite = opposite;
     }
 
     public static Reference from(Attribute attribute) {

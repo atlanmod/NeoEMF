@@ -157,16 +157,16 @@ public class XmiInternalHandlerTest extends AllXmiInternalHandlerTest {
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         referenceList = root.getReferences();
-        assertThat(referenceList, hasSize(19)); // Now contains 'containment'
-        assertValidReference(referenceList.get(0), "ownedElements", UNKNOWN_INDEX, "/@Model.0/@ownedElements.0", true, true, "model");
-        assertValidReference(referenceList.get(12), "orphanTypes", UNKNOWN_INDEX, "/@Model.0/@orphanTypes.9", true, true, null);
+        assertThat(referenceList, hasSize(19)); // Now contains containment
+        assertValidReference(referenceList.get(0), "ownedElements", UNKNOWN_INDEX, "/@Model.0/@ownedElements.0", true, true);
+        assertValidReference(referenceList.get(12), "orphanTypes", UNKNOWN_INDEX, "/@Model.0/@orphanTypes.9", true, true);
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
             mock = ClassifierMock.getChildFrom(root, 0, 0, 0, 0, 0, 0);
             referenceList = mock.getReferences();
-            assertThat(referenceList, hasSize(8)); // Now contains 'containment'
-            assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "/@Model.0/@compilationUnits.0", false, false, null);
-            assertValidReference(referenceList.get(5), "bodyDeclarations", UNKNOWN_INDEX, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.3", true, true, "abstractTypeDeclaration");
+            assertThat(referenceList, hasSize(8)); // Now contains containment
+            assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "/@Model.0/@compilationUnits.0", false, false);
+            assertValidReference(referenceList.get(5), "bodyDeclarations", UNKNOWN_INDEX, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.3", true, true);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
                 mockChild = ClassifierMock.getChildFrom(mock, 0);
@@ -175,38 +175,38 @@ public class XmiInternalHandlerTest extends AllXmiInternalHandlerTest {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
                 mockChild = ClassifierMock.getChildFrom(mock, 3);
                 referenceList = mockChild.getReferences();
-                assertThat(referenceList, hasSize(6)); // Now contains 'containment'
-                assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "/@Model.0/@compilationUnits.0", false, false, null);
-                assertValidReference(referenceList.get(2), "modifier", UNKNOWN_INDEX, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.2/@modifier.0", false, true, "bodyDeclaration");
+                assertThat(referenceList, hasSize(6)); // Now contains containment
+                assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "/@Model.0/@compilationUnits.0", false, false);
+                assertValidReference(referenceList.get(2), "modifier", UNKNOWN_INDEX, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.2/@modifier.0", false, true);
             }
 
             //@Model/@ownedElements.1
             mock = ClassifierMock.getChildFrom(root, 1);
             referenceList = mock.getReferences();
-            assertThat(referenceList, hasSize(5)); // Now contains 'containment'
-            assertValidReference(referenceList.get(1), "ownedPackages", UNKNOWN_INDEX, "/@Model.0/@ownedElements.1/@ownedPackages.1", true, true, "package");
+            assertThat(referenceList, hasSize(5)); // Now contains containment
+            assertValidReference(referenceList.get(1), "ownedPackages", UNKNOWN_INDEX, "/@Model.0/@ownedElements.1/@ownedPackages.1", true, true);
 
             //@Model/@orphanTypes.5
             mock = ClassifierMock.getChildFrom(root, 8);
             referenceList = mock.getReferences();
             assertThat(referenceList, hasSize(12));
-            assertValidReference(referenceList.get(0), "usagesInTypeAccess", 0, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.1/@returnType.0", true, false, "type");
-            assertValidReference(referenceList.get(9), "usagesInTypeAccess", 9, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.1/@bodyDeclarations.5/@returnType.0", true, false, "type");
+            assertValidReference(referenceList.get(0), "usagesInTypeAccess", 0, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.1/@returnType.0", true, false);
+            assertValidReference(referenceList.get(9), "usagesInTypeAccess", 9, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.1/@bodyDeclarations.5/@returnType.0", true, false);
 
             //@Model/@compilationUnits.1
             mock = ClassifierMock.getChildFrom(root, 17);
             referenceList = mock.getReferences();
-            assertThat(referenceList, hasSize(18)); // Now contains 'containment'
-            assertValidReference(referenceList.get(0), "package", 0, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0", false, false, null);
-            assertValidReference(referenceList.get(3), "imports", UNKNOWN_INDEX, "/@Model.0/@compilationUnits.1/@imports.1", true, true, null);
-            assertValidReference(referenceList.get(12), "imports", UNKNOWN_INDEX, "/@Model.0/@compilationUnits.1/@imports.10", true, true, null);
+            assertThat(referenceList, hasSize(18)); // Now contains containment
+            assertValidReference(referenceList.get(0), "package", 0, "/@Model.0/@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0", false, false);
+            assertValidReference(referenceList.get(3), "imports", UNKNOWN_INDEX, "/@Model.0/@compilationUnits.1/@imports.1", true, true);
+            assertValidReference(referenceList.get(12), "imports", UNKNOWN_INDEX, "/@Model.0/@compilationUnits.1/@imports.10", true, true);
             {
                 //@Model/@compilationUnits.1/@imports.2
                 mockChild = ClassifierMock.getChildFrom(mock, 2);
                 referenceList = mockChild.getReferences();
                 assertThat(referenceList, hasSize(2));
-                assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "/@Model.0/@compilationUnits.1", false, false, null);
-                assertValidReference(referenceList.get(1), "importedElement", 0, "/@Model.0/@ownedElements.2/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0", false, false, "usagesInImports");
+                assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "/@Model.0/@compilationUnits.1", false, false);
+                assertValidReference(referenceList.get(1), "importedElement", 0, "/@Model.0/@ownedElements.2/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0", false, false);
             }
         }
     }

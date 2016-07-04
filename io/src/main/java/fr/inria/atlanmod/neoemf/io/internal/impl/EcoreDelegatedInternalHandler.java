@@ -114,15 +114,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
             EReference eReference = (EReference) eStructuralFeature;
             reference.setContainment(eReference.isContainment());
             reference.setMany(eReference.isMany());
-
-//            EReference eOpposite = eReference.getEOpposite();
-//            if (eOpposite != null) {
-//                Reference opposite = new Reference(eOpposite.getName());
-//                opposite.setContainment(eOpposite.isContainment());
-//                opposite.setMany(eOpposite.isMany());
-//                reference.setOpposite(opposite);
-//            }
-
             super.handleReference(reference);
         }
 

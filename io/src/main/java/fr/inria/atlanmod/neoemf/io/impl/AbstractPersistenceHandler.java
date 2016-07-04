@@ -152,18 +152,6 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                     idReference);
 
             incrementAndCommit();
-
-//            Reference opposite = reference.getOpposite();
-//            if (opposite != null) {
-//                addReference(idReference,
-//                        opposite.getLocalName(),
-//                        opposite.getIndex(),
-//                        opposite.isMany(),
-//                        opposite.isContainment(),
-//                        id);
-//
-//                incrementAndCommit();
-//            }
         } catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
             unlinkedElementsMap.put(
