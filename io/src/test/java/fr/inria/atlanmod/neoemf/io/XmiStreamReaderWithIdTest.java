@@ -37,7 +37,7 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
     @Override
     @Before
     public void setUp() throws Exception {
-        this.sample = "/xmi/sampleWithId.xmi";
+        this.sample = getXmiWithId();
 
         super.setUp();
     }

@@ -23,6 +23,9 @@ import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 
 import org.junit.Before;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -67,7 +70,7 @@ public abstract class AllXmiReaderTest extends AllInputTest {
         assertThat(attribute.getValue(), equalTo(value));
     }
 
-    protected StructuralPersistanceHandler read(String filePath) throws Exception {
+    protected StructuralPersistanceHandler read(File filePath) throws Exception {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
         XmiStreamReader reader = new XmiStreamReader();
@@ -77,7 +80,7 @@ public abstract class AllXmiReaderTest extends AllInputTest {
         internalHandler.addHandler(persistanceHandler);
 
         reader.addHandler(internalHandler);
-        reader.read(XmiStreamReaderTest.class.getResourceAsStream(filePath));
+        reader.read(new FileInputStream(filePath));
 
         return persistanceHandler;
     }

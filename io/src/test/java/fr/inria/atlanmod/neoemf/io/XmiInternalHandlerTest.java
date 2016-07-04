@@ -35,7 +35,7 @@ public class XmiInternalHandlerTest extends AllXmiInternalHandlerTest {
     @Before
     public void setUp() throws Exception {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        this.sample = "/xmi/sampleStd.xmi";
+        this.sample = getXmiStandard();
 
         super.setUp();
     }

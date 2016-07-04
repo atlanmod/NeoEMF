@@ -40,9 +40,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -79,10 +79,10 @@ public class ImportTest extends AllInputTest {
 
     @Test
     public void testImportWithoutIdNeo4j() throws Exception {
-        URL url = ImportTest.class.getResource("/xmi/sampleStd.xmi");
+        File file = getXmiStandard();
 
-        EObject emfObject = readWithEMF(url.openStream());
-        EObject neoObject = readWithNeo(url.openStream());
+        EObject emfObject = readWithEMF(new FileInputStream(file));
+        EObject neoObject = readWithNeo(new FileInputStream(file));
 
         assertEqualEObject(neoObject, emfObject);
     }
@@ -91,40 +91,10 @@ public class ImportTest extends AllInputTest {
     @Ignore
     // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
     public void testImportWithIdNeo4j() throws Exception {
-        URL url = ImportTest.class.getResource("/xmi/sampleWithId.xmi");
+        File file = getXmiWithId();
 
-        EObject emfObject = readWithEMF(url.openStream());
-        EObject neoObject = readWithNeo(url.openStream());
-
-        assertEqualEObject(neoObject, emfObject);
-    }
-
-    @Test
-    public void testImportSet1Neo4j() throws Exception {
-        URL url = ImportTest.class.getResource("/xmi/bench/fr.inria.atlanmod.kyanos.tests.xmi");
-
-        EObject emfObject = readWithEMF(url.openStream());
-        EObject neoObject = readWithNeo(url.openStream());
-
-        assertEqualEObject(neoObject, emfObject);
-    }
-
-    @Test
-    public void testImportSet2Neo4j() throws Exception {
-        URL url = ImportTest.class.getResource("/xmi/bench/fr.inria.atlanmod.neo4emf.neo4jresolver.xmi");
-
-        EObject emfObject = readWithEMF(url.openStream());
-        EObject neoObject = readWithNeo(url.openStream());
-
-        assertEqualEObject(neoObject, emfObject);
-    }
-
-    @Test
-    public void testImportSet3Neo4j() throws Exception {
-        URL url = ImportTest.class.getResource("/xmi/bench/fr.inria.atlanmod.kyanos.tests.xmi");
-
-        EObject emfObject = readWithEMF(url.openStream());
-        EObject neoObject = readWithNeo(url.openStream());
+        EObject emfObject = readWithEMF(new FileInputStream(file));
+        EObject neoObject = readWithNeo(new FileInputStream(file));
 
         assertEqualEObject(neoObject, emfObject);
     }

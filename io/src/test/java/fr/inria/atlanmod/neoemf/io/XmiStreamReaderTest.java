@@ -38,7 +38,7 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
     @Override
     @Before
     public void setUp() throws Exception {
-        this.sample = "/xmi/sampleStd.xmi";
+        this.sample = getXmiStandard();
 
         super.setUp();
     }
@@ -259,7 +259,7 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testMalformedMetaClass() throws Exception {
-        read("/xmi/sampleMalformedMetaClass.xmi");
+        read(getResourceFile("/xmi/sampleMalformedMetaClass.xmi"));
     }
 
     /**

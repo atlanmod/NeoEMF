@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.io.bench.XmiStreamReaderBench;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 
 import org.eclipse.emf.common.util.URI;
@@ -35,6 +34,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AllInputTest extends AllTest {
 
+    private static final String XMI_STANDARD = "/xmi/sampleStandard.xmi";
+    private static final String XMI_WITH_ID = "/xmi/sampleWithId.xmi";
+
     private static final String ECORE = "ecore";
     private static final String ECORE_PATH = "/ecore/{name}." + ECORE;
 
@@ -42,10 +44,18 @@ public abstract class AllInputTest extends AllTest {
 
     protected StructuralPersistanceHandler persistanceHandler;
 
-    protected String sample;
+    protected File sample;
+
+    protected File getXmiStandard() {
+        return getResourceFile(XMI_STANDARD);
+    }
+
+    protected File getXmiWithId() {
+        return getResourceFile(XMI_WITH_ID);
+    }
 
     protected File getResourceFile(String path) {
-        return new File(XmiStreamReaderBench.class.getResource(path).getFile());
+        return new File(AllInputTest.class.getResource(path).getFile());
     }
 
     /**

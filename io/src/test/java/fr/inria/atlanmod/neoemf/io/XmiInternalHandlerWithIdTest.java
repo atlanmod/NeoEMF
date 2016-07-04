@@ -35,7 +35,7 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
     @Before
     public void setUp() throws Exception {
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
-        this.sample = "/xmi/sampleWithId.xmi";
+        this.sample = getXmiWithId();
 
         super.setUp();
     }
