@@ -17,9 +17,7 @@ package fr.inria.atlanmod.neoemf.io.beans;
 public class Reference extends StructuralFeature {
 
     private Identifier idReference;
-
     private boolean containment;
-
     private Reference opposite;
 
     public Reference(String localName) {
@@ -60,9 +58,7 @@ public class Reference extends StructuralFeature {
         Reference reference = new Reference(attribute.getLocalName());
         reference.setId(attribute.getId());
         reference.setIndex(attribute.getIndex());
-        reference.setIdReference(Identifier.original(attribute.getValue()));
+        reference.setIdReference(Identifier.original(attribute.getValue().toString()));
         return reference;
     }
-
-
 }

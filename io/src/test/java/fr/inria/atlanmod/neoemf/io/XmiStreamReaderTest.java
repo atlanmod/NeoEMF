@@ -68,14 +68,10 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
         ClassifierMock mockChild;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
-        assertValidElement(root, "Model", 20, null);
+        assertValidElement(root, "Model", 19, null);
         {
-            //@Model/@name (block attribute)
-            mock = ClassifierMock.getChildFrom(root, 0);
-            assertValidElement(mock, "name", 0, null);
-
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ClassifierMock.getChildFrom(root, 1, 0, 0, 0, 0, 0);
+            mock = ClassifierMock.getChildFrom(root, 0, 0, 0, 0, 0, 0);
             assertValidElement(mock, "ownedElements", 7, null);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
@@ -88,15 +84,15 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
             }
 
             //@Model/@ownedElements.1
-            mock = ClassifierMock.getChildFrom(root, 2);
+            mock = ClassifierMock.getChildFrom(root, 1);
             assertValidElement(mock, "ownedElements", 5, null);
 
             //@Model/@orphanTypes.5
-            mock = ClassifierMock.getChildFrom(root, 9);
+            mock = ClassifierMock.getChildFrom(root, 8);
             assertValidElement(mock, "orphanTypes", 0, null);
 
             //@Model/@compilationUnits.1
-            mock = ClassifierMock.getChildFrom(root, 18);
+            mock = ClassifierMock.getChildFrom(root, 17);
             assertValidElement(mock, "compilationUnits", 16, null);
             {
                 //@Model/@compilationUnits.1/@imports.2
@@ -119,15 +115,10 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
         ClassifierMock root = persistanceHandler.getElements().get(0);
         assertThat(root.getAttributes(), empty()); // Assert that 'xmi:version' and 'xmlns' don't exist
         {
-            //@Model/@name (block attribute)
-            mock = ClassifierMock.getChildFrom(root, 0);
-            assertThat(mock.getAttributes(), empty());
-
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ClassifierMock.getChildFrom(root, 1, 0, 0, 0, 0, 0);
+            mock = ClassifierMock.getChildFrom(root, 0, 0, 0, 0, 0, 0);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(1));
-            assertValidAttribute(attributeList.get(0), "name", "TestCreateResource");
+            assertThat(attributeList, empty());
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
                 mockChild = ClassifierMock.getChildFrom(mock, 0);
@@ -138,28 +129,24 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@bodyDeclarations.2
                 mockChild = ClassifierMock.getChildFrom(mock, 3);
                 attributeList = mockChild.getAttributes();
-                assertThat(attributeList, hasSize(1));
-                assertValidAttribute(attributeList.get(0), "name", "tearDownAfterClass");
+                assertThat(attributeList, empty());
             }
 
             //@Model/@ownedElements.1
-            mock = ClassifierMock.getChildFrom(root, 2);
-            attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(2));
-            assertValidAttribute(attributeList.get(0), "name", "java");
-            assertValidAttribute(attributeList.get(1), "proxy", "true");
-
-            //@Model/@orphanTypes.5
-            mock = ClassifierMock.getChildFrom(root, 9);
+            mock = ClassifierMock.getChildFrom(root, 1);
             attributeList = mock.getAttributes();
             assertThat(attributeList, hasSize(1));
-            assertValidAttribute(attributeList.get(0), "name", "void");
+            assertValidAttribute(attributeList.get(0), "proxy", "true");
+
+            //@Model/@orphanTypes.5
+            mock = ClassifierMock.getChildFrom(root, 8);
+            attributeList = mock.getAttributes();
+            assertThat(attributeList, empty());
 
             //@Model/@compilationUnits.1
-            mock = ClassifierMock.getChildFrom(root, 18);
+            mock = ClassifierMock.getChildFrom(root, 17);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(2));
-            assertValidAttribute(attributeList.get(0), "name", "TestXmi.java");
+            assertThat(attributeList, hasSize(1));
             {
                 //@Model/@compilationUnits.1/@imports.2
                 mockChild = ClassifierMock.getChildFrom(mock, 2);
@@ -182,12 +169,8 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
         ClassifierMock root = persistanceHandler.getElements().get(0);
         assertThat(root.getReferences(), empty());
         {
-            //@Model/@name (block attribute)
-            mock = ClassifierMock.getChildFrom(root, 0);
-            assertThat(mock.getReferences(), empty());
-
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ClassifierMock.getChildFrom(root, 1, 0, 0, 0, 0, 0);
+            mock = ClassifierMock.getChildFrom(root, 0, 0, 0, 0, 0, 0);
             referenceList = mock.getReferences();
             assertThat(referenceList, hasSize(1));
             assertValidReference(referenceList.get(0), "originalCompilationUnit", 0, "//@compilationUnits.0");
@@ -204,18 +187,18 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
             }
 
             //@Model/@ownedElements.1
-            mock = ClassifierMock.getChildFrom(root, 2);
+            mock = ClassifierMock.getChildFrom(root, 1);
             assertThat(mock.getReferences(), empty());
 
             //@Model/@orphanTypes.5
-            mock = ClassifierMock.getChildFrom(root, 9);
+            mock = ClassifierMock.getChildFrom(root, 8);
             referenceList = mock.getReferences();
             assertThat(referenceList, hasSize(12));
             assertValidReference(referenceList.get(0), "usagesInTypeAccess", 0, "//@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.0/@bodyDeclarations.1/@returnType");
             assertValidReference(referenceList.get(9), "usagesInTypeAccess", 9, "//@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedElements.1/@bodyDeclarations.5/@returnType");
 
             //@Model/@compilationUnits.1
-            mock = ClassifierMock.getChildFrom(root, 18);
+            mock = ClassifierMock.getChildFrom(root, 17);
             referenceList = mock.getReferences();
             assertThat(referenceList, hasSize(2));
             assertValidReference(referenceList.get(0), "package", 0, "//@ownedElements.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0/@ownedPackages.0");
@@ -242,12 +225,8 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
         Namespace ns = root.getNamespace();
         assertThat(root.getMetaClassifier(), nullValue());
         {
-            //@Model/@name (block attribute)
-            mock = ClassifierMock.getChildFrom(root, 0);
-            assertThat(mock.getMetaClassifier(), nullValue());
-
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
-            mock = ClassifierMock.getChildFrom(root, 1, 0, 0, 0, 0, 0);
+            mock = ClassifierMock.getChildFrom(root, 0, 0, 0, 0, 0, 0);
             assertValidMetaClass(mock.getMetaClassifier(), "ClassDeclaration", ns);
             {
                 //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
@@ -260,15 +239,15 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
             }
 
             //@Model/@ownedElements.1
-            mock = ClassifierMock.getChildFrom(root, 2);
+            mock = ClassifierMock.getChildFrom(root, 1);
             assertThat(mock.getMetaClassifier(), nullValue());
 
             //@Model/@orphanTypes.5
-            mock = ClassifierMock.getChildFrom(root, 9);
+            mock = ClassifierMock.getChildFrom(root, 8);
             assertValidMetaClass(mock.getMetaClassifier(), "PrimitiveTypeVoid", ns);
 
             //@Model/@compilationUnits.1
-            mock = ClassifierMock.getChildFrom(root, 18);
+            mock = ClassifierMock.getChildFrom(root, 17);
             assertThat(mock.getMetaClassifier(), nullValue());
             {
                 //@Model/@compilationUnits.1/@imports.2

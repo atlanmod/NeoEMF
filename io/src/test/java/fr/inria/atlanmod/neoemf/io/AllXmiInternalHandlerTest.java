@@ -60,21 +60,23 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
         assertThat(metaClassifier.getNamespace(), is(ns));
     }
 
-    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean containment, final String oppositeName) {
+    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment, final String oppositeName) {
         assertThat(reference.getLocalName(), equalTo(name));
         assertThat(reference.getIndex(), is(index));
         assertThat(reference.getIdReference().getValue(), equalTo(idReference));
         assertThat(reference.isContainment(), is(containment));
-        if (oppositeName == null) {
-            assertThat(reference.getOpposite(), nullValue());
-        } else {
-            assertThat(reference.getOpposite().getLocalName(), equalTo(oppositeName));
-        }
+        assertThat(reference.isMany(), is(many));
+//        if (oppositeName == null) {
+//            assertThat(reference.getOpposite(), nullValue());
+//        } else {
+//            assertThat(reference.getOpposite().getLocalName(), equalTo(oppositeName));
+//        }
     }
 
-    protected void assertValidAttribute(final Attribute attribute, final String name, final String value) {
+    protected void assertValidAttribute(final Attribute attribute, final String name, final int index, final Object value) {
         assertThat(attribute.getLocalName(), equalTo(name));
         assertThat(attribute.getValue(), equalTo(value));
+        assertThat(attribute.getIndex(), is(index));
     }
 
     private StructuralPersistanceHandler read(String filePath) throws Exception {

@@ -16,13 +16,13 @@ package fr.inria.atlanmod.neoemf.io.beans;
  */
 public class Attribute extends StructuralFeature {
 
-    private String value;
+    private Object value;
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 

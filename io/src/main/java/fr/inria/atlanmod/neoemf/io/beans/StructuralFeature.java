@@ -22,6 +22,7 @@ public abstract class StructuralFeature extends NamedElement {
 
     private Identifier id;
     private int index;
+    private boolean many;
 
     public StructuralFeature(String localName) {
         super(localName);
@@ -42,6 +43,14 @@ public abstract class StructuralFeature extends NamedElement {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public boolean isMany() {
+        return many;
+    }
+
+    public void setMany(boolean many) {
+        this.many = many;
     }
 
     /**

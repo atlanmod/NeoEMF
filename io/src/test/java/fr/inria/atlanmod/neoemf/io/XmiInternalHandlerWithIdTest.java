@@ -53,37 +53,37 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
         ClassifierMock mockChild;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
-        assertValidElement(root, "Model", 5, "themodel", "Model", true); // Assert that 'xmi' elements don't exist
+        assertValidElement(root, "Model", 5, "themodel", "jbk", true); // Assert that 'xmi' elements don't exist
         {
             //@Model/@packagedElement.0
             mock = ClassifierMock.getChildFrom(root, 0);
-            assertValidElement(mock, "packagedElement", 4, "0x81_22", "Package", false);
+            assertValidElement(mock, "packagedElement", 4, "0x81_22", "jbk", false);
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
-                assertValidElement(mockChild, "ownedAttribute", 0, "0x1f402_1", "Property", false);
+                assertValidElement(mockChild, "ownedAttribute", 0, "0x1f402_1", "attribute1", false);
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);
-                assertValidElement(mock, "packagedElement", 3, "COLLABORATION_0x1f402_12", "Collaboration", false);
+                assertValidElement(mock, "packagedElement", 3, "COLLABORATION_0x1f402_12", "machine", false);
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
                     mock = ClassifierMock.getChildFrom(mock, 0);
-                    assertValidElement(mock, "ownedBehavior", 6, "INTERACTION_0x1f402_12", "Interaction", false);
+                    assertValidElement(mock, "ownedBehavior", 6, "INTERACTION_0x1f402_12", "machine", false);
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
                         mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
-                        assertValidElement(mockChild, "operand", 5, "OPERAND1_0x1f402_12", "InteractionOperand", false);
+                        assertValidElement(mockChild, "operand", 5, "OPERAND1_0x1f402_12", null, false);
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
                         mockChild = ClassifierMock.getChildFrom(mock, 4);
-                        assertValidElement(mockChild, "message", 0, "MSG2_0x1f402_12", "Message", false);
+                        assertValidElement(mockChild, "message", 0, "MSG2_0x1f402_12", "answer", false);
                     }
                 }
             }
             //@Model/@packagedElement.2
             mock = ClassifierMock.getChildFrom(root, 2);
-            assertValidElement(mock, "packagedElement", 0, "RECOPEREVT1_0x81_22", "ReceiveOperationEvent", false);
+            assertValidElement(mock, "packagedElement", 0, "RECOPEREVT1_0x81_22", "answer", false);
         }
     }
 
@@ -99,30 +99,28 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         attributeList = root.getAttributes();
-        assertThat(attributeList, hasSize(1));
-        assertValidAttribute(attributeList.get(0), "name", "jbk");
+        assertThat(attributeList, empty());
         {
             //@Model/@packagedElement.0
             mock = ClassifierMock.getChildFrom(root, 0);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(1));
+            assertThat(attributeList, empty());
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
                 attributeList = mockChild.getAttributes();
-                assertThat(attributeList, hasSize(2));
-                assertValidAttribute(attributeList.get(1), "visibility", "private");
+                assertThat(attributeList, hasSize(1));
+                assertValidAttribute(attributeList.get(0),  "visibility", 0, "private");
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);
                 attributeList = mock.getAttributes();
-                assertThat(attributeList, hasSize(1));
-                assertValidAttribute(attributeList.get(0), "name", "machine");
+                assertThat(attributeList, empty());
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
                     mock = ClassifierMock.getChildFrom(mock, 0);
                     attributeList = mock.getAttributes();
-                    assertThat(attributeList, hasSize(1));
+                    assertThat(attributeList, empty());
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
                         mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
@@ -131,17 +129,15 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
                         mockChild = ClassifierMock.getChildFrom(mock, 4);
                         attributeList = mockChild.getAttributes();
-                        assertThat(attributeList, hasSize(2));
-                        assertValidAttribute(attributeList.get(0), "name", "answer");
-                        assertValidAttribute(attributeList.get(1), "messageSort", "synchCall");
+                        assertThat(attributeList, hasSize(1));
+                        assertValidAttribute(attributeList.get(0), "messageSort", 0, "synchCall");
                     }
                 }
             }
             //@Model/@packagedElement.2
             mock = ClassifierMock.getChildFrom(root, 2);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(1));
-            assertValidAttribute(attributeList.get(0), "name", "answer");
+            assertThat(attributeList, empty());
         }
     }
 
@@ -161,46 +157,46 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
         ClassifierMock root = persistanceHandler.getElements().get(0);
         referenceList = root.getReferences();
         assertThat(referenceList, hasSize(5)); // Now contains 'containment'
-        assertValidReference(referenceList.get(0), "packagedElement", UNKNOWN_INDEX, "0x81_22", true, null);
-        assertValidReference(referenceList.get(2), "packagedElement", UNKNOWN_INDEX, "RECOPEREVT1_0x81_22", true, null);
+        assertValidReference(referenceList.get(0), "packagedElement", UNKNOWN_INDEX, "0x81_22", true, true, null);
+        assertValidReference(referenceList.get(2), "packagedElement", UNKNOWN_INDEX, "RECOPEREVT1_0x81_22", true, true, null);
         {
             //@Model/@packagedElement.0
             mock = ClassifierMock.getChildFrom(root, 0);
             referenceList = mock.getReferences();
             assertThat(referenceList, hasSize(4)); // Now contains 'containment'
-            assertValidReference(referenceList.get(1), "packagedElement", UNKNOWN_INDEX, "0x1f582_4", true, null);
+            assertValidReference(referenceList.get(1), "packagedElement", UNKNOWN_INDEX, "0x1f582_4", true, true, null);
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
                 referenceList = mockChild.getReferences();
                 assertThat(referenceList, hasSize(1));
-                assertValidReference(referenceList.get(0), "type", UNKNOWN_INDEX, "0x1f582_4", false, null);
+                assertValidReference(referenceList.get(0), "type", UNKNOWN_INDEX, "0x1f582_4", false, false, null);
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);
                 referenceList = mock.getReferences();
                 assertThat(referenceList, hasSize(3)); // Now contains 'containment'
-                assertValidReference(referenceList.get(0), "ownedBehavior", UNKNOWN_INDEX, "INTERACTION_0x1f402_12", true, null);
+                assertValidReference(referenceList.get(0), "ownedBehavior", UNKNOWN_INDEX, "INTERACTION_0x1f402_12", true, true, null);
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
                     mock = ClassifierMock.getChildFrom(mock, 0);
                     referenceList = mock.getReferences();
                     assertThat(referenceList, hasSize(6)); // Now contains 'containment'UNKNOWN_INDEX, "LIFELINE1_0x1f402_12", true, "interaction");
-                    assertValidReference(referenceList.get(4), "message", UNKNOWN_INDEX, "MSG2_0x1f402_12", true, "interaction");
+                    assertValidReference(referenceList.get(4), "message", UNKNOWN_INDEX, "MSG2_0x1f402_12", true, true, "interaction");
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
                         mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
                         referenceList = mockChild.getReferences();
                         assertThat(referenceList, hasSize(5)); // Now contains 'containment'
-                        assertValidReference(referenceList.get(2), "fragment", UNKNOWN_INDEX, "BEHEXECSPEC2_0x1f402_12", true, "enclosingOperand");
+                        assertValidReference(referenceList.get(2), "fragment", UNKNOWN_INDEX, "BEHEXECSPEC2_0x1f402_12", true, true, "enclosingOperand");
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
                         mockChild = ClassifierMock.getChildFrom(mock, 4);
                         referenceList = mockChild.getReferences();
                         assertThat(referenceList, hasSize(3));
-                        assertValidReference(referenceList.get(0), "sendEvent", 0, "MSGOCCSPECSEND2_0x1f402_12", false, null); // New reference
-                        assertValidReference(referenceList.get(1), "receiveEvent", 0, "MSGOCCSPECREC2_0x1f402_12", false, null); // New reference
-                        assertValidReference(referenceList.get(2), "connector", 0, "CONNECTOR1_2_0x1f402_12", false, null); // New reference
+                        assertValidReference(referenceList.get(0), "sendEvent", 0, "MSGOCCSPECSEND2_0x1f402_12", false, false, null); // New reference
+                        assertValidReference(referenceList.get(1), "receiveEvent", 0, "MSGOCCSPECREC2_0x1f402_12", false, false, null); // New reference
+                        assertValidReference(referenceList.get(2), "connector", 0, "CONNECTOR1_2_0x1f402_12", false, false, null); // New reference
                     }
                 }
             }
@@ -209,7 +205,7 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
             mock = ClassifierMock.getChildFrom(root, 2);
             referenceList = mock.getReferences();
             assertThat(referenceList, hasSize(1));
-            assertValidReference(referenceList.get(0), "operation", 0, "0x1f582_2", false, null); // New reference
+            assertValidReference(referenceList.get(0), "operation", 0, "0x1f582_2", false, false, null); // New reference
         }
     }
 

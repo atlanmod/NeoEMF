@@ -93,9 +93,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract void addElement(Id id, String nsUri, String name, boolean root) throws Exception;
 
-    protected abstract void addAttribute(Id id, String name, int index, String value) throws Exception;
+    protected abstract void addAttribute(Id id, String name, int index, boolean many, Object value) throws Exception;
 
-    protected abstract void addReference(Id id, String name, int index, boolean containment, Id idReference) throws Exception;
+    protected abstract void addReference(Id id, String name, int index, boolean many, boolean containment, Id idReference) throws Exception;
 
     protected abstract void setMetaClass(Id id, Id metaClassId) throws Exception;
 
@@ -126,6 +126,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         addAttribute(id,
                 attribute.getLocalName(),
                 attribute.getIndex(),
+                attribute.isMany(),
                 attribute.getValue());
 
         incrementAndCommit();
@@ -146,26 +147,28 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             addReference(id,
                     reference.getLocalName(),
                     reference.getIndex(),
+                    reference.isMany(),
                     reference.isContainment(),
                     idReference);
 
             incrementAndCommit();
 
-            Reference opposite = reference.getOpposite();
-            if (opposite != null) {
-                addReference(idReference,
-                        opposite.getLocalName(),
-                        opposite.getIndex(),
-                        opposite.isContainment(),
-                        id);
-
-                incrementAndCommit();
-            }
+//            Reference opposite = reference.getOpposite();
+//            if (opposite != null) {
+//                addReference(idReference,
+//                        opposite.getLocalName(),
+//                        opposite.getIndex(),
+//                        opposite.isMany(),
+//                        opposite.isContainment(),
+//                        id);
+//
+//                incrementAndCommit();
+//            }
         } catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
             unlinkedElementsMap.put(
                     reference.getIdReference().getValue(),
-                    new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isContainment()));
+                    new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isMany(), reference.isContainment()));
         }
     }
 
@@ -316,7 +319,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private void tryLink(final String reference, final Id id) throws Exception {
         for (UnlinkedElement e : unlinkedElementsMap.removeAll(reference)) {
-            addReference(e.id, e.name, e.index, e.containment, id);
+            addReference(e.id, e.name, e.index, e.many, e.containment, id);
         }
     }
 
@@ -355,12 +358,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         public final Id id;
         public final String name;
         public final int index;
+        public final boolean many;
         public final boolean containment;
 
-        public UnlinkedElement(Id id, String name, int index, boolean containment) {
+        public UnlinkedElement(Id id, String name, int index, boolean many, boolean containment) {
             this.id = id;
             this.name = name;
             this.index = index;
+            this.many = many;
             this.containment = containment;
         }
     }

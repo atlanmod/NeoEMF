@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<java:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:java="http://www.eclipse.org/MoDisco/Java/0.2.incubation/java">
-  <name>
-    fr.inria.atlanmod.kyanos.tests
-  </name>
+<java:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:java="http://www.eclipse.org/MoDisco/Java/0.2.incubation/java" name="fr.inria.atlanmod.kyanos.tests">
   <ownedElements name="fr">
     <ownedPackages name="inria">
       <ownedPackages name="atlanmod">

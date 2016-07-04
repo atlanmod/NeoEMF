@@ -66,6 +66,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
      */
     private static final String PROXY = "href";
 
+    private static final String NAME = "name";
+
     /**
      * A regex pattern of an attribute containing one or several references (XPath reference).
      * <p/>
@@ -183,6 +185,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
         } else if (PROXY.equals(localName)) {
             NeoLogger.warn("'" + classifier.getLocalName() + "' is an external reference to " + value + ". This feature is not supported yet.");
             ignoreElement = true;
+        } else if (NAME.equals(localName)) {
+            classifier.setClassName(value);
+            isSpecialFeature = true;
         }
 
         return isSpecialFeature;

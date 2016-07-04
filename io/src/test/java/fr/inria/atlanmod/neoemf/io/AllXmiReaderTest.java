@@ -62,7 +62,7 @@ public abstract class AllXmiReaderTest extends AllInputTest {
         assertThat(reference.getIdReference().getValue(), equalTo(idReference));
     }
 
-    protected void assertValidAttribute(final Attribute attribute, final String name, final String value) {
+    protected void assertValidAttribute(final Attribute attribute, final String name, final Object value) {
         assertThat(attribute.getLocalName(), equalTo(name));
         assertThat(attribute.getValue(), equalTo(value));
     }

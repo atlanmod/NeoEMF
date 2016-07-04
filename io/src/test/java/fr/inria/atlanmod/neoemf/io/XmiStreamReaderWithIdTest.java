@@ -114,30 +114,28 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         attributeList = root.getAttributes();
-        assertThat(attributeList, hasSize(1));
-        assertValidAttribute(attributeList.get(0), "name", "jbk");
+        assertThat(attributeList, empty());
         {
             //@Model/@packagedElement.0
             mock = ClassifierMock.getChildFrom(root, 0);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(1));
+            assertThat(attributeList, empty());
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
                 attributeList = mockChild.getAttributes();
-                assertThat(attributeList, hasSize(2));
-                assertValidAttribute(attributeList.get(1), "visibility", "private");
+                assertThat(attributeList, hasSize(1));
+                assertValidAttribute(attributeList.get(0), "visibility", "private");
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);
                 attributeList = mock.getAttributes();
-                assertThat(attributeList, hasSize(1));
-                assertValidAttribute(attributeList.get(0), "name", "machine");
+                assertThat(attributeList, empty());
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
                     mock = ClassifierMock.getChildFrom(mock, 0);
                     attributeList = mock.getAttributes();
-                    assertThat(attributeList, hasSize(1));
+                    assertThat(attributeList, empty());
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
                         mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
@@ -146,21 +144,19 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
                         mockChild = ClassifierMock.getChildFrom(mock, 4);
                         attributeList = mockChild.getAttributes();
-                        assertThat(attributeList, hasSize(5));
-                        assertValidAttribute(attributeList.get(0), "name", "answer");
-                        assertValidAttribute(attributeList.get(1), "messageSort", "synchCall");
-                        assertValidAttribute(attributeList.get(2), "sendEvent", "MSGOCCSPECSEND2_0x1f402_12"); // Future reference
-                        assertValidAttribute(attributeList.get(3), "receiveEvent", "MSGOCCSPECREC2_0x1f402_12"); // Future reference
-                        assertValidAttribute(attributeList.get(4), "connector", "CONNECTOR1_2_0x1f402_12"); // Future reference
+                        assertThat(attributeList, hasSize(4));
+                        assertValidAttribute(attributeList.get(0), "messageSort", "synchCall");
+                        assertValidAttribute(attributeList.get(1), "sendEvent", "MSGOCCSPECSEND2_0x1f402_12"); // Future reference
+                        assertValidAttribute(attributeList.get(2), "receiveEvent", "MSGOCCSPECREC2_0x1f402_12"); // Future reference
+                        assertValidAttribute(attributeList.get(3), "connector", "CONNECTOR1_2_0x1f402_12"); // Future reference
                     }
                 }
             }
             //@Model/@packagedElement.2
             mock = ClassifierMock.getChildFrom(root, 2);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(2));
-            assertValidAttribute(attributeList.get(0), "name", "answer");
-            assertValidAttribute(attributeList.get(1), "operation", "0x1f582_2"); // Future reference
+            assertThat(attributeList, hasSize(1));
+            assertValidAttribute(attributeList.get(0), "operation", "0x1f582_2"); // Future reference
         }
     }
 

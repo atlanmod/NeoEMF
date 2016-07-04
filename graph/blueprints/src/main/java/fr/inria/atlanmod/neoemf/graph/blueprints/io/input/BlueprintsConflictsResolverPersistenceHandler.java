@@ -73,18 +73,20 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         Vertex vertex = createVertex(id);
 
         // Checks if the Vertex is not already defined
-        if (vertex.getProperty(BlueprintsPersistenceBackend.ECLASS_NAME) != null) {
+        if (vertex.getProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI) != null) {
             throw new IllegalArgumentException(
                     "An element with the same Id (" + id.toString() + ") is already defined. " +
                             "Use a handler with a conflicts resolution feature instead.");
         }
 
-        vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
+        if (name != null) {
+            vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
+        }
         vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, nsUri);
 
         if (root) {
             // Add the current element as content of the 'ROOT' node
-            addReference(ROOT_ID, ROOT_FEATURE_NAME, InternalEObject.EStore.NO_INDEX, false, id);
+            addReference(ROOT_ID, ROOT_FEATURE_NAME, InternalEObject.EStore.NO_INDEX, false, false, id);
         }
     }
 
@@ -97,7 +99,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     }
 
     @Override
-    protected void addAttribute(final Id id, final String name, int index, final String value) throws Exception {
+    protected void addAttribute(final Id id, final String name, int index, final boolean many, final Object value) throws Exception {
         Vertex vertex = getVertex(id);
 
         int size = getSize(vertex, name);
@@ -109,13 +111,20 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         size++;
         setSize(vertex, name, size);
 
-        vertex.setProperty(formatKeyValue(name, index), value);
+        vertex.setProperty(many ? formatKeyValue(name, index) : name, value);
     }
 
     @Override
-    protected void addReference(final Id id, final String name, int index, final boolean containment, final Id idReference) throws Exception {
+    protected void addReference(final Id id, final String name, int index, final boolean many, final boolean containment, final Id idReference) throws Exception {
         Vertex vertex = getVertex(id);
         Vertex referencedVertex = getVertex(idReference);
+
+//        for (Vertex v : vertex.getVertices(Direction.OUT, name)) {
+//            if (v.getId().equals(referencedVertex.getId())) {
+//                NeoLogger.info("Already existing edge " + id);
+//                return;
+//            }
+//        }
 
         // Update the containment reference if needed
         if (containment) {

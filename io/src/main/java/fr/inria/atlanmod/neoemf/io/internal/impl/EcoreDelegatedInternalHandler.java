@@ -80,7 +80,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Defines the value of the waiting attribute, if exists
         if (waitingAttribute != null) {
             waitingAttribute.setValue(characters);
-            super.handleAttribute(waitingAttribute);
+            handleAttribute(waitingAttribute);
 
             waitingAttribute = null;
         }
@@ -93,6 +93,8 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Checks that the attribute is well a attribute
         if (eStructuralFeature instanceof EAttribute) {
+            EAttribute eAttribute = (EAttribute) eStructuralFeature;
+            attribute.setMany(eAttribute.isMany());
             super.handleAttribute(attribute);
         }
 
@@ -109,16 +111,17 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Checks that the reference is well a reference
         if (eStructuralFeature instanceof EReference) {
-            // Update containment value
             EReference eReference = (EReference) eStructuralFeature;
             reference.setContainment(eReference.isContainment());
+            reference.setMany(eReference.isMany());
 
-            EReference eOpposite = eReference.getEOpposite();
-            if (eOpposite != null) {
-                Reference opposite = new Reference(eOpposite.getName());
-                opposite.setContainment(opposite.isContainment());
-                reference.setOpposite(opposite);
-            }
+//            EReference eOpposite = eReference.getEOpposite();
+//            if (eOpposite != null) {
+//                Reference opposite = new Reference(eOpposite.getName());
+//                opposite.setContainment(eOpposite.isContainment());
+//                opposite.setMany(eOpposite.isMany());
+//                reference.setOpposite(opposite);
+//            }
 
             super.handleReference(reference);
         }
@@ -137,6 +140,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
             super.handleEndElement();
         } else {
+            waitingAttribute = null; // Clean the waiting attribute : no character has been found to fill its value
             ignoreCleaning = false;
         }
     }
@@ -159,9 +163,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         if (classifier.getMetaClassifier() == null) {
             classifier.setMetaClassifier(new MetaClassifier(ns, eClass.getName()));
         }
-
-        // Defines the classname of the current element
-        classifier.setClassName(eClass.getName());
 
         // Defines the element as root node
         classifier.setRoot(true);
@@ -209,8 +210,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Gets the type the reference or gets the type from the registered metaclass
         EClass eClass = getEClass(classifier, ns, (EClass) eReference.getEType(), ePackage);
 
-        // Defines the class name and the namespace of the element
-        classifier.setClassName(eClass.getName());
         classifier.setNamespace(ns);
 
         // Notify next handlers of new element, and retreive its identifier
@@ -221,16 +220,8 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         Reference ref = new Reference(eReference.getName());
         ref.setId(idsStack.getLast());
         ref.setIdReference(currentId);
-        ref.setContainment(eReference.isContainment());
 
-        EReference eOpposite = eReference.getEOpposite();
-        if (eOpposite != null) {
-            Reference opposite = new Reference(eOpposite.getName());
-            opposite.setContainment(opposite.isContainment());
-            ref.setOpposite(opposite);
-        }
-
-        super.handleReference(ref);
+        handleReference(ref);
 
         // Save EClass and identifier
         classesStack.addLast(eClass);
