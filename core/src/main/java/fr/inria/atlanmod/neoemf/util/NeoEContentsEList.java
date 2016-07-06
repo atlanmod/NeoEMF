@@ -30,12 +30,12 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
 
     @SuppressWarnings("unchecked") // Unchecked cast
-    public static <T> NeoEContentsEList<T> emptyNeoContentsEList() {
-        return (NeoEContentsEList<T>)EMPTY_NEO_CONTENTS_ELIST;
+    public static <E> NeoEContentsEList<E> emptyNeoContentsEList() {
+        return (NeoEContentsEList<E>)EMPTY_NEO_CONTENTS_ELIST;
     }
     
-    public static <T> NeoEContentsEList<T> createNeoEContentsEList(EObject eObject) {
-        NeoEContentsEList<T> contentEList;
+    public static <E> NeoEContentsEList<E> createNeoEContentsEList(EObject eObject) {
+        NeoEContentsEList<E> contentEList;
         EStructuralFeature[] eStructuralFeatures =
                 ((EClassImpl.FeatureSubsetSupplier) eObject.eClass().getEAllStructuralFeatures()).containments();
         if (eStructuralFeatures == null) {
