@@ -42,8 +42,6 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -84,8 +82,8 @@ public class ImportTest extends AllInputTest {
     public void testCompareWithEMFNeo4j() throws Exception {
         File file = getXmiStandard();
 
-        EObject emfObject = readWithEMF(new FileInputStream(file));
-        EObject neoObject = readWithNeo(new FileInputStream(file));
+        EObject emfObject = loadWithEMF(file);
+        EObject neoObject = loadWithNeoBlueprints(file);
 
         assertEqualEObject(neoObject, emfObject);
     }
@@ -100,7 +98,7 @@ public class ImportTest extends AllInputTest {
         EObject eObject;
         EObject eObjectChild;
 
-        EObject root = readWithNeo(new FileInputStream(getXmiStandard()));
+        EObject root = loadWithNeoBlueprints(getXmiStandard());
         assertValidElement(root, "Model", 19, "fr.inria.atlanmod.kyanos.tests");
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
@@ -139,10 +137,10 @@ public class ImportTest extends AllInputTest {
      * Check that the attributes are properly processed.
      */
     @Test
-    public void testAttributes() throws Exception {
+    public void testAttributesNeo4j() throws Exception {
         EObject eObject;
 
-        EObject root = readWithNeo(new FileInputStream(getXmiStandard()));
+        EObject root = loadWithNeoBlueprints(getXmiStandard());
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0/@modifier
             eObject = getChildFrom(root, 0, 0, 0, 0, 0, 0, 0);
@@ -165,11 +163,11 @@ public class ImportTest extends AllInputTest {
      * References previously detected as attributes, are now well placed.
      */
     @Test
-    public void testReferences() throws Exception {
+    public void testReferencesNeo4j() throws Exception {
         EObject eObject;
         EObject eObjectChild;
 
-        EObject root = readWithNeo(new FileInputStream(getXmiStandard()));
+        EObject root = loadWithNeoBlueprints(getXmiStandard());
         assertValidReference(root, "ownedElements", 0, "Package", "fr", true, true);
         assertValidReference(root, "orphanTypes", 5, "PrimitiveTypeVoid", "void", true, true);
         {
@@ -212,70 +210,10 @@ public class ImportTest extends AllInputTest {
     public void testImportWithIdNeo4j() throws Exception {
         File file = getXmiWithId();
 
-        EObject emfObject = readWithEMF(new FileInputStream(file));
-        EObject neoObject = readWithNeo(new FileInputStream(file));
+        EObject emfObject = loadWithEMF(file);
+        EObject neoObject = loadWithNeoBlueprints(file);
 
         assertEqualEObject(neoObject, emfObject);
-    }
-
-    private EObject readWithEMF(InputStream stream) throws Exception {
-        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
-
-        Resource resource = new XMIResourceImpl();
-        resource.load(stream, Collections.emptyMap());
-        return resource.getContents().get(0);
-    }
-
-    private EObject readWithNeo(InputStream stream) throws Exception {
-        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
-        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
-
-        BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
-        PersistenceHandler persistenceHandler = BlueprintsPersistenceHandlerFactory.createPersistenceHandler(persistenceBackend, false);
-
-        IOFactory.importXmi(stream, persistenceHandler);
-
-        persistenceBackend.stop();
-
-        return load();
-    }
-
-    private EObject load() throws IOException {
-        PersistenceBackendFactoryRegistry.register(
-                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                BlueprintsPersistenceBackendFactory.getInstance());
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(
-                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                PersistentResourceFactory.eINSTANCE);
-
-        Resource resource = resourceSet.createResource(NeoBlueprintsURI.createNeoGraphURI(neo4jFile));
-        resource.load(Collections.emptyMap());
-
-        return resource.getContents().get(0);
-    }
-
-    private BlueprintsPersistenceBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
-        Map<String, Object> options = new HashMap<>();
-
-        List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
-        storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
-
-        options.put(
-                BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE,
-                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
-
-        options.put(
-                PersistentResourceOptions.STORE_OPTIONS,
-                storeOptions);
-
-        options.put(
-                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE,
-                BlueprintsNeo4jResourceOptions.CacheType.NONE);
-
-        return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
     }
 
     private void assertEqualEObject(EObject actual, EObject expected) {
@@ -396,5 +334,65 @@ public class ImportTest extends AllInputTest {
         }
 
         return child;
+    }
+
+    private EObject loadWithEMF(File file) throws Exception {
+        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
+
+        Resource resource = new XMIResourceImpl();
+        resource.load(new FileInputStream(file), Collections.emptyMap());
+        return resource.getContents().get(0);
+    }
+
+    private void loadWithNeo(File file, PersistenceHandler persistenceHandler) throws Exception {
+        registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
+        registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
+
+        IOFactory.importXmi(new FileInputStream(file), persistenceHandler);
+    }
+
+    private EObject loadWithNeoBlueprints(File file) throws Exception {
+        BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
+        PersistenceHandler persistenceHandler = BlueprintsPersistenceHandlerFactory.createPersistenceHandler(persistenceBackend, false);
+
+        loadWithNeo(file, persistenceHandler);
+
+        persistenceBackend.stop();
+
+        PersistenceBackendFactoryRegistry.register(
+                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
+                BlueprintsPersistenceBackendFactory.getInstance());
+
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(
+                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
+                PersistentResourceFactory.eINSTANCE);
+
+        Resource resource = resourceSet.createResource(NeoBlueprintsURI.createNeoGraphURI(neo4jFile));
+        resource.load(Collections.emptyMap());
+
+        return resource.getContents().get(0);
+    }
+
+    private BlueprintsPersistenceBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
+        Map<String, Object> options = new HashMap<>();
+
+        List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
+        storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
+
+        options.put(
+                BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE,
+                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
+
+        options.put(
+                PersistentResourceOptions.STORE_OPTIONS,
+                storeOptions);
+
+        options.put(
+                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE,
+                BlueprintsNeo4jResourceOptions.CacheType.NONE);
+
+        return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
     }
 }
