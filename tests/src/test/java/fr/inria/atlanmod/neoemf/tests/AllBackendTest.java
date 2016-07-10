@@ -27,8 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AllBackendTest extends AllTest {
 
@@ -50,7 +49,7 @@ public abstract class AllBackendTest extends AllTest {
 
     @Before
     public void setUp() throws Exception {
-        assertThat("EPackage not set", ePackage, notNullValue());
+        assertThat(ePackage).isNotNull(); // "EPackage not set"
         String className = getClass().getSimpleName();
         String timestamp = String.valueOf(new Date().getTime());
         mapFile = temporaryFolder.getRoot().toPath().resolve(className + "MapDB" + timestamp).toFile();

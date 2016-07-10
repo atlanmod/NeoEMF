@@ -29,15 +29,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NeoBlueprintsURITest extends AllTest {
 
+    private static final String TEST_FILENAME = "neoGraphURITestFile";
+
+    private static final String INVALID = "invalid";
+
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    private static final String TEST_FILENAME = "neoGraphURITestFile";
 
     private PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
     private File testFile;
@@ -66,7 +67,7 @@ public class NeoBlueprintsURITest extends AllTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI("invalid:/test");
+        URI invalidURI = URI.createURI(INVALID + ":/test");
         NeoBlueprintsURI.createNeoGraphURI(invalidURI);
     }
 
@@ -74,20 +75,19 @@ public class NeoBlueprintsURITest extends AllTest {
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
         URI validURI = URI.createURI(NeoBlueprintsURI.NEO_GRAPH_SCHEME + ":/test");
         URI neoURI = NeoBlueprintsURI.createNeoGraphURI(validURI);
-        assertThat(neoURI.scheme(), is(NeoBlueprintsURI.NEO_GRAPH_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
         URI neoURI = NeoBlueprintsURI.createNeoGraphURI(fileURI);
-        assertThat(neoURI.scheme(), is(NeoBlueprintsURI.NEO_GRAPH_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
         URI neoURI = NeoBlueprintsURI.createNeoGraphURI(testFile);
-        assertThat(neoURI.scheme(), is(NeoBlueprintsURI.NEO_GRAPH_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
     }
-
 }

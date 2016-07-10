@@ -22,9 +22,7 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoadedResourceContainerTest extends AllLoadedResourceTest {
 
@@ -96,19 +94,19 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
 
     private void getElementsContainer(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
-        assertThat(model.eContainer(), nullValue());
+        assertThat(model.eContainer()).isNull();
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertThat(modelContent.eContainer(), sameInstance((EObject) model));
+        assertThat(modelContent.eContainer()).isSameAs(model);
     }
 
     private void getElementsEInternalContainer(PersistentResource persistentResource) {
         // TODO Check if we have to correct it or not (performance issues)
         InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
-        assertThat("eInternalContainer must return null if eContainer has not been called", model.eInternalContainer(), nullValue());
+        assertThat(model.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
 
         InternalEObject modelContent = (InternalEObject) ((SampleModel) model).getContentObjects().get(0);
-        assertThat("eInternalContainer must return null if eContainer has not been called", modelContent.eInternalContainer(), nullValue());
+        assertThat(modelContent.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
     }
 
     private void getAllContentsEInternalContainer(PersistentResource persistentResource) {
@@ -116,10 +114,9 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
         Iterator<EObject> it = persistentResource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertThat("eInternalContainer must return null if eContainer has not been called", sampleModel.eInternalContainer(), nullValue());
+        assertThat(sampleModel.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
-        assertThat("eInternalContainer must return null if eContainer has not been called", sampleContentObject.eInternalContainer(), nullValue());
+        assertThat(sampleContentObject.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
     }
-
 }

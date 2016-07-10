@@ -123,5 +123,4 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     private void allInstancesStrictPersistent(PersistentResource persistentResource) {
         allInstancesPersistentTranscient(persistentResource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
-
 }

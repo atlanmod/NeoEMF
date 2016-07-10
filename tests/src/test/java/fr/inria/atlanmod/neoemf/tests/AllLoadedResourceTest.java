@@ -78,5 +78,4 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
         neo4jResource.load(Collections.emptyMap());
         tinkerResource.load(Collections.emptyMap());
     }
-
 }

@@ -54,5 +54,4 @@ public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
         tinkerSampleModel.getContentObjects().add(tinkerSampleContentObject);
         tinkerResource.getContents().add(tinkerSampleModel);
     }
-
 }
