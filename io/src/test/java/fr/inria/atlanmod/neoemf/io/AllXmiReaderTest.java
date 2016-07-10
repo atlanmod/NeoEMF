@@ -26,11 +26,7 @@ import org.junit.Before;
 import java.io.File;
 import java.io.FileInputStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -44,30 +40,30 @@ public abstract class AllXmiReaderTest extends AllInputTest {
     }
 
     protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id) {
-        assertThat(mock.getLocalName(), equalTo(name));
-        assertThat(mock.getElements(), hasSize(size));
+        assertThat(mock.getLocalName()).isEqualTo(name);
+        assertThat(mock.getElements()).hasSize(size);
 
         if (id == null) {
-            assertThat(mock.getId(), nullValue());
+            assertThat(mock.getId()).isNull();
         } else {
-            assertThat(mock.getId().getValue(), equalTo(id));
+            assertThat(mock.getId().getValue()).isEqualTo(id);
         }
     }
 
     protected void assertValidMetaClass(final MetaClassifier metaClassifier, final String name, final Namespace ns) {
-        assertThat(metaClassifier.getLocalName(), equalTo(name));
-        assertThat(metaClassifier.getNamespace(), is(ns));
+        assertThat(metaClassifier.getLocalName()).isEqualTo(name);
+        assertThat(metaClassifier.getNamespace()).isEqualTo(ns);
     }
 
     protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference) {
-        assertThat(reference.getLocalName(), equalTo(name));
-        assertThat(reference.getIndex(), is(index));
-        assertThat(reference.getIdReference().getValue(), equalTo(idReference));
+        assertThat(reference.getLocalName()).isEqualTo(name);
+        assertThat(reference.getIndex()).isEqualTo(index);
+        assertThat(reference.getIdReference().getValue()).isEqualTo(idReference);
     }
 
     protected void assertValidAttribute(final Attribute attribute, final String name, final Object value) {
-        assertThat(attribute.getLocalName(), equalTo(name));
-        assertThat(attribute.getValue(), equalTo(value));
+        assertThat(attribute.getLocalName()).isEqualTo(name);
+        assertThat(attribute.getValue()).isEqualTo(value);
     }
 
     protected StructuralPersistanceHandler read(File filePath) throws Exception {

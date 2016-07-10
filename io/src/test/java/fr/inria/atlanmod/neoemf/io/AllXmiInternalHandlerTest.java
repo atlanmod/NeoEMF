@@ -28,11 +28,7 @@ import org.junit.Before;
 import java.io.File;
 import java.io.FileInputStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -46,35 +42,35 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
     }
 
     protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id, final String className, final boolean root) {
-        assertThat(mock.getLocalName(), equalTo(name));
-        assertThat(mock.getElements(), hasSize(size));
-        assertThat(mock.getClassName(), equalTo(className));
-        assertThat(mock.isRoot(), is(root));
+        assertThat(mock.getLocalName()).isEqualTo(name);
+        assertThat(mock.getElements()).hasSize(size);
+        assertThat(mock.getClassName()).isEqualTo(className);
+        assertThat(mock.isRoot()).isEqualTo(root);
 
         if (id == null) {
-            assertThat(mock.getId(), nullValue());
+            assertThat(mock.getId()).isNull();
         } else {
-            assertThat(mock.getId().getValue(), equalTo(id));
+            assertThat(mock.getId().getValue()).isEqualTo(id);
         }
     }
 
     protected void assertValidMetaClass(final MetaClassifier metaClassifier, final String name, final Namespace ns) {
-        assertThat(metaClassifier.getLocalName(), equalTo(name));
-        assertThat(metaClassifier.getNamespace(), is(ns));
+        assertThat(metaClassifier.getLocalName()).isEqualTo(name);
+        assertThat(metaClassifier.getNamespace()).isSameAs(ns);
     }
 
     protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
-        assertThat(reference.getLocalName(), equalTo(name));
-        assertThat(reference.getIndex(), is(index));
-        assertThat(reference.getIdReference().getValue(), equalTo(idReference));
-        assertThat(reference.isContainment(), is(containment));
-        assertThat(reference.isMany(), is(many));
+        assertThat(reference.getLocalName()).isEqualTo(name);
+        assertThat(reference.getIndex()).isEqualTo(index);
+        assertThat(reference.getIdReference().getValue()).isEqualTo(idReference);
+        assertThat(reference.isContainment()).isEqualTo(containment);
+        assertThat(reference.isMany()).isEqualTo(many);
     }
 
     protected void assertValidAttribute(final Attribute attribute, final String name, final int index, final Object value) {
-        assertThat(attribute.getLocalName(), equalTo(name));
-        assertThat(attribute.getValue(), equalTo(value));
-        assertThat(attribute.getIndex(), is(index));
+        assertThat(attribute.getLocalName()).isEqualTo(name);
+        assertThat(attribute.getValue()).isEqualTo(value);
+        assertThat(attribute.getIndex()).isEqualTo(index);
     }
 
     private StructuralPersistanceHandler read(File filePath) throws Exception {

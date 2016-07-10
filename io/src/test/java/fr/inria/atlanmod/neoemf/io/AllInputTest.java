@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
 import java.io.File;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -83,7 +83,7 @@ public abstract class AllInputTest extends AllTest {
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 
-        checkNotNull(ePackage, "EPackage '" + prefix + "' does not exist.");
+        assertThat(ePackage).isNotNull(); // "EPackage does not exist"
 
         EPackage.Registry.INSTANCE.put(uri, ePackage);
     }
