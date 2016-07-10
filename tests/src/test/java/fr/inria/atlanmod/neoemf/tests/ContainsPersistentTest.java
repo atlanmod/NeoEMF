@@ -12,7 +12,6 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import org.junit.Test;
 
-
 /**
  * Test class for the contains method, related to performance issue descibed in #30
  * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
@@ -84,5 +83,4 @@ public class ContainsPersistentTest extends AllContainsTest {
         createResourceContent(tinkerResource, 5);
         checkContainsResult(tinkerResource, 5);
     }
-    
 }

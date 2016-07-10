@@ -84,5 +84,4 @@ public class ContainsTransientTest extends AllContainsTest {
         createResourceContent(tinkerResource, 5);
         checkContainsResult(tinkerResource, 5);
     }
-    
 }

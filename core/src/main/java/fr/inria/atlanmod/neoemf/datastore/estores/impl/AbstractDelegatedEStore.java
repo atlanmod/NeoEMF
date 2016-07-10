@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.datastore.estores.DelegatedEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 
 import org.eclipse.emf.common.util.EList;
@@ -25,7 +26,7 @@ import org.eclipse.emf.ecore.resource.Resource;
  * A {@link SearcheableResourceEStore} wrapper that delegates method calls to an
  * internal {@link SearcheableResourceEStore}.
  */
-public abstract class AbstractDelegatedEStore<S extends SearcheableResourceEStore> implements SearcheableResourceEStore {
+public abstract class AbstractDelegatedEStore<S extends SearcheableResourceEStore> implements DelegatedEStore<S> {
 
 	/**
 	 * The wrapped {@link SearcheableResourceEStore}.
@@ -36,6 +37,7 @@ public abstract class AbstractDelegatedEStore<S extends SearcheableResourceEStor
 		this.eStore = eStore;
 	}
 
+	@Override
 	public S getEStore() {
 		return eStore;
 	}

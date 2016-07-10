@@ -45,11 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.collection.IsMapContaining.hasKey;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapPersistenceBackendFactoryTest extends AllTest {
 
@@ -99,8 +95,8 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
-        assertThat("Invalid backend created", transientBackend, instanceOf(MapPersistenceBackend.class));
-        // Need to test further the nature of the MapDB engine
+        assertThat(transientBackend).isInstanceOf(MapPersistenceBackend.class); // "Invalid backend created"
+        // TODO Need to test further the nature of the MapDB engine
     }
 
     @Test
@@ -108,17 +104,16 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
-        assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(DirectWriteMapResourceEStoreImpl.class); // "Invalid EStore created"
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
-        assertThat(innerBackend, sameInstance(transientBackend));
+        assertHasInnerBackend(eStore, transientBackend);
     }
 
     @Test
     public void testCreatePersistentBackendNoOption() throws InvalidDataStoreException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
-        assertThat("Invalid backend created", persistentBackend, instanceOf(MapPersistenceBackend.class));
-        // Need to test further the nature of the MapDB engine
+        assertThat(persistentBackend).isInstanceOf(MapPersistenceBackend.class); // "Invalid backend created"
+        // TODO Need to test further the nature of the MapDB engine
     }
 
     @Test
@@ -126,10 +121,9 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, Collections.emptyMap());
-        assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(DirectWriteMapResourceEStoreImpl.class); // "Invalid EStore created"
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
+        assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
@@ -139,10 +133,9 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapResourceEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(DirectWriteMapResourceEStoreImpl.class); // "Invalid EStore created"
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
+        assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
@@ -152,10 +145,9 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapWithListsResourceEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(DirectWriteMapWithListsResourceEStoreImpl.class); // "Invalid EStore created"
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
+        assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
@@ -165,10 +157,9 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(DirectWriteMapWithIndexesResourceEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(DirectWriteMapWithIndexesResourceEStoreImpl.class); // "Invalid EStore created"
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
+        assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
@@ -178,10 +169,9 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(AutocommitEStoreImpl.class); // "Invalid EStore created"
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
+        assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
@@ -191,10 +181,9 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(CachedManyDirectWriteMapResourceEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(CachedManyDirectWriteMapResourceEStoreImpl.class); // "Invalid EStore created"
 
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) eStore);
-        assertThat("The backend in the EStore is not the created one", innerBackend, sameInstance(persistentBackend));
+        assertHasInnerBackend(eStore, persistentBackend);
     }
 
     /**
@@ -206,23 +195,28 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
     @Test
     public void testCopyBackend() throws InvalidDataStoreException {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
-        assertThat("Transient backend is not an instance of MapPersistenceBackend", transientBackend, instanceOf(MapPersistenceBackend.class));
+        assertThat(transientBackend).isInstanceOf(MapPersistenceBackend.class); // "Transient backend is not an instance of MapPersistenceBackend"
 
         MapPersistenceBackend transientMap = (MapPersistenceBackend) transientBackend;
         //SearcheableResourceEStore transientEStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
-        assertThat("Persistent backend is not an instance of MapPersistenceBackend", persistentBackend, instanceOf(MapPersistenceBackend.class));
+        assertThat(persistentBackend).isInstanceOf(MapPersistenceBackend.class); // "Persistent backend is not an instance of MapPersistenceBackend"
 
         MapPersistenceBackend persistentMap = (MapPersistenceBackend) persistentBackend;
         //SearcheableResourceEStore persistentEStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         persistenceBackendFactory.copyBackend(transientMap, persistentMap);
         for (String tKey : transientMap.getAll().keySet()) {
-            assertThat("Persistent backend does not contain the key " + tKey, persistentMap.getAll(), hasKey(tKey));
-            assertThat("Persistent backend structure " + tKey + " is not equal to transient one", persistentMap.getAll().get(tKey), is(transientMap.get(tKey)));
+            assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"
+            assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent backend structure %s is not equal to transient one"
         }
     }
 
     private PersistenceBackend getInnerBackend(DirectWriteResourceEStore store) {
         return store.getPersistenceBackend();
+    }
+
+    private void assertHasInnerBackend(SearcheableResourceEStore store, PersistenceBackend expectedInnerBackend) {
+        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) store);
+        assertThat(innerBackend).isSameAs(expectedInnerBackend); // "The backend in the EStore is not the created one"
     }
 }

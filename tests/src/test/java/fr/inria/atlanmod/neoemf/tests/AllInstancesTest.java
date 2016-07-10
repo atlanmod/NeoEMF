@@ -24,8 +24,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.After;
 import org.junit.Before;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AllInstancesTest extends AllBackendTest {
 
@@ -85,19 +84,18 @@ public abstract class AllInstancesTest extends AllBackendTest {
 
     protected void allInstancesPersistentTranscient(PersistentResource persistentResource, boolean strict, int abstractPackContentCount, int packContentCount) {
         EList<EObject> allPacks = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
-        assertThat("Invalid count", allPacks.size(), equalTo(PACK_COUNT));
+        assertThat(allPacks).hasSize(PACK_COUNT); // "Invalid count"
 
         EList<EObject> allAbstractPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
-        assertThat("Invalid count", allAbstractPackContents.size(), equalTo(abstractPackContentCount));
+        assertThat(allAbstractPackContents).hasSize(abstractPackContentCount); // "Invalid count"
 
         EList<EObject> allPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
-        assertThat("Invalid count", allPackContents.size(), equalTo(packContentCount));
+        assertThat(allPackContents).hasSize(packContentCount); // "Invalid count"
 
         EList<EObject> allSpecializedPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
-        assertThat("Invalid count", allSpecializedPackContents.size(), equalTo(SPECIALIZED_PACK_CONTENT_COUNT));
+        assertThat(allSpecializedPackContents).hasSize(SPECIALIZED_PACK_CONTENT_COUNT); // "Invalid count"
 
         EList<EObject> allPackContents2 = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
-        assertThat("Invalid count", allPackContents2.size(), equalTo(PACK_CONTENT_2_COUNT));
+        assertThat(allPackContents2).hasSize(PACK_CONTENT_2_COUNT); // "Invalid count"
     }
-
 }

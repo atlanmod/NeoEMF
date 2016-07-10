@@ -39,9 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AllTest {
 
@@ -106,12 +104,12 @@ public class BlueprintsResourceSaveTest extends AllTest {
         resource.save(Collections.emptyMap());
 
         File configFile = new File(testFile + configFileName);
-        assertThat("Config file does not exist", configFile.exists(), is(true));
+        assertThat(configFile).exists(); // "Config file does not exist"
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assertThat(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(true));
-        assertThat(configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT));
-        assertThat("Too much content in the .properties file", getKeyCount(configuration), equalTo(3));
+        assertThat(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)).isTrue();
+        assertThat(configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
+        assertThat(getKeyCount(configuration)).isEqualTo(3); // "Too much content in the .properties file"
     }
 
     @Test
@@ -120,12 +118,11 @@ public class BlueprintsResourceSaveTest extends AllTest {
         resource.save(options);
 
         File configFile = new File(testFile + configFileName);
-        assertThat("Config file does not exist", configFile.exists(), is(true));
+        assertThat(configFile).exists(); // "Config file does not exist"
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assertThat(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(true));
-        assertThat(configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE), is(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT));
-        assertThat("Too much content in the .properties file", getKeyCount(configuration), equalTo(3));
+        assertThat(configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)).isTrue();
+        assertThat(configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
+        assertThat(getKeyCount(configuration)).isEqualTo(3); // "Too much content in the .properties file"
     }
-
 }
