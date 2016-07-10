@@ -22,6 +22,7 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     public static enum EStoreGraphOption implements StoreOption {
         AUTOCOMMIT,
         DIRECT_WRITE,
+        MANY_CACHE
     }
     
 }

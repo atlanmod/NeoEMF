@@ -65,7 +65,7 @@ public class NeoEMFEditor extends EcoreEditor {
             storeOptions.add(MapResourceOptions.EStoreMapOption.DIRECT_WRITE);
             
         } else if(resource.getURI().scheme().equals(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
-            storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
+            storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.MANY_CACHE);
         }
         try {
             resource.load(options);
