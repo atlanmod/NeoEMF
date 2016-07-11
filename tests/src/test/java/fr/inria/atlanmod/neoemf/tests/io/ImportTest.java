@@ -50,10 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 /**
@@ -220,8 +217,8 @@ public class ImportTest extends AllInputTest {
         if (!testedObjects.contains(expected)) {
             testedObjects.add(expected);
 
-            assertThat(actual.eClass().getName(), equalTo(expected.eClass().getName()));
-            assertThat(actual.eContents().size(), is(expected.eContents().size()));
+            assertThat(actual.eClass().getName()).isEqualTo(expected.eClass().getName());
+            assertThat(actual.eContents()).hasSameSizeAs(expected.eContents());
 
             for (EAttribute eAttribute : expected.eClass().getEAttributes()) {
                 assertEqualFeature(actual, expected, eAttribute.getFeatureID());
@@ -253,23 +250,23 @@ public class ImportTest extends AllInputTest {
                 List<?> expectedList = (List<?>) expectedValue;
                 List<?> actualList = (List<?>) actualValue;
 
-                assertThat(actualList.size(), is(expectedList.size()));
+                assertThat(actualList).hasSameSizeAs(expectedList);
 
                 for (int i = 0; i < expectedList.size(); i++) {
                     assertEqualEObject((EObject) actualList.get(i), (EObject) expectedList.get(i));
                 }
             }
             else {
-                assertThat(actualValue, equalTo(expectedValue));
+                assertThat(actualValue).isEqualTo(expectedValue);
             }
         }
     }
 
     private void assertValidElement(final EObject eObject, final String className, final int size, final Object name) {
-        assertThat(eObject.eClass().getName(), equalTo(className));
-        assertThat(eObject.eContents(), hasSize(size));
+        assertThat(eObject.eClass().getName()).isEqualTo(className);
+        assertThat(eObject.eContents()).hasSize(size);
         if (name != null) {
-            assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name")), equalTo(name));
+            assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name"))).isEqualTo(name);
         } else {
             try {
                 eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
@@ -294,31 +291,31 @@ public class ImportTest extends AllInputTest {
             eObjectReference = (EObject) objectReference;
         }
 
-        assertThat(eObjectReference.eClass().getName(), equalTo(referenceClassName));
+        assertThat(eObjectReference.eClass().getName()).isEqualTo(referenceClassName);
 
         if (referenceName != null) {
             EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
-            assertThat(eObjectReference.eGet(eAttribute).toString(), equalTo(referenceName));
+            assertThat(eObjectReference.eGet(eAttribute).toString()).isEqualTo(referenceName);
         } else {
             try {
                 EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
-                assertThat(eObjectReference.eGet(eAttribute), equalTo(eAttribute.getDefaultValue()));
+                assertThat(eObjectReference.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
             } catch (NullPointerException e) {
                 // It's good
             }
         }
 
-        assertThat(eReference.isContainment(), is(containment));
-        assertThat(eReference.isMany(), is(many));
+        assertThat(eReference.isContainment()).isEqualTo(containment);
+        assertThat(eReference.isMany()).isEqualTo(many);
     }
 
     private void assertValidAttribute(final EObject eObject, final String name, final Object value) {
         EAttribute eAttribute = (EAttribute) eObject.eClass().getEStructuralFeature(name);
 
         if (value == null) {
-            assertThat(eObject.eGet(eAttribute), equalTo(eAttribute.getDefaultValue()));
+            assertThat(eObject.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
         } else {
-            assertThat(eObject.eGet(eAttribute).toString(), equalTo(value));
+            assertThat(eObject.eGet(eAttribute).toString()).isEqualTo(value);
         }
     }
 

@@ -29,8 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NeoMapURITest extends AllTest {
 
@@ -64,30 +63,29 @@ public class NeoMapURITest extends AllTest {
         testFile = null;
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI("invalid:/test");
-        NeoMapURI.createNeoMapURI(invalidURI);
-    }
-
     @Test
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
         URI validURI = URI.createURI(NeoMapURI.NEO_MAP_SCHEME + ":/test");
         URI neoURI = NeoMapURI.createNeoMapURI(validURI);
-        assertThat(neoURI.scheme(), is(NeoMapURI.NEO_MAP_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.NEO_MAP_SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
         URI neoURI = NeoMapURI.createNeoMapURI(fileURI);
-        assertThat(neoURI.scheme(), is(NeoMapURI.NEO_MAP_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.NEO_MAP_SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
         URI neoURI = NeoMapURI.createNeoMapURI(testFile);
-        assertThat(neoURI.scheme(), is(NeoMapURI.NEO_MAP_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.NEO_MAP_SCHEME);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
+        URI invalidURI = URI.createURI("invalid:/test");
+        NeoMapURI.createNeoMapURI(invalidURI);
+    }
 }

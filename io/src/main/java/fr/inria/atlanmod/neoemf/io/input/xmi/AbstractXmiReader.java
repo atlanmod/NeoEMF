@@ -179,7 +179,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
             else if (XMI_VERSION_ATTR.equals(prefixedValue)) { // xmi:version
-                NeoLogger.info("XMI version : " + value);
+                //NeoLogger.info("XMI version : " + value);
                 isSpecialFeature = true;
             }
         } else if (PROXY.equals(localName)) {

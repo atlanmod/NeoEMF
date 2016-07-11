@@ -17,9 +17,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 
 import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test case to reproduce the issue #7 @link{https://github.com/atlanmod/NeoEMF/issues/7}
@@ -32,9 +30,7 @@ public class Issue7Test extends AllTest {
         MapSampleFactory factory = MapSampleFactory.eINSTANCE;
 
         SampleModel model = factory.createSampleModel();
-        assertThat("Created SampleModel is null", model, notNullValue());
-        assertThat("Accessed List is null", model.getContentObjects(), notNullValue());
-        assertThat("Accessed List is not empty", model.getContentObjects().isEmpty(), is(true));
+        assertThat(model).isNotNull();
+        assertThat(model.getContentObjects()).isNotNull().isEmpty();
     }
-
 }

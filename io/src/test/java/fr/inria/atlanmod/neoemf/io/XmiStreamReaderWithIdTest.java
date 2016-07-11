@@ -21,13 +21,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -49,11 +43,11 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
     public void testNamespacesWithId() throws Exception {
         Namespace.Registry nsRegistry = Namespace.Registry.getInstance();
         Iterable<String> prefixes = nsRegistry.getPrefixes();
-        assertThat(prefixes, containsInAnyOrder("uml", "xmi"));
+        assertThat(prefixes).containsExactlyInAnyOrder("uml", "xmi");
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
-        assertThat(root.getNamespace(), not(nullValue()));
-        assertThat(root.getNamespace().getPrefix(), equalTo("uml"));
+        assertThat(root.getNamespace()).isNotNull();
+        assertThat(root.getNamespace().getPrefix()).isEqualTo("uml");
     }
 
     /**
@@ -61,7 +55,7 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
      */
     @Test
     public void testElementsAndChildrenWithId() throws Exception {
-        assertThat(persistanceHandler.getElements(), not(empty()));
+        assertThat(persistanceHandler.getElements()).isNotEmpty();
 
         ClassifierMock mock;
         ClassifierMock mockChild;
@@ -114,37 +108,37 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         attributeList = root.getAttributes();
-        assertThat(attributeList, empty());
+        assertThat(attributeList).isEmpty();
         {
             //@Model/@packagedElement.0
             mock = ClassifierMock.getChildFrom(root, 0);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, empty());
+            assertThat(attributeList).isEmpty();
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
                 attributeList = mockChild.getAttributes();
-                assertThat(attributeList, hasSize(1));
+                assertThat(attributeList).hasSize(1);
                 assertValidAttribute(attributeList.get(0), "visibility", "private");
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);
                 attributeList = mock.getAttributes();
-                assertThat(attributeList, empty());
+                assertThat(attributeList).isEmpty();
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
                     mock = ClassifierMock.getChildFrom(mock, 0);
                     attributeList = mock.getAttributes();
-                    assertThat(attributeList, empty());
+                    assertThat(attributeList).isEmpty();
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
                         mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
-                        assertThat(mockChild.getAttributes(), empty());
+                        assertThat(mockChild.getAttributes()).isEmpty();
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
                         mockChild = ClassifierMock.getChildFrom(mock, 4);
                         attributeList = mockChild.getAttributes();
-                        assertThat(attributeList, hasSize(4));
+                        assertThat(attributeList).hasSize(4);
                         assertValidAttribute(attributeList.get(0), "messageSort", "synchCall");
                         assertValidAttribute(attributeList.get(1), "sendEvent", "MSGOCCSPECSEND2_0x1f402_12"); // Future reference
                         assertValidAttribute(attributeList.get(2), "receiveEvent", "MSGOCCSPECREC2_0x1f402_12"); // Future reference
@@ -155,7 +149,7 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
             //@Model/@packagedElement.2
             mock = ClassifierMock.getChildFrom(root, 2);
             attributeList = mock.getAttributes();
-            assertThat(attributeList, hasSize(1));
+            assertThat(attributeList).hasSize(1);
             assertValidAttribute(attributeList.get(0), "operation", "0x1f582_2"); // Future reference
         }
     }
@@ -172,40 +166,40 @@ public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
         List<Reference> referenceList;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
-        assertThat(root.getReferences(), empty());
+        assertThat(root.getReferences()).isEmpty();
         {
             //@Model/@packagedElement.0
             mock = ClassifierMock.getChildFrom(root, 0);
-            assertThat(mock.getReferences(), empty());
+            assertThat(mock.getReferences()).isEmpty();
             {
                 //@Model/@packagedElement.0/@packagedElement.0/@ownedAttribute
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
                 referenceList = mockChild.getReferences();
-                assertThat(referenceList, hasSize(1));
+                assertThat(referenceList).hasSize(1);
                 assertValidReference(referenceList.get(0), "type", UNKNOWN_INDEX, "0x1f582_4");
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);
-                assertThat(mock.getReferences(), empty());
+                assertThat(mock.getReferences()).isEmpty();
                 {
                     //@Model/@packagedElement.0/@packagedElement.3/ownedBehavior.0
                     mock = ClassifierMock.getChildFrom(mock, 0);
-                    assertThat(mock.getReferences(), empty());
+                    assertThat(mock.getReferences()).isEmpty();
                     {
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@fragment/@operand
                         mockChild = ClassifierMock.getChildFrom(mock, 3, 0);
-                        assertThat(mockChild.getReferences(), empty());
+                        assertThat(mockChild.getReferences()).isEmpty();
 
                         //@Model/@packagedElement.0/@packagedElement.3/@ownedBehavior.0/@message.0
                         mockChild = ClassifierMock.getChildFrom(mock, 4);
-                        assertThat(mockChild.getReferences(), empty());
+                        assertThat(mockChild.getReferences()).isEmpty();
                     }
                 }
             }
 
             //@Model/@packagedElement.2
             mock = ClassifierMock.getChildFrom(root, 2);
-            assertThat(mock.getReferences(), empty());
+            assertThat(mock.getReferences()).isEmpty();
         }
     }
 

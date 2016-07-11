@@ -24,8 +24,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
@@ -153,19 +152,18 @@ public class EObjectEContentsTest extends AllBackendTest {
     
     private void checkEContents() {
         EList<EObject> eContents = p.eContents();
-        assertThat("p.eContents().size() returns an invalid value", eContents.size(), equalTo(ECONTENTS_COUNT));
+        assertThat(eContents).hasSize(ECONTENTS_COUNT);
         for(int i = 0; i < SUB_PACK_COUNT; i++) {
-            assertThat("p.eContents().get("+i+") != subPacks.get("+i+")", eContents.get(i), equalTo(subPacks.get(i)));
+            assertThat(eContents.get(i)).isEqualTo(subPacks.get(i)); // "p.eContents().get(i) != subPacks.get(i)"
         }
         for(int i = 0; i < PACK_CONTENT_COUNT; i++) {
-            assertThat("p.eContents().get(" + (i + SUB_PACK_COUNT) + ") != packContents.get(" + i
-                    + ")", eContents.get(i + SUB_PACK_COUNT), equalTo(packContents.get(i)));
+            assertThat(eContents.get(i + SUB_PACK_COUNT)).isEqualTo(packContents.get(i)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
         }
     }
     
     private void checkEmptyEContentsSize() {
         EList<EObject> eContents = p.eContents();
-        assertThat("p.eContents().size() != 0", eContents.size(), equalTo(0));
+        assertThat(eContents).isEmpty();
     }
     
     private void checkEmptyEContentsGet() {

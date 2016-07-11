@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
@@ -64,11 +64,7 @@ public class AllContainsTest extends AllBackendTest {
     
     protected void checkContainsResult(PersistentResource r, int cCount) {
         SampleModel m = (SampleModel)r.getContents().get(0);
-        for(int i = 0; i < cCount; i++) {
-            assertTrue("m.getContentObjects().contains(c"+i+") returns false", m.getContentObjects().contains(addedContent.get(i)));
-        }
+        assertThat(m.getContentObjects()).hasSize(cCount);
+        assertThat(m.getContentObjects()).containsExactlyElementsOf(addedContent);
     }
-    
-    
-    
 }

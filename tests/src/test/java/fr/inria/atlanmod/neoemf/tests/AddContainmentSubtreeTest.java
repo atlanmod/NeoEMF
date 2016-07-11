@@ -16,12 +16,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWr
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
-import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Checks that adding a transient containment sub-tree to an
@@ -71,15 +68,14 @@ public class AddContainmentSubtreeTest extends AllContainmentTest {
         InternalPersistentEObject ip3 = (InternalPersistentEObject) p3;
         InternalPersistentEObject ipc1 = (InternalPersistentEObject) pc1;
 
-        assertThat(ip1.eStore(), instanceOf(eStoreClass));
-        assertThat(ip2.eStore(), instanceOf(eStoreClass));
-        assertThat(ip3.eStore(), instanceOf(eStoreClass));
-        assertThat(ipc1.eStore(), instanceOf(eStoreClass));
+        assertThat(ip1.eStore()).isInstanceOf(eStoreClass);
+        assertThat(ip2.eStore()).isInstanceOf(eStoreClass);
+        assertThat(ip3.eStore()).isInstanceOf(eStoreClass);
+        assertThat(ipc1.eStore()).isInstanceOf(eStoreClass);
 
-        assertThat(ip1.resource(), sameInstance((Resource.Internal) persistentResource));
-        assertThat(ip2.resource(), sameInstance((Resource.Internal) persistentResource));
-        assertThat(ip3.resource(), sameInstance((Resource.Internal) persistentResource));
-        assertThat(ipc1.resource(), sameInstance((Resource.Internal) persistentResource));
+        assertThat(ip1.resource()).isSameAs(persistentResource);
+        assertThat(ip2.resource()).isSameAs(persistentResource);
+        assertThat(ip3.resource()).isSameAs(persistentResource);
+        assertThat(ipc1.resource()).isSameAs(persistentResource);
     }
-	
 }
