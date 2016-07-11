@@ -56,7 +56,7 @@ public class NeoEMFEditor extends EcoreEditor {
         editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
         // Create the store options depending of the backend
         List<StoreOption> storeOptions = new ArrayList<>();
-        storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
+//        storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
         Map<Object,Object> options = new HashMap<>();
         options.put(PersistentResourceOptions.STORE_OPTIONS,storeOptions);
         if(resource.getURI().scheme().equals(NeoMapURI.NEO_MAP_SCHEME)) {
