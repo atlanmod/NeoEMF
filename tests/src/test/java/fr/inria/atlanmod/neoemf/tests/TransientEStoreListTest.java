@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,15 +7,18 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.TransientEStoreImpl;
+import fr.inria.atlanmod.neoemf.issues.Issue7Test;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,15 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test cases that check List method consistency for the @see{TransientEStoreImpl} class.
- * Issue #7 reported the error for isEmpty method @see{Issue7Test}
+ * Test cases that check List method consistency for the {@link TransientEStoreImpl} class.
+ * Issue #7 reported the error for isEmpty method {@link Issue7Test}
  */
 public class TransientEStoreListTest extends AllTest {
 
@@ -48,55 +47,55 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testListNotNull() {
-        assertThat("Accessed list is null", model.getContentObjects(), notNullValue());
+        assertThat(model.getContentObjects()).isNotNull(); // "Accessed list is null"
     }
 
     @Test
     public void testAdd() {
-        assertThat("Adding valid item to the list returns false", model.getContentObjects().add(mapFactory.createSampleModelContentObject()), is(true));
+        assertThat(model.getContentObjects().add(mapFactory.createSampleModelContentObject())).isTrue(); // "Adding valid item to the list returns false"
     }
 
     @Test
     public void testAddAllCollection() {
-        List<SampleModelContentObject> list = new ArrayList<SampleModelContentObject>();
+        List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
         list.add(mapFactory.createSampleModelContentObject());
-        assertThat("Adding valid item list returns false", model.getContentObjects().addAll(list), is(true));
+        assertThat(model.getContentObjects().addAll(list)).isTrue(); // "Adding valid item list returns false"
     }
 
     @Test
     public void testAddAllCollectionIndex() {
-        List<SampleModelContentObject> list = new ArrayList<SampleModelContentObject>();
+        List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
         list.add(mapFactory.createSampleModelContentObject());
-        assertThat("Adding valid item list at a given index returns false", model.getContentObjects().addAll(0, list), is(true));
+        assertThat(model.getContentObjects().addAll(0, list)).isTrue(); // "Adding valid item list at a given index returns false"
     }
 
     @Test
     public void testClear() {
         model.getContentObjects().clear();
-        assertThat("List isn't empty after clean", model.getContentObjects().isEmpty(), is(true));
+        assertThat(model.getContentObjects()).isEmpty(); // "List isn't empty after clean"
     }
 
     @Test
     public void testContains() {
-        assertThat("Accessed list contains the created element", model.getContentObjects().contains(mapFactory.createSampleModelContentObject()), is(false));
+        assertThat(model.getContentObjects().contains(mapFactory.createSampleModelContentObject())).isFalse(); // "Accessed list contains the created element"
     }
 
     @Test
     public void testContainsAll() {
-        List<SampleModelContentObject> list = new ArrayList<SampleModelContentObject>();
+        List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
         list.add(mapFactory.createSampleModelContentObject());
-        assertThat("Accessed list contains the given collection", model.getContentObjects().containsAll(list), is(false));
+        assertThat(model.getContentObjects().containsAll(list)).isFalse(); // "Accessed list contains the given collection"
     }
 
     @Test
     public void testEquals() {
-        List<SampleModelContentObject> list = new ArrayList<SampleModelContentObject>();
+        List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
         list.add(mapFactory.createSampleModelContentObject());
-        assertThat("Accessed list is equal to the given collection", model.getContentObjects().equals(list), is(false));
+        assertThat(model.getContentObjects().equals(list)).isFalse(); // "Accessed list is equal to the given collection"
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -111,12 +110,12 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testIndexOf() {
-        assertThat("IndexOf returns a wrong value", model.getContentObjects().indexOf(mapFactory.createSampleModelContentObject()), equalTo(-1));
+        assertThat(model.getContentObjects().indexOf(mapFactory.createSampleModelContentObject())).isEqualTo(-1); // "IndexOf returns a wrong value"
     }
 
     @Test
     public void testIsEmpty() {
-        assertThat("Accessed list is not empty", model.getContentObjects().isEmpty(), is(true));
+        assertThat(model.getContentObjects().isEmpty()).isTrue(); // "Accessed list is not empty"
     }
 
     @Test
@@ -126,7 +125,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testLastIndexOf() {
-        assertThat("LastIndexOf returns a wrong value", model.getContentObjects().lastIndexOf(mapFactory.createSampleModelContentObject()), equalTo(-1));
+        assertThat(model.getContentObjects().lastIndexOf(mapFactory.createSampleModelContentObject())).isEqualTo(-1); // "LastIndexOf returns a wrong value"
     }
 
     @Test
@@ -166,7 +165,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testRemoveAllCollection() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().removeAll(collection);
@@ -174,13 +173,12 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testRemoveAllEmptyCollection() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
-        model.getContentObjects().removeAll(collection);
+        model.getContentObjects().removeAll(new ArrayList<SampleModelContentObject>());
     }
 
     @Test
     public void testRetainAllCollection() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().retainAll(collection);
@@ -188,8 +186,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testRetainAllEmptyCollection() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
-        model.getContentObjects().retainAll(collection);
+        model.getContentObjects().retainAll(new ArrayList<>());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -199,7 +196,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testSetValidIndex() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
@@ -208,7 +205,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test(expected = ClassCastException.class)
     public void testSetInvalidObject() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
@@ -217,16 +214,16 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testSizeEmptyList() {
-        assertThat(model.getContentObjects().size(), equalTo(0));
+        assertThat(model.getContentObjects().size()).isEqualTo(0);
     }
 
     @Test
     public void testSize() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().size(), equalTo(2));
+        assertThat(model.getContentObjects().size()).isEqualTo(2);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -236,41 +233,41 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testSubList() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().subList(0, 1).size(), equalTo(1));
+        assertThat(model.getContentObjects().subList(0, 1).size()).isEqualTo(1);
     }
 
     @Test
     public void testToArrayEmptyList() {
-        assertThat(model.getContentObjects().toArray().length, equalTo(0));
+        assertThat(model.getContentObjects().toArray().length).isEqualTo(0);
     }
 
     @Test
     public void testToArray() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().toArray().length, equalTo(2));
+        assertThat(model.getContentObjects().toArray().length).isEqualTo(2);
     }
 
     @Test
     public void testToArrayParameterEmptyList() {
         Object[] array = new Object[0];
-        model.getContentObjects().toArray(array);
+        assertThat(model.getContentObjects().toArray(array)).containsExactly(array);
     }
 
     @Test
     public void testToArrayParameter() {
         Object[] array = new Object[2];
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        assertThat(model.getContentObjects().toArray(array).length, equalTo(2));
+        assertThat(model.getContentObjects().toArray(array).length).isEqualTo(2);
     }
 
     @Test
@@ -280,11 +277,10 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testToString() {
-        Collection<SampleModelContentObject> collection = new ArrayList<SampleModelContentObject>();
+        Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
         model.getContentObjects().toString();
     }
-
 }

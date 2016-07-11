@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,17 +7,29 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.core.impl;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 
-public class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
+public final class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
+
+	private static PersistenceFactory INSTANCE;
+
+	public static PersistenceFactory getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new PersistenceFactoryImpl();
+		}
+		return INSTANCE;
+	}
+
+	private PersistenceFactoryImpl() {
+	}
 	
 	@Override
 	public InternalPersistentEObject create(EClass eClass) {
@@ -25,5 +37,4 @@ public class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceF
 		eObject.eSetClass(eClass);
 		return eObject;
 	}
-	
 }

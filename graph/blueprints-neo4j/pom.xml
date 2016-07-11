@@ -16,70 +16,57 @@
     <name>NeoEMF :: Graph :: Blueprints :: Neo4j Wrapper</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <manifest-location>META-INF</manifest-location>
+        <config-path>${project.parent.parent.basedir}</config-path>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-graph-algo</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-graph-matching</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-lucene-index</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-neo4j-graph</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
+        <!-- By default, imports a POM file instead of a JAR, which is not recognized by Eclipe -->
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
+            <version>1.9.6</version>
+            <scope>runtime</scope>
         </dependency>
 
+        <!-- Common dependencies -->
+
         <dependency>
-            <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-            <artifactId>concurrentlinkedhashmap-lru</artifactId>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
         </dependency>
 
         <!-- Internal dependencies -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
+            <artifactId>core</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>graph.blueprints</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- EMF dependencies -->
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
@@ -91,8 +78,24 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>graph.blueprints</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -102,46 +105,28 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>${maven-bundle-plugin.version}</version>
                 <configuration>
-                    <manifestLocation>${manifest-location}</manifestLocation>
                     <instructions>
-                        <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>.,{maven-dependencies}<!--,target/classes--></Bundle-ClassPath>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources,
-                            fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config,
-                            com.googlecode.concurrentlinkedhashmap,
-                            org.apache.lucene.*;-split-package:=first,
-                            javax.transaction,
-                            javax.transaction.xa,
-                            com.tinkerpop.blueprints.impls.neo4j,
-                            org.neo4j.*;-split-package:=first
+                            fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.*
                         </Export-Package>
-                        <Import-Package></Import-Package>
-                        <Embed-Dependency>
-                            geronimo-jta_1.1_spec,
-                            concurrentlinkedhashmap-lru,
-                            neo4j-lucene-index,
-                            lucene-core,
-                            neo4j-graph-algo,
-                            neo4j-graph-matching,
-                            neo4j-kernel,
-                            blueprints-neo4j-graph
-                        </Embed-Dependency>
-                        <Require-Bundle>fr.inria.atlanmod.neoemf.graph.blueprints</Require-Bundle>
+                        <_exportcontents>
+                            org.apache.commons.configuration,
+                            org.apache.commons.configuration.beanutils,
+                            org.apache.commons.configuration.event,
+                            org.apache.commons.configuration.interpol,
+                            org.apache.commons.configuration.reloading,
+                            org.apache.commons.configuration.resolver,
+                            org.apache.commons.configuration.tree,
+                            org.apache.commons.lang.exception,
+                            org.apache.commons.lang.text,
+                            org.apache.commons.logging,
+                        </_exportcontents>
+                        <Require-Bundle>
+                            fr.inria.atlanmod.neoemf.graph.blueprints
+                        </Require-Bundle>
                     </instructions>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <!--<goals>
-                          <goal>manifest</goal>
-                        </goals>-->
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -37,18 +37,6 @@
             <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,28 +7,28 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
+
 package fr.inria.atlanmod.neoemf.tests;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.List;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
 
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.AbstractPackContent;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.Pack;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
- * {@link https://github.com/atlanmod/NeoEMF/issues/30}
+ * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
 public class EObjectEContentsTest extends AllBackendTest {
 
@@ -46,8 +46,8 @@ public class EObjectEContentsTest extends AllBackendTest {
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
         ePackage = MapSamplePackage.eINSTANCE;
-        subPacks = new ArrayList<EObject>();
-        packContents = new ArrayList<EObject>();
+        subPacks = new ArrayList<>();
+        packContents = new ArrayList<>();
         super.setUp();
         createPersistentStores();
     }
@@ -152,19 +152,18 @@ public class EObjectEContentsTest extends AllBackendTest {
     
     private void checkEContents() {
         EList<EObject> eContents = p.eContents();
-        assertThat("p.eContents().size() returns an invalid value", eContents.size(), equalTo(ECONTENTS_COUNT));
+        assertThat(eContents).hasSize(ECONTENTS_COUNT);
         for(int i = 0; i < SUB_PACK_COUNT; i++) {
-            assertThat("p.eContents().get("+i+") != subPacks.get("+i+")", eContents.get(i), equalTo(subPacks.get(i)));
+            assertThat(eContents.get(i)).isEqualTo(subPacks.get(i)); // "p.eContents().get(i) != subPacks.get(i)"
         }
         for(int i = 0; i < PACK_CONTENT_COUNT; i++) {
-            assertThat("p.eContents().get(" + (i + SUB_PACK_COUNT) + ") != packContents.get(" + i
-                    + ")", eContents.get(i + SUB_PACK_COUNT), equalTo(packContents.get(i)));
+            assertThat(eContents.get(i + SUB_PACK_COUNT)).isEqualTo(packContents.get(i)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
         }
     }
     
     private void checkEmptyEContentsSize() {
         EList<EObject> eContents = p.eContents();
-        assertThat("p.eContents().size() != 0", eContents.size(), equalTo(0));
+        assertThat(eContents).isEmpty();
     }
     
     private void checkEmptyEContentsGet() {

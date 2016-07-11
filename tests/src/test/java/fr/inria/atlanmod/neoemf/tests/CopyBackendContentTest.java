@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,17 +7,17 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
+
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,12 +25,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CopyBackendContentTest extends AllBackendTest {
 
@@ -38,19 +33,21 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
         this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
 
-        super.createTransientStores();
+        createTransientStores();
 
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();
@@ -59,33 +56,35 @@ public class CopyBackendContentTest extends AllBackendTest {
     private void createResourceContent(PersistentResource r) {
         SampleModel model = factory.createSampleModel();
         model.setName(MODEL_NAME);
+
         SampleModelContentObject content1 = factory.createSampleModelContentObject();
         content1.setName(CONTENT1_NAME);
+        model.getContentObjects().add(content1);
+
         SampleModelContentObject content2 = factory.createSampleModelContentObject();
         content2.setName(CONTENT2_NAME);
-        model.getContentObjects().add(content1);
         model.getContentObjects().add(content2);
+
         r.getContents().add(model);
     }
 
     @Test
     public void testCopyBackendMapDB() throws IOException {
-        mapResource.save(Collections.EMPTY_MAP);
-        assertThat("Map resource content is empty", mapResource.getContents(), not(empty()));
-        assertThat("Top-level element is not a SampleModel", mapResource.getContents().get(0), instanceOf(SampleModel.class));
+        mapResource.save(Collections.emptyMap());
+        assertThat(mapResource.getContents()).isNotEmpty(); // "Map resource content is empty"
+        assertThat(mapResource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
 
         SampleModel sampleModel = (SampleModel) mapResource.getContents().get(0);
-        assertThat("SampleModel has an invalid name attribute", sampleModel.getName(), equalTo(MODEL_NAME));
+        assertThat(sampleModel.getName()).isEqualTo(MODEL_NAME); // "SampleModel has an invalid name attribute"
 
         EList<SampleModelContentObject> contentObjects = sampleModel.getContentObjects();
-        assertThat("SampleModel contentObjects collection is empty", contentObjects, not(empty()));
-        assertThat("SampleModel contentObjects collection has an invalid size", contentObjects.size(), equalTo(2));
+        assertThat(contentObjects).isNotEmpty(); // "SampleModel contentObjects collection is empty"
+        assertThat(contentObjects).hasSize(2); // "SampleModel contentObjects collection has an invalid size"
 
-        assertThat("First element in contentObjects collection has an invalid name", contentObjects.get(0).getName(), equalTo(CONTENT1_NAME));
-        assertThat("Second element in contentObjects collection has an invalid name", contentObjects.get(1).getName(), equalTo(CONTENT2_NAME));
+        assertThat(contentObjects.get(0).getName()).isEqualTo(CONTENT1_NAME); // "First element in contentObjects collection has an invalid name"
+        assertThat(contentObjects.get(1).getName()).isEqualTo(CONTENT2_NAME); // "Second element in contentObjects collection has an invalid name"
 
-        assertThat("First element in contentObjects collection has an invalid container", contentObjects.get(0).eContainer(), sameInstance((EObject) sampleModel));
-        assertThat("Second element in contentObjects collection has an invalid container", contentObjects.get(1).eContainer(), sameInstance((EObject) sampleModel));
+        assertThat(contentObjects.get(0).eContainer()).isSameAs(sampleModel); // "First element in contentObjects collection has an invalid container"
+        assertThat(contentObjects.get(1).eContainer()).isSameAs(sampleModel); // "Second element in contentObjects collection has an invalid container"
     }
-
 }

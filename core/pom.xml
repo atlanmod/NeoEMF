@@ -22,8 +22,7 @@
     </description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <manifest-location>META-INF</manifest-location>
+        <config-path>${project.parent.basedir}</config-path>
     </properties>
 
     <dependencies>
@@ -36,22 +35,17 @@
 
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
         <!-- Logging dependencies -->
@@ -66,31 +60,21 @@
             <artifactId>log4j-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+        </dependency>
+
         <!-- EMF dependencies -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.codegen</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
@@ -108,14 +92,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.avh4.util</groupId>
-            <artifactId>imagecomparison</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -125,37 +103,17 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>${maven-bundle-plugin.version}</version>
                 <configuration>
-                    <manifestLocation>${manifest-location}</manifestLocation>
                     <instructions>
-                        <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                        <Export-Package>fr.inria.atlanmod.neoemf.*</Export-Package>
-                        <Import-Package></Import-Package>
-                        <Embed-Dependency>
-                            cglib-nodep,
-                            log4j-api,
-                            log4j-core,
-                            commons-io,
-                            commons-lang,
-                            guava,
-                            commons-collections4
-                        </Embed-Dependency>
-                        <DynamicImport-Package>*</DynamicImport-Package>
-                        <Require-Bundle>org.eclipse.emf.ecore;visibility:=reexport</Require-Bundle>
+                        <Export-Package>
+                            fr.inria.atlanmod.neoemf.*
+                        </Export-Package>
+                        <_exportcontents/>
+                        <Require-Bundle>
+                            org.eclipse.emf.ecore
+                        </Require-Bundle>
                     </instructions>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <!--<goals>
-                          <goal>manifest</goal>
-                        </goals>-->
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

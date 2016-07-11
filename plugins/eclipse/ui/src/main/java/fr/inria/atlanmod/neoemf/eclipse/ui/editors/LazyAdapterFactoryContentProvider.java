@@ -63,19 +63,19 @@ public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProv
         if(element instanceof ResourceSet) {
             ResourceSet rSet = (ResourceSet)element;
             childCount = rSet.getResources().size();
-            NeoLogger.log(NeoLogger.SEVERITY_INFO, "ResourceSet childCount : " + childCount);
+            NeoLogger.info("ResourceSet childCount : {0}", childCount);
             tViewer.setChildCount(element, childCount);
         }
         if(element instanceof Resource) {
             Resource r = (Resource)element;
             childCount = r.getContents().size();
-            NeoLogger.log(NeoLogger.SEVERITY_INFO, "Resource childCount : " + childCount);
+            NeoLogger.info("Resource childCount : {0}", childCount);
             tViewer.setChildCount(element, childCount);
         }
         if(element instanceof PersistentEObject) {
             PersistentEObject e = (PersistentEObject)element;
             childCount = getChildCount(e);
-            NeoLogger.log(NeoLogger.SEVERITY_INFO, "EObject (" + e.eClass().getName() + ") childCount : " + childCount);
+            NeoLogger.info("EObject ({0}) childCount : {1}",  e.eClass().getName(), childCount);
             tViewer.setChildCount(element, childCount);
         }
     }

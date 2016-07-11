@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,23 +7,24 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.util;
 
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.List;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 
 import org.eclipse.emf.common.util.URI;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import java.io.File;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class NeoURI extends URI {
 
 	protected static final String FILE_SCHEME = "file";
 
-	protected URI internalUri;
+	private final URI internalUri;
 	
 	protected NeoURI(int hashCode, URI internalUri) {
 		super(hashCode);
@@ -31,36 +32,41 @@ public class NeoURI extends URI {
 	}
 
 	public static URI createNeoURI(URI uri) {
-		if(uri.scheme().equals(FILE_SCHEME)) {
-			throw new IllegalArgumentException("Can not create NeoURI from file URI without a valid scheme");
-		}
-		if(PersistenceBackendFactoryRegistry.getFactories().containsKey(uri.scheme())) {
-			return new NeoURI(uri.hashCode(), uri);
-		} else {
-			throw new IllegalArgumentException(MessageFormat.format("Unregistered URI scheme {0}", uri.toString()));
-		}
+		checkArgument(!uri.scheme().equals(FILE_SCHEME),
+				"Can not create NeoURI from file URI without a valid scheme");
+		checkArgument(PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()),
+				"Unregistered URI scheme %s", uri.toString());
+
+		return new NeoURI(uri.hashCode(), uri);
 	}
 	
 	public static URI createNeoURI(File file, String scheme) {
+		URI returnValue;
 		URI fileUri = URI.createFileURI(file.getAbsolutePath());
 		if(scheme == null) {
-			return NeoURI.createNeoURI(fileUri);
+			returnValue = NeoURI.createNeoURI(fileUri);
+		} else {
+			returnValue =createNeoURI(fileUri, scheme);
 		}
-		return createNeoURI(fileUri, scheme);
+		return returnValue;
 	}
 	
 	public static URI createNeoURI(URI fileUri, String scheme) {
+		URI returnValue;
 		if(scheme == null) {
-			return createNeoURI(fileUri);
+			returnValue = createNeoURI(fileUri);
+		} else {
+			URI uri = URI.createHierarchicalURI(
+					scheme,
+					fileUri.authority(),
+					fileUri.device(),
+					fileUri.segments(),
+					fileUri.query(),
+					fileUri.fragment()
+			);
+			returnValue = createNeoURI(uri);
 		}
-		URI uri = URI.createHierarchicalURI(
-				scheme, 
-				fileUri.authority(),
-				fileUri.device(),
-				fileUri.segments(),
-				fileUri.query(),
-				fileUri.fragment());
-		return  createNeoURI(uri);
+		return returnValue;
 	}
 	
 	@Override

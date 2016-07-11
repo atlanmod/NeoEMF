@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,53 +7,53 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-import fr.inria.atlanmod.neoemf.AllCoreTest;
+import fr.inria.atlanmod.neoemf.AllTest;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class PersistenceBackendFactoryRegistryTest extends AllCoreTest {
+public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
-    private AbstractPersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(AbstractPersistenceBackendFactory.class);
-    private AbstractPersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(AbstractPersistenceBackendFactory.class);
+    private static final String MOCK_1 = "mock1";
+    private static final String MOCK_2 = "mock2";
+
+    private PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
+    private PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
+        PersistenceBackendFactoryRegistry.unregisterAll();
     }
 
     @Test
     public void testSingleAdd() {
-        PersistenceBackendFactoryRegistry.getFactories().put("mock1", persistenceBackendFactory1);
-        assertThat(PersistenceBackendFactoryRegistry.getFactories().size(), equalTo(1));
+        PersistenceBackendFactoryRegistry.register(MOCK_1, persistenceBackendFactory1);
+        assertThat(PersistenceBackendFactoryRegistry.getFactories()).hasSize(1);
 
-        AbstractPersistenceBackendFactory registeredFactory = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
-        assertThat(registeredFactory, notNullValue());
-        assertThat(registeredFactory, sameInstance(persistenceBackendFactory1));
+        PersistenceBackendFactory registeredFactory = PersistenceBackendFactoryRegistry.getFactoryProvider(MOCK_1);
+        assertThat(registeredFactory).isNotNull();
+        assertThat(registeredFactory).isSameAs(persistenceBackendFactory1);
     }
 
     @Test
     public void testMulltipleAdd() {
-        PersistenceBackendFactoryRegistry.getFactories().put("mock1", persistenceBackendFactory1);
-        PersistenceBackendFactoryRegistry.getFactories().put("mock2", persistenceBackendFactory2);
-        assertThat(PersistenceBackendFactoryRegistry.getFactories().size(), equalTo(2));
+        PersistenceBackendFactoryRegistry.register(MOCK_1, persistenceBackendFactory1);
+        PersistenceBackendFactoryRegistry.register(MOCK_2, persistenceBackendFactory2);
+        assertThat(PersistenceBackendFactoryRegistry.getFactories()).hasSize(2);
 
-        AbstractPersistenceBackendFactory registeredFactory1 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock1");
-        assertThat(registeredFactory1, notNullValue());
-        assertThat(registeredFactory1, sameInstance(persistenceBackendFactory1));
+        PersistenceBackendFactory registeredFactory1 = PersistenceBackendFactoryRegistry.getFactoryProvider(MOCK_1);
+        assertThat(registeredFactory1).isNotNull();
+        assertThat(registeredFactory1).isSameAs(persistenceBackendFactory1);
 
-        AbstractPersistenceBackendFactory registeredFactory2 = PersistenceBackendFactoryRegistry.getFactoryProvider("mock2");
-        assertThat(registeredFactory2, notNullValue());
-        assertThat(registeredFactory2, sameInstance(persistenceBackendFactory2));
+        PersistenceBackendFactory registeredFactory2 = PersistenceBackendFactoryRegistry.getFactoryProvider(MOCK_2);
+        assertThat(registeredFactory2).isNotNull();
+        assertThat(registeredFactory2).isSameAs(persistenceBackendFactory2);
     }
-
 }

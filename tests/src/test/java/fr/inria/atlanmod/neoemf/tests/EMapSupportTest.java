@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,21 +7,23 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.*;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
+
 import org.eclipse.emf.common.util.EMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EMapSupportTest extends AllBackendTest {
 
@@ -29,18 +31,19 @@ public class EMapSupportTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
         this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
-        super.createPersistentStores();
+        createPersistentStores();
         mapResource.getContents().add(factory.createSampleModel());
         neo4jResource.getContents().add(factory.createSampleModel());
         tinkerResource.getContents().add(factory.createSampleModel());
-
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();
@@ -108,10 +111,10 @@ public class EMapSupportTest extends AllBackendTest {
 
     private void getMapStringStringEmpty(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
-        assertThat("Map field is not an instance of EMap", model.getMap(), instanceOf(EMap.class));
+        assertThat(model.getMap()).isInstanceOf(EMap.class); // "Map field is not an instance of EMap"
 
         EMap<String, String> map = model.getMap();
-        assertThat("EMap is not empty", map, empty());
+        assertThat(map).isEmpty(); // "EMap is not empty"
     }
 
     private void putMapStringString(PersistentResource persistentResource) {
@@ -120,19 +123,19 @@ public class EMapSupportTest extends AllBackendTest {
         map.put(KEY1, VALUE1);
         map.put(KEY2, VALUE2);
 
-        assertThat("Map does not contain " + KEY1, map.containsKey(KEY1), is(true));
-        assertThat("Map does not contain " + KEY2, map.containsKey(KEY2), is(true));
+        assertThat(map.containsKey(KEY1)).isTrue(); // "Map does not contain KEY1"
+        assertThat(map.containsKey(KEY2)).isTrue(); // "Map does not contain KEY2"
 
-        assertThat("Wrong value for " + KEY1, map.get(KEY1), is(VALUE1));
-        assertThat("Wrong  value for " + KEY2, map.get(KEY2), is(VALUE2));
+        assertThat(map.get(KEY1)).isEqualTo(VALUE1); // "Wrong value for KEY1"
+        assertThat(map.get(KEY2)).isEqualTo(VALUE2); // "Wrong value for KEY2"
     }
 
     private void getMapKVEmpty(PersistentResource persistentResource) {
         SampleModel model = (SampleModel) persistentResource.getContents().get(0);
-        assertThat("KvMap field is not an instance of EMap", model.getKvMap(), instanceOf(EMap.class));
+        assertThat(model.getKvMap()).isInstanceOf(EMap.class); // "KvMap field is not an instance of EMap"
 
         EMap<K, V> map = model.getKvMap();
-        assertThat("KvMap is not empty", map, empty());
+        assertThat(map).isEmpty(); // "KvMap is not empty"
     }
 
     private void putMapKV(PersistentResource persistentResource) {
@@ -158,11 +161,10 @@ public class EMapSupportTest extends AllBackendTest {
         map.put(k1, v1);
         map.put(k2, v2);
 
-        assertThat("Map does not contain " + KEY1, map.containsKey(k1), is(true));
-        assertThat("Map does not contain " + KEY2, map.containsKey(k2), is(true));
+        assertThat(map.containsKey(k1)).isTrue(); // "Map does not contain KEY1"
+        assertThat(map.containsKey(k2)).isTrue(); // "Map does not contain KEY2"
 
-        assertThat("Wrong value for " + KEY1, map.get(k1), is(v1));
-        assertThat("Wrong value for " + KEY2, map.get(k2), is(v2));
+        assertThat(map.get(k1)).isEqualTo(v1); // "Wrong value for KEY1"
+        assertThat(map.get(k2)).isEqualTo(v2); // "Wrong value for KEY2"
     }
-
 }

@@ -134,6 +134,7 @@
 
 ### Others
 
-/lib
 **/*.log
 **/java-gen
+**/*.vpp*
+**/*.vux

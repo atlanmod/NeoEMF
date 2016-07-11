@@ -10,17 +10,19 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
 
 import org.eclipse.emf.ecore.EClass;
 
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import java.util.Map;
 
 /**
  * Dummy backend implementation for HBase to fit core architecture
- * The real access to the HBase Table is done in @see{DirectWriteHbaseResourceEStoreImpl}
- * and @see{ReadOnlyHbaseResourceEStoreImpl}
+ * The real access to the HBase Table is done in {@link DirectWriteHBaseResourceEStoreImpl}
+ * and {@link ReadOnlyHBaseResourceEStoreImpl}
  */
 public class HBasePersistenceBackend implements PersistenceBackend {
 
@@ -45,9 +47,7 @@ public class HBasePersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public Object getAllInstances(EClass eClass, boolean strict)
-            throws UnsupportedOperationException {
+    public Object getAllInstances(EClass eClass, boolean strict) {
         throw new UnsupportedOperationException();
     }
-
 }

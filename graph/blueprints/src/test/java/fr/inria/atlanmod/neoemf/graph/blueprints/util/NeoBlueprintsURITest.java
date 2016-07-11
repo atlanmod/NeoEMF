@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,16 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.util;
 
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.graph.blueprints.AllGraphTest;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
@@ -27,24 +29,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class NeoBlueprintsURITest extends AllGraphTest {
+public class NeoBlueprintsURITest extends AllTest {
+
+    private static final String TEST_FILENAME = "neoGraphURITestFile";
+
+    private static final String INVALID = "invalid";
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private static final String TEST_FILENAME = "neoGraphURITestFile";
-
-    private AbstractPersistenceBackendFactory persistenceBackendFactory = new BlueprintsPersistenceBackendFactory();
-    private File testFile = null;
+    private PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
+    private File testFile;
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.getFactories().clear();
-        PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + String.valueOf(new Date().getTime())).toFile();
+        PersistenceBackendFactoryRegistry.unregisterAll();
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 
     @After
@@ -55,7 +58,7 @@ public class NeoBlueprintsURITest extends AllGraphTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                System.err.println(e);
+                NeoLogger.warn(e);
             }
         }
 
@@ -64,7 +67,7 @@ public class NeoBlueprintsURITest extends AllGraphTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI("invalid:/test");
+        URI invalidURI = URI.createURI(INVALID + ":/test");
         NeoBlueprintsURI.createNeoGraphURI(invalidURI);
     }
 
@@ -72,20 +75,19 @@ public class NeoBlueprintsURITest extends AllGraphTest {
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
         URI validURI = URI.createURI(NeoBlueprintsURI.NEO_GRAPH_SCHEME + ":/test");
         URI neoURI = NeoBlueprintsURI.createNeoGraphURI(validURI);
-        assertThat(neoURI.scheme(), is(NeoBlueprintsURI.NEO_GRAPH_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
         URI neoURI = NeoBlueprintsURI.createNeoGraphURI(fileURI);
-        assertThat(neoURI.scheme(), is(NeoBlueprintsURI.NEO_GRAPH_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
         URI neoURI = NeoBlueprintsURI.createNeoGraphURI(testFile);
-        assertThat(neoURI.scheme(), is(NeoBlueprintsURI.NEO_GRAPH_SCHEME));
+        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.NEO_GRAPH_SCHEME);
     }
-
 }
