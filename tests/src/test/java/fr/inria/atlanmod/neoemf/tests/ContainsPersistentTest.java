@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 package fr.inria.atlanmod.neoemf.tests;
 
 import org.junit.Test;
@@ -15,14 +15,14 @@ import org.junit.Test;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
- * {@link https://github.com/atlanmod/NeoEMF/issues/30}
+ * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
 public class ContainsPersistentTest extends AllContainsTest {
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        super.createPersistentStores();
+        createPersistentStores();
     }
     
     @Override

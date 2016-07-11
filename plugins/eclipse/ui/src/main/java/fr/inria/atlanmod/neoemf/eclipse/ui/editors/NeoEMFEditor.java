@@ -34,9 +34,9 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceFactoryImpl;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 public class NeoEMFEditor extends EcoreEditor {
@@ -45,10 +45,8 @@ public class NeoEMFEditor extends EcoreEditor {
 	
 	public NeoEMFEditor() {
 	    super();
-	    this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                new PersistentResourceFactoryImpl());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap()
-                .put(NeoMapURI.NEO_MAP_SCHEME, new PersistentResourceFactoryImpl());
+	    this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.eINSTANCE);
+        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.eINSTANCE);
     }
 	
 	@Override
@@ -57,9 +55,9 @@ public class NeoEMFEditor extends EcoreEditor {
         Resource resource = editingDomain.getResourceSet().createResource(resourceURI);
         editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
         // Create the store options depending of the backend
-        List<StoreOption> storeOptions = new ArrayList<StoreOption>();
+        List<StoreOption> storeOptions = new ArrayList<>();
         storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
-        Map<Object,Object> options = new HashMap<Object,Object>();
+        Map<Object,Object> options = new HashMap<>();
         options.put(PersistentResourceOptions.STORE_OPTIONS,storeOptions);
         if(resource.getURI().scheme().equals(NeoMapURI.NEO_MAP_SCHEME)) {
             storeOptions.add(MapResourceOptions.EStoreMapOption.DIRECT_WRITE);
@@ -70,10 +68,10 @@ public class NeoEMFEditor extends EcoreEditor {
         try {
             resource.load(options);
 	    } catch(IOException e1) {
-	        NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to create model for the editor");
-	        NeoLogger.log(NeoLogger.SEVERITY_ERROR, e1);
+	        NeoLogger.error("Unable to create model for the editor");
+	        NeoLogger.error(e1);
 	        for(Resource r : editingDomain.getResourceSet().getResources()) {
-	            NeoLogger.log(NeoLogger.SEVERITY_INFO, resource.getURI().toString());
+	            NeoLogger.info(resource.getURI().toString());
 	            if(r instanceof PersistentResource) {
 	                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)resource);
 	            }
@@ -152,12 +150,12 @@ public class NeoEMFEditor extends EcoreEditor {
 	         }
 	       });
 	    long end = System.currentTimeMillis();
-	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "NeoEMF Editor Opened in " + (end-begin) + " ms");
+	    NeoLogger.info("NeoEMF Editor Opened in {0} ms", (end-begin));
 	  }
 	
 	@Override
 	public void dispose() {
-	    NeoLogger.log(NeoLogger.SEVERITY_INFO, "Disposing NeoEditor");
+	    NeoLogger.info("Disposing NeoEditor");
         for (Resource resource : editingDomain.getResourceSet().getResources()) {
         	if(resource instanceof PersistentResource) {
         	    PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl)resource);

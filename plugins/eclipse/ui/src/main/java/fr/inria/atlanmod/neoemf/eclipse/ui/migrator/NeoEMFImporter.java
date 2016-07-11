@@ -111,7 +111,7 @@ public class NeoEMFImporter extends ModelImporter {
 	@Override
 	protected void handleOriginalGenModel() throws DiagnosticException {
 		URI genModelURI = getOriginalGenModel().eResource().getURI();
-		StringBuffer text = new StringBuffer();
+		StringBuilder text = new StringBuilder();
 		for (String value : getOriginalGenModel().getForeignModel()) {
 			if (value.endsWith(".ecore") || value.endsWith(".emof")) //$NON-NLS-2$
 			{
@@ -121,7 +121,7 @@ public class NeoEMFImporter extends ModelImporter {
 		}
 
 		if (text.length() == 0) {
-			List<URI> locations = new UniqueEList<URI>();
+			List<URI> locations = new UniqueEList<>();
 			for (GenPackage genPackage : getOriginalGenModel().getGenPackages()) {
 				URI ecoreURI = genPackage.getEcorePackage().eResource().getURI();
 				if (locations.add(ecoreURI)) {

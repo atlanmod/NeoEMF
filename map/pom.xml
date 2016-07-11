@@ -18,8 +18,7 @@
     <description>Map implementation of the core component.</description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <manifest-location>META-INF</manifest-location>
+        <config-path>${project.parent.basedir}</config-path>
     </properties>
 
     <dependencies>
@@ -28,24 +27,25 @@
             <artifactId>mapdb</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>jboss-common</artifactId>
-        </dependency>
-
         <!-- Internal dependencies -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Common dependencies -->
 
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>
@@ -54,20 +54,25 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
         </dependency>
 
-        <!-- Logging dependencies -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <!-- EMF dependencies -->
 
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
@@ -83,6 +88,14 @@
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -90,40 +103,19 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>${maven-bundle-plugin.version}</version>
                 <configuration>
-                    <manifestLocation>${manifest-location}</manifestLocation>
                     <instructions>
-                        <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.map.resources,
-                            fr.inria.atlanmod.neoemf.map.datastore,
-                            fr.inria.atlanmod.neoemf.map.util
+                            fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>
-                        <Import-Package></Import-Package>
-                        <Embed-Dependency>
-                            mapdb,
-                            jboss-common,
-                            commons-lang,
-                            commons-io,
-                            commons-collections,
-                            commons-configuration,
-                            commons-logging
-                        </Embed-Dependency>
-                        <Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>
+                        <_exportcontents>
+                            org.mapdb
+                        </_exportcontents>
+                        <Require-Bundle>
+                            fr.inria.atlanmod.neoemf.core
+                        </Require-Bundle>
                     </instructions>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <!--<goals>
-                          <goal>manifest</goal>
-                        </goals>-->
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,15 +7,14 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
-import fr.inria.atlanmod.neoemf.test.commons.BlueprintsResourceBuilder;
-import fr.inria.atlanmod.neoemf.test.commons.MapResourceBuilder;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
@@ -51,8 +50,8 @@ public abstract class AllBackendTest extends AllTest {
 
     @Before
     public void setUp() throws Exception {
-        assertThat("EPackage not set", this.ePackage, notNullValue());
-        String className = this.getClass().getSimpleName();
+        assertThat("EPackage not set", ePackage, notNullValue());
+        String className = getClass().getSimpleName();
         String timestamp = String.valueOf(new Date().getTime());
         mapFile = temporaryFolder.getRoot().toPath().resolve(className + "MapDB" + timestamp).toFile();
         neo4jFile = temporaryFolder.getRoot().toPath().resolve(className + "Neo4j" + timestamp).toFile();
@@ -86,24 +85,8 @@ public abstract class AllBackendTest extends AllTest {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
             } catch (IOException e) {
-                    System.err.println(e);
+                NeoLogger.warn(e);
             }
         }
-    }
-    
-    protected void printMemoryUsage() {
-        int mb = 1024*1024;
-        //Getting the runtime reference from system
-        Runtime runtime = Runtime.getRuntime();
-        System.out.println("##### Heap utilization statistics [MB] #####");
-        //Print used memory
-        System.out.println("  Used Memory  : " + String.format("%4d", (runtime.totalMemory() - runtime.freeMemory()) / mb));
-        //Print free memory
-        System.out.println("  Free Memory  : " + String.format("%4d", runtime.freeMemory() / mb));
-        //Print total available memory
-        System.out.println("  Total Memory : " + String.format("%4d", runtime.totalMemory() / mb));
-        //Print Maximum available memory
-        System.out.println("  Max Memory   : " + String.format("%4d", runtime.maxMemory() / mb));
-        System.out.println("#####");
     }
 }

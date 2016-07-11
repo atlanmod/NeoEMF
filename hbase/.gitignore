@@ -1,8 +1,0 @@
-/bin
-/lib/jars
-/lib/javadocs
-/lib/sources
-/lib
-*~
-/target/
-/META-INF/MANIFEST.MF

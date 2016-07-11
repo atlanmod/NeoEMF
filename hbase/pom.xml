@@ -18,55 +18,58 @@
     <description>HBase implementation of the core component.</description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <manifest-location>META-INF</manifest-location>
+        <config-path>${project.parent.basedir}</config-path>
     </properties>
 
     <dependencies>
-        
-	    <dependency>
-			<groupId>org.apache.hbase</groupId>
-			<artifactId>hbase-client</artifactId>
-			<version>0.98.13-hadoop2</version>
-		</dependency>
-	
-		<dependency>
-		    <groupId>org.apache.hbase</groupId>
-		    <artifactId>hbase-common</artifactId>
-		    <version>0.98.13-hadoop2</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.apache.hbase</groupId>
-		    <artifactId>hbase-hadoop-compat</artifactId>
-		    <version>0.98.13-hadoop2</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.apache.hadoop</groupId>
-		    <artifactId>hadoop-common</artifactId>
-		    <version>2.6.0</version>
-		</dependency>
-		
-		<dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-common-core</artifactId>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-hadoop-compat</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+        </dependency>
+
+        <!-- Common dependencies -->
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
         <!-- Internal dependencies -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Common dependencies -->
+        <!-- EMF dependencies -->
 
-        
-        <!-- Logging dependencies -->
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
 
-       
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
+        </dependency>
+
         <!-- Test dependencies -->
 
         <dependency>
@@ -87,28 +90,17 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>${maven-bundle-plugin.version}</version>
                 <configuration>
-                    <manifestLocation>${manifest-location}</manifestLocation>
                     <instructions>
-                        <Bundle-Version>0.0.1.${build.tstamp}</Bundle-Version>
-                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                        <Export-Package>fr.inria.atlanmod.neoemf.hbase.*</Export-Package>
-                        <Import-Package></Import-Package>
-                        <Embed-Dependency></Embed-Dependency>
-                        <Require-Bundle>fr.inria.atlanmod.neoemf.core</Require-Bundle>
+                        <Export-Package>
+                            fr.inria.atlanmod.neoemf.hbase.*
+                        </Export-Package>
+                        <_exportcontents/>
+                        <Require-Bundle>
+                            fr.inria.atlanmod.neoemf.core
+                        </Require-Bundle>
                     </instructions>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <!--<goals>
-                          <goal>manifest</goal>
-                        </goals>-->
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

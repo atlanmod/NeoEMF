@@ -1,12 +1,23 @@
-package fr.inria.atlanmod.neoemf.tests;
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
 
-import org.eclipse.emf.ecore.resource.Resource;
-import org.junit.Test;
+package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+
+import org.eclipse.emf.ecore.resource.Resource;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsSame.sameInstance;
@@ -33,7 +44,7 @@ public class AddContainmentSubtreeTest extends AllContainmentTest {
 	public void testAddContainmentSubtreeToPersistentResourceTinker() {
         addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsResourceEStoreImpl.class);
 	}
-	
+
 	public void createResourceContent(PersistentResource r) {
 	    p1 = factory.createPack();
         p1.setName("p1");

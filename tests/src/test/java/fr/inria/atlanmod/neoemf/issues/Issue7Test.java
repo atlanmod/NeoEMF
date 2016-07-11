@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,14 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.issues;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -28,7 +28,7 @@ public class Issue7Test extends AllTest {
 
     @Test
     public void testIssue7() {
-        MapSamplePackage samplePackage = MapSamplePackage.eINSTANCE;
+        //MapSamplePackage samplePackage = MapSamplePackage.eINSTANCE;
         MapSampleFactory factory = MapSampleFactory.eINSTANCE;
 
         SampleModel model = factory.createSampleModel();

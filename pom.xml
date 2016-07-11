@@ -27,7 +27,7 @@
         <module>graph</module>
         <module>map</module>
         <module>hbase</module>
-		<module>test-commons</module>
+        <module>io</module>
 		<module>tests</module>
     </modules>
 

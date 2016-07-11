@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,25 +7,26 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
+
 package fr.inria.atlanmod.neoemf.tests;
 
-import static org.junit.Assert.assertTrue;
+import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
+
+import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.ecore.resource.Resource;
-
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModel;
-import fr.inria.atlanmod.neoemf.test.commons.models.mapSample.SampleModelContentObject;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
- * {@link https://github.com/atlanmod/NeoEMF/issues/30}
+ * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
 public class AllContainsTest extends AllBackendTest {
 
@@ -49,7 +50,7 @@ public class AllContainsTest extends AllBackendTest {
     }
     
     protected void createResourceContent(Resource r, int cCount) {
-        addedContent = new ArrayList<SampleModelContentObject>();
+        addedContent = new ArrayList<>();
         m = factory.createSampleModel();
         m.setName("Model");
         for(int i = 0; i < cCount; i++) {

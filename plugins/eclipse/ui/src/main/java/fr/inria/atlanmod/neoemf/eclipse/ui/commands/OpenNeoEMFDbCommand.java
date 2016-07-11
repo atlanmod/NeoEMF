@@ -34,7 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
 
-import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
@@ -73,23 +73,21 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
 
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-		        PersistenceBackendFactoryRegistry.getFactories().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                    new BlueprintsPersistenceBackendFactory());
-		        PersistenceBackendFactoryRegistry.getFactories().put(NeoMapURI.NEO_MAP_SCHEME,
-                    new MapPersistenceBackendFactory());
-	            System.out.println(folder.getRawLocation().toOSString()+"/"+AbstractPersistenceBackendFactory.NEO_CONFIG_FILE);
-		        File neoConfigFile = new File(folder.getRawLocation().toOSString()+"/"+AbstractPersistenceBackendFactory.NEO_CONFIG_FILE);
-		        PropertiesConfiguration neoConfig = null;
+		        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+		        PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+	            System.out.println(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
+		        File neoConfigFile = new File(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
+		        PropertiesConfiguration neoConfig;
 		        try {
                     neoConfig = new PropertiesConfiguration(neoConfigFile);
                 } catch (ConfigurationException e1) {
-                    NeoLogger.log(NeoLogger.SEVERITY_ERROR, "Unable to find neoconfig.properties file");
+                    NeoLogger.error("Unable to find neoconfig.properties file");
                     return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open the editor", e1);
                 }
-		        String backendType = neoConfig.getString(AbstractPersistenceBackendFactory.BACKEND_PROPERTY);
+		        String backendType = neoConfig.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
 		        URI uri = null;
 		        if(backendType == null) {
-		            NeoLogger.log(NeoLogger.SEVERITY_ERROR, "neoconfig.properties does not contain " + AbstractPersistenceBackendFactory.BACKEND_PROPERTY + " property");
+		            NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
 		            return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor");
 		        } else if(backendType.equals(MapPersistenceBackendFactory.MAPDB_BACKEND)) {
 		            uri = NeoMapURI.createNeoMapURI(new File(folder.getRawLocation().toOSString()));
@@ -99,15 +97,13 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
 		        }
 //		        URI uri= NeoBlueprintsURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
 				URIEditorInput editorInput = new URIEditorInput(uri);
-				if (editorInput != null) {
-					IWorkbench workbench = PlatformUI.getWorkbench();
-					IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-					try {
-						page.openEditor(editorInput, NeoEMFEditor.EDITOR_ID);
-					} catch (PartInitException e) {
-						return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor", e);
-					}
-				}
+				IWorkbench workbench = PlatformUI.getWorkbench();
+				IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+				try {
+                    page.openEditor(editorInput, NeoEMFEditor.EDITOR_ID);
+                } catch (PartInitException e) {
+                    return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor", e);
+                }
 				return Status.OK_STATUS;
 			}
 		}.schedule();

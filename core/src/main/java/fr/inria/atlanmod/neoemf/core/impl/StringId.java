@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,17 +7,25 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 
 package fr.inria.atlanmod.neoemf.core.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import java.util.Objects;
+
 public class StringId implements Id {
 
 	private static final long serialVersionUID = 1L;
-	
-	String literalId;
+
+	private final String literalId;
+
+	public static Id generate() {
+		return new StringId(EcoreUtil.generateUUID());
+	}
 	
 	public StringId(String literalId) {
 		this.literalId = literalId;
@@ -25,7 +33,7 @@ public class StringId implements Id {
 	
 	@Override
 	public int compareTo(Id o) {
-		return o.toString().compareTo(this.toString());
+		return o.toString().compareTo(toString());
 	}
 	
 	@Override
@@ -43,21 +51,16 @@ public class StringId implements Id {
 		if(obj == this) {
 			return true;
 		}
-		else if(obj == null) {
+		if(obj == null || obj.getClass() != getClass()) {
 			return false;
 		}
-		else if(obj.getClass() != this.getClass()) {
-			return false;
-		}
-		else {
-			return ((Id)obj).toString().equals(literalId);
-		}
-		
+
+		StringId other = (StringId) obj;
+		return Objects.equals(literalId, other.literalId);
 	}
 	
 	@Override
 	public int hashCode() {
 	    return literalId.hashCode();
 	}
-
 }
