@@ -53,7 +53,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	private static final String INSTANCE_OF = "neoInstanceOf";
 	private static final String CONTAINER = "eContainer";
 
-	private final Cache<Id, InternalPersistentEObject> loadedEObjectsCache;
+	protected final Cache<Id, InternalPersistentEObject> loadedEObjectsCache;
 
 	protected final Map<Tuple2<Id, String>, Object> tuple2Map;
 

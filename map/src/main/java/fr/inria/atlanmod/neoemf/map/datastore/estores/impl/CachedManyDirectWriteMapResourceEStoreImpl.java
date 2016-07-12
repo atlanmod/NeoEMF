@@ -11,17 +11,25 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
+import static com.google.common.base.Preconditions.checkPositionIndex;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.cache.CacheStats;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.mapdb.Fun;
 import org.mapdb.Fun.Tuple2;
 
 import java.util.Timer;
@@ -56,8 +64,39 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 			returnValue = cachedArray.get(key, new CacheLoader(object, feature));
 		} catch (ExecutionException e) {
 			NeoLogger.warn(e.getCause());
+		} catch (InvalidCacheLoadException e) {
+//		    NeoLogger.warn(e.getCause());
 		}
 		return returnValue;
+	}
+	
+	@Override
+	protected void addWithReference(InternalPersistentEObject object, EReference eReference,
+	        int index, PersistentEObject value) {
+	    if(eReference.isMany()) {
+	        if(index == EStore.NO_INDEX) {
+	            /*
+	             * Handle NO_INDEX index, which represent direct-append feature.
+	             * The call to size should not cause an overhead because it would have been done in regular
+	             * addUnique() otherwise.
+	             */
+	            add(object, eReference, size(object, eReference), value);
+	        }
+	        updateContainment(object, eReference, value);
+	        updateInstanceOf(value);
+	        Object[] array = (Object[]) getFromMap(object, eReference);
+	        if (array == null) {
+	            array = new Object[] {};
+	        }
+	        checkPositionIndex(index, array.length, "Invalid add index " + index);
+	        array = ArrayUtils.add(array, index, value.id());
+	        cachedArray.put(Fun.t2(object.id(), eReference.getName()), array);
+	        tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
+	        loadedEObjectsCache.put(value.id(),(InternalPersistentEObject)value);
+	    }
+	    else {
+	        super.addWithReference(object, eReference, index, value);
+	    }
 	}
 
 	private class CacheLoader implements Callable<Object> {
@@ -72,7 +111,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 
 		@Override
         public Object call() throws Exception {
-            return CachedManyDirectWriteMapResourceEStoreImpl.super.getFromMap(persistentEObject, feature);
+		    return CachedManyDirectWriteMapResourceEStoreImpl.super.getFromMap(persistentEObject, feature);
         }
 	}
 }
