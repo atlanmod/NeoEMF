@@ -12,6 +12,12 @@
    <feature url="features/fr.inria.atlanmod.neoemf.map.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.map.feature" version="0.0.1.qualifier">
       <category name="Backends"/>
    </feature>
+   <feature url="features/fr.inria.atlanmod.neoemf.io.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.io.feature" version="0.0.1.qualifier">
+      <category name="Utils"/>
+   </feature>
+   <feature url="features/fr.inria.atlanmod.neoemf.hbase.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.hbase.feature" version="0.0.1.qualifier">
+      <category name="Backends"/>
+   </feature>
    <category-def name="Base" label="Base">
       <description>
          NeoEMF Core components and utils (no implementation provided, see Backends components to plug a specific datastore)
@@ -20,6 +26,11 @@
    <category-def name="Backends" label="Backends">
       <description>
          Backend-specific implementations of NeoEMF Base component. Provided components can be plugged separatly to store models in a specific manner. See plugins descriptions for usages.
+      </description>
+   </category-def>
+   <category-def name="Utils" label="Utils">
+      <description>
+         Optional modules providing additional features (scalable importer, efficient exporter ...)
       </description>
    </category-def>
 </site>

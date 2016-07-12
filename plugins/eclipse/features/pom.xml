@@ -23,7 +23,9 @@
         <module>fr.inria.atlanmod.neoemf.core.feature</module>
         <module>fr.inria.atlanmod.neoemf.graph.blueprints.feature</module>
         <module>fr.inria.atlanmod.neoemf.map.feature</module>
+		<module>fr.inria.atlanmod.neoemf.hbase.feature</module>
         <module>fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature</module>
+        <module>fr.inria.atlanmod.neoemf.io.feature</module>
     </modules>
 
 </project>
