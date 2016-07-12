@@ -168,7 +168,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			vertex = getMappedVertex(persistentEObject.id());
 		}
 		else {
-		    NeoLogger.warn("Trying to access a non-mapped PersistentEObject");
+//		    NeoLogger.warn("Trying to access a non-mapped PersistentEObject");
 		}
 		return vertex;
 	}

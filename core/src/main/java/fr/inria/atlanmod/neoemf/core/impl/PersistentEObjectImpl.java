@@ -159,7 +159,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 	public Internal resource() {
 		return resource;
 	}
-
+	
 	@Override
 	public void resource(Internal resource) {
 		this.resource = resource;
