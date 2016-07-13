@@ -66,12 +66,12 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	private Map<?, ?> options;
 
-	private SearcheableResourceEStore eStore;
+	protected SearcheableResourceEStore eStore;
 
 	/**
 	 * The underlying {@link PersistenceBackend} that stores the data.
 	 */
-	private PersistenceBackend persistenceBackend;
+	protected PersistenceBackend persistenceBackend;
 	
 	private boolean isPersistent;
 

@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
-public final class PersistentResourceFactoryImpl implements PersistentResourceFactory {
+public class PersistentResourceFactoryImpl implements PersistentResourceFactory {
 
 	private static PersistentResourceFactory INSTANCE;
 
@@ -28,7 +28,7 @@ public final class PersistentResourceFactoryImpl implements PersistentResourceFa
 		return INSTANCE;
 	}
 
-	private PersistentResourceFactoryImpl() {
+	protected PersistentResourceFactoryImpl() {
 	}
 
 	@Override
