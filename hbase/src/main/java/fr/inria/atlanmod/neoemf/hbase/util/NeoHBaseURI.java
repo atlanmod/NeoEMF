@@ -38,6 +38,17 @@ public class NeoHBaseURI extends NeoURI {
         }
     }
     
+    public static URI createNeoHBaseURI(String host, String port, URI modelURI) {
+        return URI.createHierarchicalURI(
+                NEO_HBASE_SCHEME,
+                host+":"+port,
+                null,
+                modelURI.segments(),
+                null,
+                null
+        );
+    }
+    
     public static URI createNeoHBaseURI(File file) {
         return NeoURI.createNeoURI(file, NEO_HBASE_SCHEME);
     }
