@@ -86,7 +86,7 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
             }
         }
         else {
-            return super.get(object, eReference, index);
+            return super.getWithReference(object, eReference, index);
         }
     }
     
