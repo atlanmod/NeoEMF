@@ -11,7 +11,7 @@
     <body>
         <release version="0.0.2" date="2016-06-27" description="Subsequent release">
 			<action dev="gdaniel" type="update">
-				Update generated MANIFEST to include <DynamicImport-Package> tag (since it has been removed of the parent)
+				Update generated MANIFEST to include DynamicImport-Package tag (since it has been removed of the parent)
 			</action>			
 			<action dev="gdaniel" type="update">
 				Autocommit store cannot be created alone (previous behaviour was to implicitly create
