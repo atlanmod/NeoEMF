@@ -12,6 +12,7 @@ package fr.inria.atlanmod.neoemf.hbase.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.InvalidTransientResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
@@ -27,8 +28,20 @@ import java.io.File;
 import java.util.Map;
 
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+    
+    private static PersistenceBackendFactory INSTANCE;
 
+    public static PersistenceBackendFactory getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new HBasePersistenceBackendFactory();
+        }
+        return INSTANCE;
+    }
+    
     public static final String HBASE_BACKEND = "hbase";
+    
+    private HBasePersistenceBackendFactory() {
+    }
     
     @Override
     public PersistenceBackend createTransientBackend() {
