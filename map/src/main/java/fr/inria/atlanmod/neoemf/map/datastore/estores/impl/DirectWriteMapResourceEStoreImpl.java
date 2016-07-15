@@ -288,7 +288,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		ContainerInfo info = containersMap.get(persistentEObject.id());
 		if (info != null) {
 			EObject container = eObject(info.containerId);
-			container.eClass().getEStructuralFeature(info.containingFeatureName);
+			return container.eClass().getEStructuralFeature(info.containingFeatureName);
 		}
 		return null;
 	}
