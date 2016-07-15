@@ -110,6 +110,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                    	<DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.graph.blueprints.*
                         </Export-Package>

@@ -110,7 +110,7 @@
                         </Export-Package>
                         <_exportcontents/>
                         <Require-Bundle>
-                            org.eclipse.emf.ecore
+                            org.eclipse.emf.ecore;visibility:=reexport
                         </Require-Bundle>
                     </instructions>
                 </configuration>

@@ -10,8 +10,8 @@
 
     <body>
         <release version="0.0.2" date="2016-06-27" description="Subsequent release">
-            <action dev="jruiz" type="add">
-                Added additional documentation on how to configure the plugin.
+            <action dev="gdaniel" type="add">
+                Manifest statements to fix OSGI related issues (Neo4j and Blueprints class loading)
             </action>
             <action dev="aramirez" type="fix" issue="MPJIRA-11">
                 Enable retrieving component-specific issues.

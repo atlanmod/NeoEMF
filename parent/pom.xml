@@ -490,7 +490,8 @@
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package/>
-                            <DynamicImport-Package>*</DynamicImport-Package>
+<!--                             Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j internal -->
+<!--                             class loading (in particular caches are not recognized anymore) -->
                             <Embed-Dependency>*;scope=compile|runtime;type=!pom</Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>
