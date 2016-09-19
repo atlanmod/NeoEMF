@@ -98,7 +98,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		try {
 			isLoading = true;
 			if (!isLoaded) {
-				if (getFile().exists()) {
+				if (getFile().exists() || uri.authority() != null) {
+				    // Check authority to enable remote resource loading
 					this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
 					this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
 					this.isPersistent = true;
