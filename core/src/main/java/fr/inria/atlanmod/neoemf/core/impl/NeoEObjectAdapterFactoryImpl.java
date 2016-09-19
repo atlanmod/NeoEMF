@@ -56,7 +56,7 @@ public class NeoEObjectAdapterFactoryImpl {
      */
 	public static <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adaptableObject == null) {
-			NeoLogger.warn("Trying to create an adapter for a null object");
+//			NeoLogger.warn("Trying to create an adapter for a null object");
 			return null;
 		}
 		checkNotNull(adapterType);
