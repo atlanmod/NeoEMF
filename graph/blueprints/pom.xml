@@ -116,9 +116,9 @@
                         </Export-Package>
                         <_exportcontents>
                             com.tinkerpop.blueprints,
+                            com.tinkerpop.blueprints.util,
                             com.tinkerpop.blueprints.util.wrappers,
                             com.tinkerpop.blueprints.util.wrappers.id,
-
                             org.apache.commons.configuration,
                             org.apache.commons.configuration.beanutils,
                             org.apache.commons.configuration.event,
