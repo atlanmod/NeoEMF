@@ -120,4 +120,15 @@
             type="org.eclipse.core.resources.IFolder">
       </propertyTester>
    </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            class="fr.inria.atlanmod.neoemf.eclipse.ui.decorators.NeoDBDecorator"
+            id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
+            label="NeoEMF Database Folder Decorator"
+            objectClass="org.eclipse.core.resources.IFolder"
+            state="true">
+      </decorator>
+   </extension>
 </plugin>

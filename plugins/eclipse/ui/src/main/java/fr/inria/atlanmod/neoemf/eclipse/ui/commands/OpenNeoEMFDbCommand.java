@@ -95,7 +95,6 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
 		        else if(backendType.equals(BlueprintsPersistenceBackendFactory.BLUEPRINTS_BACKEND)) {
 		            uri = NeoBlueprintsURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
 		        }
-//		        URI uri= NeoBlueprintsURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
 				URIEditorInput editorInput = new URIEditorInput(uri);
 				IWorkbench workbench = PlatformUI.getWorkbench();
 				IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();

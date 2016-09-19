@@ -13,7 +13,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fr.inria.atlanmod.neoemf.ui</artifactId>
+    <artifactId>fr.inria.atlanmod.neoemf.eclipse.ui</artifactId>
     <packaging>eclipse-plugin</packaging>
 
     <name>NeoEMF :: Eclipse :: UI</name>

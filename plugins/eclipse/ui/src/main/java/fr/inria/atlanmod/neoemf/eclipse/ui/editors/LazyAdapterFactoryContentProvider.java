@@ -38,18 +38,21 @@ public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProv
         if(parent instanceof ResourceSet) {
             ResourceSet rSet = (ResourceSet)parent;
             Resource childResource = rSet.getResources().get(index);
+            NeoLogger.info("Updating children of {0}", parent.toString());
             tViewer.replace(parent, index, childResource);
             tViewer.setChildCount(childResource, childResource.getContents().size());
         }
         if(parent instanceof Resource) {
             Resource r = (Resource)parent;
             EObject child = r.getContents().get(index);
+            NeoLogger.info("Updating children of {0}", parent.toString());
             tViewer.replace(parent, index, child);
             tViewer.setChildCount(child, getChildCount(child));
         }
         if(parent instanceof PersistentEObject) {
             PersistentEObject e = (PersistentEObject)parent;
             EObject child = e.eContents().get(index);
+            NeoLogger.info("Updating children of {0}", parent.toString());
             tViewer.replace(parent, index, child);
             tViewer.setChildCount(child, getChildCount(child));
         }
