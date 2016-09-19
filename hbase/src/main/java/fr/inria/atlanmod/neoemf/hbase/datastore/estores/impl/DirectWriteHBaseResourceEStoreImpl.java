@@ -131,6 +131,9 @@ public class DirectWriteHBaseResourceEStoreImpl implements SearcheableResourceES
 
 	protected Object get(InternalEObject object, EReference eReference, int index) {
 		Object value = getFromTable(object, eReference);
+		if(value == null) {
+		    return null;
+		}
 		if (!eReference.isMany()) {
 			return eObject(new StringId((String) value));
 		} else {
