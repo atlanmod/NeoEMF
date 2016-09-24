@@ -157,10 +157,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	@Override
 	public String getURIFragment(EObject eObject) {
-		String returnValue = super.getURIFragment(eObject);
-		if (eObject.eResource() != this) {
-			returnValue = URI_UNKNOWN;
-		} else {
+		String returnValue = URI_UNKNOWN;
+		if(eObject.eResource() == this) {
 			// Try to adapt as a PersistentEObject and return the ID
 			PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
 			if (persistentEObject != null) {
