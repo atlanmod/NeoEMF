@@ -8,3 +8,7 @@ branches:
     - master
 
 script: mvn verify
+
+env:
+  global:
+    JAVA_OPTS=-Xms256m -Xmx1g -XX:MaxPermSize=256m
