@@ -1,8 +1,6 @@
 NeoEMF
 ======
 
-[![Build Status](https://ci.inria.fr/neoemf/buildStatus/icon?job=NeoEMF-master)](https://ci.inria.fr/neoemf/job/NeoEMF-master)
-
 ## What is NeoEMF?
 
 NeoEMF is an [AtlanMod](http://www.emn.fr/z-info/atlanmod/index.php/Main_Page) research team project that aims at handling large EMF models in an efficient and scalable way.
