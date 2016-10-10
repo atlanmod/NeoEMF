@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
 
@@ -51,7 +50,7 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
 
     @Override
     public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             return getWithAttribute(eObject, (EAttribute) feature, index);
         } else if (feature instanceof EReference) {
@@ -61,17 +60,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected Object getWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
+    protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object getWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+    protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             return setWithAttribute(eObject, (EAttribute) feature, index, value);
         } else if (feature instanceof EReference) {
@@ -82,17 +81,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected Object setWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object setWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             return isSetWithAttribute(eObject, (EAttribute) feature);
         } else if (feature instanceof EReference) {
@@ -102,17 +101,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected boolean isSetWithAttribute(InternalPersistentEObject object, EAttribute eAttribute) {
+    protected boolean isSetWithAttribute(PersistentEObject object, EAttribute eAttribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean isSetWithReference(InternalPersistentEObject object, EReference eReference) {
+    protected boolean isSetWithReference(PersistentEObject object, EReference eReference) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void unset(InternalEObject object, EStructuralFeature feature) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             unsetWithAttribute(eObject, (EAttribute) feature);
         } else if (feature instanceof EReference) {
@@ -122,11 +121,11 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected void unsetWithAttribute(InternalPersistentEObject object, EAttribute eAttribute) {
+    protected void unsetWithAttribute(PersistentEObject object, EAttribute eAttribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected void unsetWithReference(InternalPersistentEObject object, EReference eReference) {
+    protected void unsetWithReference(PersistentEObject object, EReference eReference) {
         throw new UnsupportedOperationException();
     }
 
@@ -141,7 +140,7 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
             return false;
         }
 
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             return containsWithAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
@@ -152,17 +151,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected boolean containsWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, Object value) {
+    protected boolean containsWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean containsWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected boolean containsWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if(feature instanceof EAttribute) {
             return indexOfWithAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
@@ -173,17 +172,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected int indexOfWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, Object value) {
+    protected int indexOfWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected int indexOfWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected int indexOfWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if(feature instanceof EAttribute) {
             return lastIndexOfWithAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
@@ -194,17 +193,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected int lastIndexOfWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, Object value) {
+    protected int lastIndexOfWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected int lastIndexOfWithReference(InternalPersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected int lastIndexOfWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             addWithAttribute(eObject, (EAttribute) feature, index, value);
         } else if (feature instanceof EReference) {
@@ -215,17 +214,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected void addWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected void addWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             return removeWithAttribute(eObject, (EAttribute) feature, index);
         } else if (feature instanceof EReference) {
@@ -235,17 +234,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected Object removeWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
+    protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object removeWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+    protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear(InternalEObject object, EStructuralFeature feature) {
-        InternalPersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class);
+        PersistentEObject eObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
         if (feature instanceof EAttribute) {
             clearWithAttribute(eObject, (EAttribute) feature);
         } else if (feature instanceof EReference) {
@@ -255,11 +254,11 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         }
     }
 
-    protected void clearWithAttribute(InternalPersistentEObject object, EAttribute eAttribute) {
+    protected void clearWithAttribute(PersistentEObject object, EAttribute eAttribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected void clearWithReference(InternalPersistentEObject object, EReference eReference) {
+    protected void clearWithReference(PersistentEObject object, EReference eReference) {
         throw new UnsupportedOperationException();
     }
 

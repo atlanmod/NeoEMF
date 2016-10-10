@@ -20,7 +20,6 @@ import com.google.common.cache.CacheStats;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
@@ -71,7 +70,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	}
 	
 	@Override
-	protected void addWithReference(InternalPersistentEObject object, EReference eReference,
+	protected void addWithReference(PersistentEObject object, EReference eReference,
 	        int index, PersistentEObject value) {
 	    if(eReference.isMany()) {
 	        if(index == EStore.NO_INDEX) {
@@ -92,7 +91,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	        array = ArrayUtils.add(array, index, value.id());
 	        cachedArray.put(Fun.t2(object.id(), eReference.getName()), array);
 	        tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
-	        loadedEObjectsCache.put(value.id(),(InternalPersistentEObject)value);
+	        loadedEObjectsCache.put(value.id(),(PersistentEObject)value);
 	    }
 	    else {
 	        super.addWithReference(object, eReference, index, value);

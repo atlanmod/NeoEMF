@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -144,10 +144,10 @@ public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends AbstractDeleg
     }
 
     private void setAsLoaded(Object object) {
-        if (object instanceof InternalPersistentEObject) {
-            loadedObjects.add(((InternalPersistentEObject) object).id());
+        if (object instanceof PersistentEObject) {
+            loadedObjects.add(((PersistentEObject) object).id());
         } else {
-            NeoLogger.debug("Not an InternalPersistentEObject : This object will be ignored in the final count.");
+            NeoLogger.debug("Not an PersistentEObject : This object will be ignored in the final count.");
         }
     }
 

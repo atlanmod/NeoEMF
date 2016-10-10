@@ -17,7 +17,7 @@ import com.google.common.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -67,7 +67,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	private static final Configuration conf = HBaseConfiguration.create();
 
-	private final Cache<Object, InternalPersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
+	private final Cache<Object, PersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
 
 	private final Cache<EStoreEntryKey, Object> featuresMap = CacheBuilder.newBuilder().softValues().build();
 
@@ -150,8 +150,8 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		InternalPersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object,	InternalPersistentEObject.class));
+		PersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(object,	PersistentEObject.class));
 		try {
 			Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
 			byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
@@ -219,8 +219,8 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 			return ArrayUtils.indexOf(array, serializeValue((EAttribute) feature, value));
 		}
 		else {
-			InternalPersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class));
+			PersistentEObject childEObject = checkNotNull(
+					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			return ArrayUtils.indexOf(array, childEObject.id().toString());
 		}
 	}
@@ -236,8 +236,8 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 			return ArrayUtils.lastIndexOf(array, serializeValue((EAttribute) feature, value));
 		}
 		else {
-			InternalPersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class));
+			PersistentEObject childEObject = checkNotNull(
+					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 			return ArrayUtils.lastIndexOf(array, childEObject.id().toString());
 		}
 	}
@@ -287,8 +287,8 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
-		InternalPersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
+		PersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 
 		try {
 			Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
@@ -310,8 +310,8 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
-		InternalPersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
+		PersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 
 		try {
 			Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
@@ -344,17 +344,17 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 		if (id == null) {
 			return null;
 		}
-		InternalPersistentEObject neoEObject = loadedEObjects.getIfPresent(id);
+		PersistentEObject neoEObject = loadedEObjects.getIfPresent(id);
 		if (neoEObject == null) {
 			EClass eClass = resolveInstanceOf(id);
 			if (eClass != null) {
 				EObject eObject = EcoreUtil.create(eClass);
-				if (eObject instanceof InternalPersistentEObject) {
-					neoEObject = (InternalPersistentEObject) eObject;
+				if (eObject instanceof PersistentEObject) {
+					neoEObject = (PersistentEObject) eObject;
 				}
 				else {
 					neoEObject = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
 				}
 				neoEObject.id(id);
 			}
@@ -389,18 +389,18 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 		return null;
 	}
 
-	protected void updateLoadedEObjects(InternalPersistentEObject eObject) {
+	protected void updateLoadedEObjects(PersistentEObject eObject) {
 		loadedEObjects.put(eObject.id(), eObject);
 	}
 
-	protected void updateContainment(InternalPersistentEObject object,
+	protected void updateContainment(PersistentEObject object,
 									 EReference eReference,
 									 EObject referencedObject)
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	protected void updateInstanceOf(InternalPersistentEObject object) {
+	protected void updateInstanceOf(PersistentEObject object) {
 		NeoLogger.error(UNSUP_MSG, table.getName().getNameAsString());
 		throw new UnsupportedOperationException(MessageFormat.format(UNSUP_MSG, table.getName().getNameAsString()));
 	}
@@ -422,8 +422,8 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 	 * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s
 	 */
 	private Object getFromTableIfNotExisting(InternalEObject object, EStructuralFeature feature) {
-		InternalPersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object,	InternalPersistentEObject.class));
+		PersistentEObject neoEObject = checkNotNull(
+				NeoEObjectAdapterFactoryImpl.getAdapter(object,	PersistentEObject.class));
 
 		EStoreEntryKey entry = new EStoreEntryKey(neoEObject.id().toString(), feature);
 		Object returnValue = null;

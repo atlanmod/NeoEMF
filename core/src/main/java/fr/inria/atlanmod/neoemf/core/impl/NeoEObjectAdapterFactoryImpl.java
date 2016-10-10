@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.core.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import net.sf.cglib.proxy.Enhancer;
@@ -35,12 +35,12 @@ public class NeoEObjectAdapterFactoryImpl {
 
 	/**
 	 * {@link Cache} that stores the {@link InternalEObject objects} that have been already adapted to avoid
-	 * duplication of {@link InternalPersistentEObject persistent objects}s.
+	 * duplication of {@link PersistentEObject persistent objects}s.
 	 * <p/>
 	 * We use a soft value cache since the adaptor is no longer needed when the original {@link InternalEObject} has
 	 * been garbage collected.
 	 */
-	private static final Cache<InternalEObject, InternalPersistentEObject> ADAPTED_OBJECTS_CACHE =
+	private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
 			CacheBuilder.newBuilder().weakKeys().build();
 
 	/**
@@ -64,11 +64,11 @@ public class NeoEObjectAdapterFactoryImpl {
 		Object adapter = null;
 		if (adapterType.isInstance(adaptableObject)) {
 			adapter = adaptableObject;
-		} else if (adapterType.isAssignableFrom(InternalPersistentEObject.class) && adaptableObject instanceof InternalEObject) {
+		} else if (adapterType.isAssignableFrom(PersistentEObject.class) && adaptableObject instanceof InternalEObject) {
 			adapter = ADAPTED_OBJECTS_CACHE.getIfPresent(adaptableObject);
 			if (adapter == null || !adapterType.isAssignableFrom(adapter.getClass())) {
 				adapter = createAdapter(adaptableObject, adapterType);
-				ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (InternalPersistentEObject)  adapter);
+				ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (PersistentEObject)  adapter);
 			}
 		}
 
@@ -89,17 +89,17 @@ public class NeoEObjectAdapterFactoryImpl {
 	private static Object createAdapter(Object adaptableObject, Class<?> adapterType) {
 		/*
 		 * Compute the interfaces that the proxy has to implement
-		 * These are the current interfaces + InternalPersistentEObject
+		 * These are the current interfaces + PersistentEObject
 		 */
 		List<Class<?>> interfaces = ClassUtils.getAllInterfaces(adaptableObject.getClass());
-		interfaces.add(InternalPersistentEObject.class);
+		interfaces.add(PersistentEObject.class);
 
 		// Create the proxy
 		Enhancer proxy = new Enhancer();
 
 		/*
 		 * Use the ClassLoader of the type, otherwise it will cause OSGI troubles (like project trying to
-		 * create an InternalPersistentEObject while it does not have a dependency to NeoEMF core)
+		 * create an PersistentEObject while it does not have a dependency to NeoEMF core)
 		 */
 		proxy.setClassLoader(adapterType.getClassLoader());
 		proxy.setSuperclass(adaptableObject.getClass());

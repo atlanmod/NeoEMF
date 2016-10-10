@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
@@ -53,7 +52,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	private static final String INSTANCE_OF = "neoInstanceOf";
 	private static final String CONTAINER = "eContainer";
 
-	protected final Cache<Id, InternalPersistentEObject> loadedEObjectsCache;
+	protected final Cache<Id, PersistentEObject> loadedEObjectsCache;
 
 	protected final Map<Tuple2<Id, String>, Object> tuple2Map;
 
@@ -76,7 +75,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object getWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
 		if (eAttribute.isMany()) {
@@ -90,7 +89,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object getWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eReference);
 		if (eReference.isMany()) {
@@ -104,7 +103,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object setWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		if (!eAttribute.isMany()) {
 			Object oldValue = tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
@@ -121,7 +120,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object setWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		Object returnValue;
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
@@ -148,7 +147,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected void addWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if(index == EStore.NO_INDEX) {
 			/*
 			 * Handle NO_INDEX index, which represent direct-append feature.
@@ -167,7 +166,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected void addWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if(index == EStore.NO_INDEX) {
 			/*
 			 * Handle NO_INDEX index, which represent direct-append feature.
@@ -185,11 +184,11 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		checkPositionIndex(index, array.length, "Invalid add index " + index);
 		array = ArrayUtils.add(array, index, value.id());
 		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
-		loadedEObjectsCache.put(value.id(),(InternalPersistentEObject)value);
+		loadedEObjectsCache.put(value.id(),(PersistentEObject)value);
 	}
 
 	@Override
-	protected Object removeWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object[] array = (Object[]) getFromMap(object, eAttribute);
 		checkPositionIndex(index, array.length, "Invalid remove index " + index);
 		Object oldValue = array[index];
@@ -199,7 +198,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object removeWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
 		Object[] array = (Object[]) getFromMap(object, eReference);
 		checkPositionIndex(index, array.length, "Invalid remove index " + index);
 		Object oldId = array[index];
@@ -295,7 +294,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	@Override
 	public EObject eObject(Id id) {
-		InternalPersistentEObject persistentEObject = null;
+		PersistentEObject persistentEObject = null;
 		if (id != null) {
 			try {
 				persistentEObject = loadedEObjectsCache.get(id, new PersistentEObjectCacheLoader(id));
@@ -343,7 +342,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		throw new UnsupportedOperationException();
 	}
 
-	private class PersistentEObjectCacheLoader implements Callable<InternalPersistentEObject> {
+	private class PersistentEObjectCacheLoader implements Callable<PersistentEObject> {
 
 		private final Id id;
 
@@ -352,8 +351,8 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		}
 
 		@Override
-		public InternalPersistentEObject call() throws Exception {
-			InternalPersistentEObject persistentEObject;
+		public PersistentEObject call() throws Exception {
+			PersistentEObject persistentEObject;
 			EClass eClass = resolveInstanceOf(id);
 			if (eClass != null) {
 				EObject eObject;
@@ -363,11 +362,11 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 				} else {
 					eObject = EcoreUtil.create(eClass);
 				}
-				if (eObject instanceof InternalPersistentEObject) {
-					persistentEObject = (InternalPersistentEObject) eObject;
+				if (eObject instanceof PersistentEObject) {
+					persistentEObject = (PersistentEObject) eObject;
 				} else {
 					persistentEObject = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
 				}
 				persistentEObject.id(id);
 			} else {

@@ -11,11 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
@@ -68,7 +67,7 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
 	
 	private void addContainmentSubtreeToPersistentResource(PersistentResource persistentResource, Class<?> eStoreClass) {
 		createResourceContent(persistentResource);
-		InternalPersistentEObject icom1 = (InternalPersistentEObject)com1;
+		PersistentEObject icom1 = (PersistentEObject)com1;
 
 		assertThat(icom1.eStore()).isInstanceOf(eStoreClass);
 		assertThat(icom1.resource()).isSameAs((Resource.Internal) persistentResource);

@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -41,19 +40,19 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	}
 
 	@Override
-	protected Object getWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object value = tuple3Map.get(Fun.t3(object.id(), eAttribute.getName(), index));
 		return parseProperty(eAttribute, value);
 	}
 
 	@Override
-	protected Object getWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
 		Object value = tuple3Map.get(Fun.t3(object.id(), eReference.getName(), index));
 		return eObject((Id) value);
 	}
 	
 	@Override
-	protected Object setWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if (!eAttribute.isMany()) {
 			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), EStore.NO_INDEX);
 		}
@@ -62,7 +61,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	}
 
 	@Override
-	protected Object setWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if (!eReference.isMany()) {
 			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), EStore.NO_INDEX);
 		}

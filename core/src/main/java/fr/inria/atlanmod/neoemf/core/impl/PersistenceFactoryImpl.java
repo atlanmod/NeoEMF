@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.core.impl;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
@@ -32,7 +32,7 @@ public final class PersistenceFactoryImpl extends EFactoryImpl implements Persis
 	}
 	
 	@Override
-	public InternalPersistentEObject create(EClass eClass) {
+	public PersistentEObject create(EClass eClass) {
 		PersistentEObjectImpl eObject = new PersistentEObjectImpl();
 		eObject.eSetClass(eClass);
 		return eObject;

@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.core.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
@@ -37,7 +36,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements InternalPersistentEObject {
+public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
 	private static final int UNSETTED_FEATURE_ID = -1;
 
@@ -201,8 +200,8 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements I
 			if(feature instanceof EReference) {
 				EReference eRef = (EReference)feature;
 				if(eRef.isContainment()) {
-					InternalPersistentEObject internalElement = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(value, InternalPersistentEObject.class));
+					PersistentEObject internalElement = checkNotNull(
+							NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
 					if(internalElement.resource() != resource()) {
 						internalElement.resource(resource());
 					}

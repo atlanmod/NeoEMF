@@ -18,7 +18,6 @@ import com.google.common.cache.LoadingCache;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
@@ -50,7 +49,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object getWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
 		if (!eAttribute.isMany()) {
@@ -64,7 +63,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object getWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eReference);
 		if (!eReference.isMany()) {
@@ -79,7 +78,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object setWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		if (!eAttribute.isMany()) {
 			Object oldValue = tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
@@ -97,7 +96,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object setWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		Object returnValue;
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
@@ -117,7 +116,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected void addWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		list.add(index, serializeToProperty(eAttribute, value));
 		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
@@ -125,7 +124,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected void addWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
@@ -135,7 +134,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object removeWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		Object oldValue = list.get(index);
 		list.remove(index);
@@ -145,7 +144,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
-	protected Object removeWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		Object oldId = list.get(index);
 		list.remove(index);

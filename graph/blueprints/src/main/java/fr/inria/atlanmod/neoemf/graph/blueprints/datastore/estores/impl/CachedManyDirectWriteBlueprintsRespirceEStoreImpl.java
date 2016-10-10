@@ -10,24 +10,20 @@
  *******************************************************************************/
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl;
 
-import java.util.Iterator;
-import java.util.Map;
-
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource.Internal;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
-
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource.Internal;
+
+import java.util.Iterator;
 
 public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
         DirectWriteBlueprintsResourceEStoreImpl {
@@ -44,7 +40,7 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
     }
     
     @Override
-    protected Object getWithReference(InternalPersistentEObject object, EReference eReference, int index) {
+    protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
         if(eReference.isMany()) {
             CacheKey key = new CacheKey(object.id(), eReference);
             Object[] list = cache.getIfPresent(key);
