@@ -137,13 +137,14 @@ public class InvalidTransientResourceEStoreImpl implements PersistentEStore {
         throw getCustomUnsupportedException();
     }
 
+
     @Override
-    public PersistenceBackend getPersistenceBackend() {
+    public PersistentEStore getEStore() {
         throw getCustomUnsupportedException();
     }
 
     @Override
-    public PersistentEStore getEStore() {
+    public void save() {
         throw getCustomUnsupportedException();
     }
 

@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
@@ -36,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -210,8 +212,34 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         }
     }
 
+
+    /**
+     * Utility method to retrieve the PersistentEStore associated to a store.
+     * @param store
+     * @return
+     */
     private PersistenceBackend getInnerBackend(PersistentEStore store) {
-        return store.getPersistenceBackend();
+        // context is the real EStore, which can de decorated.
+        PersistentEStore context = store.getEStore();
+        Field field = null;
+        PersistenceBackend result = null;
+
+        try {
+            field = AbstractDirectWriteResourceEStore.class.getDeclaredField("persistenceBackend");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+
+        field.setAccessible(true);
+
+        try {
+            result = (PersistenceBackend) field.get(context);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     private void assertHasInnerBackend(PersistentEStore store, PersistenceBackend expectedInnerBackend) {

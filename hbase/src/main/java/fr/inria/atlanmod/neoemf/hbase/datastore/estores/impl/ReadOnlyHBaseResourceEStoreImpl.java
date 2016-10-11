@@ -375,10 +375,6 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 		return neoEObject;
 	}
 
-	@Override
-	public PersistenceBackend getPersistenceBackend() {
-		throw new RuntimeException("Should not be called");
-	}
 
 	@Override
 	public PersistentEStore getEStore() {
@@ -449,6 +445,15 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+		throw new UnsupportedOperationException();
+	}
+
+
+	/**
+	 * TODO: implement this method.
+	 */
+	@Override
+	public void save() {
 		throw new UnsupportedOperationException();
 	}
 

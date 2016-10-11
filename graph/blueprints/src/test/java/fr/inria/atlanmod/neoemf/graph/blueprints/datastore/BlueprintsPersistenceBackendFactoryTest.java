@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.CachedManyDirectWriteBlueprintsRespirceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
@@ -34,6 +35,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -178,9 +180,36 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
+
+    /**
+     * Too method to retrieve the PersistentEStore associated to a store.
+     * @param store
+     * @return
+     */
     private PersistenceBackend getInnerBackend(PersistentEStore store) {
-        return store.getPersistenceBackend();
+        // context is the real EStore, which can de decorated.
+        PersistentEStore context = store.getEStore();
+        Field field = null;
+        PersistenceBackend result = null;
+
+        try {
+            field = AbstractDirectWriteResourceEStore.class.getDeclaredField("persistenceBackend");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+
+        field.setAccessible(true);
+
+        try {
+            result = (PersistenceBackend) field.get(context);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
+
 
     private void assertHasInnerBackend(PersistentEStore store, PersistenceBackend expectedInnerBackend) {
         PersistenceBackend innerBackend = getInnerBackend(store);

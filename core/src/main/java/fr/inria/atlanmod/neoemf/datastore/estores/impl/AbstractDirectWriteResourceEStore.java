@@ -33,11 +33,6 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     }
 
     @Override
-    public P getPersistenceBackend() {
-        return persistenceBackend;
-    }
-
-    @Override
     public Resource.Internal resource() {
         return resource;
     }
@@ -305,5 +300,10 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     @Override
     public PersistentEStore getEStore() {
         return this;
+    }
+
+    @Override
+    public void save() {
+        persistenceBackend.save();
     }
 }

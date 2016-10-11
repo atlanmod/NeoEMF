@@ -147,9 +147,8 @@ public abstract class AbstractEStoreDecorator implements PersistentEStore {
 	}
 
 	@Override
-	public PersistenceBackend getPersistenceBackend() {
-		//TODO: implement this method !
-		return null;
+	public void save() {
+		eStore.save();
 	}
 
 	@Override

@@ -781,8 +781,12 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
         throw new UnsupportedOperationException();
     }
 
+
+	/**
+	 * TODO: implement this method.
+	 */
 	@Override
-	public PersistenceBackend getPersistenceBackend() {
+	public void save() {
 		throw new UnsupportedOperationException();
 	}
 

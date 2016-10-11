@@ -59,9 +59,10 @@ public interface PersistentEStore extends InternalEObject.EStore {
 	 */
 	PersistentEStore getEStore();
 
+
 	/**
-	 * Returns the persistence backend associated to this store.
-	 * @return
+	 * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence
+	 * back-end.
 	 */
-	PersistenceBackend getPersistenceBackend();
+	void save();
 }

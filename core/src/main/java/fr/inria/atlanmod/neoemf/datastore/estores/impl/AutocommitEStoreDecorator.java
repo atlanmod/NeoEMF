@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -94,22 +93,17 @@ public class AutocommitEStoreDecorator extends AbstractEStoreDecorator  {
 		incrementAndCommit();
 	}
 
-	@Override
-	public PersistenceBackend getPersistenceBackend() {
-		return eStore.getPersistenceBackend();
-	}
-
 	private void incrementAndCommit() {
 		opCount = (opCount + 1) % opsBetweenCommits;
 		if (opCount == 0) {
-			getPersistenceBackend().save();
+			this.save();
 		}
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			getPersistenceBackend().save();
+			this.save();
 		} catch (Exception ex) {
 			NeoLogger.error(ex);
 		}

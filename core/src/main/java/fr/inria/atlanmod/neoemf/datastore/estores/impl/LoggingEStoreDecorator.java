@@ -159,10 +159,4 @@ public class LoggingEStoreDecorator extends AbstractEStoreDecorator {
 		return super.eObject(id);
 	}
 
-	@Override
-	public PersistenceBackend getPersistenceBackend() {
-		NeoLogger.info("Called getPersistenceBackend");
-		return  null;
-	}
-
 }
