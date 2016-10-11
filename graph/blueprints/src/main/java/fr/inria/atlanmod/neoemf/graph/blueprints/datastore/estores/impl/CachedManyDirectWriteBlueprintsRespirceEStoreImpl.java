@@ -82,7 +82,7 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
         }
     }
 
-    private class CacheKey {
+    private static class CacheKey {
 
         public Id id;
         public EStructuralFeature feature;

@@ -16,7 +16,7 @@ import com.google.common.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
@@ -133,8 +133,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		return features.containsKey(Fun.t2(persistentEObject.id(), feature.getName()));
 	}
 
@@ -176,7 +175,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		checkPositionIndex(index, array.length, "Invalid add index " + index);
 		array = ArrayUtils.add(array, index, value.id());
 		features.put(Fun.t2(object.id(), eReference.getName()), array);
-		loadedEObjectsCache.put(value.id(),(PersistentEObject)value);
+		loadedEObjectsCache.put(value.id(), value);
 	}
 
 	@Override
@@ -201,14 +200,13 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		features.remove(Fun.t2(persistentEObject.id(), feature.getName()));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
+        features.remove(Fun.t2(persistentEObject.id(), feature.getName()));
 	}
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object[] array = (Object[]) getFromMap(persistentEObject, feature);
 		return array != null ? array.length : 0; 
 	}
@@ -221,15 +219,14 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int resultValue;
-		PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object[] array = (Object[]) getFromMap(persistentEObject, feature);
 		if (array == null) {
 			resultValue = ArrayUtils.INDEX_NOT_FOUND;
 		} else if (feature instanceof EAttribute) {
 			resultValue = ArrayUtils.indexOf(array, serializeToProperty((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			resultValue = ArrayUtils.indexOf(array, childEObject.id());
 		}
 		return resultValue;
@@ -238,15 +235,14 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int resultValue;
-		PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object[] array = (Object[]) getFromMap(persistentEObject, feature);
 		if (array == null) {
 			resultValue = ArrayUtils.INDEX_NOT_FOUND;
 		} else if (feature instanceof EAttribute) {
 			resultValue = ArrayUtils.lastIndexOf(array, serializeToProperty((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			resultValue = ArrayUtils.lastIndexOf(array, childEObject.id());
 		}
 		return resultValue;
@@ -254,17 +250,15 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		features.put(Fun.t2(persistentEObject.id(), feature.getName()), new Object[] {});
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
+        features.put(Fun.t2(persistentEObject.id(), feature.getName()), new Object[] {});
 	}
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
 		InternalEObject returnValue = null;
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
+        ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
 		if (info != null) {
 			returnValue = (InternalEObject) eObject(info.containerId);
 		}
@@ -274,9 +268,8 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
+        ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
 		if (info != null) {
 			EObject container = eObject(info.containerId);
 			return container.eClass().getEStructuralFeature(info.containingFeatureName);
@@ -357,8 +350,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 				if (eObject instanceof PersistentEObject) {
 					persistentEObject = (PersistentEObject) eObject;
 				} else {
-					persistentEObject = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+					persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 				}
 				persistentEObject.id(id);
 			} else {

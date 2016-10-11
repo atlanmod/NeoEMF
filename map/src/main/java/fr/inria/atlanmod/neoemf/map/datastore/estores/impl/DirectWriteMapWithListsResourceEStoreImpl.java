@@ -17,7 +17,7 @@ import com.google.common.cache.LoadingCache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
@@ -155,7 +155,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	@Override
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		List<Object> list = (List<Object>) getFromMap(persistentEObject, feature);
 		return list != null ? list.size() : 0; 
 	}
@@ -164,15 +164,14 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int returnValue;
-		PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		List<Object> list = (List<Object>) getFromMap(persistentEObject, feature);
 		if (list== null) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
 			returnValue = list.indexOf(serializeToProperty((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			returnValue = list.indexOf(childEObject.id());
 		}
 		return returnValue;
@@ -183,15 +182,14 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int returnValue;
-		PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class);
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		List<Object> list = (List<Object>) getFromMap(persistentEObject, feature);
 		if (list == null) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
 			returnValue = list.lastIndexOf(serializeToProperty((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			returnValue = list.lastIndexOf(childEObject.id());
 		}
 		return returnValue;
@@ -199,8 +197,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		features.put(Fun.t2(persistentEObject.id(), feature.getName()), new ArrayList<>());
 	}
 

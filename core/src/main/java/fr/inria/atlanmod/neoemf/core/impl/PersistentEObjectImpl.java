@@ -200,8 +200,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 			if(feature instanceof EReference) {
 				EReference eRef = (EReference)feature;
 				if(eRef.isContainment()) {
-					PersistentEObject internalElement = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+					PersistentEObject internalElement = PersistentEObjectAdapter.getAdapter(value);
 					if(internalElement.resource() != resource()) {
 						internalElement.resource(resource());
 					}

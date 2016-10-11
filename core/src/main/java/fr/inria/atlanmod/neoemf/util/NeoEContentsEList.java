@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.EList;
@@ -49,12 +49,12 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     
     public NeoEContentsEList(EObject owner) {
         super(owner);
-        this.owner = NeoEObjectAdapterFactoryImpl.getAdapter(owner, PersistentEObject.class);
+        this.owner = PersistentEObjectAdapter.getAdapter(owner);
     }
     
     public NeoEContentsEList(EObject owner, EStructuralFeature[] eStructuralFeatures) {
         super(owner,eStructuralFeatures);
-        this.owner = NeoEObjectAdapterFactoryImpl.getAdapter(owner, PersistentEObject.class);
+        this.owner = PersistentEObjectAdapter.getAdapter(owner);
     }
     
     @Override
