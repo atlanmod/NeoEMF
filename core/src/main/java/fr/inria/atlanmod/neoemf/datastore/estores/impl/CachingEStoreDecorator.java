@@ -30,7 +30,7 @@ public class CachingEStoreDecorator extends AbstractEStoreDecorator{
 
 	public CachingEStoreDecorator(PersistentEStore eStore, int cacheSize) {
 		super(eStore);
-		cache = new ValueCache<Integer>(cacheSize);
+		cache = new ValueCache<>(cacheSize);
 	}
 	
 	@Override
