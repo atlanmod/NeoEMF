@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -77,8 +77,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		// Make space for the new element
 		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
 		if (size == null) {
@@ -94,8 +93,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 		if (feature instanceof EAttribute) {
 			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), index), value);
 		} else if (feature instanceof EReference) {
-			PersistentEObject referencedEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject referencedEObject = PersistentEObjectAdapter.getAdapter(value);
 			updateContainment(persistentEObject, (EReference) feature, referencedEObject);
 			updateInstanceOf(referencedEObject);
 			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), index), referencedEObject.id());
@@ -106,8 +104,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
 		// Gete element to remove
 		Object returnValue = tuple3Map.get(Fun.t3(persistentEObject.id(),feature.getName(), index));
@@ -122,8 +119,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
 		return size != null ? size : 0; 
 	}
@@ -140,8 +136,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		tuple2Map.remove(Fun.t2(persistentEObject.id(), feature.getName()));
 	}
 }

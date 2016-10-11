@@ -35,15 +35,13 @@ public interface PersistentEObject extends InternalEObject {
     void id(Id id);
 
     /**
-     *
-     * returns true if this object is mapped to an entity (table, node, column, etc.) stored in a database.
+     * Returns true if this object is mapped to an entity (table, node, column, etc.) stored in a database.
      *
      * @return
      */
     boolean isMapped();
 
     /**
-     *
      * Sets the mapped attribute.
      *
      * @param mapped

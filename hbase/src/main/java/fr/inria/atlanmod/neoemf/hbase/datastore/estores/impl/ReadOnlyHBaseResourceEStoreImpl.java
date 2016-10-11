@@ -15,10 +15,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -151,8 +150,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object,	PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		try {
 			Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
 			byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
@@ -220,8 +218,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 			return ArrayUtils.indexOf(array, serializeValue((EAttribute) feature, value));
 		}
 		else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			return ArrayUtils.indexOf(array, childEObject.id().toString());
 		}
 	}
@@ -237,8 +234,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 			return ArrayUtils.lastIndexOf(array, serializeValue((EAttribute) feature, value));
 		}
 		else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			return ArrayUtils.lastIndexOf(array, childEObject.id().toString());
 		}
 	}
@@ -288,8 +284,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 
 		try {
 			Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
@@ -311,8 +306,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 
 		try {
 			Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
@@ -354,8 +348,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 					neoEObject = (PersistentEObject) eObject;
 				}
 				else {
-					neoEObject = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+					neoEObject = PersistentEObjectAdapter.getAdapter(eObject);
 				}
 				neoEObject.id(id);
 			}
@@ -429,8 +422,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 	 * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s
 	 */
 	private Object getFromTableIfNotExisting(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object,	PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 
 		EStoreEntryKey entry = new EStoreEntryKey(neoEObject.id().toString(), feature);
 		Object returnValue = null;

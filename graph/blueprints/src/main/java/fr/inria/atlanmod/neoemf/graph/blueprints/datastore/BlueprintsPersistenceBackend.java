@@ -26,7 +26,7 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdVertex;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
@@ -132,8 +132,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EObject eObject) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 		return addVertex(persistentEObject.id().toString());
 	}
 
@@ -161,8 +160,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getVertex(EObject eObject) {
 		Vertex vertex = null;
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 		if(persistentEObject.isMapped()) {
 			vertex = getMappedVertex(persistentEObject.id());
 		}
@@ -193,8 +191,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
 		Vertex vertex;
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 		if(persistentEObject.isMapped()) {
 			vertex = getMappedVertex(persistentEObject.id());
 		}
@@ -398,8 +395,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
                 if (eObject instanceof PersistentEObject) {
                     persistentEObject = (PersistentEObject) eObject;
                 } else {
-                    persistentEObject = checkNotNull(
-                            NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+                    persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
                 }
                 persistentEObject.id(new StringId(id.toString()));
                 persistentEObject.setMapped(true);

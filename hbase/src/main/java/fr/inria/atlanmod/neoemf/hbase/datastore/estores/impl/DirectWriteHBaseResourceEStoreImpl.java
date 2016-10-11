@@ -15,9 +15,8 @@ import com.google.common.cache.CacheBuilder;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -155,8 +154,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 	}
 
 	protected Object set(InternalEObject object, EAttribute eAttribute, int index, Object value) {
-	    PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+	    PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object oldValue = isSet(object, eAttribute) ? get(object, eAttribute, index) :  null;
 		try {
 			if (!eAttribute.isMany()) {
@@ -206,10 +204,8 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 	}
 
 	protected Object set(InternalEObject object, EReference eReference, int index, EObject referencedObject) {
-	    PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-	    PersistentEObject neoReferencedEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(referencedObject, PersistentEObject.class));
+	    PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
+	    PersistentEObject neoReferencedEObject = PersistentEObjectAdapter.getAdapter(referencedObject);
 		Object oldValue = isSet(object, eReference) ? get(object, eReference, index) :  null;
 		updateLoadedEObjects(neoReferencedEObject);
 		updateContainment(neoEObject, eReference, neoReferencedEObject);
@@ -240,8 +236,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		try {
 			Result result= table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
 			byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
@@ -266,8 +261,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	protected void add(InternalEObject object, EAttribute eAttribute, int index, Object value) {
 		try {
-		    PersistentEObject neoEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		    PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 			String[] array;
 			boolean passed;
 			int attemp = 0;			
@@ -308,10 +302,8 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	protected void add(InternalEObject object, EReference eReference, int index, EObject referencedObject) {
 		try {
-			PersistentEObject neoEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-			PersistentEObject neoReferencedEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(referencedObject, PersistentEObject.class));
+			PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
+			PersistentEObject neoReferencedEObject = PersistentEObjectAdapter.getAdapter(referencedObject);
 			// as long as the element is not attached to the resource, the containment and type  information 
 			// are not stored.
 			updateLoadedEObjects(neoReferencedEObject);
@@ -363,8 +355,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 	
 	protected void addAsAppend(PersistentEObject object, EReference eReference, boolean atEnd, EObject referencedObject) throws IOException {
 		
-		PersistentEObject neoReferencedEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(referencedObject, PersistentEObject.class));
+		PersistentEObject neoReferencedEObject = PersistentEObjectAdapter.getAdapter(referencedObject);
 		
 		Append append = new Append(Bytes.toBytes(object.id().toString()));
 		append.add(PROPERTY_FAMILY, 
@@ -389,8 +380,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 	}
 
 	protected Object remove(InternalEObject object, EAttribute eAttribute, int index) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 	    Object oldValue = get(object, eAttribute, index);
 		try {
 			
@@ -433,8 +423,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 	}
 
 	protected Object remove(InternalEObject object, EReference eReference, int index) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object oldValue = get(object, eReference, index);
 		
 		try {
@@ -489,8 +478,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		try {
 			Delete delete = new Delete(Bytes.toBytes(neoEObject.id().toString()));
 			delete.deleteColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()));
@@ -530,8 +518,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 		if (feature instanceof EAttribute) {
 			return ArrayUtils.indexOf(array, serializeValue((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			return ArrayUtils.indexOf(array, childEObject.id().toString());
 		}
 	}
@@ -546,8 +533,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 		if (feature instanceof EAttribute) {
 			return ArrayUtils.lastIndexOf(array, serializeValue((EAttribute) feature, value));
 		} else {
-			PersistentEObject childEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject childEObject = PersistentEObjectAdapter.getAdapter(value);
 			return ArrayUtils.lastIndexOf(array, childEObject.id().toString());
 		}
 	}
@@ -555,8 +541,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		try {
 			Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
 			put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), NeoHBaseUtil.EncoderUtil.toBytes(new String[] {}));
@@ -603,8 +588,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public InternalEObject getContainer(InternalEObject object) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		
 		try {
 			Result result= table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
@@ -624,8 +608,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	@Override
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
-		PersistentEObject neoEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 		
 		try {
 			Result result= table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
@@ -664,8 +647,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 				if (eObject instanceof PersistentEObject) {
 					neoEObject = (PersistentEObject) eObject;
 				} else {
-					neoEObject = checkNotNull(
-							NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+					neoEObject = PersistentEObjectAdapter.getAdapter(eObject);
 				}
 				neoEObject.id(id);
 			} else {
@@ -706,8 +688,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 	protected void updateContainment(PersistentEObject object, EReference eReference, EObject referencedObject) {
 		if (eReference.isContainment()) {
 			
-		    PersistentEObject neoReferencedEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(referencedObject, PersistentEObject.class));
+		    PersistentEObject neoReferencedEObject = PersistentEObjectAdapter.getAdapter(referencedObject);
 			// remove from root 
 			
 			try {
@@ -757,8 +738,7 @@ public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 	 */
 	protected Object getFromTable(InternalEObject object, EStructuralFeature feature) {
 		try {
-		    PersistentEObject neoEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		    PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 			Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
 			byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
 			if (!feature.isMany()) {
