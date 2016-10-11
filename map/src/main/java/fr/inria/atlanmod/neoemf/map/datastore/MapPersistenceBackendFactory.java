@@ -14,9 +14,8 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
@@ -27,7 +26,6 @@ import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -69,7 +67,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 	}
 
 	@Override
-	public SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+	public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
 		checkArgument(backend instanceof DB,
 				"Trying to create a Map-based EStore with an invalid backend");
 
@@ -111,11 +109,11 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 	}
 
 	@Override
-	protected SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
+	protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 		checkArgument(backend instanceof DB,
 				"Trying to create a Map-based EStore with an invalid backend");
 
-		DirectWriteResourceEStore eStore = null;
+		PersistentEStore eStore = null;
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
 		// Store
@@ -134,7 +132,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
         // Autocommit
         if (eStore != null) {
 			if(storeOptions != null && storeOptions.contains(EStoreMapOption.AUTOCOMMIT)) {
-				eStore = new AutocommitEStoreImpl(eStore);
+				eStore = new AutocommitEStoreDecorator(eStore);
             }
         } else {
             throw new InvalidDataStoreException();

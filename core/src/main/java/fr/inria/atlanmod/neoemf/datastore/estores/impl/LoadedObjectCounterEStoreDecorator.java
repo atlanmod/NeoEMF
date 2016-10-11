@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -22,13 +22,12 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LoadedObjectCounterLoggingDelegatedEStoreImpl extends AbstractDelegatedEStore<SearcheableResourceEStore> {
+public class LoadedObjectCounterEStoreDecorator extends AbstractEStoreDecorator {
 
-    private final Set<Id> loadedObjects;
+    private final Set<Id> loadedObjects = new HashSet<>();
 
-    public LoadedObjectCounterLoggingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
+    public LoadedObjectCounterEStoreDecorator(PersistentEStore eStore) {
         super(eStore);
-        this.loadedObjects = new HashSet<>();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         NeoLogger.info("Using LoadedObjectCounter logger");
     }

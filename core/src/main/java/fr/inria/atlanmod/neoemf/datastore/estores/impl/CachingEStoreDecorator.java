@@ -11,68 +11,71 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper that caches the size data.
+ * A {@link PersistentEStore} decorator that caches the size data.
  * 
  */
-public class SizeCachingDelegatedEStoreImpl extends AbstractCachingDelegatedEStore<Integer> {
-	
-	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
+public class CachingEStoreDecorator extends AbstractEStoreDecorator{
+
+	private ValueCache<Integer> cache;
+
+	public CachingEStoreDecorator(PersistentEStore eStore) {
 		super(eStore);
+		cache = new ValueCache<>();
 	}
 
-	public SizeCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore, int cacheSize) {
-		super(eStore, cacheSize);
+	public CachingEStoreDecorator(PersistentEStore eStore, int cacheSize) {
+		super(eStore);
+		cache = new ValueCache<Integer>(cacheSize);
 	}
 	
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		cacheValue(object, feature, 0);
+		cache.cacheValue(object, feature, 0);
 		super.unset(object, feature);
 	}
 
 	@Override
 	public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-		Integer size = getValueFromCache(object, feature);
+		Integer size = cache.getValueFromCache(object, feature);
 		return size != null ? size == 0 : super.isEmpty(object, feature);
 	}
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		Integer size = getValueFromCache(object, feature);
+		Integer size = cache.getValueFromCache(object, feature);
 		if (size == null) {
 			size = super.size(object, feature);
-			cacheValue(object, feature, size);
+			cache.cacheValue(object, feature, size);
 		}
 		return size;
 	}
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		Integer size = getValueFromCache(object, feature);
+		Integer size = cache.getValueFromCache(object, feature);
 		if (size != null) {
-			cacheValue(object, feature, size + 1);
+			cache.cacheValue(object, feature, size + 1);
 		} 
 		super.add(object, feature, index, value);
 	}
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		Integer size = getValueFromCache(object, feature);
+		Integer size = cache.getValueFromCache(object, feature);
 		if (size != null) {
-			cacheValue(object, feature, size - 1);
+			cache.cacheValue(object, feature, size - 1);
 		} 
 		return super.remove(object, feature, index);
 	}
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		cacheValue(object, feature, 0);
+		cache.cacheValue(object, feature, 0);
 		super.clear(object, feature);
 	}
 }

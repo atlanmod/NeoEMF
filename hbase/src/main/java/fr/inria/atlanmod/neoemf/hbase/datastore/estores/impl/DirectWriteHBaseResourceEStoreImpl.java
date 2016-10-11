@@ -17,7 +17,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -54,7 +55,7 @@ import java.util.concurrent.TimeoutException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class DirectWriteHBaseResourceEStoreImpl implements SearcheableResourceEStore {
+public class DirectWriteHBaseResourceEStoreImpl implements PersistentEStore {
 
 	private static final byte[] PROPERTY_FAMILY =				Bytes.toBytes("p");
 	private static final byte[] TYPE_FAMILY = 					Bytes.toBytes("t");
@@ -779,4 +780,14 @@ public class DirectWriteHBaseResourceEStoreImpl implements SearcheableResourceES
             throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
+
+	@Override
+	public PersistenceBackend getPersistenceBackend() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public PersistentEStore getEStore() {
+		return this;
+	}
 }

@@ -14,20 +14,14 @@ package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 
-public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBackend> implements DirectWriteResourceEStore {
+public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBackend> implements PersistentEStore {
 
     private final Resource.Internal resource;
 
@@ -306,5 +300,10 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
 
     protected Object serializeToProperty(EAttribute eAttribute, Object value) {
         return value != null ? EcoreUtil.convertToString(eAttribute.getEAttributeType(), value) : null;
+    }
+
+    @Override
+    public PersistentEStore getEStore() {
+        return this;
     }
 }

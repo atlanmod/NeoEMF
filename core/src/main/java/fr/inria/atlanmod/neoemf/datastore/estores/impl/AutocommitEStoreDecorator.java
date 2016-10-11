@@ -12,13 +12,12 @@
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-public class AutocommitEStoreImpl extends AbstractDelegatedEStore<DirectWriteResourceEStore> implements DirectWriteResourceEStore {
+public class AutocommitEStoreDecorator extends AbstractEStoreDecorator  {
 
 	/**
 	 * Default number of allowed modifications (100000) between commits on the
@@ -28,7 +27,7 @@ public class AutocommitEStoreImpl extends AbstractDelegatedEStore<DirectWriteRes
 
 	/**
 	 * Number of allowed modifications between commits on the underlying {@link InternalEObject.EStore}
-	 * for this {@link AutocommitEStoreImpl}.
+	 * for this {@link AutocommitEStoreDecorator}.
 	 */
 	private final int opsBetweenCommits;
 
@@ -41,7 +40,7 @@ public class AutocommitEStoreImpl extends AbstractDelegatedEStore<DirectWriteRes
 	 * Allows to specify the number of allowed modification on the underlying {@link InternalEObject.EStore} before
 	 * saving automatically.
 	 */
-	public AutocommitEStoreImpl(DirectWriteResourceEStore eStore, int opsBetweenCommits) {
+	public AutocommitEStoreDecorator(PersistentEStore eStore, int opsBetweenCommits) {
 		super(eStore);
 		this.opCount = 0;
 		this.opsBetweenCommits = opsBetweenCommits;
@@ -52,7 +51,7 @@ public class AutocommitEStoreImpl extends AbstractDelegatedEStore<DirectWriteRes
 	 * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
 	 * {@link InternalEObject.EStore} before saving automatically.
 	 */
-	public AutocommitEStoreImpl(DirectWriteResourceEStore eStore) {
+	public AutocommitEStoreDecorator(PersistentEStore eStore) {
 		this(eStore, OPS_BETWEEN_COMMITS_DEFAULT);
 	}
 
@@ -97,7 +96,7 @@ public class AutocommitEStoreImpl extends AbstractDelegatedEStore<DirectWriteRes
 
 	@Override
 	public PersistenceBackend getPersistenceBackend() {
-		return getEStore().getPersistenceBackend();
+		return eStore.getPersistenceBackend();
 	}
 
 	private void incrementAndCommit() {

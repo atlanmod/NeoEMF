@@ -18,7 +18,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -52,7 +53,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStore {
+public class ReadOnlyHBaseResourceEStoreImpl implements PersistentEStore {
 
 	private static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 	private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
@@ -374,6 +375,16 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 		return neoEObject;
 	}
 
+	@Override
+	public PersistenceBackend getPersistenceBackend() {
+		throw new RuntimeException("Should not be called");
+	}
+
+	@Override
+	public PersistentEStore getEStore() {
+		return this;
+	}
+
 	protected EClass resolveInstanceOf(Id id) {
 		try {
 			Result result = table.get(new Get(Bytes.toBytes(id.toString())));
@@ -482,7 +493,7 @@ public class ReadOnlyHBaseResourceEStoreImpl implements SearcheableResourceEStor
 			return true;
 		}
 
-		private SearcheableResourceEStore getOuterType() {
+		private PersistentEStore getOuterType() {
 			return ReadOnlyHBaseResourceEStoreImpl.this;
 		}
 

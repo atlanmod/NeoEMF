@@ -14,12 +14,12 @@ package fr.inria.atlanmod.neoemf.datastore.impl;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterLoggingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.FeatureCachingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.CachingEStoreDecorator;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
@@ -28,30 +28,30 @@ import java.util.Map;
 
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
-	@Override
-	public SearcheableResourceEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-	    SearcheableResourceEStore eStore = internalCreatePersistentEStore(resource, backend, options);
-	    @SuppressWarnings("unchecked")
-		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
-	    if(storeOptions != null && !storeOptions.isEmpty()) {
-	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.IS_SET_CACHING)) {
-	            eStore = new IsSetCachingDelegatedEStoreImpl(eStore);
-	        }
-	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING)) {
-	            eStore = new EStructuralFeatureCachingDelegatedEStoreImpl(eStore);
-	        }
-	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.SIZE_CACHING)) {
-	            eStore = new SizeCachingDelegatedEStoreImpl(eStore);
-	        }
-	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.LOGGING)) {
-	            eStore = new LoggingDelegatedEStoreImpl(eStore);
-	        }
-	        if(storeOptions.contains(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING)) {
-	            eStore = new LoadedObjectCounterLoggingDelegatedEStoreImpl(eStore);
-	        }
-	    }
-	    return eStore;
-	}
+    @Override
+    public PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+        PersistentEStore eStore = internalCreatePersistentEStore(resource, backend, options);
 
-	protected abstract SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException;
+        List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>) options.get(PersistentResourceOptions.STORE_OPTIONS);
+        if (storeOptions != null && !storeOptions.isEmpty()) {
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.IS_SET_CACHING)) {
+                eStore = new IsSetCachingEStoreDecorator(eStore);
+            }
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING)) {
+                eStore = new FeatureCachingEStoreDecorator(eStore);
+            }
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.SIZE_CACHING)) {
+                eStore = new CachingEStoreDecorator(eStore);
+            }
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.LOGGING)) {
+                eStore = new LoggingEStoreDecorator(eStore);
+            }
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING)) {
+                eStore = new LoadedObjectCounterEStoreDecorator(eStore);
+            }
+        }
+        return eStore;
+    }
+
+    protected abstract PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
 }

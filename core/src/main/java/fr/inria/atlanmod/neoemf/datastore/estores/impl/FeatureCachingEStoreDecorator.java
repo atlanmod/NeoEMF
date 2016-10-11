@@ -11,31 +11,35 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper that caches {@link EStructuralFeature structural features}.
+ * A {@link PersistentEStore} decorator that caches {@link EStructuralFeature structural features}.
  * 
  */
-public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachingDelegatedEStore<Object> {
+public class FeatureCachingEStoreDecorator extends  AbstractEStoreDecorator {
+
+	private ValueCache<Object> cache;
 	
-	public EStructuralFeatureCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
+	public FeatureCachingEStoreDecorator(PersistentEStore eStore) {
 		super(eStore);
+		cache = new ValueCache<>();
 	}
 
-	public EStructuralFeatureCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore, int cacheSize) {
-		super(eStore, cacheSize);
+	public FeatureCachingEStoreDecorator(PersistentEStore eStore, int cacheSize) {
+		super(eStore);
+		cache = new ValueCache<>(cacheSize);
 	}
 	
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-		Object returnValue = getValueFromCache(object, feature, index);
+		Object returnValue = cache.getValueFromCache(object, feature, index);
 		if (returnValue == null) {
 			returnValue = super.get(object, feature, index);
-			cacheValue(object, feature, index, returnValue);
+			cache.cacheValue(object, feature, index, returnValue);
 		}
 		return returnValue;
 	}
@@ -43,14 +47,14 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachin
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		Object returnValue = super.set(object, feature, index, value);
-		cacheValue(object, feature, index, value);
+		cache.cacheValue(object, feature, index, value);
 		return returnValue;
 	}
 	
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		super.add(object, feature, index, value);
-		cacheValue(object, feature, index, value);
+		cache.cacheValue(object, feature, index, value);
 		invalidateValues(object, feature, index + 1);
 	}
 	
@@ -71,14 +75,14 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachin
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
 		Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
 		invalidateValues(object, feature, Math.min(sourceIndex, targetIndex));
-		cacheValue(object, feature, targetIndex, returnValue);
+		cache.cacheValue(object, feature, targetIndex, returnValue);
 		return returnValue;
 	}
 	
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		if (!feature.isMany()) {
-			invalidateValue(object, feature);
+			cache.invalidateValue(object, feature);
 		} else {
 			invalidateValues(object, feature, 0);
 		}
@@ -90,7 +94,7 @@ public class EStructuralFeatureCachingDelegatedEStoreImpl extends AbstractCachin
      */
 	private void invalidateValues(InternalEObject object, EStructuralFeature feature, int startIndex) {
 		for (int i = startIndex; i < size(object, feature); i++) {
-			invalidateValue(object, feature, i);
+			cache.invalidateValue(object, feature, i);
 		}
 	}
 }

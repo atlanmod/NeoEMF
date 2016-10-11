@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -37,9 +38,7 @@ import com.tinkerpop.blueprints.util.GraphHelper;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.CachedManyDirectWriteBlueprintsRespirceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
@@ -80,7 +79,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 	}
 	
 	@Override
-	public SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+	public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
 		checkArgument(backend instanceof BlueprintsPersistenceBackend,
 				"Trying to create a Graph-based EStore with an invalid backend");
 
@@ -205,11 +204,11 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 	}
 	
 	@Override
-	protected SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
+	protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
 		checkArgument(backend instanceof BlueprintsPersistenceBackend,
 				"Trying to create a Graph-based EStore with an invalid backend");
 
-		DirectWriteResourceEStore eStore = null;
+		PersistentEStore eStore = null;
 		@SuppressWarnings("unchecked")
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
 		// Store
@@ -230,10 +229,10 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 		if(storeOptions != null && storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
 		    if(options.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK)) {
 		        int autoCommitChunk = Integer.parseInt((String)options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK));
-		        eStore = new AutocommitEStoreImpl(eStore, autoCommitChunk);
+		        eStore = new AutocommitEStoreDecorator(eStore, autoCommitChunk);
 		    }
 		    else {
-		        eStore =  new AutocommitEStoreImpl(eStore);
+		        eStore =  new AutocommitEStoreDecorator(eStore);
 		    }
 		}
 		return eStore;

@@ -36,11 +36,15 @@ public interface PersistentEObject extends InternalEObject {
 
     /**
      *
+     * returns true if this object is mapped to an entity (table, node, column, etc.) stored in a database.
+     *
      * @return
      */
     boolean isMapped();
 
     /**
+     *
+     * Sets the mapped attribute.
      *
      * @param mapped
      */
@@ -54,7 +58,7 @@ public interface PersistentEObject extends InternalEObject {
     Resource.Internal resource();
 
     /**
-     * Sets the resourc containing this persistent object.
+     * Sets the resource containing this persistent object.
      * @param resource
      */
     void resource(Resource.Internal resource);

@@ -12,9 +12,8 @@
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.estores.DelegatedEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -23,23 +22,18 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper that delegates method calls to an
- * internal {@link SearcheableResourceEStore}.
+ * A {@link PersistentEStore} wrapper that delegates method calls to an
+ * internal {@link PersistentEStore}.
  */
-public abstract class AbstractDelegatedEStore<S extends SearcheableResourceEStore> implements DelegatedEStore<S> {
+public abstract class AbstractEStoreDecorator implements PersistentEStore {
 
 	/**
-	 * The wrapped {@link SearcheableResourceEStore}.
+	 * The decorated {@link PersistentEStore}.
 	 */
-	private final S eStore;
+	final protected PersistentEStore eStore;
 
-	public AbstractDelegatedEStore(S eStore) {
+	public AbstractEStoreDecorator(PersistentEStore eStore) {
 		this.eStore = eStore;
-	}
-
-	@Override
-	public S getEStore() {
-		return eStore;
 	}
 
 	@Override
@@ -150,5 +144,16 @@ public abstract class AbstractDelegatedEStore<S extends SearcheableResourceEStor
 	@Override
 	public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
 		return eStore.getAllInstances(eClass, strict);
+	}
+
+	@Override
+	public PersistenceBackend getPersistenceBackend() {
+		//TODO: implement this method !
+		return null;
+	}
+
+	@Override
+	public PersistentEStore getEStore() {
+		return eStore;
 	}
 }

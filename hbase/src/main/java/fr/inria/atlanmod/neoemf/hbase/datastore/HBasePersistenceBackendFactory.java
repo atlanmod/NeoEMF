@@ -13,10 +13,10 @@ package fr.inria.atlanmod.neoemf.hbase.datastore;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.InvalidTransientResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.CachingEStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
@@ -49,7 +49,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     }
 
     @Override
-    public SearcheableResourceEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+    public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
         NeoLogger.warn(
                 "NeoEMF/HBase does not provide a transient layer, you must save/load your resource before using it");
         return new InvalidTransientResourceEStoreImpl();
@@ -62,7 +62,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     }
 
     @Override
-    protected SearcheableResourceEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+    protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
             if(options.containsKey(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY)) {
                 if(Boolean.TRUE.equals(options.get(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY))) {
@@ -87,7 +87,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
 
-    private SearcheableResourceEStore embedInDefaultWrapper(SearcheableResourceEStore eStore) {
-        return new IsSetCachingDelegatedEStoreImpl(new SizeCachingDelegatedEStoreImpl(eStore));
+    private PersistentEStore embedInDefaultWrapper(PersistentEStore eStore) {
+        return new IsSetCachingEStoreDecorator(new CachingEStoreDecorator(eStore));
     }
 }
