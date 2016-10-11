@@ -90,7 +90,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	        checkPositionIndex(index, array.length, "Invalid add index " + index);
 	        array = ArrayUtils.add(array, index, value.id());
 	        cachedArray.put(Fun.t2(object.id(), eReference.getName()), array);
-	        tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
+	        features.put(Fun.t2(object.id(), eReference.getName()), array);
 	        loadedEObjectsCache.put(value.id(),(PersistentEObject)value);
 	    }
 	    else {

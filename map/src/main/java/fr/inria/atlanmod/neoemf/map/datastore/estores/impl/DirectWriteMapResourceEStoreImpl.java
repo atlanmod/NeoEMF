@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -23,16 +22,9 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage.Registry;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -48,17 +40,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 
 public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourceEStore<MapPersistenceBackend> {
+    
 
-	private static final String INSTANCE_OF = "neoInstanceOf";
-	private static final String CONTAINER = "eContainer";
-
+	/**
+	 * An in-memory cache for persistent EObjects.
+	 */
 	protected final Cache<Id, PersistentEObject> loadedEObjectsCache;
 
-	protected final Map<Tuple2<Id, String>, Object> tuple2Map;
-
-	private final Map<Id, EClassInfo> instanceOfMap;
-
-	private final Map<Id, ContainerInfo> containersMap;
+	/**
+	 * A persistent map that stores Structural features for persistent EObjects.
+	 * The key is build using the persistent object Id plus the name of the feature.
+	 */
+	protected final Map<Tuple2<Id, String>, Object> features;
 
 	public DirectWriteMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
 		this(resource, persistenceBackend, persistenceBackend.getHashMap("NeoEMF"));
@@ -68,9 +61,8 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	protected DirectWriteMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend, Map<?, ?> map) {
 		super(resource, persistenceBackend);
 		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
-		this.tuple2Map = (Map<Tuple2<Id, String>, Object>) map;
-		this.instanceOfMap = persistenceBackend.getHashMap(INSTANCE_OF);
-		this.containersMap = persistenceBackend.getHashMap(CONTAINER);
+		this.features = (Map<Tuple2<Id, String>, Object>) map;
+
 		NeoLogger.info("DirectWriteMapResourceEStore Created");
 	}
 
@@ -106,14 +98,14 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		if (!eAttribute.isMany()) {
-			Object oldValue = tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
+			Object oldValue = features.put(Fun.t2(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
 			returnValue = parseProperty(eAttribute, oldValue);
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eAttribute);
 			checkPositionIndex(index, array.length, "Invalid set index " + index);
 			Object oldValue = array[index];
 			array[index] = serializeToProperty(eAttribute, value);
-			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
+			features.put(Fun.t2(object.id(), eAttribute.getName()), array);
 			returnValue = parseProperty(eAttribute, oldValue);
 		}
 		return returnValue;
@@ -125,14 +117,14 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
 		if (!eReference.isMany()) {
-			Object oldId = tuple2Map.put(Fun.t2(object.id(), eReference.getName()), value.id());
+			Object oldId = features.put(Fun.t2(object.id(), eReference.getName()), value.id());
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eReference);
 			checkPositionIndex(index, array.length, "Invalid set index " + index);
 			Object oldId = array[index];
 			array[index] = value.id();
-			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
+			features.put(Fun.t2(object.id(), eReference.getName()), array);
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		}
 		return returnValue;
@@ -143,7 +135,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		return tuple2Map.containsKey(Fun.t2(persistentEObject.id(), feature.getName()));
+		return features.containsKey(Fun.t2(persistentEObject.id(), feature.getName()));
 	}
 
 	@Override
@@ -162,7 +154,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		}
 		checkPositionIndex(index, array.length, "Invalid add index " + index);
 		array = ArrayUtils.add(array, index, serializeToProperty(eAttribute, value));
-		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
+		features.put(Fun.t2(object.id(), eAttribute.getName()), array);
 	}
 
 	@Override
@@ -183,7 +175,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		}
 		checkPositionIndex(index, array.length, "Invalid add index " + index);
 		array = ArrayUtils.add(array, index, value.id());
-		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
+		features.put(Fun.t2(object.id(), eReference.getName()), array);
 		loadedEObjectsCache.put(value.id(),(PersistentEObject)value);
 	}
 
@@ -193,7 +185,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		checkPositionIndex(index, array.length, "Invalid remove index " + index);
 		Object oldValue = array[index];
 		array = ArrayUtils.remove(array, index);
-		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), array);
+		features.put(Fun.t2(object.id(), eAttribute.getName()), array);
 		return parseProperty(eAttribute, oldValue);
 	}
 
@@ -203,7 +195,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		checkPositionIndex(index, array.length, "Invalid remove index " + index);
 		Object oldId = array[index];
 		array = ArrayUtils.remove(array, index);
-		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
+		features.put(Fun.t2(object.id(), eReference.getName()), array);
 		return eObject((Id)oldId);
 	}
 
@@ -211,7 +203,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		tuple2Map.remove(Fun.t2(persistentEObject.id(), feature.getName()));
+		features.remove(Fun.t2(persistentEObject.id(), feature.getName()));
 	}
 
 	@Override
@@ -264,7 +256,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		tuple2Map.put(Fun.t2(persistentEObject.id(), feature.getName()), new Object[] {});
+		features.put(Fun.t2(persistentEObject.id(), feature.getName()), new Object[] {});
 	}
 
 	@Override
@@ -272,7 +264,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		InternalEObject returnValue = null;
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		ContainerInfo info = containersMap.get(persistentEObject.id());
+		ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
 		if (info != null) {
 			returnValue = (InternalEObject) eObject(info.containerId);
 		}
@@ -284,7 +276,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		ContainerInfo info = containersMap.get(persistentEObject.id());
+		ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
 		if (info != null) {
 			EObject container = eObject(info.containerId);
 			return container.eClass().getEStructuralFeature(info.containingFeatureName);
@@ -310,31 +302,31 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	
 	private EClass resolveInstanceOf(Id id) {
 		EClass eClass = null;
-		EClassInfo eClassInfo = instanceOfMap.get(id);
+		EClassInfo eClassInfo = persistenceBackend.metaclassFor(id);
 		if (eClassInfo != null) {
-			eClass = (EClass) Registry.INSTANCE.getEPackage(eClassInfo.nsURI).getEClassifier(eClassInfo.className);
+			eClass = eClassInfo.eClass();
 		}
 		return eClass;
 	}
 	
 	protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
 		if (eReference.isContainment()) {
-			ContainerInfo info = containersMap.get(referencedObject.id());
+			ContainerInfo info = persistenceBackend.containerFor(referencedObject.id());
 			if (info == null || !info.containerId.equals(object.id())) {
-				containersMap.put(referencedObject.id(), new ContainerInfo(object.id(), eReference.getName()));
+                persistenceBackend.storeContainer(referencedObject.id(), new ContainerInfo(object.id(), eReference.getName()));
 			}
 		}
 	}
 	
 	protected void updateInstanceOf(PersistentEObject object) {
-		EClassInfo info = instanceOfMap.get(object.id());
+		EClassInfo info = persistenceBackend.metaclassFor(object.id());
 		if (info == null) {
-			instanceOfMap.put(object.id(), new EClassInfo(object.eClass().getEPackage().getNsURI(), object.eClass().getName()));
+            persistenceBackend.storeMetaclass(object.id(), new EClassInfo(object));
 		}
 	}
 	
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-		return tuple2Map.get(Fun.t2(object.id(), feature.getName()));
+		return features.get(Fun.t2(object.id(), feature.getName()));
 	}
 	
 	@Override

@@ -54,7 +54,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	@Override
 	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if (!eAttribute.isMany()) {
-			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), EStore.NO_INDEX);
+			features.put(Fun.t2(object.id(), eAttribute.getName()), EStore.NO_INDEX);
 		}
 		Object oldValue = tuple3Map.put(Fun.t3(object.id(), eAttribute.getName(), index), serializeToProperty(eAttribute, value));
 		return parseProperty(eAttribute, oldValue);
@@ -63,7 +63,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	@Override
 	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if (!eReference.isMany()) {
-			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), EStore.NO_INDEX);
+			features.put(Fun.t2(object.id(), eReference.getName()), EStore.NO_INDEX);
 		}
 		Object returnValue = null;
 		updateContainment(object, eReference, value);
@@ -80,7 +80,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
 		// Make space for the new element
-		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
+		Integer size = (Integer) features.get(Fun.t2(persistentEObject.id(), feature.getName()));
 		if (size == null) {
 			size = 0;
 		}
@@ -88,7 +88,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 			Object movingValue = tuple3Map.get(Fun.t3(persistentEObject.id(),  feature.getName(), i));
 			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), i + 1), movingValue);
 		}
-		tuple2Map.put(Fun.t2(persistentEObject.id(), feature.getName()), size + 1);
+		features.put(Fun.t2(persistentEObject.id(), feature.getName()), size + 1);
 		
 		// add element
 		if (feature instanceof EAttribute) {
@@ -108,7 +108,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
+		Integer size = (Integer) features.get(Fun.t2(persistentEObject.id(), feature.getName()));
 		// Gete element to remove
 		Object returnValue = tuple3Map.get(Fun.t3(persistentEObject.id(),feature.getName(), index));
 		// Update indexes (element to remove is overwriten)
@@ -116,7 +116,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 			Object movingValue = tuple3Map.get(Fun.t3(persistentEObject.id(), feature.getName(), i));
 			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), i - 1), movingValue);
 		}
-		tuple2Map.put(Fun.t2(persistentEObject.id(), feature.getName()), size - 1);
+		features.put(Fun.t2(persistentEObject.id(), feature.getName()), size - 1);
 		return returnValue;
 	}
 
@@ -124,7 +124,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
+		Integer size = (Integer) features.get(Fun.t2(persistentEObject.id(), feature.getName()));
 		return size != null ? size : 0; 
 	}
 
@@ -142,6 +142,6 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		tuple2Map.remove(Fun.t2(persistentEObject.id(), feature.getName()));
+		features.remove(Fun.t2(persistentEObject.id(), feature.getName()));
 	}
 }

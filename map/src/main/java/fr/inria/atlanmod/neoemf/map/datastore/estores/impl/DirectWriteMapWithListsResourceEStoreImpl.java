@@ -81,14 +81,14 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		if (!eAttribute.isMany()) {
-			Object oldValue = tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
+			Object oldValue = features.put(Fun.t2(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
 			returnValue = parseProperty(eAttribute, oldValue);
 		} else {
 
 			List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 			Object oldValue = list.get(index);
 			list.set(index, serializeToProperty(eAttribute, value));
-			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
+			features.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
 			returnValue = parseProperty(eAttribute, oldValue);
 		}
 		return returnValue;
@@ -101,13 +101,13 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
 		if (!eReference.isMany()) {
-			Object oldId = tuple2Map.put(Fun.t2(object.id(), eReference.getName()), value.id());
+			Object oldId = features.put(Fun.t2(object.id(), eReference.getName()), value.id());
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		} else {
 			List<Object> list = (List<Object>) getFromMap(object, eReference);
 			Object oldId = list.get(index);
 			list.set(index, value.id());
-			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
+			features.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
 			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		}
 		return returnValue;
@@ -119,7 +119,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		list.add(index, serializeToProperty(eAttribute, value));
-		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
+		features.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 		updateInstanceOf(referencedObject);
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		list.add(index, referencedObject.id());
-		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
+		features.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		Object oldValue = list.get(index);
 		list.remove(index);
-		tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
+		features.put(Fun.t2(object.id(), eAttribute.getName()), list.toArray());
 		return parseProperty(eAttribute, oldValue);
 	}
 
@@ -148,7 +148,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		Object oldId = list.get(index);
 		list.remove(index);
-		tuple2Map.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
+		features.put(Fun.t2(object.id(), eReference.getName()), list.toArray());
 		return eObject((Id) oldId);
 	}
 
@@ -201,14 +201,14 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	public void clear(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = checkNotNull(
 				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		tuple2Map.put(Fun.t2(persistentEObject.id(), feature.getName()), new ArrayList<>());
+		features.put(Fun.t2(persistentEObject.id(), feature.getName()), new ArrayList<>());
 	}
 
 	@Override
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
 		Object returnValue = null;
 		if (!feature.isMany()) {
-			returnValue = tuple2Map.get(Fun.t2(object.id(), feature.getName()));
+			returnValue = features.get(Fun.t2(object.id(), feature.getName()));
 		} else {
 			try {
 				returnValue = mapCache.get(Fun.t2(object.id(), feature.getName()));
@@ -226,7 +226,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 		@Override
         public Object load(Tuple2<Id, String> key) throws Exception {
             Object returnValue;
-            Object value = tuple2Map.get(key);
+            Object value = features.get(key);
             if (value == null) {
                 returnValue = new ArrayList<>();
             } else if (value instanceof Object[]) {
