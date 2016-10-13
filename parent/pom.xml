@@ -76,7 +76,7 @@
 
         <!-- DB -->
         <blueprints.version>2.5.0</blueprints.version> <!-- 2.6+ : require JDK8 -->
-        <mapdb.version>1.0.9</mapdb.version> <!-- 2+ : require JDK8 -->
+        <mapdb.version>3.0.2</mapdb.version> <!-- 2+ : require JDK8 -->
         <hbase.version>0.98.13-hadoop2</hbase.version>
         <hadoop.version>2.6.0</hadoop.version>
 

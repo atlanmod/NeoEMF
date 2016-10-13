@@ -32,7 +32,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
-import org.mapdb.Engine;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,8 +61,9 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
     
 	@Override
 	public PersistenceBackend createTransientBackend() {
-	    Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
-		return new MapPersistenceBackend(mapEngine);
+	    //Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
+		DB db = DBMaker.memoryDB().make();
+		return new MapPersistenceBackend(db);
 	}
 
 	@Override
@@ -104,8 +104,11 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
          * TODO Check the difference when asyncWriteEnable() is set.
          * It has been desactived for MONDO deliverable but not well tested
          */
-	    Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().makeEngine();
-        return new MapPersistenceBackend(mapEngine);
+
+
+	    //Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().makeEngine();
+		DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
+        return new MapPersistenceBackend(db);
 	}
 
 	@Override
@@ -148,18 +151,10 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 		checkArgument(to instanceof MapPersistenceBackend,
 				"The target copy backend is not an instance of MapPersistenceBackend");
 
-	    MapPersistenceBackend mapFrom = (MapPersistenceBackend)from;
-	    MapPersistenceBackend mapTo = (MapPersistenceBackend)to;
-	    for(Map.Entry<String, Object> entry : mapFrom.getAll().entrySet()) {
-	        Object collection = entry.getValue();
-	        if(collection instanceof Map) {
-                Map fromMap = (Map)collection;
-                Map toMap = mapTo.getHashMap(entry.getKey());
-	            toMap.putAll(fromMap);
-	        }
-	        else {
-	            throw new UnsupportedOperationException("Cannot copy Map backend: store type " + collection.getClass().getSimpleName() + " is not supported");
-	        }
-	    }
+	    MapPersistenceBackend source = (MapPersistenceBackend)from;
+	    MapPersistenceBackend target = (MapPersistenceBackend)to;
+
+		source.copyTo(target);
+
 	}
 }

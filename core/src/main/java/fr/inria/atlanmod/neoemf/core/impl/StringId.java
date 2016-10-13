@@ -43,7 +43,7 @@ public class StringId implements Id {
 
 	@Override
 	public long toLong() {
-		throw new UnsupportedOperationException("Can not create a Long ID");
+		throw new UnsupportedOperationException("Cannot create a Long ID");
 	}
 	
 	@Override
