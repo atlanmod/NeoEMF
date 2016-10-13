@@ -71,4 +71,11 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         return Objects.hash(id,name);
     }
 
+    public Id id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
 }

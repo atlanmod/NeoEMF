@@ -14,8 +14,7 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKey;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.*;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
 import org.eclipse.emf.ecore.EClass;
@@ -67,19 +66,19 @@ public class MapPersistenceBackend implements PersistenceBackend {
     public MapPersistenceBackend(DB aDB) {
         db = aDB;
         containersMap = db.hashMap(CONTAINER)
-                .keySerializer(Serializer.JAVA)
+                .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
         instanceOfMap = db.hashMap(INSTANCE_OF)
-                .keySerializer(Serializer.JAVA)
+                .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
         features = db.hashMap(FEATURES)
-                .keySerializer(Serializer.JAVA)
+                .keySerializer(new FeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
         multivaluedFeatures = db.hashMap(MULTIVALUED_FEATURES)
-                .keySerializer(Serializer.JAVA)
+                .keySerializer(new MultivaluedFeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
     }
@@ -224,12 +223,10 @@ public class MapPersistenceBackend implements PersistenceBackend {
      * @param target
      */
     public void copyTo(MapPersistenceBackend target) {
-        // TODO: Using the default serializer may not work if we use other serializers in the code.
         for(Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             Object collection = entry.getValue();
             if(collection instanceof Map) {
                 Map fromMap = (Map)collection;
-                //Map toMap = target.db.hashMap(entry.getKey(),Serializer.JAVA, Serializer.JAVA).createOrOpen();
                 Map toMap = target.db.hashMap(entry.getKey()).createOrOpen();
 
                 toMap.putAll(fromMap);
