@@ -1,18 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2008, 2013 Eike Stepper (Berlin, Germany) and others.
+/*
+ * Copyright (c) 2008-2016 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Eike Stepper - initial API and implementation
- *    AtlanMod - Adapted to NeoEMF models
- *******************************************************************************/
+ *     Eike Stepper - initial API and implementation
+ *     Atlanmod INRIA LINA Mines Nantes - Adapted to NeoEMF models
+ */
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
-
-import java.text.MessageFormat;
-import java.util.List;
 
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
@@ -31,6 +28,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.importer.ModelImporter;
+
+import java.text.MessageFormat;
+import java.util.List;
 
 public class NeoEMFImporter extends ModelImporter {
 	

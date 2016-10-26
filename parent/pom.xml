@@ -87,7 +87,6 @@
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
         <guava.version>19.0</guava.version>
-        <woodstox.version>5.0.2</woodstox.version>
 
         <!-- Logging -->
         <log4j.version>2.6</log4j.version>

@@ -1,15 +1,18 @@
-/*******************************************************************************
- * Copyright (c) 2008, 2013 Eike Stepper (Berlin, Germany) and others.
+/*
+ * Copyright (c) 2008-2016 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Eike Stepper - initial API and implementation
- *    AtlanMod - Adapted to NeoEMF models
- *******************************************************************************/
+ *     Eike Stepper - initial API and implementation
+ *     Atlanmod INRIA LINA Mines Nantes - Adapted to NeoEMF models
+ */
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
+
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -22,9 +25,6 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenDelegationKind;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.WrappedException;
-
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 
 public abstract class NeoEMFImporterUtil {
 

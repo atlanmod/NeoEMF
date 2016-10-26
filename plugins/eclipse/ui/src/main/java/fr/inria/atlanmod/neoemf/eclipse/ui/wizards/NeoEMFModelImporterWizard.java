@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,15 +7,15 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizards;
+
+import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter;
 
 import org.eclipse.emf.converter.ModelConverter;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterDetailPage;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterPackagePage;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterWizard;
-
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter;
 
 public class NeoEMFModelImporterWizard extends ModelImporterWizard {
 	public NeoEMFModelImporterWizard() {
