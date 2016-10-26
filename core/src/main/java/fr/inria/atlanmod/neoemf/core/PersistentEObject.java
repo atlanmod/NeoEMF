@@ -11,12 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import org.eclipse.emf.ecore.EObject;
+
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * An {@code EObject object} able to persist in a database.
  */
-public interface PersistentEObject extends EObject {
+public interface PersistentEObject extends InternalEObject {
 
     /**
      * Returns the unique identifier of this persistent object.
@@ -31,4 +33,31 @@ public interface PersistentEObject extends EObject {
      * @param id a unique identifier
      */
     void id(Id id);
+
+    /**
+     * Returns true if this object is mapped to an entity (table, node, column, etc.) stored in a database.
+     *
+     * @return
+     */
+    boolean isMapped();
+
+    /**
+     * Sets the mapped attribute.
+     *
+     * @param mapped
+     */
+    void setMapped(boolean mapped);
+
+    /**
+     * Returns the resource containing this persistent object.
+     *
+     * @return the containing resource.
+     */
+    Resource.Internal resource();
+
+    /**
+     * Sets the resource containing this persistent object.
+     * @param resource
+     */
+    void resource(Resource.Internal resource);
 }

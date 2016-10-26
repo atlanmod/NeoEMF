@@ -9,16 +9,17 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.datastore.estores;
+package fr.inria.atlanmod.neoemf.core.impl;
 
-/**
- *
- */
-public interface DelegatedEStore<S extends SearcheableResourceEStore> extends SearcheableResourceEStore {
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
-    /**
-     *
-     * @return
-     */
-    S getEStore();
+import java.lang.reflect.Method;
+
+class PersistentEObjectProxyHandler implements MethodInterceptor {
+
+	@Override
+	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) {
+		throw new UnsupportedOperationException();
+	}
 }

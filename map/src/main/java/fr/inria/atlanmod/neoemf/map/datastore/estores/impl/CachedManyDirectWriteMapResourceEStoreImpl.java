@@ -11,37 +11,31 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
-import static com.google.common.base.Preconditions.checkPositionIndex;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.cache.CacheStats;
-
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.mapdb.Fun;
-import org.mapdb.Fun.Tuple2;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import static com.google.common.base.Preconditions.checkPositionIndex;
+
 public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 
 	private static final long TIMER_PERIOD = 20000;
 
-	private final Cache<Tuple2<Id, String>, Object> cachedArray;
+	private final Cache<FeatureKey, Object> cachedArray;
 
 	@SuppressWarnings("unchecked")
 	public CachedManyDirectWriteMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
@@ -58,7 +52,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	
 	@Override
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-		Tuple2<Id, String> key = new Tuple2<>(object.id(), feature.getName());
+		FeatureKey key = new FeatureKey(object.id(), feature.getName());
 		Object returnValue = null;
 		try {
 			returnValue = cachedArray.get(key, new CacheLoader(object, feature));
@@ -71,7 +65,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	}
 	
 	@Override
-	protected void addWithReference(InternalPersistentEObject object, EReference eReference,
+	protected void addWithReference(PersistentEObject object, EReference eReference,
 	        int index, PersistentEObject value) {
 	    if(eReference.isMany()) {
 	        if(index == EStore.NO_INDEX) {
@@ -90,9 +84,9 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	        }
 	        checkPositionIndex(index, array.length, "Invalid add index " + index);
 	        array = ArrayUtils.add(array, index, value.id());
-	        cachedArray.put(Fun.t2(object.id(), eReference.getName()), array);
-	        tuple2Map.put(Fun.t2(object.id(), eReference.getName()), array);
-	        loadedEObjectsCache.put(value.id(),(InternalPersistentEObject)value);
+	        cachedArray.put(new FeatureKey(object.id(), eReference.getName()), array);
+	        persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), array);
+	        loadedEObjectsCache.put(value.id(),(PersistentEObject)value);
 	    }
 	    else {
 	        super.addWithReference(object, eReference, index, value);

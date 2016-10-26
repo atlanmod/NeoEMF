@@ -12,14 +12,13 @@
 package fr.inria.atlanmod.neoemf.resources.impl;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoURI;
@@ -66,7 +65,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
 	private Map<?, ?> options;
 
-	protected SearcheableResourceEStore eStore;
+	protected PersistentEStore eStore;
 
 	/**
 	 * The underlying {@link PersistenceBackend} that stores the data.
@@ -160,7 +159,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		String returnValue = URI_UNKNOWN;
 		if(eObject.eResource() == this) {
 			// Try to adapt as a PersistentEObject and return the ID
-			PersistentEObject persistentEObject = NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class);
+			PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 			if (persistentEObject != null) {
 				returnValue = persistentEObject.id().toString();
 			}
@@ -347,8 +346,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			 * referenced from a saved object may be garbage collected before they have been completely stored in the DB
 			 */
 			List<Object> hardLinksList = new ArrayList<>();
-			InternalPersistentEObject eObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
+			PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
 			// Collect all contents
 			hardLinksList.add(object);
 			Iterator<EObject> it = eObject.eAllContents();
@@ -360,8 +358,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
 			 */
 			for (Object element : hardLinksList) {
-				InternalPersistentEObject internalElement = checkNotNull(
-						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));
+				PersistentEObject internalElement = PersistentEObjectAdapter.getAdapter(element);
 				internalElement.resource(PersistentResourceImpl.this);
 			}
 			super.delegateAdd(index, object);
@@ -372,8 +369,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		protected E delegateRemove(int index) {
 			E object = super.delegateRemove(index);
 			List<E> hardLinksList = new ArrayList<>();
-			InternalPersistentEObject eObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(object, InternalPersistentEObject.class));
+			PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
 			// Collect all contents
 			hardLinksList.add(object);
 			Iterator<EObject> it = eObject.eAllContents();
@@ -385,8 +381,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
 			 */
 			for (E element : hardLinksList) {
-				InternalPersistentEObject internalElement = checkNotNull(
-						NeoEObjectAdapterFactoryImpl.getAdapter(element, InternalPersistentEObject.class));
+				PersistentEObject internalElement = PersistentEObjectAdapter.getAdapter(element);
 				internalElement.resource(null);
 			}
 			return object;			

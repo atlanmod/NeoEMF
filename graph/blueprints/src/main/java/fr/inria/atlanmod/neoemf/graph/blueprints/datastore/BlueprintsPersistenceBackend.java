@@ -26,9 +26,8 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdVertex;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
@@ -75,7 +74,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * {@link EObject} is no longer referenced and can be garbage collected it
 	 * is removed from the {@link Cache}.
 	 */
-	private final Cache<Object, InternalPersistentEObject> loadedEObjectsCache;
+	private final Cache<Object, PersistentEObject> loadedEObjectsCache;
 	private final Cache<Object, Vertex> loadedVerticesCache;
 	private final List<EClass> indexedEClasses;
 	
@@ -133,8 +132,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * @return the newly created vertex
 	 */
 	protected Vertex addVertex(EObject eObject) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 		return addVertex(persistentEObject.id().toString());
 	}
 
@@ -162,8 +160,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getVertex(EObject eObject) {
 		Vertex vertex = null;
-		InternalPersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 		if(persistentEObject.isMapped()) {
 			vertex = getMappedVertex(persistentEObject.id());
 		}
@@ -194,8 +191,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 */
 	public Vertex getOrCreateVertex(EObject eObject) {
 		Vertex vertex;
-		InternalPersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
 		if(persistentEObject.isMapped()) {
 			vertex = getMappedVertex(persistentEObject.id());
 		}
@@ -205,7 +201,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		return vertex;
 	}
 
-	private Vertex createVertex(final InternalPersistentEObject persistentEObject) {
+	private Vertex createVertex(final PersistentEObject persistentEObject) {
 		Vertex vertex = addVertex(persistentEObject);
 		EClass eClass = persistentEObject.eClass();
 
@@ -258,8 +254,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		return returnValue;
 	}
 
-	public InternalPersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
-		InternalPersistentEObject persistentEObject = null;
+	public PersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
+		PersistentEObject persistentEObject = null;
 		Object id = vertex.getId();
 		if (eClass == null) {
 			eClass = resolveInstanceOf(vertex);
@@ -279,7 +275,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * {@link Vertex} in subsequent calls, unless the {@link EObject} returned
 	 * in previous calls has been already garbage collected.
 	 */
-	public InternalPersistentEObject reifyVertex(Vertex vertex) {
+	public PersistentEObject reifyVertex(Vertex vertex) {
 		return reifyVertex(vertex, null);
 	}
 	
@@ -374,7 +370,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
         }
 	}
 
-	private static class PersistantEObjectCacheLoader implements Callable<InternalPersistentEObject> {
+	private static class PersistantEObjectCacheLoader implements Callable<PersistentEObject> {
 
 		private final Object id;
 		private final EClass eClass;
@@ -385,8 +381,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		}
 
 		@Override
-        public InternalPersistentEObject call() throws Exception {
-            InternalPersistentEObject persistentEObject;
+        public PersistentEObject call() throws Exception {
+            PersistentEObject persistentEObject;
             if (eClass != null) {
                 EObject eObject;
                 if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
@@ -396,11 +392,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
                     // EObject eObject = EcoreUtil.create(eClass);
                     eObject = EcoreUtil.create(eClass);
                 }
-                if (eObject instanceof InternalPersistentEObject) {
-                    persistentEObject = (InternalPersistentEObject) eObject;
+                if (eObject instanceof PersistentEObject) {
+                    persistentEObject = (PersistentEObject) eObject;
                 } else {
-                    persistentEObject = checkNotNull(
-                            NeoEObjectAdapterFactoryImpl.getAdapter(eObject, InternalPersistentEObject.class));
+                    persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
                 }
                 persistentEObject.id(new StringId(id.toString()));
                 persistentEObject.setMapped(true);

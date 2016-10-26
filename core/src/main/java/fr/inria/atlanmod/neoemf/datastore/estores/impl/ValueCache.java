@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -22,22 +22,21 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.Objects;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper able to cache values.
+ * A cache for feature values.
  *
  * @param <V> the type of cached values
  */
-public abstract class AbstractCachingDelegatedEStore<V> extends AbstractDelegatedEStore<SearcheableResourceEStore> {
+public class ValueCache<V> {
 
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     private final Cache<CacheKey, V> cache;
 
-    public AbstractCachingDelegatedEStore(SearcheableResourceEStore eStore) {
-        this(eStore, DEFAULT_CACHE_SIZE);
+    public ValueCache() {
+        this(DEFAULT_CACHE_SIZE);
     }
 
-    public AbstractCachingDelegatedEStore(SearcheableResourceEStore eStore, int cacheSize) {
-        super(eStore);
+    public ValueCache(int cacheSize) {
         this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize).build();
     }
 

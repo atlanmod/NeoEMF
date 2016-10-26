@@ -11,7 +11,8 @@
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -24,7 +25,7 @@ import org.eclipse.emf.ecore.resource.Resource;
  * Utility class which can be used by backend-specific implementations that
  * does not provide a transient layer.
  */
-public class InvalidTransientResourceEStoreImpl implements SearcheableResourceEStore {
+public class InvalidTransientResourceEStoreImpl implements PersistentEStore {
 
     @Override
     public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
@@ -133,6 +134,17 @@ public class InvalidTransientResourceEStoreImpl implements SearcheableResourceES
 
     @Override
     public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+        throw getCustomUnsupportedException();
+    }
+
+
+    @Override
+    public PersistentEStore getEStore() {
+        throw getCustomUnsupportedException();
+    }
+
+    @Override
+    public void save() {
         throw getCustomUnsupportedException();
     }
 

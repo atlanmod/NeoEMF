@@ -16,27 +16,17 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.estores.DelegatedEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.EStructuralFeatureCachingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterLoggingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingDelegatedEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.SizeCachingDelegatedEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.*;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
-
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -48,12 +38,12 @@ import static org.mockito.Mockito.when;
  */
 public class AbstractPersistenceBackendFactoryTest extends AllTest {
 
-    private static final String SEARCHEABLE_RESOURCE_ESTORE_NAME = SearcheableResourceEStore.class.getSimpleName();
+    private static final String SEARCHEABLE_RESOURCE_ESTORE_NAME = PersistentEStore.class.getSimpleName();
 
     private static final String MOCK = "mock";
 
     private AbstractPersistenceBackendFactory persistenceBackendFactory = mock(AbstractPersistenceBackendFactory.class);
-    private SearcheableResourceEStore mockPersistentEStore = mock(SearcheableResourceEStore.class);
+    private PersistentEStore mockPersistentEStore = mock(PersistentEStore.class);
     private PersistenceBackend mockPersistentBackend = mock(PersistenceBackend.class);
     private Map<Object, Object> options = new HashMap<>();
     private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
@@ -74,15 +64,15 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         options.clear();
     }
 
-    private SearcheableResourceEStore getChildStore(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        assertThat(store).isInstanceOf(DelegatedEStore.class); // "Invalid call, can not get the child store if the given one is not a DelegatedResourceEStoreImpl"
-        return ((DelegatedEStore<?>) store).getEStore();
+    private PersistentEStore getChildStore(EStore store) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        assertThat(store).isInstanceOf(PersistentEStore.class); // "Invalid call, can not get the child store if the given one is not a DelegatedResourceEStoreImpl"
+        return ((PersistentEStore) store).getEStore();
     }
 
     @Test
     public void testNoOptions() throws InvalidDataStoreException {
-        SearcheableResourceEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, Collections.emptyMap());
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        PersistentEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, Collections.emptyMap());
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -92,13 +82,13 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
     public void testIsSetCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(IsSetCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -108,13 +98,13 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
     public void testLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoggingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(LoggingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -124,13 +114,13 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
     public void testSizeCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(SizeCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -140,13 +130,13 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
     public void testEStructuralFeatureCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(EStructuralFeatureCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(FeatureCachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -156,13 +146,13 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
     public void testLoadedObjectCounterLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoadedObjectCounterLoggingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(LoadedObjectCounterEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -170,23 +160,23 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link LoggingDelegatedEStoreImpl}
+     * 2 stores : {@link IsSetCachingEStoreDecorator} and {@link LoggingEStoreDecorator}
      */
     @Test
     public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
         storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoggingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(LoggingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -194,23 +184,23 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingDelegatedEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
+     * 2 stores : {@link IsSetCachingEStoreDecorator} and {@link CachingEStoreDecorator}
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
         storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(SizeCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -218,23 +208,23 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link SizeCachingDelegatedEStoreImpl} and {@link EStructuralFeatureCachingDelegatedEStoreImpl}
+     * 2 stores : {@link CachingEStoreDecorator} and {@link FeatureCachingEStoreDecorator}
      */
     @Test
     public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
         storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
         storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(SizeCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(EStructuralFeatureCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(FeatureCachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -242,8 +232,8 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 4 stores : {@link EStructuralFeatureCachingDelegatedEStoreImpl}, {@link IsSetCachingDelegatedEStoreImpl},
-     * {@link LoggingDelegatedEStoreImpl} and {@link SizeCachingDelegatedEStoreImpl}
+     * 4 stores : {@link FeatureCachingEStoreDecorator}, {@link IsSetCachingEStoreDecorator},
+     * {@link LoggingEStoreDecorator} and {@link CachingEStoreDecorator}
      */
     @Test
     public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
@@ -252,22 +242,22 @@ public class AbstractPersistenceBackendFactoryTest extends AllTest {
         storeOptions.add(PersistentResourceOptions.EStoreOption.LOGGING);
         storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
 
-        SearcheableResourceEStore store;
+        PersistentEStore store;
 
         store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoggingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(LoggingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SizeCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(EStructuralFeatureCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(FeatureCachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingDelegatedEStoreImpl.class);
+        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(SearcheableResourceEStore.class);
+        assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);

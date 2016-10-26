@@ -27,7 +27,7 @@ NeoEMF Benchmarks
    
 ### Note for 32 bits configurations or computers with limited RAM
 
-This setup is not recommanded, since biggest models could not be imported from XMI in CDO and NeoEMF. 
+This setup is not recommended, since biggest models could not be imported from XMI in CDO and NeoEMF.
 In any case, it is necessary to decrease the max heap size on line 16, 18 and 45 in file fr.inria.atlanmod.neoemf.benchmarks/benchmarks.xml:
 `<property name="creator.vmargs" value="-Xmx8g" />` should be
 `<property name="creator.vmargs" value="-Xmx2g" />`

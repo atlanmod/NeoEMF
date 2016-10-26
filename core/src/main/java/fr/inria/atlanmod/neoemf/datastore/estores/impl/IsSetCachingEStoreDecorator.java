@@ -11,64 +11,68 @@
 
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper that caches the presence of a value.
+ * A {@link PersistentEStore} wrapper that caches the presence of a value.
  * 
  */
-public class IsSetCachingDelegatedEStoreImpl extends AbstractCachingDelegatedEStore<Boolean> {
-	
-	public IsSetCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
+public class IsSetCachingEStoreDecorator extends AbstractEStoreDecorator {
+
+	private ValueCache<Boolean> cache;
+
+	public IsSetCachingEStoreDecorator(PersistentEStore eStore) {
 		super(eStore);
+		cache = new ValueCache<>();
 	}
 
-	public IsSetCachingDelegatedEStoreImpl(SearcheableResourceEStore eStore, int cacheSize) {
-		super(eStore, cacheSize);
+	public IsSetCachingEStoreDecorator(PersistentEStore eStore, int cacheSize) {
+		super(eStore);
+		cache = new ValueCache<>(cacheSize);
 	}
 	
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		cacheValue(object, feature, false);
+		cache.cacheValue(object, feature, false);
 		super.unset(object, feature);
 	}
 
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-		Boolean isSet = getValueFromCache(object, feature);
+		Boolean isSet = cache.getValueFromCache(object, feature);
 		return isSet != null ? isSet : super.isSet(object, feature);
 	}
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		cacheValue(object, feature, true);
+		cache.cacheValue(object, feature, true);
 		super.add(object, feature, index, value);
 	}
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		invalidateValue(object, feature);
+		cache.invalidateValue(object, feature);
 		return super.remove(object, feature, index);
 	}
 	
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		cacheValue(object, feature, true);
+		cache.cacheValue(object, feature, true);
 		return super.set(object, feature, index, value);
 	}
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		cacheValue(object, feature, false);
+		cache.cacheValue(object, feature, false);
 		super.clear(object, feature);
 	}
 	
 	@Override
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-		cacheValue(object, feature, true);
+		cache.cacheValue(object, feature, true);
 		return super.move(object, feature, targetIndex, sourceIndex);
 	}
 	
@@ -76,7 +80,7 @@ public class IsSetCachingDelegatedEStoreImpl extends AbstractCachingDelegatedESt
 	public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
 		boolean returnValue = super.contains(object, feature, value);
 		if (returnValue) {
-			cacheValue(object, feature, true);
+			cache.cacheValue(object, feature, true);
 		}
 		return returnValue;
 	}
@@ -85,7 +89,7 @@ public class IsSetCachingDelegatedEStoreImpl extends AbstractCachingDelegatedESt
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
 		Object returnValue = super.get(object, feature, index);
 		if (returnValue != null) {
-			cacheValue(object, feature, true);
+			cache.cacheValue(object, feature, true);
 		}
 		return returnValue;
 	}

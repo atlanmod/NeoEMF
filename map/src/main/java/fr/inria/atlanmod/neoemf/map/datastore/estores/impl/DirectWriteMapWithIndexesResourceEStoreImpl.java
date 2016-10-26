@@ -13,10 +13,8 @@ package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
@@ -24,52 +22,44 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.mapdb.Fun;
-import org.mapdb.Fun.Tuple3;
 
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 
-	private final Map<Tuple3<Id, String, Integer>, Object> tuple3Map;
-
 	public DirectWriteMapWithIndexesResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
-		super(resource, persistenceBackend, persistenceBackend.getHashMap("SIZES"));
-		this.tuple3Map = persistenceBackend.getHashMap("NeoEMF");
+		super(resource, persistenceBackend);
 	}
 
 	@Override
-	protected Object getWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index) {
-		Object value = tuple3Map.get(Fun.t3(object.id(), eAttribute.getName(), index));
+	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+		Object value = persistenceBackend.valueAtIndex(new MultivaluedFeatureKey(object.id(), eAttribute.getName(), index));
 		return parseProperty(eAttribute, value);
 	}
 
 	@Override
-	protected Object getWithReference(InternalPersistentEObject object, EReference eReference, int index) {
-		Object value = tuple3Map.get(Fun.t3(object.id(), eReference.getName(), index));
+	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+		Object value = persistenceBackend.valueAtIndex(new MultivaluedFeatureKey(object.id(), eReference.getName(), index));
 		return eObject((Id) value);
 	}
 	
 	@Override
-	protected Object setWithAttribute(InternalPersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if (!eAttribute.isMany()) {
-			tuple2Map.put(Fun.t2(object.id(), eAttribute.getName()), EStore.NO_INDEX);
+			persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), EStore.NO_INDEX);
 		}
-		Object oldValue = tuple3Map.put(Fun.t3(object.id(), eAttribute.getName(), index), serializeToProperty(eAttribute, value));
+		Object oldValue = persistenceBackend.storeValueAtIndex(new MultivaluedFeatureKey(object.id(), eAttribute.getName(), index), serializeToProperty(eAttribute, value));
 		return parseProperty(eAttribute, oldValue);
 	}
 
 	@Override
-	protected Object setWithReference(InternalPersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if (!eReference.isMany()) {
-			tuple2Map.put(Fun.t2(object.id(), eReference.getName()), EStore.NO_INDEX);
+			persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), EStore.NO_INDEX);
 		}
 		Object returnValue = null;
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
-		Object oldId = tuple3Map.put(Fun.t3(object.id(), eReference.getName(), index), value.id());
+		Object oldId = persistenceBackend.storeValueAtIndex(new MultivaluedFeatureKey(object.id(), eReference.getName(), index), value.id());
 		if (oldId != null) {
 			returnValue = eObject((Id) oldId);
 		}
@@ -78,28 +68,26 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		// Make space for the new element
-		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
+		Integer size = (Integer) persistenceBackend.valueOf(new FeatureKey(persistentEObject.id(), feature.getName()));
 		if (size == null) {
 			size = 0;
 		}
 		for (int i = size - 1; i >= index; i--) {
-			Object movingValue = tuple3Map.get(Fun.t3(persistentEObject.id(),  feature.getName(), i));
-			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), i + 1), movingValue);
+			Object movingValue = persistenceBackend.valueAtIndex(new MultivaluedFeatureKey(persistentEObject.id(),  feature.getName(), i));
+			persistenceBackend.storeValueAtIndex(new MultivaluedFeatureKey(persistentEObject.id(), feature.getName(), i + 1), movingValue);
 		}
-		tuple2Map.put(Fun.t2(persistentEObject.id(), feature.getName()), size + 1);
+		persistenceBackend.storeValue(new FeatureKey(persistentEObject.id(), feature.getName()), size + 1);
 		
 		// add element
 		if (feature instanceof EAttribute) {
-			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), index), value);
+			persistenceBackend.storeValueAtIndex(new MultivaluedFeatureKey(persistentEObject.id(), feature.getName(), index), value);
 		} else if (feature instanceof EReference) {
-			PersistentEObject referencedEObject = checkNotNull(
-					NeoEObjectAdapterFactoryImpl.getAdapter(value, PersistentEObject.class));
+			PersistentEObject referencedEObject = PersistentEObjectAdapter.getAdapter(value);
 			updateContainment(persistentEObject, (EReference) feature, referencedEObject);
 			updateInstanceOf(referencedEObject);
-			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), index), referencedEObject.id());
+			persistenceBackend.storeValueAtIndex(new MultivaluedFeatureKey(persistentEObject.id(), feature.getName(), index), referencedEObject.id());
 		} else {
 			throw new IllegalArgumentException(feature.toString());
 		}
@@ -107,25 +95,24 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
-		// Gete element to remove
-		Object returnValue = tuple3Map.get(Fun.t3(persistentEObject.id(),feature.getName(), index));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
+		Integer size = (Integer) persistenceBackend.valueOf(new FeatureKey(persistentEObject.id(), feature.getName()));
+		// Get element to remove
+		Object returnValue = persistenceBackend.valueAtIndex(new MultivaluedFeatureKey(persistentEObject.id(),feature.getName(), index));
 		// Update indexes (element to remove is overwriten)
 		for (int i = index + 1; i < size; i++) {
-			Object movingValue = tuple3Map.get(Fun.t3(persistentEObject.id(), feature.getName(), i));
-			tuple3Map.put(Fun.t3(persistentEObject.id(), feature.getName(), i - 1), movingValue);
+			Object movingValue = persistenceBackend.valueAtIndex(new MultivaluedFeatureKey(persistentEObject.id(), feature.getName(), i));
+			persistenceBackend.storeValueAtIndex(new MultivaluedFeatureKey(persistentEObject.id(), feature.getName(), i - 1), movingValue);
 		}
-		tuple2Map.put(Fun.t2(persistentEObject.id(), feature.getName()), size - 1);
+		persistenceBackend.storeValue(new FeatureKey(persistentEObject.id(), feature.getName()), size - 1);
 		return returnValue;
 	}
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		Integer size = (Integer) tuple2Map.get(Fun.t2(persistentEObject.id(), feature.getName()));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
+		Integer size = (Integer) persistenceBackend.valueOf(new FeatureKey(persistentEObject.id(), feature.getName()));
+
 		return size != null ? size : 0; 
 	}
 
@@ -141,8 +128,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		PersistentEObject persistentEObject = checkNotNull(
-				NeoEObjectAdapterFactoryImpl.getAdapter(object, PersistentEObject.class));
-		tuple2Map.remove(Fun.t2(persistentEObject.id(), feature.getName()));
+		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
+		persistenceBackend.removeFeature(new FeatureKey(persistentEObject.id(), feature.getName()));
 	}
 }

@@ -11,19 +11,21 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.CachedManyDirectWriteBlueprintsRespirceEStoreImpl;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -31,22 +33,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.*;
 
-import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.estores.DirectWriteResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.CachedManyDirectWriteBlueprintsRespirceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThat;
 
 public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
 
@@ -98,7 +92,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
     public void testCreateTransientEStore() {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
 
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
+        PersistentEStore eStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
         assertThat(eStore).isInstanceOf(DirectWriteBlueprintsResourceEStoreImpl.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, transientBackend);
@@ -117,7 +111,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
     public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, Collections.emptyMap());
+        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, Collections.emptyMap());
         assertThat(eStore).isInstanceOf(DirectWriteBlueprintsResourceEStoreImpl.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
@@ -129,7 +123,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat(eStore).isInstanceOf(DirectWriteBlueprintsResourceEStoreImpl.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
@@ -141,7 +135,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
         
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
         
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
         assertThat("Invalid EStore created", eStore, instanceOf(CachedManyDirectWriteBlueprintsRespirceEStoreImpl.class));
         
         assertHasInnerBackend(eStore, persistentBackend);
@@ -154,8 +148,8 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(AutocommitEStoreImpl.class); // "Invalid EStore created";
+        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        assertThat(eStore).isInstanceOf(AutocommitEStoreDecorator.class); // "Invalid EStore created";
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
@@ -167,8 +161,8 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
         
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
         
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreImpl.class));
+        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreDecorator.class));
         
         assertHasInnerBackend(eStore, persistentBackend);
     }
@@ -180,18 +174,45 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
         
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
         
-        SearcheableResourceEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreImpl.class));
+        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreDecorator.class));
         
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
-    private PersistenceBackend getInnerBackend(DirectWriteResourceEStore store) {
-        return store.getPersistenceBackend();
+
+    /**
+     * Too method to retrieve the PersistentEStore associated to a store.
+     * @param store
+     * @return
+     */
+    private PersistenceBackend getInnerBackend(PersistentEStore store) {
+        // context is the real EStore, which can de decorated.
+        PersistentEStore context = store.getEStore();
+        Field field = null;
+        PersistenceBackend result = null;
+
+        try {
+            field = AbstractDirectWriteResourceEStore.class.getDeclaredField("persistenceBackend");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+
+        field.setAccessible(true);
+
+        try {
+            result = (PersistenceBackend) field.get(context);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
-    private void assertHasInnerBackend(SearcheableResourceEStore store, PersistenceBackend expectedInnerBackend) {
-        PersistenceBackend innerBackend = getInnerBackend((DirectWriteResourceEStore) store);
+
+    private void assertHasInnerBackend(PersistentEStore store, PersistenceBackend expectedInnerBackend) {
+        PersistenceBackend innerBackend = getInnerBackend(store);
         assertThat(innerBackend).isSameAs(expectedInnerBackend); // "The backend in the EStore is not the created one"
     }
 }

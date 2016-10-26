@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -63,10 +63,10 @@ public class AddContainmentSubtreeTest extends AllContainmentTest {
     private void addContainmentSubtreeToPersistentResource(PersistentResource persistentResource, Class<?> eStoreClass) {
         createResourceContent(persistentResource);
 
-        InternalPersistentEObject ip1 = (InternalPersistentEObject) p1;
-        InternalPersistentEObject ip2 = (InternalPersistentEObject) p2;
-        InternalPersistentEObject ip3 = (InternalPersistentEObject) p3;
-        InternalPersistentEObject ipc1 = (InternalPersistentEObject) pc1;
+        PersistentEObject ip1 = (PersistentEObject) p1;
+        PersistentEObject ip2 = (PersistentEObject) p2;
+        PersistentEObject ip3 = (PersistentEObject) p3;
+        PersistentEObject ipc1 = (PersistentEObject) pc1;
 
         assertThat(ip1.eStore()).isInstanceOf(eStoreClass);
         assertThat(ip2.eStore()).isInstanceOf(eStoreClass);

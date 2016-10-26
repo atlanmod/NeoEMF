@@ -73,17 +73,19 @@ public abstract class AllBackendTest extends AllTest {
 
     @After
     public void tearDown() throws Exception {
-        printMemoryUsage();
+        //printMemoryUsage();
+
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) mapResource);
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) neo4jResource);
         PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) tinkerResource);
 
-        temporaryFolder.delete();
+        //temporaryFolder.delete();
 
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 NeoLogger.warn(e);
             }
         }

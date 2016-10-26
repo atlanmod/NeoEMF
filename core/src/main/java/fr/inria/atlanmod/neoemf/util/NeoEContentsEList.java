@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.core.impl.NeoEObjectAdapterFactoryImpl;
-import fr.inria.atlanmod.neoemf.datastore.InternalPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
 
-    private final InternalPersistentEObject owner;
+    private final PersistentEObject owner;
 
     private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
 
@@ -49,12 +49,12 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     
     public NeoEContentsEList(EObject owner) {
         super(owner);
-        this.owner = NeoEObjectAdapterFactoryImpl.getAdapter(owner, InternalPersistentEObject.class);
+        this.owner = PersistentEObjectAdapter.getAdapter(owner);
     }
     
     public NeoEContentsEList(EObject owner, EStructuralFeature[] eStructuralFeatures) {
         super(owner,eStructuralFeatures);
-        this.owner = NeoEObjectAdapterFactoryImpl.getAdapter(owner, InternalPersistentEObject.class);
+        this.owner = PersistentEObjectAdapter.getAdapter(owner);
     }
     
     @Override

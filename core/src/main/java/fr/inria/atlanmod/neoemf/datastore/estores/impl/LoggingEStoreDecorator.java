@@ -12,7 +12,8 @@
 package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.estores.SearcheableResourceEStore;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
@@ -22,13 +23,13 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * A {@link SearcheableResourceEStore} wrapper that logs every call to its
+ * A {@link PersistentEStore} decorator that logs every call to its
  * methods in the {@link NeoLogger}.
  * 
  */
-public class LoggingDelegatedEStoreImpl extends AbstractDelegatedEStore<SearcheableResourceEStore> {
+public class LoggingEStoreDecorator extends AbstractEStoreDecorator {
 
-	public LoggingDelegatedEStoreImpl(SearcheableResourceEStore eStore) {
+	public LoggingEStoreDecorator(PersistentEStore eStore) {
 		super(eStore);
 	}
 
@@ -157,4 +158,5 @@ public class LoggingDelegatedEStoreImpl extends AbstractDelegatedEStore<Searchea
 		NeoLogger.info("Called getEObject with value {0}", id);
 		return super.eObject(id);
 	}
+
 }
