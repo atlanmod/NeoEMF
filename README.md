@@ -1,4 +1,4 @@
-NeoEMF
+NeoEMF [![Build Status](https://travis-ci.org/atlanmod/NeoEMF.svg?branch=master)](https://travis-ci.org/atlanmod/NeoEMF)
 ======
 
 ## What is NeoEMF?
