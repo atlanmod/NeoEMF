@@ -76,7 +76,7 @@
 
         <!-- DB -->
         <blueprints.version>2.5.0</blueprints.version> <!-- 2.6+ : require JDK8 -->
-        <mapdb.version>3.0.2</mapdb.version> <!-- 2+ : require JDK8 -->
+        <mapdb.version>3.0.2</mapdb.version>
         <hbase.version>0.98.13-hadoop2</hbase.version>
         <hadoop.version>2.6.0</hadoop.version>
 
@@ -373,7 +373,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Xms256m -Xmx1g -XX:PermSize=512m -XX:+UseConcMarkSweepGC</argLine>
+                    <argLine>-Xms256m -Xmx1g -XX:+UseConcMarkSweepGC</argLine>
                     <failIfNoTests>false</failIfNoTests>
                     <runOrder>random</runOrder>
                     <includes>
