@@ -39,7 +39,6 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 
 	private final Cache<FeatureKey, Object> cachedArray;
 
-	@SuppressWarnings("unchecked")
 	public CachedManyDirectWriteMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
 		super(resource, persistenceBackend);
 		cachedArray = CacheBuilder.newBuilder().softValues().recordStats().build();

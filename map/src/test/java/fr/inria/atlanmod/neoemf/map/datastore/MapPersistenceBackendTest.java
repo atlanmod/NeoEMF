@@ -60,7 +60,7 @@ public class MapPersistenceBackendTest {
         DataOutput2 out = new DataOutput2();
         FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked") // Unchecked cast: 'GroupSerializer' to 'Serializer<...>'
         Serializer<FeatureKey> ser = Serializer.JAVA;
         FeatureKey key2 = ser.clone(key1);
 

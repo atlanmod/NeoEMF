@@ -284,7 +284,7 @@ public class ImportTest extends AllInputTest {
         EObject eObjectReference;
 
         if (many) {
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
             EList<EObject> eObjectList = (EList<EObject>) objectReference;
             eObjectReference = eObjectList.get(index);
         } else {

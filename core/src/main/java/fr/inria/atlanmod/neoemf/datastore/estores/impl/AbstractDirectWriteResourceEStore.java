@@ -274,13 +274,15 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
         int size = size(object, feature);
         T[] result = array.length < size ? Arrays.copyOf(array, size) : array;
         for (int index = 0; index < size; index++) {
-            result[index] = (T) get(object, feature, index);
+            @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'T'
+            T value = (T) get(object, feature, index);
+
+            result[index] = value;
         }
         return result;
     }

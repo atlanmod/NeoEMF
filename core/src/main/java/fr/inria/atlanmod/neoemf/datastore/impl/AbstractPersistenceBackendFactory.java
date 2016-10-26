@@ -32,7 +32,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     public PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         PersistentEStore eStore = internalCreatePersistentEStore(resource, backend, options);
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'List<...>'
         List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>) options.get(PersistentResourceOptions.STORE_OPTIONS);
 
         if (storeOptions != null && !storeOptions.isEmpty()) {

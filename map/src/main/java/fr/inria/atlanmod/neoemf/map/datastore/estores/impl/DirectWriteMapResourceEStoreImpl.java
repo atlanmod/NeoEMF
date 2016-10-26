@@ -51,7 +51,6 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	protected final Cache<Id, PersistentEObject> loadedEObjectsCache;
 
 
-	@SuppressWarnings("unchecked")
 	public DirectWriteMapResourceEStoreImpl(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
 		super(resource, persistenceBackend);
 		this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();

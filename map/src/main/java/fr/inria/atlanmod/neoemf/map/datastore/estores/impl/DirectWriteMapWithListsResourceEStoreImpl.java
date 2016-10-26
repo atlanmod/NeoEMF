@@ -46,7 +46,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
@@ -60,7 +60,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eReference);
@@ -75,7 +75,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		if (!eAttribute.isMany()) {
@@ -93,7 +93,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		Object returnValue;
 		updateContainment(object, eReference, value);
@@ -113,7 +113,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		list.add(index, serializeToProperty(eAttribute, value));
@@ -121,7 +121,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
@@ -131,7 +131,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
 		Object oldValue = list.get(index);
@@ -141,7 +141,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
 		List<Object> list = (List<Object>) getFromMap(object, eReference);
 		Object oldId = list.get(index);
@@ -151,7 +151,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		List<Object> list = (List<Object>) getFromMap(persistentEObject, feature);
@@ -159,7 +159,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int returnValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
@@ -177,7 +177,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'java.util.List<java.lang.Object>'
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int returnValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);

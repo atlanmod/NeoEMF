@@ -78,7 +78,6 @@ public class NeoHBaseUtil {
 			}
 
 			//Connection resourceConnection = ConnectionFactory.createConnection(conf);
-			@SuppressWarnings("resource")
 			HBaseAdmin admin = new HBaseAdmin(conf);
 			String cloneURI = formatURI (modelURI);
 			TableName tableName = TableName.valueOf(cloneURI);

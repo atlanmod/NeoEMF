@@ -29,7 +29,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
 
     private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
 
-    @SuppressWarnings("unchecked") // Unchecked cast
+    @SuppressWarnings("unchecked") // Unchecked cast: 'NeoEContentsEList<?>' to 'NeoEContentsEList<...>'
     public static <E> NeoEContentsEList<E> emptyNeoContentsEList() {
         return (NeoEContentsEList<E>)EMPTY_NEO_CONTENTS_ELIST;
     }
@@ -58,7 +58,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     }
     
     @Override
-    @SuppressWarnings("unchecked") // Unchecked cast: 'java.lang.Object' to 'E'
+    @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'E'
     public E get(int index) {
         if(eStructuralFeatures == null) {
             throw new IndexOutOfBoundsException("index=" + index + ",size=0");

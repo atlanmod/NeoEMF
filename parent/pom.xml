@@ -50,6 +50,8 @@
         <bundle-plugin.version>3.0.1</bundle-plugin.version>
         <clean-plugin.version>3.0.0</clean-plugin.version>
         <compiler-plugin.version>3.5.1</compiler-plugin.version>
+        <deploy-plugin.version>2.8.2</deploy-plugin.version>
+        <install-plugin.version>2.5.2</install-plugin.version>
         <jar-plugin.version>3.0.0</jar-plugin.version>
         <resource-plugin.version>3.0.0</resource-plugin.version>
         <site-plugin.version>3.5.1</site-plugin.version>
@@ -62,23 +64,23 @@
         <checkstyle-plugin.version>2.17</checkstyle-plugin.version>
         <cobertura-plugin.version>2.7</cobertura-plugin.version>
         <dependency-plugin.version>2.10</dependency-plugin.version>
-        <findbugs-plugin.version>3.0.3</findbugs-plugin.version>
+        <findbugs-plugin.version>3.0.4</findbugs-plugin.version>
         <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
         <jxr-plugin.version>2.5</jxr-plugin.version>
-        <license-plugin.version>1.8</license-plugin.version>
-        <pmd-plugin.version>3.6</pmd-plugin.version>
+        <license-plugin.version>1.10</license-plugin.version>
+        <pmd-plugin.version>3.7</pmd-plugin.version>
         <project-info-reports-plugin.version>2.9</project-info-reports-plugin.version>
         <surefire-report-plugin.version>2.19.1</surefire-report-plugin.version>
         <taglist-plugin.version>2.4</taglist-plugin.version>
-        <versions-plugin.version>2.2</versions-plugin.version>
+        <versions-plugin.version>2.3</versions-plugin.version>
 
         <!-- Dependencies -->
 
         <!-- DB -->
-        <blueprints.version>2.5.0</blueprints.version> <!-- 2.6+ : require JDK8 -->
+        <blueprints.version>2.5.0</blueprints.version>  <!-- Update available ! -->
         <mapdb.version>3.0.2</mapdb.version>
-        <hbase.version>0.98.13-hadoop2</hbase.version>
-        <hadoop.version>2.6.0</hadoop.version>
+        <hbase.version>0.98.13-hadoop2</hbase.version>  <!-- Update available ! -->
+        <hadoop.version>2.6.0</hadoop.version>          <!-- Update available ! -->
 
         <!-- Commons -->
         <cglib-nodep.version>3.2.4</cglib-nodep.version>
@@ -437,6 +439,18 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${resource-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${install-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${deploy-plugin.version}</version>
                 </plugin>
 
                 <plugin>

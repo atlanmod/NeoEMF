@@ -208,9 +208,11 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 		checkArgument(backend instanceof BlueprintsPersistenceBackend,
 				"Trying to create a Graph-based EStore with an invalid backend");
 
-		PersistentEStore eStore = null;
-		@SuppressWarnings("unchecked")
+		PersistentEStore eStore;
+
+		@SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'List<...>'
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+
 		// Store
 		if(storeOptions == null || storeOptions.isEmpty()) {
 			eStore = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);

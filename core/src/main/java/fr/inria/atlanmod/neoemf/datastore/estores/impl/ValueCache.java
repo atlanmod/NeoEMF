@@ -90,7 +90,6 @@ public class ValueCache<V> {
             if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            @SuppressWarnings("unchecked")
             CacheKey other = (CacheKey) obj;
             return Objects.equals(object, other.object)
                     && Objects.equals(feature, other.feature)

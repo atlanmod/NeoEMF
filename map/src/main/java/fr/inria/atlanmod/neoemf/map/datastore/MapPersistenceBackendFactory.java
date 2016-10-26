@@ -118,8 +118,10 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 				"Trying to create a Map-based EStore with an invalid backend: "+backend.getClass().getName());
 
 		PersistentEStore eStore = null;
-		@SuppressWarnings("unchecked")
+
+		@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+
 		// Store
 		if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreMapOption.AUTOCOMMIT))) {
 			eStore = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
@@ -144,7 +146,6 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 		return eStore;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
 		checkArgument(from instanceof MapPersistenceBackend,
