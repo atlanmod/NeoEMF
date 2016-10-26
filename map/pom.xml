@@ -108,7 +108,7 @@
                             fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>
                         <_exportcontents>
-                            org.mapdb
+                            org.mapdb,
                         </_exportcontents>
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.core

@@ -81,15 +81,15 @@
         <hadoop.version>2.6.0</hadoop.version>
 
         <!-- Commons -->
-        <cglib-nodep.version>3.2.2</cglib-nodep.version>
+        <cglib-nodep.version>3.2.4</cglib-nodep.version>
         <commons-collections.version>4.1</commons-collections.version>
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
-        <commons-lang.version>3.4</commons-lang.version>
+        <commons-lang.version>3.5</commons-lang.version>
         <guava.version>19.0</guava.version>
 
         <!-- Logging -->
-        <log4j.version>2.6</log4j.version>
+        <log4j.version>2.7</log4j.version>
 
         <!-- EMF -->
         <emf.version>2.11.0-v20150805-0538</emf.version>
@@ -97,7 +97,7 @@
         <emf-ecore-xcore-lib.version>1.1.100</emf-ecore-xcore-lib.version>
 
         <!-- Test -->
-        <assertj.version>2.5.0</assertj.version>
+        <assertj.version>3.5.2</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <joda-time.version>2.9.4</joda-time.version>
@@ -295,6 +295,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <!--<arg>-Xlint:all</arg>-->
+                    </compilerArgs>
+                </configuration>
             </plugin>
 
             <plugin>

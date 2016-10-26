@@ -60,6 +60,7 @@ public class MapPersistenceBackendTest {
         DataOutput2 out = new DataOutput2();
         FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
 
+        @SuppressWarnings("unchecked")
         Serializer<FeatureKey> ser = Serializer.JAVA;
         FeatureKey key2 = ser.clone(key1);
 

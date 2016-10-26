@@ -130,8 +130,7 @@
                             org.apache.lucene.*;-split-package:=first,
                             com.tinkerpop.blueprints.impls.neo4j,
                             org.neo4j.kernel.impl.cache;-split-package:=merge-last,
-                            org.neo4j.*;-split-package:=first,      
-<!--                             com.googlecode.concurrentlinkedhashmap                     -->
+                            org.neo4j.*;-split-package:=first,
                         </Export-Package>
                         <Private-Package>
                         	javax.transaction,
@@ -154,10 +153,6 @@
                         	lucene-core,
                         	neo4j-kernel,
                         	blueprints-neo4j-graph
-<!--                      	    geronimo-jta_1.1_spec, -->
-<!--                         	concurrentlinkedhashmap-lru, -->
-<!--                         	neo4j-graph-algo, -->
-<!--                         	neo4j-graph-matching, -->
                         </Embed-Dependency>
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.graph.blueprints

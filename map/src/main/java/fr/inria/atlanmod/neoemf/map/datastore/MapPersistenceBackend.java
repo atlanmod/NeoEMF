@@ -67,7 +67,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
      */
     private final Map<MultivaluedFeatureKey, Object> multivaluedFeatures;
 
-
+    @SuppressWarnings("unchecked")
     public MapPersistenceBackend(DB aDB) {
         db = aDB;
         containersMap = db.hashMap(CONTAINER)
@@ -227,6 +227,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
      * Copies all the contents of this backend to the target one.
      * @param target
      */
+    @SuppressWarnings("unchecked")
     public void copyTo(MapPersistenceBackend target) {
         for(Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             Object collection = entry.getValue();
