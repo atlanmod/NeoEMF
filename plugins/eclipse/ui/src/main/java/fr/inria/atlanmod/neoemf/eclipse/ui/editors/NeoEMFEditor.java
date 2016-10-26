@@ -28,9 +28,12 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Tree;
 
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -45,6 +48,12 @@ public class NeoEMFEditor extends EcoreEditor {
 	
 	public NeoEMFEditor() {
 	    super();
+	    if(!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
+	    	PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+	    }
+	    if(!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
+	    	PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+	    }
 	    this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.eINSTANCE);
         this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.eINSTANCE);
     }
