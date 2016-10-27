@@ -20,8 +20,9 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EClassImpl;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
 
@@ -60,13 +61,20 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'E'
     public E get(int index) {
+        checkNotNull(eStructuralFeatures, "index=" + index + ", size=0");
         if(eStructuralFeatures == null) {
             throw new IndexOutOfBoundsException("index=" + index + ",size=0");
         }
         // Find the feature to look for
         int featureSize = 0;
         for (EStructuralFeature eStructuralFeature : eStructuralFeatures) {
-            int localFeatureSize = owner.eStore().size(owner, eStructuralFeature);
+            int localFeatureSize = 0;
+            if(eStructuralFeature.isMany()) {
+                localFeatureSize = owner.eStore().size(owner, eStructuralFeature);
+            }
+            else {
+                localFeatureSize = owner.eStore().isSet(owner, eStructuralFeature) ? 1 : 0;
+            }
             featureSize += localFeatureSize;
             if (featureSize > index) {
                 // The correct feature has been found

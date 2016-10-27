@@ -41,6 +41,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkPositionIndex;
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourceEStore<MapPersistenceBackend> {
     
@@ -198,6 +199,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
+	    checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object[] array = (Object[]) getFromMap(persistentEObject, feature);
 		return array != null ? array.length : 0; 

@@ -39,6 +39,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWriteResourceEStore<BlueprintsPersistenceBackend> {
 
@@ -212,6 +213,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
+	    checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
 		Vertex vertex = persistenceBackend.getVertex(object);
 		return vertex != null ? getSize(vertex, feature) : 0;
 	}

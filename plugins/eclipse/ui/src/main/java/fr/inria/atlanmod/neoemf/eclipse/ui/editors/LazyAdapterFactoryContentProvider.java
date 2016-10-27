@@ -84,7 +84,7 @@ public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProv
     }
     
     private int getChildCount(EObject eObject) {
-        return eObject.eContents().size()-1;
+        return eObject.eContents().size();
     }
 
 }
