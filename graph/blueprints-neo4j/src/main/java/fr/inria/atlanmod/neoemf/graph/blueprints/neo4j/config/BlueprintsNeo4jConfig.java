@@ -17,6 +17,8 @@ import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
+import static java.util.Objects.isNull;
+
 public final class BlueprintsNeo4jConfig implements BlueprintsConfig {
 
     private static BlueprintsConfig INSTANCE;
@@ -25,7 +27,7 @@ public final class BlueprintsNeo4jConfig implements BlueprintsConfig {
      * Returns the instance of this {@link BlueprintsConfig configuration}.
      */
     public static BlueprintsConfig getInstance() {
-        if (INSTANCE == null) {
+        if (isNull(INSTANCE)) {
             INSTANCE = new BlueprintsNeo4jConfig();
         }
         return INSTANCE;
@@ -38,7 +40,7 @@ public final class BlueprintsNeo4jConfig implements BlueprintsConfig {
     
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
-        if(currentConfiguration.getString(BLUEPRINTS_NEO4J_DIRECTORY) == null) {
+        if(isNull(currentConfiguration.getString(BLUEPRINTS_NEO4J_DIRECTORY))) {
             currentConfiguration.addProperty(BLUEPRINTS_NEO4J_DIRECTORY, dbLocation.getAbsolutePath());
         }
     }

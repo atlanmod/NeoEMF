@@ -17,6 +17,8 @@ import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
+import static java.util.Objects.isNull;
+
 public final class BlueprintsTgConfig implements BlueprintsConfig {
 
     private static BlueprintsConfig INSTANCE;
@@ -25,7 +27,7 @@ public final class BlueprintsTgConfig implements BlueprintsConfig {
      * Returns the instance of this {@link BlueprintsConfig configuration}.
      */
     public static BlueprintsConfig getInstance() {
-        if (INSTANCE == null) {
+        if (isNull(INSTANCE)) {
             INSTANCE = new BlueprintsTgConfig();
         }
         return INSTANCE;
@@ -39,10 +41,10 @@ public final class BlueprintsTgConfig implements BlueprintsConfig {
     
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
-        if(currentConfiguration.getString(BLUEPRINTS_TG_DIRECTORY) == null) {
+        if(isNull(currentConfiguration.getString(BLUEPRINTS_TG_DIRECTORY))) {
             currentConfiguration.addProperty(BLUEPRINTS_TG_DIRECTORY, dbLocation.getAbsolutePath());
         }
-        if(currentConfiguration.getString(BLUEPRINTS_TG_FILE_TYPE) == null) {
+        if(isNull(currentConfiguration.getString(BLUEPRINTS_TG_FILE_TYPE))) {
             currentConfiguration.addProperty(BLUEPRINTS_TG_FILE_TYPE, "GRAPHML");
         }
     }

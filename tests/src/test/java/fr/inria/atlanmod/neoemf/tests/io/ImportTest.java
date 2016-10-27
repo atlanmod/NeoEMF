@@ -50,6 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
@@ -265,15 +266,16 @@ public class ImportTest extends AllInputTest {
     private void assertValidElement(final EObject eObject, final String className, final int size, final Object name) {
         assertThat(eObject.eClass().getName()).isEqualTo(className);
         assertThat(eObject.eContents()).hasSize(size);
-        if (name != null) {
-            assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name"))).isEqualTo(name);
-        } else {
+        if (isNull(name)) {
             try {
                 eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
                 fail();
             } catch (NullPointerException ignore) {
                 // It's good !
             }
+        }
+        else {
+            assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name"))).isEqualTo(name);
         }
     }
 
@@ -293,16 +295,17 @@ public class ImportTest extends AllInputTest {
 
         assertThat(eObjectReference.eClass().getName()).isEqualTo(referenceClassName);
 
-        if (referenceName != null) {
-            EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
-            assertThat(eObjectReference.eGet(eAttribute).toString()).isEqualTo(referenceName);
-        } else {
+        if (isNull(referenceName)) {
             try {
                 EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
                 assertThat(eObjectReference.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
             } catch (NullPointerException ignore) {
                 // It's good
             }
+        }
+        else {
+            EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
+            assertThat(eObjectReference.eGet(eAttribute).toString()).isEqualTo(referenceName);
         }
 
         assertThat(eReference.isContainment()).isEqualTo(containment);
@@ -312,7 +315,7 @@ public class ImportTest extends AllInputTest {
     private void assertValidAttribute(final EObject eObject, final String name, final Object value) {
         EAttribute eAttribute = (EAttribute) eObject.eClass().getEStructuralFeature(name);
 
-        if (value == null) {
+        if (isNull(value)) {
             assertThat(eObject.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
         } else {
             assertThat(eObject.eGet(eAttribute).toString()).isEqualTo(value);

@@ -28,6 +28,7 @@ import org.junit.Before;
 import java.io.File;
 import java.io.FileInputStream;
 
+import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -47,7 +48,7 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
         assertThat(mock.getClassName()).isEqualTo(className);
         assertThat(mock.isRoot()).isEqualTo(root);
 
-        if (id == null) {
+        if (isNull(id)) {
             assertThat(mock.getId()).isNull();
         } else {
             assertThat(mock.getId().getValue()).isEqualTo(id);

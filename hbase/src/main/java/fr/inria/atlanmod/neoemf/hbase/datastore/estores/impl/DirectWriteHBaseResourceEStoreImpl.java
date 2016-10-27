@@ -52,6 +52,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import static java.util.Objects.isNull;
+
 // TODO Continue cleaning, there is still code duplication
 public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResourceEStore<HBasePersistenceBackend> {
 
@@ -76,7 +78,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 
 		Configuration conf = HBaseConfiguration.create();
 		conf.set("hbase.zookeeper.quorum", resource.getURI().host());
-		conf.set("hbase.zookeeper.property.clientPort", resource.getURI().port() != null ? resource.getURI().port() : "2181");
+		conf.set("hbase.zookeeper.property.clientPort", isNull(resource.getURI().port()) ? "2181" : resource.getURI().port());
 
 		TableName tableName = TableName.valueOf(NeoHBaseUtil.formatURI(resource.getURI()));
 		HBaseAdmin admin = new HBaseAdmin(conf);
@@ -99,7 +101,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object value = getFromTable(object, eAttribute);
 		if (!eAttribute.isMany()) {
 			return parseProperty(eAttribute, value);
@@ -111,13 +113,13 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object getReference(PersistentEObject object, EReference eReference, int index) {
 		if (eReference.isContainer()) {
 			return getContainer(object);
 		}
 
 		Object value = getFromTable(object, eReference);
-		if(value == null) {
+		if(isNull(value)) {
 		    return null;
 		}
 		if (!eReference.isMany()) {
@@ -129,7 +131,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object oldValue = isSet(object, eAttribute) ? get(object, eAttribute, index) :  null;
 		try {
 			if (!eAttribute.isMany()) {
@@ -153,7 +155,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 						passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
 								PROPERTY_FAMILY,
 								Bytes.toBytes(eAttribute.getName()),
-								array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
+								isNull(array) ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 								put);
 						if (!passed) {
 							if (attemp > ATTEMP_TIMES_DEFAULT) throw new TimeoutException();
@@ -177,7 +179,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+	protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
 		Object oldValue = isSet(object, eReference) ? get(object, eReference, index) :  null;
 		updateLoadedEObjects(referencedObject);
 		updateContainment(object, eReference, referencedObject);
@@ -211,7 +213,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 		try {
 			Result result= table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
 			byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
-			return value != null;
+			return !isNull(value);
 		} catch (IOException e) {
 			NeoLogger.error("Unable to get information for element ''{0}''", neoEObject);
 		}
@@ -219,7 +221,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		try {
 			String[] array;
 			boolean passed;
@@ -239,7 +241,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 				passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
 						PROPERTY_FAMILY,
 						Bytes.toBytes(eAttribute.getName()),
-						array == null ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
+						isNull(array) ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
 						put);
 				if (!passed) {
 					if (attemp > ATTEMP_TIMES_DEFAULT)  throw new TimeoutException();
@@ -258,7 +260,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+	protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
 		try {
 			/*
 			 * As long as the element is not attached to the resource, the containment and type  information are not
@@ -288,7 +290,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 					passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
 							PROPERTY_FAMILY,
 							Bytes.toBytes(eReference.getName()),
-							array == null ? null : NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
+							isNull(array) ? null : NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
 							put);
 					if (!passed) {
 						if (attemp > ATTEMP_TIMES_DEFAULT) throw new TimeoutException();
@@ -319,7 +321,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 	    Object oldValue = get(object, eAttribute, index);
 		try {
 			
@@ -360,7 +362,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	}
 
 	@Override
-	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
 		Object oldValue = get(object, eReference, index);
 		
 		try {
@@ -416,7 +418,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
 		String[] array = (String[]) getFromTable(eObject, feature);
-		return array != null ? array.length : 0; 
+		return isNull(array) ? 0 : array.length;
 	}
 
 	@Override
@@ -429,7 +431,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
 		String[] array = (String[]) getFromTable(eObject, feature);
-		if (array == null) {
+		if (isNull(array)) {
 			return -1;
 		}
 		if (feature instanceof EAttribute) {
@@ -445,7 +447,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
 		String[] array = (String[]) getFromTable(eObject, feature);
-		if (array == null) {
+		if (isNull(array)) {
 			return -1;
 		}
 		if (feature instanceof EAttribute) {
@@ -478,7 +480,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 			String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
 			String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 	
-			if (containerId != null && containingFeatureName != null) {
+			if (!isNull(containerId) && !isNull(containingFeatureName)) {
 				return (InternalEObject) eObject(new StringId(containerId));
 			}
 			
@@ -497,7 +499,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 			String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
 			String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 	
-			if (containerId != null && containingFeatureName != null) {
+			if (!isNull(containerId) && !isNull(containingFeatureName)) {
 				EObject container = eObject(new StringId(containerId));
 				return container.eClass().getEStructuralFeature(containingFeatureName);
 			}
@@ -510,13 +512,13 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 
 	@Override
 	public EObject eObject(Id id) {
-		if (id == null) {
+		if (isNull(id)) {
 			return null;
 		}
 		PersistentEObject persistentEObject = loadedEObjects.getIfPresent(id);
-		if (persistentEObject == null) {
+		if (isNull(persistentEObject)) {
 			EClass eClass = resolveInstanceOf(id);
-			if (eClass != null) {
+			if (!isNull(eClass)) {
 				EObject eObject = EcoreUtil.create(eClass);
 				if (eObject instanceof PersistentEObject) {
 					persistentEObject = (PersistentEObject) eObject;
@@ -527,7 +529,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 			} else {
 				NeoLogger.error("Element {0} does not have an associated EClass", id);
 			}
-			if (persistentEObject == null) {
+			if (isNull(persistentEObject)) {
 				NeoLogger.error("Element {0} does not exist", id);
 				return null;
 			} else {
@@ -545,7 +547,7 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 			Result result= table.get(new Get(Bytes.toBytes(id.toString())));
 			String nsURI = Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER));
 			String className = Bytes.toString(result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER));
-			if (nsURI != null && className != null) {
+			if (!isNull(nsURI) && !isNull(className)) {
 				return (EClass) Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
 			}
 		} catch (IOException e) {

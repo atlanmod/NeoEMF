@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * A factory able to adapt an {@link Object object} in a specific {@link Class type}.
@@ -55,7 +56,7 @@ public class PersistentEObjectAdapter {
 	 * @throws NullPointerException if the {@code type} is {@code null}
      */
 	public static <T extends PersistentEObject> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-		if (adaptableObject == null) {
+		if (isNull(adaptableObject)) {
 			return null;
 		}
 		checkNotNull(adapterType);
@@ -65,13 +66,13 @@ public class PersistentEObjectAdapter {
 			adapter = adaptableObject;
 		} else if (adaptableObject instanceof InternalEObject) {
 			adapter = ADAPTED_OBJECTS_CACHE.getIfPresent(adaptableObject);
-			if (adapter == null || !adapterType.isAssignableFrom(adapter.getClass())) {
+			if (isNull(adapter) || !adapterType.isAssignableFrom(adapter.getClass())) {
 				adapter = createAdapter(adaptableObject, adapterType);
 				ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (PersistentEObject)  adapter);
 			}
 		}
 
-		if (adapter == null) {
+		if (isNull(adapter)) {
 			NeoLogger.warn("Unable to create a {0} adapter for this object of type {1}", adapterType.getSimpleName(), adaptableObject.getClass().getSimpleName());
 		}
 		return adapterType.cast(adapter);

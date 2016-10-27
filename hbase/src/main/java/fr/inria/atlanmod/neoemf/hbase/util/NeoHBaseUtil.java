@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 public class NeoHBaseUtil {
 
@@ -46,7 +47,7 @@ public class NeoHBaseUtil {
 		private static ResourceUtil INSTANCE;
 
 		public static ResourceUtil getInstance() {
-			if (INSTANCE == null) {
+			if (isNull(INSTANCE)) {
 				INSTANCE = new ResourceUtil();
 			}
 			return INSTANCE;
@@ -66,7 +67,7 @@ public class NeoHBaseUtil {
 
 			// Setting up the configuration according to the URI
 			conf.set("hbase.zookeeper.quorum", modelURI.host());
-			conf.set("hbase.zookeeper.property.clientPort", modelURI.port() != null ? modelURI.port() : "2181");
+			conf.set("hbase.zookeeper.property.clientPort", isNull(modelURI.port()) ? "2181" : modelURI.port());
 
 			// Checking HBase availability
 			try {
@@ -116,7 +117,7 @@ public class NeoHBaseUtil {
 		public static final char VALUE_SEPERATOR_DEFAULT = ',';
 		
 		public static String [] toStringsReferences(byte[] value) {
-			if (value != null) {
+			if (!isNull(value)) {
 				checkArgument(value.length % (UUID_LENGTH + 1) == UUID_LENGTH);
 				int length = (value.length + 1)/(UUID_LENGTH + 1);
 				
@@ -135,7 +136,7 @@ public class NeoHBaseUtil {
 		}
 
 		public static byte[] toBytesReferences (String[] strings) {
-			if (strings != null) {
+			if (!isNull(strings)) {
 				return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes();
 			}
 			return null;
@@ -156,7 +157,7 @@ public class NeoHBaseUtil {
 		}
 
 		public static String[] toStrings(byte[] bytes) {
-			if (bytes == null) {
+			if (isNull(bytes)) {
 				return null;
 			}
 			

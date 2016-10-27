@@ -29,7 +29,8 @@ import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.NoSuchElementException;
-import java.util.concurrent.Callable;
+
+import static java.util.Objects.isNull;
 
 /**
  * A {@link fr.inria.atlanmod.neoemf.io.PersistenceHandler persistence handler} for a
@@ -73,13 +74,13 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         Vertex vertex = createVertex(id);
 
         // Checks if the Vertex is not already defined
-        if (vertex.getProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI) != null) {
+        if (!isNull(vertex.getProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI))) {
             throw new IllegalArgumentException(
                     "An element with the same Id (" + id.toString() + ") is already defined. " +
                             "Use a handler with a conflicts resolution feature instead.");
         }
 
-        if (name != null) {
+        if (!isNull(name)) {
             vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
         }
         vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, nsUri);
@@ -183,7 +184,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
 
     private static Integer getSize(final Vertex vertex, final String name) {
         Integer size = vertex.getProperty(formatKeyValue(name, SIZE_LITERAL));
-        return size != null ? size : 0;
+        return isNull(size) ? 0 : size;
     }
 
     private static void setSize(final Vertex vertex, final String name, final int size) {

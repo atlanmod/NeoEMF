@@ -17,12 +17,14 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import static java.util.Objects.isNull;
+
 public class PersistentResourceFactoryImpl implements PersistentResourceFactory {
 
 	private static PersistentResourceFactory INSTANCE;
 
 	public static PersistentResourceFactory getInstance() {
-		if (INSTANCE == null) {
+		if (isNull(INSTANCE)) {
 			INSTANCE = new PersistentResourceFactoryImpl();
 		}
 		return INSTANCE;

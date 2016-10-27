@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static java.util.Objects.isNull;
 
 
 public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
@@ -46,7 +47,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object value = getFromMap(object, eAttribute);
 		if (eAttribute.isMany()) {
 			value = manyValueFrom(value).get(index);
@@ -55,7 +56,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object getReference(PersistentEObject object, EReference eReference, int index) {
 		Object value = getFromMap(object, eReference);
 		if (eReference.isMany()) {
 			value = eObject((Id) manyValueFrom(value).get(index));
@@ -64,7 +65,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object oldValue;
 		if (!eAttribute.isMany()) {
 			oldValue = persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
@@ -79,7 +80,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		Object oldId;
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
@@ -91,19 +92,19 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 			list.set(index, value.id());
 			persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), list.toArray());
 		}
-		return oldId != null ? eObject((Id) oldId) : null;
+		return isNull(oldId) ? null : eObject((Id) oldId);
 	}
 
 
 	@Override
-	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
 		list.add(index, serializeToProperty(eAttribute, value));
 		persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), list.toArray());
 	}
 
 	@Override
-	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+	protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
 		List<Object> list = manyValueFrom(getFromMap(object, eReference));
@@ -112,7 +113,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
 		Object oldValue = list.get(index);
 		list.remove(index);
@@ -121,7 +122,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
 		List<Object> list = manyValueFrom(getFromMap(object, eReference));
 		Object oldId = list.get(index);
 		list.remove(index);
@@ -133,7 +134,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
-		return list != null ? list.size() : 0; 
+		return isNull(list) ? 0 : list.size();
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 		int returnValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
-		if (list== null) {
+		if (isNull(list)) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
 			returnValue = list.indexOf(serializeToProperty((EAttribute) feature, value));
@@ -158,7 +159,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 		int returnValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
-		if (list == null) {
+		if (isNull(list)) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
 			returnValue = list.lastIndexOf(serializeToProperty((EAttribute) feature, value));
@@ -203,7 +204,7 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
         public Object load(FeatureKey key) throws Exception {
             Object returnValue;
             Object value = persistenceBackend.valueOf(key);
-            if (value == null) {
+            if (isNull(value)) {
                 returnValue = new ArrayList<>();
             } else if (value instanceof Object[]) {
                 Object[] array = (Object[]) value;

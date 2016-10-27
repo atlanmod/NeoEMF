@@ -27,12 +27,14 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import java.io.File;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
     
     private static PersistenceBackendFactory INSTANCE;
 
     public static PersistenceBackendFactory getInstance() {
-        if (INSTANCE == null) {
+        if (isNull(INSTANCE)) {
             INSTANCE = new HBasePersistenceBackendFactory();
         }
         return INSTANCE;

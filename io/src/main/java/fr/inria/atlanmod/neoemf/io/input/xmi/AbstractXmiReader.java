@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.isNull;
+
 /**
  * An abstract implementation of a {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} able to process {@code
  * XMI} files.
@@ -111,7 +113,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                     return;
                 }
 
-                if (features != null && !features.isEmpty()) {
+                if (!isNull(features) && !features.isEmpty()) {
                     structuralFeatures.addAll(features);
                 }
             }
@@ -139,7 +141,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
         if (!processSpecialFeatures(classifier, prefix, localName, value)) {
             List<String> references = getReferences(value);
-            if (references != null) {
+            if (!isNull(references)) {
                 features = processReferences(localName, references);
             }
             else {
@@ -159,7 +161,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
         boolean isSpecialFeature = false;
 
         // A special feature always has a prefix
-        if (prefix != null) {
+        if (!isNull(prefix)) {
             final String prefixedValue = prefix + ':' + localName;
 
             if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type
@@ -285,7 +287,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static String getPrefix(String prefixedValue) {
         String prefix = null;
 
-        if (prefixedValue != null) {
+        if (!isNull(prefixedValue)) {
             List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
             if (splittedName.size() > 1) {
                 prefix = splittedName.get(0);

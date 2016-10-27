@@ -28,6 +28,7 @@ import java.util.TimerTask;
 import javax.xml.parsers.SAXParserFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * A XMI {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} that uses stream for reading.
@@ -73,7 +74,7 @@ public class XmiStreamReader extends AbstractXmiReader {
 
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
         } catch (SAXException e) {
-            if (e.getException() != null) {
+            if (!isNull(e.getException())) {
                 throw e.getException();
             } else {
                 throw e;

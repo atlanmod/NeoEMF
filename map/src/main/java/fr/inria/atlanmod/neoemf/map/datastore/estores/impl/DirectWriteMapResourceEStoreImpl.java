@@ -40,8 +40,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
 
 public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourceEStore<MapPersistenceBackend> {
     
@@ -60,7 +61,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
 		if (eAttribute.isMany()) {
@@ -74,7 +75,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object getReference(PersistentEObject object, EReference eReference, int index) {
 		Object returnValue;
 		Object value = getFromMap(object, eReference);
 		if (eReference.isMany()) {
@@ -88,7 +89,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
 		if (!eAttribute.isMany()) {
 			Object oldValue = persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
@@ -105,20 +106,20 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		Object returnValue;
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
 		if (!eReference.isMany()) {
 			Object oldId = persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), value.id());
-			returnValue = oldId != null ? eObject((Id) oldId) : null;
+			returnValue = isNull(oldId) ? null : eObject((Id) oldId);
 		} else {
 			Object[] array = (Object[]) getFromMap(object, eReference);
 			checkPositionIndex(index, array.length, "Invalid set index " + index);
 			Object oldId = array[index];
 			array[index] = value.id();
 			persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), array);
-			returnValue = oldId != null ? eObject((Id) oldId) : null;
+			returnValue = isNull(oldId) ? null : eObject((Id) oldId);
 		}
 		return returnValue;
 	}
@@ -131,7 +132,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if(index == EStore.NO_INDEX) {
 			/*
 			 * Handle NO_INDEX index, which represent direct-append feature.
@@ -141,7 +142,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 			add(object, eAttribute, size(object, eAttribute), value);
 		}
 		Object[] array = (Object[]) getFromMap(object, eAttribute);
-		if (array == null) {
+		if (isNull(array)) {
 			array = new Object[] {};
 		}
 		checkPositionIndex(index, array.length, "Invalid add index " + index);
@@ -150,7 +151,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if(index == EStore.NO_INDEX) {
 			/*
 			 * Handle NO_INDEX index, which represent direct-append feature.
@@ -162,7 +163,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
 		Object[] array = (Object[]) getFromMap(object, eReference);
-		if (array == null) {
+		if (isNull(array)) {
 			array = new Object[] {};
 		}
 		checkPositionIndex(index, array.length, "Invalid add index " + index);
@@ -172,7 +173,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object[] array = (Object[]) getFromMap(object, eAttribute);
 		checkPositionIndex(index, array.length, "Invalid remove index " + index);
 		Object oldValue = array[index];
@@ -182,7 +183,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	}
 
 	@Override
-	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
 		Object[] array = (Object[]) getFromMap(object, eReference);
 		checkPositionIndex(index, array.length, "Invalid remove index " + index);
 		Object oldId = array[index];
@@ -202,7 +203,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	    checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object[] array = (Object[]) getFromMap(persistentEObject, feature);
-		return array != null ? array.length : 0; 
+		return isNull(array) ? 0 : array.length;
 	}
 
 	@Override
@@ -215,7 +216,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		int resultValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object[] array = (Object[]) getFromMap(persistentEObject, feature);
-		if (array == null) {
+		if (isNull(array)) {
 			resultValue = ArrayUtils.INDEX_NOT_FOUND;
 		} else if (feature instanceof EAttribute) {
 			resultValue = ArrayUtils.indexOf(array, serializeToProperty((EAttribute) feature, value));
@@ -231,7 +232,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		int resultValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Object[] array = (Object[]) getFromMap(persistentEObject, feature);
-		if (array == null) {
+		if (isNull(array)) {
 			resultValue = ArrayUtils.INDEX_NOT_FOUND;
 		} else if (feature instanceof EAttribute) {
 			resultValue = ArrayUtils.lastIndexOf(array, serializeToProperty((EAttribute) feature, value));
@@ -253,7 +254,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		InternalEObject returnValue = null;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
         ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
-		if (info != null) {
+		if (!isNull(info)) {
 			returnValue = (InternalEObject) eObject(info.containerId);
 		}
 		return returnValue;
@@ -264,7 +265,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	public EStructuralFeature getContainingFeature(InternalEObject object) {
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
         ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
-		if (info != null) {
+		if (!isNull(info)) {
 			EObject container = eObject(info.containerId);
 			return container.eClass().getEStructuralFeature(info.containingFeatureName);
 		}
@@ -274,7 +275,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	@Override
 	public EObject eObject(Id id) {
 		PersistentEObject persistentEObject = null;
-		if (id != null) {
+		if (!isNull(id)) {
 			try {
 				persistentEObject = loadedEObjectsCache.get(id, new PersistentEObjectCacheLoader(id));
 				if (persistentEObject.resource() != resource()) {
@@ -290,7 +291,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	private EClass resolveInstanceOf(Id id) {
 		EClass eClass = null;
 		EClassInfo eClassInfo = persistenceBackend.metaclassFor(id);
-		if (eClassInfo != null) {
+		if (!isNull(eClassInfo)) {
 			eClass = eClassInfo.eClass();
 		}
 		return eClass;
@@ -299,7 +300,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
 		if (eReference.isContainment()) {
 			ContainerInfo info = persistenceBackend.containerFor(referencedObject.id());
-			if (info == null || !info.containerId.equals(object.id())) {
+			if (isNull(info) || !info.containerId.equals(object.id())) {
                 persistenceBackend.storeContainer(referencedObject.id(), new ContainerInfo(object.id(), eReference.getName()));
 			}
 		}
@@ -307,7 +308,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	
 	protected void updateInstanceOf(PersistentEObject object) {
 		EClassInfo info = persistenceBackend.metaclassFor(object.id());
-		if (info == null) {
+		if (isNull(info)) {
             persistenceBackend.storeMetaclass(object.id(), new EClassInfo(object));
 		}
 	}
@@ -333,7 +334,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 		public PersistentEObject call() throws Exception {
 			PersistentEObject persistentEObject;
 			EClass eClass = resolveInstanceOf(id);
-			if (eClass != null) {
+			if (!isNull(eClass)) {
 				EObject eObject;
 				if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
 					// Dynamic EMF

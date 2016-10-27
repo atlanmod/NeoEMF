@@ -53,6 +53,8 @@ import org.eclipse.ui.part.ISetSelectionTarget;
 import java.io.File;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 /**
  * This is a simple wizard for creating a new dynamic model file.
  */
@@ -150,7 +152,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
                 @Override
                 protected void execute(IProgressMonitor progressMonitor) {
-                    if (progressMonitor == null) {
+                    if (isNull(progressMonitor)) {
                         progressMonitor = new NullProgressMonitor();
                     }
                     progressMonitor.beginTask("Create NeoEMF resource", 2);
@@ -168,7 +170,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 
                         // Add the initial model object to the contents.
                         EObject rootObject = createInitialModel();
-                        if (rootObject != null) {
+                        if (!isNull(rootObject)) {
                             resource.getContents().add(rootObject);
                         }
 
@@ -187,7 +189,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                     }
                     finally {
                         // Unload resource
-                        if (resource != null) {
+                        if (!isNull(resource)) {
                             resource.unload();
                         }
                         progressMonitor.done();

@@ -40,6 +40,8 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import static java.util.Objects.isNull;
+
 public class ReadOnlyHBaseResourceEStoreImpl extends DirectWriteHBaseResourceEStoreImpl {
 
 	private final Cache<EStoreKey, Object> featuresMap = CacheBuilder.newBuilder().softValues().build();
@@ -147,7 +149,7 @@ public class ReadOnlyHBaseResourceEStoreImpl extends DirectWriteHBaseResourceESt
 			if (this == obj) {
 				return true;
 			}
-			if (obj == null || getClass() != obj.getClass()) {
+			if (isNull(obj) || getClass() != obj.getClass()) {
 				return false;
 			}
 			EStoreKey other = (EStoreKey) obj;

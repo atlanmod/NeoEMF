@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.AbstractInternalNotifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An abstract implementation of a {@link Reader reader} that notifies {@link InternalHandler internal handlers}.
@@ -46,6 +47,6 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
     protected static String format(String prefix, String value) {
         checkNotNull(value);
 
-        return (prefix != null ? prefix + ':' : "") + value;
+        return (isNull(prefix) ? "" : prefix + ':') + value;
     }
 }

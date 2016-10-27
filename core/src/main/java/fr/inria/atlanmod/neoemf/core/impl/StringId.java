@@ -17,6 +17,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 public class StringId implements Id {
 
 	private static final long serialVersionUID = 1L;
@@ -51,7 +53,7 @@ public class StringId implements Id {
 		if(obj == this) {
 			return true;
 		}
-		if(obj == null || obj.getClass() != getClass()) {
+		if(isNull(obj) || obj.getClass() != getClass()) {
 			return false;
 		}
 

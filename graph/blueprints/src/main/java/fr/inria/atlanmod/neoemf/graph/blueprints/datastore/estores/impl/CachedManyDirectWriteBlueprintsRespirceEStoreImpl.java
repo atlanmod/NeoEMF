@@ -27,6 +27,8 @@ import org.eclipse.emf.ecore.resource.Resource.Internal;
 
 import java.util.Iterator;
 
+import static java.util.Objects.isNull;
+
 public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
         DirectWriteBlueprintsResourceEStoreImpl {
 
@@ -42,13 +44,13 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
     }
 
     @Override
-    protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+    protected Object getReference(PersistentEObject object, EReference eReference, int index) {
         if (eReference.isMany()) {
             CacheKey key = new CacheKey(object.id(), eReference);
             Object[] list = cache.getIfPresent(key);
-            if (list != null) {
+            if (!isNull(list)) {
                 Object o = list[index];
-                if (o == null) {
+                if (isNull(o)) {
                     NeoLogger.warn("Inconsistent content in CachedMany map, null value found for key " + key.toString() + " at index " + index);
                     return super.get(object, eReference, index);
                 } else {
@@ -67,7 +69,7 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
                 Iterator<Edge> iterator = vertex.getEdges(Direction.OUT, eReference.getName()).iterator();
                 while (iterator.hasNext()) {
                     Edge edge = iterator.next();
-                    if (edge.getProperty(POSITION) == null) {
+                    if (isNull(edge.getProperty(POSITION))) {
                         NeoLogger.error("An edge corresponding to the many EReference " + eReference.getName() + " does not have a position property");
                         throw new RuntimeException("An edge corresponding to the many EReference " + eReference.getName() + " does not have a position property");
                     } else {
@@ -80,7 +82,7 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
                 return reifyVertex((Vertex) vertices[index]);
             }
         } else {
-            return super.getWithReference(object, eReference, index);
+            return super.getReference(object, eReference, index);
         }
     }
 

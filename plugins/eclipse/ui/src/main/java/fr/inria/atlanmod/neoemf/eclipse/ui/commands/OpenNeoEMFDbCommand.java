@@ -45,6 +45,7 @@ import org.eclipse.ui.progress.UIJob;
 
 import java.io.File;
 
+import static java.util.Objects.isNull;
 
 public class OpenNeoEMFDbCommand extends AbstractHandler {
 
@@ -68,7 +69,7 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
                 folder = (IFolder) elt;
             }
         }
-        if (folder == null) {
+        if (isNull(folder)) {
             return null;
         }
 
@@ -102,7 +103,7 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
             }
             String backendType = neoConfig.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
             URI uri = null;
-            if (backendType == null) {
+            if (isNull(backendType)) {
                 NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor");
             }

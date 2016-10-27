@@ -19,6 +19,8 @@ import org.mapdb.Serializer;
 
 import java.io.IOException;
 
+import static java.util.Objects.isNull;
+
 /**
  * Serializer for persistent object ids. Only works with StringId instances.
  *
@@ -46,9 +48,12 @@ public class IdSerializer implements Serializer<Id> {
 
     @Override
     public boolean equals(Object other) {
-
-        if (other == null || !(other instanceof IdSerializer))return false;
-        if (this == other) return true;
+        if (this == other) {
+            return true;
+        }
+        if (isNull(other) || !(other instanceof IdSerializer)) {
+            return false;
+        }
 
         IdSerializer that = (IdSerializer) other;
 

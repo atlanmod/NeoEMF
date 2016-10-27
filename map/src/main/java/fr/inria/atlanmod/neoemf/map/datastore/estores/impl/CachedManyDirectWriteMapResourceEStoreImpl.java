@@ -32,6 +32,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
 
 public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 
@@ -66,8 +67,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	}
 	
 	@Override
-	protected void addWithReference(PersistentEObject object, EReference eReference,
-	        int index, PersistentEObject value) {
+	protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 	    if(eReference.isMany()) {
 	        if(index == EStore.NO_INDEX) {
 	            /*
@@ -80,17 +80,17 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 	        updateContainment(object, eReference, value);
 	        updateInstanceOf(value);
 	        Object[] array = (Object[]) getFromMap(object, eReference);
-	        if (array == null) {
+	        if (isNull(array)) {
 	            array = new Object[] {};
 	        }
 	        checkPositionIndex(index, array.length, "Invalid add index " + index);
 	        array = ArrayUtils.add(array, index, value.id());
 	        cachedArray.put(new FeatureKey(object.id(), eReference.getName()), array);
 	        persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), array);
-	        loadedEObjectsCache.put(value.id(),(PersistentEObject)value);
+	        loadedEObjectsCache.put(value.id(), value);
 	    }
 	    else {
-	        super.addWithReference(object, eReference, index, value);
+	        super.addReference(object, eReference, index, value);
 	    }
 	}
 

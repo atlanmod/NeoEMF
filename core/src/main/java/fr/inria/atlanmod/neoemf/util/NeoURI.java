@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 public class NeoURI extends URI {
 
@@ -43,7 +44,7 @@ public class NeoURI extends URI {
 	public static URI createNeoURI(File file, String scheme) {
 		URI returnValue;
 		URI fileUri = URI.createFileURI(file.getAbsolutePath());
-		if(scheme == null) {
+		if(isNull(scheme)) {
 			returnValue = NeoURI.createNeoURI(fileUri);
 		} else {
 			returnValue =createNeoURI(fileUri, scheme);
@@ -53,7 +54,7 @@ public class NeoURI extends URI {
 	
 	public static URI createNeoURI(URI fileUri, String scheme) {
 		URI returnValue;
-		if(scheme == null) {
+		if(isNull(scheme)) {
 			returnValue = createNeoURI(fileUri);
 		} else {
 			URI uri = URI.createHierarchicalURI(

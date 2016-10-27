@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
 
     // TODO: In the future an extension point or reflection should be used to determine the supported graph types
@@ -152,7 +154,7 @@ class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
                 String[] splitName = graphName.split("\\.");
                 String graphId = splitName[splitName.length - 2];
                 String graphPrefix = "blueprints." + graphId;
-                graphProperties.removeIf(p -> p.getProperty() != null && !p.getProperty().startsWith(graphPrefix));
+                graphProperties.removeIf(p -> !isNull(p.getProperty()) && !p.getProperty().startsWith(graphPrefix));
 
                 if (GRAPH_TYPES[0].equals(selection.getFirstElement())) {
                     GraphProperty property = new GraphProperty("blueprints.tg.file-type", "JAVA");
@@ -253,7 +255,7 @@ class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (isNull(obj) || getClass() != obj.getClass()) {
                 return false;
             }
             GraphProperty other = (GraphProperty) obj;

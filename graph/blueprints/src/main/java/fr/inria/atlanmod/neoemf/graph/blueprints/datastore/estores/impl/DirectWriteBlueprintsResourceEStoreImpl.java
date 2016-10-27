@@ -36,10 +36,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
-import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWriteResourceEStore<BlueprintsPersistenceBackend> {
 
@@ -56,7 +57,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Vertex vertex = persistenceBackend.getVertex(object);
 		String propertyName = eAttribute.getName();
 		if (eAttribute.isMany()) {
@@ -67,7 +68,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object getReference(PersistentEObject object, EReference eReference, int index) {
 		Object returnValue = null;
 		Vertex vertex = persistenceBackend.getVertex(object);
 		Vertex referencedVertex;
@@ -85,16 +86,16 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 							.vertices(),
 					null);
 		}
-		if (referencedVertex != null) {
+		if (!isNull(referencedVertex)) {
 			returnValue = reifyVertex(referencedVertex);
 		}
 		return returnValue;
 	}
 
 	@Override
-	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		Object returnValue;
-		if (value == null) {
+		if (isNull(value)) {
 			returnValue = get(object, eAttribute, index);
 			clear(object, eAttribute);
 		} else {
@@ -114,9 +115,9 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		Object returnValue = null;
-		if (value == null) {
+		if (isNull(value)) {
 			returnValue = get(object, eReference, index);
 			clear(object, eReference);
 		} else {
@@ -131,7 +132,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 			if (!eReference.isMany()) {
 				Edge edge = Iterables.getOnlyElement(
 						vertex.getEdges(Direction.OUT, eReference.getName()), null);
-				if (edge != null) {
+				if (!isNull(edge)) {
 					Vertex referencedVertex = edge.getVertex(Direction.IN);
 					returnValue = reifyVertex(referencedVertex);
 					edge.remove();
@@ -158,31 +159,31 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected boolean isSetWithAttribute(PersistentEObject object, EAttribute eAttribute) {
+	protected boolean isSetAttribute(PersistentEObject object, EAttribute eAttribute) {
 		boolean returnValue = false;
 		Vertex vertex = persistenceBackend.getVertex(object);
-		if (vertex != null) {
+		if (!isNull(vertex)) {
 			String propertyName = eAttribute.getName();
 			if (eAttribute.isMany()) {
 				propertyName += SEPARATOR + SIZE_LITERAL;
 			}
-			returnValue = null != vertex.getProperty(propertyName);
+			returnValue = !isNull(vertex.getProperty(propertyName));
 		}
 		return returnValue;
 	}
 
 	@Override
-	protected boolean isSetWithReference(PersistentEObject object, EReference eReference) {
+	protected boolean isSetReference(PersistentEObject object, EReference eReference) {
 		boolean returnValue = false;
 		Vertex vertex = persistenceBackend.getVertex(object);
-		if (vertex != null) {
+		if (!isNull(vertex)) {
 			returnValue = !Iterables.isEmpty(vertex.getVertices(Direction.OUT, eReference.getName()));
 		}
 		return returnValue;
 	}
 
 	@Override
-	protected void unsetWithAttribute(PersistentEObject object, EAttribute eAttribute) {
+	protected void unsetAttribute(PersistentEObject object, EAttribute eAttribute) {
 		Vertex vertex = persistenceBackend.getVertex(object);
 		String propertyName = eAttribute.getName();
 		if (eAttribute.isMany()) {
@@ -196,11 +197,11 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected void unsetWithReference(PersistentEObject object, EReference eReference) {
+	protected void unsetReference(PersistentEObject object, EReference eReference) {
 		Vertex vertex = persistenceBackend.getVertex(object);
 		if (!eReference.isMany()) {
 			Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, eReference.getName()), null);
-			if (edge != null) {
+			if (!isNull(edge)) {
 				edge.remove();
 			}
 		} else {
@@ -215,12 +216,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	public int size(InternalEObject object, EStructuralFeature feature) {
 	    checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
 		Vertex vertex = persistenceBackend.getVertex(object);
-		return vertex != null ? getSize(vertex, feature) : 0;
+		return isNull(vertex) ? 0 : getSize(vertex, feature);
 	}
 
 	protected Integer getSize(Vertex vertex, EStructuralFeature feature) {
 		Integer size = vertex.getProperty(feature.getName() + SEPARATOR + SIZE_LITERAL);
-		return size != null ? size : 0;
+		return isNull(size) ? 0 : size;
 	}
 
 	private void setSize(Vertex vertex, EStructuralFeature feature, int size) {
@@ -228,12 +229,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected boolean containsWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+	protected boolean containsAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
 		return ArrayUtils.contains(toArray(object, eAttribute), value);
 	}
 
 	@Override
-	protected boolean containsWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+	protected boolean containsReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
 		Vertex v = persistenceBackend.getOrCreateVertex(object);
 		for (Vertex vOut : v.getVertices(Direction.OUT, eReference.getName())) {
 			if (vOut.getId().equals(value.id().toString())) {
@@ -244,13 +245,13 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected int indexOfWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+	protected int indexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
 		return ArrayUtils.indexOf(toArray(object, eAttribute), value);
 	}
 
 	@Override
-	protected int indexOfWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
-	    if (value != null) {
+	protected int indexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+	    if (!isNull(value)) {
 			Vertex inVertex = persistenceBackend.getVertex(object);
 			Vertex outVertex = persistenceBackend.getVertex(value);
 			for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
@@ -263,14 +264,14 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected int lastIndexOfWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+	protected int lastIndexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
 		return ArrayUtils.lastIndexOf(toArray(object, eAttribute), value);
 	}
 
 	@Override
-	protected int lastIndexOfWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+	protected int lastIndexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
 		int resultValue;
-		if (value == null) {
+		if (isNull(value)) {
 			resultValue = ArrayUtils.INDEX_NOT_FOUND;
 		} else {
 			Vertex inVertex = persistenceBackend.getVertex(object);
@@ -278,12 +279,12 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 			Edge lastPositionEdge = null;
 			for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
 				if (e.getVertex(Direction.OUT).equals(inVertex)
-						&& (lastPositionEdge == null
+						&& (isNull(lastPositionEdge)
 						|| (int) e.getProperty(POSITION) > (int) lastPositionEdge.getProperty(POSITION))) {
 					lastPositionEdge = e;
 				}
 			}
-			if (lastPositionEdge == null) {
+			if (isNull(lastPositionEdge)) {
 				resultValue = ArrayUtils.INDEX_NOT_FOUND;
 			}
 			else {
@@ -294,7 +295,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if(index == EStore.NO_INDEX) {
 			/*
 			 * Handle NO_INDEX index, which represent direct-append feature.
@@ -316,7 +317,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if(index == EStore.NO_INDEX) {
 			/*
 			 * Handle NO_INDEX index, which represent direct-append feature.
@@ -356,7 +357,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Vertex vertex = persistenceBackend.getVertex(object);
 		Integer size = getSize(vertex, eAttribute);
 		Object returnValue;
@@ -373,7 +374,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
 		Vertex vertex = persistenceBackend.getVertex(object);
 		String referenceName = eReference.getName();
 		Integer size = getSize(vertex, eReference);
@@ -411,7 +412,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected void clearWithAttribute(PersistentEObject object, EAttribute eAttribute) {
+	protected void clearAttribute(PersistentEObject object, EAttribute eAttribute) {
 		Vertex vertex = persistenceBackend.getVertex(object);
 		Integer size = getSize(vertex, eAttribute);
 		for (int i = 0; i < size; i++) {
@@ -421,7 +422,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	}
 
 	@Override
-	protected void clearWithReference(PersistentEObject object, EReference eReference) {
+	protected void clearReference(PersistentEObject object, EReference eReference) {
 		Vertex vertex = persistenceBackend.getOrCreateVertex(object);
 		for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges()) {
 			edge.remove();
@@ -434,7 +435,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		InternalEObject returnValue = null;
 		Vertex vertex = persistenceBackend.getVertex(object);
 		Vertex containerVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, CONTAINER), null);
-		if (containerVertex != null) {
+		if (!isNull(containerVertex)) {
 			returnValue = reifyVertex(containerVertex);
 		}
 		return returnValue;
@@ -445,10 +446,10 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 		EStructuralFeature resultValue = null;
 		Vertex vertex = persistenceBackend.getVertex(object);
 		Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, CONTAINER), null);
-		if (edge != null) {
+		if (!isNull(edge)) {
 			String featureName = edge.getProperty(CONTAINING_FEATURE);
 			Vertex containerVertex = edge.getVertex(Direction.IN);
-	        if (featureName != null) {
+	        if (!isNull(featureName)) {
                 EObject container = reifyVertex(containerVertex);
 				resultValue = container.eClass().getEStructuralFeature(featureName);
 			}
@@ -487,7 +488,7 @@ public class DirectWriteBlueprintsResourceEStoreImpl extends AbstractDirectWrite
 	@Override
 	public EObject eObject(Id uriFragment) {
 		Vertex vertex = persistenceBackend.getVertex(uriFragment);
-		return vertex != null ? reifyVertex(vertex) : null;
+		return isNull(vertex) ? null : reifyVertex(vertex);
 	}
 
 	@Override

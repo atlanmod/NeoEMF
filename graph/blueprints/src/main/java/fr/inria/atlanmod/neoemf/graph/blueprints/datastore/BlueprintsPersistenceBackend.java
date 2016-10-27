@@ -52,6 +52,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
 
@@ -83,7 +84,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		this.loadedVerticesCache = CacheBuilder.newBuilder().softValues().build();
 		this.indexedEClasses = new ArrayList<>();
 		this.metaclassIndex = getIndex(METACLASSES, Vertex.class);
-		if(metaclassIndex == null) {
+		if(isNull(metaclassIndex)) {
 			metaclassIndex = createIndex(METACLASSES,Vertex.class);
 		}
 		this.isStarted = true;
@@ -205,7 +206,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		EClass eClass = persistentEObject.eClass();
 
 		Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, eClass.getName()), null);
-		if(eClassVertex == null) {
+		if(isNull(eClassVertex)) {
 			eClassVertex = addVertex(eClass);
 			metaclassIndex.put(NAME, eClass.getName(), eClassVertex);
 			indexedEClasses.add(eClass);
@@ -239,13 +240,13 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	// FIXME Return of instance of non-static inner class 'NeoEdge'
 	public Edge getEdge(final Object id) {
         final Edge edge = getBaseGraph().getEdge(id);
-		return null != edge ? new NeoEdge(edge) : null;
+		return isNull(edge) ? null : new NeoEdge(edge);
     }
 
 	public EClass resolveInstanceOf(Vertex vertex) {
 		EClass returnValue = null;
 		Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, INSTANCE_OF), null);
-		if (eClassVertex != null) {
+		if (!isNull(eClassVertex)) {
 			String name = eClassVertex.getProperty(ECLASS_NAME);
 			String nsUri = eClassVertex.getProperty(EPACKAGE_NSURI);
 			returnValue = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
@@ -256,7 +257,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	public PersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
 		PersistentEObject persistentEObject = null;
 		Object id = vertex.getId();
-		if (eClass == null) {
+		if (isNull(eClass)) {
 			eClass = resolveInstanceOf(vertex);
 		}
 		try {
@@ -282,7 +283,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	 * Builds the {@code id} used to identify {@link EClass} {@link Vertex}es.
 	 */
 	protected String buildEClassId(EClass eClass) {
-		return eClass != null ? eClass.getName() + '@' + eClass.getEPackage().getNsURI() : null;
+		return isNull(eClass) ? null : eClass.getName() + '@' + eClass.getEPackage().getNsURI();
 	}
 	
 	/**
@@ -322,7 +323,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 			// Get all the vertices that are indexed with one of the EClass
 			for(EClass ec : eClassToFind) {
 				Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, ec.getName()), null);
-				if(metaClassVertex != null) {
+				if(!isNull(metaClassVertex)) {
 					Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
 					indexHits.put(ec, instanceVertexIterable);
 			    } else {
@@ -382,7 +383,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		@Override
         public PersistentEObject call() throws Exception {
             PersistentEObject persistentEObject;
-            if (eClass != null) {
+            if (!isNull(eClass)) {
                 EObject eObject;
                 if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
                     // Dynamic EMF

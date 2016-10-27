@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 public class PersistentResourceImpl extends ResourceImpl implements PersistentResource {
 
@@ -96,7 +97,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		try {
 			isLoading = true;
 			if (!isLoaded) {
-				if (getFile().exists() || uri.authority() != null) {
+				if (getFile().exists() || !isNull(uri.authority())) {
 				    // Check authority to enable remote resource loading
 					this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
 					this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
@@ -117,11 +118,11 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	@Override
 	public void save(Map<?, ?> options) throws IOException {
 
-		if (this.options != null) {
+		if (!isNull(this.options)) {
 			// Check that the save options do not collide with previous load options
 			for (Entry<?, ?> entry : options.entrySet()) {
 				if (this.options.containsKey(entry.getKey())
-						&& entry.getValue() != null
+						&& !isNull(entry.getValue())
 						&& !entry.getValue().equals(this.options.get(entry.getKey())))
 				{
 					throw new IOException(new InvalidOptionsException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString())));
@@ -150,7 +151,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	@Override
 	public EObject getEObject(String uriFragment) {
 		EObject eObject = eStore.eObject(new StringId(uriFragment));
-		return eObject != null ? eObject : super.getEObject(uriFragment);
+		return isNull(eObject) ? super.getEObject(uriFragment) : eObject;
 	}
 
 	@Override
@@ -159,7 +160,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		if(eObject.eResource() == this) {
 			// Try to adapt as a PersistentEObject and return the ID
 			PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
-			if (persistentEObject != null) {
+			if (!isNull(persistentEObject)) {
 				returnValue = persistentEObject.id().toString();
 			}
 		}
@@ -230,7 +231,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 	}
 
 	public static void shutdownWithoutUnload(PersistentResourceImpl resource) {
-		if (resource != null) {
+		if (!isNull(resource)) {
 			NeoLogger.info("Shutdown Without Unload of Persistent Resource : {0}", resource.getURI());
 			resource.shutdown();
 		}
@@ -284,7 +285,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		@Override
 		protected E validate(int index, E object) {
 			checkArgument(
-					canContainNull() || object != null,
+					canContainNull() || !isNull(object),
 					"The 'no null' constraint is violated"
 			);
 			return object;
@@ -331,7 +332,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		@Override
 		public NotificationChain inverseRemove(E object, NotificationChain notifications) {
 			InternalEObject eObject = (InternalEObject) object;
-			if (isLoaded || unloadingContents != null) {
+			if (isLoaded || !isNull(unloadingContents)) {
 				detached(eObject);
 			}
 			return eObject.eSetResource(null, notifications);
@@ -419,7 +420,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 		private void loaded() {
 			if (!isLoaded()) {
 				Notification notification = setLoaded(true);
-				if (notification != null) {
+				if (!isNull(notification)) {
 					eNotify(notification);
 				}
 			}

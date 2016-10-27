@@ -43,13 +43,14 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
 	private static PersistenceBackendFactory INSTANCE;
 
 	public static PersistenceBackendFactory getInstance() {
-		if (INSTANCE == null) {
+		if (isNull(INSTANCE)) {
 			INSTANCE = new MapPersistenceBackendFactory();
 		}
 		return INSTANCE;
@@ -121,7 +122,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 		List<StoreOption> storeOptions = storeOptionsFrom(options);
 
 		// Store
-		if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreMapOption.AUTOCOMMIT))) {
+		if(isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreMapOption.AUTOCOMMIT))) {
 			eStore = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
         }
         else if (storeOptions.contains(EStoreMapOption.CACHED_MANY)) {
@@ -134,13 +135,12 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 			eStore = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
         // Autocommit
-        if (eStore != null) {
-			if(storeOptions != null && storeOptions.contains(EStoreMapOption.AUTOCOMMIT)) {
-				eStore = new AutocommitEStoreDecorator(eStore);
-            }
-        } else {
+		if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
+		else if (!isNull(storeOptions) && storeOptions.contains(EStoreMapOption.AUTOCOMMIT)) {
+			eStore = new AutocommitEStoreDecorator(eStore);
+		}
 		return eStore;
 	}
 

@@ -19,6 +19,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 /**
  * A cache for feature values.
  *
@@ -87,7 +89,7 @@ public class ValueCache<V> {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (isNull(obj) || getClass() != obj.getClass()) {
                 return false;
             }
             CacheKey other = (CacheKey) obj;

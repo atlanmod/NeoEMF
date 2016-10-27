@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.io.beans;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import static java.util.Objects.isNull;
+
 /**
  * A namespace identified by a prefix and a URI.
  */
@@ -49,7 +51,7 @@ public class Namespace {
         private static Registry INSTANCE;
 
         public static Registry getInstance() {
-            if (INSTANCE == null) {
+            if (isNull(INSTANCE)) {
                 INSTANCE = new Registry();
             }
             return INSTANCE;
@@ -84,7 +86,7 @@ public class Namespace {
          * namespace is registered with this {@code prefix}
          */
         public Namespace getFromPrefix(String prefix) {
-            if (prefix == null) {
+            if (isNull(prefix)) {
                 return null;
             }
             return namespacesByPrefix.getIfPresent(prefix);
@@ -100,7 +102,7 @@ public class Namespace {
          * namespace is registered with this {@code uri}.
          */
         public Namespace getFromUri(String uri) {
-            if (uri == null) {
+            if (isNull(uri)) {
                 return null;
             }
             return namespacesByUri.getIfPresent(uri);

@@ -47,13 +47,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
 
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
 	private static PersistenceBackendFactory INSTANCE;
 
 	public static PersistenceBackendFactory getInstance() {
-		if (INSTANCE == null) {
+		if (isNull(INSTANCE)) {
 			INSTANCE = new BlueprintsPersistenceBackendFactory();
 		}
 		return INSTANCE;
@@ -117,7 +118,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 
 			// Check we have a valid graph type, it is needed to get the graph name
 			String graphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
-			if (graphType == null) {
+			if (isNull(graphType)) {
 				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
 			}
 
@@ -154,7 +155,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
                 neoConfig.setProperty(BACKEND_PROPERTY, BLUEPRINTS_BACKEND);
             }
 		} finally {
-			if (configuration != null) {
+			if (!isNull(configuration)) {
 				try {
 					configuration.save();
 				} catch (ConfigurationException e) {
@@ -165,7 +166,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 					NeoLogger.warn(e);
 				}
 			}
-			if(neoConfig != null) {
+			if(!isNull(neoConfig)) {
 			    try {
 			        neoConfig.save();
 			    } catch(ConfigurationException e) {
@@ -185,7 +186,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 		List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
 
 		// Store
-		if(storeOptions == null || storeOptions.isEmpty()) {
+		if(isNull(storeOptions) || storeOptions.isEmpty()) {
 			eStore = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend)backend);
     	}
 		else {
@@ -199,7 +200,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 		        throw new InvalidDataStoreException("No valid base EStore found in the options");
 		    }
 		}
-		if(storeOptions != null && storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
+		if(!isNull(storeOptions) && storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
 		    if(options.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK)) {
 		        int autoCommitChunk = Integer.parseInt((String)options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK));
 		        eStore = new AutocommitEStoreDecorator(eStore, autoCommitChunk);

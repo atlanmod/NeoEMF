@@ -42,6 +42,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class MigrateCommand extends AbstractHandler {
 
     private ISelection selection;
@@ -60,17 +62,17 @@ public class MigrateCommand extends AbstractHandler {
             protected IStatus run(IProgressMonitor monitor) {
                 try {
                     IFile file = getFile();
-                    if (file == null) {
+                    if (isNull(file)) {
                         showMessage("The selected element is not a *.genmodel file.", true);
                     }
                     else {
                         GenModel genModel = getGenModel(file);
-                        if (genModel == null) {
+                        if (isNull(genModel)) {
                             showMessage("The selected file does not contain a generator model.", true);
                         }
                         else {
                             String msg = NeoEMFImporterUtil.adjustGenModel(genModel);
-                            if (msg == null) {
+                            if (isNull(msg)) {
                                 showMessage("The selected generator model was already migrated.", false);
                             }
                             else {

@@ -34,6 +34,8 @@ import org.eclipse.emf.ecore.util.EcoreEMap;
 
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
 	private static final int UNSETTED_FEATURE_ID = -1;
@@ -94,7 +96,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 	@Override
 	public InternalEObject eInternalContainer() {
 		// Do not load the container from the eStore here: it creates an important overhead and performance loss
-		return eContainer == null ? super.eInternalContainer() : eContainer;
+		return isNull(eContainer) ? super.eInternalContainer() : eContainer;
 	}
 
 	@Override
@@ -119,7 +121,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 	@Override
 	protected void eBasicSetContainer(InternalEObject newContainer) {
 		eContainer = newContainer;
-		if (newContainer != null && newContainer.eResource() != resource) {
+		if (!isNull(newContainer) && newContainer.eResource() != resource) {
 			resource((Resource.Internal) eContainer.eResource());
 		}
 	}
@@ -128,9 +130,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 	public int eContainerFeatureID() {
 		if (eContainerFeatureId == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
 			EReference containingFeature = (EReference) eStore().getContainingFeature(this);
-			if (containingFeature != null) {
+			if (!isNull(containingFeature)) {
 				EReference oppositeFeature = containingFeature.getEOpposite();
-				if (oppositeFeature != null) {
+				if (!isNull(oppositeFeature)) {
 					eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
 				} else {
 					eBasicSetContainerFeatureID(
@@ -149,7 +151,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 
 	@Override
 	public Resource eResource() {
-		return resource != null ? resource : super.eResource();
+		return isNull(resource) ? super.eResource() : resource;
 	}
 
 	@Override
@@ -168,21 +170,21 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 			eStore = new OwnedTransientEStoreImpl(this);
 		}
 		// Move contents from oldStore to eStore
-		if (oldStore != null && eStore != null && eStore != oldStore) {
+		if (!isNull(oldStore) && !isNull(eStore) && eStore != oldStore) {
 			// If the new store is different, initialize the new store
 			// with the data stored in the old store
 			for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
 				if (oldStore.isSet(this, feature)) {
 					if (!feature.isMany()) {
 						Object value = getAdaptedValue(oldStore, feature, EStore.NO_INDEX);
-						if (value != null) {
+						if (!isNull(value)) {
 							eStore.set(this, feature, EStore.NO_INDEX, value);
 						}
 					} else {
 						eStore.clear(this, feature);
 						for (int i = 0; i < oldStore.size(this, feature); i++) {
 							Object value = getAdaptedValue(oldStore, feature, i);
-							if (value != null) {
+							if (!isNull(value)) {
 								eStore.add(this, feature, i, value);
 							}
 						}
@@ -194,7 +196,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 
 	private Object getAdaptedValue(EStore store, EStructuralFeature feature, int index) {
 		Object value = store.get(this, feature, index);
-		if (value != null) {
+		if (!isNull(value)) {
 			if(feature instanceof EReference) {
 				EReference eRef = (EReference)feature;
 				if(eRef.isContainment()) {
@@ -210,7 +212,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 
 	@Override
 	public EStore eStore() {
-		if (eStore == null) {
+		if (isNull(eStore)) {
 			eStore = new OwnedTransientEStoreImpl(this);
 		}
 		return eStore;
@@ -246,7 +248,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 		final EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 		final EClassifier eType = feature.getEType();
 		if (feature.isMany()) {
-		    if(eType.getInstanceClassName() != null && eType.getInstanceClassName().equals("java.util.Map$Entry")) {
+		    if(!isNull(eType.getInstanceClassName()) && eType.getInstanceClassName().equals("java.util.Map$Entry")) {
 				returnValue = new EStoreEcoreEMap(eType, feature);
 		    }
 		    else {
@@ -274,7 +276,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null || getClass() != obj.getClass()) {
+		if (isNull(obj) || getClass() != obj.getClass()) {
 			return false;
 		}
 		PersistentEObject other = (PersistentEObject) obj;
@@ -291,19 +293,19 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 	    {
 	      result.append(" (eProxyURI: ");
 	      result.append(eProxyURI());
-	      if (eDynamicClass() != null)
+	      if (!isNull(eDynamicClass()))
 	      {
 	        result.append(" eClass: ");
 	        result.append(eDynamicClass());
 	      }
 	      result.append(')');
 	    }
-	    else if (eDynamicClass() != null)
+	    else if (!isNull(eDynamicClass()))
 	    {
 	      result.append(" (eClass: ");
 	      result.append(eDynamicClass());
 	      result.append(')');
-	    } else if (eStaticClass() != null) {
+	    } else if (!isNull(eStaticClass())) {
 		      result.append(" (eClass: ");
 		      result.append(eStaticClass());
 		      result.append(')');
@@ -364,12 +366,11 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
 		}
 
 		/**
-         * Override the default implementation which relies on size() to compute
-         * the insertion index by providing a custom NO_INDEX features, meaning that
-         * the back-end has to append the result to the existing list
+         * Override the default implementation which relies on size() to compute the insertion index by providing a
+		 * custom NO_INDEX features, meaning that the back-end has to append the result to the existing list.
          *
-         * This behavior allows fast write operation on back-ends which would otherwise
-         * need to deserialize the underlying list to add the element at the specified index
+         * This behavior allows fast write operation on back-ends which would otherwise need to deserialize the
+		 * underlying list to add the element at the specified index.
          */
         @Override
         public boolean add(Object object)

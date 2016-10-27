@@ -27,6 +27,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 
+import static java.util.Objects.isNull;
+
 public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBackend> implements PersistentEStore {
 
     private final Resource.Internal resource;
@@ -47,19 +49,19 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public Object get(InternalEObject object, EStructuralFeature feature, int index) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            return getWithAttribute(eObject, (EAttribute) feature, index);
+            return getAttribute(eObject, (EAttribute) feature, index);
         } else if (feature instanceof EReference) {
-            return getWithReference(eObject, (EReference) feature, index);
+            return getReference(eObject, (EReference) feature, index);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+    protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+    protected Object getReference(PersistentEObject object, EReference eReference, int index) {
         throw new UnsupportedOperationException();
     }
 
@@ -67,20 +69,20 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            return setWithAttribute(eObject, (EAttribute) feature, index, value);
+            return setAttribute(eObject, (EAttribute) feature, index, value);
         } else if (feature instanceof EReference) {
             PersistentEObject referencedEObject = PersistentEObjectAdapter.getAdapter(value);
-            return setWithReference(eObject, (EReference) feature, index, referencedEObject);
+            return setReference(eObject, (EReference) feature, index, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
@@ -88,19 +90,19 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public boolean isSet(InternalEObject object, EStructuralFeature feature) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            return isSetWithAttribute(eObject, (EAttribute) feature);
+            return isSetAttribute(eObject, (EAttribute) feature);
         } else if (feature instanceof EReference) {
-            return isSetWithReference(eObject, (EReference) feature);
+            return isSetReference(eObject, (EReference) feature);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected boolean isSetWithAttribute(PersistentEObject object, EAttribute eAttribute) {
+    protected boolean isSetAttribute(PersistentEObject object, EAttribute eAttribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean isSetWithReference(PersistentEObject object, EReference eReference) {
+    protected boolean isSetReference(PersistentEObject object, EReference eReference) {
         throw new UnsupportedOperationException();
     }
 
@@ -108,19 +110,19 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public void unset(InternalEObject object, EStructuralFeature feature) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            unsetWithAttribute(eObject, (EAttribute) feature);
+            unsetAttribute(eObject, (EAttribute) feature);
         } else if (feature instanceof EReference) {
-            unsetWithReference(eObject, (EReference) feature);
+            unsetReference(eObject, (EReference) feature);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected void unsetWithAttribute(PersistentEObject object, EAttribute eAttribute) {
+    protected void unsetAttribute(PersistentEObject object, EAttribute eAttribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected void unsetWithReference(PersistentEObject object, EReference eReference) {
+    protected void unsetReference(PersistentEObject object, EReference eReference) {
         throw new UnsupportedOperationException();
     }
 
@@ -131,26 +133,26 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
 
     @Override
     public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-        if (value == null) {
+        if (isNull(value)) {
             return false;
         }
 
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            return containsWithAttribute(eObject, (EAttribute) feature, value);
+            return containsAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
             PersistentEObject referencedEObject = PersistentEObjectAdapter.getAdapter(value);
-            return containsWithReference(eObject, (EReference) feature, referencedEObject);
+            return containsReference(eObject, (EReference) feature, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected boolean containsWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+    protected boolean containsAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean containsWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected boolean containsReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
@@ -158,20 +160,20 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if(feature instanceof EAttribute) {
-            return indexOfWithAttribute(eObject, (EAttribute) feature, value);
+            return indexOfAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
             PersistentEObject referencedEObject = PersistentEObjectAdapter.getAdapter(value);
-            return indexOfWithReference(eObject, (EReference) feature, referencedEObject);
+            return indexOfReference(eObject, (EReference) feature, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected int indexOfWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+    protected int indexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected int indexOfWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected int indexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
@@ -179,20 +181,20 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if(feature instanceof EAttribute) {
-            return lastIndexOfWithAttribute(eObject, (EAttribute) feature, value);
+            return lastIndexOfAttribute(eObject, (EAttribute) feature, value);
         } else if(feature instanceof EReference) {
             PersistentEObject referencedEObject = PersistentEObjectAdapter.getAdapter(value);
-            return lastIndexOfWithReference(eObject, (EReference) feature, referencedEObject);
+            return lastIndexOfReference(eObject, (EReference) feature, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected int lastIndexOfWithAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+    protected int lastIndexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected int lastIndexOfWithReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected int lastIndexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
@@ -200,20 +202,20 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            addWithAttribute(eObject, (EAttribute) feature, index, value);
+            addAttribute(eObject, (EAttribute) feature, index, value);
         } else if (feature instanceof EReference) {
             PersistentEObject referencedEObject = PersistentEObjectAdapter.getAdapter(value);
-            addWithReference(eObject, (EReference) feature, index, referencedEObject);
+            addReference(eObject, (EReference) feature, index, referencedEObject);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
@@ -221,19 +223,19 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            return removeWithAttribute(eObject, (EAttribute) feature, index);
+            return removeAttribute(eObject, (EAttribute) feature, index);
         } else if (feature instanceof EReference) {
-            return removeWithReference(eObject, (EReference) feature, index);
+            return removeReference(eObject, (EReference) feature, index);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+    protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
+    protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
         throw new UnsupportedOperationException();
     }
 
@@ -241,19 +243,19 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     public void clear(InternalEObject object, EStructuralFeature feature) {
         PersistentEObject eObject = PersistentEObjectAdapter.getAdapter(object);
         if (feature instanceof EAttribute) {
-            clearWithAttribute(eObject, (EAttribute) feature);
+            clearAttribute(eObject, (EAttribute) feature);
         } else if (feature instanceof EReference) {
-            clearWithReference(eObject, (EReference) feature);
+            clearReference(eObject, (EReference) feature);
         } else {
             throw new IllegalArgumentException(feature.toString());
         }
     }
 
-    protected void clearWithAttribute(PersistentEObject object, EAttribute eAttribute) {
+    protected void clearAttribute(PersistentEObject object, EAttribute eAttribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected void clearWithReference(PersistentEObject object, EReference eReference) {
+    protected void clearReference(PersistentEObject object, EReference eReference) {
         throw new UnsupportedOperationException();
     }
 
@@ -298,11 +300,17 @@ public abstract class AbstractDirectWriteResourceEStore<P extends PersistenceBac
     }
 
     protected Object parseProperty(EAttribute eAttribute, Object property) {
-        return property != null ? EcoreUtil.createFromString(eAttribute.getEAttributeType(), property.toString()) : null;
+        if (isNull(property)) {
+            return null;
+        }
+        return EcoreUtil.createFromString(eAttribute.getEAttributeType(), property.toString());
     }
 
     protected Object serializeToProperty(EAttribute eAttribute, Object value) {
-        return value != null ? EcoreUtil.convertToString(eAttribute.getEAttributeType(), value) : null;
+        if (isNull(value)) {
+            return null;
+        }
+        return EcoreUtil.convertToString(eAttribute.getEAttributeType(), value);
     }
 
     @Override

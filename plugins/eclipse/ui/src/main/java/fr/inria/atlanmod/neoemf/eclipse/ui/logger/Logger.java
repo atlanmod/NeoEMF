@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import static java.util.Objects.isNull;
+
 public class Logger {
 
     public static final int SEVERITY_CANCEL = IStatus.CANCEL;
@@ -33,7 +35,7 @@ public class Logger {
 
     public static void log(int severity, Throwable e) {
         log.log(new Status(severity, NeoEMFUiPlugin.PLUGIN_ID,
-                           e.getMessage() != null ? e.getMessage() : e.toString(), e));
+                           !isNull(e.getMessage()) ? e.getMessage() : e.toString(), e));
     }
 
     public static void log(int severity, String msg, Throwable e) {

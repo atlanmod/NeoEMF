@@ -27,6 +27,8 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
     /**
@@ -41,7 +43,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         PersistentEStore eStore = internalCreatePersistentEStore(resource, backend, options);
         List<StoreOption> storeOptions = storeOptionsFrom(options);
 
-        if (storeOptions != null && !storeOptions.isEmpty()) {
+        if (!isNull(storeOptions) && !storeOptions.isEmpty()) {
             if (storeOptions.contains(PersistentResourceOptions.EStoreOption.IS_SET_CACHING)) {
                 eStore = new IsSetCachingEStoreDecorator(eStore);
             }

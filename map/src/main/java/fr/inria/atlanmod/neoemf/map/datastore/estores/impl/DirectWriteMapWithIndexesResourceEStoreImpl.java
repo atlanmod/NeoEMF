@@ -24,6 +24,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import static java.util.Objects.isNull;
+
 
 public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapResourceEStoreImpl {
 
@@ -32,19 +34,19 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	}
 
 	@Override
-	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+	protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
 		Object value = persistenceBackend.valueAtIndex(new MultivaluedFeatureKey(object.id(), eAttribute.getName(), index));
 		return parseProperty(eAttribute, value);
 	}
 
 	@Override
-	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
+	protected Object getReference(PersistentEObject object, EReference eReference, int index) {
 		Object value = persistenceBackend.valueAtIndex(new MultivaluedFeatureKey(object.id(), eReference.getName(), index));
 		return eObject((Id) value);
 	}
 	
 	@Override
-	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+	protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
 		if (!eAttribute.isMany()) {
 			persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), EStore.NO_INDEX);
 		}
@@ -53,7 +55,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 	}
 
 	@Override
-	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+	protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
 		if (!eReference.isMany()) {
 			persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), EStore.NO_INDEX);
 		}
@@ -61,7 +63,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
 		Object oldId = persistenceBackend.storeValueAtIndex(new MultivaluedFeatureKey(object.id(), eReference.getName(), index), value.id());
-		if (oldId != null) {
+		if (!isNull(oldId)) {
 			returnValue = eObject((Id) oldId);
 		}
 		return returnValue;
@@ -72,7 +74,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		// Make space for the new element
 		Integer size = (Integer) persistenceBackend.valueOf(new FeatureKey(persistentEObject.id(), feature.getName()));
-		if (size == null) {
+		if (isNull(size)) {
 			size = 0;
 		}
 		for (int i = size - 1; i >= index; i--) {
@@ -114,7 +116,7 @@ public class DirectWriteMapWithIndexesResourceEStoreImpl extends DirectWriteMapR
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
 		Integer size = (Integer) persistenceBackend.valueOf(new FeatureKey(persistentEObject.id(), feature.getName()));
 
-		return size != null ? size : 0; 
+		return isNull(size) ? 0 : size;
 	}
 
 	@Override

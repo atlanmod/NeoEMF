@@ -31,6 +31,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import static java.util.Objects.isNull;
+
 /**
  * Create a dynamic instance of an {@link EClass}.
  */
@@ -50,7 +52,7 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
 
         URI uri = eClass.eResource().getURI();
         IStructuredSelection selection = StructuredSelection.EMPTY;
-        if (uri != null && uri.isHierarchical()) {
+        if (!isNull(uri) && uri.isHierarchical()) {
             if (uri.isRelative() || (uri = uri.deresolve(PLATFORM_RESOURCE)).isRelative()) {
                 IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toString()));
                 if (file.exists()) {
@@ -60,7 +62,7 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
         }
 
         // Register the EClass EPackage if it is not registered yet
-        if (EPackage.Registry.INSTANCE.getEPackage(eClass.getEPackage().getNsURI()) == null) {
+        if (isNull(EPackage.Registry.INSTANCE.getEPackage(eClass.getEPackage().getNsURI()))) {
             EPackage.Registry.INSTANCE.put(eClass.getEPackage().getNsURI(), eClass.getEPackage());
         }
 

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 /**
  * A simple {@link InternalEObject.EStore} implementation that uses collections to store the data in memory.
  */
@@ -44,7 +46,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 			returnValue = singleMap.get(entry);
 		} else {
 			List<Object> saved = manyMap.get(entry);
-			if (saved != null) {
+			if (!isNull(saved)) {
 				returnValue = saved.get(index);
 			} else {
 			    // The list is empty (since it is not persisted in the manyMap object)
@@ -64,7 +66,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> saved = manyMap.get(entry);
-		if (saved != null) {
+		if (!isNull(saved)) {
 		    if(index == InternalEObject.EStore.NO_INDEX) {
 		        /*
 		         * Handle NO_INDEX index, which represent direct-append feature.
@@ -91,7 +93,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> saved = manyMap.get(entry);
-        if (saved != null) {
+        if (!isNull(saved)) {
             return saved.remove(index);
         } else {
             // The list is empty (since it is not persisted in the manyMap object)
@@ -112,7 +114,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	public void clear(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		if (list != null) {
+		if (!isNull(list)) {
 			list.clear();
 		}
 	}
@@ -134,49 +136,49 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	public int size(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		return list != null ? list.size() : 0;
+		return isNull(list) ? 0 : list.size();
 	}
 
 	@Override
 	public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		return list != null ? list.indexOf(value) : -1;
+		return isNull(list) ? -1 : list.indexOf(value);
 	}
 
 	@Override
 	public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		return list != null ? list.lastIndexOf(value) : -1;
+		return isNull(list) ? -1 : list.lastIndexOf(value);
 	}
 
 	@Override
 	public Object[] toArray(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		return list != null ? list.toArray() : new Object[] {};
+		return isNull(list) ? new Object[]{} : list.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		return list != null ? list.toArray(array) : Arrays.copyOf(array, 0);
+		return isNull(list) ? Arrays.copyOf(array, 0) : list.toArray(array);
 	}
 
 	@Override
 	public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> res = manyMap.get(entry);
-		return res == null || res.isEmpty();
+		return isNull(res) || res.isEmpty();
 	}
 
 	@Override
 	public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
-		return list != null && list.contains(value);
+		return !isNull(list) && list.contains(value);
 	}
 
 	@Override
@@ -184,7 +186,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 		EStoreKey entry = new EStoreKey(eObject, feature);
 		List<Object> list = manyMap.get(entry);
 		// Return the default hashCode value if the list is empty
-		return list != null ? list.hashCode() : 1;
+		return isNull(list) ? 1 : list.hashCode();
 	}
 
 	@Override
@@ -223,7 +225,7 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 			if (this == obj) {
 				return true;
 			}
-			if (obj == null || getClass() != obj.getClass()) {
+			if (isNull(obj) || getClass() != obj.getClass()) {
 				return false;
 			}
 			EStoreKey other = (EStoreKey) obj;

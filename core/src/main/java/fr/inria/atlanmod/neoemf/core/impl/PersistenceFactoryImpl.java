@@ -17,12 +17,14 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
+import static java.util.Objects.isNull;
+
 public final class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
 
 	private static PersistenceFactory INSTANCE;
 
 	public static PersistenceFactory getInstance() {
-		if (INSTANCE == null) {
+		if (isNull(INSTANCE)) {
 			INSTANCE = new PersistenceFactoryImpl();
 		}
 		return INSTANCE;

@@ -20,9 +20,11 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EClassImpl;
 import org.eclipse.emf.ecore.util.EContentsEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
 
@@ -39,7 +41,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         NeoEContentsEList<E> contentEList;
         EStructuralFeature[] eStructuralFeatures =
                 ((EClassImpl.FeatureSubsetSupplier) eObject.eClass().getEAllStructuralFeatures()).containments();
-        if (eStructuralFeatures == null) {
+        if (isNull(eStructuralFeatures)) {
             contentEList = NeoEContentsEList.emptyNeoContentsEList();
         }
         else {

@@ -32,6 +32,7 @@ import java.util.Deque;
 import java.util.NoSuchElementException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An handler able to persist newly created data in a {@link PersistenceBackend persistence backend}.
@@ -117,7 +118,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     @Override
     public void handleAttribute(final Attribute attribute) throws Exception {
         Id id;
-        if (attribute.getId() == null) {
+        if (isNull(attribute.getId())) {
             id = elementIdStack.getLast();
         } else {
             id = getOrCreateId(attribute.getId());
@@ -135,7 +136,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     @Override
     public void handleReference(final Reference reference) throws Exception {
         Id id;
-        if (reference.getId() == null) {
+        if (isNull(reference.getId())) {
             id = elementIdStack.getLast();
         } else {
             id = getOrCreateId(reference.getId());
@@ -243,7 +244,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         Id id = metaclassIdCache.getIfPresent(idValue);
 
         // If metaclass doesn't already exist, we create it
-        if (id == null) {
+        if (isNull(id)) {
             id = createId(Identifier.generated(idValue));
             boolean conflict = false;
 
@@ -278,9 +279,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private Id getOrCreateId(final Identifier identifier) {
         Id id = conflictElementIdCache.getIfPresent(identifier.getValue());
-        if (id == null) {
+        if (isNull(id)) {
             id = elementIdCache.getIfPresent(identifier.getValue());
-            if (id == null) {
+            if (isNull(id)) {
                 id = createId(identifier);
                 elementIdCache.put(identifier.getValue(), id);
             }

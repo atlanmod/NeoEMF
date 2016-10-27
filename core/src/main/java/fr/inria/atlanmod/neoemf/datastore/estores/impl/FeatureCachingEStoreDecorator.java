@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import static java.util.Objects.isNull;
+
 /**
  * A {@link PersistentEStore} decorator that caches {@link EStructuralFeature structural features}.
  * 
@@ -37,7 +39,7 @@ public class FeatureCachingEStoreDecorator extends  AbstractEStoreDecorator {
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
 		Object returnValue = cache.getValueFromCache(object, feature, index);
-		if (returnValue == null) {
+		if (isNull(returnValue)) {
 			returnValue = super.get(object, feature, index);
 			cache.cacheValue(object, feature, index, returnValue);
 		}

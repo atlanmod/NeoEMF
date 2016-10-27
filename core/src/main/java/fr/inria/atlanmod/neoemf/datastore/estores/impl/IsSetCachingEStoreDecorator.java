@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import static java.util.Objects.isNull;
+
 /**
  * A {@link PersistentEStore} wrapper that caches the presence of a value.
  * 
@@ -43,7 +45,7 @@ public class IsSetCachingEStoreDecorator extends AbstractEStoreDecorator {
 	@Override
 	public boolean isSet(InternalEObject object, EStructuralFeature feature) {
 		Boolean isSet = cache.getValueFromCache(object, feature);
-		return isSet != null ? isSet : super.isSet(object, feature);
+		return isNull(isSet) ? super.isSet(object, feature) : isSet;
 	}
 
 	@Override
@@ -88,7 +90,7 @@ public class IsSetCachingEStoreDecorator extends AbstractEStoreDecorator {
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
 		Object returnValue = super.get(object, feature, index);
-		if (returnValue != null) {
+		if (!isNull(returnValue)) {
 			cache.cacheValue(object, feature, true);
 		}
 		return returnValue;

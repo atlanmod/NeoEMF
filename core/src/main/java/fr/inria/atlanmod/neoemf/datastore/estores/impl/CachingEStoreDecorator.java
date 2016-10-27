@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import static java.util.Objects.isNull;
+
 /**
  * A {@link PersistentEStore} decorator that caches the size data.
  * 
@@ -43,13 +45,13 @@ public class CachingEStoreDecorator extends AbstractEStoreDecorator{
 	@Override
 	public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
 		Integer size = cache.getValueFromCache(object, feature);
-		return size != null ? size == 0 : super.isEmpty(object, feature);
+		return isNull(size) ? super.isEmpty(object, feature) : (size == 0);
 	}
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		Integer size = cache.getValueFromCache(object, feature);
-		if (size == null) {
+		if (isNull(size)) {
 			size = super.size(object, feature);
 			cache.cacheValue(object, feature, size);
 		}
@@ -59,7 +61,7 @@ public class CachingEStoreDecorator extends AbstractEStoreDecorator{
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		Integer size = cache.getValueFromCache(object, feature);
-		if (size != null) {
+		if (!isNull(size)) {
 			cache.cacheValue(object, feature, size + 1);
 		} 
 		super.add(object, feature, index, value);
@@ -68,7 +70,7 @@ public class CachingEStoreDecorator extends AbstractEStoreDecorator{
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
 		Integer size = cache.getValueFromCache(object, feature);
-		if (size != null) {
+		if (!isNull(size)) {
 			cache.cacheValue(object, feature, size - 1);
 		} 
 		return super.remove(object, feature, index);

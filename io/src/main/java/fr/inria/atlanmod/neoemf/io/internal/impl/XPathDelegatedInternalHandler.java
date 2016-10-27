@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An {@link InternalHandler internal handler} that analyses XML elements in order to create and to process XPath
@@ -65,7 +66,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
     @Override
     public void handleStartElement(Classifier classifier) throws Exception {
-        if (classifier.getId() != null) {
+        if (!isNull(classifier.getId())) {
             hasIds = true;
         }
 
@@ -80,12 +81,12 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             String id = path + XPATH_INDEX_SEPARATOR + count;
 
             // Defines the XPath start of all elements from the root element
-            if (expressionStart == null) {
+            if (isNull(expressionStart)) {
                 expressionStart = id + XPATH_START_ELT;
             }
 
             // Defines the new identifier as identifier of the classifier if it not already exist
-            if (classifier.getId() == null) {
+            if (isNull(classifier.getId())) {
                 classifier.setId(Identifier.generated(id));
             }
         }
@@ -229,7 +230,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
             public Node getChild(String key) {
                 Node child = children.getIfPresent(key);
-                if (child == null) {
+                if (isNull(child)) {
                     throw new NoSuchElementException("No such element '" + key + "' in the element '" + this.key + "'");
                 }
                 return child;
@@ -245,7 +246,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             }
 
             public boolean hasChild(String key) {
-                return children.getIfPresent(key) != null;
+                return !isNull(children.getIfPresent(key));
             }
 
             public long size() {
