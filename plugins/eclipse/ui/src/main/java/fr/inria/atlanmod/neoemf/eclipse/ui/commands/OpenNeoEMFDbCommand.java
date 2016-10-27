@@ -73,6 +73,12 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
 
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
+				if(!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
+			    	PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+			    }
+			    if(!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
+			    	PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+			    }
 	            System.out.println(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
 		        File neoConfigFile = new File(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
 		        PropertiesConfiguration neoConfig;
