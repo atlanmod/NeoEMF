@@ -17,5 +17,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 public interface PersistentResourceFactory extends Resource.Factory {
 
-	PersistentResourceFactory eINSTANCE = PersistentResourceFactoryImpl.getInstance();
+	/**
+	 * Returns the default instance of this {@code PersistentResourceFactory factory}.
+	 */
+	static PersistentResourceFactory getInstance() {
+		return PersistentResourceFactoryImpl.getInstance();
+	}
 }

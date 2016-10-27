@@ -271,7 +271,7 @@ public class ImportTest extends AllInputTest {
             try {
                 eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
                 fail();
-            } catch (NullPointerException e) {
+            } catch (NullPointerException ignore) {
                 // It's good !
             }
         }
@@ -300,7 +300,7 @@ public class ImportTest extends AllInputTest {
             try {
                 EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
                 assertThat(eObjectReference.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
-            } catch (NullPointerException e) {
+            } catch (NullPointerException ignore) {
                 // It's good
             }
         }
@@ -364,7 +364,7 @@ public class ImportTest extends AllInputTest {
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(
                 NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                PersistentResourceFactory.eINSTANCE);
+                PersistentResourceFactory.getInstance());
 
         Resource resource = resourceSet.createResource(NeoBlueprintsURI.createNeoGraphURI(neo4jFile));
         resource.load(Collections.emptyMap());

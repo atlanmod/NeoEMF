@@ -62,9 +62,6 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'E'
     public E get(int index) {
         checkNotNull(eStructuralFeatures, "index=" + index + ", size=0");
-        if(eStructuralFeatures == null) {
-            throw new IndexOutOfBoundsException("index=" + index + ",size=0");
-        }
         // Find the feature to look for
         int featureSize = 0;
         for (EStructuralFeature eStructuralFeature : eStructuralFeatures) {

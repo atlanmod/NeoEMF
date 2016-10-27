@@ -8,8 +8,8 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
-package fr.inria.atlanmod.neoemf.eclipse.ui.commands;
 
+package fr.inria.atlanmod.neoemf.eclipse.ui.commands;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.wizards.DynamicModelWizard;
 
@@ -31,62 +31,60 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-
-
 /**
  * Create a dynamic instance of an {@link EClass}.
  */
 public class CreateDynamicInstanceCommand extends AbstractHandler {
-	protected static final URI PLATFORM_RESOURCE = URI.createPlatformResourceURI("/", false);
 
-	protected EClass eClass;
+    private static final URI PLATFORM_RESOURCE = URI.createPlatformResourceURI("/", false);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
-		initializeEClass(event);
-		
-		URI uri = eClass.eResource().getURI();
-		IStructuredSelection selection = StructuredSelection.EMPTY;
-		if (uri != null && uri.isHierarchical()) {
-			if (uri.isRelative() || (uri = uri.deresolve(PLATFORM_RESOURCE)).isRelative()) {
-				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toString()));
-				if (file.exists()) {
-					selection = new StructuredSelection(file);
-				}
-			}
-		}
+    private EClass eClass;
 
-		// Register the EClass EPackage if  it is not registered yet
-		if (EPackage.Registry.INSTANCE.getEPackage(eClass.getEPackage().getNsURI()) == null) {
-			EPackage.Registry.INSTANCE.put(eClass.getEPackage().getNsURI(), eClass.getEPackage());
-		}
-		
-		DynamicModelWizard dynamicModelWizard = new DynamicModelWizard(eClass);
-		dynamicModelWizard.init(PlatformUI.getWorkbench(), selection);
-		WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), dynamicModelWizard);
+    /* (non-Javadoc)
+     * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+     */
+    @Override
+    public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		wizardDialog.open();
-		return null;
-	}
+        initializeEClass(event);
 
-	public void initializeEClass(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		ISelectionService service = window.getSelectionService();
-		ISelection selection = service.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			Object object = ((IStructuredSelection) selection).getFirstElement();
-			if (object instanceof EClass) {
-				eClass = (EClass) object;
-				setEnabled(!eClass.isAbstract());
-				return;
-			}
-		}
-		eClass = null;
-		setEnabled(false);
-	}
-	
+        URI uri = eClass.eResource().getURI();
+        IStructuredSelection selection = StructuredSelection.EMPTY;
+        if (uri != null && uri.isHierarchical()) {
+            if (uri.isRelative() || (uri = uri.deresolve(PLATFORM_RESOURCE)).isRelative()) {
+                IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toString()));
+                if (file.exists()) {
+                    selection = new StructuredSelection(file);
+                }
+            }
+        }
+
+        // Register the EClass EPackage if it is not registered yet
+        if (EPackage.Registry.INSTANCE.getEPackage(eClass.getEPackage().getNsURI()) == null) {
+            EPackage.Registry.INSTANCE.put(eClass.getEPackage().getNsURI(), eClass.getEPackage());
+        }
+
+        DynamicModelWizard dynamicModelWizard = new DynamicModelWizard(eClass);
+        dynamicModelWizard.init(PlatformUI.getWorkbench(), selection);
+        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), dynamicModelWizard);
+
+        wizardDialog.open();
+        return null;
+    }
+
+    private void initializeEClass(ExecutionEvent event) throws ExecutionException {
+        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        ISelectionService service = window.getSelectionService();
+        ISelection selection = service.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            Object object = ((IStructuredSelection) selection).getFirstElement();
+            if (object instanceof EClass) {
+                eClass = (EClass) object;
+                setEnabled(!eClass.isAbstract());
+                return;
+            }
+        }
+        eClass = null;
+        setEnabled(false);
+    }
 }

@@ -23,11 +23,11 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.BlueprintsConfig;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.CachedManyDirectWriteBlueprintsRespirceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.EStoreGraphOption;
-import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
@@ -37,7 +37,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
@@ -61,9 +60,8 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 	}
 
 	/**
-	 * The configuration file name. This file stores the metadata information
-	 * about the underlying graph, i.e., graph type and other configuration
-	 * options.
+	 * The configuration file name. This file stores the metadata information about the underlying graph, i.e., graph
+	 * type and other configuration options.
 	 */
 	private static final String CONFIG_FILE = "config.properties";
 	public static final String BLUEPRINTS_BACKEND = "blueprints";
@@ -103,8 +101,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 			if (!configuration.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)) {
 				configuration.setProperty(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
 			} else if (options.containsKey(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE)) {
-				// The file already existed, check that the issued options
-				// are not conflictive
+				// The file already existed, check that the issued options are not conflictive
 				String savedGraphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
 				String issuedGraphType = options.get(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE).toString();
 				if (!savedGraphType.equals(issuedGraphType)) {
@@ -118,48 +115,22 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 				configuration.setProperty(e.getKey().toString(), e.getValue().toString());
 			}
 
-			// Check we have a valid graph type, it is needed to get the
-			// graph name
+			// Check we have a valid graph type, it is needed to get the graph name
 			String graphType = configuration.getString(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE);
 			if (graphType == null) {
 				throw new InvalidDataStoreException("Graph type is undefined for " + file.getAbsolutePath());
 			}
-			
+
+			// Define the configuration
 			String[] segments = graphType.split(GRAPH_SEPERATOR);
 			if(segments.length >= 2) {
-    			String graphName = segments[segments.length - 2];
-    			String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0))+graphName.substring(1);
-    			String configClassQualifiedName = MessageFormat.format("fr.inria.atlanmod.neoemf.graph.blueprints.{0}.config.Blueprints{1}Config", graphName, upperCaseGraphName);
-    			try {
-                    ClassLoader classLoader = BlueprintsPersistenceBackendFactory.class
-                            .getClassLoader();
-                    Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
-                    Field configClassInstanceField = configClass.getField("eINSTANCE");
-                    AbstractBlueprintsConfig configClassInstance = (AbstractBlueprintsConfig) configClassInstanceField
-                            .get(configClass);
-                    Method configMethod = configClass.getMethod("putDefaultConfiguration",
-                            Configuration.class, File.class);
-                    configMethod.invoke(configClassInstance, configuration, file);
-                    Method setGlobalSettingsMethod = configClass.getMethod("setGlobalSettings");
-                    setGlobalSettingsMethod.invoke(configClassInstance);
-                } catch (ClassNotFoundException e1) {
-                    NeoLogger.warn("Unable to find the configuration class {0}", configClassQualifiedName);
-                    e1.printStackTrace();
-                } catch (NoSuchFieldException e2) {
-                    NeoLogger.warn("Unable to find the static field eINSTANCE in class Blueprints{0}Config", upperCaseGraphName);
-                    e2.printStackTrace();
-                } catch (NoSuchMethodException e3) {
-                    NeoLogger.error("Unable to find configuration methods in class Blueprints{0}Config", upperCaseGraphName);
-                    e3.printStackTrace();
-                } catch (InvocationTargetException | IllegalAccessException e4) {
-                    NeoLogger.error("An error occurs during the execution of a configuration method", upperCaseGraphName);
-                    e4.printStackTrace();
-                }
+    			setBlueprintsConfiguration(segments[segments.length - 2], configuration, file);
             }
 			else {
 			    NeoLogger.warn("Unable to compute graph type name from {0}", graphType);
 			}
 
+			// Create graph
 			Graph baseGraph;
 			try {
 			    baseGraph = GraphFactory.open(configuration);
@@ -187,9 +158,11 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 				try {
 					configuration.save();
 				} catch (ConfigurationException e) {
-					// Unable to save configuration, supposedly it's a minor error,
-					// so we log it without rising an exception
-					NeoLogger.error(e);
+					/*
+					 * Unable to save configuration.
+					 * Supposedly it's a minor error, so we log it without rising an exception.
+					 */
+					NeoLogger.warn(e);
 				}
 			}
 			if(neoConfig != null) {
@@ -209,9 +182,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 				"Trying to create a Graph-based EStore with an invalid backend");
 
 		PersistentEStore eStore;
-
-		@SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'List<...>'
-		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+		List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
 
 		// Store
 		if(storeOptions == null || storeOptions.isEmpty()) {
@@ -251,5 +222,34 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 		BlueprintsPersistenceBackend bTo = (BlueprintsPersistenceBackend)to;
 	    GraphHelper.copyGraph(bFrom, bTo);
 	    bTo.initMetaClassesIndex(bFrom.getIndexedEClasses());
+	}
+
+	private BlueprintsConfig getBlueprintsConfiguration(String graphName) {
+		String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1);
+
+		String configClassQualifiedName = MessageFormat.format(
+				"fr.inria.atlanmod.neoemf.graph.blueprints.{0}.config.Blueprints{1}Config",
+				graphName, upperCaseGraphName);
+
+		BlueprintsConfig blueprintsConfig = null;
+		try {
+			ClassLoader classLoader = BlueprintsPersistenceBackendFactory.class.getClassLoader();
+			Class<?> configClass = classLoader.loadClass(configClassQualifiedName);
+			Method configClassInstanceMethod = configClass.getMethod("getInstance");
+			blueprintsConfig = (BlueprintsConfig) configClassInstanceMethod.invoke(configClass);
+		} catch (ClassNotFoundException e) {
+			NeoLogger.warn(e, "Unable to find the configuration class {0}", configClassQualifiedName);
+		} catch (NoSuchMethodException e) {
+			NeoLogger.error(e, "Unable to find configuration methods in class Blueprints{0}Config", upperCaseGraphName);
+		} catch (InvocationTargetException | IllegalAccessException e) {
+			NeoLogger.error(e, "An error occurs during the execution of a configuration method", upperCaseGraphName);
+		}
+		return blueprintsConfig;
+	}
+
+	private void setBlueprintsConfiguration(String graphName, Configuration configuration, File file) {
+		BlueprintsConfig blueprintsConfig = getBlueprintsConfiguration(graphName);
+		blueprintsConfig.putDefaultConfiguration(configuration, file);
+		blueprintsConfig.setGlobalSettings();
 	}
 }

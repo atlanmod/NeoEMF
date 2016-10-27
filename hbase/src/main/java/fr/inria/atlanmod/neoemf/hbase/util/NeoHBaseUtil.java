@@ -35,6 +35,8 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class NeoHBaseUtil {
 
     public static final int UUID_LENGTH = 23;
@@ -115,7 +117,7 @@ public class NeoHBaseUtil {
 		
 		public static String [] toStringsReferences(byte[] value) {
 			if (value != null) {
-				assert (value.length) % (UUID_LENGTH + 1) == UUID_LENGTH;
+				checkArgument(value.length % (UUID_LENGTH + 1) == UUID_LENGTH);
 				int length = (value.length + 1)/(UUID_LENGTH + 1);
 				
 				Iterator<String> iterator =  Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(value)).iterator();

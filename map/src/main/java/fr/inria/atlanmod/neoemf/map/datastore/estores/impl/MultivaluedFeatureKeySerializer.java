@@ -16,9 +16,6 @@ import org.mapdb.Serializer;
 
 import java.io.IOException;
 
-/**
- * Created by sunye on 13/10/2016.
- */
 public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
 
     Serializer<Integer> intSerializer = Serializer.INTEGER;
@@ -34,7 +31,7 @@ public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
         return new MultivaluedFeatureKey(
                 idSerializer.deserialize(input, -1),
                 stringSerializer.deserialize(input, -1),
-                intSerializer.deserialize(input, -1).intValue());
+                intSerializer.deserialize(input, -1));
     }
 
 }

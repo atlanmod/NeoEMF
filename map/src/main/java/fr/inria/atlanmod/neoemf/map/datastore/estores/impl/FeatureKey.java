@@ -15,16 +15,18 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Created by sunye on 13/10/2016.
- */
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class FeatureKey implements Comparable<FeatureKey>, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     final private Id id;
     final private String name;
 
     public FeatureKey(Id anId, String aString) {
-        assert anId != null: "FeatureKey Id should not be null";
-        assert aString != null: "FeatureKey feature name should not be null";
+        checkNotNull(anId, "FeatureKey Id should not be null");
+        checkNotNull(aString, "FeatureKey feature name should not be null");
 
         id = anId;
         name = aString;

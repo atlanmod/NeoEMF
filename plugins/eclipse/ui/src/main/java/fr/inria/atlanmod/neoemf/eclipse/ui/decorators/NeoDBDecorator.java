@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.eclipse.ui.decorators;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
@@ -20,13 +21,13 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 public class NeoDBDecorator extends LabelProvider implements ILabelDecorator {
-    
+
     @Override
     public Image decorateImage(Image image, Object element) {
-        if(element instanceof IFolder) {
-            IFolder folder = (IFolder)element;
+        if (element instanceof IFolder) {
+            IFolder folder = (IFolder) element;
             IFile configFile = folder.getFile(PersistenceBackendFactory.NEO_CONFIG_FILE);
-            if(configFile.exists()) {
+            if (configFile.exists()) {
                 // In a NeoEMF Database Folder
                 return NeoEMFUiPlugin.getImageDescriptor("icons/full/obj16/neoemf.png").createImage();
             }
@@ -39,5 +40,4 @@ public class NeoDBDecorator extends LabelProvider implements ILabelDecorator {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

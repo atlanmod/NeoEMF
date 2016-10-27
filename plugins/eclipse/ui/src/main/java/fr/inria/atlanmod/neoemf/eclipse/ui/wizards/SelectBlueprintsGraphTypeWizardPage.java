@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizards;
 
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -18,9 +19,7 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -42,317 +41,287 @@ import org.eclipse.ui.PlatformUI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
+class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
 
-	protected class GraphProperty {
-		protected String property;
-		protected String value;
+    // TODO: In the future an extension point or reflection should be used to determine the supported graph types
+    private static final String[] GRAPH_TYPES = new String[]{
+            "com.tinkerpop.blueprints.impls.tg.TinkerGraph",
+            "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph"
+    };
+    private ComboViewer comboViewer;
+    private TableViewer tableViewer;
 
-		public GraphProperty(String property, String value) {
-			this.property = property;
-			this.value = value;
-		}
-		
-		public String getProperty() {
-			return property;
-		}
+    private Button addButton;
+    private Button removeButton;
 
-		public String getValue() {
-			return value;
-		}
-		
-		public void setProperty(String property) {
-			this.property = property;
-		}
-		
-		public void setValue(String value) {
-			this.value = value;
-		}
+    private List<GraphProperty> graphProperties = new ArrayList<>();
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((property == null) ? 0 : property.hashCode());
-			result = prime * result + ((value == null) ? 0 : value.hashCode());
-			return result;
-		}
+    protected SelectBlueprintsGraphTypeWizardPage(String pageName, String title, ImageDescriptor titleImage) {
+        super(pageName, title, titleImage);
+    }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			GraphProperty other = (GraphProperty) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
-			if (property == null) {
-				if (other.property != null)
-					return false;
-			} else if (!property.equals(other.property))
-				return false;
-			if (value == null) {
-				if (other.value != null)
-					return false;
-			} else if (!value.equals(other.value))
-				return false;
-			return true;
-		}
+    @Override
+    public void createControl(Composite parent) {
+        initializeDialogUnits(parent);
 
-		private SelectBlueprintsGraphTypeWizardPage getOuterType() {
-			return SelectBlueprintsGraphTypeWizardPage.this;
-		}
-	}
-	
-	// TODO: In the future an extension point or reflection should be
-	// used to determine the supported graph types
-	protected static final String[] GRAPH_TYPES = new String[] { 
-		"com.tinkerpop.blueprints.impls.tg.TinkerGraph", 
-		"com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph" };
+        Composite composite = new Composite(parent, SWT.NONE);
+        composite.setLayout(new GridLayout(2, false));
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-	
-	protected ComboViewer comboViewer;
-	protected TableViewer tableViewer;
-	protected Button addButton;
-	protected Button removeButton;
+        Label typeLabel = new Label(composite, SWT.NONE);
+        typeLabel.setText("Graph type:");
 
-	protected List<GraphProperty> graphProperties = new ArrayList<>();
+        comboViewer = new ComboViewer(composite, SWT.READ_ONLY);
+        comboViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        comboViewer.setContentProvider(new ArrayContentProvider());
+        comboViewer.setInput(GRAPH_TYPES);
 
+        Label properties = new Label(composite, SWT.NONE);
+        properties.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+        properties.setText("Additional properties:");
 
-	
-	protected SelectBlueprintsGraphTypeWizardPage(String pageName, String title, ImageDescriptor titleImage) {
-		super(pageName, title, titleImage);
-	}
+        Composite tableComposite = new Composite(composite, SWT.NONE);
+        tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+        GridLayout tableLayout = new GridLayout(2, false);
+        tableLayout.marginWidth = 0;
+        tableLayout.marginHeight = 0;
+        tableComposite.setLayout(tableLayout);
 
-	@Override
-	public void createControl(Composite parent) {
-		initializeDialogUnits(parent);
+        Composite tableLayoutComposite = new Composite(tableComposite, SWT.NONE);
+        tableLayoutComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        TableColumnLayout tableColumnLayout = new TableColumnLayout();
+        tableLayoutComposite.setLayout(tableColumnLayout);
 
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        tableViewer = new TableViewer(tableLayoutComposite, SWT.FULL_SELECTION | SWT.BORDER);
+        tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        tableViewer.getTable().setHeaderVisible(true);
+        tableViewer.getTable().setLinesVisible(true);
 
-		Label typeLabel = new Label(composite, SWT.NONE);
-		typeLabel.setText("Graph type:");
+        createColumns();
+        tableColumnLayout.setColumnData(tableViewer.getTable().getColumn(0), new ColumnWeightData(20, 200, true));
+        tableColumnLayout.setColumnData(tableViewer.getTable().getColumn(1), new ColumnWeightData(20, 200, true));
 
-		comboViewer = new ComboViewer(composite, SWT.READ_ONLY);
-		comboViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		comboViewer.setContentProvider(new ArrayContentProvider());
-		comboViewer.setInput(GRAPH_TYPES);
-		
-		Label properties = new Label(composite, SWT.NONE);
-		properties.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
-		properties.setText("Additional properties:");
-		
-	
-		Composite tableComposite = new Composite(composite, SWT.NONE);
-		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		GridLayout tableLayout = new GridLayout(2, false);
-		tableLayout.marginWidth = 0;
-		tableLayout.marginHeight = 0;
-		tableComposite.setLayout(tableLayout);
+        tableViewer.setContentProvider(new ArrayContentProvider());
+        tableViewer.setInput(graphProperties);
+        tableViewer.addSelectionChangedListener(event -> removeButton.setEnabled(!event.getSelection().isEmpty()));
 
-		Composite tableLayoutComposite = new Composite(tableComposite, SWT.NONE);
-		tableLayoutComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		TableColumnLayout tableColumnLayout = new TableColumnLayout();
-		tableLayoutComposite.setLayout(tableColumnLayout);
-		
-		tableViewer = new TableViewer(tableLayoutComposite, SWT.FULL_SELECTION | SWT.BORDER);
-		tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		tableViewer.getTable().setHeaderVisible(true);
-		tableViewer.getTable().setLinesVisible(true);
+        Composite buttonsComposite = new Composite(tableComposite, SWT.NONE);
+        buttonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
+        buttonsComposite.setLayout(new FillLayout(SWT.VERTICAL));
 
-		createColumns();
-		tableColumnLayout.setColumnData(tableViewer.getTable().getColumn(0), new ColumnWeightData(20, 200, true)); 
-		tableColumnLayout.setColumnData(tableViewer.getTable().getColumn(1), new ColumnWeightData(20, 200, true)); 
+        addButton = new Button(buttonsComposite, SWT.PUSH);
+        addButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+        addButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                graphProperties.add(new GraphProperty("new.property.name", "value"));
+                tableViewer.refresh();
+            }
+        });
 
-		tableViewer.setContentProvider(new ArrayContentProvider());
-		tableViewer.setInput(graphProperties);
-		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				removeButton.setEnabled(!event.getSelection().isEmpty());
-			}
-		});
-		
-		Composite buttonsComposite = new Composite(tableComposite, SWT.NONE);
-		buttonsComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		buttonsComposite.setLayout(new FillLayout(SWT.VERTICAL));
+        removeButton = new Button(buttonsComposite, SWT.PUSH);
+        removeButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
+        removeButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                IStructuredSelection selection = IStructuredSelection.class.cast(tableViewer.getSelection());
+                if (!selection.isEmpty()) {
+                    GraphProperty selectedElement = GraphProperty.class.cast(selection.getFirstElement());
+                    graphProperties.remove(selectedElement);
+                    tableViewer.refresh();
+                }
+            }
+        });
+        removeButton.setEnabled(false);
 
-		addButton = new Button(buttonsComposite, SWT.PUSH);
-		addButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
-		addButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				graphProperties.add(new GraphProperty("new.property.name", "value"));
-				tableViewer.refresh();
-			}
-		});
-		
-		removeButton = new Button(buttonsComposite, SWT.PUSH);
-		removeButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
-				if (!selection.isEmpty()) {
-					graphProperties.remove(selection.getFirstElement());
-					tableViewer.refresh();
-				}
-			}
-		});
-		removeButton.setEnabled(false);
-		
-		configureDefaultValues();
-		setErrorMessage(null);
-		setMessage(null);
-		setControl(composite);
-	}
+        configureDefaultValues();
+        setErrorMessage(null);
+        setMessage(null);
+        setControl(composite);
+    }
 
+    private void configureDefaultValues() {
+        comboViewer.addSelectionChangedListener(event -> {
+            IStructuredSelection selection = IStructuredSelection.class.cast(event.getSelection());
+            if (!selection.isEmpty()) {
+                String graphName = selection.getFirstElement().toString();
+                String[] splitName = graphName.split("\\.");
+                String graphId = splitName[splitName.length - 2];
+                String graphPrefix = "blueprints." + graphId;
+                graphProperties.removeIf(p -> p.getProperty() != null && !p.getProperty().startsWith(graphPrefix));
 
-	protected void configureDefaultValues() {
-		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				if (!selection.isEmpty()) {
-					String graphName = selection.getFirstElement().toString();
-					String[] splitName = graphName.split("\\.");
-					String graphId = splitName[splitName.length - 2];
-					String graphPrefix = "blueprints." + graphId;
-					Iterator<GraphProperty> iterator = graphProperties.iterator();
-					while (iterator.hasNext()) {
-						GraphProperty property = iterator.next();
-						if (property.getProperty() != null && !property.getProperty().startsWith(graphPrefix)) {
-							iterator.remove();
-						}
-					}
-					if (GRAPH_TYPES[0].equals(selection.getFirstElement())) {
-						GraphProperty property = new GraphProperty("blueprints.tg.file-type", "JAVA");
-						if (!graphProperties.contains(property)) {
-							graphProperties.add(property);
-						}
-					}
-					tableViewer.refresh();
-				}
-			}
-		});
-		comboViewer.setSelection(new StructuredSelection(GRAPH_TYPES[0]));
-	}
+                if (GRAPH_TYPES[0].equals(selection.getFirstElement())) {
+                    GraphProperty property = new GraphProperty("blueprints.tg.file-type", "JAVA");
+                    if (!graphProperties.contains(property)) {
+                        graphProperties.add(property);
+                    }
+                }
+                tableViewer.refresh();
+            }
+        });
+        comboViewer.setSelection(new StructuredSelection(GRAPH_TYPES[0]));
+    }
 
-	protected void createColumns() {
-		String[] titles = { "Property", "Value" };
-		int[] bounds = { 100, 100 };
+    private void createColumns() {
+        String[] titles = {"Property", "Value"};
+        int[] bounds = {100, 100};
 
-		// First column is for the first name
-		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0], 0);
-		col.setLabelProvider(new CellLabelProvider() {
-			@Override
-			public void update(ViewerCell cell) {
-				cell.setText(((GraphProperty) cell.getElement()).getProperty());
-			}
-		});
-		col.setEditingSupport(new PropertyEditingSupport(tableViewer));
+        // First column is for the first name
+        TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0], 0);
+        col.setLabelProvider(new CellLabelProvider() {
+            @Override
+            public void update(ViewerCell cell) {
+                cell.setText(((GraphProperty) cell.getElement()).getProperty());
+            }
+        });
+        col.setEditingSupport(new PropertyEditingSupport(tableViewer));
 
-		// Second column is for the last name
-		col = createTableViewerColumn(titles[1], bounds[1], 1);
-		col.setLabelProvider(new CellLabelProvider() {
-			@Override
-			public void update(ViewerCell cell) {
-				cell.setText(((GraphProperty) cell.getElement()).getValue());
-			}
-		});
-		col.setEditingSupport(new ValueEditingSupport(tableViewer));
+        // Second column is for the last name
+        col = createTableViewerColumn(titles[1], bounds[1], 1);
+        col.setLabelProvider(new CellLabelProvider() {
+            @Override
+            public void update(ViewerCell cell) {
+                cell.setText(((GraphProperty) cell.getElement()).getValue());
+            }
+        });
+        col.setEditingSupport(new ValueEditingSupport(tableViewer));
 
-	}
+    }
 
-	protected TableViewerColumn createTableViewerColumn(String title, int bound, final int colNumber) {
-		final TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
-		final TableColumn column = viewerColumn.getColumn();
-		column.setText(title);
-		column.setWidth(bound);
-		column.setResizable(true);
-		column.setMoveable(true);
-		return viewerColumn;
-	}
-	
-	public abstract class GraphPropertiesEditingSupport extends EditingSupport {
+    private TableViewerColumn createTableViewerColumn(String title, int bound, final int colNumber) {
+        final TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+        final TableColumn column = viewerColumn.getColumn();
+        column.setText(title);
+        column.setWidth(bound);
+        column.setResizable(true);
+        column.setMoveable(true);
+        return viewerColumn;
+    }
 
-		protected final TableViewer viewer;
-		protected final CellEditor editor;
+    public Map<?, ?> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        Object graphType = ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
+        properties.put("blueprints.graph", graphType);
+        for (GraphProperty property : graphProperties) {
+            if ("TRUE".equalsIgnoreCase(property.getValue()) || "FALSE".equalsIgnoreCase(property.getValue())) {
+                properties.put(property.getProperty(), Boolean.parseBoolean(property.getValue()));
+            }
+            else {
+                properties.put(property.getProperty(), property.getValue());
+            }
+        }
+        return properties;
+    }
 
-		public GraphPropertiesEditingSupport(TableViewer viewer) {
-			super(viewer);
-			this.viewer = viewer;
-			this.editor = new TextCellEditor(viewer.getTable());
-		}
+    private class GraphProperty {
 
-		@Override
-		protected CellEditor getCellEditor(Object element) {
-			return editor;
-		}
+        private String property;
+        private String value;
 
-		@Override
-		protected boolean canEdit(Object element) {
-			return true;
-		}
-	}
-	
-	public class PropertyEditingSupport extends GraphPropertiesEditingSupport {
+        public GraphProperty(String property, String value) {
+            this.property = property;
+            this.value = value;
+        }
 
-		public PropertyEditingSupport(TableViewer viewer) {
-			super(viewer);
-		}
+        public String getProperty() {
+            return property;
+        }
 
-		@Override
-		protected Object getValue(Object element) {
-			return ((GraphProperty) element).getProperty();
-		}
+        public void setProperty(String property) {
+            this.property = property;
+        }
 
-		@Override
-		protected void setValue(Object element, Object value) {
-			((GraphProperty) element).setProperty(String.valueOf(value));
-			viewer.update(element, null);
-		}
-	}
+        public String getValue() {
+            return value;
+        }
 
-	public class ValueEditingSupport extends GraphPropertiesEditingSupport {
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-		public ValueEditingSupport(TableViewer viewer) {
-			super(viewer);
-		}
+        @Override
+        public int hashCode() {
+            return Objects.hash(getOuterType(), property, value);
+        }
 
-		@Override
-		protected Object getValue(Object element) {
-			return ((GraphProperty) element).getValue();
-		}
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            GraphProperty other = (GraphProperty) obj;
+            return Objects.equals(getOuterType(), other.getOuterType())
+                    && Objects.equals(property, other.getProperty())
+                    && Objects.equals(value, other.getValue());
+        }
 
-		@Override
-		protected void setValue(Object element, Object value) {
-			((GraphProperty) element).setValue(String.valueOf(value));
-			viewer.update(element, null);
-		}
-	}
-	
-	public Map<?, ?> getProperties() {
-		Map<String, Object> properties = new HashMap<>();
-		Object graphType = ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
-		properties.put("blueprints.graph", graphType); 
-		for (GraphProperty property : graphProperties) {
-			if ("TRUE".equalsIgnoreCase(property.getValue()) || "FALSE".equalsIgnoreCase(property.getValue())) {
-				properties.put(property.getProperty(), Boolean.parseBoolean(property.getValue()));
-			} else {
-				properties.put(property.getProperty(), property.getValue());
-			}
-		}
-		return properties;
-	}
+        private SelectBlueprintsGraphTypeWizardPage getOuterType() {
+            return SelectBlueprintsGraphTypeWizardPage.this;
+        }
+    }
+
+    private abstract class GraphPropertiesEditingSupport extends EditingSupport {
+
+        protected final TableViewer viewer;
+        protected final CellEditor editor;
+
+        public GraphPropertiesEditingSupport(TableViewer viewer) {
+            super(viewer);
+            this.viewer = viewer;
+            this.editor = new TextCellEditor(viewer.getTable());
+        }
+
+        @Override
+        protected CellEditor getCellEditor(Object element) {
+            return editor;
+        }
+
+        @Override
+        protected boolean canEdit(Object element) {
+            return true;
+        }
+    }
+
+    private class PropertyEditingSupport extends GraphPropertiesEditingSupport {
+
+        public PropertyEditingSupport(TableViewer viewer) {
+            super(viewer);
+        }
+
+        @Override
+        protected Object getValue(Object element) {
+            return ((GraphProperty) element).getProperty();
+        }
+
+        @Override
+        protected void setValue(Object element, Object value) {
+            ((GraphProperty) element).setProperty(String.valueOf(value));
+            viewer.update(element, null);
+        }
+    }
+
+    private class ValueEditingSupport extends GraphPropertiesEditingSupport {
+
+        public ValueEditingSupport(TableViewer viewer) {
+            super(viewer);
+        }
+
+        @Override
+        protected Object getValue(Object element) {
+            return ((GraphProperty) element).getValue();
+        }
+
+        @Override
+        protected void setValue(Object element, Object value) {
+            ((GraphProperty) element).setValue(String.valueOf(value));
+            viewer.update(element, null);
+        }
+    }
 }

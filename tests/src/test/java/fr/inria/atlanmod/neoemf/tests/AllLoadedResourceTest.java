@@ -68,8 +68,8 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
         tinkerResource = null;
 
         ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.eINSTANCE);
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.eINSTANCE);
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
         mapResource = (PersistentResource) rSet.getResource(NeoMapURI.createNeoMapURI(mapFile), true);
         neo4jResource = (PersistentResource) rSet.getResource(NeoBlueprintsURI.createNeoGraphURI(neo4jFile), true);
         tinkerResource = (PersistentResource) rSet.getResource(NeoBlueprintsURI.createNeoGraphURI(tinkerFile), true);

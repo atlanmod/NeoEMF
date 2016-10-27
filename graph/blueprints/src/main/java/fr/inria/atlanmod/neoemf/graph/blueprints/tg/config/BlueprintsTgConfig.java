@@ -11,13 +11,25 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.tg.config;
 
+import fr.inria.atlanmod.neoemf.graph.blueprints.BlueprintsConfig;
+
 import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
-public final class BlueprintsTgConfig extends AbstractBlueprintsConfig {
+public final class BlueprintsTgConfig implements BlueprintsConfig {
 
-    public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsTgConfig();
+    private static BlueprintsConfig INSTANCE;
+
+    /**
+     * Returns the instance of this {@link BlueprintsConfig configuration}.
+     */
+    public static BlueprintsConfig getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new BlueprintsTgConfig();
+        }
+        return INSTANCE;
+    }
 
     private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
     private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";

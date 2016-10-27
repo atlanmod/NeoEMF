@@ -55,6 +55,10 @@ public class NeoLogger {
         internalLog(Level.WARN, null, e);
     }
 
+    public static void warn(Throwable e, String pattern, Object... args) {
+        internalLog(Level.WARN, MessageFormat.format(pattern, args), e);
+    }
+
     public static void error(String msg) {
         internalLog(Level.ERROR, msg, null);
     }

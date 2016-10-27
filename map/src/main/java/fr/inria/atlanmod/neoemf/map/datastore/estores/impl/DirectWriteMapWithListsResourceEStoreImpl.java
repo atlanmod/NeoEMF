@@ -46,94 +46,74 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object getWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-		Object returnValue;
 		Object value = getFromMap(object, eAttribute);
-		if (!eAttribute.isMany()) {
-			returnValue = parseProperty(eAttribute, value);
-		} else {
-			List<Object> list = (List<Object>) value;
-			returnValue = parseProperty(eAttribute, list.get(index));
+		if (eAttribute.isMany()) {
+			value = manyValueFrom(value).get(index);
 		}
-		return returnValue;
+		return parseProperty(eAttribute, value);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object getWithReference(PersistentEObject object, EReference eReference, int index) {
-		Object returnValue;
 		Object value = getFromMap(object, eReference);
-		if (!eReference.isMany()) {
-			returnValue = eObject((Id) value);
-		} else {
-			List<Object> list = (List<Object>) value;
-			returnValue = eObject((Id) list.get(index));
+		if (eReference.isMany()) {
+			value = eObject((Id) manyValueFrom(value).get(index));
 		}
-		return returnValue;
+		return eObject((Id) value);
 	}
 
-
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object setWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-		Object returnValue;
+		Object oldValue;
 		if (!eAttribute.isMany()) {
-			Object oldValue = persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
-			returnValue = parseProperty(eAttribute, oldValue);
+			oldValue = persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
 		} else {
-
-			List<Object> list = (List<Object>) getFromMap(object, eAttribute);
-			Object oldValue = list.get(index);
+			List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
+			oldValue = list.get(index);
 			list.set(index, serializeToProperty(eAttribute, value));
 			persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), list.toArray());
-			returnValue = parseProperty(eAttribute, oldValue);
+			oldValue = parseProperty(eAttribute, oldValue);
 		}
-		return returnValue;
+		return parseProperty(eAttribute, oldValue);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object setWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
-		Object returnValue;
+		Object oldId;
 		updateContainment(object, eReference, value);
 		updateInstanceOf(value);
 		if (!eReference.isMany()) {
-			Object oldId = persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), value.id());
-			returnValue = oldId != null ? eObject((Id) oldId) : null;
+			oldId = persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), value.id());
 		} else {
-			List<Object> list = (List<Object>) getFromMap(object, eReference);
-			Object oldId = list.get(index);
+			List<Object> list = manyValueFrom(getFromMap(object, eReference));
+			oldId = list.get(index);
 			list.set(index, value.id());
 			persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), list.toArray());
-			returnValue = oldId != null ? eObject((Id) oldId) : null;
 		}
-		return returnValue;
+		return oldId != null ? eObject((Id) oldId) : null;
 	}
 
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected void addWithAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
+		List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
 		list.add(index, serializeToProperty(eAttribute, value));
 		persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), list.toArray());
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected void addWithReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
 		updateContainment(object, eReference, referencedObject);
 		updateInstanceOf(referencedObject);
-		List<Object> list = (List<Object>) getFromMap(object, eReference);
+		List<Object> list = manyValueFrom(getFromMap(object, eReference));
 		list.add(index, referencedObject.id());
 		persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), list.toArray());
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object removeWithAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-		List<Object> list = (List<Object>) getFromMap(object, eAttribute);
+		List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
 		Object oldValue = list.get(index);
 		list.remove(index);
 		persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), list.toArray());
@@ -141,9 +121,8 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	protected Object removeWithReference(PersistentEObject object, EReference eReference, int index) {
-		List<Object> list = (List<Object>) getFromMap(object, eReference);
+		List<Object> list = manyValueFrom(getFromMap(object, eReference));
 		Object oldId = list.get(index);
 		list.remove(index);
 		persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), list.toArray());
@@ -151,19 +130,17 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	public int size(InternalEObject object, EStructuralFeature feature) {
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
-		List<Object> list = (List<Object>) getFromMap(persistentEObject, feature);
+		List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
 		return list != null ? list.size() : 0; 
 	}
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int returnValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
-		List<Object> list = (List<Object>) getFromMap(persistentEObject, feature);
+		List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
 		if (list== null) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
@@ -177,11 +154,10 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 
 
 	@Override
-	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
 	public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
 		int returnValue;
 		PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(object);
-		List<Object> list = (List<Object>) getFromMap(persistentEObject, feature);
+		List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
 		if (list == null) {
 			returnValue = -1;
 		} else if (feature instanceof EAttribute) {
@@ -212,6 +188,11 @@ public class DirectWriteMapWithListsResourceEStoreImpl extends DirectWriteMapRes
 			}
 		}
 		return returnValue;
+	}
+
+	@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
+	private List<Object> manyValueFrom(Object value) {
+		return (List<Object>) value;
 	}
 	
 	private class Tuple2CacheLoader extends CacheLoader<FeatureKey, Object> {

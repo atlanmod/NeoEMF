@@ -25,7 +25,7 @@ import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithLis
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -118,9 +118,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 				"Trying to create a Map-based EStore with an invalid backend: "+backend.getClass().getName());
 
 		PersistentEStore eStore = null;
-
-		@SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
-		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+		List<StoreOption> storeOptions = storeOptionsFrom(options);
 
 		// Store
 		if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreMapOption.AUTOCOMMIT))) {

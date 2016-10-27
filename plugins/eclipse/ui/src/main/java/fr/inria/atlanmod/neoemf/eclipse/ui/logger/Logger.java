@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.eclipse.ui.logger;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
@@ -18,29 +19,28 @@ import org.eclipse.core.runtime.Status;
 
 public class Logger {
 
-	public static final int SEVERITY_CANCEL = IStatus.CANCEL;
-	public static final int SEVERITY_ERROR = IStatus.ERROR;
-	public static final int SEVERITY_INFO= IStatus.INFO;
-	public static final int SEVERITY_OK = IStatus.OK;
-	public static final int SEVERITY_WARNING = IStatus.WARNING;
-	
+    public static final int SEVERITY_CANCEL = IStatus.CANCEL;
+    public static final int SEVERITY_ERROR = IStatus.ERROR;
+    public static final int SEVERITY_INFO = IStatus.INFO;
+    public static final int SEVERITY_OK = IStatus.OK;
+    public static final int SEVERITY_WARNING = IStatus.WARNING;
+
     private static ILog log;
-    
+
     static {
-        log = NeoEMFUiPlugin.getDefault().getLog();    
+        log = NeoEMFUiPlugin.getDefault().getLog();
     }
-    
+
     public static void log(int severity, Throwable e) {
         log.log(new Status(severity, NeoEMFUiPlugin.PLUGIN_ID,
-        		e.getMessage() != null ? e.getMessage() : e.toString(), e));
+                           e.getMessage() != null ? e.getMessage() : e.toString(), e));
     }
 
     public static void log(int severity, String msg, Throwable e) {
-    	log.log(new Status(severity, NeoEMFUiPlugin.PLUGIN_ID, msg, e));
+        log.log(new Status(severity, NeoEMFUiPlugin.PLUGIN_ID, msg, e));
     }
-    
+
     public static void log(int severity, String msg) {
         log.log(new Status(severity, NeoEMFUiPlugin.PLUGIN_ID, msg, null));
     }
-    
 }

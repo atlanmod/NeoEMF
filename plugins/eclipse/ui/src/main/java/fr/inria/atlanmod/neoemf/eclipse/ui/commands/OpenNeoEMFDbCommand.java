@@ -8,9 +8,11 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.eclipse.ui.commands;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
@@ -46,69 +48,80 @@ import java.io.File;
 
 public class OpenNeoEMFDbCommand extends AbstractHandler {
 
-	private IFolder folder;
+    private IFolder folder;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		ISelectionService service = window.getSelectionService();
-		ISelection selection = service.getSelection();
-		
-		folder = null;
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			Object elt = structuredSelection.getFirstElement();
-			if (elt instanceof IFolder) {
-				folder = (IFolder) elt;
-			}
-		}
-		if (folder == null) return null;
-		
-		new UIJob(window.getShell().getDisplay(), "Create Dynamic Instance") {
+    /* (non-Javadoc)
+     * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+     */
+    @Override
+    public Object execute(ExecutionEvent event) throws ExecutionException {
 
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				if(!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
-			    	PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-			    }
-			    if(!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
-			    	PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
-			    }
-	            System.out.println(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
-		        File neoConfigFile = new File(folder.getRawLocation().toOSString()+"/"+PersistenceBackendFactory.NEO_CONFIG_FILE);
-		        PropertiesConfiguration neoConfig;
-		        try {
-                    neoConfig = new PropertiesConfiguration(neoConfigFile);
-                } catch (ConfigurationException e1) {
-                    NeoLogger.error("Unable to find neoconfig.properties file");
-                    return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open the editor", e1);
-                }
-		        String backendType = neoConfig.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
-		        URI uri = null;
-		        if(backendType == null) {
-		            NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
-		            return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor");
-		        } else if(backendType.equals(MapPersistenceBackendFactory.MAPDB_BACKEND)) {
-		            uri = NeoMapURI.createNeoMapURI(new File(folder.getRawLocation().toOSString()));
-		        }
-		        else if(backendType.equals(BlueprintsPersistenceBackendFactory.BLUEPRINTS_BACKEND)) {
-		            uri = NeoBlueprintsURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
-		        }
-				URIEditorInput editorInput = new URIEditorInput(uri);
-				IWorkbench workbench = PlatformUI.getWorkbench();
-				IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-				try {
-                    page.openEditor(editorInput, NeoEMFEditor.EDITOR_ID);
-                } catch (PartInitException e) {
-                    return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor", e);
-                }
-				return Status.OK_STATUS;
-			}
-		}.schedule();
-		return null;
-	}
+        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        ISelectionService service = window.getSelectionService();
+        ISelection selection = service.getSelection();
+
+        folder = null;
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            Object elt = structuredSelection.getFirstElement();
+            if (elt instanceof IFolder) {
+                folder = (IFolder) elt;
+            }
+        }
+        if (folder == null) {
+            return null;
+        }
+
+        new CreateDynamicInstanceJob(window).schedule();
+        return null;
+    }
+
+    private class CreateDynamicInstanceJob extends UIJob {
+
+        public CreateDynamicInstanceJob(IWorkbenchWindow window) {
+            super(window.getShell().getDisplay(), "Create Dynamic Instance");
+        }
+
+        @Override
+        public IStatus runInUIThread(IProgressMonitor monitor) {
+            if (!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
+                PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+            }
+            if (!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
+                PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+            }
+            System.out.println(folder.getRawLocation().toOSString() + "/" + PersistenceBackendFactory.NEO_CONFIG_FILE);
+            File neoConfigFile = new File(folder.getRawLocation().toOSString() + "/" + PersistenceBackendFactory.NEO_CONFIG_FILE);
+            PropertiesConfiguration neoConfig;
+            try {
+                neoConfig = new PropertiesConfiguration(neoConfigFile);
+            }
+            catch (ConfigurationException e1) {
+                NeoLogger.error("Unable to find neoconfig.properties file");
+                return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open the editor", e1);
+            }
+            String backendType = neoConfig.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
+            URI uri = null;
+            if (backendType == null) {
+                NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
+                return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor");
+            }
+            else if (backendType.equals(MapPersistenceBackendFactory.MAPDB_BACKEND)) {
+                uri = NeoMapURI.createNeoMapURI(new File(folder.getRawLocation().toOSString()));
+            }
+            else if (backendType.equals(BlueprintsPersistenceBackendFactory.BLUEPRINTS_BACKEND)) {
+                uri = NeoBlueprintsURI.createNeoGraphURI(new File(folder.getRawLocation().toOSString()));
+            }
+            URIEditorInput editorInput = new URIEditorInput(uri);
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+            try {
+                page.openEditor(editorInput, NeoEMFEditor.EDITOR_ID);
+            }
+            catch (PartInitException e) {
+                return new Status(IStatus.ERROR, NeoEMFUiPlugin.PLUGIN_ID, "Unable to open editor", e);
+            }
+            return Status.OK_STATUS;
+        }
+    }
 }

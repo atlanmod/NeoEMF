@@ -21,11 +21,9 @@ import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
-/**
- * Created by sunye on 13/10/2016.
- */
-public class MapPersistenceBackendTest {
+import static org.assertj.core.api.Assertions.assertThat;
 
+public class MapPersistenceBackendTest {
 
     @Test
     public void testStoreFeature() {
@@ -34,7 +32,7 @@ public class MapPersistenceBackendTest {
         FeatureKey key = new FeatureKey(new StringId("object1"), "name");
         backend.storeValue(key, "value");
 
-       assert "value".equals(backend.valueOf(key));
+       assertThat("value").isEqualTo(backend.valueOf(key));
     }
 
     @Test
@@ -47,11 +45,11 @@ public class MapPersistenceBackendTest {
 
         for (int i = 0; i < 10 ; i++) {
             keys[i] = new MultivaluedFeatureKey(new StringId("object"), "name", i);
-            backend.storeValueAtIndex(keys[i], new Integer(i));
+            backend.storeValueAtIndex(keys[i], i);
         }
 
         for (int i = 0; i < TIMES; i++) {
-            assert new Integer(i).equals(backend.valueAtIndex(keys[i]));
+            assertThat(i).isEqualTo(backend.valueAtIndex(keys[i]));
         }
     }
 
@@ -64,14 +62,13 @@ public class MapPersistenceBackendTest {
         Serializer<FeatureKey> ser = Serializer.JAVA;
         FeatureKey key2 = ser.clone(key1);
 
-        assert key1.equals(key2);
+        assertThat(key1).isEqualTo(key2);
 
         ser.serialize(out, key1);
 
         FeatureKey key3 = ser.deserialize(new DataInput2.ByteArray(out.copyBytes()), out.pos);
 
-        assert key1.equals(key3);
-
+        assertThat(key1).isEqualTo(key3);
     }
 
     @Test
@@ -79,6 +76,6 @@ public class MapPersistenceBackendTest {
         FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
         FeatureKey key2 = new FeatureKey(new StringId("object1"), "name");
 
-        assert key1.hashCode() == key2.hashCode();
+        assertThat(key1.hashCode()).isEqualTo(key2.hashCode());
     }
 }

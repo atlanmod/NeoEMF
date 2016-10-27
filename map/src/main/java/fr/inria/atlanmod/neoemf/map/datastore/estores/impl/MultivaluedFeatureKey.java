@@ -12,10 +12,10 @@ package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
-/**
- * Created by sunye on 13/10/2016.
- */
 public class MultivaluedFeatureKey extends FeatureKey {
+
+    private static final long serialVersionUID = 1L;
+
     private final int position;
 
     public MultivaluedFeatureKey(Id anId, String aString, int anInt) {

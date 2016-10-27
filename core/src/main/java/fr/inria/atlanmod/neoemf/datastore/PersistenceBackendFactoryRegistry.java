@@ -20,8 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class PersistenceBackendFactoryRegistry {
 
 	/**
-	 * A map containing all registered {@link PersistenceBackendFactory backend factory} identified by a uri
-	 * scheme.
+	 * A map containing all registered {@link PersistenceBackendFactory backend factory} identified by a uri scheme.
 	 */
 	private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
 
@@ -48,8 +47,7 @@ public class PersistenceBackendFactoryRegistry {
 	}
 
 	/**
-	 * Defines if a {@link PersistenceBackendFactory backend factory} is registered for the given {@code
-	 * uriScheme}.
+	 * Defines if a {@link PersistenceBackendFactory backend factory} is registered for the given {@code uriScheme}.
 	 *
 	 * @param uriScheme the uri scheme identifying the backend factory
 	 * @return {@code true} if a backend factory is registered for the given {@code uriScheme}

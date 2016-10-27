@@ -59,7 +59,7 @@ public class CachedManyDirectWriteMapResourceEStoreImpl extends DirectWriteMapRe
 			returnValue = cachedArray.get(key, new CacheLoader(object, feature));
 		} catch (ExecutionException e) {
 			NeoLogger.warn(e.getCause());
-		} catch (InvalidCacheLoadException e) {
+		} catch (InvalidCacheLoadException ignore) {
 //		    NeoLogger.warn(e.getCause());
 		}
 		return returnValue;

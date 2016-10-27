@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.eclipse.ui.tester;
 
 import org.eclipse.core.expressions.PropertyTester;
@@ -15,24 +16,24 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.Path;
 
 public class NeoEMFDatabase extends PropertyTester {
-	
-	private static final String IS_NEOEMF_DB = "isNeoEMFDB";  
-	
-	public NeoEMFDatabase() {
-	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
-	 */
-	@Override
-	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-		if (IS_NEOEMF_DB.equals(property) && receiver instanceof IFolder) {
-			boolean expected = (Boolean) expectedValue;
-			IFolder folder = (IFolder) receiver;
-			if (folder.exists(new Path("neoconfig.properties")) == expected) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private static final String IS_NEOEMF_DB = "isNeoEMFDB";
+
+    public NeoEMFDatabase() {
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
+     */
+    @Override
+    public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
+        if (IS_NEOEMF_DB.equals(property) && receiver instanceof IFolder) {
+            boolean expected = (Boolean) expectedValue;
+            IFolder folder = (IFolder) receiver;
+            if (folder.exists(new Path("neoconfig.properties")) == expected) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -18,9 +18,6 @@ import org.mapdb.Serializer;
 
 import java.io.IOException;
 
-/**
- * Created by sunye on 13/10/2016.
- */
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
     Serializer<String> stringSerializer = Serializer.STRING;

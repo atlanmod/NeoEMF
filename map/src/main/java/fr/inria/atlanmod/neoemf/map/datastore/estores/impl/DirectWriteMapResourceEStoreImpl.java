@@ -337,7 +337,7 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 				EObject eObject;
 				if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
 					// Dynamic EMF
-					eObject = PersistenceFactory.eINSTANCE.create(eClass);
+					eObject = PersistenceFactory.getInstance().create(eClass);
 				} else {
 					eObject = EcoreUtil.create(eClass);
 				}

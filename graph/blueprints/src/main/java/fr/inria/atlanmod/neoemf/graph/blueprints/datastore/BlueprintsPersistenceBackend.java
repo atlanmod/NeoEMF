@@ -386,7 +386,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
                 EObject eObject;
                 if(eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
                     // Dynamic EMF
-                    eObject = PersistenceFactory.eINSTANCE.create(eClass);
+                    eObject = PersistenceFactory.getInstance().create(eClass);
                 } else {
                     // EObject eObject = EcoreUtil.create(eClass);
                     eObject = EcoreUtil.create(eClass);

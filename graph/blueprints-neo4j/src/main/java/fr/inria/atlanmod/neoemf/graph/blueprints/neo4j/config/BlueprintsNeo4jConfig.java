@@ -11,15 +11,25 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
+import fr.inria.atlanmod.neoemf.graph.blueprints.BlueprintsConfig;
 
 import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
-public final class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
+public final class BlueprintsNeo4jConfig implements BlueprintsConfig {
 
-    public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsNeo4jConfig();
+    private static BlueprintsConfig INSTANCE;
+
+    /**
+     * Returns the instance of this {@link BlueprintsConfig configuration}.
+     */
+    public static BlueprintsConfig getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new BlueprintsNeo4jConfig();
+        }
+        return INSTANCE;
+    }
 
     private static final String BLUEPRINTS_NEO4J_DIRECTORY = "blueprints.neo4j.directory";
 

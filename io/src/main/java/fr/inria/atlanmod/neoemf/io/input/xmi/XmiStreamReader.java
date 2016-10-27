@@ -180,8 +180,7 @@ public class XmiStreamReader extends AbstractXmiReader {
             try {
                 logProgress((double) (total - stream.available()) / (double) total * 100d);
             }
-            catch (Exception e) {
-                // No nothing
+            catch (Exception ignore) {
             }
         }
     }

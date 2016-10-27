@@ -22,18 +22,24 @@ import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterEStore
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingEStoreDecorator;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 
 import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
+    /**
+     * Returns a list of store options from the given {@code options}.
+     */
+    protected static List<StoreOption> storeOptionsFrom(Map<?, ?> options) {
+        return (List<StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+    }
+
     @Override
     public PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         PersistentEStore eStore = internalCreatePersistentEStore(resource, backend, options);
-
-        @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'List<...>'
-        List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>) options.get(PersistentResourceOptions.STORE_OPTIONS);
+        List<StoreOption> storeOptions = storeOptionsFrom(options);
 
         if (storeOptions != null && !storeOptions.isEmpty()) {
             if (storeOptions.contains(PersistentResourceOptions.EStoreOption.IS_SET_CACHING)) {

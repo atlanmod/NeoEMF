@@ -139,12 +139,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
 
     protected Vertex getVertex(final Id id) throws Exception {
         try {
-            return loadedVertices.get(id, new Callable<Vertex>() {
-                @Override
-                public Vertex call() throws Exception {
-                    return getPersistenceBackend().getVertex(id.toString());
-                }
-            });
+            return loadedVertices.get(id, () -> getPersistenceBackend().getVertex(id.toString()));
         } catch (Exception e) {
             throw new NoSuchElementException("Unable to find an element with Id '" + id.toString() + "'");
         }
@@ -152,12 +147,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
 
     protected Vertex createVertex(final Id id) throws Exception {
         try {
-            return loadedVertices.get(id, new Callable<Vertex>() {
-                @Override
-                public Vertex call() throws Exception {
-                    return getPersistenceBackend().addVertex(id.toString());
-                }
-            });
+            return loadedVertices.get(id, () -> getPersistenceBackend().addVertex(id.toString()));
         } catch (Exception e) {
             throw new AlreadyExistingIdException("Already existing Id '" + id.toString() + "'");
         }

@@ -20,9 +20,8 @@ import org.mapdb.DataOutput2;
 
 import java.io.IOException;
 
-/**
- * Created by sunye on 13/10/2016.
- */
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class FeatureKeySerializerTest {
 
     @Test
@@ -35,7 +34,6 @@ public class FeatureKeySerializerTest {
         serializer.serialize(out, key1);
         FeatureKey key2 = serializer.deserialize(new DataInput2.ByteArray(out.copyBytes()), 0);
 
-        assert key1.equals(key2);
-
+        assertThat(key1).isEqualTo(key2);
     }
 }

@@ -20,18 +20,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-/**
- * Created by sunye on 13/10/2016.
- */
-public class FeatureKeyTest {
+import static org.assertj.core.api.Assertions.assertThat;
 
+public class FeatureKeyTest {
 
     @Test
     public void testCompareEqualTo() {
         FeatureKey key1 = new FeatureKey(new StringId("myobject"), "aaa");
         FeatureKey key2 = new FeatureKey(new StringId("myobject"), "aaa");
 
-        assert key1.compareTo(key2) == 0;
+        assertThat(key1.compareTo(key2)).isEqualTo(0);
     }
 
     @Test
@@ -39,7 +37,7 @@ public class FeatureKeyTest {
         FeatureKey key1 = new FeatureKey(new StringId("myobject"), "aaa");
         FeatureKey key2 = new FeatureKey(new StringId("myobject"), "bbb");
 
-        assert key1.compareTo(key2) < 0;
+        assertThat(key1.compareTo(key2)).isLessThan(0);
     }
 
     @Test
@@ -47,8 +45,8 @@ public class FeatureKeyTest {
         FeatureKey key1 = new FeatureKey(new StringId("AAA"), "aaa");
         FeatureKey key2 = new FeatureKey(new StringId("BBB"), "zzz");
 
-        System.out.println(key1.compareTo(key2) );
-        assert key1.compareTo(key2) > 0 ;
+        //System.out.println(key1.compareTo(key2) );
+        assertThat(key1.compareTo(key2)).isGreaterThan(0);
     }
 
     @Test
@@ -61,6 +59,6 @@ public class FeatureKeyTest {
 
         FeatureKey key2 = (FeatureKey) in.readObject();
 
-        assert key1.equals(key2);
+        assertThat(key1).isEqualTo(key2);
     }
 }

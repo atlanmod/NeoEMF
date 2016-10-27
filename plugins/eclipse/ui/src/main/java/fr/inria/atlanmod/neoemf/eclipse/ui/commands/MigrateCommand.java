@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.eclipse.ui.commands;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter;
@@ -43,101 +44,103 @@ import java.util.Map;
 
 public class MigrateCommand extends AbstractHandler {
 
-	protected ISelection selection;
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		ISelectionService service = window.getSelectionService();
-		selection = service.getSelection();
-	 
-		new Job("Migrating EMF model") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					IFile file = getFile();
-					if (file == null) {
-						showMessage("The selected element is not a *.genmodel file.", true);
-					} else {
-						GenModel genModel = getGenModel(file);
-						if (genModel == null) {
-							showMessage("The selected file does not contain a generator model.", true);
-						} else {
-							String msg = NeoEMFImporterUtil.adjustGenModel(genModel);
-							if (msg == null) {
-								showMessage("The selected generator model was already migrated.", false);
-							} else {
-								genModel.eResource().save(null);
-								showMessage("The selected generator model has been migrated:" + "\n\n" + msg, false);
-							}
-						}
-					}
-				} catch (Exception ex) {
-					return new Status(IStatus.ERROR, NeoEMFImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
-				}
+    private ISelection selection;
 
-				return Status.OK_STATUS;
-			}
-		}.schedule();
-		return null;
-	}
-	
-	protected IFile getFile() {
-		if (selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection).getFirstElement();
-			if (element instanceof IFile) {
-				IFile file = (IFile) element;
-				if ("genmodel".equals(file.getFileExtension())) {
-					return file;
-				}
-			}
-		}
+    /* (non-Javadoc)
+     * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+     */
+    @Override
+    public Object execute(ExecutionEvent event) throws ExecutionException {
+        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        ISelectionService service = window.getSelectionService();
+        selection = service.getSelection();
 
-		return null;
-	}
+        new Job("Migrating EMF model") {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                try {
+                    IFile file = getFile();
+                    if (file == null) {
+                        showMessage("The selected element is not a *.genmodel file.", true);
+                    }
+                    else {
+                        GenModel genModel = getGenModel(file);
+                        if (genModel == null) {
+                            showMessage("The selected file does not contain a generator model.", true);
+                        }
+                        else {
+                            String msg = NeoEMFImporterUtil.adjustGenModel(genModel);
+                            if (msg == null) {
+                                showMessage("The selected generator model was already migrated.", false);
+                            }
+                            else {
+                                genModel.eResource().save(null);
+                                showMessage("The selected generator model has been migrated:" + "\n\n" + msg, false);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex) {
+                    return new Status(IStatus.ERROR, NeoEMFImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
+                }
 
-	protected GenModel getGenModel(IFile file) {
-		ResourceSet resourceSet = new ResourceSetImpl();
+                return Status.OK_STATUS;
+            }
+        }.schedule();
+        return null;
+    }
 
-		Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
-		map.put("*", new XMIResourceFactoryImpl());
+    private IFile getFile() {
+        if (selection instanceof IStructuredSelection) {
+            Object element = ((IStructuredSelection) selection).getFirstElement();
+            if (element instanceof IFile) {
+                IFile file = (IFile) element;
+                if ("genmodel".equals(file.getFileExtension())) {
+                    return file;
+                }
+            }
+        }
+        return null;
+    }
 
-		URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), false);
-		Resource resource = resourceSet.getResource(uri, true);
+    private GenModel getGenModel(IFile file) {
+        ResourceSet resourceSet = new ResourceSetImpl();
 
-		EList<EObject> contents = resource.getContents();
-		if (!contents.isEmpty()) {
-			EObject object = contents.get(0);
-			if (object instanceof GenModel) {
-				return (GenModel) object;
-			}
-		}
+        Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
+        map.put("*", new XMIResourceFactoryImpl());
 
-		return null;
-	}
-	
-	protected void showMessage(final String msg, final boolean error) {
-		try {
-			final Display display = PlatformUI.getWorkbench().getDisplay();
-			display.syncExec(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						final Shell shell = new Shell(display);
-						if (error) {
-							MessageDialog.openError(shell, "NeoEMF Migrator", msg);
-						} else {
-							MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
-						}
-					} catch (RuntimeException ignore) {
-					}
-				}
-			});
-		} catch (RuntimeException ignore) {
-		}
-	}
+        URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), false);
+        Resource resource = resourceSet.getResource(uri, true);
 
+        EList<EObject> contents = resource.getContents();
+        if (!contents.isEmpty()) {
+            EObject object = contents.get(0);
+            if (object instanceof GenModel) {
+                return (GenModel) object;
+            }
+        }
+
+        return null;
+    }
+
+    private void showMessage(final String msg, final boolean error) {
+        try {
+            final Display display = PlatformUI.getWorkbench().getDisplay();
+            display.syncExec(() -> {
+                try {
+                    final Shell shell = new Shell(display);
+                    if (error) {
+                        MessageDialog.openError(shell, "NeoEMF Migrator", msg);
+                    }
+                    else {
+                        MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
+                    }
+                }
+                catch (RuntimeException ignore) {
+                }
+            });
+        }
+        catch (RuntimeException ignore) {
+        }
+    }
 }
