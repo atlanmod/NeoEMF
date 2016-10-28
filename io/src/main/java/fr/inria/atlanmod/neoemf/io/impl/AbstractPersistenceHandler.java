@@ -206,7 +206,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * Creates an element from the given {@code classifier} with the given {@code id}, and returns the given {@code id}.
      * <p/>
      * If {@code id} is {@code null}, it is calculated by the {@link #getId(String)} method.
-
+     *
      * @return the given {@code id}
      */
     protected Id createElement(final Classifier classifier, final Id id) throws Exception {
@@ -251,7 +251,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Creates a metaclass form the given {@code metaClassifier} and returns its {@link Id}.
-
+     *
      * @return the {@link Id} of the newly created metaclass
      */
     protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) throws Exception {
@@ -321,7 +321,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * Tries to link elements that have not been linked at their creation.
      *
      * @param reference the reference of the targetted element
-     * @param id the identifier of the targetted element
+     * @param id        the identifier of the targetted element
      */
     private void tryLink(final String reference, final Id id) throws Exception {
         for (UnlinkedElement e : unlinkedElementsMap.removeAll(reference)) {

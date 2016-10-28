@@ -43,7 +43,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentEStore(PersistentResource, PersistenceBackend, Map)}
+ * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentEStore(PersistentResource,
+ * PersistenceBackend, Map)}
  */
 public class PersistenceBackendFactoryTest extends AllTest {
 

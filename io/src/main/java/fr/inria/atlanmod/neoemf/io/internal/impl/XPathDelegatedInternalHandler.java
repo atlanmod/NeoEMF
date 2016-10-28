@@ -159,7 +159,9 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         /**
          * Gets the XPath of the current element.
+         *
          * @param name the last element of the path
+         *
          * @return a String representing the XPath of the element
          */
         public String getPath(String name) {

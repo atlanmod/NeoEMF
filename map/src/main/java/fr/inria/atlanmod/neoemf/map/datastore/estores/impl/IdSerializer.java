@@ -24,7 +24,6 @@ import static java.util.Objects.isNull;
 
 /**
  * Serializer for persistent object ids. Only works with StringId instances.
- *
  */
 public class IdSerializer implements Serializer<Id> {
 

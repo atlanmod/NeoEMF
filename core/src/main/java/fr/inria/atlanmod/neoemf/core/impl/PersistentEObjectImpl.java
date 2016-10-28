@@ -271,8 +271,9 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
     /**
      * Returns the container of the {@link PersistentEObject}.
      * <p/>
-     * Do not return the same value as standard EMF implementation if the container
-     * has not been accessed with the public method {@link #eContainer()} before.
+     * Do not return the same value as standard EMF implementation if the container has not been accessed with the
+     * public method {@link #eContainer()} before.
+     *
      * @return the container of the {@link PersistentEObject}.
      */
     @Override
@@ -379,7 +380,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
         /**
          * Override the default implementation which relies on size() to compute the insertion index by providing a
          * custom NO_INDEX features, meaning that the back-end has to append the result to the existing list.
-         *
+         * <p>
          * This behavior allows fast write operation on back-ends which would otherwise need to deserialize the
          * underlying list to add the element at the specified index.
          */

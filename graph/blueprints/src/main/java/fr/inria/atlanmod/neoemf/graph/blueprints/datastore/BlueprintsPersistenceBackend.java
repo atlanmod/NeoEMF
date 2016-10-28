@@ -167,8 +167,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      * Create a new vertex, add it to the graph, and return the newly created
      * vertex. The issued {@link EObject} is used to calculate the {@link Vertex} {@code id}.
      *
-     * @param eObject
-     *            The corresponding {@link EObject}
+     * @param eObject The corresponding {@link EObject}
+     *
      * @return the newly created vertex
      */
     protected Vertex addVertex(EObject eObject) {
@@ -180,8 +180,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      * Create a new vertex, add it to the graph, and return the newly created
      * vertex. The issued {@link EClass} is used to calculate the {@link Vertex} {@code id}.
      *
-     * @param eClass
-     *            The corresponding {@link EClass}
+     * @param eClass The corresponding {@link EClass}
+     *
      * @return the newly created vertex
      */
     protected Vertex addVertex(EClass eClass) {
@@ -195,8 +195,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      * Return the vertex corresponding to the provided {@link EObject}. If no
      * vertex corresponds to that {@link EObject}, then return {@code null}.
      *
-     * @return the vertex referenced by the provided {@link EObject} or {@code null}
-     *         when no such vertex exists
+     * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
     public Vertex getVertex(EObject eObject) {
         Vertex vertex = null;
@@ -214,8 +213,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      * Returns the vertex corresponding to the provided {@link EClass}. If no
      * vertex corresponds to that {@link EClass}, then return {@code null}.
      *
-     * @return the vertex referenced by the provided {@link EClass} or {@code null} when
-     *         no such vertex exists
+     * @return the vertex referenced by the provided {@link EClass} or {@code null} when no such vertex exists
      */
     protected Vertex getVertex(EClass eClass) {
         return getVertex(buildEClassId(eClass));
@@ -226,8 +224,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      * vertex corresponds to that {@link EObject}, then the corresponding
      * {@link Vertex} together with its {@code INSTANCE_OF} relationship is created.
      *
-     * @return the vertex referenced by the provided {@link EObject} or {@code null}
-     *         when no such vertex exists
+     * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
     public Vertex getOrCreateVertex(EObject eObject) {
         Vertex vertex;
@@ -329,7 +326,8 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
     /**
      * Returns the list of {@link EClass}es that have been indexed.
      * <p/>
-     * This list is needed to support index copy in {@link BlueprintsPersistenceBackendFactory#copyBackend(PersistenceBackend, PersistenceBackend)}
+     * This list is needed to support index copy in {@link BlueprintsPersistenceBackendFactory#copyBackend(PersistenceBackend,
+     * PersistenceBackend)}
      */
     public List<EClass> getIndexedEClasses() {
         return indexedEClasses;

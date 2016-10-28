@@ -41,10 +41,13 @@ public interface PersistenceBackend {
 
     /**
      * Back-end specific computation of {@link org.eclipse.emf.ecore.resource.Resource#getAllContents()}.
+     *
      * @param eClass the class to compute the instances of
      * @param strict {@code true} if the lookup searches for strict instances
-     * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the
-     * {@link EClass}
+     *
+     * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
+     *         EClass}
+     *
      * @throws UnsupportedOperationException if the back-end does not support allInstances lookup
      */
     Object getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;

@@ -84,6 +84,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
 
     /**
      * Creates and saves the NeoEMF configuration.
+     *
      * @param directory the directory where the configuration must be stored.
      */
     protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {

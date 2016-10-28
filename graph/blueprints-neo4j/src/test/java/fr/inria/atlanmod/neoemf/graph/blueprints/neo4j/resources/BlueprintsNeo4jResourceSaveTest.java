@@ -32,6 +32,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * Used to verify a property added by Blueprints during the graph creation
      */
     private static final String OPTIONS_GRAPH_NEO4J_STORE_DIR = "blueprints.neo4j.conf.store_dir";
+
     /**
      * Number of properties for an empty Neo4j instance (with no option provided)
      */
@@ -86,8 +87,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     /**
      * Test the existence of the cache_type properties in the configuration file.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -109,8 +112,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     /**
      * Test the existence of the cache_type properties in the configuration file.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -132,8 +137,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     /**
      * Test the existence of the cache_type properties in the configuration file.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link  #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -155,10 +162,12 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     /**
      * Test the existence of the use_memory_mapped_buffers properties in the configuration file.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourceTrueUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
@@ -178,10 +187,12 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     /**
      * Test the existence of the use_memory_mapped_buffers properties in the configuration file.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourceTrueBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
@@ -201,10 +212,12 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     /**
      * Test the existence of the use_memory_mapped_buffers properties in the configuration file.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourceFalseUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
@@ -224,10 +237,12 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     /**
      * Test the existence of the use_memory_mapped_buffers properties in the configuration file.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourceFalseBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
@@ -248,8 +263,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test the existence of the strings_mapped_memory properties in the configuration file (with
      * a positive value).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -272,10 +289,11 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test an exception is thrown when the resource is saved if the property strings_mapped_memory
      * is set with a negative value.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test(expected = InvalidDataStoreException.class)
@@ -287,8 +305,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test the existence of the strings_mapped_memory properties in the configuration file (with
      * a value set to 0M).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_STRINGS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -314,7 +334,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
@@ -336,10 +355,11 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test an exception is thrown when the resource is saved if the property arrays_mapped_memory
      * is set with a negative value.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test(expected = InvalidDataStoreException.class)
@@ -351,10 +371,11 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test the existence of the arrays_mapped_memory properties in the configuration file (with
      * a value set to 0M).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_ARRAYS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     *
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
@@ -376,8 +397,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test the existence of the nodes_mapped_memory properties in the configuration file (with
      * a positive value).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -400,8 +423,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test an exception is thrown when the resource is saved if the property nodes_mapped_memory
      * is set with a negative value.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -414,8 +439,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test the existence of the nodes_mapped_memory properties in the configuration file (with
      * a value set to 0M).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_NODES_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -438,8 +465,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test the existence of the properties_mapped_memory properties in the configuration file (with
      * a positive value).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -462,8 +491,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test an exception is thrown when the resource is saved if the property properties_mapped_memory
      * is set with a negative value.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -476,8 +507,10 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     /**
      * Test the existence of the properties_mapped_memory properties in the configuration file (with
      * a value set to 0M).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_PROPERTIES_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
@@ -498,12 +531,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     }
 
     /**
-     * Test the existence of the relationships_mapped_memory properties in the configuration file (with
-     * a positive value).
+     * Test the existence of the relationships_mapped_memory properties in the configuration file (with a positive
+     * value).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourcePositiveRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
@@ -522,12 +557,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     }
 
     /**
-     * Test an exception is thrown when the resource is saved if the property relationships_mapped_memory
-     * is set with a negative value.
+     * Test an exception is thrown when the resource is saved if the property relationships_mapped_memory is set with a
+     * negative value.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeRelationshipsMappedMemoryOption() throws IOException {
@@ -536,12 +573,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     }
 
     /**
-     * Test the existence of the relationships_mapped_memory properties in the configuration file (with
-     * a value set to 0M).
+     * Test the existence of the relationships_mapped_memory properties in the configuration file (with a value set to
+     * 0M).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourceNullRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
@@ -560,12 +599,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     }
 
     /**
-     * Test the existence of relationships_mapped_memory and properties_mapped_memory properties
-     * in the configuration file (with a positive value).
+     * Test the existence of relationships_mapped_memory and properties_mapped_memory properties in the configuration
+     * file (with a positive value).
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryPositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
@@ -589,13 +630,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     }
 
     /**
-     * Test an exception is thrown when the resource is saved if the property properties_mapped_memory
-     * is set with a negative value and the property relationships_mapped_memory is set with a positive
-     * value.
+     * Test an exception is thrown when the resource is saved if the property properties_mapped_memory is set with a
+     * negative value and the property relationships_mapped_memory is set with a positive value.
+     * <p>
      * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY}
      * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <p>
+     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
+     * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryNegativePropertiesMappedMemoryOption() throws IOException {
@@ -606,20 +648,24 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
     }
 
     /**
-     * Test the existence of all the properties in the configuration file (all options given to the
-     * resource are valid).
+     * Test the existence of all the properties in the configuration file (all options given to the resource are valid).
+     * <p>
      * Tested options are:
-     * - cache_type
-     * - use_memory_mapped_buffers
-     * - strings_mapped_memory
-     * - arrays_mapped_memory
-     * - nodes_mapped_memory
-     * - properties_mapped_memory
-     * - relationships_mapped_memory
-     * This test use the option {@link BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY}
-     * but does not test it (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
-     * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
-     * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
+     * <ul>
+     * <li>cache_type</li>
+     * <li>use_memory_mapped_buffers</li>
+     * <li>strings_mapped_memory</li>
+     * <li>arrays_mapped_memory</li>
+     * <li>nodes_mapped_memory</li>
+     * <li>properties_mapped_memory</li>
+     * <li>relationships_mapped_memory</li>
+     * </ul>
+     * This test use the option {@link
+     * BlueprintsNeo4jResourceOptions#OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY} but does not test it (it is
+     * done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()})
+     * <p>
+     * In addition, there is no verification on the
+     * OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
     @Test
     public void testSaveGraphNeo4jResourceAllOptionsValid() throws IOException, ConfigurationException {

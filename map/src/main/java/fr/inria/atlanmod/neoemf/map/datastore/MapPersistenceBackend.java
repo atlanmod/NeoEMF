@@ -62,7 +62,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
     /**
      * A persistent map that store the values of multivalued features for persistent EObjects.
      * The key is build using the persistent object Id plus the name of the feature plus the index of the value.
-     *
      */
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 

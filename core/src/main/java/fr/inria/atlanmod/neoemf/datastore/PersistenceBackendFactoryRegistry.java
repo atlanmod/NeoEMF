@@ -40,7 +40,9 @@ public class PersistenceBackendFactoryRegistry {
      * Returns a specific {@link PersistenceBackendFactory backend factory} identified by {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
+     *
      * @return the backend factory
+     *
      * @throws NullPointerException if no backend factory is registered for the given {@code uriScheme}
      */
     public static PersistenceBackendFactory getFactoryProvider(String uriScheme) {
@@ -51,6 +53,7 @@ public class PersistenceBackendFactoryRegistry {
      * Defines if a {@link PersistenceBackendFactory backend factory} is registered for the given {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
+     *
      * @return {@code true} if a backend factory is registered for the given {@code uriScheme}
      */
     public static boolean isRegistered(String uriScheme) {

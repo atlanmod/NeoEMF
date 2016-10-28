@@ -49,10 +49,10 @@ public class PersistentEObjectAdapter {
      * Returns the given {@code object} adapted in a specific {@code type}.
      *
      * @param adaptableObject the object to adapt
-     * @param adapterType the class in which the object must be adapted
+     * @param adapterType     the class in which the object must be adapted
      *
-     * @return an adapted object in the given {@code type}, or {@code null} if the {@code object} cannot be assigned
-     *         as a {@code type}
+     * @return an adapted object in the given {@code type}, or {@code null} if the {@code object} cannot be assigned as
+     *         a {@code type}
      *
      * @throws NullPointerException if the {@code type} is {@code null}
      */
@@ -98,7 +98,7 @@ public class PersistentEObjectAdapter {
      * Create an adapter for the given {@code object} in a specific {@code type}.
      *
      * @param adaptableObject the object to adapt
-     * @param adapterType the class in which the object must be adapted
+     * @param adapterType     the class in which the object must be adapted
      *
      * @return an adapted object in the given {@code type}
      */

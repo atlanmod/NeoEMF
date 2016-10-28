@@ -370,8 +370,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
             while (it.hasNext()) {
                 hardLinksList.add((E) it.next());
             }
-			/*
-			 * Iterate using the hard links list instead the getAllContents.
+            /*
+             * Iterate using the hard links list instead the getAllContents.
 			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
 			 */
             for (E element : hardLinksList) {

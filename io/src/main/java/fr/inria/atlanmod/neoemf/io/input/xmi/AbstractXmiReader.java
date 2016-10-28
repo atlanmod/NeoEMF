@@ -121,6 +121,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Returns the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix.
+     *
      * @return the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix
      */
     private static String getPrefix(String prefixedValue) {
@@ -180,7 +181,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Processes an attribute
-
+     *
      * @return a list of {@link StructuralFeature structural features} that can be empty.
      */
     private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
@@ -254,7 +255,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Processes a list of {@code references} and returns a list of {@link Reference}.
-
+     *
      * @return a list of {@link Reference} from the given {@code references}
      */
     private List<StructuralFeature> processReferences(String localName, List<String> references) throws Exception {

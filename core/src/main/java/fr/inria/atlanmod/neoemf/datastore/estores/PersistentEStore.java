@@ -38,9 +38,12 @@ public interface PersistentEStore extends InternalEObject.EStore {
 
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
+     *
      * @param eClass the {@link EClass} to compute the instances of
      * @param strict {@code true} if the lookup searches for strict instances
+     *
      * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
+     *
      * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
      */
     default EList<EObject> getAllInstances(EClass eClass, boolean strict) {
