@@ -105,6 +105,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testHashCode() {
+        //noinspection ResultOfMethodCallIgnored
         model.getContentObjects().hashCode();
     }
 
@@ -272,6 +273,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testToStringEmptyList() {
+        //noinspection ResultOfMethodCallIgnored
         model.getContentObjects().toString();
     }
 
@@ -281,6 +283,7 @@ public class TransientEStoreListTest extends AllTest {
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
+        //noinspection ResultOfMethodCallIgnored
         model.getContentObjects().toString();
     }
 }

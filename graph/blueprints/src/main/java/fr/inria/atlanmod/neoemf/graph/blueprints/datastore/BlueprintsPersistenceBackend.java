@@ -28,7 +28,6 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
@@ -91,8 +90,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 	}
 	
 	@Override
-	public void start(Map<?, ?> options) throws InvalidDataStoreException {
-
+	public void start(Map<?, ?> options) {
 	}
 	
 	@Override
@@ -164,9 +162,9 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 		if(persistentEObject.isMapped()) {
 			vertex = getMappedVertex(persistentEObject.id());
 		}
-		else {
+//		else {
 //		    NeoLogger.warn("Trying to access a non-mapped PersistentEObject");
-		}
+//		}
 		return vertex;
 	}
 

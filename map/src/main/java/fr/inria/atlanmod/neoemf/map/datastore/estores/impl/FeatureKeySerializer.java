@@ -20,8 +20,8 @@ import java.io.IOException;
 
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
-    Serializer<String> stringSerializer = Serializer.STRING;
-    Serializer<Id> idSerializer = new IdSerializer();
+    final Serializer<String> stringSerializer = Serializer.STRING;
+    final Serializer<Id> idSerializer = new IdSerializer();
 
     @Override
     public void serialize(DataOutput2 out, FeatureKey fk) throws IOException {

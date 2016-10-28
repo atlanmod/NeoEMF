@@ -235,6 +235,7 @@ public class ImportTest extends AllInputTest {
         }
     }
 
+    @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
     private void assertEqualFeature(EObject actual, EObject expected, int featureId) {
         EStructuralFeature eStructuralFeature = expected.eClass().getEStructuralFeature(featureId);
 

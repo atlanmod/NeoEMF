@@ -32,9 +32,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class EObjectEContentsTest extends AllBackendTest {
 
-    private static int SUB_PACK_COUNT = 5;
-    private static int PACK_CONTENT_COUNT = 3;
-    private static int ECONTENTS_COUNT = SUB_PACK_COUNT + PACK_CONTENT_COUNT;
+    private static final int SUB_PACK_COUNT = 5;
+    private static final int PACK_CONTENT_COUNT = 3;
+    private static final int ECONTENTS_COUNT = SUB_PACK_COUNT + PACK_CONTENT_COUNT;
     
     protected MapSampleFactory factory;
     protected Pack p;

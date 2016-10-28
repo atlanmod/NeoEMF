@@ -24,7 +24,7 @@ import static java.util.Objects.isNull;
  */
 public class IsSetCachingEStoreDecorator extends AbstractEStoreDecorator {
 
-	private ValueCache<Boolean> cache;
+	private final ValueCache<Boolean> cache;
 
 	public IsSetCachingEStoreDecorator(PersistentEStore eStore) {
 		super(eStore);

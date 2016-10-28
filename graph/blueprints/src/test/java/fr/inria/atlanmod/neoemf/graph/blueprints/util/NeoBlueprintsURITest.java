@@ -37,10 +37,11 @@ public class NeoBlueprintsURITest extends AllTest {
 
     private static final String INVALID = "invalid";
 
+    private final PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
+
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
     private File testFile;
 
     @Before

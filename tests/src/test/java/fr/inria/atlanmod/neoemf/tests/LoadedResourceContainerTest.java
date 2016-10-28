@@ -105,7 +105,7 @@ public class LoadedResourceContainerTest extends AllLoadedResourceTest {
         InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
         assertThat(model.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
 
-        InternalEObject modelContent = (InternalEObject) ((SampleModel) model).getContentObjects().get(0);
+        InternalEObject modelContent = ((SampleModel) model).getContentObjects().get(0);
         assertThat(modelContent.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
     }
 

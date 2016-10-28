@@ -24,8 +24,8 @@ public class Identifier {
         return new Identifier(value, true);
     }
 
-    private String value;
-    private boolean generated;
+    private final String value;
+    private final boolean generated;
 
     private Identifier(String value, boolean generated) {
         this.value = value;

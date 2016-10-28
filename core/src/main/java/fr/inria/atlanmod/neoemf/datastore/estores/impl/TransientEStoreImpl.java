@@ -161,9 +161,10 @@ public class TransientEStoreImpl implements InternalEObject.EStore {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked") // Unchecked cast: List<Object> to List<T>
 	public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
 		EStoreKey entry = new EStoreKey(eObject, feature);
-		List<Object> list = manyMap.get(entry);
+		List<T> list = (List<T>) manyMap.get(entry);
 		return isNull(list) ? Arrays.copyOf(array, 0) : list.toArray(array);
 	}
 

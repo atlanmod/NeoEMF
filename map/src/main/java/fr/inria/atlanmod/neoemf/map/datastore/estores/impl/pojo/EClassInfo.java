@@ -25,9 +25,9 @@ public class EClassInfo implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String nsURI;
+	private final String nsURI;
 	
-	private String className;
+	private final String className;
 	
 	public EClassInfo(PersistentEObject object) {
 		this.nsURI = object.eClass().getEPackage().getNsURI();
@@ -36,7 +36,6 @@ public class EClassInfo implements Serializable {
 
 	/**
 	 * Retrieves the EClass corresponding to this memento.
-	 * @return
 	 */
 	public EClass eClass() {
 		return (EClass) EPackage.Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);

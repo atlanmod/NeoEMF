@@ -97,7 +97,7 @@ public class LoadedResourceResourceTest extends AllLoadedResourceTest {
         InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
         assertThat(model.eDirectResource()).isNull(); // "eDirectResource must return null"
 
-        InternalEObject modelContent = (InternalEObject) ((SampleModel) model).getContentObjects().get(0);
+        InternalEObject modelContent = ((SampleModel) model).getContentObjects().get(0);
         assertThat(modelContent.eDirectResource()).isNull(); // "eDirectResource must return null"
     }
 

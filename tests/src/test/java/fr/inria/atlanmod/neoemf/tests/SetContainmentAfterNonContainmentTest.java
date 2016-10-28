@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -68,14 +67,13 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
 	
 	private void addContainmentSubtreeToPersistentResource(PersistentResource persistentResource, Class<?> eStoreClass) {
 		createResourceContent(persistentResource);
-		PersistentEObject icom1 = (PersistentEObject)com1;
 
-		assertThat(icom1.eStore()).isInstanceOf(eStoreClass);
-		assertThat(icom1.resource()).isSameAs((Resource.Internal) persistentResource);
+		assertThat(com1.eStore()).isInstanceOf(eStoreClass);
+		assertThat(com1.resource()).isSameAs((Resource.Internal) persistentResource);
 
 		// Check that the element has a container (it cannot be in the resource if it does not)
-		assertThat(icom1.eContainer()).isSameAs((EObject) pc1);
-		assertThat(icom1.eInternalContainer()).isSameAs((EObject) pc1);
+		assertThat(com1.eContainer()).isSameAs((EObject) pc1);
+		assertThat(com1.eInternalContainer()).isSameAs((EObject) pc1);
 
 		// Check that the element is in the containment reference list of its parent
 		assertThat(pc1.getContainmentNoOppositeRefComment()).contains(com1);

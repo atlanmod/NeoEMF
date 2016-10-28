@@ -91,11 +91,8 @@ public class SavedResourceResourceTest extends AllSavedResourceTest {
     }
 
     private void checkEDirectResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        InternalEObject internalMapSampleModel = (InternalEObject) sampleModel;
-        assertThat(internalMapSampleModel.eDirectResource()).isSameAs(persistentResource); // "Wrong eDirectResource value"
-
-        InternalEObject internalMapSampleContentObject = (InternalEObject) sampleModelContentObject;
-        assertThat(internalMapSampleContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
+        assertThat(sampleModel.eDirectResource()).isSameAs(persistentResource); // "Wrong eDirectResource value"
+        assertThat(sampleModelContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
     }
 
     private void getAllContentsEDirectResource(PersistentResource persistentResource) {

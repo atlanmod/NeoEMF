@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
 
-    Serializer<Integer> intSerializer = Serializer.INTEGER;
+    final Serializer<Integer> intSerializer = Serializer.INTEGER;
 
     @Override
     public void serialize(DataOutput2 out, FeatureKey fk) throws IOException {

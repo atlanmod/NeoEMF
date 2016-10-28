@@ -61,7 +61,6 @@ public class NeoHBaseUtil {
 		/**
 		 * Deletes a table if exist
 		 * @return {@code true} if deleted, {@code false} otherwise
-		 * @throws IOException
 		 */
 		public boolean deleteResourceIfExists (URI modelURI) throws IOException {
 

@@ -60,12 +60,12 @@ public class Namespace {
         /**
          * Registered {@link Namespace namespaces} identified by their prefix.
          */
-        private Cache<String, Namespace> namespacesByPrefix;
+        private final Cache<String, Namespace> namespacesByPrefix;
 
         /**
          * Registered {@link Namespace namespaces} identified by their URI.
          */
-        private Cache<String, Namespace> namespacesByUri;
+        private final Cache<String, Namespace> namespacesByUri;
 
         private Registry() {
             namespacesByPrefix = CacheBuilder.newBuilder().build();

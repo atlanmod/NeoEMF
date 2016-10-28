@@ -25,8 +25,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
 
-import java.util.Iterator;
-
 import static java.util.Objects.isNull;
 
 public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
@@ -66,9 +64,7 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
                     NeoLogger.error("Invalid get index " + index);
                     throw new IndexOutOfBoundsException("Invalid get index " + index);
                 }
-                Iterator<Edge> iterator = vertex.getEdges(Direction.OUT, eReference.getName()).iterator();
-                while (iterator.hasNext()) {
-                    Edge edge = iterator.next();
+                for (Edge edge : vertex.getEdges(Direction.OUT, eReference.getName())) {
                     if (isNull(edge.getProperty(POSITION))) {
                         NeoLogger.error("An edge corresponding to the many EReference " + eReference.getName() + " does not have a position property");
                         throw new RuntimeException("An edge corresponding to the many EReference " + eReference.getName() + " does not have a position property");
@@ -88,8 +84,8 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
 
     private static class CacheKey {
 
-        public Id id;
-        public EStructuralFeature feature;
+        public final Id id;
+        public final EStructuralFeature feature;
 
         public CacheKey(Id id, EStructuralFeature feature) {
             this.id = id;

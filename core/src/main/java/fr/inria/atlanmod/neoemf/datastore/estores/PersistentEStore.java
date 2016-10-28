@@ -20,9 +20,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * This interface extends the {@link InternalEObject.EStore} interface and allows to establish a
- * mapping between {@link Resource}s and {@link InternalEObject.EStore}s.
- * 
+ * This interface extends the {@link InternalEObject.EStore} interface and allows to establish a mapping between
+ * {@link Resource}s and {@link InternalEObject.EStore}s.
  */
 public interface PersistentEStore extends InternalEObject.EStore {
 
@@ -32,8 +31,8 @@ public interface PersistentEStore extends InternalEObject.EStore {
 	Resource resource();
 
 	/**
-	 * Returns the resolved {@link EObject} identified by the given
-	 * {@code id} or {@code null} if no {@link EObject} can be resolved.
+	 * Returns the resolved {@link EObject} identified by the given {@code id} or {@code null} if no {@link EObject} can
+	 * be resolved.
 	 */
 	EObject eObject(Id id);
 	
@@ -47,21 +46,12 @@ public interface PersistentEStore extends InternalEObject.EStore {
 	EList<EObject> getAllInstances(EClass eClass, boolean strict);
 
 	/**
-     * Returns the persistence backend where data are written.
-     *
-     * @return the persistence backend
-     */
-
-	/**
 	 * Utility method used for tests. Returns the decorated eStore, if it exists.
-	 * @return
 	 */
 	PersistentEStore getEStore();
 
-
 	/**
-	 * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence
-	 * back-end.
+	 * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence back-end.
 	 */
 	void save();
 }

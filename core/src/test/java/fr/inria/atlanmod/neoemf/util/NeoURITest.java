@@ -41,7 +41,7 @@ public class NeoURITest extends AllTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private PersistenceBackendFactory persistenceBackendFactory = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory = Mockito.mock(PersistenceBackendFactory.class);
     private File testFile;
 
     @Before

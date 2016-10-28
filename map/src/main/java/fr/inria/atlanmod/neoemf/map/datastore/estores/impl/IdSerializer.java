@@ -27,13 +27,10 @@ import static java.util.Objects.isNull;
  */
 public class IdSerializer implements Serializer<Id> {
 
-    Serializer<String> serializer = Serializer.STRING;
+    final Serializer<String> serializer = Serializer.STRING;
 
     /**
      * Serializes id to a DataOutput. Uses a String Serializer.
-     * @param out
-     * @param id
-     * @throws IOException
      */
     @Override
     public void serialize(DataOutput2 out, Id id) throws IOException {

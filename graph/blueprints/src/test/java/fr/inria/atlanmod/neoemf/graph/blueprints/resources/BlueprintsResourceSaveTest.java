@@ -48,9 +48,9 @@ public class BlueprintsResourceSaveTest extends AllTest {
 
     private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
 
-    protected String testFilePath = TEST_FILENAME;
+    protected final String configFileName = "/config.properties";
 
-    protected String configFileName = "/config.properties";
+    protected String testFilePath = TEST_FILENAME;
 
     protected PersistenceBackendFactory persistenceBackendFactory;
     protected File testFile;

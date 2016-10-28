@@ -67,7 +67,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         // Find the feature to look for
         int featureSize = 0;
         for (EStructuralFeature eStructuralFeature : eStructuralFeatures) {
-            int localFeatureSize = 0;
+            int localFeatureSize;
             if(eStructuralFeature.isMany()) {
                 localFeatureSize = owner.eStore().size(owner, eStructuralFeature);
             }

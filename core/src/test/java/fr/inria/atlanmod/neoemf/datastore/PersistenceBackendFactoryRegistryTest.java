@@ -24,8 +24,8 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
     private static final String MOCK_1 = "mock1";
     private static final String MOCK_2 = "mock2";
 
-    private PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
-    private PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
 
     @Before
     public void setUp() {

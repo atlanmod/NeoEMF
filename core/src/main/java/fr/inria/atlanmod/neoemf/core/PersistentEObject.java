@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * An {@code EObject object} able to persist in a database.
+ * An {@link org.eclipse.emf.ecore.EObject object} able to persist in a database.
  */
 public interface PersistentEObject extends InternalEObject {
 
@@ -35,16 +35,12 @@ public interface PersistentEObject extends InternalEObject {
     void id(Id id);
 
     /**
-     * Returns true if this object is mapped to an entity (table, node, column, etc.) stored in a database.
-     *
-     * @return
+     * Returns {@code true} if this object is mapped to an entity (table, node, column, etc.) stored in a database.
      */
     boolean isMapped();
 
     /**
      * Sets the mapped attribute.
-     *
-     * @param mapped
      */
     void setMapped(boolean mapped);
 
@@ -57,7 +53,6 @@ public interface PersistentEObject extends InternalEObject {
 
     /**
      * Sets the resource containing this persistent object.
-     * @param resource
      */
     void resource(Resource.Internal resource);
 }

@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,12 +31,6 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 
     @Test

@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKeySerializer;
@@ -93,8 +92,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public void start(Map<?, ?> options) throws InvalidDataStoreException {
-
+    public void start(Map<?, ?> options) {
     }
 
     @Override
@@ -132,9 +130,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Retrieves container for a given object id.
-     *
-     * @param id
-     * @return
      */
     public ContainerInfo containerFor(Id id) {
         return containersMap.get(id);
@@ -142,9 +137,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Stores containter information for an object id
-     *
-     * @param id
-     * @param container
      */
     public void storeContainer(Id id, ContainerInfo container) {
         containersMap.put(id, container);
@@ -152,9 +144,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Retrieves metaclass (EClass) for a given object id
-     *
-     * @param id
-     * @return
      */
     public EClassInfo metaclassFor(Id id) {
         return instanceOfMap.get(id);
@@ -162,9 +151,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Stores metaclass (EClass) information for an object id.
-     *
-     * @param id
-     * @param metaclass
      */
     public void storeMetaclass(Id id, EClassInfo metaclass) {
         instanceOfMap.put(id, metaclass);
@@ -172,9 +158,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Store the value of a given feature.
-     * @param key
-     * @param value
-     * @return
      */
     public Object storeValue(FeatureKey key, Object value) {
         return features.put(key,value);
@@ -182,8 +165,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Retrieves the value of a given feature.
-     * @param key
-     * @return
      */
     public Object valueOf(FeatureKey key) {
         return features.get(key);
@@ -191,8 +172,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Removes the value of a given feature. The feature becomes unset.
-     * @param key
-     * @return
      */
     public Object removeFeature(FeatureKey key) {
         return features.remove(key);
@@ -200,8 +179,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Return true if the feature was set, false otherwise.
-     * @param key
-     * @return
      */
     public boolean isFeatureSet(FeatureKey key) {
         return features.containsKey(key);
@@ -209,9 +186,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Stores the single value of a given multivalued feature at the given index.
-     * @param key
-     * @param value
-     * @return
      */
     public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
         return multivaluedFeatures.put(key,value);
@@ -219,8 +193,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Retrieves the value of a given multivalued feature at a given index.
-     * @param key
-     * @return
      */
     public Object valueAtIndex(MultivaluedFeatureKey key) {
         return multivaluedFeatures.get(key);
@@ -229,7 +201,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Copies all the contents of this backend to the target one.
-     * @param target
      */
     @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
     public void copyTo(MapPersistenceBackend target) {

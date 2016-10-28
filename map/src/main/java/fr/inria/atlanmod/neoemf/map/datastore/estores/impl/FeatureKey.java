@@ -34,7 +34,6 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
     /**
      * Compares two feature keys.
-     * @param other
      * @return 0 if equal, -1 if before, 1 if after.
      */
     @Override

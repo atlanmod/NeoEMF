@@ -19,9 +19,9 @@ public class ContainerInfo implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public Id containerId;
+	public final Id containerId;
 	
-	public String containingFeatureName;
+	public final String containingFeatureName;
 	
 	public ContainerInfo(Id containerId, String containingFeatureName) {
 		this.containerId = containerId;

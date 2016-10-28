@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class PersistentResourceDecorator implements PersistentResource {
 
-    protected PersistentResource base;
+    protected final PersistentResource base;
     
     public PersistentResourceDecorator(PersistentResource baseResource) {
         this.base = baseResource;

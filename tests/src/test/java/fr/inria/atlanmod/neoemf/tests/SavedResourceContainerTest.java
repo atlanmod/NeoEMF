@@ -91,11 +91,8 @@ public class SavedResourceContainerTest extends AllSavedResourceTest {
     }
 
     private void checkEInternalContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        InternalEObject internalMapSampleModel = (InternalEObject) sampleModel;
-        assertThat(internalMapSampleModel.eInternalContainer()).isNull(); // "Top Level EObject has a not null internal container"
-
-        InternalEObject internalMapSampleContentObject = (InternalEObject) sampleModelContentObject;
-        assertThat(internalMapSampleContentObject.eInternalContainer()).isSameAs(internalMapSampleModel); // "Wrong eInternalContainer value"
+        assertThat(sampleModel.eInternalContainer()).isNull(); // "Top Level EObject has a not null internal container"
+        assertThat(sampleModelContentObject.eInternalContainer()).isSameAs((InternalEObject) sampleModel); // "Wrong eInternalContainer value"
     }
 
     private void getAllContentsEInternalContainer(PersistentResource persistentResource) {

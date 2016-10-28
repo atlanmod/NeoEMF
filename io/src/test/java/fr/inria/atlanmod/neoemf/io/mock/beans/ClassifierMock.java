@@ -26,12 +26,12 @@ import java.util.List;
  */
 public class ClassifierMock {
 
-    private Classifier classifier;
+    private final Classifier classifier;
 
-    private List<Attribute> attributes;
-    private List<Reference> references;
+    private final List<Attribute> attributes;
+    private final List<Reference> references;
 
-    private List<ClassifierMock> elements;
+    private final List<ClassifierMock> elements;
 
     public ClassifierMock(Classifier classifier) {
         this.classifier = classifier;

@@ -149,8 +149,8 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
         /**
          * The root of this tree. This does not represent the root node path.
          */
-        private Node dummyRoot;
-        private Deque<Node> currentPath;
+        private final Node dummyRoot;
+        private final Deque<Node> currentPath;
 
         public TreePath() {
             this.dummyRoot = new Node("ROOT");
@@ -205,10 +205,10 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         private static class Node {
 
-            private String key;
-            private Integer value;
+            private final String key;
+            private final Cache<String, Node> children;
 
-            private Cache<String, Node> children;
+            private Integer value;
 
             public Node(String key) {
                 this.key = key;

@@ -24,11 +24,6 @@ public class ContainsPersistentTest extends AllContainsTest {
         createPersistentStores();
     }
     
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-    
     @Test
     public void testContainsPersistent3ElementsMapDB() {
         createResourceContent(mapResource,3);

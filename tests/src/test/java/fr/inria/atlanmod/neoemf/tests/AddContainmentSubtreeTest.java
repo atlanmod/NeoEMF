@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
@@ -63,19 +62,14 @@ public class AddContainmentSubtreeTest extends AllContainmentTest {
     private void addContainmentSubtreeToPersistentResource(PersistentResource persistentResource, Class<?> eStoreClass) {
         createResourceContent(persistentResource);
 
-        PersistentEObject ip1 = (PersistentEObject) p1;
-        PersistentEObject ip2 = (PersistentEObject) p2;
-        PersistentEObject ip3 = (PersistentEObject) p3;
-        PersistentEObject ipc1 = (PersistentEObject) pc1;
+        assertThat(p1.eStore()).isInstanceOf(eStoreClass);
+        assertThat(p2.eStore()).isInstanceOf(eStoreClass);
+        assertThat(p3.eStore()).isInstanceOf(eStoreClass);
+        assertThat(pc1.eStore()).isInstanceOf(eStoreClass);
 
-        assertThat(ip1.eStore()).isInstanceOf(eStoreClass);
-        assertThat(ip2.eStore()).isInstanceOf(eStoreClass);
-        assertThat(ip3.eStore()).isInstanceOf(eStoreClass);
-        assertThat(ipc1.eStore()).isInstanceOf(eStoreClass);
-
-        assertThat(ip1.resource()).isSameAs(persistentResource);
-        assertThat(ip2.resource()).isSameAs(persistentResource);
-        assertThat(ip3.resource()).isSameAs(persistentResource);
-        assertThat(ipc1.resource()).isSameAs(persistentResource);
+        assertThat(p1.resource()).isSameAs(persistentResource);
+        assertThat(p2.resource()).isSameAs(persistentResource);
+        assertThat(p3.resource()).isSameAs(persistentResource);
+        assertThat(pc1.resource()).isSameAs(persistentResource);
     }
 }

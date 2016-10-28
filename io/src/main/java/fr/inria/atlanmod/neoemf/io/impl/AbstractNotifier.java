@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public abstract class AbstractNotifier<T extends IOHandler> implements IONotifier<T> {
 
-    private Set<T> handlers;
+    private final Set<T> handlers;
 
     public AbstractNotifier() {
         this.handlers = new HashSet<>();

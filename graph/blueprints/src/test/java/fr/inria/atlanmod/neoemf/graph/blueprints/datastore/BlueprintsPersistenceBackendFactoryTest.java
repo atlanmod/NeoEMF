@@ -13,14 +13,13 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
-import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.CachedManyDirectWriteBlueprintsRespirceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
@@ -37,7 +36,6 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -49,17 +47,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
+public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private static final String TEST_FILENAME = "graphPersistenceBackendFactoryTestFile";
 
+    private final Map<Object, Object> options = new HashMap<>();
+    private final List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
+
     private PersistenceBackendFactory persistenceBackendFactory;
     private File testFile;
-    private Map<Object, Object> options = new HashMap<>();
-    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -186,37 +185,6 @@ public class BlueprintsPersistenceBackendFactoryTest extends AllTest {
         
         assertHasInnerBackend(eStore, persistentBackend);
     }
-
-
-    /**
-     * Too method to retrieve the PersistentEStore associated to a store.
-     * @param store
-     * @return
-     */
-    private PersistenceBackend getInnerBackend(PersistentEStore store) {
-        // context is the real EStore, which can de decorated.
-        PersistentEStore context = store.getEStore();
-        Field field = null;
-        PersistenceBackend result = null;
-
-        try {
-            field = AbstractDirectWriteResourceEStore.class.getDeclaredField("persistenceBackend");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-
-
-        field.setAccessible(true);
-
-        try {
-            result = (PersistenceBackend) field.get(context);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
 
     private void assertHasInnerBackend(PersistentEStore store, PersistenceBackend expectedInnerBackend) {
         PersistenceBackend innerBackend = getInnerBackend(store);

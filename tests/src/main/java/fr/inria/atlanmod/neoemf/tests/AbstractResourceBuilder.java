@@ -25,7 +25,7 @@ import java.util.Map;
 
 public abstract class AbstractResourceBuilder {
 
-    private EPackage ePackage;
+    private final EPackage ePackage;
 
     protected ResourceSet rSet;
     protected URI uri;

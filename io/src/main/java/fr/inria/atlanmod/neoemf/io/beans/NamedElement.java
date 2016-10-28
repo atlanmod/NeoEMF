@@ -16,7 +16,7 @@ package fr.inria.atlanmod.neoemf.io.beans;
  */
 public class NamedElement {
 
-    private String localName;
+    private final String localName;
 
     public NamedElement(String localName) {
         this.localName = localName;

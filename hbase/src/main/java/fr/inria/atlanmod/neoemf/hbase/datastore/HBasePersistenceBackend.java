@@ -10,7 +10,6 @@
  */
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
@@ -27,8 +26,7 @@ import java.util.Map;
 public class HBasePersistenceBackend implements PersistenceBackend {
 
     @Override
-    public void start(Map<?, ?> options) throws InvalidDataStoreException {
-        
+    public void start(Map<?, ?> options) {
     }
 
     @Override

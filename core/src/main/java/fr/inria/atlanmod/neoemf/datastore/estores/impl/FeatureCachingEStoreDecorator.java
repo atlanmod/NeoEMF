@@ -24,7 +24,7 @@ import static java.util.Objects.isNull;
  */
 public class FeatureCachingEStoreDecorator extends  AbstractEStoreDecorator {
 
-	private ValueCache<Object> cache;
+	private final ValueCache<Object> cache;
 	
 	public FeatureCachingEStoreDecorator(PersistentEStore eStore) {
 		super(eStore);

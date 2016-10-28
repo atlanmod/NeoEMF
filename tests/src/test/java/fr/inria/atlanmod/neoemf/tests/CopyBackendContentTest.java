@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.common.util.EList;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,12 +44,6 @@ public class CopyBackendContentTest extends AllBackendTest {
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 
     private void createResourceContent(PersistentResource r) {

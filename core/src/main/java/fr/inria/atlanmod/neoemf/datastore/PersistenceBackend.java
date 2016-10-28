@@ -20,9 +20,9 @@ public interface PersistenceBackend {
 	/**
 	 * Starts the underlying data store with the given {@code options}.
 	 */
-	//TODO InvalidDataStoreException is never thrown in method implementations
-	void start(Map<?, ?> options) throws InvalidDataStoreException;
-	
+	// TODO: All implementations are empty. Is this method really necessary ?
+	void start(Map<?, ?> options);
+
 	/**
 	 * Returns whether the underlying data store has been started or not.
 	 */

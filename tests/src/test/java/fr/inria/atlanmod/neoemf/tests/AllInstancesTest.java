@@ -21,7 +21,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SpecializedPackContent;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.After;
 import org.junit.Before;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,12 +45,6 @@ public abstract class AllInstancesTest extends AllBackendTest {
         factory = MapSampleFactory.eINSTANCE;
         this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /**

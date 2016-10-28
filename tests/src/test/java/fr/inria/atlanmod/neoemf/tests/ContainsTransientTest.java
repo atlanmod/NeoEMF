@@ -25,11 +25,6 @@ public class ContainsTransientTest extends AllContainsTest {
         createTransientStores();
     }
     
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-    
     @Test
     public void testContainsTransient3ElementsMapDB() {
         createResourceContent(mapResource,3);
