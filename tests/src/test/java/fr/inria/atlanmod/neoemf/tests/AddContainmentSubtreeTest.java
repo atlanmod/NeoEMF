@@ -26,27 +26,27 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class AddContainmentSubtreeTest extends AllContainmentTest {
 
-	@Test
-	public void testAddContainmentSubtreeToPersistentResourceMapDB() {
+    @Test
+    public void testAddContainmentSubtreeToPersistentResourceMapDB() {
         addContainmentSubtreeToPersistentResource(mapResource, DirectWriteMapResourceEStoreImpl.class);
-	}
-	
-	@Test
-	public void testAddContainmentSubtreeToPersistentResourceNeo4j() {
-        addContainmentSubtreeToPersistentResource(neo4jResource, DirectWriteBlueprintsResourceEStoreImpl.class);
-	}
-	
-	@Test
-	public void testAddContainmentSubtreeToPersistentResourceTinker() {
-        addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsResourceEStoreImpl.class);
-	}
+    }
 
-	public void createResourceContent(PersistentResource r) {
-	    p1 = factory.createPack();
+    @Test
+    public void testAddContainmentSubtreeToPersistentResourceNeo4j() {
+        addContainmentSubtreeToPersistentResource(neo4jResource, DirectWriteBlueprintsResourceEStoreImpl.class);
+    }
+
+    @Test
+    public void testAddContainmentSubtreeToPersistentResourceTinker() {
+        addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsResourceEStoreImpl.class);
+    }
+
+    public void createResourceContent(PersistentResource r) {
+        p1 = factory.createPack();
         p1.setName("p1");
-        
+
         r.getContents().add(p1);
-        
+
         p2 = factory.createPack();
         p2.setName("p2");
         pc1 = factory.createPackContent();
@@ -55,9 +55,9 @@ public class AddContainmentSubtreeTest extends AllContainmentTest {
         p2.getPacks().add(p3);
         pc1.setName("pc1");
         p3.getOwnedContents().add(pc1);
-        
+
         p1.getPacks().add(p2);
-	}
+    }
 
     private void addContainmentSubtreeToPersistentResource(PersistentResource persistentResource, Class<?> eStoreClass) {
         createResourceContent(persistentResource);

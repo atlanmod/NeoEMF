@@ -151,7 +151,8 @@ public class ImportBench extends AllInputBench {
 
         try {
             IOFactory.importXmi(file, persistenceHandler);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             NeoLogger.error(e);
             throw e;
         }

@@ -29,38 +29,37 @@ public abstract class AbstractResourceBuilder {
 
     protected ResourceSet rSet;
     protected URI uri;
-    protected Map<Object,Object> resourceOptions;
+    protected Map<Object, Object> resourceOptions;
 
     private boolean isPersistent;
-    
+
     public AbstractResourceBuilder(EPackage ePackage) {
         this.ePackage = ePackage;
         initBuilder();
     }
-    
+
     protected void initBuilder() {
         isPersistent = false;
         EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
         rSet = new ResourceSetImpl();
         resourceOptions = new HashMap<>();
     }
-    
+
     public abstract AbstractResourceBuilder uri(URI uri);
-    
+
     public abstract AbstractResourceBuilder file(File file);
-    
+
     public AbstractResourceBuilder persistent() {
         isPersistent = true;
         return this;
     }
-    
+
     public PersistentResource build() throws IOException {
-        PersistentResource resource = (PersistentResource)rSet.createResource(uri);
-        if(isPersistent) {
+        PersistentResource resource = (PersistentResource) rSet.createResource(uri);
+        if (isPersistent) {
             resource.save(resourceOptions);
         }
         initBuilder();
         return resource;
     }
-    
 }

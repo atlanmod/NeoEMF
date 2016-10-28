@@ -24,45 +24,44 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 
 public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
-    
+
     public BlueprintsResourceBuilder(EPackage ePackage) {
         super(ePackage);
         initBlueprintsBuilder();
     }
-    
+
     @Override
     protected void initBuilder() {
         super.initBuilder();
         initBlueprintsBuilder();
     }
-    
-    private void initBlueprintsBuilder() {
-        if(!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
-    }
-    
+
     @Override
     public BlueprintsResourceBuilder uri(URI uri) {
         this.uri = NeoBlueprintsURI.createNeoGraphURI(uri);
         return this;
     }
-    
+
     @Override
     public BlueprintsResourceBuilder file(File file) {
         this.uri = NeoBlueprintsURI.createNeoGraphURI(file);
         return this;
     }
-    
+
+    private void initBlueprintsBuilder() {
+        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        }
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+    }
+
     public BlueprintsResourceBuilder neo4j() {
         resourceOptions.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
         return this;
     }
-    
+
     public BlueprintsResourceBuilder tinkerGraph() {
         resourceOptions.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
         return this;
     }
-    
 }

@@ -27,30 +27,29 @@ public class MapResourceBuilder extends AbstractResourceBuilder {
         super(ePackage);
         initMapBuilder();
     }
-    
+
     @Override
     protected void initBuilder() {
         super.initBuilder();
         initMapBuilder();
     }
-    
-    private void initMapBuilder() {
-        if(!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
-        }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
-    }
-    
+
     @Override
     public MapResourceBuilder uri(URI uri) {
         this.uri = NeoMapURI.createNeoMapURI(uri);
         return this;
     }
-    
+
     @Override
     public MapResourceBuilder file(File file) {
         this.uri = NeoMapURI.createNeoMapURI(file);
         return this;
     }
-    
+
+    private void initMapBuilder() {
+        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+        }
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
+    }
 }

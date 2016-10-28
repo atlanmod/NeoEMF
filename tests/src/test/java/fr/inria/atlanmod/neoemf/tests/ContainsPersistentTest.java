@@ -24,56 +24,55 @@ public class ContainsPersistentTest extends AllContainsTest {
         super.setUp();
         createPersistentStores();
     }
-    
+
     @Test
     public void testContainsPersistent3ElementsMapDB() {
-        createResourceContent(mapResource,3);
-        checkContainsResult(mapResource,3);
+        createResourceContent(mapResource, 3);
+        checkContainsResult(mapResource, 3);
     }
-    
+
     @Test
     public void testContainsPersistent3ElementsNeo4j() {
-        createResourceContent(neo4jResource,3);
-        checkContainsResult(neo4jResource,3);
+        createResourceContent(neo4jResource, 3);
+        checkContainsResult(neo4jResource, 3);
     }
-    
+
     @Test
     public void testContainsPersistent3ElementsTinker() {
-        createResourceContent(tinkerResource,3);
-        checkContainsResult(tinkerResource,3);
+        createResourceContent(tinkerResource, 3);
+        checkContainsResult(tinkerResource, 3);
     }
-    
+
     @Test
     public void testContainsPersistent4ElementsMapDB() {
-        createResourceContent(mapResource,4);
+        createResourceContent(mapResource, 4);
         checkContainsResult(mapResource, 4);
     }
-    
+
     @Test
     public void testContainsPersistent4ElementsNeo4j() {
         createResourceContent(neo4jResource, 4);
         checkContainsResult(neo4jResource, 4);
     }
-    
+
     @Test
     public void testContainsPersistent4ElementsTinker() {
         createResourceContent(tinkerResource, 4);
         checkContainsResult(tinkerResource, 4);
     }
-    
-    
+
     @Test
     public void testContainsPersistent5ElementsMapDB() {
         createResourceContent(mapResource, 5);
         checkContainsResult(mapResource, 5);
     }
-    
+
     @Test
     public void testContainsPersistent5ElementsNeo4j() {
         createResourceContent(neo4jResource, 5);
         checkContainsResult(neo4jResource, 5);
     }
-    
+
     @Test
     public void testContainsPersistent5ElementsTinker() {
         createResourceContent(tinkerResource, 5);

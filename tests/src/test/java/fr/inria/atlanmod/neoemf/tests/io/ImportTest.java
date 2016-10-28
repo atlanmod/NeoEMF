@@ -67,6 +67,20 @@ public class ImportTest extends AllInputTest {
     private HashSet<Object> testedObjects;
     private HashSet<EStructuralFeature> testedFeatures;
 
+    private static EObject getChildFrom(EObject root, int... indexes) {
+        if (indexes.length == 0) {
+            throw new IllegalArgumentException("You must define at least one index");
+        }
+
+        EObject child = root;
+
+        for (int index : indexes) {
+            child = child.eContents().get(index);
+        }
+
+        return child;
+    }
+
     @Before
     public void setUp() throws Exception {
         String timestamp = String.valueOf(new Date().getTime());
@@ -271,7 +285,8 @@ public class ImportTest extends AllInputTest {
             try {
                 eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
                 fail();
-            } catch (NullPointerException ignore) {
+            }
+            catch (NullPointerException ignore) {
                 // It's good !
             }
         }
@@ -280,6 +295,7 @@ public class ImportTest extends AllInputTest {
         }
     }
 
+    @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
     private void assertValidReference(final EObject eObject, final String name, final int index, final String referenceClassName, final String referenceName, final boolean many, final boolean containment) {
         EReference eReference = (EReference) eObject.eClass().getEStructuralFeature(name);
 
@@ -287,10 +303,10 @@ public class ImportTest extends AllInputTest {
         EObject eObjectReference;
 
         if (many) {
-            @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
             EList<EObject> eObjectList = (EList<EObject>) objectReference;
             eObjectReference = eObjectList.get(index);
-        } else {
+        }
+        else {
             eObjectReference = (EObject) objectReference;
         }
 
@@ -300,7 +316,8 @@ public class ImportTest extends AllInputTest {
             try {
                 EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
                 assertThat(eObjectReference.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
-            } catch (NullPointerException ignore) {
+            }
+            catch (NullPointerException ignore) {
                 // It's good
             }
         }
@@ -318,23 +335,10 @@ public class ImportTest extends AllInputTest {
 
         if (isNull(value)) {
             assertThat(eObject.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
-        } else {
+        }
+        else {
             assertThat(eObject.eGet(eAttribute).toString()).isEqualTo(value);
         }
-    }
-
-    private static EObject getChildFrom(EObject root, int ... indexes) {
-        if (indexes.length == 0) {
-            throw new IllegalArgumentException("You must define at least one index");
-        }
-
-        EObject child = root;
-
-        for (int index : indexes) {
-            child = child.eContents().get(index);
-        }
-
-        return child;
     }
 
     private EObject loadWithEMF(File file) throws Exception {

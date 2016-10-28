@@ -31,39 +31,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AllContainsTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
-    
+
     protected SampleModel m;
     protected List<SampleModelContentObject> addedContent;
-    
+
     @Override
     public void setUp() throws Exception {
         factory = MapSampleFactory.eINSTANCE;
         ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
     }
-    
+
     @Override
     public void tearDown() throws Exception {
         m = null;
         addedContent = null;
         super.tearDown();
     }
-    
+
     protected void createResourceContent(Resource r, int cCount) {
         addedContent = new ArrayList<>();
         m = factory.createSampleModel();
         m.setName("Model");
-        for(int i = 0; i < cCount; i++) {
+        for (int i = 0; i < cCount; i++) {
             SampleModelContentObject c = factory.createSampleModelContentObject();
-            c.setName("c"+i);
+            c.setName("c" + i);
             addedContent.add(c);
             m.getContentObjects().add(c);
         }
         r.getContents().add(m);
     }
-    
+
     protected void checkContainsResult(PersistentResource r, int cCount) {
-        SampleModel m = (SampleModel)r.getContents().get(0);
+        SampleModel m = (SampleModel) r.getContents().get(0);
         assertThat(m.getContentObjects()).hasSize(cCount);
         assertThat(m.getContentObjects()).containsExactlyElementsOf(addedContent);
     }
