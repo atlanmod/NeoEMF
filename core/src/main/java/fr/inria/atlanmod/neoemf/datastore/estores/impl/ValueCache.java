@@ -40,27 +40,27 @@ public class ValueCache<V> {
         this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize).build();
     }
 
-    protected V getValueFromCache(InternalEObject object, EStructuralFeature feature) {
+    protected V get(InternalEObject object, EStructuralFeature feature) {
         return cache.getIfPresent(new CacheKey(object, feature));
     }
 
-    protected V getValueFromCache(InternalEObject object, EStructuralFeature feature, int index) {
+    protected V get(InternalEObject object, EStructuralFeature feature, int index) {
         return cache.getIfPresent(new CacheKey(object, feature, index));
     }
 
-    protected void cacheValue(InternalEObject object, EStructuralFeature feature, V value) {
+    protected void put(InternalEObject object, EStructuralFeature feature, V value) {
         cache.put(new CacheKey(object, feature), value);
     }
 
-    protected void cacheValue(InternalEObject object, EStructuralFeature feature, int index, V value) {
+    protected void put(InternalEObject object, EStructuralFeature feature, int index, V value) {
         cache.put(new CacheKey(object, feature, index), value);
     }
 
-    protected void invalidateValue(InternalEObject object, EStructuralFeature feature) {
+    protected void invalidate(InternalEObject object, EStructuralFeature feature) {
         cache.invalidate(new CacheKey(object, feature));
     }
 
-    protected void invalidateValue(InternalEObject object, EStructuralFeature feature, int index) {
+    protected void invalidate(InternalEObject object, EStructuralFeature feature, int index) {
         cache.invalidate(new CacheKey(object, feature, index));
     }
 

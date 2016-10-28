@@ -44,7 +44,7 @@ import static java.util.Objects.isNull;
 
 public class ReadOnlyHBaseResourceEStoreImpl extends DirectWriteHBaseResourceEStoreImpl {
 
-	private final Cache<EStoreKey, Object> featuresMap = CacheBuilder.newBuilder().softValues().build();
+	private final Cache<EStoreKey, Object> cache = CacheBuilder.newBuilder().softValues().build();
 
 	public ReadOnlyHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
 		super(resource);
@@ -55,7 +55,6 @@ public class ReadOnlyHBaseResourceEStoreImpl extends DirectWriteHBaseResourceESt
 		if (!admin.tableExists(tableName)) {
 			throw new IOException(MessageFormat.format("Resource with URI {0} does not exist", tableName.getNameAsString()));
 		}
-
 		return new HTable(conf, tableName);
 	}
 
@@ -121,7 +120,7 @@ public class ReadOnlyHBaseResourceEStoreImpl extends DirectWriteHBaseResourceESt
 		EStoreKey entry = new EStoreKey(neoEObject.id().toString(), feature);
 		Object returnValue = null;
 		try {
-			returnValue = featuresMap.get(entry, new FeatureCacheLoader(neoEObject.id(), feature));
+			returnValue = cache.get(entry, new FeatureCacheLoader(neoEObject.id(), feature));
 		}
 		catch (ExecutionException e) {
 			NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);

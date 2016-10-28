@@ -316,11 +316,6 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
 	protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
 		return persistenceBackend.valueOf(new FeatureKey(object.id(), feature.getName()));
 	}
-	
-	@Override
-	public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-		throw new UnsupportedOperationException();
-	}
 
 	private class PersistentEObjectCacheLoader implements Callable<PersistentEObject> {
 

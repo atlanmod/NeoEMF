@@ -43,7 +43,9 @@ public interface PersistentEStore extends InternalEObject.EStore {
 	 * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
 	 * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
 	 */
-	EList<EObject> getAllInstances(EClass eClass, boolean strict);
+	default EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Utility method used for tests. Returns the decorated eStore, if it exists.

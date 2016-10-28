@@ -21,134 +21,132 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * Utility class which can be used by backend-specific implementations that
- * does not provide a transient layer.
+ * Utility class which can be used by backend-specific implementations that does not provide a transient layer.
  */
 public class InvalidTransientResourceEStoreImpl implements PersistentEStore {
 
     @Override
     public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public void clear(InternalEObject eObject, EStructuralFeature feature) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public EObject create(EClass eClass) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public InternalEObject getContainer(InternalEObject eObject) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public EStructuralFeature getContainingFeature(InternalEObject eObject) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public boolean isSet(InternalEObject eObject, EStructuralFeature feature) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public Object move(InternalEObject eObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public int size(InternalEObject eObject, EStructuralFeature feature) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public Object[] toArray(InternalEObject eObject, EStructuralFeature feature) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
     
     @Override
     public void unset(InternalEObject eObject, EStructuralFeature feature) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
 
     @Override
     public int hashCode(InternalEObject object, EStructuralFeature feature) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
 
     @Override
     public Resource resource() {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
 
     @Override
     public EObject eObject(Id id) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
 
     @Override
     public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
-
 
     @Override
     public PersistentEStore getEStore() {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
 
     @Override
     public void save() {
-        throw getCustomUnsupportedException();
+        throw unsupportedOperation();
     }
 
-    private RuntimeException getCustomUnsupportedException() {
-        return new UnsupportedOperationException(
-                "The backend you are using does not provide a transient layer, you must save/load your resource before using it");
+    private UnsupportedOperationException unsupportedOperation() {
+        return new UnsupportedOperationException("The backend you are using does not provide a transient layer. " +
+                                                         "You must save/load your resource before using it");
     }
 }

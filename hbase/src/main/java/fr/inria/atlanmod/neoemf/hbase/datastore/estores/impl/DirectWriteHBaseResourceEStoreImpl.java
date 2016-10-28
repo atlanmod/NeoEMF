@@ -38,7 +38,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.protobuf.generated.ZooKeeperProtos;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -615,11 +614,6 @@ public class DirectWriteHBaseResourceEStoreImpl extends AbstractDirectWriteResou
 		}
 		return null;
 	}
-
-    @Override
-    public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException();
-    }
 
 	/**
 	 * TODO: implement this method.

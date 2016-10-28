@@ -38,47 +38,47 @@ public class CachingEStoreDecorator extends AbstractEStoreDecorator{
 	
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
-		cache.cacheValue(object, feature, 0);
+		cache.put(object, feature, 0);
 		super.unset(object, feature);
 	}
 
 	@Override
 	public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-		Integer size = cache.getValueFromCache(object, feature);
+		Integer size = cache.get(object, feature);
 		return isNull(size) ? super.isEmpty(object, feature) : (size == 0);
 	}
 
 	@Override
 	public int size(InternalEObject object, EStructuralFeature feature) {
-		Integer size = cache.getValueFromCache(object, feature);
+		Integer size = cache.get(object, feature);
 		if (isNull(size)) {
 			size = super.size(object, feature);
-			cache.cacheValue(object, feature, size);
+			cache.put(object, feature, size);
 		}
 		return size;
 	}
 
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		Integer size = cache.getValueFromCache(object, feature);
+		Integer size = cache.get(object, feature);
 		if (!isNull(size)) {
-			cache.cacheValue(object, feature, size + 1);
+			cache.put(object, feature, size + 1);
 		} 
 		super.add(object, feature, index, value);
 	}
 
 	@Override
 	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		Integer size = cache.getValueFromCache(object, feature);
+		Integer size = cache.get(object, feature);
 		if (!isNull(size)) {
-			cache.cacheValue(object, feature, size - 1);
+			cache.put(object, feature, size - 1);
 		} 
 		return super.remove(object, feature, index);
 	}
 
 	@Override
 	public void clear(InternalEObject object, EStructuralFeature feature) {
-		cache.cacheValue(object, feature, 0);
+		cache.put(object, feature, 0);
 		super.clear(object, feature);
 	}
 }

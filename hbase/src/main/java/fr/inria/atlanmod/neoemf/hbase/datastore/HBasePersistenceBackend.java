@@ -19,9 +19,10 @@ import org.eclipse.emf.ecore.EClass;
 import java.util.Map;
 
 /**
- * Dummy backend implementation for HBase to fit core architecture
- * The real access to the HBase Table is done in {@link DirectWriteHBaseResourceEStoreImpl}
- * and {@link ReadOnlyHBaseResourceEStoreImpl}
+ * Dummy backend implementation for HBase to fit core architecture.
+ * <p/>
+ * The real access to the HBase Table is done in {@link DirectWriteHBaseResourceEStoreImpl} and
+ * {@link ReadOnlyHBaseResourceEStoreImpl}.
  */
 public class HBasePersistenceBackend implements PersistenceBackend {
 

@@ -38,10 +38,10 @@ public class FeatureCachingEStoreDecorator extends  AbstractEStoreDecorator {
 	
 	@Override
 	public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-		Object returnValue = cache.getValueFromCache(object, feature, index);
+		Object returnValue = cache.get(object, feature, index);
 		if (isNull(returnValue)) {
 			returnValue = super.get(object, feature, index);
-			cache.cacheValue(object, feature, index, returnValue);
+			cache.put(object, feature, index, returnValue);
 		}
 		return returnValue;
 	}
@@ -49,14 +49,14 @@ public class FeatureCachingEStoreDecorator extends  AbstractEStoreDecorator {
 	@Override
 	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		Object returnValue = super.set(object, feature, index, value);
-		cache.cacheValue(object, feature, index, value);
+		cache.put(object, feature, index, value);
 		return returnValue;
 	}
 	
 	@Override
 	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
 		super.add(object, feature, index, value);
-		cache.cacheValue(object, feature, index, value);
+		cache.put(object, feature, index, value);
 		invalidateValues(object, feature, index + 1);
 	}
 	
@@ -77,14 +77,14 @@ public class FeatureCachingEStoreDecorator extends  AbstractEStoreDecorator {
 	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
 		Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
 		invalidateValues(object, feature, Math.min(sourceIndex, targetIndex));
-		cache.cacheValue(object, feature, targetIndex, returnValue);
+		cache.put(object, feature, targetIndex, returnValue);
 		return returnValue;
 	}
 	
 	@Override
 	public void unset(InternalEObject object, EStructuralFeature feature) {
 		if (!feature.isMany()) {
-			cache.invalidateValue(object, feature);
+			cache.invalidate(object, feature);
 		} else {
 			invalidateValues(object, feature, 0);
 		}
@@ -96,7 +96,7 @@ public class FeatureCachingEStoreDecorator extends  AbstractEStoreDecorator {
      */
 	private void invalidateValues(InternalEObject object, EStructuralFeature feature, int startIndex) {
 		for (int i = startIndex; i < size(object, feature); i++) {
-			cache.invalidateValue(object, feature, i);
+			cache.invalidate(object, feature, i);
 		}
 	}
 }
