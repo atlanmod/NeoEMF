@@ -19,7 +19,7 @@ public interface Id extends Comparable<Id>, Serializable {
      * Returns the {@code String} representation of the {@code Id}.
      */
     String toString();
-    
+
     /**
      * Returns the {@code long} number of the {@code Id}.
      */

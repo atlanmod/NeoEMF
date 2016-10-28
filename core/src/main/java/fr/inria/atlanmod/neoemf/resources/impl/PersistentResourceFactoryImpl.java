@@ -21,24 +21,24 @@ import static java.util.Objects.isNull;
 
 public class PersistentResourceFactoryImpl implements PersistentResourceFactory {
 
-	private static PersistentResourceFactory INSTANCE;
+    private static PersistentResourceFactory INSTANCE;
 
-	public static PersistentResourceFactory getInstance() {
-		if (isNull(INSTANCE)) {
-			INSTANCE = new PersistentResourceFactoryImpl();
-		}
-		return INSTANCE;
-	}
+    protected PersistentResourceFactoryImpl() {
+    }
 
-	protected PersistentResourceFactoryImpl() {
-	}
+    public static PersistentResourceFactory getInstance() {
+        if (isNull(INSTANCE)) {
+            INSTANCE = new PersistentResourceFactoryImpl();
+        }
+        return INSTANCE;
+    }
 
-	@Override
-	public Resource createResource(URI uri) {
-		Resource resource = null;
-		if (PersistenceBackendFactoryRegistry.isRegistered(uri.scheme())) {
-			resource = new PersistentResourceImpl(uri);
-		}
-		return resource;
-	}
+    @Override
+    public Resource createResource(URI uri) {
+        Resource resource = null;
+        if (PersistenceBackendFactoryRegistry.isRegistered(uri.scheme())) {
+            resource = new PersistentResourceImpl(uri);
+        }
+        return resource;
+    }
 }

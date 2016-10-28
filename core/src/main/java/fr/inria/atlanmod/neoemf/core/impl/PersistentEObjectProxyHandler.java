@@ -18,8 +18,8 @@ import java.lang.reflect.Method;
 
 class PersistentEObjectProxyHandler implements MethodInterceptor {
 
-	@Override
-	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) {
+        throw new UnsupportedOperationException();
+    }
 }

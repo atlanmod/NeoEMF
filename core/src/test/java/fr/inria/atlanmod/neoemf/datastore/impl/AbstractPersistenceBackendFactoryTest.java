@@ -33,7 +33,8 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AllTest {
             Field field = AbstractDirectWriteResourceEStore.class.getDeclaredField("persistenceBackend");
             field.setAccessible(true);
             result = (PersistenceBackend) field.get(context);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
             NeoLogger.error(e);
         }
 

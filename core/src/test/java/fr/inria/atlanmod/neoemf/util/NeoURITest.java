@@ -38,10 +38,10 @@ public class NeoURITest extends AllTest {
     private static final String MOCK = "mock";
     private static final String INVALID = "invalid";
 
+    private final PersistenceBackendFactory persistenceBackendFactory = Mockito.mock(PersistenceBackendFactory.class);
+
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    private final PersistenceBackendFactory persistenceBackendFactory = Mockito.mock(PersistenceBackendFactory.class);
     private File testFile;
 
     @Before
@@ -58,7 +58,8 @@ public class NeoURITest extends AllTest {
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 NeoLogger.warn(e);
             }
         }

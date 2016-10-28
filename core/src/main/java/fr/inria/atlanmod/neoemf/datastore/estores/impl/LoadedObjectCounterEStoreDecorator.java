@@ -145,12 +145,14 @@ public class LoadedObjectCounterEStoreDecorator extends AbstractEStoreDecorator 
     private void setAsLoaded(Object object) {
         if (object instanceof PersistentEObject) {
             loadedObjects.add(((PersistentEObject) object).id());
-        } else {
+        }
+        else {
             NeoLogger.debug("Not an PersistentEObject : This object will be ignored in the final count.");
         }
     }
 
     private class ShutdownHook extends Thread {
+
         @Override
         public void run() {
             NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());

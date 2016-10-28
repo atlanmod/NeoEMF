@@ -25,7 +25,8 @@ public class NeoLogger {
 
     private static final Logger ROOT_LOGGER = LogManager.getLogger();
 
-    private NeoLogger() {}
+    private NeoLogger() {
+    }
 
     public static void debug(String msg) {
         internalLog(Level.DEBUG, msg, null);
@@ -94,7 +95,8 @@ public class NeoLogger {
     private static Logger getLogger() {
         if (CLASSNAME_NEEDED) {
             return LogManager.getLogger(ReflectionUtil.getCallerClass(CALLER_CLASS_DEPTH));
-        } else {
+        }
+        else {
             return ROOT_LOGGER;
         }
     }

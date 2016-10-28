@@ -21,14 +21,14 @@ import java.util.List;
  */
 public class SynchronizedTransientEStoreImpl extends TransientEStoreImpl {
 
-	public SynchronizedTransientEStoreImpl() {
-		super();
-		singleMap = Collections.synchronizedMap(singleMap);
-		manyMap = Collections.synchronizedMap(manyMap);
-	}
+    public SynchronizedTransientEStoreImpl() {
+        super();
+        singleMap = Collections.synchronizedMap(singleMap);
+        manyMap = Collections.synchronizedMap(manyMap);
+    }
 
-	@Override
-	protected List<Object> createValue() {
-		return Collections.synchronizedList(new ArrayList<>());
-	}
+    @Override
+    protected List<Object> createValue() {
+        return Collections.synchronizedList(new ArrayList<>());
+    }
 }

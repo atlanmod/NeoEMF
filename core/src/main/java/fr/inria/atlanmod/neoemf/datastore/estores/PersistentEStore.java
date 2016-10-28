@@ -25,35 +25,35 @@ import org.eclipse.emf.ecore.resource.Resource;
  */
 public interface PersistentEStore extends InternalEObject.EStore {
 
-	/**
-	 * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated.
-	 */
-	Resource resource();
+    /**
+     * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated.
+     */
+    Resource resource();
 
-	/**
-	 * Returns the resolved {@link EObject} identified by the given {@code id} or {@code null} if no {@link EObject} can
-	 * be resolved.
-	 */
-	EObject eObject(Id id);
-	
-	/**
-	 * Back-end specific computation of {@link Resource#getAllContents()}.
-	 * @param eClass the {@link EClass} to compute the instances of
-	 * @param strict {@code true} if the lookup searches for strict instances
-	 * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
-	 * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
-	 */
-	default EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Returns the resolved {@link EObject} identified by the given {@code id} or {@code null} if no {@link EObject} can
+     * be resolved.
+     */
+    EObject eObject(Id id);
 
-	/**
-	 * Utility method used for tests. Returns the decorated eStore, if it exists.
-	 */
-	PersistentEStore getEStore();
+    /**
+     * Back-end specific computation of {@link Resource#getAllContents()}.
+     * @param eClass the {@link EClass} to compute the instances of
+     * @param strict {@code true} if the lookup searches for strict instances
+     * @return an {@link EList} containing all the {@link EObject}s that are instances of the given {@link EClass}
+     * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
+     */
+    default EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence back-end.
-	 */
-	void save();
+    /**
+     * Utility method used for tests. Returns the decorated eStore, if it exists.
+     */
+    PersistentEStore getEStore();
+
+    /**
+     * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence back-end.
+     */
+    void save();
 }

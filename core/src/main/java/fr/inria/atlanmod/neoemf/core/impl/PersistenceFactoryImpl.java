@@ -21,22 +21,22 @@ import static java.util.Objects.isNull;
 
 public final class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
 
-	private static PersistenceFactory INSTANCE;
+    private static PersistenceFactory INSTANCE;
 
-	public static PersistenceFactory getInstance() {
-		if (isNull(INSTANCE)) {
-			INSTANCE = new PersistenceFactoryImpl();
-		}
-		return INSTANCE;
-	}
+    private PersistenceFactoryImpl() {
+    }
 
-	private PersistenceFactoryImpl() {
-	}
-	
-	@Override
-	public PersistentEObject create(EClass eClass) {
-		PersistentEObjectImpl eObject = new PersistentEObjectImpl();
-		eObject.eSetClass(eClass);
-		return eObject;
-	}
+    public static PersistenceFactory getInstance() {
+        if (isNull(INSTANCE)) {
+            INSTANCE = new PersistenceFactoryImpl();
+        }
+        return INSTANCE;
+    }
+
+    @Override
+    public PersistentEObject create(EClass eClass) {
+        PersistentEObjectImpl eObject = new PersistentEObjectImpl();
+        eObject.eSetClass(eClass);
+        return eObject;
+    }
 }

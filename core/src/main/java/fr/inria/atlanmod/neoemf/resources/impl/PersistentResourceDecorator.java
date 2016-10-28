@@ -39,11 +39,11 @@ import java.util.Map;
 public class PersistentResourceDecorator implements PersistentResource {
 
     protected final PersistentResource base;
-    
+
     public PersistentResourceDecorator(PersistentResource baseResource) {
         this.base = baseResource;
     }
-    
+
     @Override
     public ResourceSet getResourceSet() {
         return base.getResourceSet();
@@ -185,8 +185,7 @@ public class PersistentResourceDecorator implements PersistentResource {
     }
 
     @Override
-    public NotificationChain basicSetResourceSet(ResourceSet resourceSet,
-            NotificationChain notifications) {
+    public NotificationChain basicSetResourceSet(ResourceSet resourceSet, NotificationChain notifications) {
         return base.basicSetResourceSet(resourceSet, notifications);
     }
 

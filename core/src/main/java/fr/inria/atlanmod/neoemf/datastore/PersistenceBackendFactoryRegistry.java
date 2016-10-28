@@ -19,65 +19,66 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PersistenceBackendFactoryRegistry {
 
-	/**
-	 * A map containing all registered {@link PersistenceBackendFactory backend factory} identified by a uri scheme.
-	 */
-	private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
-
-	private PersistenceBackendFactoryRegistry() {}
-
-	/**
-	 * Returns all registered factories.
-	 *
-	 * @return an immutable {@link Map map} of {@link PersistenceBackendFactory backend factory}
+    /**
+     * A map containing all registered {@link PersistenceBackendFactory backend factory} identified by a uri scheme.
      */
-	public static Map<String, PersistenceBackendFactory> getFactories() {
-		return Collections.unmodifiableMap(FACTORIES);
-	}
+    private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
 
-	/**
-	 * Returns a specific {@link PersistenceBackendFactory backend factory} identified by {@code uriScheme}.
-	 *
-	 * @param uriScheme the uri scheme identifying the backend factory
-	 * @return the backend factory
-	 * @throws NullPointerException if no backend factory is registered for the given {@code uriScheme}
+    private PersistenceBackendFactoryRegistry() {
+    }
+
+    /**
+     * Returns all registered factories.
+     *
+     * @return an immutable {@link Map map} of {@link PersistenceBackendFactory backend factory}
      */
-	public static PersistenceBackendFactory getFactoryProvider(String uriScheme) {
-		return checkNotNull(FACTORIES.get(uriScheme), "Can not find a factory for the given type %s", uriScheme);
-	}
+    public static Map<String, PersistenceBackendFactory> getFactories() {
+        return Collections.unmodifiableMap(FACTORIES);
+    }
 
-	/**
-	 * Defines if a {@link PersistenceBackendFactory backend factory} is registered for the given {@code uriScheme}.
-	 *
-	 * @param uriScheme the uri scheme identifying the backend factory
-	 * @return {@code true} if a backend factory is registered for the given {@code uriScheme}
+    /**
+     * Returns a specific {@link PersistenceBackendFactory backend factory} identified by {@code uriScheme}.
+     *
+     * @param uriScheme the uri scheme identifying the backend factory
+     * @return the backend factory
+     * @throws NullPointerException if no backend factory is registered for the given {@code uriScheme}
      */
-	public static boolean isRegistered(String uriScheme) {
-		return FACTORIES.containsKey(uriScheme);
-	}
+    public static PersistenceBackendFactory getFactoryProvider(String uriScheme) {
+        return checkNotNull(FACTORIES.get(uriScheme), "Can not find a factory for the given type %s", uriScheme);
+    }
 
-	/**
-	 * Register a {@link PersistenceBackendFactory backend factory} identified by the given {@code uriScheme}.
-	 *
-	 * @param uriScheme the uri scheme identifying the backend factory
-	 */
-	public static void register(String uriScheme, PersistenceBackendFactory factory) {
-		FACTORIES.put(uriScheme, factory);
-	}
-
-	/**
-	 * Unregister a {@link PersistenceBackendFactory backend factory} identified by the given {@code uriScheme}.
-	 *
-	 * @param uriScheme the uri scheme identifying the backend factory
+    /**
+     * Defines if a {@link PersistenceBackendFactory backend factory} is registered for the given {@code uriScheme}.
+     *
+     * @param uriScheme the uri scheme identifying the backend factory
+     * @return {@code true} if a backend factory is registered for the given {@code uriScheme}
      */
-	public static void unregister(String uriScheme) {
-		FACTORIES.remove(uriScheme);
-	}
+    public static boolean isRegistered(String uriScheme) {
+        return FACTORIES.containsKey(uriScheme);
+    }
 
-	/**
-	 * Unregister all backend factories.
-	 */
-	public static void unregisterAll() {
-		FACTORIES.clear();
-	}
+    /**
+     * Register a {@link PersistenceBackendFactory backend factory} identified by the given {@code uriScheme}.
+     *
+     * @param uriScheme the uri scheme identifying the backend factory
+     */
+    public static void register(String uriScheme, PersistenceBackendFactory factory) {
+        FACTORIES.put(uriScheme, factory);
+    }
+
+    /**
+     * Unregister a {@link PersistenceBackendFactory backend factory} identified by the given {@code uriScheme}.
+     *
+     * @param uriScheme the uri scheme identifying the backend factory
+     */
+    public static void unregister(String uriScheme) {
+        FACTORIES.remove(uriScheme);
+    }
+
+    /**
+     * Unregister all backend factories.
+     */
+    public static void unregisterAll() {
+        FACTORIES.clear();
+    }
 }

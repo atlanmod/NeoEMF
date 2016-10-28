@@ -39,16 +39,16 @@ import static java.util.Objects.isNull;
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
     /**
-     * Returns a literal description of the created persistence backend.
-     */
-    protected abstract String getName();
-
-    /**
      * Returns a list of store options from the given {@code options}.
      */
     protected static List<StoreOption> storeOptionsFrom(Map<?, ?> options) {
-        return (List<StoreOption>)options.get(STORE_OPTIONS);
+        return (List<StoreOption>) options.get(STORE_OPTIONS);
     }
+
+    /**
+     * Returns a literal description of the created persistence backend.
+     */
+    protected abstract String getName();
 
     @Override
     public PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
@@ -87,7 +87,8 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
 
         try {
             configuration = new PropertiesConfiguration(path.toFile());
-        } catch (ConfigurationException e) {
+        }
+        catch (ConfigurationException e) {
             throw new InvalidDataStoreException(e);
         }
 
@@ -98,7 +99,8 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         try {
             configuration.save();
             NeoLogger.debug("Configuration stored at " + path);
-        } catch(ConfigurationException e) {
+        }
+        catch (ConfigurationException e) {
             /*
              * Unable to save configuration.
              * Supposedly it's a minor error, so we log it without rising an exception.

@@ -28,15 +28,25 @@ import static java.util.Objects.isNull;
 
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
 
+    private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
+
     private final PersistentEObject owner;
 
-    private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
+    public NeoEContentsEList(EObject owner) {
+        super(owner);
+        this.owner = PersistentEObjectAdapter.getAdapter(owner);
+    }
+
+    public NeoEContentsEList(EObject owner, EStructuralFeature[] eStructuralFeatures) {
+        super(owner, eStructuralFeatures);
+        this.owner = PersistentEObjectAdapter.getAdapter(owner);
+    }
 
     @SuppressWarnings("unchecked") // Unchecked cast: 'NeoEContentsEList<?>' to 'NeoEContentsEList<...>'
     public static <E> NeoEContentsEList<E> emptyNeoContentsEList() {
-        return (NeoEContentsEList<E>)EMPTY_NEO_CONTENTS_ELIST;
+        return (NeoEContentsEList<E>) EMPTY_NEO_CONTENTS_ELIST;
     }
-    
+
     public static <E> NeoEContentsEList<E> createNeoEContentsEList(EObject eObject) {
         NeoEContentsEList<E> contentEList;
         EStructuralFeature[] eStructuralFeatures =
@@ -49,17 +59,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         }
         return contentEList;
     }
-    
-    public NeoEContentsEList(EObject owner) {
-        super(owner);
-        this.owner = PersistentEObjectAdapter.getAdapter(owner);
-    }
-    
-    public NeoEContentsEList(EObject owner, EStructuralFeature[] eStructuralFeatures) {
-        super(owner,eStructuralFeatures);
-        this.owner = PersistentEObjectAdapter.getAdapter(owner);
-    }
-    
+
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'E'
     public E get(int index) {
@@ -68,7 +68,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         int featureSize = 0;
         for (EStructuralFeature eStructuralFeature : eStructuralFeatures) {
             int localFeatureSize;
-            if(eStructuralFeature.isMany()) {
+            if (eStructuralFeature.isMany()) {
                 localFeatureSize = owner.eStore().size(owner, eStructuralFeature);
             }
             else {

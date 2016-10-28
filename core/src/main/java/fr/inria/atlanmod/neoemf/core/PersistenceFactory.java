@@ -21,13 +21,13 @@ import org.eclipse.emf.ecore.EFactory;
  */
 public interface PersistenceFactory extends EFactory {
 
-	/**
-	 * Returns the default instance of this {@code PersistenceFactory factory}.
-	 */
-	static PersistenceFactory getInstance() {
-		return PersistenceFactoryImpl.getInstance();
-	}
-	
-	@Override
-	PersistentEObject create(EClass eClass);
+    /**
+     * Returns the default instance of this {@code PersistenceFactory factory}.
+     */
+    static PersistenceFactory getInstance() {
+        return PersistenceFactoryImpl.getInstance();
+    }
+
+    @Override
+    PersistentEObject create(EClass eClass);
 }

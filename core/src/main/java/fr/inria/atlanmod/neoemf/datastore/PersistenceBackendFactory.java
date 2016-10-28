@@ -23,15 +23,16 @@ import java.util.Map;
 public interface PersistenceBackendFactory {
 
     String NEO_CONFIG_FILE = "neoconfig.properties";
+
     String BACKEND_PROPERTY = "backend";
 
     PersistenceBackend createTransientBackend();
 
-    PersistenceBackend createPersistentBackend(File file, Map<?,?> options) throws InvalidDataStoreException;
+    PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException;
 
     PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend);
 
-    PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException;
+    PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
 
     void copyBackend(PersistenceBackend from, PersistenceBackend to);
 }
