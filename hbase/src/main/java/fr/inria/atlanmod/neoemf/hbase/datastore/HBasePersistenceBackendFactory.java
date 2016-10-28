@@ -20,13 +20,13 @@ import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingEStoreDecorat
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 import java.io.File;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptions.*;
 import static java.util.Objects.isNull;
 
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
@@ -41,10 +41,15 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     }
     
     public static final String HBASE_BACKEND = "hbase";
-    
+
     private HBasePersistenceBackendFactory() {
     }
-    
+
+    @Override
+    public String getName() {
+        return HBASE_BACKEND;
+    }
+
     @Override
     public PersistenceBackend createTransientBackend() {
         return new HBasePersistenceBackend();
@@ -52,8 +57,6 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
-        NeoLogger.warn(
-                "NeoEMF/HBase does not provide a transient layer, you must save/load your resource before using it");
         return new InvalidTransientResourceEStoreImpl();
     }
 
@@ -66,8 +69,8 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
-            if(options.containsKey(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY)) {
-                if(Boolean.TRUE.equals(options.get(HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY))) {
+            if(options.containsKey(OPTIONS_HBASE_READ_ONLY)) {
+                if(Boolean.TRUE.equals(options.get(OPTIONS_HBASE_READ_ONLY))) {
                     // Create a read-only EStore
                     return embedInDefaultWrapper(new ReadOnlyHBaseResourceEStoreImpl(resource));
                 }
