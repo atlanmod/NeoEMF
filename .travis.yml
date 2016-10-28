@@ -11,6 +11,8 @@ branches:
   only:
     - master
 
+install: true
+
 script:
   - mvn install
 
