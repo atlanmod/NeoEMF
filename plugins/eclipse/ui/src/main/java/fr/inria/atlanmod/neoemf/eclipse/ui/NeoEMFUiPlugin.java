@@ -58,6 +58,7 @@ public class NeoEMFUiPlugin extends AbstractUIPlugin {
      * plug-in relative path
      *
      * @param path the path
+     *
      * @return the image descriptor
      */
     public static ImageDescriptor getImageDescriptor(String path) {
@@ -74,7 +75,7 @@ public class NeoEMFUiPlugin extends AbstractUIPlugin {
         plugin = this;
         NeoEMFUiPlugin.getDefault().getLog().addLogListener(logListener);
         /*
-		 * Needed because auto-registration doesn't work if only static String are accessed before resource loading.
+         * Needed because auto-registration doesn't work if only static String are accessed before resource loading.
 		 * This happens when an eclipse instance is loaded with an opened NeoEMF editor
 		 * (only NeoBlueprintsURI.NEO_GRAPH_SCHEME is accessed)
 		 */

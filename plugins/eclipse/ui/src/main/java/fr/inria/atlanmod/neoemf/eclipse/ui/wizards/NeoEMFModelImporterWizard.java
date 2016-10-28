@@ -33,8 +33,8 @@ public class NeoEMFModelImporterWizard extends ModelImporterWizard {
         ModelImporterDetailPage detailPage = new ModelImporterDetailPage(getModelImporter(), "EcoreModel");
         detailPage.setTitle("Ecore &Import");
         detailPage.setDescription(detailPage.showGenModel()
-                                          ? "Specify one or more '.ecore' or '.emof' URIs, try to load them, and choose a file name for the generator model"
-                                          : "Specify one or more '.ecore' or '.emof' URIs and try to load them");
+                ? "Specify one or more '.ecore' or '.emof' URIs, try to load them, and choose a file name for the generator model"
+                : "Specify one or more '.ecore' or '.emof' URIs and try to load them");
         addPage(detailPage);
 
         ModelImporterPackagePage packagePage = new ModelImporterPackagePage(getModelImporter(), "EcorePackages");

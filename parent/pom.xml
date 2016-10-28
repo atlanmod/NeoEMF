@@ -520,13 +520,13 @@
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package/>
-                                <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
-                                     internal class loading (in particular caches are not recognized anymore) -->
-
+                            <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
+                                 internal class loading (in particular caches are not recognized anymore) -->
+                            <Embed-Dependency>
                                 <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
                                      otherwise it creates conflicts with running osgi version (these dependencies are
                                      only needed when running the plugins in an eclipse-based environment) -->
-                            <Embed-Dependency>*;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi
+                                *;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>

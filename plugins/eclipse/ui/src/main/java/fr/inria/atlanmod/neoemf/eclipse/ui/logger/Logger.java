@@ -35,7 +35,7 @@ public class Logger {
 
     public static void log(int severity, Throwable e) {
         log.log(new Status(severity, NeoEMFUiPlugin.PLUGIN_ID,
-                           !isNull(e.getMessage()) ? e.getMessage() : e.toString(), e));
+                !isNull(e.getMessage()) ? e.getMessage() : e.toString(), e));
     }
 
     public static void log(int severity, String msg, Throwable e) {
