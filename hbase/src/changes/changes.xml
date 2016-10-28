@@ -1,5 +1,5 @@
-<document xmlns="http://maven.apache.org/changes/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/changes/1.0.0"
           xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
 
     <!-- For details on the structure : https://maven.apache.org/plugins/maven-changes-plugin/changes.html -->
@@ -13,7 +13,7 @@
             <action dev="gdaniel" type="update">
                 Change HBasePersistenceBackend factory to fit Factory conventions
             </action>
-			<action dev="gdaniel" type="add">
+            <action dev="gdaniel" type="add">
                 Add utility method in NeoHBaseURI to create remote HBase URIs
             </action>
             <action dev="aramirez" type="fix" issue="MPJIRA-11">

@@ -45,149 +45,149 @@ import static java.util.Objects.isNull;
 
 public class ReadOnlyHBaseResourceEStoreImpl extends DirectWriteHBaseResourceEStoreImpl {
 
-	private final Cache<EStoreKey, Object> cache = CacheBuilder.newBuilder().softValues().build();
+    private final Cache<EStoreKey, Object> cache = CacheBuilder.newBuilder().softValues().build();
 
-	public ReadOnlyHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
-		super(resource);
-	}
+    public ReadOnlyHBaseResourceEStoreImpl(Resource.Internal resource) throws IOException {
+        super(resource);
+    }
 
-	@Override
-	protected HTable initTable(Configuration conf, TableName tableName, HBaseAdmin admin) throws IOException {
-		if (!admin.tableExists(tableName)) {
-			throw new IOException(MessageFormat.format("Resource with URI {0} does not exist", tableName.getNameAsString()));
-		}
-		return new HTable(conf, tableName);
-	}
+    @Override
+    protected HTable initTable(Configuration conf, TableName tableName, HBaseAdmin admin) throws IOException {
+        if (!admin.tableExists(tableName)) {
+            throw new IOException(MessageFormat.format("Resource with URI {0} does not exist", tableName.getNameAsString()));
+        }
+        return new HTable(conf, tableName);
+    }
 
-	@Override
-	public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		throw unsupportedOperation();
-	}
+    @Override
+    protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
+        throw unsupportedOperation();
+    }
 
-	@Override
-	public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-		throw unsupportedOperation();
-	}
+    @Override
+    protected void updateInstanceOf(PersistentEObject object) {
+        throw unsupportedOperation();
+    }
 
-	@Override
-	public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-		throw unsupportedOperation();
-	}
+    /**
+     * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
+     * fr.inria.atlanmod.neoemf.core.PersistentEObject} {@code object}
+     *
+     * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
+     * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s
+     */
+    @Override
+    protected Object getFromTable(PersistentEObject object, EStructuralFeature feature) {
+        PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
 
-	@Override
-	public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-		throw unsupportedOperation();
-	}
+        EStoreKey entry = new EStoreKey(neoEObject.id().toString(), feature);
+        Object returnValue = null;
+        try {
+            returnValue = cache.get(entry, new FeatureCacheLoader(neoEObject.id(), feature));
+        }
+        catch (ExecutionException e) {
+            NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
+        }
+        return returnValue;
+    }
 
-	@Override
-	public void unset(InternalEObject object, EStructuralFeature feature) {
-		throw unsupportedOperation();
-	}
+    @Override
+    public void unset(InternalEObject object, EStructuralFeature feature) {
+        throw unsupportedOperation();
+    }
 
-	@Override
-	public void clear(InternalEObject object, EStructuralFeature feature) {
-		throw unsupportedOperation();
-	}
+    @Override
+    public void clear(InternalEObject object, EStructuralFeature feature) {
+        throw unsupportedOperation();
+    }
 
-	@Override
-	protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
-		throw unsupportedOperation();
-	}
+    @Override
+    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+        throw unsupportedOperation();
+    }
 
-	@Override
-	protected void updateInstanceOf(PersistentEObject object) {
-		throw unsupportedOperation();
-	}
+    @Override
+    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+        throw unsupportedOperation();
+    }
 
-	private UnsupportedOperationException unsupportedOperation() {
-		String message = "Unable to write to resource with URI {0}. Make sure that the resource is not read-only";
-		String tableName = table.getName().getNameAsString();
+    @Override
+    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
+        throw unsupportedOperation();
+    }
 
-		NeoLogger.error(message, tableName);
-		return new UnsupportedOperationException(MessageFormat.format(message, tableName));
-	}
+    @Override
+    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        throw unsupportedOperation();
+    }
 
-	/**
-	 * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
-	 * fr.inria.atlanmod.neoemf.core.PersistentEObject} {@code object}
-	 *
-	 * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
-	 * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s
-	 */
-	@Override
-	protected Object getFromTable(PersistentEObject object, EStructuralFeature feature) {
-		PersistentEObject neoEObject = PersistentEObjectAdapter.getAdapter(object);
+    private UnsupportedOperationException unsupportedOperation() {
+        String message = "Unable to write to resource with URI {0}. Make sure that the resource is not read-only";
+        String tableName = table.getName().getNameAsString();
 
-		EStoreKey entry = new EStoreKey(neoEObject.id().toString(), feature);
-		Object returnValue = null;
-		try {
-			returnValue = cache.get(entry, new FeatureCacheLoader(neoEObject.id(), feature));
-		}
-		catch (ExecutionException e) {
-			NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
-		}
-		return returnValue;
-	}
+        NeoLogger.error(message, tableName);
+        return new UnsupportedOperationException(MessageFormat.format(message, tableName));
+    }
 
-	private class EStoreKey {
+    private class EStoreKey {
 
-		private final String eObject;
-		private final EStructuralFeature eStructuralFeature;
+        private final String eObject;
+        private final EStructuralFeature eStructuralFeature;
 
-		public EStoreKey(String eObject, EStructuralFeature eStructuralFeature) {
-			this.eObject = eObject;
-			this.eStructuralFeature = eStructuralFeature;
-		}
+        public EStoreKey(String eObject, EStructuralFeature eStructuralFeature) {
+            this.eObject = eObject;
+            this.eStructuralFeature = eStructuralFeature;
+        }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(getOuterType(), eObject, eStructuralFeature);
-		}
+        @Override
+        public int hashCode() {
+            return Objects.hash(getOuterType(), eObject, eStructuralFeature);
+        }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (isNull(obj) || getClass() != obj.getClass()) {
-				return false;
-			}
-			EStoreKey other = (EStoreKey) obj;
-			return Objects.equals(eObject, other.eObject)
-					&& Objects.equals(eStructuralFeature, other.eStructuralFeature)
-					&& Objects.equals(getOuterType(), other.getOuterType());
-		}
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (isNull(obj) || getClass() != obj.getClass()) {
+                return false;
+            }
+            EStoreKey other = (EStoreKey) obj;
+            return Objects.equals(eObject, other.eObject)
+                    && Objects.equals(eStructuralFeature, other.eStructuralFeature)
+                    && Objects.equals(getOuterType(), other.getOuterType());
+        }
 
-		private PersistentEStore getOuterType() {
-			return ReadOnlyHBaseResourceEStoreImpl.this;
-		}
-	}
+        private PersistentEStore getOuterType() {
+            return ReadOnlyHBaseResourceEStoreImpl.this;
+        }
+    }
 
-	private class FeatureCacheLoader implements Callable<Object> {
+    private class FeatureCacheLoader implements Callable<Object> {
 
-		private final Id id;
-		private final EStructuralFeature feature;
+        private final Id id;
+        private final EStructuralFeature feature;
 
-		public FeatureCacheLoader(Id id, EStructuralFeature feature) {
-			this.id = id;
-			this.feature = feature;
-		}
+        public FeatureCacheLoader(Id id, EStructuralFeature feature) {
+            this.id = id;
+            this.feature = feature;
+        }
 
-		@Override
-		public Object call() throws Exception {
-				Result result = table.get(new Get(Bytes.toBytes(id.toString())));
-				byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
-				if (!feature.isMany()) {
-					return Bytes.toString(value);
-				}
-				else {
-					if (feature instanceof EAttribute) {
-						return NeoHBaseUtil.EncoderUtil.toStrings(value);
-					}
-					else {
-						return NeoHBaseUtil.EncoderUtil.toStringsReferences(value);
-					}
-				}
-		}
-	}
+        @Override
+        public Object call() throws Exception {
+            Result result = table.get(new Get(Bytes.toBytes(id.toString())));
+            byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
+            if (!feature.isMany()) {
+                return Bytes.toString(value);
+            }
+            else {
+                if (feature instanceof EAttribute) {
+                    return NeoHBaseUtil.EncoderUtil.toStrings(value);
+                }
+                else {
+                    return NeoHBaseUtil.EncoderUtil.toStringsReferences(value);
+                }
+            }
+        }
+    }
 }
