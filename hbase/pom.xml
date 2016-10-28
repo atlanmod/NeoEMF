@@ -48,6 +48,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        
+        <dependency>
+		    <groupId>org.eclipse.tycho</groupId>
+		    <artifactId>org.eclipse.osgi</artifactId>
+		</dependency>
 
         <!-- Internal dependencies -->
 
@@ -91,8 +96,11 @@
                         </Export-Package>
                         <_exportcontents/>
                         <Require-Bundle>
-                            fr.inria.atlanmod.neoemf.core
+                            fr.inria.atlanmod.neoemf.core,
+                            org.eclipse.core.runtime
                         </Require-Bundle>
+                        <Bundle-Activator>fr.inria.atlanmod.neoemf.hbase.Activator</Bundle-Activator>
+                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                     </instructions>
                 </configuration>
             </plugin>
