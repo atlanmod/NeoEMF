@@ -34,23 +34,23 @@
             <scope>runtime</scope>
         </dependency>
 
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-kernel</artifactId>
-			<version>1.9.6</version>
-		</dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <version>1.9.6</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>3.6.2</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>3.6.2</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-lucene-index</artifactId>
-			<version>1.9.6</version>
-		</dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-lucene-index</artifactId>
+            <version>1.9.6</version>
+        </dependency>
 
         <!-- Common dependencies -->
 
@@ -133,7 +133,7 @@
                             org.neo4j.*;-split-package:=first,
                         </Export-Package>
                         <Private-Package>
-                        	javax.transaction,
+                            javax.transaction,
                             javax.transaction.xa
                         </Private-Package>
                         <_exportcontents>
@@ -149,10 +149,10 @@
                             org.apache.commons.logging,
                         </_exportcontents>
                         <Embed-Dependency>
-                        	neo4j-lucene-index,
-                        	lucene-core,
-                        	neo4j-kernel,
-                        	blueprints-neo4j-graph
+                            neo4j-lucene-index,
+                            lucene-core,
+                            neo4j-kernel,
+                            blueprints-neo4j-graph
                         </Embed-Dependency>
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.graph.blueprints

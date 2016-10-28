@@ -21,7 +21,13 @@ import static java.util.Objects.isNull;
 
 public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
+    private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
+    private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";
+
     private static InternalBlueprintsConfiguration INSTANCE;
+
+    private InternalBlueprintsTgConfiguration() {
+    }
 
     /**
      * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
@@ -33,24 +39,18 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
         return INSTANCE;
     }
 
-    private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
-    private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";
-
-    private InternalBlueprintsTgConfiguration() {
-    }
-    
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
-        if(isNull(currentConfiguration.getString(BLUEPRINTS_TG_DIRECTORY))) {
+        if (isNull(currentConfiguration.getString(BLUEPRINTS_TG_DIRECTORY))) {
             currentConfiguration.addProperty(BLUEPRINTS_TG_DIRECTORY, dbLocation.getAbsolutePath());
         }
-        if(isNull(currentConfiguration.getString(BLUEPRINTS_TG_FILE_TYPE))) {
+        if (isNull(currentConfiguration.getString(BLUEPRINTS_TG_FILE_TYPE))) {
             currentConfiguration.addProperty(BLUEPRINTS_TG_FILE_TYPE, "GRAPHML");
         }
     }
-    
+
     @Override
     public void setGlobalSettings() {
-        
+
     }
 }

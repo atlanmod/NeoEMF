@@ -43,17 +43,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AllTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
-
     protected final String configFileName = "/config.properties";
 
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
     protected String testFilePath = TEST_FILENAME;
+    protected File testFile;
 
     protected PersistenceBackendFactory persistenceBackendFactory;
-    protected File testFile;
     protected Map<Object, Object> options;
     protected ResourceSet resSet;
     protected Resource resource;
@@ -81,7 +79,8 @@ public class BlueprintsResourceSaveTest extends AllTest {
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 NeoLogger.warn(e);
             }
         }

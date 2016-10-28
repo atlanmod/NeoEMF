@@ -28,15 +28,13 @@ import org.eclipse.emf.ecore.resource.Resource.Internal;
 
 import static java.util.Objects.isNull;
 
-public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
-        DirectWriteBlueprintsResourceEStoreImpl {
+public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends DirectWriteBlueprintsResourceEStoreImpl {
 
     // Cache Object[] instead of Vertex[]
     // because TODO cache many properties in addition to vertices
     private final Cache<CacheKey, Object[]> cache;
 
-    public CachedManyDirectWriteBlueprintsRespirceEStoreImpl(Internal resource,
-                                                             BlueprintsPersistenceBackend graph) {
+    public CachedManyDirectWriteBlueprintsRespirceEStoreImpl(Internal resource, BlueprintsPersistenceBackend graph) {
         super(resource, graph);
         cache = CacheBuilder.newBuilder().softValues().build();
         NeoLogger.info("CachedManyBlueprintsResourceEStore Created");
@@ -52,11 +50,13 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
                 if (isNull(o)) {
                     NeoLogger.warn("Inconsistent content in CachedMany map, null value found for key " + key.toString() + " at index " + index);
                     return super.get(object, eReference, index);
-                } else {
+                }
+                else {
                     NeoLogger.debug("Found in cache " + key.toString() + "-" + object.eClass().getName() + "- idx=" + index);
                     return reifyVertex((Vertex) o);
                 }
-            } else {
+            }
+            else {
                 Vertex vertex = persistenceBackend.getVertex(object);
                 Integer size = getSize(vertex, eReference);
                 Object[] vertices = new Object[size];
@@ -69,7 +69,8 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
                     if (isNull(edge.getProperty(POSITION))) {
                         NeoLogger.error("An edge corresponding to the many EReference " + eReference.getName() + " does not have a position property");
                         throw new RuntimeException("An edge corresponding to the many EReference " + eReference.getName() + " does not have a position property");
-                    } else {
+                    }
+                    else {
                         Integer position = edge.getProperty(POSITION);
                         Vertex otherEnd = edge.getVertex(Direction.IN);
                         NeoLogger.debug("Putting in cache " + key.toString() + "-" + object.eClass().getName() + "- idx=" + position);
@@ -78,7 +79,8 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
                 }
                 return reifyVertex((Vertex) vertices[index]);
             }
-        } else {
+        }
+        else {
             return super.getReference(object, eReference, index);
         }
     }
@@ -94,6 +96,11 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
         }
 
         @Override
+        public int hashCode() {
+            return id.hashCode() + feature.hashCode();
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (obj instanceof CacheKey) {
                 return id.equals(((CacheKey) obj).id) && feature.equals(((CacheKey) obj).feature);
@@ -102,15 +109,8 @@ public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends
         }
 
         @Override
-        public int hashCode() {
-            return id.hashCode() + feature.hashCode();
-        }
-
-        @Override
         public String toString() {
             return "(" + id.toString() + "," + feature.getName() + ")";
         }
-
     }
-
 }

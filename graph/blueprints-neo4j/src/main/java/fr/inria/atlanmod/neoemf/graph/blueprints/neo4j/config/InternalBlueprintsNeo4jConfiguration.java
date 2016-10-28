@@ -21,7 +21,12 @@ import static java.util.Objects.isNull;
 
 public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {
 
+    private static final String BLUEPRINTS_NEO4J_DIRECTORY = "blueprints.neo4j.directory";
+
     private static InternalBlueprintsConfiguration INSTANCE;
+
+    private InternalBlueprintsNeo4jConfiguration() {
+    }
 
     /**
      * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
@@ -33,14 +38,9 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
         return INSTANCE;
     }
 
-    private static final String BLUEPRINTS_NEO4J_DIRECTORY = "blueprints.neo4j.directory";
-
-    private InternalBlueprintsNeo4jConfiguration() {
-    }
-    
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
-        if(isNull(currentConfiguration.getString(BLUEPRINTS_NEO4J_DIRECTORY))) {
+        if (isNull(currentConfiguration.getString(BLUEPRINTS_NEO4J_DIRECTORY))) {
             currentConfiguration.addProperty(BLUEPRINTS_NEO4J_DIRECTORY, dbLocation.getAbsolutePath());
         }
     }
@@ -48,5 +48,5 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
     @Override
     public void setGlobalSettings() {
 
-    }    
+    }
 }

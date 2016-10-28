@@ -22,11 +22,11 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
     private static BundleContext context;
-    
+
     static BundleContext getContext() {
         return context;
     }
-    
+
     @Override
     public void start(BundleContext bundleContext) throws Exception {
         context = bundleContext;
@@ -37,10 +37,9 @@ public class Activator implements BundleActivator {
             NeoLogger.info("Graph persistence backend registered");
         }
     }
-    
+
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
         context = null;
     }
-    
 }

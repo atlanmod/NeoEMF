@@ -33,7 +33,8 @@ public class BlueprintsPersistenceHandlerFactory {
     public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend, boolean conflictResolution) {
         if (conflictResolution) {
             return new BlueprintsConflictsResolverPersistenceHandler(persistenceBackend);
-        } else {
+        }
+        else {
             return new BlueprintsNotConflictsResolverPersistenceHandler(persistenceBackend);
         }
     }

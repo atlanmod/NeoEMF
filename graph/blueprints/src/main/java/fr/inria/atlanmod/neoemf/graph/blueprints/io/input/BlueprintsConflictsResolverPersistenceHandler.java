@@ -57,16 +57,31 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         loadedVertices = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
-    @Override
-    protected Id getId(final String reference) {
-        return new StringId(reference);
+    private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {
+        for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
+            edge.remove();
+        }
+
+        Edge edge = childVertex.addEdge(CONTAINER, parentVertex);
+        edge.setProperty(CONTAINING_FEATURE, localName);
+    }
+
+    private static Integer getSize(final Vertex vertex, final String name) {
+        Integer size = vertex.getProperty(formatKeyValue(name, SIZE_LITERAL));
+        return isNull(size) ? 0 : size;
+    }
+
+    private static void setSize(final Vertex vertex, final String name, final int size) {
+        vertex.setProperty(formatKeyValue(name, SIZE_LITERAL), size);
+    }
+
+    private static String formatKeyValue(final String key, final Object value) {
+        return key + SEPARATOR + value;
     }
 
     @Override
-    public void handleStartDocument() throws Exception {
-        createRootVertex();
-
-        super.handleStartDocument();
+    protected Id getId(final String reference) {
+        return new StringId(reference);
     }
 
     @Override
@@ -89,14 +104,6 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
             // Add the current element as content of the 'ROOT' node
             addReference(ROOT_ID, ROOT_FEATURE_NAME, InternalEObject.EStore.NO_INDEX, false, false, id);
         }
-    }
-
-    @Override
-    protected void setMetaClass(final Id id, final Id metaClassId) throws Exception {
-        Vertex vertex = getVertex(id);
-        Vertex metaClassVertex = getVertex(metaClassId);
-
-        vertex.addEdge(BlueprintsPersistenceBackend.INSTANCE_OF, metaClassVertex);
     }
 
     @Override
@@ -138,10 +145,26 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         edge.setProperty(POSITION, index);
     }
 
+    @Override
+    protected void setMetaClass(final Id id, final Id metaClassId) throws Exception {
+        Vertex vertex = getVertex(id);
+        Vertex metaClassVertex = getVertex(metaClassId);
+
+        vertex.addEdge(BlueprintsPersistenceBackend.INSTANCE_OF, metaClassVertex);
+    }
+
+    @Override
+    public void handleStartDocument() throws Exception {
+        createRootVertex();
+
+        super.handleStartDocument();
+    }
+
     protected Vertex getVertex(final Id id) throws Exception {
         try {
             return loadedVertices.get(id, () -> getPersistenceBackend().getVertex(id.toString()));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new NoSuchElementException("Unable to find an element with Id '" + id.toString() + "'");
         }
     }
@@ -149,7 +172,8 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     protected Vertex createVertex(final Id id) throws Exception {
         try {
             return loadedVertices.get(id, () -> getPersistenceBackend().addVertex(id.toString()));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new AlreadyExistingIdException("Already existing Id '" + id.toString() + "'");
         }
     }
@@ -171,27 +195,5 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
         Id metaClassId = getOrCreateMetaClass(metaClassifier);
 
         setMetaClass(id, metaClassId);
-    }
-
-    private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {
-        for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
-            edge.remove();
-        }
-
-        Edge edge = childVertex.addEdge(CONTAINER, parentVertex);
-        edge.setProperty(CONTAINING_FEATURE, localName);
-    }
-
-    private static Integer getSize(final Vertex vertex, final String name) {
-        Integer size = vertex.getProperty(formatKeyValue(name, SIZE_LITERAL));
-        return isNull(size) ? 0 : size;
-    }
-
-    private static void setSize(final Vertex vertex, final String name, final int size) {
-        vertex.setProperty(formatKeyValue(name, SIZE_LITERAL), size);
-    }
-
-    private static String formatKeyValue(final String key, final Object value) {
-        return key + SEPARATOR + value;
     }
 }
