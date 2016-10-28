@@ -22,13 +22,10 @@ import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWrite
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithIndexesResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithListsResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
@@ -37,12 +34,11 @@ import org.mapdb.DBMaker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.*;
 import static java.util.Objects.isNull;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
@@ -60,7 +56,12 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 
 	private MapPersistenceBackendFactory() {
 	}
-    
+
+	@Override
+	public String getName() {
+		return MAPDB_BACKEND;
+	}
+
 	@Override
 	public PersistenceBackend createTransientBackend() {
 	    //Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
@@ -78,7 +79,9 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 
 	@Override
 	public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
-	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
+	    MapPersistenceBackend backend;
+
+		File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
 	    if (!dbFile.getParentFile().exists()) {
 			try {
 				Files.createDirectories(dbFile.getParentFile().toPath());
@@ -86,31 +89,12 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 				NeoLogger.error(e);
 			}
 		}
-	    PropertiesConfiguration neoConfig;
-	    Path neoConfigPath = Paths.get(file.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
-        try {
-            neoConfig= new PropertiesConfiguration(neoConfigPath.toFile());
-        } catch (ConfigurationException e) {
-            throw new InvalidDataStoreException(e);
-        }
-        if (!neoConfig.containsKey(BACKEND_PROPERTY)) {
-            neoConfig.setProperty(BACKEND_PROPERTY, MAPDB_BACKEND);
-        }
-		try {
-            neoConfig.save();
-        } catch(ConfigurationException e) {
-            NeoLogger.error(e);
-        }
-	    //Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
-	    /*
-         * TODO Check the difference when asyncWriteEnable() is set.
-         * It has been desactived for MONDO deliverable but not well tested
-         */
 
-
-	    //Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().makeEngine();
 		DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
-        return new MapPersistenceBackend(db);
+		backend = new MapPersistenceBackend(db);
+		processGlobalConfiguration(file);
+
+        return backend;
 	}
 
 	@Override
@@ -122,23 +106,23 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 		List<StoreOption> storeOptions = storeOptionsFrom(options);
 
 		// Store
-		if(isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreMapOption.AUTOCOMMIT))) {
+		if(isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(AUTOCOMMIT))) {
 			eStore = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
         }
-        else if (storeOptions.contains(EStoreMapOption.CACHED_MANY)) {
+        else if (storeOptions.contains(CACHED_MANY)) {
 			eStore = new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_LISTS)) {
+        else if (storeOptions.contains(DIRECT_WRITE_WITH_LISTS)) {
 			eStore = new DirectWriteMapWithListsResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_INDEXES)) {
+        else if (storeOptions.contains(DIRECT_WRITE_WITH_INDEXES)) {
 			eStore = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
         // Autocommit
 		if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-		else if (!isNull(storeOptions) && storeOptions.contains(EStoreMapOption.AUTOCOMMIT)) {
+		else if (!isNull(storeOptions) && storeOptions.contains(AUTOCOMMIT)) {
 			eStore = new AutocommitEStoreDecorator(eStore);
 		}
 		return eStore;
@@ -146,15 +130,12 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 
 	@Override
 	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-		checkArgument(from instanceof MapPersistenceBackend,
-				"The backend to copy is not an instance of MapPersistenceBackend");
-		checkArgument(to instanceof MapPersistenceBackend,
-				"The target copy backend is not an instance of MapPersistenceBackend");
+		checkArgument(from instanceof MapPersistenceBackend && to instanceof MapPersistenceBackend,
+					  "The backend to copy is not an instance of MapPersistenceBackend");
 
-	    MapPersistenceBackend source = (MapPersistenceBackend)from;
-	    MapPersistenceBackend target = (MapPersistenceBackend)to;
+	    MapPersistenceBackend source = (MapPersistenceBackend) from;
+	    MapPersistenceBackend target = (MapPersistenceBackend) to;
 
 		source.copyTo(target);
-
 	}
 }

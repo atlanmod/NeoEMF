@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.BlueprintsConfig;
+import fr.inria.atlanmod.neoemf.graph.blueprints.config.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
 
@@ -19,23 +19,23 @@ import java.io.File;
 
 import static java.util.Objects.isNull;
 
-public final class BlueprintsNeo4jConfig implements BlueprintsConfig {
+public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {
 
-    private static BlueprintsConfig INSTANCE;
+    private static InternalBlueprintsConfiguration INSTANCE;
 
     /**
-     * Returns the instance of this {@link BlueprintsConfig configuration}.
+     * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
      */
-    public static BlueprintsConfig getInstance() {
+    public static InternalBlueprintsConfiguration getInstance() {
         if (isNull(INSTANCE)) {
-            INSTANCE = new BlueprintsNeo4jConfig();
+            INSTANCE = new InternalBlueprintsNeo4jConfiguration();
         }
         return INSTANCE;
     }
 
     private static final String BLUEPRINTS_NEO4J_DIRECTORY = "blueprints.neo4j.directory";
 
-    private BlueprintsNeo4jConfig() {
+    private InternalBlueprintsNeo4jConfiguration() {
     }
     
     @Override

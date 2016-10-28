@@ -4,6 +4,7 @@ import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import java.lang.reflect.Field;
 
@@ -22,7 +23,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AllTest {
             field.setAccessible(true);
             result = (PersistenceBackend) field.get(context);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            NeoLogger.error(e);
         }
 
         return result;

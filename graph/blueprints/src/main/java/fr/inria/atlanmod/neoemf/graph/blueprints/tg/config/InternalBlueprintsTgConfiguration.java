@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.tg.config;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.BlueprintsConfig;
+import fr.inria.atlanmod.neoemf.graph.blueprints.config.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
 
@@ -19,16 +19,16 @@ import java.io.File;
 
 import static java.util.Objects.isNull;
 
-public final class BlueprintsTgConfig implements BlueprintsConfig {
+public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
-    private static BlueprintsConfig INSTANCE;
+    private static InternalBlueprintsConfiguration INSTANCE;
 
     /**
-     * Returns the instance of this {@link BlueprintsConfig configuration}.
+     * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
      */
-    public static BlueprintsConfig getInstance() {
+    public static InternalBlueprintsConfiguration getInstance() {
         if (isNull(INSTANCE)) {
-            INSTANCE = new BlueprintsTgConfig();
+            INSTANCE = new InternalBlueprintsTgConfiguration();
         }
         return INSTANCE;
     }
@@ -36,7 +36,7 @@ public final class BlueprintsTgConfig implements BlueprintsConfig {
     private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
     private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";
 
-    private BlueprintsTgConfig() {
+    private InternalBlueprintsTgConfiguration() {
     }
     
     @Override

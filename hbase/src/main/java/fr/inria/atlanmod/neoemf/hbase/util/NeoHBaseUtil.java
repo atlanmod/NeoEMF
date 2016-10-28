@@ -169,7 +169,7 @@ public class NeoHBaseUtil {
 			} catch (IOException e) {
 				NeoLogger.error("Unable to convert ''{0}'' to String[]", Arrays.toString(bytes));
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				NeoLogger.error(e);
 			} finally {
 				IOUtils.closeQuietly(objectInputStream);
 			}

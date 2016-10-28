@@ -20,22 +20,34 @@ import fr.inria.atlanmod.neoemf.datastore.estores.impl.FeatureCachingEStoreDecor
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingEStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterEStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.*;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.*;
 import static java.util.Objects.isNull;
 
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
     /**
+     * Returns a literal description of the created persistence backend.
+     */
+    protected abstract String getName();
+
+    /**
      * Returns a list of store options from the given {@code options}.
      */
     protected static List<StoreOption> storeOptionsFrom(Map<?, ?> options) {
-        return (List<StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
+        return (List<StoreOption>)options.get(STORE_OPTIONS);
     }
 
     @Override
@@ -44,19 +56,19 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         List<StoreOption> storeOptions = storeOptionsFrom(options);
 
         if (!isNull(storeOptions) && !storeOptions.isEmpty()) {
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.IS_SET_CACHING)) {
+            if (storeOptions.contains(IS_SET_CACHING)) {
                 eStore = new IsSetCachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING)) {
+            if (storeOptions.contains(ESTRUCUTRALFEATURE_CACHING)) {
                 eStore = new FeatureCachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.SIZE_CACHING)) {
+            if (storeOptions.contains(SIZE_CACHING)) {
                 eStore = new CachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.LOGGING)) {
+            if (storeOptions.contains(LOGGING)) {
                 eStore = new LoggingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING)) {
+            if (storeOptions.contains(LOADED_OBJECT_COUNTER_LOGGING)) {
                 eStore = new LoadedObjectCounterEStoreDecorator(eStore);
             }
         }
@@ -64,4 +76,34 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     }
 
     protected abstract PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
+
+    /**
+     * Creates and saves the NeoEMF configuration.
+     * @param directory the directory where the configuration must be stored.
+     */
+    protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
+        PropertiesConfiguration configuration;
+        Path path = Paths.get(directory.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
+
+        try {
+            configuration = new PropertiesConfiguration(path.toFile());
+        } catch (ConfigurationException e) {
+            throw new InvalidDataStoreException(e);
+        }
+
+        if (!configuration.containsKey(BACKEND_PROPERTY)) {
+            configuration.setProperty(BACKEND_PROPERTY, getName());
+        }
+
+        try {
+            configuration.save();
+            NeoLogger.debug("Configuration stored at " + path);
+        } catch(ConfigurationException e) {
+            /*
+             * Unable to save configuration.
+             * Supposedly it's a minor error, so we log it without rising an exception.
+             */
+            NeoLogger.warn(e);
+        }
+    }
 }

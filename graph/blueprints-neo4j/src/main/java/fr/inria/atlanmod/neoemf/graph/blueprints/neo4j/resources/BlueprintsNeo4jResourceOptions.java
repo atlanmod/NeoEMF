@@ -25,7 +25,8 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     String OPTIONS_BLUEPRINTS_NEO4J_RELATIONSHIPS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.relationshipstore.db.mapped_memory";
     
     /**
-     * Possible values for @{see OPTIONS_GRAPH_NEO4J_CACHE_TYPE}.
+     * Possible values for {@link #OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE}.
+     * <p/>
      * The cache type hpc is not available because the embedded Neo4j the Community Edition.
      */
     enum CacheType {
@@ -47,7 +48,7 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     }
     
     /**
-     * Possible values for @{see OPTIONS_GRAPH_NEO4J_USE_MEMORY_MAPPED_BUFFER}.
+     * Possible values for {@link #OPTIONS_BLUEPRINTS_NEO4J_USE_MEMORY_MAPPED_BUFFERS}.
      */
     enum UseMemoryMappedBuffer {
         TRUE("true"),

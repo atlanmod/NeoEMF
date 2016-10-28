@@ -12,6 +12,7 @@ package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
+import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -24,6 +25,15 @@ import org.eclipse.emf.ecore.resource.Resource;
  * Utility class which can be used by backend-specific implementations that does not provide a transient layer.
  */
 public class InvalidTransientResourceEStoreImpl implements PersistentEStore {
+
+    private static final String UNSUPPORTED_MSG =
+            "The backend you are using does not provide a transient layer. " +
+            "You must save/load your resource before using it";
+
+    public InvalidTransientResourceEStoreImpl() {
+        super();
+        NeoLogger.warn(UNSUPPORTED_MSG);
+    }
 
     @Override
     public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
@@ -146,7 +156,6 @@ public class InvalidTransientResourceEStoreImpl implements PersistentEStore {
     }
 
     private UnsupportedOperationException unsupportedOperation() {
-        return new UnsupportedOperationException("The backend you are using does not provide a transient layer. " +
-                                                         "You must save/load your resource before using it");
+        return new UnsupportedOperationException(UNSUPPORTED_MSG);
     }
 }
