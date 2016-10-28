@@ -27,7 +27,7 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 import java.io.File;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptions.*;
+import static fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY;
 import static java.util.Objects.isNull;
 
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {

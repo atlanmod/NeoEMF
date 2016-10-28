@@ -38,7 +38,11 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.*;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.AUTOCOMMIT;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.CACHED_MANY;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.DIRECT_WRITE;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_INDEXES;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_LISTS;
 import static java.util.Objects.isNull;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {

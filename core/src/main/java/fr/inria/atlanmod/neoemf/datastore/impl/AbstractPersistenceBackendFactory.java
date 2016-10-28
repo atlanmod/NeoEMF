@@ -32,8 +32,13 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.*;
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.*;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.IS_SET_CACHING;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.LOGGING;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.SIZE_CACHING;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.STORE_OPTIONS;
+import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 import static java.util.Objects.isNull;
 
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {

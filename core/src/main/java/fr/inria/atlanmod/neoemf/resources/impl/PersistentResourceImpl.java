@@ -249,7 +249,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
             setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
             setLowerBound(0);
             setName(CONTENTS);
-            setEType(new EClassifierImpl() {});
+            setEType(new EClassifierImpl() {
+            });
             setFeatureID(RESOURCE__CONTENTS);
         }
     }
@@ -346,8 +347,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
             while (it.hasNext()) {
                 hardLinksList.add(it.next());
             }
-			/*
-			 * Iterate using the hard links list instead the getAllContents.
+            /*
+             * Iterate using the hard links list instead the getAllContents.
 			 * We ensure that using the hardLinksList it is not taken out by JIT compiler
 			 */
             for (Object element : hardLinksList) {

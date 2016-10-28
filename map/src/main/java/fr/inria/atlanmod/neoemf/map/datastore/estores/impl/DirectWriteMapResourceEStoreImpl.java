@@ -207,8 +207,8 @@ public class DirectWriteMapResourceEStoreImpl extends AbstractDirectWriteResourc
     @Override
     protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         if (index == EStore.NO_INDEX) {
-			/*
-			 * Handle NO_INDEX index, which represent direct-append feature.
+            /*
+             * Handle NO_INDEX index, which represent direct-append feature.
 			 * The call to size should not cause an overhead because it would have been done in regular
 			 * addUnique() otherwise.
 			 */

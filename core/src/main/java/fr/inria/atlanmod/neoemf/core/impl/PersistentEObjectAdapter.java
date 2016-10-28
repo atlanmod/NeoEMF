@@ -114,7 +114,7 @@ public class PersistentEObjectAdapter {
         Enhancer proxy = new Enhancer();
 
 		/*
-		 * Use the ClassLoader of the type, otherwise it will cause OSGI troubles (like project trying to
+         * Use the ClassLoader of the type, otherwise it will cause OSGI troubles (like project trying to
 		 * create an PersistentEObject while it does not have a dependency to NeoEMF core)
 		 */
         proxy.setClassLoader(adapterType.getClassLoader());
