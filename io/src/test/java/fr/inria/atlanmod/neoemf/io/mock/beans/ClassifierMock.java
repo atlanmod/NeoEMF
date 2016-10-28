@@ -41,6 +41,20 @@ public class ClassifierMock {
         this.elements = new ArrayList<>();
     }
 
+    public static ClassifierMock getChildFrom(ClassifierMock root, int... indexes) {
+        if (indexes.length == 0) {
+            throw new IllegalArgumentException("You must define at least one index");
+        }
+
+        ClassifierMock child = root;
+
+        for (int index : indexes) {
+            child = child.getElements().get(index);
+        }
+
+        return child;
+    }
+
     public String getLocalName() {
         return classifier.getLocalName();
     }
@@ -75,19 +89,5 @@ public class ClassifierMock {
 
     public List<ClassifierMock> getElements() {
         return elements;
-    }
-
-    public static ClassifierMock getChildFrom(ClassifierMock root, int ... indexes) {
-        if (indexes.length == 0) {
-            throw new IllegalArgumentException("You must define at least one index");
-        }
-
-        ClassifierMock child = root;
-
-        for (int index : indexes) {
-            child = child.getElements().get(index);
-        }
-
-        return child;
     }
 }

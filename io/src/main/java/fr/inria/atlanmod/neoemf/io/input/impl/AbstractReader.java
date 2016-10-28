@@ -24,6 +24,12 @@ import static java.util.Objects.isNull;
  */
 public abstract class AbstractReader extends AbstractInternalNotifier implements Reader {
 
+    protected static String format(String prefix, String value) {
+        checkNotNull(value);
+
+        return (isNull(prefix) ? "" : prefix + ':') + value;
+    }
+
     protected void processStartDocument() throws Exception {
         notifyStartDocument();
     }
@@ -42,11 +48,5 @@ public abstract class AbstractReader extends AbstractInternalNotifier implements
 
     protected void processEndDocument() throws Exception {
         notifyEndDocument();
-    }
-
-    protected static String format(String prefix, String value) {
-        checkNotNull(value);
-
-        return (isNull(prefix) ? "" : prefix + ':') + value;
     }
 }

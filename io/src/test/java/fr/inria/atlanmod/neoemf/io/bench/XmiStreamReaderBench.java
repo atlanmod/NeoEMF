@@ -64,7 +64,8 @@ public class XmiStreamReaderBench extends AllInputBench {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         try {
             IOFactory.importXmi(file, persistenceHandler);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             NeoLogger.error(e);
             throw e;
         }

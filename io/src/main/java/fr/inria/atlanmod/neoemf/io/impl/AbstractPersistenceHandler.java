@@ -39,38 +39,35 @@ import static java.util.Objects.isNull;
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
-    private static final int OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
     protected static final int DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
 
-    private int opCount;
+    private static final int OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
     private final P persistenceBackend;
 
     private final Deque<Id> elementIdStack;
-
     /**
      * Cache of recently processed {@code Id}.
      */
     private final Cache<String, Id> elementIdCache;
-
     /**
      * Cache of registered metaclasses.
      */
     private final Cache<String, Id> metaclassIdCache;
-
     /**
      * Cache of unlinked elements, waiting until their reference is created.
      * <p/>
      * In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
-
     /**
      * Cache of conflited {@code Id}.
      * <p/>
      * In case of conflict detection only.
      */
     private final Cache<String, Id> conflictElementIdCache;
+
+    private int opCount;
 
     protected AbstractPersistenceHandler(P persistenceBackend) {
         this.persistenceBackend = persistenceBackend;
@@ -84,6 +81,22 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         this.conflictElementIdCache = CacheBuilder.newBuilder().build();
 
         NeoLogger.info("Autocommit Blueprints Handler created (chunk = {0})", OPS_BETWEEN_COMMITS_DEFAULT);
+    }
+
+    /**
+     * Adapts the given {@code value} according to the max memory.
+     * <p/>
+     * The formulas can be improved, for sure.
+     */
+    private static int adaptFromMemory(int value) {
+        double maxMemoryGB = Math.round(Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000);
+
+        double factor = maxMemoryGB;
+        if (maxMemoryGB > 1) {
+            factor *= 2;
+        }
+
+        return (int) (value * factor);
     }
 
     protected P getPersistenceBackend() {
@@ -120,7 +133,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         Id id;
         if (isNull(attribute.getId())) {
             id = elementIdStack.getLast();
-        } else {
+        }
+        else {
             id = getOrCreateId(attribute.getId());
         }
 
@@ -138,7 +152,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         Id id;
         if (isNull(reference.getId())) {
             id = elementIdStack.getLast();
-        } else {
+        }
+        else {
             id = getOrCreateId(reference.getId());
         }
 
@@ -153,7 +168,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                     idReference);
 
             incrementAndCommit();
-        } catch (NoSuchElementException e) {
+        }
+        catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
             unlinkedElementsMap.put(
                     reference.getIdReference().getValue(),
@@ -169,7 +185,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     @Override
     public void handleEndDocument() throws Exception {
         long unlinkedNumber = unlinkedElementsMap.size();
-        if(unlinkedNumber > 0) {
+        if (unlinkedNumber > 0) {
             NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
             for (String e : unlinkedElementsMap.asMap().keySet()) {
                 NeoLogger.warn(" > " + e);
@@ -227,7 +243,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                 conflictElementIdCache.put(idValue, id);
                 conflict = true;
             }
-        } while (conflict);
+        }
+        while (conflict);
 
         return id;
     }
@@ -321,22 +338,6 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         if (opCount == 0) {
             persistenceBackend.save();
         }
-    }
-
-    /**
-     * Adapts the given {@code value} according to the max memory.
-     * <p/>
-     * The formulas can be improved, for sure.
-     */
-    private static int adaptFromMemory(int value) {
-        double maxMemoryGB = Math.round(Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000);
-
-        double factor = maxMemoryGB;
-        if (maxMemoryGB > 1) {
-            factor *= 2;
-        }
-
-        return (int) (value * factor);
     }
 
     /**

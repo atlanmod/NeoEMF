@@ -34,13 +34,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public abstract class AllInputTest extends AllTest {
 
+    protected static final int UNKNOWN_INDEX = -1;
+
     private static final String XMI_STANDARD = "/xmi/sampleStandard.xmi";
     private static final String XMI_WITH_ID = "/xmi/sampleWithId.xmi";
 
     private static final String ECORE = "ecore";
     private static final String ECORE_PATH = "/ecore/{name}." + ECORE;
-
-    protected static final int UNKNOWN_INDEX = -1;
 
     protected StructuralPersistanceHandler persistanceHandler;
 
@@ -79,7 +79,7 @@ public abstract class AllInputTest extends AllTest {
         Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
         EObject eObject = r.getContents().get(0);
         if (eObject instanceof EPackage) {
-            ePackage = (EPackage)eObject;
+            ePackage = (EPackage) eObject;
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 

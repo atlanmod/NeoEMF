@@ -132,7 +132,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Replace elements which has not index : all elements must have an index (default = 0)
         Matcher matcher = PATTERN_NODE_WITHOUT_INDEX.matcher(modifiedReference);
-        while(matcher.find()) {
+        while (matcher.find()) {
             modifiedReference = matcher.replaceAll("$2.0$3");
         }
 
@@ -186,7 +186,8 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
                 // Try to get and increment the node if it exists
                 node = node.getChild(name);
                 node.incrementValue();
-            } else {
+            }
+            else {
                 // The node doesn't exist : we create him
                 node = node.addChild(new Node(name));
             }

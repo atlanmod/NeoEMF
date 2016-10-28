@@ -24,6 +24,14 @@ public class Reference extends StructuralFeature {
         this.containment = false;
     }
 
+    public static Reference from(Attribute attribute) {
+        Reference reference = new Reference(attribute.getLocalName());
+        reference.setId(attribute.getId());
+        reference.setIndex(attribute.getIndex());
+        reference.setIdReference(Identifier.original(attribute.getValue().toString()));
+        return reference;
+    }
+
     public Identifier getIdReference() {
         return idReference;
     }
@@ -43,13 +51,5 @@ public class Reference extends StructuralFeature {
 
     public void setContainment(boolean containment) {
         this.containment = containment;
-    }
-
-    public static Reference from(Attribute attribute) {
-        Reference reference = new Reference(attribute.getLocalName());
-        reference.setId(attribute.getId());
-        reference.setIndex(attribute.getIndex());
-        reference.setIdReference(Identifier.original(attribute.getValue().toString()));
-        return reference;
     }
 }

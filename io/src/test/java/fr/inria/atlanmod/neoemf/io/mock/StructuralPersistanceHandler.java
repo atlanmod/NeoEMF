@@ -59,7 +59,8 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
 
         if (!classifierStack.isEmpty()) {
             classifierStack.getLast().getElements().add(mock);
-        } else {
+        }
+        else {
             elements.add(mock);
         }
 
@@ -73,11 +74,13 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     public void handleAttribute(Attribute attribute) throws Exception {
         if (isNull(attribute.getId()) || attribute.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getAttributes().add(attribute);
-        } else {
+        }
+        else {
             ClassifierMock mock = classifierMockCache.getIfPresent(attribute.getId().getValue());
             if (!isNull(mock) && mock.getId().equals(attribute.getId())) {
                 mock.getAttributes().add(attribute);
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException();
             }
         }
@@ -87,11 +90,13 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     public void handleReference(Reference reference) throws Exception {
         if (isNull(reference.getId()) || reference.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getReferences().add(reference);
-        } else {
+        }
+        else {
             ClassifierMock mock = classifierMockCache.getIfPresent(reference.getId().getValue());
             if (!isNull(mock) && mock.getId().equals(reference.getId())) {
                 mock.getReferences().add(reference);
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException();
             }
         }

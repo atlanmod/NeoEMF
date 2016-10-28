@@ -64,6 +64,31 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         this.ignoreCleaning = false;
     }
 
+    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
+        MetaClassifier metaClassifier = classifier.getMetaClassifier();
+
+        if (!isNull(metaClassifier)) {
+            EClass subEClass = (EClass) ePackage.getEClassifier(metaClassifier.getLocalName());
+
+            // Checks that the metaclass is a subtype of the reference type.
+            // If true, use it instead of supertype
+            if (eClass.isSuperTypeOf(subEClass)) {
+                eClass = subEClass;
+            }
+            else {
+                throw new Exception(subEClass.getName() + " is not a subclass of " + eClass.getName());
+            }
+        }
+
+        // If not present, create the metaclass from the current class
+        else {
+            metaClassifier = new MetaClassifier(ns, eClass.getName());
+            classifier.setMetaClassifier(metaClassifier);
+        }
+
+        return eClass;
+    }
+
     @Override
     public void handleStartElement(Classifier classifier) throws Exception {
         // Is root
@@ -73,17 +98,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Is a feature of parent
         else {
             handleFeature(classifier);
-        }
-    }
-
-    @Override
-    public void handleCharacters(String characters) throws Exception {
-        // Defines the value of the waiting attribute, if exists
-        if (!isNull(waitingAttribute)) {
-            waitingAttribute.setValue(characters);
-            handleAttribute(waitingAttribute);
-
-            waitingAttribute = null;
         }
     }
 
@@ -131,9 +145,21 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
             idsStack.removeLast();
 
             super.handleEndElement();
-        } else {
+        }
+        else {
             waitingAttribute = null; // Clean the waiting attribute : no character has been found to fill its value
             ignoreCleaning = false;
+        }
+    }
+
+    @Override
+    public void handleCharacters(String characters) throws Exception {
+        // Defines the value of the waiting attribute, if exists
+        if (!isNull(waitingAttribute)) {
+            waitingAttribute.setValue(characters);
+            handleAttribute(waitingAttribute);
+
+            waitingAttribute = null;
         }
     }
 
@@ -220,30 +246,5 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Save EClass and identifier
         classesStack.addLast(eClass);
         idsStack.addLast(currentId);
-    }
-
-    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
-        MetaClassifier metaClassifier = classifier.getMetaClassifier();
-
-        if (!isNull(metaClassifier)) {
-            EClass subEClass = (EClass) ePackage.getEClassifier(metaClassifier.getLocalName());
-
-            // Checks that the metaclass is a subtype of the reference type.
-            // If true, use it instead of supertype
-            if (eClass.isSuperTypeOf(subEClass)) {
-                eClass = subEClass;
-            }
-            else {
-                throw new Exception(subEClass.getName() + " is not a subclass of " + eClass.getName());
-            }
-        }
-
-        // If not present, create the metaclass from the current class
-        else {
-            metaClassifier = new MetaClassifier(ns, eClass.getName());
-            classifier.setMetaClassifier(metaClassifier);
-        }
-
-        return eClass;
     }
 }

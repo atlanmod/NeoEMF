@@ -25,18 +25,18 @@ import static java.util.Objects.isNull;
  */
 public class Md5Hasher implements Hasher {
 
+    private static final HashFunction hashFunction = Hashing.md5();
+
     private static Hasher INSTANCE;
+
+    private Md5Hasher() {
+    }
 
     public static Hasher getInstance() {
         if (isNull(INSTANCE)) {
             INSTANCE = new Md5Hasher();
         }
         return INSTANCE;
-    }
-
-    private static final HashFunction hashFunction = Hashing.md5();
-
-    private Md5Hasher() {
     }
 
     @Override

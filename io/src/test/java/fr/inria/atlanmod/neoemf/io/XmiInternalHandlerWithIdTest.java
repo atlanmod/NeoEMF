@@ -107,7 +107,7 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
                 attributeList = mockChild.getAttributes();
                 assertThat(attributeList).hasSize(1);
-                assertValidAttribute(attributeList.get(0),  "visibility", 0, "private");
+                assertValidAttribute(attributeList.get(0), "visibility", 0, "private");
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);

@@ -22,17 +22,16 @@ import static java.util.Objects.isNull;
 public class Namespace {
 
     private static final Namespace DEFAULT = new Namespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
-
-    public static Namespace getDefault() {
-        return DEFAULT;
-    }
-
     private final String prefix;
     private final String uri;
 
     private Namespace(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
+    }
+
+    public static Namespace getDefault() {
+        return DEFAULT;
     }
 
     public String getPrefix() {
@@ -49,19 +48,10 @@ public class Namespace {
     public static class Registry {
 
         private static Registry INSTANCE;
-
-        public static Registry getInstance() {
-            if (isNull(INSTANCE)) {
-                INSTANCE = new Registry();
-            }
-            return INSTANCE;
-        }
-
         /**
          * Registered {@link Namespace namespaces} identified by their prefix.
          */
         private final Cache<String, Namespace> namespacesByPrefix;
-
         /**
          * Registered {@link Namespace namespaces} identified by their URI.
          */
@@ -70,6 +60,13 @@ public class Namespace {
         private Registry() {
             namespacesByPrefix = CacheBuilder.newBuilder().build();
             namespacesByUri = CacheBuilder.newBuilder().build();
+        }
+
+        public static Registry getInstance() {
+            if (isNull(INSTANCE)) {
+                INSTANCE = new Registry();
+            }
+            return INSTANCE;
         }
 
         public Iterable<String> getPrefixes() {

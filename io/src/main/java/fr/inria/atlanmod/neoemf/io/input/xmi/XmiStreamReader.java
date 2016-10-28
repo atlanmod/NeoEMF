@@ -73,14 +73,23 @@ public class XmiStreamReader extends AbstractXmiReader {
             logProgressTimer.schedule(new LogProgressTimer(stream, stream.available()), 10000, 30000);
 
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
-        } catch (SAXException e) {
+        }
+        catch (SAXException e) {
             if (!isNull(e.getException())) {
                 throw e.getException();
-            } else {
+            }
+            else {
                 throw e;
             }
-        } finally {
+        }
+        finally {
             logProgressTimer.cancel();
+        }
+    }
+
+    private void logProgress(double percent) {
+        if (showProgress) {
+            NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
         }
     }
 
@@ -98,6 +107,18 @@ public class XmiStreamReader extends AbstractXmiReader {
             }
 
             logProgress(0);
+        }
+
+        @Override
+        public void endDocument() throws SAXException {
+            logProgress(100);
+
+            try {
+                processEndDocument();
+            }
+            catch (Exception e) {
+                throw new SAXException(e);
+            }
         }
 
         @Override
@@ -126,19 +147,6 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
 
         @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
-            String characters = String.valueOf(ch, start, length).trim();
-            try {
-                if (!characters.isEmpty()) {
-                    processCharacters(characters);
-                }
-            }
-            catch (Exception e) {
-                throw new SAXException(e);
-            }
-        }
-
-        @Override
         public void endElement(String uri, String name, String qName) throws SAXException {
             // Ignore XMI elements
             if (uri.equals(xmiUri)) {
@@ -154,11 +162,12 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
 
         @Override
-        public void endDocument() throws SAXException {
-            logProgress(100);
-
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            String characters = String.valueOf(ch, start, length).trim();
             try {
-                processEndDocument();
+                if (!characters.isEmpty()) {
+                    processCharacters(characters);
+                }
             }
             catch (Exception e) {
                 throw new SAXException(e);
@@ -183,12 +192,6 @@ public class XmiStreamReader extends AbstractXmiReader {
             }
             catch (Exception ignore) {
             }
-        }
-    }
-
-    private void logProgress(double percent) {
-        if (showProgress) {
-            NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
         }
     }
 }

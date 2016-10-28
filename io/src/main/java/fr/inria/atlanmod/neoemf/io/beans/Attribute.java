@@ -18,21 +18,8 @@ public class Attribute extends StructuralFeature {
 
     private Object value;
 
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
     public Attribute(String localName) {
         super(localName);
-    }
-
-    @Override
-    public boolean isAttribute() {
-        return true;
     }
 
     public static Attribute from(Reference reference) {
@@ -41,5 +28,18 @@ public class Attribute extends StructuralFeature {
         attribute.setIndex(reference.getIndex());
         attribute.setValue(reference.getIdReference().getValue());
         return attribute;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    @Override
+    public boolean isAttribute() {
+        return true;
     }
 }

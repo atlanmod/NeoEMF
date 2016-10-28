@@ -50,7 +50,8 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
 
         if (isNull(id)) {
             assertThat(mock.getId()).isNull();
-        } else {
+        }
+        else {
             assertThat(mock.getId().getValue()).isEqualTo(id);
         }
     }

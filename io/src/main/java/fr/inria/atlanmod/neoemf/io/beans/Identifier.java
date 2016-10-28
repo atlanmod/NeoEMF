@@ -16,20 +16,20 @@ package fr.inria.atlanmod.neoemf.io.beans;
  */
 public class Identifier {
 
-    public static Identifier original(String value) {
-        return new Identifier(value, false);
-    }
-
-    public static Identifier generated(String value) {
-        return new Identifier(value, true);
-    }
-
     private final String value;
     private final boolean generated;
 
     private Identifier(String value, boolean generated) {
         this.value = value;
         this.generated = generated;
+    }
+
+    public static Identifier original(String value) {
+        return new Identifier(value, false);
+    }
+
+    public static Identifier generated(String value) {
+        return new Identifier(value, true);
     }
 
     public String getValue() {

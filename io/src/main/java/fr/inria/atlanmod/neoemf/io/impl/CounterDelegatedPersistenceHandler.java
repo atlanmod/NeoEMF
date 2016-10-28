@@ -25,9 +25,9 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
  */
 public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersistenceHandler {
 
-    private Stopwatch stopWatch;
-
     private final String name;
+
+    private Stopwatch stopWatch;
 
     private long elementCount;
     private long attributeCount;
@@ -43,7 +43,7 @@ public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersist
 
     @Override
     public void handleStartDocument() throws Exception {
-        NeoLogger.info("[" + name +  "] Document analysis in progress...");
+        NeoLogger.info("[" + name + "] Document analysis in progress...");
         stopWatch = Stopwatch.createStarted();
 
         super.handleStartDocument();

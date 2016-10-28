@@ -52,11 +52,6 @@ public class AbstractDelegatedInternalHandler implements InternalHandler {
     }
 
     @Override
-    public void handleCharacters(String characters) throws Exception {
-        internalHandler.handleCharacters(characters);
-    }
-
-    @Override
     public void handleEndElement() throws Exception {
         internalHandler.handleEndElement();
     }
@@ -64,6 +59,11 @@ public class AbstractDelegatedInternalHandler implements InternalHandler {
     @Override
     public void handleEndDocument() throws Exception {
         internalHandler.handleEndDocument();
+    }
+
+    @Override
+    public void handleCharacters(String characters) throws Exception {
+        internalHandler.handleCharacters(characters);
     }
 
     // Notifier methods

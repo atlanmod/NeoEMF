@@ -61,7 +61,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * The attribute key representing the version of the parsed XMI file.
      */
-    private static final String XMI_VERSION_ATTR = format(XMI_NS , "version");
+    private static final String XMI_VERSION_ATTR = format(XMI_NS, "version");
 
     /**
      * The attribute key representing a link to another document.
@@ -89,6 +89,52 @@ public abstract class AbstractXmiReader extends AbstractReader {
             Pattern.compile("(\\w+):(\\w+)");
 
     private boolean ignoreElement = false;
+
+    /**
+     * Returns a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
+     * does not match with {@link #PATTERN_WELL_FORMED_REF}.
+     *
+     * @return a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
+     * does not match with {@link #PATTERN_WELL_FORMED_REF}
+     *
+     * @see #PATTERN_WELL_FORMED_REF
+     */
+    private static List<String> getReferences(String attribute) {
+        List<String> references = null;
+
+        if (!attribute.trim().isEmpty()) {
+            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
+
+            boolean isReference = true;
+            for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
+                String ref = references.get(i);
+                isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
+            }
+
+            if (!isReference) {
+                references = null;
+            }
+        }
+
+        return references;
+    }
+
+    /**
+     * Returns the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix.
+     * @return the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix
+     */
+    private static String getPrefix(String prefixedValue) {
+        String prefix = null;
+
+        if (!isNull(prefixedValue)) {
+            List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
+            if (splittedName.size() > 1) {
+                prefix = splittedName.get(0);
+            }
+        }
+
+        return prefix;
+    }
 
     /**
      * Processes a new element and send a notification to handlers.
@@ -125,7 +171,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
         for (StructuralFeature feature : structuralFeatures) {
             if (feature.isAttribute()) {
                 notifyAttribute((Attribute) feature);
-            } else {
+            }
+            else {
                 notifyReference((Reference) feature);
             }
         }
@@ -184,10 +231,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 //NeoLogger.info("XMI version : " + value);
                 isSpecialFeature = true;
             }
-        } else if (PROXY.equals(localName)) {
+        }
+        else if (PROXY.equals(localName)) {
             NeoLogger.warn("'" + classifier.getLocalName() + "' is an external reference to " + value + ". This feature is not supported yet.");
             ignoreElement = true;
-        } else if (NAME.equals(localName)) {
+        }
+        else if (NAME.equals(localName)) {
             classifier.setClassName(value);
             isSpecialFeature = true;
         }
@@ -234,7 +283,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
         if (m.find()) {
             MetaClassifier metaClassifier = new MetaClassifier(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
             element.setMetaClassifier(metaClassifier);
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
         }
     }
@@ -246,54 +296,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
     protected void processEndElement(String uri, String localName) throws Exception {
         if (!ignoreElement) {
             notifyEndElement();
-        } else {
+        }
+        else {
             ignoreElement = false;
         }
-    }
-
-    /**
-     * Returns a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
-     * does not match with {@link #PATTERN_WELL_FORMED_REF}.
-     *
-     * @return a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
-     * does not match with {@link #PATTERN_WELL_FORMED_REF}
-     *
-     * @see #PATTERN_WELL_FORMED_REF
-     */
-    private static List<String> getReferences(String attribute) {
-        List<String> references = null;
-
-        if (!attribute.trim().isEmpty()) {
-            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
-
-            boolean isReference = true;
-            for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
-                String ref = references.get(i);
-                isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
-            }
-
-            if (!isReference) {
-                references = null;
-            }
-        }
-
-        return references;
-    }
-
-    /**
-     * Returns the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix.
-     * @return the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix
-     */
-    private static String getPrefix(String prefixedValue) {
-        String prefix = null;
-
-        if (!isNull(prefixedValue)) {
-            List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
-            if (splittedName.size() > 1) {
-                prefix = splittedName.get(0);
-            }
-        }
-
-        return prefix;
     }
 }

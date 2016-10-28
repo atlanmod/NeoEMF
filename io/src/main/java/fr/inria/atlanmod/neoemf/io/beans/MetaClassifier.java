@@ -17,16 +17,15 @@ package fr.inria.atlanmod.neoemf.io.beans;
 public class MetaClassifier extends NamedElement {
 
     private static final MetaClassifier DEFAULT = new MetaClassifier(Namespace.getDefault(), "EObject");
-
-    public static MetaClassifier getDefault() {
-        return DEFAULT;
-    }
-
     private Namespace namespace;
 
     public MetaClassifier(Namespace namespace, String localName) {
         super(localName);
         this.namespace = namespace;
+    }
+
+    public static MetaClassifier getDefault() {
+        return DEFAULT;
     }
 
     public Namespace getNamespace() {
