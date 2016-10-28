@@ -18,6 +18,12 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.BundleContext;
 
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+
 public class NeoEMFUiPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
@@ -58,16 +64,27 @@ public class NeoEMFUiPlugin extends AbstractUIPlugin {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-     */
-    @Override
-    public void start(BundleContext context) throws Exception {
-        super.start(context);
-        plugin = this;
-        NeoEMFUiPlugin.getDefault().getLog().addLogListener(logListener);
-    }
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 */
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
+		NeoEMFUiPlugin.getDefault().getLog().addLogListener(logListener);
+		/*
+		 * Needed because auto-registration doesn't work if only static String are accessed before resource loading.
+		 * This happens when an eclipse instance is loaded with an opened NeoEMF editor
+		 * (only NeoBlueprintsURI.NEO_GRAPH_SCHEME is accessed)
+		 */
+        if(!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        }
+        if(!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+        }
+	}
 
     /*
      * (non-Javadoc)

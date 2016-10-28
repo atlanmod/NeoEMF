@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.util;
 
-import fr.inria.atlanmod.neoemf.util.NeoURI;
+import java.io.File;
+import java.text.MessageFormat;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 
-import java.io.File;
-import java.text.MessageFormat;
+import fr.inria.atlanmod.neoemf.util.NeoURI;
 
 public class NeoBlueprintsURI extends NeoURI {
 	

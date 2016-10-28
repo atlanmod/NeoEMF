@@ -159,8 +159,6 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                     Resource resource = null;
                     try {
                         // Create a resource set
-                        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-
                         ResourceSet resourceSet = new ResourceSetImpl();
                         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
                         resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(true));
