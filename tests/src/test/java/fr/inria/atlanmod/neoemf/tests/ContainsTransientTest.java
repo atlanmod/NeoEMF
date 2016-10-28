@@ -8,10 +8,10 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.tests;
 
 import org.junit.Test;
-
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30

@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;

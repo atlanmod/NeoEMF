@@ -25,7 +25,6 @@ import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;

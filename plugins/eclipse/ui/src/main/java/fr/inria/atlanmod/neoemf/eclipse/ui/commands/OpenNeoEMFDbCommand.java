@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.commands;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;

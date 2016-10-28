@@ -8,6 +8,7 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
