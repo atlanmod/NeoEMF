@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
-import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
 import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
@@ -37,7 +36,6 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,18 +46,19 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapPersistenceBackendFactoryTest extends AllTest {
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
     private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
 
-    private PersistenceBackendFactory persistenceBackendFactory;
+    private final Map<Object, Object> options = new HashMap<>();
+    private final List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private File testFolder;
     private File testFile;
-    private Map<Object, Object> options = new HashMap<>();
-    private List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
+
+    private PersistenceBackendFactory persistenceBackendFactory;
 
     @Before
     public void setUp() {
@@ -68,7 +67,8 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         try {
             Files.createDirectories(testFolder.toPath());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             NeoLogger.error(e);
         }
         testFile = new File(testFolder + "/db");
@@ -84,7 +84,8 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 NeoLogger.warn(e);
             }
         }
@@ -188,10 +189,8 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
     }
 
     /**
-     * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent
-     * data stores from the transient ones. Only empty backends are tested.
-     *
-     * @throws InvalidDataStoreException
+     * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent data stores from the transient ones.
+     * Only empty backends are tested.
      */
     @Test
     public void testCopyBackend() throws InvalidDataStoreException {
@@ -210,36 +209,6 @@ public class MapPersistenceBackendFactoryTest extends AllTest {
             assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"
             assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent backend structure %s is not equal to transient one"
         }
-    }
-
-
-    /**
-     * Utility method to retrieve the PersistentEStore associated to a store.
-     * @param store
-     * @return
-     */
-    private PersistenceBackend getInnerBackend(PersistentEStore store) {
-        // context is the real EStore, which can de decorated.
-        PersistentEStore context = store.getEStore();
-        Field field = null;
-        PersistenceBackend result = null;
-
-        try {
-            field = AbstractDirectWriteResourceEStore.class.getDeclaredField("persistenceBackend");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-
-
-        field.setAccessible(true);
-
-        try {
-            result = (PersistenceBackend) field.get(context);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return result;
     }
 
     private void assertHasInnerBackend(PersistentEStore store, PersistenceBackend expectedInnerBackend) {

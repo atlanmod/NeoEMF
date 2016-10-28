@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,11 +91,8 @@ public class SavedResourceContainerTest extends AllSavedResourceTest {
     }
 
     private void checkEInternalContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        InternalEObject internalMapSampleModel = (InternalEObject) sampleModel;
-        assertThat(internalMapSampleModel.eInternalContainer()).isNull(); // "Top Level EObject has a not null internal container"
-
-        InternalEObject internalMapSampleContentObject = (InternalEObject) sampleModelContentObject;
-        assertThat(internalMapSampleContentObject.eInternalContainer()).isSameAs(internalMapSampleModel); // "Wrong eInternalContainer value"
+        assertThat(sampleModel.eInternalContainer()).isNull(); // "Top Level EObject has a not null internal container"
+        assertThat(sampleModelContentObject.eInternalContainer()).isSameAs((InternalEObject) sampleModel); // "Wrong eInternalContainer value"
     }
 
     private void getAllContentsEInternalContainer(PersistentResource persistentResource) {

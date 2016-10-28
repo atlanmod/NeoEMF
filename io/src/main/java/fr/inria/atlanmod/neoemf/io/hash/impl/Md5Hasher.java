@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,23 +18,25 @@ import com.google.common.hash.Hashing;
 import fr.inria.atlanmod.neoemf.io.hash.HashCode;
 import fr.inria.atlanmod.neoemf.io.hash.Hasher;
 
+import static java.util.Objects.isNull;
+
 /**
  * A {@link Hasher hasher} using the {@code MD5} algorithm.
  */
 public class Md5Hasher implements Hasher {
 
+    private static final HashFunction hashFunction = Hashing.md5();
+
     private static Hasher INSTANCE;
 
+    private Md5Hasher() {
+    }
+
     public static Hasher getInstance() {
-        if (INSTANCE == null) {
+        if (isNull(INSTANCE)) {
             INSTANCE = new Md5Hasher();
         }
         return INSTANCE;
-    }
-
-    private static final HashFunction hashFunction = Hashing.md5();
-
-    private Md5Hasher() {
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,44 +32,42 @@ import java.util.Deque;
 import java.util.NoSuchElementException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An handler able to persist newly created data in a {@link PersistenceBackend persistence backend}.
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
-    private static final int OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
     protected static final int DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
 
-    private int opCount;
+    private static final int OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
     private final P persistenceBackend;
 
     private final Deque<Id> elementIdStack;
-
     /**
      * Cache of recently processed {@code Id}.
      */
     private final Cache<String, Id> elementIdCache;
-
     /**
      * Cache of registered metaclasses.
      */
     private final Cache<String, Id> metaclassIdCache;
-
     /**
      * Cache of unlinked elements, waiting until their reference is created.
      * <p/>
      * In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
-
     /**
      * Cache of conflited {@code Id}.
      * <p/>
      * In case of conflict detection only.
      */
     private final Cache<String, Id> conflictElementIdCache;
+
+    private int opCount;
 
     protected AbstractPersistenceHandler(P persistenceBackend) {
         this.persistenceBackend = persistenceBackend;
@@ -83,6 +81,22 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         this.conflictElementIdCache = CacheBuilder.newBuilder().build();
 
         NeoLogger.info("Autocommit Blueprints Handler created (chunk = {0})", OPS_BETWEEN_COMMITS_DEFAULT);
+    }
+
+    /**
+     * Adapts the given {@code value} according to the max memory.
+     * <p/>
+     * The formulas can be improved, for sure.
+     */
+    private static int adaptFromMemory(int value) {
+        double maxMemoryGB = Math.round(Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000);
+
+        double factor = maxMemoryGB;
+        if (maxMemoryGB > 1) {
+            factor *= 2;
+        }
+
+        return (int) (value * factor);
     }
 
     protected P getPersistenceBackend() {
@@ -117,9 +131,10 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     @Override
     public void handleAttribute(final Attribute attribute) throws Exception {
         Id id;
-        if (attribute.getId() == null) {
+        if (isNull(attribute.getId())) {
             id = elementIdStack.getLast();
-        } else {
+        }
+        else {
             id = getOrCreateId(attribute.getId());
         }
 
@@ -135,9 +150,10 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     @Override
     public void handleReference(final Reference reference) throws Exception {
         Id id;
-        if (reference.getId() == null) {
+        if (isNull(reference.getId())) {
             id = elementIdStack.getLast();
-        } else {
+        }
+        else {
             id = getOrCreateId(reference.getId());
         }
 
@@ -152,7 +168,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                     idReference);
 
             incrementAndCommit();
-        } catch (NoSuchElementException e) {
+        }
+        catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
             unlinkedElementsMap.put(
                     reference.getIdReference().getValue(),
@@ -168,7 +185,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     @Override
     public void handleEndDocument() throws Exception {
         long unlinkedNumber = unlinkedElementsMap.size();
-        if(unlinkedNumber > 0) {
+        if (unlinkedNumber > 0) {
             NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
             for (String e : unlinkedElementsMap.asMap().keySet()) {
                 NeoLogger.warn(" > " + e);
@@ -189,7 +206,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * Creates an element from the given {@code classifier} with the given {@code id}, and returns the given {@code id}.
      * <p/>
      * If {@code id} is {@code null}, it is calculated by the {@link #getId(String)} method.
-
+     *
      * @return the given {@code id}
      */
     protected Id createElement(final Classifier classifier, final Id id) throws Exception {
@@ -226,14 +243,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                 conflictElementIdCache.put(idValue, id);
                 conflict = true;
             }
-        } while (conflict);
+        }
+        while (conflict);
 
         return id;
     }
 
     /**
      * Creates a metaclass form the given {@code metaClassifier} and returns its {@link Id}.
-
+     *
      * @return the {@link Id} of the newly created metaclass
      */
     protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) throws Exception {
@@ -243,7 +261,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         Id id = metaclassIdCache.getIfPresent(idValue);
 
         // If metaclass doesn't already exist, we create it
-        if (id == null) {
+        if (isNull(id)) {
             id = createId(Identifier.generated(idValue));
             boolean conflict = false;
 
@@ -278,9 +296,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private Id getOrCreateId(final Identifier identifier) {
         Id id = conflictElementIdCache.getIfPresent(identifier.getValue());
-        if (id == null) {
+        if (isNull(id)) {
             id = elementIdCache.getIfPresent(identifier.getValue());
-            if (id == null) {
+            if (isNull(id)) {
                 id = createId(identifier);
                 elementIdCache.put(identifier.getValue(), id);
             }
@@ -303,7 +321,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * Tries to link elements that have not been linked at their creation.
      *
      * @param reference the reference of the targetted element
-     * @param id the identifier of the targetted element
+     * @param id        the identifier of the targetted element
      */
     private void tryLink(final String reference, final Id id) throws Exception {
         for (UnlinkedElement e : unlinkedElementsMap.removeAll(reference)) {
@@ -320,22 +338,6 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         if (opCount == 0) {
             persistenceBackend.save();
         }
-    }
-
-    /**
-     * Adapts the given {@code value} according to the max memory.
-     * <p/>
-     * The formulas can be improved, for sure.
-     */
-    private static int adaptFromMemory(int value) {
-        double maxMemoryGB = Math.round(Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000);
-
-        double factor = maxMemoryGB;
-        if (maxMemoryGB > 1) {
-            factor *= 2;
-        }
-
-        return (int) (value * factor);
     }
 
     /**

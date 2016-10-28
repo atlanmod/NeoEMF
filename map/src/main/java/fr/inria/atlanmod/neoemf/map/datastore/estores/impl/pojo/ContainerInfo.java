@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,15 +16,15 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import java.io.Serializable;
 
 public class ContainerInfo implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	public Id containerId;
-	
-	public String containingFeatureName;
-	
-	public ContainerInfo(Id containerId, String containingFeatureName) {
-		this.containerId = containerId;
-		this.containingFeatureName = containingFeatureName;
-	}
+
+    private static final long serialVersionUID = 1L;
+
+    public final Id containerId;
+
+    public final String containingFeatureName;
+
+    public ContainerInfo(Id containerId, String containingFeatureName) {
+        this.containerId = containerId;
+        this.containingFeatureName = containingFeatureName;
+    }
 }

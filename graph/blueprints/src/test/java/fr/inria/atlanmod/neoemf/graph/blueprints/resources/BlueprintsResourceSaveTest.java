@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,17 +43,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AllTest {
 
+    private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
+    protected final String configFileName = "/config.properties";
+
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
-
     protected String testFilePath = TEST_FILENAME;
-
-    protected String configFileName = "/config.properties";
+    protected File testFile;
 
     protected PersistenceBackendFactory persistenceBackendFactory;
-    protected File testFile;
     protected Map<Object, Object> options;
     protected ResourceSet resSet;
     protected Resource resource;
@@ -66,7 +64,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
         PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + new Date().getTime()).toFile();
         resSet = new ResourceSetImpl();
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.eINSTANCE);
+        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
         resource = resSet.createResource(NeoBlueprintsURI.createNeoGraphURI(testFile));
     }
 
@@ -81,7 +79,8 @@ public class BlueprintsResourceSaveTest extends AllTest {
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 NeoLogger.warn(e);
             }
         }

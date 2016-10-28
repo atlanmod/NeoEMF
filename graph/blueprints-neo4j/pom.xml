@@ -26,7 +26,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- By default, imports a POM file instead of a JAR, which is not recognized by Eclipe -->
+        <!-- By default, imports a POM file instead of a JAR, which is not recognized by Eclipse -->
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
@@ -34,23 +34,23 @@
             <scope>runtime</scope>
         </dependency>
 
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-kernel</artifactId>
-			<version>1.9.6</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>3.6.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-lucene-index</artifactId>
-			<version>1.9.6</version>
-		</dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <version>1.9.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>3.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-lucene-index</artifactId>
+            <version>1.9.6</version>
+        </dependency>
 
         <!-- Common dependencies -->
 
@@ -130,11 +130,10 @@
                             org.apache.lucene.*;-split-package:=first,
                             com.tinkerpop.blueprints.impls.neo4j,
                             org.neo4j.kernel.impl.cache;-split-package:=merge-last,
-                            org.neo4j.*;-split-package:=first,      
-<!--                             com.googlecode.concurrentlinkedhashmap                     -->
+                            org.neo4j.*;-split-package:=first,
                         </Export-Package>
                         <Private-Package>
-                        	javax.transaction,
+                            javax.transaction,
                             javax.transaction.xa
                         </Private-Package>
                         <_exportcontents>
@@ -150,14 +149,10 @@
                             org.apache.commons.logging,
                         </_exportcontents>
                         <Embed-Dependency>
-                        	neo4j-lucene-index,
-                        	lucene-core,
-                        	neo4j-kernel,
-                        	blueprints-neo4j-graph
-<!--                      	    geronimo-jta_1.1_spec, -->
-<!--                         	concurrentlinkedhashmap-lru, -->
-<!--                         	neo4j-graph-algo, -->
-<!--                         	neo4j-graph-matching, -->
+                            neo4j-lucene-index,
+                            lucene-core,
+                            neo4j-kernel,
+                            blueprints-neo4j-graph
                         </Embed-Dependency>
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.graph.blueprints

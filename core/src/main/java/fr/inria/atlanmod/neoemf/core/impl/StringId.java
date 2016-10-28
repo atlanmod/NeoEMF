@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,50 +17,52 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 public class StringId implements Id {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String literalId;
+    private final String literalId;
 
-	public static Id generate() {
-		return new StringId(EcoreUtil.generateUUID());
-	}
-	
-	public StringId(String literalId) {
-		this.literalId = literalId;
-	}
-	
-	@Override
-	public int compareTo(Id o) {
-		return o.toString().compareTo(toString());
-	}
-	
-	@Override
-	public String toString() {
-		return literalId;
-	}
+    public StringId(String literalId) {
+        this.literalId = literalId;
+    }
 
-	@Override
-	public long toLong() {
-		throw new UnsupportedOperationException("Cannot create a Long ID");
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == this) {
-			return true;
-		}
-		if(obj == null || obj.getClass() != getClass()) {
-			return false;
-		}
+    public static Id generate() {
+        return new StringId(EcoreUtil.generateUUID());
+    }
 
-		StringId other = (StringId) obj;
-		return Objects.equals(literalId, other.literalId);
-	}
-	
-	@Override
-	public int hashCode() {
-	    return literalId.hashCode();
-	}
+    @Override
+    public int compareTo(Id o) {
+        return o.toString().compareTo(toString());
+    }
+
+    @Override
+    public long toLong() {
+        throw new UnsupportedOperationException("Cannot create a Long ID");
+    }
+
+    @Override
+    public int hashCode() {
+        return literalId.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (isNull(obj) || obj.getClass() != getClass()) {
+            return false;
+        }
+
+        StringId other = (StringId) obj;
+        return Objects.equals(literalId, other.literalId);
+    }
+
+    @Override
+    public String toString() {
+        return literalId;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 /**
  *
@@ -57,11 +59,12 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
 
         if (!classifierStack.isEmpty()) {
             classifierStack.getLast().getElements().add(mock);
-        } else {
+        }
+        else {
             elements.add(mock);
         }
 
-        if (classifier.getId() != null) {
+        if (!isNull(classifier.getId())) {
             classifierMockCache.put(classifier.getId().getValue(), mock);
         }
         classifierStack.addLast(mock);
@@ -69,13 +72,15 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
 
     @Override
     public void handleAttribute(Attribute attribute) throws Exception {
-        if (attribute.getId() == null || attribute.getId().equals(classifierStack.getLast().getId())) {
+        if (isNull(attribute.getId()) || attribute.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getAttributes().add(attribute);
-        } else {
+        }
+        else {
             ClassifierMock mock = classifierMockCache.getIfPresent(attribute.getId().getValue());
-            if (mock != null && mock.getId().equals(attribute.getId())) {
+            if (!isNull(mock) && mock.getId().equals(attribute.getId())) {
                 mock.getAttributes().add(attribute);
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException();
             }
         }
@@ -83,13 +88,15 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
 
     @Override
     public void handleReference(Reference reference) throws Exception {
-        if (reference.getId() == null || reference.getId().equals(classifierStack.getLast().getId())) {
+        if (isNull(reference.getId()) || reference.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getReferences().add(reference);
-        } else {
+        }
+        else {
             ClassifierMock mock = classifierMockCache.getIfPresent(reference.getId().getValue());
-            if (mock != null && mock.getId().equals(reference.getId())) {
+            if (!isNull(mock) && mock.getId().equals(reference.getId())) {
                 mock.getReferences().add(reference);
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException();
             }
         }

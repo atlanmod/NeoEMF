@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.junit.Before;
 import java.io.File;
 import java.io.FileInputStream;
 
+import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -47,9 +48,10 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
         assertThat(mock.getClassName()).isEqualTo(className);
         assertThat(mock.isRoot()).isEqualTo(root);
 
-        if (id == null) {
+        if (isNull(id)) {
             assertThat(mock.getId()).isNull();
-        } else {
+        }
+        else {
             assertThat(mock.getId().getValue()).isEqualTo(id);
         }
     }

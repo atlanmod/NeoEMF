@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import java.util.TimerTask;
 import javax.xml.parsers.SAXParserFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * A XMI {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} that uses stream for reading.
@@ -72,14 +73,23 @@ public class XmiStreamReader extends AbstractXmiReader {
             logProgressTimer.schedule(new LogProgressTimer(stream, stream.available()), 10000, 30000);
 
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
-        } catch (SAXException e) {
-            if (e.getException() != null) {
+        }
+        catch (SAXException e) {
+            if (!isNull(e.getException())) {
                 throw e.getException();
-            } else {
+            }
+            else {
                 throw e;
             }
-        } finally {
+        }
+        finally {
             logProgressTimer.cancel();
+        }
+    }
+
+    private void logProgress(double percent) {
+        if (showProgress) {
+            NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
         }
     }
 
@@ -97,6 +107,18 @@ public class XmiStreamReader extends AbstractXmiReader {
             }
 
             logProgress(0);
+        }
+
+        @Override
+        public void endDocument() throws SAXException {
+            logProgress(100);
+
+            try {
+                processEndDocument();
+            }
+            catch (Exception e) {
+                throw new SAXException(e);
+            }
         }
 
         @Override
@@ -125,19 +147,6 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
 
         @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
-            String characters = String.valueOf(ch, start, length).trim();
-            try {
-                if (!characters.isEmpty()) {
-                    processCharacters(characters);
-                }
-            }
-            catch (Exception e) {
-                throw new SAXException(e);
-            }
-        }
-
-        @Override
         public void endElement(String uri, String name, String qName) throws SAXException {
             // Ignore XMI elements
             if (uri.equals(xmiUri)) {
@@ -153,11 +162,12 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
 
         @Override
-        public void endDocument() throws SAXException {
-            logProgress(100);
-
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            String characters = String.valueOf(ch, start, length).trim();
             try {
-                processEndDocument();
+                if (!characters.isEmpty()) {
+                    processCharacters(characters);
+                }
             }
             catch (Exception e) {
                 throw new SAXException(e);
@@ -180,15 +190,8 @@ public class XmiStreamReader extends AbstractXmiReader {
             try {
                 logProgress((double) (total - stream.available()) / (double) total * 100d);
             }
-            catch (Exception e) {
-                // No nothing
+            catch (Exception ignore) {
             }
-        }
-    }
-
-    private void logProgress(double percent) {
-        if (showProgress) {
-            NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public abstract class AbstractNotifier<T extends IOHandler> implements IONotifier<T> {
 
-    private Set<T> handlers;
+    private final Set<T> handlers;
 
     public AbstractNotifier() {
         this.handlers = new HashSet<>();

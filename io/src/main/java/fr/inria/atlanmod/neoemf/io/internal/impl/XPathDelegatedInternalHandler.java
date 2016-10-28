@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An {@link InternalHandler internal handler} that analyses XML elements in order to create and to process XPath
@@ -65,7 +66,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
     @Override
     public void handleStartElement(Classifier classifier) throws Exception {
-        if (classifier.getId() != null) {
+        if (!isNull(classifier.getId())) {
             hasIds = true;
         }
 
@@ -80,12 +81,12 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             String id = path + XPATH_INDEX_SEPARATOR + count;
 
             // Defines the XPath start of all elements from the root element
-            if (expressionStart == null) {
+            if (isNull(expressionStart)) {
                 expressionStart = id + XPATH_START_ELT;
             }
 
             // Defines the new identifier as identifier of the classifier if it not already exist
-            if (classifier.getId() == null) {
+            if (isNull(classifier.getId())) {
                 classifier.setId(Identifier.generated(id));
             }
         }
@@ -131,7 +132,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         // Replace elements which has not index : all elements must have an index (default = 0)
         Matcher matcher = PATTERN_NODE_WITHOUT_INDEX.matcher(modifiedReference);
-        while(matcher.find()) {
+        while (matcher.find()) {
             modifiedReference = matcher.replaceAll("$2.0$3");
         }
 
@@ -148,8 +149,8 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
         /**
          * The root of this tree. This does not represent the root node path.
          */
-        private Node dummyRoot;
-        private Deque<Node> currentPath;
+        private final Node dummyRoot;
+        private final Deque<Node> currentPath;
 
         public TreePath() {
             this.dummyRoot = new Node("ROOT");
@@ -158,7 +159,9 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         /**
          * Gets the XPath of the current element.
+         *
          * @param name the last element of the path
+         *
          * @return a String representing the XPath of the element
          */
         public String getPath(String name) {
@@ -185,7 +188,8 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
                 // Try to get and increment the node if it exists
                 node = node.getChild(name);
                 node.incrementValue();
-            } else {
+            }
+            else {
                 // The node doesn't exist : we create him
                 node = node.addChild(new Node(name));
             }
@@ -204,10 +208,10 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
         private static class Node {
 
-            private String key;
-            private Integer value;
+            private final String key;
+            private final Cache<String, Node> children;
 
-            private Cache<String, Node> children;
+            private Integer value;
 
             public Node(String key) {
                 this.key = key;
@@ -229,7 +233,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
 
             public Node getChild(String key) {
                 Node child = children.getIfPresent(key);
-                if (child == null) {
+                if (isNull(child)) {
                     throw new NoSuchElementException("No such element '" + key + "' in the element '" + this.key + "'");
                 }
                 return child;
@@ -245,7 +249,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             }
 
             public boolean hasChild(String key) {
-                return children.getIfPresent(key) != null;
+                return !isNull(children.getIfPresent(key));
             }
 
             public long size() {

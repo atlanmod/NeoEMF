@@ -20,7 +20,7 @@
     </description>
 
     <properties>
-        <tycho-maven-plugin.version>0.24.0</tycho-maven-plugin.version>
+        <tycho-maven-plugin.version>0.26.0</tycho-maven-plugin.version>
     </properties>
 
     <repositories>

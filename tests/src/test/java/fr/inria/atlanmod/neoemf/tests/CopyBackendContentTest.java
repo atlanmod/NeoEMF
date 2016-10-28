@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.common.util.EList;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,12 +44,6 @@ public class CopyBackendContentTest extends AllBackendTest {
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 
     private void createResourceContent(PersistentResource r) {

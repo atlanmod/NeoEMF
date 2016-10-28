@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,25 +7,26 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
-package fr.inria.atlanmod.neoemf.map;
+ */
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+package fr.inria.atlanmod.neoemf.map;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
 public class Activator implements BundleActivator {
-    
+
     private static BundleContext context;
-    
+
     static BundleContext getContext() {
         return context;
     }
-    
+
     @Override
     public void start(BundleContext bundleContext) throws Exception {
         context = bundleContext;
@@ -36,8 +37,8 @@ public class Activator implements BundleActivator {
             NeoLogger.info("Map persistence backend registered");
         }
     }
-    
+
     public void stop(BundleContext bundleContext) throws Exception {
         context = null;
-    };
+    }
 }

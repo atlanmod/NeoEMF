@@ -62,11 +62,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        
+
         <dependency>
-		    <groupId>org.eclipse.tycho</groupId>
-		    <artifactId>org.eclipse.osgi</artifactId>
-		</dependency>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+        </dependency>
 
         <!-- EMF dependencies -->
 
@@ -113,7 +113,7 @@
                             fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>
                         <_exportcontents>
-                            org.mapdb
+                            org.mapdb,
                         </_exportcontents>
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.core,

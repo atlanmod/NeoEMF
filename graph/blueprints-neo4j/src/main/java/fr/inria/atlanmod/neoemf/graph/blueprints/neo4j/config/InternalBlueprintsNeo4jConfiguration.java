@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,24 +11,36 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.config;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.tg.config.AbstractBlueprintsConfig;
+import fr.inria.atlanmod.neoemf.graph.blueprints.config.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
-public final class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
+import static java.util.Objects.isNull;
 
-    public static AbstractBlueprintsConfig eINSTANCE = new BlueprintsNeo4jConfig();
+public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {
 
     private static final String BLUEPRINTS_NEO4J_DIRECTORY = "blueprints.neo4j.directory";
 
-    private BlueprintsNeo4jConfig() {
+    private static InternalBlueprintsConfiguration INSTANCE;
+
+    private InternalBlueprintsNeo4jConfiguration() {
     }
-    
+
+    /**
+     * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
+     */
+    public static InternalBlueprintsConfiguration getInstance() {
+        if (isNull(INSTANCE)) {
+            INSTANCE = new InternalBlueprintsNeo4jConfiguration();
+        }
+        return INSTANCE;
+    }
+
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
-        if(currentConfiguration.getString(BLUEPRINTS_NEO4J_DIRECTORY) == null) {
+        if (isNull(currentConfiguration.getString(BLUEPRINTS_NEO4J_DIRECTORY))) {
             currentConfiguration.addProperty(BLUEPRINTS_NEO4J_DIRECTORY, dbLocation.getAbsolutePath());
         }
     }
@@ -36,5 +48,5 @@ public final class BlueprintsNeo4jConfig extends AbstractBlueprintsConfig {
     @Override
     public void setGlobalSettings() {
 
-    }    
+    }
 }

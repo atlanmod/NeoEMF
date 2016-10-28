@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,11 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
+
 package fr.inria.atlanmod.neoemf.resources.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
@@ -26,23 +24,24 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
 
 /**
- * An empty {@see PersistentResource} decorator that delegates all method calls to the decorated 
- * resource.
+ * An empty {@see PersistentResource} decorator that delegates all method calls to the decorated resource.
  * <p>
  * This class can be extended by external tools to add behavior to an existing {@see PersistentResource}.
- * </p>
  */
 public class PersistentResourceDecorator implements PersistentResource {
 
-    protected PersistentResource base;
-    
+    protected final PersistentResource base;
+
     public PersistentResourceDecorator(PersistentResource baseResource) {
         this.base = baseResource;
     }
-    
+
     @Override
     public ResourceSet getResourceSet() {
         return base.getResourceSet();
@@ -184,8 +183,7 @@ public class PersistentResourceDecorator implements PersistentResource {
     }
 
     @Override
-    public NotificationChain basicSetResourceSet(ResourceSet resourceSet,
-            NotificationChain notifications) {
+    public NotificationChain basicSetResourceSet(ResourceSet resourceSet, NotificationChain notifications) {
         return base.basicSetResourceSet(resourceSet, notifications);
     }
 

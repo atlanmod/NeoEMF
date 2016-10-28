@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,21 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.map.datastore.estores.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
 import java.io.IOException;
 
-/**
- * Created by sunye on 13/10/2016.
- */
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
-    Serializer<String> stringSerializer = Serializer.STRING;
-    Serializer<Id> idSerializer = new IdSerializer();
+    final Serializer<String> stringSerializer = Serializer.STRING;
+    final Serializer<Id> idSerializer = new IdSerializer();
 
     @Override
     public void serialize(DataOutput2 out, FeatureKey fk) throws IOException {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * An {@link InternalHandler internal handler} that creates and links simple elements to an Ecore structure.
@@ -63,6 +64,31 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         this.ignoreCleaning = false;
     }
 
+    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
+        MetaClassifier metaClassifier = classifier.getMetaClassifier();
+
+        if (!isNull(metaClassifier)) {
+            EClass subEClass = (EClass) ePackage.getEClassifier(metaClassifier.getLocalName());
+
+            // Checks that the metaclass is a subtype of the reference type.
+            // If true, use it instead of supertype
+            if (eClass.isSuperTypeOf(subEClass)) {
+                eClass = subEClass;
+            }
+            else {
+                throw new Exception(subEClass.getName() + " is not a subclass of " + eClass.getName());
+            }
+        }
+
+        // If not present, create the metaclass from the current class
+        else {
+            metaClassifier = new MetaClassifier(ns, eClass.getName());
+            classifier.setMetaClassifier(metaClassifier);
+        }
+
+        return eClass;
+    }
+
     @Override
     public void handleStartElement(Classifier classifier) throws Exception {
         // Is root
@@ -72,17 +98,6 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Is a feature of parent
         else {
             handleFeature(classifier);
-        }
-    }
-
-    @Override
-    public void handleCharacters(String characters) throws Exception {
-        // Defines the value of the waiting attribute, if exists
-        if (waitingAttribute != null) {
-            waitingAttribute.setValue(characters);
-            handleAttribute(waitingAttribute);
-
-            waitingAttribute = null;
         }
     }
 
@@ -130,9 +145,21 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
             idsStack.removeLast();
 
             super.handleEndElement();
-        } else {
+        }
+        else {
             waitingAttribute = null; // Clean the waiting attribute : no character has been found to fill its value
             ignoreCleaning = false;
+        }
+    }
+
+    @Override
+    public void handleCharacters(String characters) throws Exception {
+        // Defines the value of the waiting attribute, if exists
+        if (!isNull(waitingAttribute)) {
+            waitingAttribute.setValue(characters);
+            handleAttribute(waitingAttribute);
+
+            waitingAttribute = null;
         }
     }
 
@@ -151,7 +178,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         EClass eClass = (EClass) ePackage.getEClassifier(classifier.getLocalName());
 
         // Defines the metaclass of the current element if not present
-        if (classifier.getMetaClassifier() == null) {
+        if (isNull(classifier.getMetaClassifier())) {
             classifier.setMetaClassifier(new MetaClassifier(ns, eClass.getName()));
         }
 
@@ -188,7 +215,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     }
 
     private void handleFeatureAsAttribute(Classifier classifier, EAttribute eAttribute) {
-        if (waitingAttribute != null) {
+        if (!isNull(waitingAttribute)) {
             NeoLogger.warn("An attribute still waiting for a value. It wiil be ignored");
         }
 
@@ -219,30 +246,5 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         // Save EClass and identifier
         classesStack.addLast(eClass);
         idsStack.addLast(currentId);
-    }
-
-    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
-        MetaClassifier metaClassifier = classifier.getMetaClassifier();
-
-        if (metaClassifier != null) {
-            EClass subEClass = (EClass) ePackage.getEClassifier(metaClassifier.getLocalName());
-
-            // Checks that the metaclass is a subtype of the reference type.
-            // If true, use it instead of supertype
-            if (eClass.isSuperTypeOf(subEClass)) {
-                eClass = subEClass;
-            }
-            else {
-                throw new Exception(subEClass.getName() + " is not a subclass of " + eClass.getName());
-            }
-        }
-
-        // If not present, create the metaclass from the current class
-        else {
-            metaClassifier = new MetaClassifier(ns, eClass.getName());
-            classifier.setMetaClassifier(metaClassifier);
-        }
-
-        return eClass;
     }
 }

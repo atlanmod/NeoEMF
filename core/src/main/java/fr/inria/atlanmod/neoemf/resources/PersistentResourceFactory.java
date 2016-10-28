@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,5 +17,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 public interface PersistentResourceFactory extends Resource.Factory {
 
-	PersistentResourceFactory eINSTANCE = PersistentResourceFactoryImpl.getInstance();
+    /**
+     * Returns the default instance of this {@code PersistentResourceFactory factory}.
+     */
+    static PersistentResourceFactory getInstance() {
+        return PersistentResourceFactoryImpl.getInstance();
+    }
 }

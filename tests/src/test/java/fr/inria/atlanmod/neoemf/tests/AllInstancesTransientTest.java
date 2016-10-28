@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,12 +27,6 @@ public class AllInstancesTransientTest extends AllInstancesTest {
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 
     @Test

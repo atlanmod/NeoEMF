@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -145,12 +145,14 @@ public class LoadedObjectCounterEStoreDecorator extends AbstractEStoreDecorator 
     private void setAsLoaded(Object object) {
         if (object instanceof PersistentEObject) {
             loadedObjects.add(((PersistentEObject) object).id());
-        } else {
+        }
+        else {
             NeoLogger.debug("Not an PersistentEObject : This object will be ignored in the final count.");
         }
     }
 
     private class ShutdownHook extends Thread {
+
         @Override
         public void run() {
             NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());

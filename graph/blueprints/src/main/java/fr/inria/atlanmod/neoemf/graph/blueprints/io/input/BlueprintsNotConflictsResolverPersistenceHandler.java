@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import com.tinkerpop.blueprints.Vertex;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 
-import java.util.concurrent.Callable;
+import static java.util.Objects.isNull;
 
 /**
  * A {@link BlueprintsConflictsResolverPersistenceHandler} with <b>no key conflict resolution</b>.
@@ -32,17 +32,14 @@ class BlueprintsNotConflictsResolverPersistenceHandler extends BlueprintsConflic
 
     @Override
     protected Vertex getVertex(final Id id) throws Exception {
-        return loadedVertices.get(id, new Callable<Vertex>() {
-            @Override
-            public Vertex call() throws Exception {
-                Vertex vertex = getPersistenceBackend().getVertex(id.toString());
+        return loadedVertices.get(id, () -> {
+            Vertex vertex = getPersistenceBackend().getVertex(id.toString());
 
-                if (vertex == null) {
-                    vertex = getPersistenceBackend().addVertex(id.toString());
-                }
-
-                return vertex;
+            if (isNull(vertex)) {
+                vertex = getPersistenceBackend().addVertex(id.toString());
             }
+
+            return vertex;
         });
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,9 @@ import fr.inria.atlanmod.neoemf.logger.NeoLogger;
  */
 public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersistenceHandler {
 
-    private Stopwatch stopWatch;
-
     private final String name;
+
+    private Stopwatch stopWatch;
 
     private long elementCount;
     private long attributeCount;
@@ -43,7 +43,7 @@ public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersist
 
     @Override
     public void handleStartDocument() throws Exception {
-        NeoLogger.info("[" + name +  "] Document analysis in progress...");
+        NeoLogger.info("[" + name + "] Document analysis in progress...");
         stopWatch = Stopwatch.createStarted();
 
         super.handleStartDocument();

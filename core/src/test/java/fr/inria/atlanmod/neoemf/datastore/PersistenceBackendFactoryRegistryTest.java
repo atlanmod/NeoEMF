@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,8 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
     private static final String MOCK_1 = "mock1";
     private static final String MOCK_2 = "mock2";
 
-    private PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
-    private PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
 
     @Before
     public void setUp() {

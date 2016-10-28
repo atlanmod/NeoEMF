@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,13 @@ import org.eclipse.emf.ecore.EFactory;
  */
 public interface PersistenceFactory extends EFactory {
 
-	/**
-	 * The default instance of this {@code PersistenceFactory factory}.
-	 */
-	PersistenceFactory eINSTANCE = PersistenceFactoryImpl.getInstance();
-	
-	@Override
-	PersistentEObject create(EClass eClass);
+    /**
+     * Returns the default instance of this {@code PersistenceFactory factory}.
+     */
+    static PersistenceFactory getInstance() {
+        return PersistenceFactoryImpl.getInstance();
+    }
+
+    @Override
+    PersistentEObject create(EClass eClass);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,15 +23,16 @@ import java.util.Map;
 public interface PersistenceBackendFactory {
 
     String NEO_CONFIG_FILE = "neoconfig.properties";
+
     String BACKEND_PROPERTY = "backend";
 
     PersistenceBackend createTransientBackend();
 
-    PersistenceBackend createPersistentBackend(File file, Map<?,?> options) throws InvalidDataStoreException;
+    PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException;
 
     PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend);
 
-    PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException;
+    PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
 
     void copyBackend(PersistenceBackend from, PersistenceBackend to);
 }

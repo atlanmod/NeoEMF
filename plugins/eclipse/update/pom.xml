@@ -31,11 +31,11 @@
             <artifactId>fr.inria.atlanmod.neoemf.map.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
-        	<groupId>fr.inria.atlanmod.neoemf</groupId>
-        	<artifactId>fr.inria.atlanmod.neoemf.hbase.feature</artifactId>
-        	<version>${project.version}</version>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.hbase.feature</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -43,11 +43,11 @@
             <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
-        	<groupId>fr.inria.atlanmod.neoemf</groupId>
-        	<artifactId>fr.inria.atlanmod.neoemf.io.feature</artifactId>
-        	<version>${project.version}</version>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.io.feature</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

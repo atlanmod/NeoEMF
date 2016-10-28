@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,21 +18,8 @@ public class Attribute extends StructuralFeature {
 
     private Object value;
 
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
     public Attribute(String localName) {
         super(localName);
-    }
-
-    @Override
-    public boolean isAttribute() {
-        return true;
     }
 
     public static Attribute from(Reference reference) {
@@ -41,5 +28,18 @@ public class Attribute extends StructuralFeature {
         attribute.setIndex(reference.getIndex());
         attribute.setValue(reference.getIdReference().getValue());
         return attribute;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    @Override
+    public boolean isAttribute() {
+        return true;
     }
 }

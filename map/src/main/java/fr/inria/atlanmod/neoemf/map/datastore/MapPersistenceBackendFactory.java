@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,12 +22,10 @@ import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.CachedManyDirectWrite
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithIndexesResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapWithListsResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
@@ -36,125 +34,113 @@ import org.mapdb.DBMaker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.AUTOCOMMIT;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.CACHED_MANY;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.DIRECT_WRITE;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_INDEXES;
+import static fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions.EStoreMapOption.DIRECT_WRITE_WITH_LISTS;
+import static java.util.Objects.isNull;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-	private static PersistenceBackendFactory INSTANCE;
-
-	public static PersistenceBackendFactory getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new MapPersistenceBackendFactory();
-		}
-		return INSTANCE;
-	}
-
     public static final String MAPDB_BACKEND = "mapdb";
 
-	private MapPersistenceBackendFactory() {
-	}
-    
-	@Override
-	public PersistenceBackend createTransientBackend() {
-	    //Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
-		DB db = DBMaker.memoryDB().make();
-		return new MapPersistenceBackend(db);
-	}
+    private static PersistenceBackendFactory INSTANCE;
 
-	@Override
-	public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
-		checkArgument(backend instanceof MapPersistenceBackend,
-				"Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
+    private MapPersistenceBackendFactory() {
+    }
 
-		return new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
-	}
-
-	@Override
-	public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
-	    File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
-	    if (!dbFile.getParentFile().exists()) {
-			try {
-				Files.createDirectories(dbFile.getParentFile().toPath());
-			} catch (IOException e) {
-				NeoLogger.error(e);
-			}
-		}
-	    PropertiesConfiguration neoConfig;
-	    Path neoConfigPath = Paths.get(file.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
-        try {
-            neoConfig= new PropertiesConfiguration(neoConfigPath.toFile());
-        } catch (ConfigurationException e) {
-            throw new InvalidDataStoreException(e);
+    public static PersistenceBackendFactory getInstance() {
+        if (isNull(INSTANCE)) {
+            INSTANCE = new MapPersistenceBackendFactory();
         }
-        if (!neoConfig.containsKey(BACKEND_PROPERTY)) {
-            neoConfig.setProperty(BACKEND_PROPERTY, MAPDB_BACKEND);
-        }
-		try {
-            neoConfig.save();
-        } catch(ConfigurationException e) {
-            NeoLogger.error(e);
-        }
-	    //Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().asyncWriteEnable().makeEngine();
-	    /*
-         * TODO Check the difference when asyncWriteEnable() is set.
-         * It has been desactived for MONDO deliverable but not well tested
-         */
+        return INSTANCE;
+    }
 
+    @Override
+    public String getName() {
+        return MAPDB_BACKEND;
+    }
 
-	    //Engine mapEngine = DBMaker.newFileDB(dbFile).cacheLRUEnable().mmapFileEnableIfSupported().makeEngine();
-		DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
-        return new MapPersistenceBackend(db);
-	}
+    @Override
+    protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+        checkArgument(backend instanceof MapPersistenceBackend,
+                "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
 
-	@Override
-	protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?,?> options) throws InvalidDataStoreException {
-		checkArgument(backend instanceof MapPersistenceBackend,
-				"Trying to create a Map-based EStore with an invalid backend: "+backend.getClass().getName());
+        PersistentEStore eStore = null;
+        List<StoreOption> storeOptions = storeOptionsFrom(options);
 
-		PersistentEStore eStore = null;
-		@SuppressWarnings("unchecked")
-		List<PersistentResourceOptions.StoreOption> storeOptions = (List<PersistentResourceOptions.StoreOption>)options.get(PersistentResourceOptions.STORE_OPTIONS);
-		// Store
-		if(storeOptions == null || storeOptions.isEmpty() || storeOptions.contains(EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(EStoreMapOption.AUTOCOMMIT))) {
-			eStore = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend)backend);
+        // Store
+        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(AUTOCOMMIT))) {
+            eStore = new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(EStoreMapOption.CACHED_MANY)) {
-			eStore = new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
+        else if (storeOptions.contains(CACHED_MANY)) {
+            eStore = new CachedManyDirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_LISTS)) {
-			eStore = new DirectWriteMapWithListsResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
+        else if (storeOptions.contains(DIRECT_WRITE_WITH_LISTS)) {
+            eStore = new DirectWriteMapWithListsResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(EStoreMapOption.DIRECT_WRITE_WITH_INDEXES)) {
-			eStore = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
+        else if (storeOptions.contains(DIRECT_WRITE_WITH_INDEXES)) {
+            eStore = new DirectWriteMapWithIndexesResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
         }
         // Autocommit
-        if (eStore != null) {
-			if(storeOptions != null && storeOptions.contains(EStoreMapOption.AUTOCOMMIT)) {
-				eStore = new AutocommitEStoreDecorator(eStore);
-            }
-        } else {
+        if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-		return eStore;
-	}
+        else if (!isNull(storeOptions) && storeOptions.contains(AUTOCOMMIT)) {
+            eStore = new AutocommitEStoreDecorator(eStore);
+        }
+        return eStore;
+    }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-		checkArgument(from instanceof MapPersistenceBackend,
-				"The backend to copy is not an instance of MapPersistenceBackend");
-		checkArgument(to instanceof MapPersistenceBackend,
-				"The target copy backend is not an instance of MapPersistenceBackend");
+    @Override
+    public PersistenceBackend createTransientBackend() {
+        //Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
+        DB db = DBMaker.memoryDB().make();
+        return new MapPersistenceBackend(db);
+    }
 
-	    MapPersistenceBackend source = (MapPersistenceBackend)from;
-	    MapPersistenceBackend target = (MapPersistenceBackend)to;
+    @Override
+    public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
+        MapPersistenceBackend backend;
 
-		source.copyTo(target);
+        File dbFile = FileUtils.getFile(NeoMapURI.createNeoMapURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
+        if (!dbFile.getParentFile().exists()) {
+            try {
+                Files.createDirectories(dbFile.getParentFile().toPath());
+            }
+            catch (IOException e) {
+                NeoLogger.error(e);
+            }
+        }
 
-	}
+        DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
+        backend = new MapPersistenceBackend(db);
+        processGlobalConfiguration(file);
+
+        return backend;
+    }
+
+    @Override
+    public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+        checkArgument(backend instanceof MapPersistenceBackend,
+                "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
+
+        return new DirectWriteMapResourceEStoreImpl(resource, (MapPersistenceBackend) backend);
+    }
+
+    @Override
+    public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
+        checkArgument(from instanceof MapPersistenceBackend && to instanceof MapPersistenceBackend,
+                "The backend to copy is not an instance of MapPersistenceBackend");
+
+        MapPersistenceBackend source = (MapPersistenceBackend) from;
+        MapPersistenceBackend target = (MapPersistenceBackend) to;
+
+        source.copyTo(target);
+    }
 }

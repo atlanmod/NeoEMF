@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,6 +105,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testHashCode() {
+        //noinspection ResultOfMethodCallIgnored
         model.getContentObjects().hashCode();
     }
 
@@ -272,6 +273,7 @@ public class TransientEStoreListTest extends AllTest {
 
     @Test
     public void testToStringEmptyList() {
+        //noinspection ResultOfMethodCallIgnored
         model.getContentObjects().toString();
     }
 
@@ -281,6 +283,7 @@ public class TransientEStoreListTest extends AllTest {
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
+        //noinspection ResultOfMethodCallIgnored
         model.getContentObjects().toString();
     }
 }

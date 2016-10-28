@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.isNull;
+
 /**
  * An abstract implementation of a {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} able to process {@code
  * XMI} files.
@@ -59,7 +61,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * The attribute key representing the version of the parsed XMI file.
      */
-    private static final String XMI_VERSION_ATTR = format(XMI_NS , "version");
+    private static final String XMI_VERSION_ATTR = format(XMI_NS, "version");
 
     /**
      * The attribute key representing a link to another document.
@@ -87,167 +89,6 @@ public abstract class AbstractXmiReader extends AbstractReader {
             Pattern.compile("(\\w+):(\\w+)");
 
     private boolean ignoreElement = false;
-
-    /**
-     * Processes a new element and send a notification to handlers.
-     */
-    protected void processStartElement(String uri, String localName, Attributes attributes) throws Exception {
-        Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
-
-        int attrLength = attributes.getLength();
-
-        List<StructuralFeature> structuralFeatures = new ArrayList<>(attrLength);
-
-        // Processes features
-        if (attrLength > 0) {
-            for (int i = 0; i < attrLength; i++) {
-                List<StructuralFeature> features = processFeatures(element,
-                        getPrefix(attributes.getQName(i)),
-                        attributes.getLocalName(i),
-                        attributes.getValue(i));
-
-                if (ignoreElement) {
-                    //No need to go further
-                    return;
-                }
-
-                if (features != null && !features.isEmpty()) {
-                    structuralFeatures.addAll(features);
-                }
-            }
-        }
-
-        notifyStartElement(element);
-
-        // Send attributes and references
-        for (StructuralFeature feature : structuralFeatures) {
-            if (feature.isAttribute()) {
-                notifyAttribute((Attribute) feature);
-            } else {
-                notifyReference((Reference) feature);
-            }
-        }
-    }
-
-    /**
-     * Processes an attribute
-
-     * @return a list of {@link StructuralFeature structural features} that can be empty.
-     */
-    private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
-        List<StructuralFeature> features = null;
-
-        if (!processSpecialFeatures(classifier, prefix, localName, value)) {
-            List<String> references = getReferences(value);
-            if (references != null) {
-                features = processReferences(localName, references);
-            }
-            else {
-                features = processAttributes(localName, value);
-            }
-        }
-
-        return features;
-    }
-
-    /**
-     * Processes a special feature as 'xsi:type', 'xmi:id' or 'xmi:idref'.
-     *
-     * @return {@code true} if the given feature is a special feature
-     */
-    private boolean processSpecialFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
-        boolean isSpecialFeature = false;
-
-        // A special feature always has a prefix
-        if (prefix != null) {
-            final String prefixedValue = prefix + ':' + localName;
-
-            if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type
-                processMetaClass(classifier, value);
-                isSpecialFeature = true;
-            }
-            else if (XMI_ID.equals(prefixedValue)) { // xmi:id
-                classifier.setId(Identifier.original(value));
-                isSpecialFeature = true;
-            }
-            else if (XMI_IDREF.equals(prefixedValue)) { // xmi:idref
-                //It's not a feature of the current element, but a reference of the previous
-                Reference reference = new Reference(classifier.getLocalName());
-                reference.setIdReference(Identifier.original(value));
-                notifyReference(reference);
-                ignoreElement = true;
-                isSpecialFeature = true;
-            }
-            else if (XMI_VERSION_ATTR.equals(prefixedValue)) { // xmi:version
-                //NeoLogger.info("XMI version : " + value);
-                isSpecialFeature = true;
-            }
-        } else if (PROXY.equals(localName)) {
-            NeoLogger.warn("'" + classifier.getLocalName() + "' is an external reference to " + value + ". This feature is not supported yet.");
-            ignoreElement = true;
-        } else if (NAME.equals(localName)) {
-            classifier.setClassName(value);
-            isSpecialFeature = true;
-        }
-
-        return isSpecialFeature;
-    }
-
-    private List<StructuralFeature> processAttributes(String localName, String value) {
-        Attribute attribute = new Attribute(localName);
-        attribute.setIndex(0);
-        attribute.setValue(value);
-
-        return Lists.newArrayList((StructuralFeature) attribute);
-    }
-
-    /**
-     * Processes a list of {@code references} and returns a list of {@link Reference}.
-
-     * @return a list of {@link Reference} from the given {@code references}
-     */
-    private List<StructuralFeature> processReferences(String localName, List<String> references) throws Exception {
-        List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
-
-        int index = 0;
-        for (String s : references) {
-            Reference ref = new Reference(localName);
-            ref.setIndex(index);
-            ref.setIdReference(Identifier.generated(s));
-            structuralFeatures.add(ref);
-            index++;
-        }
-
-        return structuralFeatures;
-    }
-
-    /**
-     * Processes a metaclass attribute from the given {@code prefixedValue}, and defines is as the metaclass of the
-     * given {@code element}.
-     *
-     * @see #PATTERN_PREFIXED_VALUE
-     */
-    private void processMetaClass(Classifier element, String prefixedValue) throws Exception {
-        Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
-        if (m.find()) {
-            MetaClassifier metaClassifier = new MetaClassifier(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
-            element.setMetaClassifier(metaClassifier);
-        } else {
-            throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
-        }
-    }
-
-    protected void processCharacters(String characters) throws Exception {
-        notifyCharacters(characters);
-    }
-
-    protected void processEndElement(String uri, String localName) throws Exception {
-        if (!ignoreElement) {
-            notifyEndElement();
-        } else {
-            ignoreElement = false;
-        }
-    }
 
     /**
      * Returns a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
@@ -280,12 +121,13 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Returns the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix.
+     *
      * @return the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix
      */
     private static String getPrefix(String prefixedValue) {
         String prefix = null;
 
-        if (prefixedValue != null) {
+        if (!isNull(prefixedValue)) {
             List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
             if (splittedName.size() > 1) {
                 prefix = splittedName.get(0);
@@ -293,5 +135,171 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
 
         return prefix;
+    }
+
+    /**
+     * Processes a new element and send a notification to handlers.
+     */
+    protected void processStartElement(String uri, String localName, Attributes attributes) throws Exception {
+        Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
+
+        int attrLength = attributes.getLength();
+
+        List<StructuralFeature> structuralFeatures = new ArrayList<>(attrLength);
+
+        // Processes features
+        if (attrLength > 0) {
+            for (int i = 0; i < attrLength; i++) {
+                List<StructuralFeature> features = processFeatures(element,
+                        getPrefix(attributes.getQName(i)),
+                        attributes.getLocalName(i),
+                        attributes.getValue(i));
+
+                if (ignoreElement) {
+                    //No need to go further
+                    return;
+                }
+
+                if (!isNull(features) && !features.isEmpty()) {
+                    structuralFeatures.addAll(features);
+                }
+            }
+        }
+
+        notifyStartElement(element);
+
+        // Send attributes and references
+        for (StructuralFeature feature : structuralFeatures) {
+            if (feature.isAttribute()) {
+                notifyAttribute((Attribute) feature);
+            }
+            else {
+                notifyReference((Reference) feature);
+            }
+        }
+    }
+
+    /**
+     * Processes an attribute
+     *
+     * @return a list of {@link StructuralFeature structural features} that can be empty.
+     */
+    private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
+        List<StructuralFeature> features = null;
+
+        if (!processSpecialFeatures(classifier, prefix, localName, value)) {
+            List<String> references = getReferences(value);
+            if (!isNull(references)) {
+                features = processReferences(localName, references);
+            }
+            else {
+                features = processAttributes(localName, value);
+            }
+        }
+
+        return features;
+    }
+
+    /**
+     * Processes a special feature as 'xsi:type', 'xmi:id' or 'xmi:idref'.
+     *
+     * @return {@code true} if the given feature is a special feature
+     */
+    private boolean processSpecialFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
+        boolean isSpecialFeature = false;
+
+        // A special feature always has a prefix
+        if (!isNull(prefix)) {
+            final String prefixedValue = prefix + ':' + localName;
+
+            if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type
+                processMetaClass(classifier, value);
+                isSpecialFeature = true;
+            }
+            else if (XMI_ID.equals(prefixedValue)) { // xmi:id
+                classifier.setId(Identifier.original(value));
+                isSpecialFeature = true;
+            }
+            else if (XMI_IDREF.equals(prefixedValue)) { // xmi:idref
+                //It's not a feature of the current element, but a reference of the previous
+                Reference reference = new Reference(classifier.getLocalName());
+                reference.setIdReference(Identifier.original(value));
+                notifyReference(reference);
+                ignoreElement = true;
+                isSpecialFeature = true;
+            }
+            else if (XMI_VERSION_ATTR.equals(prefixedValue)) { // xmi:version
+                //NeoLogger.info("XMI version : " + value);
+                isSpecialFeature = true;
+            }
+        }
+        else if (PROXY.equals(localName)) {
+            NeoLogger.warn("'" + classifier.getLocalName() + "' is an external reference to " + value + ". This feature is not supported yet.");
+            ignoreElement = true;
+        }
+        else if (NAME.equals(localName)) {
+            classifier.setClassName(value);
+            isSpecialFeature = true;
+        }
+
+        return isSpecialFeature;
+    }
+
+    private List<StructuralFeature> processAttributes(String localName, String value) {
+        Attribute attribute = new Attribute(localName);
+        attribute.setIndex(0);
+        attribute.setValue(value);
+
+        return Lists.newArrayList((StructuralFeature) attribute);
+    }
+
+    /**
+     * Processes a list of {@code references} and returns a list of {@link Reference}.
+     *
+     * @return a list of {@link Reference} from the given {@code references}
+     */
+    private List<StructuralFeature> processReferences(String localName, List<String> references) throws Exception {
+        List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
+
+        int index = 0;
+        for (String s : references) {
+            Reference ref = new Reference(localName);
+            ref.setIndex(index);
+            ref.setIdReference(Identifier.generated(s));
+            structuralFeatures.add(ref);
+            index++;
+        }
+
+        return structuralFeatures;
+    }
+
+    /**
+     * Processes a metaclass attribute from the given {@code prefixedValue}, and defines is as the metaclass of the
+     * given {@code element}.
+     *
+     * @see #PATTERN_PREFIXED_VALUE
+     */
+    private void processMetaClass(Classifier element, String prefixedValue) throws Exception {
+        Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
+        if (m.find()) {
+            MetaClassifier metaClassifier = new MetaClassifier(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
+            element.setMetaClassifier(metaClassifier);
+        }
+        else {
+            throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
+        }
+    }
+
+    protected void processCharacters(String characters) throws Exception {
+        notifyCharacters(characters);
+    }
+
+    protected void processEndElement(String uri, String localName) throws Exception {
+        if (!ignoreElement) {
+            notifyEndElement();
+        }
+        else {
+            ignoreElement = false;
+        }
     }
 }

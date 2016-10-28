@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,11 +91,8 @@ public class SavedResourceResourceTest extends AllSavedResourceTest {
     }
 
     private void checkEDirectResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        InternalEObject internalMapSampleModel = (InternalEObject) sampleModel;
-        assertThat(internalMapSampleModel.eDirectResource()).isSameAs(persistentResource); // "Wrong eDirectResource value"
-
-        InternalEObject internalMapSampleContentObject = (InternalEObject) sampleModelContentObject;
-        assertThat(internalMapSampleContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
+        assertThat(sampleModel.eDirectResource()).isSameAs(persistentResource); // "Wrong eDirectResource value"
+        assertThat(sampleModelContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
     }
 
     private void getAllContentsEDirectResource(PersistentResource persistentResource) {

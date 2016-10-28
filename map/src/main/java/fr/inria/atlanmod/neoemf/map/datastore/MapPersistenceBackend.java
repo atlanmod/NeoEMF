@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,15 @@
 package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.*;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKey;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKeySerializer;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.IdSerializer;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
+
 import org.eclipse.emf.ecore.EClass;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -53,30 +57,33 @@ public class MapPersistenceBackend implements PersistenceBackend {
      * A persistent map that stores Structural feature values for persistent EObjects.
      * The key is build using the persistent object Id plus the name of the feature.
      */
-    private final Map<FeatureKey, Object> features;
+    private final HTreeMap<FeatureKey, Object> features;
 
     /**
      * A persistent map that store the values of multivalued features for persistent EObjects.
      * The key is build using the persistent object Id plus the name of the feature plus the index of the value.
-     *
      */
-    private final Map<MultivaluedFeatureKey, Object> multivaluedFeatures;
+    private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 
-
+    @SuppressWarnings("unchecked") // Unchecked cast: 'HTreeMap' to 'HTreeMap<...>'
     public MapPersistenceBackend(DB aDB) {
         db = aDB;
+
         containersMap = db.hashMap(CONTAINER)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
+
         instanceOfMap = db.hashMap(INSTANCE_OF)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
+
         features = db.hashMap(FEATURES)
                 .keySerializer(new FeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
+
         multivaluedFeatures = db.hashMap(MULTIVALUED_FEATURES)
                 .keySerializer(new MultivaluedFeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
@@ -84,8 +91,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public void start(Map<?, ?> options) throws InvalidDataStoreException {
-
+    public void start(Map<?, ?> options) {
     }
 
     @Override
@@ -123,9 +129,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Retrieves container for a given object id.
-     *
-     * @param id
-     * @return
      */
     public ContainerInfo containerFor(Id id) {
         return containersMap.get(id);
@@ -133,9 +136,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Stores containter information for an object id
-     *
-     * @param id
-     * @param container
      */
     public void storeContainer(Id id, ContainerInfo container) {
         containersMap.put(id, container);
@@ -143,9 +143,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Retrieves metaclass (EClass) for a given object id
-     *
-     * @param id
-     * @return
      */
     public EClassInfo metaclassFor(Id id) {
         return instanceOfMap.get(id);
@@ -153,9 +150,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Stores metaclass (EClass) information for an object id.
-     *
-     * @param id
-     * @param metaclass
      */
     public void storeMetaclass(Id id, EClassInfo metaclass) {
         instanceOfMap.put(id, metaclass);
@@ -163,18 +157,13 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Store the value of a given feature.
-     * @param key
-     * @param value
-     * @return
      */
     public Object storeValue(FeatureKey key, Object value) {
-        return features.put(key,value);
+        return features.put(key, value);
     }
 
     /**
      * Retrieves the value of a given feature.
-     * @param key
-     * @return
      */
     public Object valueOf(FeatureKey key) {
         return features.get(key);
@@ -182,8 +171,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Removes the value of a given feature. The feature becomes unset.
-     * @param key
-     * @return
      */
     public Object removeFeature(FeatureKey key) {
         return features.remove(key);
@@ -191,8 +178,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Return true if the feature was set, false otherwise.
-     * @param key
-     * @return
      */
     public boolean isFeatureSet(FeatureKey key) {
         return features.containsKey(key);
@@ -200,18 +185,13 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Stores the single value of a given multivalued feature at the given index.
-     * @param key
-     * @param value
-     * @return
      */
     public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
-        return multivaluedFeatures.put(key,value);
+        return multivaluedFeatures.put(key, value);
     }
 
     /**
      * Retrieves the value of a given multivalued feature at a given index.
-     * @param key
-     * @return
      */
     public Object valueAtIndex(MultivaluedFeatureKey key) {
         return multivaluedFeatures.get(key);
@@ -220,13 +200,13 @@ public class MapPersistenceBackend implements PersistenceBackend {
 
     /**
      * Copies all the contents of this backend to the target one.
-     * @param target
      */
+    @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
     public void copyTo(MapPersistenceBackend target) {
-        for(Map.Entry<String, Object> entry : db.getAll().entrySet()) {
+        for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             Object collection = entry.getValue();
-            if(collection instanceof Map) {
-                Map fromMap = (Map)collection;
+            if (collection instanceof Map) {
+                Map fromMap = (Map) collection;
                 Map toMap = target.db.hashMap(entry.getKey()).createOrOpen();
 
                 toMap.putAll(fromMap);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,8 @@ public class NeoLogger {
 
     private static final Logger ROOT_LOGGER = LogManager.getLogger();
 
-    private NeoLogger() {}
+    private NeoLogger() {
+    }
 
     public static void debug(String msg) {
         internalLog(Level.DEBUG, msg, null);
@@ -53,6 +54,10 @@ public class NeoLogger {
 
     public static void warn(Throwable e) {
         internalLog(Level.WARN, null, e);
+    }
+
+    public static void warn(Throwable e, String pattern, Object... args) {
+        internalLog(Level.WARN, MessageFormat.format(pattern, args), e);
     }
 
     public static void error(String msg) {
@@ -90,7 +95,8 @@ public class NeoLogger {
     private static Logger getLogger() {
         if (CLASSNAME_NEEDED) {
             return LogManager.getLogger(ReflectionUtil.getCallerClass(CALLER_CLASS_DEPTH));
-        } else {
+        }
+        else {
             return ROOT_LOGGER;
         }
     }

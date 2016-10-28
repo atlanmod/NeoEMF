@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,12 @@ package fr.inria.atlanmod.neoemf.datastore.estores.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 /**
  * A cache for feature values.
@@ -40,31 +40,32 @@ public class ValueCache<V> {
         this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize).build();
     }
 
-    protected V getValueFromCache(InternalEObject object, EStructuralFeature feature) {
+    protected V get(InternalEObject object, EStructuralFeature feature) {
         return cache.getIfPresent(new CacheKey(object, feature));
     }
 
-    protected V getValueFromCache(InternalEObject object, EStructuralFeature feature, int index) {
+    protected V get(InternalEObject object, EStructuralFeature feature, int index) {
         return cache.getIfPresent(new CacheKey(object, feature, index));
     }
 
-    protected void cacheValue(InternalEObject object, EStructuralFeature feature, V value) {
+    protected void put(InternalEObject object, EStructuralFeature feature, V value) {
         cache.put(new CacheKey(object, feature), value);
     }
 
-    protected void cacheValue(InternalEObject object, EStructuralFeature feature, int index, V value) {
+    protected void put(InternalEObject object, EStructuralFeature feature, int index, V value) {
         cache.put(new CacheKey(object, feature, index), value);
     }
 
-    protected void invalidateValue(InternalEObject object, EStructuralFeature feature) {
+    protected void invalidate(InternalEObject object, EStructuralFeature feature) {
         cache.invalidate(new CacheKey(object, feature));
     }
 
-    protected void invalidateValue(InternalEObject object, EStructuralFeature feature, int index) {
+    protected void invalidate(InternalEObject object, EStructuralFeature feature, int index) {
         cache.invalidate(new CacheKey(object, feature, index));
     }
 
     private static class CacheKey {
+
         private final InternalEObject object;
         private final EStructuralFeature feature;
         private final int index;
@@ -89,16 +90,13 @@ public class ValueCache<V> {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (isNull(obj) || getClass() != obj.getClass()) {
                 return false;
             }
-            @SuppressWarnings("unchecked")
             CacheKey other = (CacheKey) obj;
             return Objects.equals(object, other.object)
                     && Objects.equals(feature, other.feature)
-                    && (index == other.index
-                        || index == InternalEObject.EStore.NO_INDEX
-                        || other.index == InternalEObject.EStore.NO_INDEX);
+                    && (index == other.index || index == InternalEObject.EStore.NO_INDEX || other.index == InternalEObject.EStore.NO_INDEX);
         }
     }
 }

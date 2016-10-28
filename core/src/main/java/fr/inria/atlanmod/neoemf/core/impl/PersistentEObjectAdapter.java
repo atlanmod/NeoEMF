@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,99 +25,102 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * A factory able to adapt an {@link Object object} in a specific {@link Class type}.
  */
 public class PersistentEObjectAdapter {
 
-	private PersistentEObjectAdapter() {}
-
-	/**
-	 * {@link Cache} that stores the {@link InternalEObject objects} that have been already adapted to avoid
-	 * duplication of {@link PersistentEObject persistent objects}s.
-	 * <p/>
-	 * We use a soft value cache since the adaptor is no longer needed when the original {@link InternalEObject} has
-	 * been garbage collected.
-	 */
-	private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
-			CacheBuilder.newBuilder().weakKeys().build();
-
-	/**
-	 * Returns the given {@code object} adapted in a specific {@code type}.
-	 *
-	 * @param adaptableObject the object to adapt
-	 * @param adapterType the class in which the object must be adapted
-	 *
-     * @return an adapted object in the given {@code type}, or {@code null} if the {@code object} cannot be assigned
-	 *         as a {@code type}
-	 *
-	 * @throws NullPointerException if the {@code type} is {@code null}
+    /**
+     * {@link Cache} that stores the {@link InternalEObject objects} that have been already adapted to avoid
+     * duplication of {@link PersistentEObject persistent objects}s.
+     * <p/>
+     * We use a soft value cache since the adaptor is no longer needed when the original {@link InternalEObject} has
+     * been garbage collected.
      */
-	public static <T extends PersistentEObject> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-		if (adaptableObject == null) {
-			return null;
-		}
-		checkNotNull(adapterType);
+    private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
+            CacheBuilder.newBuilder().weakKeys().build();
 
-		Object adapter = null;
-		if (adapterType.isInstance(adaptableObject)) {
-			adapter = adaptableObject;
-		} else if (adaptableObject instanceof InternalEObject) {
-			adapter = ADAPTED_OBJECTS_CACHE.getIfPresent(adaptableObject);
-			if (adapter == null || !adapterType.isAssignableFrom(adapter.getClass())) {
-				adapter = createAdapter(adaptableObject, adapterType);
-				ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (PersistentEObject)  adapter);
-			}
-		}
+    private PersistentEObjectAdapter() {
+    }
 
-		if (adapter == null) {
-			NeoLogger.warn("Unable to create a {0} adapter for this object of type {1}", adapterType.getSimpleName(), adaptableObject.getClass().getSimpleName());
-		}
-		return adapterType.cast(adapter);
-	}
+    /**
+     * Returns the given {@code object} adapted in a specific {@code type}.
+     *
+     * @param adaptableObject the object to adapt
+     * @param adapterType     the class in which the object must be adapted
+     *
+     * @return an adapted object in the given {@code type}, or {@code null} if the {@code object} cannot be assigned as
+     *         a {@code type}
+     *
+     * @throws NullPointerException if the {@code type} is {@code null}
+     */
+    public static <T extends PersistentEObject> T getAdapter(Object adaptableObject, Class<T> adapterType) {
+        if (isNull(adaptableObject)) {
+            return null;
+        }
+        checkNotNull(adapterType);
 
-	/**
-	 * Returns the given {@code object} as a {@link PersistentEObject}.
-	 *
-	 * @param adaptableObject the object to adapt
-	 *
-	 * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
-	 *         assigned as a {@link PersistentEObject}
-	 *
-	 * @see #getAdapter(Object, Class)
-	 */
-	public static PersistentEObject getAdapter(Object adaptableObject) {
-		return getAdapter(adaptableObject, PersistentEObject.class);
-	}
+        Object adapter = null;
+        if (adapterType.isInstance(adaptableObject)) {
+            adapter = adaptableObject;
+        }
+        else if (adaptableObject instanceof InternalEObject) {
+            adapter = ADAPTED_OBJECTS_CACHE.getIfPresent(adaptableObject);
+            if (isNull(adapter) || !adapterType.isAssignableFrom(adapter.getClass())) {
+                adapter = createAdapter(adaptableObject, adapterType);
+                ADAPTED_OBJECTS_CACHE.put((InternalEObject) adaptableObject, (PersistentEObject) adapter);
+            }
+        }
 
-	/**
-	 * Create an adapter for the given {@code object} in a specific {@code type}.
-	 *
-	 * @param adaptableObject the object to adapt
-	 * @param adapterType the class in which the object must be adapted
-	 *
+        if (isNull(adapter)) {
+            NeoLogger.warn("Unable to create a {0} adapter for this object of type {1}", adapterType.getSimpleName(), adaptableObject.getClass().getSimpleName());
+        }
+        return adapterType.cast(adapter);
+    }
+
+    /**
+     * Returns the given {@code object} as a {@link PersistentEObject}.
+     *
+     * @param adaptableObject the object to adapt
+     *
+     * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
+     *         assigned as a {@link PersistentEObject}
+     *
+     * @see #getAdapter(Object, Class)
+     */
+    public static PersistentEObject getAdapter(Object adaptableObject) {
+        return getAdapter(adaptableObject, PersistentEObject.class);
+    }
+
+    /**
+     * Create an adapter for the given {@code object} in a specific {@code type}.
+     *
+     * @param adaptableObject the object to adapt
+     * @param adapterType     the class in which the object must be adapted
+     *
      * @return an adapted object in the given {@code type}
      */
-	private static Object createAdapter(Object adaptableObject, Class<?> adapterType) {
-		/*
-		 * Compute the interfaces that the proxy has to implement
+    private static Object createAdapter(Object adaptableObject, Class<?> adapterType) {
+        /*
+         * Compute the interfaces that the proxy has to implement
 		 * These are the current interfaces + PersistentEObject
 		 */
-		List<Class<?>> interfaces = ClassUtils.getAllInterfaces(adaptableObject.getClass());
-		interfaces.add(PersistentEObject.class);
+        List<Class<?>> interfaces = ClassUtils.getAllInterfaces(adaptableObject.getClass());
+        interfaces.add(PersistentEObject.class);
 
-		// Create the proxy
-		Enhancer proxy = new Enhancer();
+        // Create the proxy
+        Enhancer proxy = new Enhancer();
 
 		/*
-		 * Use the ClassLoader of the type, otherwise it will cause OSGI troubles (like project trying to
+         * Use the ClassLoader of the type, otherwise it will cause OSGI troubles (like project trying to
 		 * create an PersistentEObject while it does not have a dependency to NeoEMF core)
 		 */
-		proxy.setClassLoader(adapterType.getClassLoader());
-		proxy.setSuperclass(adaptableObject.getClass());
-		proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
-		proxy.setCallback(new PersistentEObjectProxyHandler());
-		return proxy.create();
-	}
+        proxy.setClassLoader(adapterType.getClassLoader());
+        proxy.setSuperclass(adaptableObject.getClass());
+        proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
+        proxy.setCallback(new PersistentEObjectProxyHandler());
+        return proxy.create();
+    }
 }

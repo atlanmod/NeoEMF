@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,7 @@ public class XmiInternalHandlerWithIdTest extends AllXmiInternalHandlerTest {
                 mockChild = ClassifierMock.getChildFrom(mock, 0, 4);
                 attributeList = mockChild.getAttributes();
                 assertThat(attributeList).hasSize(1);
-                assertValidAttribute(attributeList.get(0),  "visibility", 0, "private");
+                assertValidAttribute(attributeList.get(0), "visibility", 0, "private");
 
                 //@Model/@packagedElement.0/@packagedElement.3
                 mock = ClassifierMock.getChildFrom(mock, 3);

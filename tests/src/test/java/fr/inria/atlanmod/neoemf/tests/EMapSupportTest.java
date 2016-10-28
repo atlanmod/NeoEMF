@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
 
 import org.eclipse.emf.common.util.EMap;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,12 +40,6 @@ public class EMapSupportTest extends AllBackendTest {
         mapResource.getContents().add(factory.createSampleModel());
         neo4jResource.getContents().add(factory.createSampleModel());
         tinkerResource.getContents().add(factory.createSampleModel());
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 
     @Test

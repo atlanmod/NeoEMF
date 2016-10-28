@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,15 +9,16 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.tg.config;
+package fr.inria.atlanmod.neoemf.graph.blueprints.config;
 
 import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
-public abstract class AbstractBlueprintsConfig {
+public interface InternalBlueprintsConfiguration {
 
-    public abstract void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation);
-    
-    public abstract void setGlobalSettings();
+    void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation);
+
+    // TODO: All implementations are empty. Is this method really necessary ?
+    void setGlobalSettings();
 }

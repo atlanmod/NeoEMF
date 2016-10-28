@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,7 +97,7 @@ public class LoadedResourceResourceTest extends AllLoadedResourceTest {
         InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
         assertThat(model.eDirectResource()).isNull(); // "eDirectResource must return null"
 
-        InternalEObject modelContent = (InternalEObject) ((SampleModel) model).getContentObjects().get(0);
+        InternalEObject modelContent = ((SampleModel) model).getContentObjects().get(0);
         assertThat(modelContent.eDirectResource()).isNull(); // "eDirectResource must return null"
     }
 

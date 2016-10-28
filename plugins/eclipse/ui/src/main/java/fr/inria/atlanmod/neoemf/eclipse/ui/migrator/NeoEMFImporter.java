@@ -1,18 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2008, 2013 Eike Stepper (Berlin, Germany) and others.
+/*
+ * Copyright (c) 2008-2016 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Eike Stepper - initial API and implementation
- *    AtlanMod - Adapted to NeoEMF models
- *******************************************************************************/
-package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
+ *     Eike Stepper - initial API and implementation
+ *     Atlanmod INRIA LINA Mines Nantes - Adapted to NeoEMF models
+ */
 
-import java.text.MessageFormat;
-import java.util.List;
+package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
@@ -32,105 +30,109 @@ import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.importer.ModelImporter;
 
+import java.text.MessageFormat;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+
 public class NeoEMFImporter extends ModelImporter {
-	
-	public static final String IMPORTER_ID = NeoEMFImporter.class.getName();
 
-	public NeoEMFImporter() {
-	}
+    public static final String IMPORTER_ID = NeoEMFImporter.class.getName();
 
-	@Override
-	public String getID() {
-		return IMPORTER_ID;
-	}
+    public NeoEMFImporter() {
+    }
 
-	@Override
-	protected Diagnostic doComputeEPackages(Monitor monitor) throws Exception {
-		Diagnostic diagnostic = Diagnostic.OK_INSTANCE;
+    @Override
+    public String getID() {
+        return IMPORTER_ID;
+    }
 
-		List<URI> locationURIs = getModelLocationURIs();
-		if (locationURIs.isEmpty()) {
-			diagnostic = new BasicDiagnostic(Diagnostic.ERROR, IMPORTER_ID, 0, "Specify a valid Ecore model and try loading again",
-					null);
-		} else {
-			monitor.beginTask("", 2);
-			monitor.subTask(MessageFormat.format("Loading {0}", locationURIs));
+    @Override
+    protected void handleOriginalGenModel() throws DiagnosticException {
+        URI genModelURI = getOriginalGenModel().eResource().getURI();
+        StringBuilder text = new StringBuilder();
+        //$NON-NLS-2$
+        getOriginalGenModel().getForeignModel().stream()
+                .filter(value -> value.endsWith(".ecore") || value.endsWith(".emof"))
+                .forEach(value -> {
+                    text.append(makeAbsolute(URI.createURI(value), genModelURI).toString());
+                    text.append(" ");
+                });
 
-			ResourceSet ecoreResourceSet = createResourceSet();
-			for (URI ecoreModelLocation : locationURIs) {
-				ecoreResourceSet.getResource(ecoreModelLocation, true);
-			}
+        if (text.length() == 0) {
+            List<URI> locations = new UniqueEList<>();
+            for (GenPackage genPackage : getOriginalGenModel().getGenPackages()) {
+                URI ecoreURI = genPackage.getEcorePackage().eResource().getURI();
+                if (locations.add(ecoreURI)) {
+                    text.append(makeAbsolute(URI.createURI(ecoreURI.toString()), genModelURI).toString());
+                    text.append(" ");
+                }
+            }
+        }
 
-			EcoreUtil.resolveAll(ecoreResourceSet);
+        setModelLocation(text.toString().trim());
+    }
 
-			for (Resource resource : ecoreResourceSet.getResources()) {
-				getEPackages().addAll(EcoreUtil.<EPackage> getObjectsByType(resource.getContents(), EcorePackage.Literals.EPACKAGE));
-			}
+    @Override
+    protected Diagnostic doComputeEPackages(Monitor monitor) throws Exception {
+        Diagnostic diagnostic = Diagnostic.OK_INSTANCE;
 
-			BasicDiagnostic diagnosticChain = new BasicDiagnostic(ConverterPlugin.ID, ConverterUtil.ACTION_MESSAGE_NONE,
-					"Problems were detected while validating and converting the Ecore models", null);
-			for (EPackage ePackage : getEPackages()) {
-				Diagnostician.INSTANCE.validate(ePackage, diagnosticChain);
-			}
+        List<URI> locationURIs = getModelLocationURIs();
+        if (locationURIs.isEmpty()) {
+            diagnostic = new BasicDiagnostic(Diagnostic.ERROR, IMPORTER_ID, 0, "Specify a valid Ecore model and try loading again", null);
+        }
+        else {
+            monitor.beginTask("", 2);
+            monitor.subTask(MessageFormat.format("Loading {0}", locationURIs));
 
-			if (diagnosticChain.getSeverity() != Diagnostic.OK) {
-				diagnostic = diagnosticChain;
-			}
-		}
+            ResourceSet ecoreResourceSet = createResourceSet();
+            for (URI ecoreModelLocation : locationURIs) {
+                ecoreResourceSet.getResource(ecoreModelLocation, true);
+            }
 
-		return diagnostic;
-	}
+            EcoreUtil.resolveAll(ecoreResourceSet);
 
-	@Override
-	public void addToResource(EPackage ePackage, ResourceSet resourceSet) {
-		if (ePackage.eResource() != null && getGenModel().eResource() != null) {
-			URI ePackageURI = ePackage.eResource().getURI();
-			URI genModelURI = getGenModel().eResource().getURI();
+            for (Resource resource : ecoreResourceSet.getResources()) {
+                getEPackages().addAll(EcoreUtil.getObjectsByType(resource.getContents(), EcorePackage.Literals.EPACKAGE));
+            }
 
-			if (!ePackageURI.trimSegments(1).equals(genModelURI.trimSegments(1))) {
-				ePackage.eResource().getContents().remove(ePackage);
-			}
-		}
+            BasicDiagnostic diagnosticChain = new BasicDiagnostic(ConverterPlugin.ID, ConverterUtil.ACTION_MESSAGE_NONE, "Problems were detected while validating and converting the Ecore models", null);
+            for (EPackage ePackage : getEPackages()) {
+                Diagnostician.INSTANCE.validate(ePackage, diagnosticChain);
+            }
 
-		super.addToResource(ePackage, resourceSet);
-	}
+            if (diagnosticChain.getSeverity() != Diagnostic.OK) {
+                diagnostic = diagnosticChain;
+            }
+        }
 
-	@Override
-	protected void adjustGenModel(Monitor monitor) {
-		super.adjustGenModel(monitor);
+        return diagnostic;
+    }
 
-		GenModel genModel = getGenModel();
-		URI genModelURI = createFileURI(getGenModelPath().toString());
-		for (URI uri : getModelLocationURIs()) {
-			genModel.getForeignModel().add(makeRelative(uri, genModelURI).toString());
-		}
+    @Override
+    public void addToResource(EPackage ePackage, ResourceSet resourceSet) {
+        if (!isNull(ePackage.eResource()) && !isNull(getGenModel().eResource())) {
+            URI ePackageURI = ePackage.eResource().getURI();
+            URI genModelURI = getGenModel().eResource().getURI();
 
-		NeoEMFImporterUtil.adjustGenModel(genModel);
-	}
+            if (!ePackageURI.trimSegments(1).equals(genModelURI.trimSegments(1))) {
+                ePackage.eResource().getContents().remove(ePackage);
+            }
+        }
 
-	@Override
-	protected void handleOriginalGenModel() throws DiagnosticException {
-		URI genModelURI = getOriginalGenModel().eResource().getURI();
-		StringBuilder text = new StringBuilder();
-		for (String value : getOriginalGenModel().getForeignModel()) {
-			if (value.endsWith(".ecore") || value.endsWith(".emof")) //$NON-NLS-2$
-			{
-				text.append(makeAbsolute(URI.createURI(value), genModelURI).toString());
-				text.append(" ");
-			}
-		}
+        super.addToResource(ePackage, resourceSet);
+    }
 
-		if (text.length() == 0) {
-			List<URI> locations = new UniqueEList<>();
-			for (GenPackage genPackage : getOriginalGenModel().getGenPackages()) {
-				URI ecoreURI = genPackage.getEcorePackage().eResource().getURI();
-				if (locations.add(ecoreURI)) {
-					text.append(makeAbsolute(URI.createURI(ecoreURI.toString()), genModelURI).toString());
-					text.append(" ");
-				}
-			}
-		}
+    @Override
+    protected void adjustGenModel(Monitor monitor) {
+        super.adjustGenModel(monitor);
 
-		setModelLocation(text.toString().trim());
-	}
+        GenModel genModel = getGenModel();
+        URI genModelURI = createFileURI(getGenModelPath().toString());
+        for (URI uri : getModelLocationURIs()) {
+            genModel.getForeignModel().add(makeRelative(uri, genModelURI).toString());
+        }
+
+        NeoEMFImporterUtil.adjustGenModel(genModel);
+    }
 }
