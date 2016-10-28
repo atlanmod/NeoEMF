@@ -200,10 +200,10 @@
             </dependency>
 
             <dependency>
-			    <groupId>org.eclipse.tycho</groupId>
-			    <artifactId>org.eclipse.osgi</artifactId>
-			    <version>${osgi.version}</version>
-			</dependency>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>org.eclipse.osgi</artifactId>
+                <version>${osgi.version}</version>
+            </dependency>
 
             <!-- Logging -->
 
@@ -400,7 +400,7 @@
                 </configuration>
             </plugin>
 
-			<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
@@ -520,12 +520,14 @@
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package/>
-<!--                             Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j internal -->
-<!--                             class loading (in particular caches are not recognized anymore) -->
-<!-- 							 org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag, otherwise it -->
-<!-- 							 creates conflicts with running osgi version (these dependencies are only needed when running the plugins -->
-<!-- 							 in an eclipse-based environment) -->
-                            <Embed-Dependency>*;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi</Embed-Dependency>
+                                <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
+                                     internal class loading (in particular caches are not recognized anymore) -->
+
+                                <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
+                                     otherwise it creates conflicts with running osgi version (these dependencies are
+                                     only needed when running the plugins in an eclipse-based environment) -->
+                            <Embed-Dependency>*;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi
+                            </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>
                     </configuration>
