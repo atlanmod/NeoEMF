@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,12 +23,12 @@
 
     <modules>
         <module>parent</module>
-		<module>core</module>
+        <module>core</module>
         <module>graph</module>
         <module>map</module>
         <module>hbase</module>
         <module>io</module>
-		<module>tests</module>
+        <module>tests</module>
     </modules>
 
     <developers>
@@ -54,27 +54,38 @@
             <timezone>+2</timezone>
         </developer>
 
-		<developer>
-			<name>Gwendal Daniel</name>
-			<id>gwendal.daniel</id>
-			<email>gwendal.daniel@gmail.com</email>
-			<roles>
-				<role>admin</role>
-				<role>developer</role>
-			</roles>
-			<timezone>+2</timezone>
-		</developer>
+        <developer>
+            <name>Gwendal Daniel</name>
+            <id>gwendal.daniel</id>
+            <email>gwendal.daniel@gmail.com</email>
+            <roles>
+                <role>admin</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
 
-		<developer>
-			<name>Abel Gómez</name>
-			<id>abel.gomez</id>
-			<email>abel.gomez-llana@inria.fr</email>
-			<roles>
-				<role>admin</role>
-				<role>developer</role>
-			</roles>
-			<timezone>+2</timezone>
-		</developer>
+        <developer>
+            <name>Abel Gómez</name>
+            <id>abel.gomez</id>
+            <email>abel.gomez-llana@inria.fr</email>
+            <roles>
+                <role>admin</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+
+        <developer>
+            <name>Yoann Vernageau</name>
+            <id>yoann.vernageau</id>
+            <email>yoann.vernageau@inria.fr</email>
+            <roles>
+                <role>admin</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
     </developers>
 
 </project>
