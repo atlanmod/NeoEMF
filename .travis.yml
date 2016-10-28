@@ -5,7 +5,7 @@ jdk:
 
 env:
   global:
-    JAVA_OPTS=-Xms256m -Xmx1g
+    JAVA_OPTS=-Xmx2g
 
 branches:
   only:
