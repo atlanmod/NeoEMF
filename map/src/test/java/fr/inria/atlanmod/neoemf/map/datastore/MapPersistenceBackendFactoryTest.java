@@ -48,16 +48,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
 
-    private PersistenceBackendFactory persistenceBackendFactory;
-    private File testFolder;
-    private File testFile;
     private final Map<Object, Object> options = new HashMap<>();
     private final List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    private File testFolder;
+    private File testFile;
+
+    private PersistenceBackendFactory persistenceBackendFactory;
 
     @Before
     public void setUp() {
@@ -66,7 +67,8 @@ public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackend
         testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         try {
             Files.createDirectories(testFolder.toPath());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             NeoLogger.error(e);
         }
         testFile = new File(testFolder + "/db");
@@ -82,7 +84,8 @@ public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackend
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 NeoLogger.warn(e);
             }
         }

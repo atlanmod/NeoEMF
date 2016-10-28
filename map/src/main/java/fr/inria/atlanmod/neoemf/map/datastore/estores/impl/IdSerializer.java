@@ -44,6 +44,10 @@ public class IdSerializer implements Serializer<Id> {
 
     }
 
+    public int compare(Id one, Id other) {
+        return one.compareTo(other);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -57,9 +61,4 @@ public class IdSerializer implements Serializer<Id> {
 
         return serializer.equals(that.serializer);
     }
-
-    public int compare(Id one, Id other) {
-        return one.compareTo(other);
-    }
-
 }

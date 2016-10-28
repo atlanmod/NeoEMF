@@ -16,15 +16,15 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import java.io.Serializable;
 
 public class ContainerInfo implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	public final Id containerId;
-	
-	public final String containingFeatureName;
-	
-	public ContainerInfo(Id containerId, String containingFeatureName) {
-		this.containerId = containerId;
-		this.containingFeatureName = containingFeatureName;
-	}
+
+    private static final long serialVersionUID = 1L;
+
+    public final Id containerId;
+
+    public final String containingFeatureName;
+
+    public ContainerInfo(Id containerId, String containingFeatureName) {
+        this.containerId = containerId;
+        this.containingFeatureName = containingFeatureName;
+    }
 }

@@ -160,7 +160,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
      * Store the value of a given feature.
      */
     public Object storeValue(FeatureKey key, Object value) {
-        return features.put(key,value);
+        return features.put(key, value);
     }
 
     /**
@@ -188,7 +188,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
      * Stores the single value of a given multivalued feature at the given index.
      */
     public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
-        return multivaluedFeatures.put(key,value);
+        return multivaluedFeatures.put(key, value);
     }
 
     /**
@@ -204,10 +204,10 @@ public class MapPersistenceBackend implements PersistenceBackend {
      */
     @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
     public void copyTo(MapPersistenceBackend target) {
-        for(Map.Entry<String, Object> entry : db.getAll().entrySet()) {
+        for (Map.Entry<String, Object> entry : db.getAll().entrySet()) {
             Object collection = entry.getValue();
-            if(collection instanceof Map) {
-                Map fromMap = (Map)collection;
+            if (collection instanceof Map) {
+                Map fromMap = (Map) collection;
                 Map toMap = target.db.hashMap(entry.getKey()).createOrOpen();
 
                 toMap.putAll(fromMap);

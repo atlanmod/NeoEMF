@@ -24,7 +24,7 @@ public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
     @Override
     public void serialize(DataOutput2 out, FeatureKey fk) throws IOException {
         super.serialize(out, fk);
-        intSerializer.serialize(out, ((MultivaluedFeatureKey)fk).position());
+        intSerializer.serialize(out, ((MultivaluedFeatureKey) fk).position());
     }
 
     @Override

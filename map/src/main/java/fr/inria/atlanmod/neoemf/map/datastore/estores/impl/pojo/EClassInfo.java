@@ -22,24 +22,23 @@ import java.io.Serializable;
  * Memento class for storing metaclass/EClass information.
  */
 public class EClassInfo implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private final String nsURI;
-	
-	private final String className;
-	
-	public EClassInfo(PersistentEObject object) {
-		this.nsURI = object.eClass().getEPackage().getNsURI();
-		this.className = object.eClass().getName();
-	}
 
-	/**
-	 * Retrieves the EClass corresponding to this memento.
-	 */
-	public EClass eClass() {
-		return (EClass) EPackage.Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
-	}
+    private static final long serialVersionUID = 1L;
 
+    private final String nsURI;
+
+    private final String className;
+
+    public EClassInfo(PersistentEObject object) {
+        this.nsURI = object.eClass().getEPackage().getNsURI();
+        this.className = object.eClass().getName();
+    }
+
+    /**
+     * Retrieves the EClass corresponding to this memento.
+     */
+    public EClass eClass() {
+        return (EClass) EPackage.Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
+    }
 }
 

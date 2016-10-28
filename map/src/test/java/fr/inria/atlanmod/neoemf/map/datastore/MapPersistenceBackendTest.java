@@ -33,7 +33,7 @@ public class MapPersistenceBackendTest {
         FeatureKey key = new FeatureKey(new StringId("object1"), "name");
         backend.storeValue(key, "value");
 
-       assertThat("value").isEqualTo(backend.valueOf(key));
+        assertThat("value").isEqualTo(backend.valueOf(key));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class MapPersistenceBackendTest {
 
         MultivaluedFeatureKey[] keys = new MultivaluedFeatureKey[TIMES];
 
-        for (int i = 0; i < 10 ; i++) {
+        for (int i = 0; i < 10; i++) {
             keys[i] = new MultivaluedFeatureKey(new StringId("object"), "name", i);
             backend.storeValueAtIndex(keys[i], i);
         }
@@ -55,11 +55,11 @@ public class MapPersistenceBackendTest {
     }
 
     @Test
-    public void testSerialize() throws Exception{
+    @SuppressWarnings("unchecked") // Unchecked cast: 'GroupSerializer' to 'Serializer<...>'
+    public void testSerialize() throws Exception {
         DataOutput2 out = new DataOutput2();
         FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
 
-        @SuppressWarnings("unchecked") // Unchecked cast: 'GroupSerializer' to 'Serializer<...>'
         Serializer<FeatureKey> ser = Serializer.JAVA;
         FeatureKey key2 = ser.clone(key1);
 

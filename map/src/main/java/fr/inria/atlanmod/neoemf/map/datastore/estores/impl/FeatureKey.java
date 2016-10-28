@@ -41,14 +41,22 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     public int compareTo(FeatureKey other) {
         final int EQUAL = 0;
 
-        if (this == other) return EQUAL;
+        if (this == other) {
+            return EQUAL;
+        }
         int result = id.compareTo(other.id);
 
         if (result == EQUAL) {
             return name.compareTo(other.name);
-        } else {
+        }
+        else {
             return result;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     /**
@@ -56,20 +64,19 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      */
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        if (!(other instanceof FeatureKey)) return false;
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof FeatureKey)) {
+            return false;
+        }
 
         FeatureKey that = (FeatureKey) other;
         return id.equals(that.id) && name.equals(that.name);
     }
 
     public String toString() {
-        return "FK:{"+id+", "+name+"}";
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id,name);
+        return "FK:{" + id + ", " + name + "}";
     }
 
     public Id id() {

@@ -33,12 +33,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NeoMapURITest extends AllTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     private static final String TEST_FILENAME = "neoMapURITestFile";
 
     private final PersistenceBackendFactory persistenceBackendFactory = MapPersistenceBackendFactory.getInstance();
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private File testFile;
 
     @Before
@@ -55,7 +55,8 @@ public class NeoMapURITest extends AllTest {
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 NeoLogger.warn(e);
             }
         }
