@@ -17,8 +17,6 @@
 
     <properties>
         <config-path>${project.parent.parent.basedir}</config-path>
-        <neo4j.version>1.9.6</neo4j.version>
-        <lucene.version>3.6.2</lucene.version>
     </properties>
 
     <dependencies>
@@ -29,33 +27,29 @@
         </dependency>
 
         <!-- By default, imports a POM file instead of a JAR, which is not recognized by Eclipse -->
-        <!-- Not OSGi-ready -->
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
-            <version>${neo4j.version}</version>
+            <version>1.9.6</version>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Not OSGi-ready -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-kernel</artifactId>
-			<version>${neo4j.version}</version>
+			<version>1.9.6</version>
 		</dependency>
 
-        <!-- Not OSGi-ready -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>${lucene.version}</version>
+			<version>3.6.2</version>
 		</dependency>
 
-        <!-- Not OSGi-ready -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-lucene-index</artifactId>
-			<version>${neo4j.version}</version>
+			<version>1.9.6</version>
 		</dependency>
 
         <!-- Common dependencies -->
