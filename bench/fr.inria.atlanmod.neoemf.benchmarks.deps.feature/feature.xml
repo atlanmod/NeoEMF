@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="fr.inria.atlanmod.kyanos.benchmarks.deps.feature"
-      label="Kyanos Benchmarks Dependencies"
+      id="fr.inria.atlanmod.neoemf.benchmarks.deps.feature"
+      label="NeoEMF Benchmarks Dependencies"
       version="0.1.0.qualifier"
       provider-name="Atlanmod - Inria">
 
    <description>
-      Kyanos Benchmarks Dependencies feature.
+      NeoEMF Benchmarks Dependencies feature.
 Defines the dependencies from features included in the default Update Sites.
    </description>
 
    <copyright>
-      Copyright (c) 2014 Abel Gómez.
+Copyright (c) 2014 Abel Gómez.
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
 which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ http://www.eclipse.org/legal/epl-v10.html
    </copyright>
 
    <license>
-      Eclipse Public License - v 1.0
+Eclipse Public License - v 1.0
 
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE PUBLIC LICENSE (&quot;AGREEMENT&quot;). ANY USE, REPRODUCTION OR DISTRIBUTION OF THE PROGRAM CONSTITUTES RECIPIENT&apos;S ACCEPTANCE OF THIS AGREEMENT.
 

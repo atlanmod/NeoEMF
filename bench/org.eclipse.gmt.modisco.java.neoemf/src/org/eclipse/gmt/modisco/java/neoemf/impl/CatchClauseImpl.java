@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class CatchClauseImpl extends StatementImpl implements CatchClause {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected CatchClauseImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected CatchClauseImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getCatchClause();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getCatchClause();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SingleVariableDeclaration getException() {
-		return (SingleVariableDeclaration)eGet(JavaPackage.eINSTANCE.getCatchClause_Exception(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SingleVariableDeclaration getException() {
+        return (SingleVariableDeclaration)eGet(JavaPackage.eINSTANCE.getCatchClause_Exception(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setException(SingleVariableDeclaration newException) {
-		eSet(JavaPackage.eINSTANCE.getCatchClause_Exception(), newException);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setException(SingleVariableDeclaration newException) {
+        eSet(JavaPackage.eINSTANCE.getCatchClause_Exception(), newException);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Block getBody() {
-		return (Block)eGet(JavaPackage.eINSTANCE.getCatchClause_Body(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Block getBody() {
+        return (Block)eGet(JavaPackage.eINSTANCE.getCatchClause_Body(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setBody(Block newBody) {
-		eSet(JavaPackage.eINSTANCE.getCatchClause_Body(), newBody);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setBody(Block newBody) {
+        eSet(JavaPackage.eINSTANCE.getCatchClause_Body(), newBody);
+    }
 
 } //CatchClauseImpl

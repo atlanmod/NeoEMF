@@ -24,59 +24,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class ArrayAccessImpl extends ExpressionImpl implements ArrayAccess {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ArrayAccessImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ArrayAccessImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getArrayAccess();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getArrayAccess();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getArray() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getArrayAccess_Array(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getArray() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getArrayAccess_Array(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setArray(Expression newArray) {
-		eSet(JavaPackage.eINSTANCE.getArrayAccess_Array(), newArray);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setArray(Expression newArray) {
+        eSet(JavaPackage.eINSTANCE.getArrayAccess_Array(), newArray);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getIndex() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getArrayAccess_Index(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getIndex() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getArrayAccess_Index(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setIndex(Expression newIndex) {
-		eSet(JavaPackage.eINSTANCE.getArrayAccess_Index(), newIndex);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setIndex(Expression newIndex) {
+        eSet(JavaPackage.eINSTANCE.getArrayAccess_Index(), newIndex);
+    }
 
 } //ArrayAccessImpl

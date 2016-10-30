@@ -6,12 +6,14 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.eclipse.gmt.modisco.java.neoemf.impl,
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.gmt.modisco.java,
+ org.eclipse.gmt.modisco.java.neoemf.impl,
  org.eclipse.gmt.modisco.java.neoemf.meta,
  org.eclipse.gmt.modisco.java.neoemf.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
+ fr.inria.atlanmod.neoemf.core;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
- org.eclipse.gmt.modisco.java;bundle-version="0.11.1"
+ org.eclipse.gmt.modisco.java
 Bundle-ActivationPolicy: lazy

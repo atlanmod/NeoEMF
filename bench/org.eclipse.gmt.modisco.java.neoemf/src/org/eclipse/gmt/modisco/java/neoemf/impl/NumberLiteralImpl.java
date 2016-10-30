@@ -22,41 +22,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class NumberLiteralImpl extends ExpressionImpl implements NumberLiteral {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected NumberLiteralImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected NumberLiteralImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getNumberLiteral();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getNumberLiteral();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getTokenValue() {
-		return (String)eGet(JavaPackage.eINSTANCE.getNumberLiteral_TokenValue(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getTokenValue() {
+        return (String)eGet(JavaPackage.eINSTANCE.getNumberLiteral_TokenValue(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTokenValue(String newTokenValue) {
-		eSet(JavaPackage.eINSTANCE.getNumberLiteral_TokenValue(), newTokenValue);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setTokenValue(String newTokenValue) {
+        eSet(JavaPackage.eINSTANCE.getNumberLiteral_TokenValue(), newTokenValue);
+    }
 
 } //NumberLiteralImpl

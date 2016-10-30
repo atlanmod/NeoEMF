@@ -28,87 +28,87 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class MethodDeclarationImpl extends AbstractMethodDeclarationImpl implements MethodDeclaration {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected MethodDeclarationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected MethodDeclarationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getMethodDeclaration();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getMethodDeclaration();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public int getExtraArrayDimensions() {
-		return (Integer)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_ExtraArrayDimensions(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public int getExtraArrayDimensions() {
+        return (Integer)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_ExtraArrayDimensions(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setExtraArrayDimensions(int newExtraArrayDimensions) {
-		eSet(JavaPackage.eINSTANCE.getMethodDeclaration_ExtraArrayDimensions(), newExtraArrayDimensions);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setExtraArrayDimensions(int newExtraArrayDimensions) {
+        eSet(JavaPackage.eINSTANCE.getMethodDeclaration_ExtraArrayDimensions(), newExtraArrayDimensions);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getReturnType() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_ReturnType(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getReturnType() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_ReturnType(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setReturnType(TypeAccess newReturnType) {
-		eSet(JavaPackage.eINSTANCE.getMethodDeclaration_ReturnType(), newReturnType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setReturnType(TypeAccess newReturnType) {
+        eSet(JavaPackage.eINSTANCE.getMethodDeclaration_ReturnType(), newReturnType);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public MethodDeclaration getRedefinedMethodDeclaration() {
-		return (MethodDeclaration)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_RedefinedMethodDeclaration(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public MethodDeclaration getRedefinedMethodDeclaration() {
+        return (MethodDeclaration)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_RedefinedMethodDeclaration(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setRedefinedMethodDeclaration(MethodDeclaration newRedefinedMethodDeclaration) {
-		eSet(JavaPackage.eINSTANCE.getMethodDeclaration_RedefinedMethodDeclaration(), newRedefinedMethodDeclaration);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setRedefinedMethodDeclaration(MethodDeclaration newRedefinedMethodDeclaration) {
+        eSet(JavaPackage.eINSTANCE.getMethodDeclaration_RedefinedMethodDeclaration(), newRedefinedMethodDeclaration);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<MethodDeclaration> getRedefinitions() {
-		return (EList<MethodDeclaration>)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_Redefinitions(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<MethodDeclaration> getRedefinitions() {
+        return (EList<MethodDeclaration>)eGet(JavaPackage.eINSTANCE.getMethodDeclaration_Redefinitions(), true);
+    }
 
 } //MethodDeclarationImpl

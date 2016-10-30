@@ -31,79 +31,79 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public abstract class ASTNodeImpl extends PersistentEObjectImpl implements ASTNode {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ASTNodeImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ASTNodeImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getASTNode();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getASTNode();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected int eStaticFeatureCount() {
-		return 0;
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected int eStaticFeatureCount() {
+        return 0;
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<Comment> getComments() {
-		return (EList<Comment>)eGet(JavaPackage.eINSTANCE.getASTNode_Comments(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<Comment> getComments() {
+        return (EList<Comment>)eGet(JavaPackage.eINSTANCE.getASTNode_Comments(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public CompilationUnit getOriginalCompilationUnit() {
-		return (CompilationUnit)eGet(JavaPackage.eINSTANCE.getASTNode_OriginalCompilationUnit(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public CompilationUnit getOriginalCompilationUnit() {
+        return (CompilationUnit)eGet(JavaPackage.eINSTANCE.getASTNode_OriginalCompilationUnit(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOriginalCompilationUnit(CompilationUnit newOriginalCompilationUnit) {
-		eSet(JavaPackage.eINSTANCE.getASTNode_OriginalCompilationUnit(), newOriginalCompilationUnit);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOriginalCompilationUnit(CompilationUnit newOriginalCompilationUnit) {
+        eSet(JavaPackage.eINSTANCE.getASTNode_OriginalCompilationUnit(), newOriginalCompilationUnit);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ClassFile getOriginalClassFile() {
-		return (ClassFile)eGet(JavaPackage.eINSTANCE.getASTNode_OriginalClassFile(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ClassFile getOriginalClassFile() {
+        return (ClassFile)eGet(JavaPackage.eINSTANCE.getASTNode_OriginalClassFile(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOriginalClassFile(ClassFile newOriginalClassFile) {
-		eSet(JavaPackage.eINSTANCE.getASTNode_OriginalClassFile(), newOriginalClassFile);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOriginalClassFile(ClassFile newOriginalClassFile) {
+        eSet(JavaPackage.eINSTANCE.getASTNode_OriginalClassFile(), newOriginalClassFile);
+    }
 
 } //ASTNodeImpl

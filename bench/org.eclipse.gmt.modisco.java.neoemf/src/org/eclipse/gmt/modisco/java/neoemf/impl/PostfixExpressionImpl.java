@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class PostfixExpressionImpl extends ExpressionImpl implements PostfixExpression {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected PostfixExpressionImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected PostfixExpressionImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getPostfixExpression();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getPostfixExpression();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PostfixExpressionKind getOperator() {
-		return (PostfixExpressionKind)eGet(JavaPackage.eINSTANCE.getPostfixExpression_Operator(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public PostfixExpressionKind getOperator() {
+        return (PostfixExpressionKind)eGet(JavaPackage.eINSTANCE.getPostfixExpression_Operator(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOperator(PostfixExpressionKind newOperator) {
-		eSet(JavaPackage.eINSTANCE.getPostfixExpression_Operator(), newOperator);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOperator(PostfixExpressionKind newOperator) {
+        eSet(JavaPackage.eINSTANCE.getPostfixExpression_Operator(), newOperator);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getOperand() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getPostfixExpression_Operand(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getOperand() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getPostfixExpression_Operand(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOperand(Expression newOperand) {
-		eSet(JavaPackage.eINSTANCE.getPostfixExpression_Operand(), newOperand);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOperand(Expression newOperand) {
+        eSet(JavaPackage.eINSTANCE.getPostfixExpression_Operand(), newOperand);
+    }
 
 } //PostfixExpressionImpl

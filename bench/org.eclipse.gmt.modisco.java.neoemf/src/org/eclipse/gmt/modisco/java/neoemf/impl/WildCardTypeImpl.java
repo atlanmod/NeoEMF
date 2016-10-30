@@ -24,59 +24,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class WildCardTypeImpl extends TypeImpl implements WildCardType {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected WildCardTypeImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected WildCardTypeImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getWildCardType();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getWildCardType();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean isUpperBound() {
-		return (Boolean)eGet(JavaPackage.eINSTANCE.getWildCardType_UpperBound(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean isUpperBound() {
+        return (Boolean)eGet(JavaPackage.eINSTANCE.getWildCardType_UpperBound(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setUpperBound(boolean newUpperBound) {
-		eSet(JavaPackage.eINSTANCE.getWildCardType_UpperBound(), newUpperBound);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setUpperBound(boolean newUpperBound) {
+        eSet(JavaPackage.eINSTANCE.getWildCardType_UpperBound(), newUpperBound);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getBound() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getWildCardType_Bound(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getBound() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getWildCardType_Bound(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setBound(TypeAccess newBound) {
-		eSet(JavaPackage.eINSTANCE.getWildCardType_Bound(), newBound);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setBound(TypeAccess newBound) {
+        eSet(JavaPackage.eINSTANCE.getWildCardType_Bound(), newBound);
+    }
 
 } //WildCardTypeImpl

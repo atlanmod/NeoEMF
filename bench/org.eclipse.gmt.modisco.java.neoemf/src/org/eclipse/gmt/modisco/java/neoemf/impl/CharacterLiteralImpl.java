@@ -22,41 +22,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class CharacterLiteralImpl extends ExpressionImpl implements CharacterLiteral {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected CharacterLiteralImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected CharacterLiteralImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getCharacterLiteral();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getCharacterLiteral();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getEscapedValue() {
-		return (String)eGet(JavaPackage.eINSTANCE.getCharacterLiteral_EscapedValue(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getEscapedValue() {
+        return (String)eGet(JavaPackage.eINSTANCE.getCharacterLiteral_EscapedValue(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setEscapedValue(String newEscapedValue) {
-		eSet(JavaPackage.eINSTANCE.getCharacterLiteral_EscapedValue(), newEscapedValue);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setEscapedValue(String newEscapedValue) {
+        eSet(JavaPackage.eINSTANCE.getCharacterLiteral_EscapedValue(), newEscapedValue);
+    }
 
 } //CharacterLiteralImpl

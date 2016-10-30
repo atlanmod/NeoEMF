@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class SingleVariableAccessImpl extends ExpressionImpl implements SingleVariableAccess {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected SingleVariableAccessImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected SingleVariableAccessImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getSingleVariableAccess();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getSingleVariableAccess();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public VariableDeclaration getVariable() {
-		return (VariableDeclaration)eGet(JavaPackage.eINSTANCE.getSingleVariableAccess_Variable(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public VariableDeclaration getVariable() {
+        return (VariableDeclaration)eGet(JavaPackage.eINSTANCE.getSingleVariableAccess_Variable(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setVariable(VariableDeclaration newVariable) {
-		eSet(JavaPackage.eINSTANCE.getSingleVariableAccess_Variable(), newVariable);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setVariable(VariableDeclaration newVariable) {
+        eSet(JavaPackage.eINSTANCE.getSingleVariableAccess_Variable(), newVariable);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getQualifier() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getSingleVariableAccess_Qualifier(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getQualifier() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getSingleVariableAccess_Qualifier(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setQualifier(Expression newQualifier) {
-		eSet(JavaPackage.eINSTANCE.getSingleVariableAccess_Qualifier(), newQualifier);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setQualifier(Expression newQualifier) {
+        eSet(JavaPackage.eINSTANCE.getSingleVariableAccess_Qualifier(), newQualifier);
+    }
 
 } //SingleVariableAccessImpl

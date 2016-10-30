@@ -23,41 +23,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public abstract class AbstractTypeQualifiedExpressionImpl extends ExpressionImpl implements AbstractTypeQualifiedExpression {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected AbstractTypeQualifiedExpressionImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected AbstractTypeQualifiedExpressionImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getAbstractTypeQualifiedExpression();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getAbstractTypeQualifiedExpression();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getQualifier() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getAbstractTypeQualifiedExpression_Qualifier(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getQualifier() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getAbstractTypeQualifiedExpression_Qualifier(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setQualifier(TypeAccess newQualifier) {
-		eSet(JavaPackage.eINSTANCE.getAbstractTypeQualifiedExpression_Qualifier(), newQualifier);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setQualifier(TypeAccess newQualifier) {
+        eSet(JavaPackage.eINSTANCE.getAbstractTypeQualifiedExpression_Qualifier(), newQualifier);
+    }
 
 } //AbstractTypeQualifiedExpressionImpl

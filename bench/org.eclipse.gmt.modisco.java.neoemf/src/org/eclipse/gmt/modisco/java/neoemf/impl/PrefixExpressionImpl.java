@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class PrefixExpressionImpl extends ExpressionImpl implements PrefixExpression {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected PrefixExpressionImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected PrefixExpressionImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getPrefixExpression();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getPrefixExpression();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PrefixExpressionKind getOperator() {
-		return (PrefixExpressionKind)eGet(JavaPackage.eINSTANCE.getPrefixExpression_Operator(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public PrefixExpressionKind getOperator() {
+        return (PrefixExpressionKind)eGet(JavaPackage.eINSTANCE.getPrefixExpression_Operator(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOperator(PrefixExpressionKind newOperator) {
-		eSet(JavaPackage.eINSTANCE.getPrefixExpression_Operator(), newOperator);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOperator(PrefixExpressionKind newOperator) {
+        eSet(JavaPackage.eINSTANCE.getPrefixExpression_Operator(), newOperator);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getOperand() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getPrefixExpression_Operand(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getOperand() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getPrefixExpression_Operand(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOperand(Expression newOperand) {
-		eSet(JavaPackage.eINSTANCE.getPrefixExpression_Operand(), newOperand);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOperand(Expression newOperand) {
+        eSet(JavaPackage.eINSTANCE.getPrefixExpression_Operand(), newOperand);
+    }
 
 } //PrefixExpressionImpl
