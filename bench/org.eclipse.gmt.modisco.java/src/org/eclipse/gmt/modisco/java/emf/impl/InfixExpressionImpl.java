@@ -42,13 +42,13 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.InfixExpressionImpl#getOperator <em>Operator</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.InfixExpressionImpl#getRightOperand <em>Right Operand</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.InfixExpressionImpl#getLeftOperand <em>Left Operand</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.InfixExpressionImpl#getExtendedOperands <em>Extended Operands</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

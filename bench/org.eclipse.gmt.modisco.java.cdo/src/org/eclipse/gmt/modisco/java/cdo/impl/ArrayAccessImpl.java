@@ -24,11 +24,11 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ArrayAccessImpl#getArray <em>Array</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ArrayAccessImpl#getIndex <em>Index</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

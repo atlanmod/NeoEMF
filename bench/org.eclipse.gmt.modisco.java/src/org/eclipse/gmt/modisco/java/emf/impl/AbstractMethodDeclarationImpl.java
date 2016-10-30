@@ -48,6 +48,7 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractMethodDeclarationImpl#getBody <em>Body</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractMethodDeclarationImpl#getParameters <em>Parameters</em>}</li>
@@ -56,7 +57,6 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractMethodDeclarationImpl#getUsagesInDocComments <em>Usages In Doc Comments</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractMethodDeclarationImpl#getUsages <em>Usages</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

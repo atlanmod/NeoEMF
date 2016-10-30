@@ -10,10 +10,10 @@ package org.eclipse.gmt.modisco.java;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.CharacterLiteral#getEscapedValue <em>Escaped Value</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage#getCharacterLiteral()
  * @model

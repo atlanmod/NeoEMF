@@ -27,12 +27,12 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.VariableDeclarationImpl#getExtraArrayDimensions <em>Extra Array Dimensions</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.VariableDeclarationImpl#getInitializer <em>Initializer</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.VariableDeclarationImpl#getUsageInVariableAccess <em>Usage In Variable Access</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

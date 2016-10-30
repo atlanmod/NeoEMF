@@ -21,8 +21,6 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Unresolved Enum Declaration</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

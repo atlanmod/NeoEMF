@@ -94,17 +94,14 @@ public class XmiCreator {
 
             Runtime.getRuntime().gc();
             long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.log(Level.INFO, MessageFormat.format("Used memory before loading: {0}",
-                    MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
+            LOG.log(Level.INFO, MessageFormat.format("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
             LOG.log(Level.INFO, "Loading source resource");
             sourceResource.load(loadOpts);
             LOG.log(Level.INFO, "Source resource loaded");
             Runtime.getRuntime().gc();
             long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.log(Level.INFO, MessageFormat.format("Used memory after loading: {0}",
-                    MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
-            LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}",
-                    MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
+            LOG.log(Level.INFO, MessageFormat.format("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
+            LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
 
             Resource targetResource = resourceSet.createResource(targetUri);
 

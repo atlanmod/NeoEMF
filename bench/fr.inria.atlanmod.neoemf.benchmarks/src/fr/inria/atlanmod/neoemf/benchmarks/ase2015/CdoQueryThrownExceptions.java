@@ -89,8 +89,7 @@ public class CdoQueryThrownExceptions {
                 {
                     Runtime.getRuntime().gc();
                     long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                    LOG.log(Level.INFO, MessageFormat.format("Used memory before query: {0}",
-                            MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
+                    LOG.log(Level.INFO, MessageFormat.format("Used memory before query: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
                     LOG.log(Level.INFO, "Start query");
                     long begin = System.currentTimeMillis();
                     EList<TypeAccess> list = ASE2015JavaQueries.getThrownExceptions(resource);
@@ -100,10 +99,8 @@ public class CdoQueryThrownExceptions {
                     LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end - begin)));
                     Runtime.getRuntime().gc();
                     long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                    LOG.log(Level.INFO, MessageFormat.format("Used memory after query: {0}",
-                            MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
-                    LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}",
-                            MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
+                    LOG.log(Level.INFO, MessageFormat.format("Used memory after query: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
+                    LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
                 }
 
                 transaction.close();

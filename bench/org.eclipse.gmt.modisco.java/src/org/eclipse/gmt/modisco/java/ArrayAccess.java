@@ -23,11 +23,11 @@ package org.eclipse.gmt.modisco.java;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.ArrayAccess#getArray <em>Array</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ArrayAccess#getIndex <em>Index</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.emf.JavaPackage#getArrayAccess()
  * @model

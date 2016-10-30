@@ -45,6 +45,7 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.ClassInstanceCreationImpl#getMethod <em>Method</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.ClassInstanceCreationImpl#getArguments <em>Arguments</em>}</li>
@@ -53,7 +54,6 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.ClassInstanceCreationImpl#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.ClassInstanceCreationImpl#getType <em>Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

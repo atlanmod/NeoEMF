@@ -30,13 +30,13 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.VariableDeclarationExpressionImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.VariableDeclarationExpressionImpl#getFragments <em>Fragments</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.VariableDeclarationExpressionImpl#getModifier <em>Modifier</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.VariableDeclarationExpressionImpl#getAnnotations <em>Annotations</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -12,8 +12,6 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Primitive Type Double</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

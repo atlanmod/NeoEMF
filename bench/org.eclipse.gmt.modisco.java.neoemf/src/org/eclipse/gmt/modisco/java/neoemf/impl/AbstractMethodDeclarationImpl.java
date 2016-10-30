@@ -22,6 +22,7 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.AbstractMethodDeclarationImpl#getBody <em>Body</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.AbstractMethodDeclarationImpl#getParameters <em>Parameters</em>}</li>
@@ -30,7 +31,6 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.AbstractMethodDeclarationImpl#getUsagesInDocComments <em>Usages In Doc Comments</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.AbstractMethodDeclarationImpl#getUsages <em>Usages</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -16,12 +16,12 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.AssignmentImpl#getLeftHandSide <em>Left Hand Side</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.AssignmentImpl#getOperator <em>Operator</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.AssignmentImpl#getRightHandSide <em>Right Hand Side</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

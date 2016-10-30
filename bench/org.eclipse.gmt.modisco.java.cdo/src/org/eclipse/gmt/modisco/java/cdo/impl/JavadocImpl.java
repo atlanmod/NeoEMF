@@ -26,10 +26,10 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.JavadocImpl#getTags <em>Tags</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

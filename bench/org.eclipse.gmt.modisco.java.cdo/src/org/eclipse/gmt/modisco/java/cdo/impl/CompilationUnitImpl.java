@@ -28,6 +28,7 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.CompilationUnitImpl#getOriginalFilePath <em>Original File Path</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.CompilationUnitImpl#getCommentList <em>Comment List</em>}</li>
@@ -35,7 +36,6 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.CompilationUnitImpl#getPackage <em>Package</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.CompilationUnitImpl#getTypes <em>Types</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

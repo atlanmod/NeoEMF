@@ -19,6 +19,7 @@ package org.eclipse.gmt.modisco.java;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.Modifier#getVisibility <em>Visibility</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Modifier#getInheritance <em>Inheritance</em>}</li>
@@ -33,7 +34,6 @@ package org.eclipse.gmt.modisco.java;
  *   <li>{@link org.eclipse.gmt.modisco.java.Modifier#getVariableDeclarationStatement <em>Variable Declaration Statement</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Modifier#getVariableDeclarationExpression <em>Variable Declaration Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getModifier()
  * @model

@@ -28,11 +28,11 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ManifestEntryImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ManifestEntryImpl#getAttributes <em>Attributes</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

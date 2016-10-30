@@ -26,13 +26,13 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.MethodDeclarationImpl#getExtraArrayDimensions <em>Extra Array Dimensions</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.MethodDeclarationImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.MethodDeclarationImpl#getRedefinedMethodDeclaration <em>Redefined Method Declaration</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.MethodDeclarationImpl#getRedefinitions <em>Redefinitions</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

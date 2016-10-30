@@ -43,12 +43,12 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.AnnotationTypeMemberDeclarationImpl#getDefault <em>Default</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.AnnotationTypeMemberDeclarationImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.AnnotationTypeMemberDeclarationImpl#getUsages <em>Usages</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

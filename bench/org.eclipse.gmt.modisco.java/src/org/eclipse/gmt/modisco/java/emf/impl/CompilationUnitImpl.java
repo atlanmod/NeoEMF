@@ -44,6 +44,7 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.CompilationUnitImpl#getOriginalFilePath <em>Original File Path</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.CompilationUnitImpl#getCommentList <em>Comment List</em>}</li>
@@ -51,7 +52,6 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.CompilationUnitImpl#getPackage <em>Package</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.CompilationUnitImpl#getTypes <em>Types</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

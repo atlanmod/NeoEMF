@@ -534,6 +534,8 @@ public enum InfixExpressionKind implements Enumerator {
      * Returns the '<em><b>Infix Expression Kind</b></em>' literal with the specified literal value.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * @param literal the literal.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static InfixExpressionKind get(String literal) {
@@ -550,6 +552,8 @@ public enum InfixExpressionKind implements Enumerator {
      * Returns the '<em><b>Infix Expression Kind</b></em>' literal with the specified name.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * @param name the name.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static InfixExpressionKind getByName(String name) {
@@ -566,6 +570,8 @@ public enum InfixExpressionKind implements Enumerator {
      * Returns the '<em><b>Infix Expression Kind</b></em>' literal with the specified integer value.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * @param value the integer value.
+     * @return the matching enumerator or <code>null</code>.
      * @generated
      */
     public static InfixExpressionKind get(int value) {

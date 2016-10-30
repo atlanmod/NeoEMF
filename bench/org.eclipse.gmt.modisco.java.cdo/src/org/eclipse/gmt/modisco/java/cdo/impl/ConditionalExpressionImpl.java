@@ -24,12 +24,12 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ConditionalExpressionImpl#getElseExpression <em>Else Expression</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ConditionalExpressionImpl#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ConditionalExpressionImpl#getThenExpression <em>Then Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

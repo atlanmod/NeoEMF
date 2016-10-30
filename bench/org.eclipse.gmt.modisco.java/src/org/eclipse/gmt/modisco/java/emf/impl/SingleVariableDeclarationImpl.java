@@ -47,6 +47,7 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.SingleVariableDeclarationImpl#getModifier <em>Modifier</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.SingleVariableDeclarationImpl#isVarargs <em>Varargs</em>}</li>
@@ -56,7 +57,6 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.SingleVariableDeclarationImpl#getCatchClause <em>Catch Clause</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.SingleVariableDeclarationImpl#getEnhancedForStatement <em>Enhanced For Statement</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
