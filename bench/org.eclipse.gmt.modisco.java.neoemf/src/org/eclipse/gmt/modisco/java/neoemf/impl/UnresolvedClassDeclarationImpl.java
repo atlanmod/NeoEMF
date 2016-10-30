@@ -18,23 +18,23 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class UnresolvedClassDeclarationImpl extends ClassDeclarationImpl implements UnresolvedClassDeclaration {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected UnresolvedClassDeclarationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected UnresolvedClassDeclarationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getUnresolvedClassDeclaration();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getUnresolvedClassDeclaration();
+    }
 
 } //UnresolvedClassDeclarationImpl

@@ -29,69 +29,69 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class ArrayCreationImpl extends ExpressionImpl implements ArrayCreation {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ArrayCreationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ArrayCreationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getArrayCreation();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getArrayCreation();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<Expression> getDimensions() {
-		return (EList<Expression>)eGet(JavaPackage.eINSTANCE.getArrayCreation_Dimensions(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<Expression> getDimensions() {
+        return (EList<Expression>)eGet(JavaPackage.eINSTANCE.getArrayCreation_Dimensions(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ArrayInitializer getInitializer() {
-		return (ArrayInitializer)eGet(JavaPackage.eINSTANCE.getArrayCreation_Initializer(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ArrayInitializer getInitializer() {
+        return (ArrayInitializer)eGet(JavaPackage.eINSTANCE.getArrayCreation_Initializer(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setInitializer(ArrayInitializer newInitializer) {
-		eSet(JavaPackage.eINSTANCE.getArrayCreation_Initializer(), newInitializer);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setInitializer(ArrayInitializer newInitializer) {
+        eSet(JavaPackage.eINSTANCE.getArrayCreation_Initializer(), newInitializer);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getType() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getArrayCreation_Type(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getType() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getArrayCreation_Type(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setType(TypeAccess newType) {
-		eSet(JavaPackage.eINSTANCE.getArrayCreation_Type(), newType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(TypeAccess newType) {
+        eSet(JavaPackage.eINSTANCE.getArrayCreation_Type(), newType);
+    }
 
 } //ArrayCreationImpl

@@ -18,23 +18,23 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class PrimitiveTypeLongImpl extends PrimitiveTypeImpl implements PrimitiveTypeLong {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected PrimitiveTypeLongImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected PrimitiveTypeLongImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getPrimitiveTypeLong();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getPrimitiveTypeLong();
+    }
 
 } //PrimitiveTypeLongImpl

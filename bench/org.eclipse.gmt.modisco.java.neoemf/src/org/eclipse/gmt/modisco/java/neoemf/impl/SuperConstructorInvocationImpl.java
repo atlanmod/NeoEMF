@@ -31,115 +31,115 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class SuperConstructorInvocationImpl extends StatementImpl implements SuperConstructorInvocation {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected SuperConstructorInvocationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected SuperConstructorInvocationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getSuperConstructorInvocation();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getSuperConstructorInvocation();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public AbstractMethodDeclaration getMethod() {
-		return (AbstractMethodDeclaration)eGet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_Method(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AbstractMethodDeclaration getMethod() {
+        return (AbstractMethodDeclaration)eGet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_Method(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setMethod(AbstractMethodDeclaration newMethod) {
-		eSet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_Method(), newMethod);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setMethod(AbstractMethodDeclaration newMethod) {
+        eSet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_Method(), newMethod);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<Expression> getArguments() {
-		return (EList<Expression>)eGet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_Arguments(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<Expression> getArguments() {
+        return (EList<Expression>)eGet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_Arguments(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<TypeAccess> getTypeArguments() {
-		return (EList<TypeAccess>)eGet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_TypeArguments(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<TypeAccess> getTypeArguments() {
+        return (EList<TypeAccess>)eGet(JavaPackage.eINSTANCE.getAbstractMethodInvocation_TypeArguments(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getExpression() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getSuperConstructorInvocation_Expression(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getExpression() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getSuperConstructorInvocation_Expression(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setExpression(Expression newExpression) {
-		eSet(JavaPackage.eINSTANCE.getSuperConstructorInvocation_Expression(), newExpression);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setExpression(Expression newExpression) {
+        eSet(JavaPackage.eINSTANCE.getSuperConstructorInvocation_Expression(), newExpression);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-		if (baseClass == AbstractMethodInvocation.class) {
-			switch (derivedFeatureID) {
-				case JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__METHOD: return JavaPackage.ABSTRACT_METHOD_INVOCATION__METHOD;
-				case JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__ARGUMENTS: return JavaPackage.ABSTRACT_METHOD_INVOCATION__ARGUMENTS;
-				case JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__TYPE_ARGUMENTS: return JavaPackage.ABSTRACT_METHOD_INVOCATION__TYPE_ARGUMENTS;
-				default: return -1;
-			}
-		}
-		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+        if (baseClass == AbstractMethodInvocation.class) {
+            switch (derivedFeatureID) {
+                case JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__METHOD: return JavaPackage.ABSTRACT_METHOD_INVOCATION__METHOD;
+                case JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__ARGUMENTS: return JavaPackage.ABSTRACT_METHOD_INVOCATION__ARGUMENTS;
+                case JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__TYPE_ARGUMENTS: return JavaPackage.ABSTRACT_METHOD_INVOCATION__TYPE_ARGUMENTS;
+                default: return -1;
+            }
+        }
+        return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-		if (baseClass == AbstractMethodInvocation.class) {
-			switch (baseFeatureID) {
-				case JavaPackage.ABSTRACT_METHOD_INVOCATION__METHOD: return JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__METHOD;
-				case JavaPackage.ABSTRACT_METHOD_INVOCATION__ARGUMENTS: return JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__ARGUMENTS;
-				case JavaPackage.ABSTRACT_METHOD_INVOCATION__TYPE_ARGUMENTS: return JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__TYPE_ARGUMENTS;
-				default: return -1;
-			}
-		}
-		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+        if (baseClass == AbstractMethodInvocation.class) {
+            switch (baseFeatureID) {
+                case JavaPackage.ABSTRACT_METHOD_INVOCATION__METHOD: return JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__METHOD;
+                case JavaPackage.ABSTRACT_METHOD_INVOCATION__ARGUMENTS: return JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__ARGUMENTS;
+                case JavaPackage.ABSTRACT_METHOD_INVOCATION__TYPE_ARGUMENTS: return JavaPackage.SUPER_CONSTRUCTOR_INVOCATION__TYPE_ARGUMENTS;
+                default: return -1;
+            }
+        }
+        return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+    }
 
 } //SuperConstructorInvocationImpl

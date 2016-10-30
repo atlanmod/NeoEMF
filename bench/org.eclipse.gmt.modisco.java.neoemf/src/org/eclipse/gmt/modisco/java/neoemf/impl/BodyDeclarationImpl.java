@@ -31,87 +31,87 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public abstract class BodyDeclarationImpl extends NamedElementImpl implements BodyDeclaration {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected BodyDeclarationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected BodyDeclarationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getBodyDeclaration();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getBodyDeclaration();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public AbstractTypeDeclaration getAbstractTypeDeclaration() {
-		return (AbstractTypeDeclaration)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_AbstractTypeDeclaration(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AbstractTypeDeclaration getAbstractTypeDeclaration() {
+        return (AbstractTypeDeclaration)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_AbstractTypeDeclaration(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setAbstractTypeDeclaration(AbstractTypeDeclaration newAbstractTypeDeclaration) {
-		eSet(JavaPackage.eINSTANCE.getBodyDeclaration_AbstractTypeDeclaration(), newAbstractTypeDeclaration);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setAbstractTypeDeclaration(AbstractTypeDeclaration newAbstractTypeDeclaration) {
+        eSet(JavaPackage.eINSTANCE.getBodyDeclaration_AbstractTypeDeclaration(), newAbstractTypeDeclaration);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<Annotation> getAnnotations() {
-		return (EList<Annotation>)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_Annotations(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<Annotation> getAnnotations() {
+        return (EList<Annotation>)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_Annotations(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public AnonymousClassDeclaration getAnonymousClassDeclarationOwner() {
-		return (AnonymousClassDeclaration)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_AnonymousClassDeclarationOwner(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AnonymousClassDeclaration getAnonymousClassDeclarationOwner() {
+        return (AnonymousClassDeclaration)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_AnonymousClassDeclarationOwner(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setAnonymousClassDeclarationOwner(AnonymousClassDeclaration newAnonymousClassDeclarationOwner) {
-		eSet(JavaPackage.eINSTANCE.getBodyDeclaration_AnonymousClassDeclarationOwner(), newAnonymousClassDeclarationOwner);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setAnonymousClassDeclarationOwner(AnonymousClassDeclaration newAnonymousClassDeclarationOwner) {
+        eSet(JavaPackage.eINSTANCE.getBodyDeclaration_AnonymousClassDeclarationOwner(), newAnonymousClassDeclarationOwner);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Modifier getModifier() {
-		return (Modifier)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_Modifier(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Modifier getModifier() {
+        return (Modifier)eGet(JavaPackage.eINSTANCE.getBodyDeclaration_Modifier(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setModifier(Modifier newModifier) {
-		eSet(JavaPackage.eINSTANCE.getBodyDeclaration_Modifier(), newModifier);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setModifier(Modifier newModifier) {
+        eSet(JavaPackage.eINSTANCE.getBodyDeclaration_Modifier(), newModifier);
+    }
 
 } //BodyDeclarationImpl

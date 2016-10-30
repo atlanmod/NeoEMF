@@ -71,7 +71,7 @@
     			<echo>Creating ${out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.ReferencesCounter" failonerror="true" fork="yes">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.ReferencesCounter" failonerror="true" fork="yes">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${xmi.file}"/>
@@ -81,7 +81,7 @@
 		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
 		        	<arg value="-label"/>
 		        	<arg value="${xmi.filename}"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 		        </java>
     			<stopwatch name="timer" action="total"/>
 			</then>
@@ -102,7 +102,7 @@
     			<echo>Creating ${cdo.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.Migrator" failonerror="true" fork="yes">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="true" fork="yes">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${xmi.file}"/>
@@ -112,7 +112,7 @@
 		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
 		        	<arg value="-output_epackage_class"/>
 		        	<arg value="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 		        </java>
     			<stopwatch name="timer" action="total"/>
 			</then>
@@ -122,33 +122,33 @@
     	</if>
     </target>
 	
-    <target name="migrate.kyanos.file">
+    <target name="migrate.neoemf.file">
     	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
-		<property name="kyanos.out" value="${benchmarks.dir}/${xmi.filename}.kyanos.zxmi"/>
+		<property name="neoemf.out" value="${benchmarks.dir}/${xmi.filename}.neoemf.zxmi"/>
     	<if>
 			<not>
-				<available file="${kyanos.out}" />
+				<available file="${neoemf.out}" />
 			</not>
     		<then>
-    			<echo>Creating ${kyanos.out}</echo>
+    			<echo>Creating ${neoemf.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.Migrator" failonerror="true" fork="yes">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="true" fork="yes">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${xmi.file}"/>
 		            <arg value="-output"/>
-		            <arg value="${kyanos.out}"/>
+		            <arg value="${neoemf.out}"/>
 		        	<arg value="-input_epackage_class"/>
 		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
 		        	<arg value="-output_epackage_class"/>
-		        	<arg value="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+		        	<arg value="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 		        </java>
     			<stopwatch name="timer" action="total"/>
 			</then>
     		<else>
-    			<echo>${kyanos.out} already exists</echo>
+    			<echo>${neoemf.out} already exists</echo>
     		</else>
     	</if>
     </target>
@@ -163,8 +163,8 @@
 		</foreach>
 	</target>
 	
-	<target name="migrate.kyanos" depends="extract.resources">
-		<foreach inheritall="true" target="migrate.kyanos.file" param="xmi.file">
+	<target name="migrate.neoemf" depends="extract.resources">
+		<foreach inheritall="true" target="migrate.neoemf.file" param="xmi.file">
 			<path>
 				<fileset dir="${resources.dir}">
 					<include name="**/*.xmi"/>
@@ -175,7 +175,7 @@
 	
 	<target name="migrate.all" depends="extract.resources">
 		<antcall target="migrate.cdo" />
-		<antcall target="migrate.kyanos" />
+		<antcall target="migrate.neoemf" />
 	</target>
 	
     <target name="gen.test.resource.cdo">
@@ -190,7 +190,7 @@
     			<echo>Creating ${resource.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoCreator" failonerror="true" fork="yes">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoCreator" failonerror="true" fork="yes">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${cdo.zxmi.file}"/>
@@ -200,7 +200,7 @@
 		        	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 		        	<arg value="-reponame"/>
 		        	<arg value="repo"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 		        </java>
     			<stopwatch name="timer" action="total"/>
     			<timestamp.echo message="End" />
@@ -211,16 +211,16 @@
     	</if>
     </target>
 	
-    <target name="gen.test.resource.kyanos">
-    	<basename property="kyanos.zxmi.filename" file="${kyanos.zxmi.file}" suffix="kyanos.zxmi"/>
-		<property name="resource.out" value="${benchmarks.dir}/${kyanos.zxmi.filename}.kyanosresource"/>
-		<property name="resource.properties.out" value="${benchmarks.dir}/${kyanos.zxmi.filename}.kyanosresource.properties"/>
+    <target name="gen.test.resource.neoemf">
+    	<basename property="neoemf.zxmi.filename" file="${neoemf.zxmi.file}" suffix="neoemf.zxmi"/>
+		<property name="resource.out" value="${benchmarks.dir}/${neoemf.zxmi.filename}.neoemfresource"/>
+		<property name="resource.properties.out" value="${benchmarks.dir}/${neoemf.zxmi.filename}.neoemfresource.properties"/>
     	<if>
 			<not>
 				<available file="${resource.out}" />
 			</not>
     		<then>
-    			<!-- Modify Kyanos resource load/save properties here -->
+    			<!-- Modify NeoEMF resource load/save properties here -->
     			<propertyfile file="${resource.properties.out}">
     			  <entry key="blueprints.graph" value="com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph"/>
     			</propertyfile>
@@ -228,17 +228,17 @@
     			<echo>Creating ${resource.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosCreator" failonerror="true" fork="yes">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFCreator" failonerror="true" fork="yes">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
-		            <arg value="${kyanos.zxmi.file}"/>
+		            <arg value="${neoemf.zxmi.file}"/>
 		            <arg value="-output"/>
 		            <arg value="${resource.out}"/>
 		        	<arg value="-epackage_class"/>
-		        	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
 		        	<arg value="-options_file"/>
 		        	<arg value="${resource.properties.out}"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 		        </java>
     			<stopwatch name="timer" action="total"/>
     			<timestamp.echo message="End" />
@@ -249,9 +249,9 @@
     	</if>
     </target>
 	
-    <target name="gen.test.resource.kyanos.map">
-    	<basename property="kyanos.zxmi.filename" file="${kyanos.zxmi.file}" suffix="kyanos.zxmi"/>
-		<property name="resource.out" value="${benchmarks.dir}/${kyanos.zxmi.filename}.kyanosmapresource"/>
+    <target name="gen.test.resource.neoemf.map">
+    	<basename property="neoemf.zxmi.filename" file="${neoemf.zxmi.file}" suffix="neoemf.zxmi"/>
+		<property name="resource.out" value="${benchmarks.dir}/${neoemf.zxmi.filename}.neoemfmapresource"/>
     	<if>
 			<not>
 				<available file="${resource.out}" />
@@ -261,15 +261,15 @@
     			<echo>Creating ${resource.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapCreator" failonerror="true" fork="yes">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapCreator" failonerror="true" fork="yes">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
-		            <arg value="${kyanos.zxmi.file}"/>
+		            <arg value="${neoemf.zxmi.file}"/>
 		            <arg value="-output"/>
 		            <arg value="${resource.out}"/>
 		        	<arg value="-epackage_class"/>
-		        	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-		            <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 		        </java>
     			<stopwatch name="timer" action="total"/>
     			<timestamp.echo message="End" />
@@ -290,21 +290,21 @@
 		</foreach>
 	</target>
 	
-	<target name="gen.test.resources.kyanos">
-		<foreach inheritall="true" target="gen.test.resource.kyanos" param="kyanos.zxmi.file">
+	<target name="gen.test.resources.neoemf">
+		<foreach inheritall="true" target="gen.test.resource.neoemf" param="neoemf.zxmi.file">
 			<path>
 				<fileset dir="${benchmarks.dir}">
-					<include name="**/*.kyanos.zxmi"/>
+					<include name="**/*.neoemf.zxmi"/>
 				</fileset>
 			</path>
 		</foreach>
 	</target>
 	
-	<target name="gen.test.resources.kyanos.map">
-		<foreach inheritall="true" target="gen.test.resource.kyanos.map" param="kyanos.zxmi.file">
+	<target name="gen.test.resources.neoemf.map">
+		<foreach inheritall="true" target="gen.test.resource.neoemf.map" param="neoemf.zxmi.file">
 			<path>
 				<fileset dir="${benchmarks.dir}">
-					<include name="**/*.kyanos.zxmi"/>
+					<include name="**/*.neoemf.zxmi"/>
 				</fileset>
 			</path>
 		</foreach>
@@ -312,8 +312,8 @@
 	
 	<target name="gen.test.resources.all">
 		<antcall target="gen.test.resources.cdo" />
-		<!--<antcall target="gen.test.resources.kyanos" />-->
-		<antcall target="gen.test.resources.kyanos.map" />
+		<!--<antcall target="gen.test.resources.neoemf" />-->
+		<antcall target="gen.test.resources.neoemf.map" />
 	</target>
 	
 	<target name="prepare.test.resources.cdo">
@@ -326,22 +326,22 @@
 		</copy>
 	</target>
 	
-	<target name="prepare.test.resources.kyanos">
+	<target name="prepare.test.resources.neoemf">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
+				<include name="*.neoemfresource/**"/>
 			</fileset>
 		</copy>
 	</target>
 	
-	<target name="prepare.test.resources.kyanos.map">
+	<target name="prepare.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
 	</target>
@@ -351,7 +351,7 @@
 		<echo>Traversing ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoTraverser" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoTraverser" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -359,41 +359,41 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="traverse.resource.kyanos">
+    <target name="traverse.resource.neoemf">
 		<timestamp.echo message="Start" />
-		<echo>Traversing ${kyanosresource.dir}</echo>
+		<echo>Traversing ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosTraverser" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFTraverser" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	    	<arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="traverse.resource.kyanos.map">
+    <target name="traverse.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Traversing ${kyanosresource.dir}</echo>
+		<echo>Traversing ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapTraverser" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapTraverser" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -410,23 +410,23 @@
 		</foreach>
 	</target>
 	
-	<target name="traverse.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
-		<antcall target="prepare.test.resources.kyanos" />
-		<foreach inheritall="true" target="traverse.resource.kyanos" param="kyanosresource.dir">
+	<target name="traverse.resources.neoemf" depends="migrate.neoemf, gen.test.resources.neoemf">
+		<antcall target="prepare.test.resources.neoemf" />
+		<foreach inheritall="true" target="traverse.resource.neoemf" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
+					<include name="**/*.neoemfresource"/>
 				</dirset>
 			</path>
 		</foreach>
 	</target>
 	
-	<target name="traverse.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
-		<antcall target="prepare.test.resources.kyanos.map" />
-		<foreach inheritall="true" target="traverse.resource.kyanos.map" param="kyanosresource.dir">
+	<target name="traverse.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="traverse.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -434,8 +434,8 @@
 	
 	<target name="traverse.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="traverse.resources.cdo" />
-		<antcall target="traverse.resources.kyanos" />
-		<antcall target="traverse.resources.kyanos.map" />
+		<antcall target="traverse.resources.neoemf" />
+		<antcall target="traverse.resources.neoemf.map" />
 	</target>
 	
 	<target name="query.classdecl.resource.cdo">
@@ -443,7 +443,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryClassDeclarationAttributes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryClassDeclarationAttributes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -451,24 +451,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.classdecl.resource.kyanos.map">
+    <target name="query.classdecl.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryClassDeclarationAttributes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryClassDeclarationAttributes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -491,18 +491,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.classdecl.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.classdecl.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.classdecl.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.classdecl.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -510,7 +510,7 @@
 	
 	<target name="query.classdecl.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.classdecl.resources.cdo" />
-		<antcall target="query.classdecl.resources.kyanos.map" />
+		<antcall target="query.classdecl.resources.neoemf.map" />
 	</target>
 
     <target name="query.grabats.resource.cdo">
@@ -518,7 +518,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryGrabats" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryGrabats" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -526,24 +526,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.grabats.resource.kyanos.map">
+    <target name="query.grabats.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryGrabats" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryGrabats" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -566,18 +566,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.grabats.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.grabats.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.grabats.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.grabats.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -585,7 +585,7 @@
 	
 	<target name="query.grabats.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.grabats.resources.cdo" />
-		<antcall target="query.grabats.resources.kyanos.map" />
+		<antcall target="query.grabats.resources.neoemf.map" />
 	</target>
 
     <target name="query.invmethods.resource.cdo">
@@ -593,7 +593,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryInvisibleMethodDeclarations" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryInvisibleMethodDeclarations" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -601,24 +601,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.invmethods.resource.kyanos.map">
+    <target name="query.invmethods.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryInvisibleMethodDeclarations" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryInvisibleMethodDeclarations" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -641,18 +641,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.invmethods.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.invmethods.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.invmethods.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.invmethods.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -660,7 +660,7 @@
 	
 	<target name="query.invmethods.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.invmethods.resources.cdo" />
-		<antcall target="query.invmethods.resources.kyanos.map" />
+		<antcall target="query.invmethods.resources.neoemf.map" />
 	</target>
 
     <target name="query.orphan.resource.cdo">
@@ -668,7 +668,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -676,24 +676,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.orphan.resource.kyanos.map">
+    <target name="query.orphan.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryOrphanNonPrimitiveTypes" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -716,18 +716,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.orphan.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.orphan.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.orphan.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.orphan.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -735,7 +735,7 @@
 	
 	<target name="query.orphan.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.orphan.resources.cdo" />
-		<antcall target="query.orphan.resources.kyanos.map" />
+		<antcall target="query.orphan.resources.neoemf.map" />
 	</target>
 
     <target name="query.rename.resource.cdo">
@@ -743,7 +743,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryRenameAllMethods" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryRenameAllMethods" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -751,24 +751,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.rename.resource.kyanos.map">
+    <target name="query.rename.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryRenameAllMethods" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryRenameAllMethods" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -791,18 +791,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.rename.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.rename.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.rename.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.rename.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -810,7 +810,7 @@
 	
 	<target name="query.rename.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.rename.resources.cdo" />
-		<antcall target="query.rename.resources.kyanos.map" />
+		<antcall target="query.rename.resources.neoemf.map" />
 	</target>
 
     <target name="query.thrownexceptions.resource.cdo">
@@ -818,7 +818,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -826,24 +826,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.thrownexceptions.resource.kyanos.map">
+    <target name="query.thrownexceptions.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryThrownExceptionsPerPackage" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -866,18 +866,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.thrownexceptions.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.thrownexceptions.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.thrownexceptions.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.thrownexceptions.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -885,7 +885,7 @@
 	
 	<target name="query.thrownexceptions.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.thrownexceptions.resources.cdo" />
-		<antcall target="query.thrownexceptions.resources.kyanos.map" />
+		<antcall target="query.thrownexceptions.resources.neoemf.map" />
 	</target>
 
     <target name="query.unusedmethods.resource.cdo">
@@ -893,7 +893,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryUnusedMethodsList" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryUnusedMethodsList" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -901,24 +901,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.unusedmethods.resource.kyanos.map">
+    <target name="query.unusedmethods.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryUnusedMethodsList" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryUnusedMethodsList" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -941,18 +941,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.unusedmethods.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.unusedmethods.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.unusedmethods.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.unusedmethods.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -960,7 +960,7 @@
 	
 	<target name="query.unusedmethods.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.unusedmethods.resources.cdo" />
-		<antcall target="query.unusedmethods.resources.kyanos.map" />
+		<antcall target="query.unusedmethods.resources.neoemf.map" />
 	</target>
 
     <target name="query.unusedmethods.comples.resource.cdo">
@@ -968,7 +968,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryLoop" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryLoop" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -976,24 +976,24 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.unusedmethods.complex.resource.kyanos.map">
+    <target name="query.unusedmethods.complex.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryLoop" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryLoop" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -1016,18 +1016,18 @@
 		</foreach>
 	</target>
 	
-	<target name="query.unusedmethods.complex.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.unusedmethods.complex.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.loop.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.loop.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -1035,7 +1035,7 @@
 	
 	<target name="query.unusedmethods.complex.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.loop.resources.cdo" />
-		<antcall target="query.loop.resources.kyanos.map" />
+		<antcall target="query.loop.resources.neoemf.map" />
 	</target>
 	
 	<!--
@@ -1044,7 +1044,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryList" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryList" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -1052,41 +1052,41 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.list.resource.kyanos">
+    <target name="query.list.resource.neoemf">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosQueryList" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFQueryList" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.list.resource.kyanos.map">
+    <target name="query.list.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryList" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryList" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -1109,35 +1109,35 @@
 		</foreach>
 	</target>
 	
-	<target name="query.list.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
+	<target name="query.list.resources.neoemf" depends="migrate.neoemf, gen.test.resources.neoemf">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
+				<include name="*.neoemfresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.list.resource.kyanos" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.list.resource.neoemf" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
+					<include name="**/*.neoemfresource"/>
 				</dirset>
 			</path>
 		</foreach>
 	</target>
 
-	<target name="query.list.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.list.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.list.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.list.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -1145,8 +1145,8 @@
 	
 	<target name="query.list.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.list.resources.cdo" />
-		<antcall target="query.list.resources.kyanos" />
-		<antcall target="query.list.resources.kyanos.map" />
+		<antcall target="query.list.resources.neoemf" />
+		<antcall target="query.list.resources.neoemf.map" />
 	</target>
 	
     <target name="query.loop.resource.cdo">
@@ -1154,7 +1154,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQueryLoop" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryLoop" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -1162,41 +1162,41 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.loop.resource.kyanos">
+    <target name="query.loop.resource.neoemf">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosQueryLoop" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFQueryLoop" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.loop.resource.kyanos.map">
+    <target name="query.loop.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQueryLoop" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryLoop" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -1219,35 +1219,35 @@
 		</foreach>
 	</target>
 	
-	<target name="query.loop.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
+	<target name="query.loop.resources.neoemf" depends="migrate.neoemf, gen.test.resources.neoemf">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
+				<include name="*.neoemfresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.loop.resource.kyanos" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.loop.resource.neoemf" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
+					<include name="**/*.neoemfresource"/>
 				</dirset>
 			</path>
 		</foreach>
 	</target>
 	
-	<target name="query.loop.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.loop.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.loop.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.loop.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -1255,8 +1255,8 @@
 	
 	<target name="query.loop.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.loop.resources.cdo" />
-		<antcall target="query.loop.resources.kyanos" />
-		<antcall target="query.loop.resources.kyanos.map" />
+		<antcall target="query.loop.resources.neoemf" />
+		<antcall target="query.loop.resources.neoemf.map" />
 	</target>
 	
     <target name="query.consecutive.resource.cdo">
@@ -1264,7 +1264,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.CdoQuery" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQuery" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -1272,41 +1272,41 @@
 	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
 	    	<arg value="-reponame"/>
 	    	<arg value="repo"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.consecutive.resource.kyanos">
+    <target name="query.consecutive.resource.neoemf">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosQuery" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFQuery" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
     </target>
 	
-    <target name="query.consecutive.resource.kyanos.map">
+    <target name="query.consecutive.resource.neoemf.map">
 		<timestamp.echo message="Start" />
-		<echo>Querying ${kyanosresource.dir}</echo>
+		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.kyanos.benchmarks.KyanosMapQuery" failonerror="true" fork="yes">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQuery" failonerror="true" fork="yes">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
-	        <arg value="${kyanosresource.dir}"/>
+	        <arg value="${neoemfresource.dir}"/>
 	    	<arg value="-epackage_class"/>
-	    	<arg value ="org.eclipse.gmt.modisco.java.kyanos.impl.JavaPackageImpl"/>
-	        <classpath refid="fr.inria.atlanmod.kyanos.benchmarks.classpath"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
 	    </java>
 		<stopwatch name="timer" action="total"/>
 		<timestamp.echo message="End" />
@@ -1329,35 +1329,35 @@
 		</foreach>
 	</target>
 	
-	<target name="query.consecutive.resources.kyanos" depends="migrate.kyanos, gen.test.resources.kyanos">
+	<target name="query.consecutive.resources.neoemf" depends="migrate.neoemf, gen.test.resources.neoemf">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosresource/**"/>
+				<include name="*.neoemfresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.consecutive.resource.kyanos" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.consecutive.resource.neoemf" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosresource"/>
+					<include name="**/*.neoemfresource"/>
 				</dirset>
 			</path>
 		</foreach>
 	</target>
 	
-	<target name="query.consecutive.resources.kyanos.map" depends="migrate.kyanos, gen.test.resources.kyanos.map">
+	<target name="query.consecutive.resources.neoemf.map" depends="migrate.neoemf, gen.test.resources.neoemf.map">
 		<delete dir="${tests.dir}" failonerror="false"/>
 		<mkdir dir="${tests.dir}"/>
 		<copy todir="${tests.dir}">
 			<fileset dir="${benchmarks.dir}">
-				<include name="*.kyanosmapresource/**"/>
+				<include name="*.neoemfmapresource/**"/>
 			</fileset>
 		</copy>
-		<foreach inheritall="true" target="query.consecutive.resource.kyanos.map" param="kyanosresource.dir">
+		<foreach inheritall="true" target="query.consecutive.resource.neoemf.map" param="neoemfresource.dir">
 			<path>
 				<dirset dir="${tests.dir}">
-					<include name="**/*.kyanosmapresource"/>
+					<include name="**/*.neoemfmapresource"/>
 				</dirset>
 			</path>
 		</foreach>
@@ -1365,8 +1365,8 @@
 	
 	<target name="query.consecutive.resources.all" depends="migrate.all, gen.test.resources.all">
 		<antcall target="query.consecutive.resources.cdo" />
-		<antcall target="query.consecutive.resources.kyanos" />
-		<antcall target="query.consecutive.resources.kyanos.map" />
+		<antcall target="query.consecutive.resources.neoemf" />
+		<antcall target="query.consecutive.resources.neoemf.map" />
 	</target>
 	-->
 	

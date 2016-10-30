@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class MemberRefImpl extends ASTNodeImpl implements MemberRef {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected MemberRefImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected MemberRefImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getMemberRef();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getMemberRef();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NamedElement getMember() {
-		return (NamedElement)eGet(JavaPackage.eINSTANCE.getMemberRef_Member(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public NamedElement getMember() {
+        return (NamedElement)eGet(JavaPackage.eINSTANCE.getMemberRef_Member(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setMember(NamedElement newMember) {
-		eSet(JavaPackage.eINSTANCE.getMemberRef_Member(), newMember);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setMember(NamedElement newMember) {
+        eSet(JavaPackage.eINSTANCE.getMemberRef_Member(), newMember);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getQualifier() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getMemberRef_Qualifier(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getQualifier() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getMemberRef_Qualifier(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setQualifier(TypeAccess newQualifier) {
-		eSet(JavaPackage.eINSTANCE.getMemberRef_Qualifier(), newQualifier);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setQualifier(TypeAccess newQualifier) {
+        eSet(JavaPackage.eINSTANCE.getMemberRef_Qualifier(), newQualifier);
+    }
 
 } //MemberRefImpl

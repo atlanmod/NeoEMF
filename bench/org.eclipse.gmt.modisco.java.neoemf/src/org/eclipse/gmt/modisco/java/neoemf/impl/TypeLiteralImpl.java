@@ -23,41 +23,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class TypeLiteralImpl extends ExpressionImpl implements TypeLiteral {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TypeLiteralImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected TypeLiteralImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getTypeLiteral();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getTypeLiteral();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getType() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getTypeLiteral_Type(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getType() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getTypeLiteral_Type(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setType(TypeAccess newType) {
-		eSet(JavaPackage.eINSTANCE.getTypeLiteral_Type(), newType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(TypeAccess newType) {
+        eSet(JavaPackage.eINSTANCE.getTypeLiteral_Type(), newType);
+    }
 
 } //TypeLiteralImpl

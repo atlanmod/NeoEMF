@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class SynchronizedStatementImpl extends StatementImpl implements SynchronizedStatement {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected SynchronizedStatementImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected SynchronizedStatementImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getSynchronizedStatement();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getSynchronizedStatement();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Block getBody() {
-		return (Block)eGet(JavaPackage.eINSTANCE.getSynchronizedStatement_Body(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Block getBody() {
+        return (Block)eGet(JavaPackage.eINSTANCE.getSynchronizedStatement_Body(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setBody(Block newBody) {
-		eSet(JavaPackage.eINSTANCE.getSynchronizedStatement_Body(), newBody);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setBody(Block newBody) {
+        eSet(JavaPackage.eINSTANCE.getSynchronizedStatement_Body(), newBody);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getExpression() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getSynchronizedStatement_Expression(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getExpression() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getSynchronizedStatement_Expression(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setExpression(Expression newExpression) {
-		eSet(JavaPackage.eINSTANCE.getSynchronizedStatement_Expression(), newExpression);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setExpression(Expression newExpression) {
+        eSet(JavaPackage.eINSTANCE.getSynchronizedStatement_Expression(), newExpression);
+    }
 
 } //SynchronizedStatementImpl

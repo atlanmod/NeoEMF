@@ -26,51 +26,51 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class ParameterizedTypeImpl extends TypeImpl implements ParameterizedType {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ParameterizedTypeImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ParameterizedTypeImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getParameterizedType();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getParameterizedType();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getType() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getParameterizedType_Type(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getType() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getParameterizedType_Type(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setType(TypeAccess newType) {
-		eSet(JavaPackage.eINSTANCE.getParameterizedType_Type(), newType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(TypeAccess newType) {
+        eSet(JavaPackage.eINSTANCE.getParameterizedType_Type(), newType);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<TypeAccess> getTypeArguments() {
-		return (EList<TypeAccess>)eGet(JavaPackage.eINSTANCE.getParameterizedType_TypeArguments(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<TypeAccess> getTypeArguments() {
+        return (EList<TypeAccess>)eGet(JavaPackage.eINSTANCE.getParameterizedType_TypeArguments(), true);
+    }
 
 } //ParameterizedTypeImpl

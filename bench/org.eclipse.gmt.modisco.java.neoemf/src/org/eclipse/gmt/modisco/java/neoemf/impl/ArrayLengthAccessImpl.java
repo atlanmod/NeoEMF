@@ -23,41 +23,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class ArrayLengthAccessImpl extends ExpressionImpl implements ArrayLengthAccess {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ArrayLengthAccessImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ArrayLengthAccessImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getArrayLengthAccess();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getArrayLengthAccess();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getArray() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getArrayLengthAccess_Array(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getArray() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getArrayLengthAccess_Array(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setArray(Expression newArray) {
-		eSet(JavaPackage.eINSTANCE.getArrayLengthAccess_Array(), newArray);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setArray(Expression newArray) {
+        eSet(JavaPackage.eINSTANCE.getArrayLengthAccess_Array(), newArray);
+    }
 
 } //ArrayLengthAccessImpl

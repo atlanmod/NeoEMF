@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class InstanceofExpressionImpl extends ExpressionImpl implements InstanceofExpression {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected InstanceofExpressionImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected InstanceofExpressionImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getInstanceofExpression();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getInstanceofExpression();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getRightOperand() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getInstanceofExpression_RightOperand(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getRightOperand() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getInstanceofExpression_RightOperand(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setRightOperand(TypeAccess newRightOperand) {
-		eSet(JavaPackage.eINSTANCE.getInstanceofExpression_RightOperand(), newRightOperand);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setRightOperand(TypeAccess newRightOperand) {
+        eSet(JavaPackage.eINSTANCE.getInstanceofExpression_RightOperand(), newRightOperand);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getLeftOperand() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getInstanceofExpression_LeftOperand(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getLeftOperand() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getInstanceofExpression_LeftOperand(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setLeftOperand(Expression newLeftOperand) {
-		eSet(JavaPackage.eINSTANCE.getInstanceofExpression_LeftOperand(), newLeftOperand);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setLeftOperand(Expression newLeftOperand) {
+        eSet(JavaPackage.eINSTANCE.getInstanceofExpression_LeftOperand(), newLeftOperand);
+    }
 
 } //InstanceofExpressionImpl

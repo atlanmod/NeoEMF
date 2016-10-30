@@ -1,5 +1,4 @@
 /**
- * *******************************************************************************
  * Copyright (c) 2009 Mia-Software.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,12 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- * 
  *     Fabien Giquel (Mia-Software) - initial API and implementation
  *     Gregoire DUPE (Mia-Software) - initial API and implementation
- * *******************************************************************************
- *
- * $Id$
  */
 package org.eclipse.gmt.modisco.java.cdo.impl;
 
@@ -39,59 +34,59 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * @generated
  */
 public class CastExpressionImpl extends ExpressionImpl implements CastExpression {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected CastExpressionImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected CastExpressionImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getCastExpression();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getCastExpression();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getExpression() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getCastExpression_Expression(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getExpression() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getCastExpression_Expression(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setExpression(Expression newExpression) {
-		eSet(JavaPackage.eINSTANCE.getCastExpression_Expression(), newExpression);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setExpression(Expression newExpression) {
+        eSet(JavaPackage.eINSTANCE.getCastExpression_Expression(), newExpression);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getType() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getCastExpression_Type(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getType() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getCastExpression_Type(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setType(TypeAccess newType) {
-		eSet(JavaPackage.eINSTANCE.getCastExpression_Type(), newType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(TypeAccess newType) {
+        eSet(JavaPackage.eINSTANCE.getCastExpression_Type(), newType);
+    }
 
 } //CastExpressionImpl

@@ -23,41 +23,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class TypeDeclarationStatementImpl extends StatementImpl implements TypeDeclarationStatement {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TypeDeclarationStatementImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected TypeDeclarationStatementImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getTypeDeclarationStatement();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getTypeDeclarationStatement();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public AbstractTypeDeclaration getDeclaration() {
-		return (AbstractTypeDeclaration)eGet(JavaPackage.eINSTANCE.getTypeDeclarationStatement_Declaration(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AbstractTypeDeclaration getDeclaration() {
+        return (AbstractTypeDeclaration)eGet(JavaPackage.eINSTANCE.getTypeDeclarationStatement_Declaration(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setDeclaration(AbstractTypeDeclaration newDeclaration) {
-		eSet(JavaPackage.eINSTANCE.getTypeDeclarationStatement_Declaration(), newDeclaration);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setDeclaration(AbstractTypeDeclaration newDeclaration) {
+        eSet(JavaPackage.eINSTANCE.getTypeDeclarationStatement_Declaration(), newDeclaration);
+    }
 
 } //TypeDeclarationStatementImpl

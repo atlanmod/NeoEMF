@@ -23,41 +23,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class ParenthesizedExpressionImpl extends ExpressionImpl implements ParenthesizedExpression {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ParenthesizedExpressionImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ParenthesizedExpressionImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getParenthesizedExpression();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getParenthesizedExpression();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getExpression() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getParenthesizedExpression_Expression(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getExpression() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getParenthesizedExpression_Expression(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setExpression(Expression newExpression) {
-		eSet(JavaPackage.eINSTANCE.getParenthesizedExpression_Expression(), newExpression);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setExpression(Expression newExpression) {
+        eSet(JavaPackage.eINSTANCE.getParenthesizedExpression_Expression(), newExpression);
+    }
 
 } //ParenthesizedExpressionImpl

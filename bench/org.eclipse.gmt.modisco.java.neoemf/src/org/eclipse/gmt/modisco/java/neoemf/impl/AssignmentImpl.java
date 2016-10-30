@@ -26,77 +26,77 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class AssignmentImpl extends ExpressionImpl implements Assignment {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected AssignmentImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected AssignmentImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getAssignment();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getAssignment();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getLeftHandSide() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getAssignment_LeftHandSide(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getLeftHandSide() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getAssignment_LeftHandSide(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setLeftHandSide(Expression newLeftHandSide) {
-		eSet(JavaPackage.eINSTANCE.getAssignment_LeftHandSide(), newLeftHandSide);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setLeftHandSide(Expression newLeftHandSide) {
+        eSet(JavaPackage.eINSTANCE.getAssignment_LeftHandSide(), newLeftHandSide);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public AssignmentKind getOperator() {
-		return (AssignmentKind)eGet(JavaPackage.eINSTANCE.getAssignment_Operator(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AssignmentKind getOperator() {
+        return (AssignmentKind)eGet(JavaPackage.eINSTANCE.getAssignment_Operator(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setOperator(AssignmentKind newOperator) {
-		eSet(JavaPackage.eINSTANCE.getAssignment_Operator(), newOperator);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOperator(AssignmentKind newOperator) {
+        eSet(JavaPackage.eINSTANCE.getAssignment_Operator(), newOperator);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Expression getRightHandSide() {
-		return (Expression)eGet(JavaPackage.eINSTANCE.getAssignment_RightHandSide(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Expression getRightHandSide() {
+        return (Expression)eGet(JavaPackage.eINSTANCE.getAssignment_RightHandSide(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setRightHandSide(Expression newRightHandSide) {
-		eSet(JavaPackage.eINSTANCE.getAssignment_RightHandSide(), newRightHandSide);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setRightHandSide(Expression newRightHandSide) {
+        eSet(JavaPackage.eINSTANCE.getAssignment_RightHandSide(), newRightHandSide);
+    }
 
 } //AssignmentImpl

@@ -29,61 +29,61 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class LabeledStatementImpl extends NamedElementImpl implements LabeledStatement {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected LabeledStatementImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected LabeledStatementImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getLabeledStatement();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getLabeledStatement();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Statement getBody() {
-		return (Statement)eGet(JavaPackage.eINSTANCE.getLabeledStatement_Body(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Statement getBody() {
+        return (Statement)eGet(JavaPackage.eINSTANCE.getLabeledStatement_Body(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setBody(Statement newBody) {
-		eSet(JavaPackage.eINSTANCE.getLabeledStatement_Body(), newBody);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setBody(Statement newBody) {
+        eSet(JavaPackage.eINSTANCE.getLabeledStatement_Body(), newBody);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<BreakStatement> getUsagesInBreakStatements() {
-		return (EList<BreakStatement>)eGet(JavaPackage.eINSTANCE.getLabeledStatement_UsagesInBreakStatements(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<BreakStatement> getUsagesInBreakStatements() {
+        return (EList<BreakStatement>)eGet(JavaPackage.eINSTANCE.getLabeledStatement_UsagesInBreakStatements(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<ContinueStatement> getUsagesInContinueStatements() {
-		return (EList<ContinueStatement>)eGet(JavaPackage.eINSTANCE.getLabeledStatement_UsagesInContinueStatements(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<ContinueStatement> getUsagesInContinueStatements() {
+        return (EList<ContinueStatement>)eGet(JavaPackage.eINSTANCE.getLabeledStatement_UsagesInContinueStatements(), true);
+    }
 
 } //LabeledStatementImpl

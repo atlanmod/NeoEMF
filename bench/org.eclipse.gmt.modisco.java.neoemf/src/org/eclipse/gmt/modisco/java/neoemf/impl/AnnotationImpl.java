@@ -27,51 +27,51 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class AnnotationImpl extends ExpressionImpl implements Annotation {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected AnnotationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected AnnotationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getAnnotation();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getAnnotation();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getType() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getAnnotation_Type(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getType() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getAnnotation_Type(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setType(TypeAccess newType) {
-		eSet(JavaPackage.eINSTANCE.getAnnotation_Type(), newType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(TypeAccess newType) {
+        eSet(JavaPackage.eINSTANCE.getAnnotation_Type(), newType);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<AnnotationMemberValuePair> getValues() {
-		return (EList<AnnotationMemberValuePair>)eGet(JavaPackage.eINSTANCE.getAnnotation_Values(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<AnnotationMemberValuePair> getValues() {
+        return (EList<AnnotationMemberValuePair>)eGet(JavaPackage.eINSTANCE.getAnnotation_Values(), true);
+    }
 
 } //AnnotationImpl

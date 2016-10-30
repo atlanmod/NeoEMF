@@ -23,41 +23,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class SuperFieldAccessImpl extends AbstractTypeQualifiedExpressionImpl implements SuperFieldAccess {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected SuperFieldAccessImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected SuperFieldAccessImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getSuperFieldAccess();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getSuperFieldAccess();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SingleVariableAccess getField() {
-		return (SingleVariableAccess)eGet(JavaPackage.eINSTANCE.getSuperFieldAccess_Field(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SingleVariableAccess getField() {
+        return (SingleVariableAccess)eGet(JavaPackage.eINSTANCE.getSuperFieldAccess_Field(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setField(SingleVariableAccess newField) {
-		eSet(JavaPackage.eINSTANCE.getSuperFieldAccess_Field(), newField);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setField(SingleVariableAccess newField) {
+        eSet(JavaPackage.eINSTANCE.getSuperFieldAccess_Field(), newField);
+    }
 
 } //SuperFieldAccessImpl

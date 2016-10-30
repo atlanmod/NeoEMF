@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class UnresolvedItemAccessImpl extends ExpressionImpl implements UnresolvedItemAccess {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected UnresolvedItemAccessImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected UnresolvedItemAccessImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getUnresolvedItemAccess();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getUnresolvedItemAccess();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public UnresolvedItem getElement() {
-		return (UnresolvedItem)eGet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Element(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public UnresolvedItem getElement() {
+        return (UnresolvedItem)eGet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Element(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setElement(UnresolvedItem newElement) {
-		eSet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Element(), newElement);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setElement(UnresolvedItem newElement) {
+        eSet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Element(), newElement);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ASTNode getQualifier() {
-		return (ASTNode)eGet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Qualifier(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ASTNode getQualifier() {
+        return (ASTNode)eGet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Qualifier(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setQualifier(ASTNode newQualifier) {
-		eSet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Qualifier(), newQualifier);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setQualifier(ASTNode newQualifier) {
+        eSet(JavaPackage.eINSTANCE.getUnresolvedItemAccess_Qualifier(), newQualifier);
+    }
 
 } //UnresolvedItemAccessImpl

@@ -1,5 +1,4 @@
 /**
- * *******************************************************************************
  * Copyright (c) 2009 Mia-Software.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,12 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- * 
  *     Fabien Giquel (Mia-Software) - initial API and implementation
  *     Gregoire DUPE (Mia-Software) - initial API and implementation
- * *******************************************************************************
- *
- * $Id$
  */
 package org.eclipse.gmt.modisco.java.cdo.impl;
 
@@ -43,53 +38,53 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * @generated
  */
 public class ManifestImpl extends CDOObjectImpl implements Manifest {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ManifestImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ManifestImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getManifest();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getManifest();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected int eStaticFeatureCount() {
-		return 0;
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected int eStaticFeatureCount() {
+        return 0;
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<ManifestAttribute> getMainAttributes() {
-		return (EList<ManifestAttribute>)eGet(JavaPackage.eINSTANCE.getManifest_MainAttributes(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<ManifestAttribute> getMainAttributes() {
+        return (EList<ManifestAttribute>)eGet(JavaPackage.eINSTANCE.getManifest_MainAttributes(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<ManifestEntry> getEntryAttributes() {
-		return (EList<ManifestEntry>)eGet(JavaPackage.eINSTANCE.getManifest_EntryAttributes(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<ManifestEntry> getEntryAttributes() {
+        return (EList<ManifestEntry>)eGet(JavaPackage.eINSTANCE.getManifest_EntryAttributes(), true);
+    }
 
 } //ManifestImpl

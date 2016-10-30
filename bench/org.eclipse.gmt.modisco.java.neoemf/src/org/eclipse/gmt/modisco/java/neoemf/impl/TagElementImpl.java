@@ -26,51 +26,51 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class TagElementImpl extends ASTNodeImpl implements TagElement {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TagElementImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected TagElementImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getTagElement();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getTagElement();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getTagName() {
-		return (String)eGet(JavaPackage.eINSTANCE.getTagElement_TagName(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getTagName() {
+        return (String)eGet(JavaPackage.eINSTANCE.getTagElement_TagName(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setTagName(String newTagName) {
-		eSet(JavaPackage.eINSTANCE.getTagElement_TagName(), newTagName);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setTagName(String newTagName) {
+        eSet(JavaPackage.eINSTANCE.getTagElement_TagName(), newTagName);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<ASTNode> getFragments() {
-		return (EList<ASTNode>)eGet(JavaPackage.eINSTANCE.getTagElement_Fragments(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<ASTNode> getFragments() {
+        return (EList<ASTNode>)eGet(JavaPackage.eINSTANCE.getTagElement_Fragments(), true);
+    }
 
 } //TagElementImpl

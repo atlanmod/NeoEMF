@@ -25,33 +25,33 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public abstract class TypeDeclarationImpl extends AbstractTypeDeclarationImpl implements TypeDeclaration {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TypeDeclarationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected TypeDeclarationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getTypeDeclaration();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getTypeDeclaration();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<TypeParameter> getTypeParameters() {
-		return (EList<TypeParameter>)eGet(JavaPackage.eINSTANCE.getTypeDeclaration_TypeParameters(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<TypeParameter> getTypeParameters() {
+        return (EList<TypeParameter>)eGet(JavaPackage.eINSTANCE.getTypeDeclaration_TypeParameters(), true);
+    }
 
 } //TypeDeclarationImpl

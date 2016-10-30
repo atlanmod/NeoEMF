@@ -23,41 +23,41 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class ClassDeclarationImpl extends TypeDeclarationImpl implements ClassDeclaration {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ClassDeclarationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected ClassDeclarationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getClassDeclaration();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getClassDeclaration();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public TypeAccess getSuperClass() {
-		return (TypeAccess)eGet(JavaPackage.eINSTANCE.getClassDeclaration_SuperClass(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public TypeAccess getSuperClass() {
+        return (TypeAccess)eGet(JavaPackage.eINSTANCE.getClassDeclaration_SuperClass(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setSuperClass(TypeAccess newSuperClass) {
-		eSet(JavaPackage.eINSTANCE.getClassDeclaration_SuperClass(), newSuperClass);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setSuperClass(TypeAccess newSuperClass) {
+        eSet(JavaPackage.eINSTANCE.getClassDeclaration_SuperClass(), newSuperClass);
+    }
 
 } //ClassDeclarationImpl

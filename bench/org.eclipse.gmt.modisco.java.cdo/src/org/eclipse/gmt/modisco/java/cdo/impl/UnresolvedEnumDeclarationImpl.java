@@ -1,5 +1,4 @@
 /**
- * *******************************************************************************
  * Copyright (c) 2009 Mia-Software.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,12 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- * 
  *     Fabien Giquel (Mia-Software) - initial API and implementation
  *     Gregoire DUPE (Mia-Software) - initial API and implementation
- * *******************************************************************************
- *
- * $Id$
  */
 package org.eclipse.gmt.modisco.java.cdo.impl;
 
@@ -32,23 +27,23 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * @generated
  */
 public class UnresolvedEnumDeclarationImpl extends EnumDeclarationImpl implements UnresolvedEnumDeclaration {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected UnresolvedEnumDeclarationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected UnresolvedEnumDeclarationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getUnresolvedEnumDeclaration();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getUnresolvedEnumDeclaration();
+    }
 
 } //UnresolvedEnumDeclarationImpl

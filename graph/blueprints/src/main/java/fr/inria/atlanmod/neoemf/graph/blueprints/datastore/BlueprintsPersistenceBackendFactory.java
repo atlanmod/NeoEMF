@@ -89,19 +89,14 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
 
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty()) {
+        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(AUTOCOMMIT))) {
             eStore = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend) backend);
         }
+        else if (storeOptions.contains(MANY_CACHE)) {
+            eStore = new CachedManyDirectWriteBlueprintsRespirceEStoreImpl(resource, (BlueprintsPersistenceBackend) backend);
+        }
         else {
-            if (storeOptions.contains(DIRECT_WRITE)) {
-                eStore = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend) backend);
-            }
-            else if (storeOptions.contains(MANY_CACHE)) {
-                eStore = new CachedManyDirectWriteBlueprintsRespirceEStoreImpl(resource, (BlueprintsPersistenceBackend) backend);
-            }
-            else {
-                throw new InvalidDataStoreException("No valid base EStore found in the options");
-            }
+            throw new InvalidDataStoreException("No valid base EStore found in the options");
         }
         // Autocommit
         if (!isNull(storeOptions) && storeOptions.contains(AUTOCOMMIT)) {

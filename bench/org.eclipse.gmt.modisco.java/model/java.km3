@@ -413,7 +413,6 @@ package java {
 		reference parameters[*] ordered container : MethodRefParameter;
 	}
 
-
 	class MethodRefParameter extends ASTNode {
 		attribute name[0-1] : String;
 		attribute varargs : Boolean;

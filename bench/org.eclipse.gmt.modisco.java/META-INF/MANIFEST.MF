@@ -1,28 +1,24 @@
 Manifest-Version: 1.0
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Built-By: hudsonBuild
 Bundle-SymbolicName: org.eclipse.gmt.modisco.java;singleton:=true
-Bundle-Activator: org.eclipse.gmt.modisco.java.plugin.JavaPlugin
-Require-Bundle: org.eclipse.core.runtime,org.eclipse.emf.ecore;bundle-
- version="2.5.0",org.eclipse.emf.ecore.xmi;bundle-version="2.5.0",org.
- eclipse.gmt.modisco.infra.common.core
-Export-Package: org.eclipse.gmt.modisco.java,org.eclipse.gmt.modisco.j
- ava.emf,org.eclipse.gmt.modisco.java.emf.impl;x-internal:=true,org.ec
- lipse.gmt.modisco.java.emf.util;x-internal:=true,org.eclipse.gmt.modi
- sco.java.internal.util; x-friends:="org.eclipse.gmt.modisco.java.disc
- overer.tests,  org.eclipse.gmt.modisco.java.discoverer,  org.eclipse.
- gmt.modisco.infra.browser.custom.examples.java.jdk,  org.eclipse.gmt.
- modisco.java.queries,  org.eclipse.modisco.java.composition.discovere
- r,  org.eclipse.modisco.java.discoverer,  org.eclipse.modisco.usecase
- .modelfilter.dependencies.ui,  org.eclipse.modisco.java.discoverer.te
- sts"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
+ org.eclipse.emf.ecore;bundle-version="2.5.0";visibility:=reexport,
+ org.eclipse.emf.ecore.xmi;bundle-version="2.5.0";visibility:=reexport,
+ org.eclipse.gmt.modisco.infra.common.core,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.7.3",
+ org.eclipse.emf.ecore.xcore.lib;bundle-version="1.1.0"
+Export-Package: org.eclipse.gmt.modisco.java,
+ org.eclipse.gmt.modisco.java.emf,
+ org.eclipse.gmt.modisco.java.emf.impl;x-internal:=true,
+ org.eclipse.gmt.modisco.java.emf.util;x-internal:=true
 Bundle-Version: 0.11.1.201309110624
 Build-Jdk: 1.6.0_21
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: %Bundle-Vendor
-Bundle-Name: %Bundle-Name
+Bundle-Vendor: %providerName
+Bundle-Name: %pluginName
 Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
 Bundle-ManifestVersion: 2

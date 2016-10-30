@@ -25,59 +25,59 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * @generated
  */
 public class TypeAccessImpl extends ExpressionImpl implements TypeAccess {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected TypeAccessImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected TypeAccessImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getTypeAccess();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getTypeAccess();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Type getType() {
-		return (Type)eGet(JavaPackage.eINSTANCE.getTypeAccess_Type(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Type getType() {
+        return (Type)eGet(JavaPackage.eINSTANCE.getTypeAccess_Type(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setType(Type newType) {
-		eSet(JavaPackage.eINSTANCE.getTypeAccess_Type(), newType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(Type newType) {
+        eSet(JavaPackage.eINSTANCE.getTypeAccess_Type(), newType);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NamespaceAccess getQualifier() {
-		return (NamespaceAccess)eGet(JavaPackage.eINSTANCE.getTypeAccess_Qualifier(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public NamespaceAccess getQualifier() {
+        return (NamespaceAccess)eGet(JavaPackage.eINSTANCE.getTypeAccess_Qualifier(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setQualifier(NamespaceAccess newQualifier) {
-		eSet(JavaPackage.eINSTANCE.getTypeAccess_Qualifier(), newQualifier);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setQualifier(NamespaceAccess newQualifier) {
+        eSet(JavaPackage.eINSTANCE.getTypeAccess_Qualifier(), newQualifier);
+    }
 
 } //TypeAccessImpl

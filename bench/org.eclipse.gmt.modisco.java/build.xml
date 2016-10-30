@@ -5,13 +5,10 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="org.eclipse.gmt.modisco.java">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../../Bureau/ec/eclipse/"/>
-    <property name="fr.inria.atlanmod.kyanos.benchmarks.location" value="../fr.inria.atlanmod.neoemf.benchmarks"/>
-    <property name="org.eclipse.gmt.modisco.java.cdo.location" value="../org.eclipse.gmt.modisco.java.cdo"/>
-    <property name="org.eclipse.gmt.modisco.java.neoemf.location" value="../org.eclipse.gmt.modisco.java.neoemf"/>
+    <property name="ECLIPSE_HOME" value="C:/WS/ide/eclipse/modeling-luna/"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.5"/>
-    <property name="source" value="1.5"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
     <path id="Plug-in Dependencies.libraryclasspath">
         <pathelement location="${ECLIPSE_HOME}plugins/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar"/>
         <pathelement location="${ECLIPSE_HOME}plugins/javax.annotation_1.2.0.v201401042248.jar"/>
@@ -39,8 +36,6 @@
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.xtend"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -58,26 +53,7 @@
             <classpath refid="org.eclipse.gmt.modisco.java.classpath"/>
         </javac>
     </target>
-    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
-        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.benchmarks.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${fr.inria.atlanmod.kyanos.benchmarks.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.cdo.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.cdo.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.neoemf.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${org.eclipse.gmt.modisco.java.neoemf.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
         <copy todir="${ant.library.dir}">
             <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>

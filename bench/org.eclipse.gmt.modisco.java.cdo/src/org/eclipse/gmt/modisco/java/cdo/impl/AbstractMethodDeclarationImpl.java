@@ -1,5 +1,4 @@
 /**
- * *******************************************************************************
  * Copyright (c) 2009 Mia-Software.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,12 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- * 
  *     Fabien Giquel (Mia-Software) - initial API and implementation
  *     Gregoire DUPE (Mia-Software) - initial API and implementation
- * *******************************************************************************
- *
- * $Id$
  */
 package org.eclipse.gmt.modisco.java.cdo.impl;
 
@@ -49,91 +44,91 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * @generated
  */
 public abstract class AbstractMethodDeclarationImpl extends BodyDeclarationImpl implements AbstractMethodDeclaration {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected AbstractMethodDeclarationImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected AbstractMethodDeclarationImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return JavaPackage.eINSTANCE.getAbstractMethodDeclaration();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return JavaPackage.eINSTANCE.getAbstractMethodDeclaration();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Block getBody() {
-		return (Block)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Body(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Block getBody() {
+        return (Block)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Body(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setBody(Block newBody) {
-		eSet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Body(), newBody);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setBody(Block newBody) {
+        eSet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Body(), newBody);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<SingleVariableDeclaration> getParameters() {
-		return (EList<SingleVariableDeclaration>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Parameters(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<SingleVariableDeclaration> getParameters() {
+        return (EList<SingleVariableDeclaration>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Parameters(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<TypeAccess> getThrownExceptions() {
-		return (EList<TypeAccess>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_ThrownExceptions(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<TypeAccess> getThrownExceptions() {
+        return (EList<TypeAccess>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_ThrownExceptions(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<TypeParameter> getTypeParameters() {
-		return (EList<TypeParameter>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_TypeParameters(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<TypeParameter> getTypeParameters() {
+        return (EList<TypeParameter>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_TypeParameters(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<MethodRef> getUsagesInDocComments() {
-		return (EList<MethodRef>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_UsagesInDocComments(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<MethodRef> getUsagesInDocComments() {
+        return (EList<MethodRef>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_UsagesInDocComments(), true);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	public EList<AbstractMethodInvocation> getUsages() {
-		return (EList<AbstractMethodInvocation>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Usages(), true);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    public EList<AbstractMethodInvocation> getUsages() {
+        return (EList<AbstractMethodInvocation>)eGet(JavaPackage.eINSTANCE.getAbstractMethodDeclaration_Usages(), true);
+    }
 
 } //AbstractMethodDeclarationImpl
