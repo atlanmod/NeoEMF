@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see org.eclipse.gmt.modisco.java.emf.JavaFactory
  * @model kind="package"
+ *        annotation="http://www.eclipse.org/emf/2002/GenModel copyrightText='Copyright (c) 2009 Mia-Software.\r\nAll rights reserved. This program and the accompanying materials\r\nare made available under the terms of the Eclipse Public License v1.0\r\nwhich accompanies this distribution, and is available at\r\nhttp://www.eclipse.org/legal/epl-v10.html\r\n\r\nContributors:\r\n    Sebastien Minguet (Mia-Software) - initial API and implementation\r\n    Frederic Madiot (Mia-Software) - initial API and implementation\r\n    Fabien Giquel (Mia-Software) - initial API and implementation\r\n    Gabriel Barbier (Mia-Software) - initial API and implementation\r\n    Erwan Breton (Sodifrance) - initial API and implementation\r\n    Romain Dervaux (Mia-Software) - initial API and implementation' metaDataPackageSuffix='emf' classPackageSuffix='emf.impl' utilityPackageSuffix='emf.util' providerPackageSuffix='emf.provider' presentationPackageSuffix='emf.presentation' testsPackageSuffix='emf.tests' modelDirectory='/org.eclipse.gmt.modisco.java/src' rootExtendsClass='org.eclipse.emf.ecore.impl.MinimalEObjectImpl' importerID='org.eclipse.emf.importer.ecore' complianceLevel='7.0' basePackage='org.eclipse.gmt.modisco'"
  * @generated
  */
 public interface JavaPackage extends EPackage {
@@ -116,6 +117,15 @@ public interface JavaPackage extends EPackage {
     int AST_NODE_FEATURE_COUNT = 3;
 
     /**
+     * The number of operations of the '<em>AST Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int AST_NODE_OPERATION_COUNT = 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.NamedElementImpl <em>Named Element</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -187,6 +197,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int NAMED_ELEMENT_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 3;
+
+    /**
+     * The number of operations of the '<em>Named Element</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NAMED_ELEMENT_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.BodyDeclarationImpl <em>Body Declaration</em>}' class.
@@ -296,6 +315,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int BODY_DECLARATION_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 4;
+
+    /**
+     * The number of operations of the '<em>Body Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int BODY_DECLARATION_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractMethodDeclarationImpl <em>Abstract Method Declaration</em>}' class.
@@ -461,6 +489,15 @@ public interface JavaPackage extends EPackage {
     int ABSTRACT_METHOD_DECLARATION_FEATURE_COUNT = BODY_DECLARATION_FEATURE_COUNT + 6;
 
     /**
+     * The number of operations of the '<em>Abstract Method Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_METHOD_DECLARATION_OPERATION_COUNT = BODY_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractMethodInvocationImpl <em>Abstract Method Invocation</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -532,6 +569,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ABSTRACT_METHOD_INVOCATION_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 3;
+
+    /**
+     * The number of operations of the '<em>Abstract Method Invocation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_METHOD_INVOCATION_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractTypeDeclarationImpl <em>Abstract Type Declaration</em>}' class.
@@ -697,6 +743,15 @@ public interface JavaPackage extends EPackage {
     int ABSTRACT_TYPE_DECLARATION_FEATURE_COUNT = BODY_DECLARATION_FEATURE_COUNT + 6;
 
     /**
+     * The number of operations of the '<em>Abstract Type Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_TYPE_DECLARATION_OPERATION_COUNT = BODY_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ExpressionImpl <em>Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -741,6 +796,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int EXPRESSION_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXPRESSION_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractTypeQualifiedExpressionImpl <em>Abstract Type Qualified Expression</em>}' class.
@@ -796,6 +860,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ABSTRACT_TYPE_QUALIFIED_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Abstract Type Qualified Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_TYPE_QUALIFIED_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AbstractVariablesContainerImpl <em>Abstract Variables Container</em>}' class.
@@ -862,6 +935,15 @@ public interface JavaPackage extends EPackage {
     int ABSTRACT_VARIABLES_CONTAINER_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Abstract Variables Container</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_VARIABLES_CONTAINER_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AnnotationImpl <em>Annotation</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -924,6 +1006,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ANNOTATION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Annotation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANNOTATION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ArchiveImpl <em>Archive</em>}' class.
@@ -1026,6 +1117,15 @@ public interface JavaPackage extends EPackage {
     int ARCHIVE_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Archive</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ARCHIVE_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.StatementImpl <em>Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1070,6 +1170,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int STATEMENT_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int STATEMENT_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AssertStatementImpl <em>Assert Statement</em>}' class.
@@ -1134,6 +1243,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ASSERT_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Assert Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ASSERT_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AnnotationMemberValuePairImpl <em>Annotation Member Value Pair</em>}' class.
@@ -1225,6 +1343,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ANNOTATION_MEMBER_VALUE_PAIR_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Annotation Member Value Pair</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANNOTATION_MEMBER_VALUE_PAIR_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AnnotationTypeDeclarationImpl <em>Annotation Type Declaration</em>}' class.
@@ -1390,6 +1517,15 @@ public interface JavaPackage extends EPackage {
     int ANNOTATION_TYPE_DECLARATION_FEATURE_COUNT = ABSTRACT_TYPE_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Annotation Type Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANNOTATION_TYPE_DECLARATION_OPERATION_COUNT = ABSTRACT_TYPE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AnnotationTypeMemberDeclarationImpl <em>Annotation Type Member Declaration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1526,6 +1662,15 @@ public interface JavaPackage extends EPackage {
     int ANNOTATION_TYPE_MEMBER_DECLARATION_FEATURE_COUNT = BODY_DECLARATION_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Annotation Type Member Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANNOTATION_TYPE_MEMBER_DECLARATION_OPERATION_COUNT = BODY_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AnonymousClassDeclarationImpl <em>Anonymous Class Declaration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1590,6 +1735,15 @@ public interface JavaPackage extends EPackage {
     int ANONYMOUS_CLASS_DECLARATION_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Anonymous Class Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANONYMOUS_CLASS_DECLARATION_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ArrayAccessImpl <em>Array Access</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1652,6 +1806,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ARRAY_ACCESS_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Array Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ARRAY_ACCESS_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ArrayCreationImpl <em>Array Creation</em>}' class.
@@ -1727,6 +1890,15 @@ public interface JavaPackage extends EPackage {
     int ARRAY_CREATION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Array Creation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ARRAY_CREATION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ArrayInitializerImpl <em>Array Initializer</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1782,6 +1954,15 @@ public interface JavaPackage extends EPackage {
     int ARRAY_INITIALIZER_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Array Initializer</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ARRAY_INITIALIZER_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ArrayLengthAccessImpl <em>Array Length Access</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1835,6 +2016,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ARRAY_LENGTH_ACCESS_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Array Length Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ARRAY_LENGTH_ACCESS_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TypeImpl <em>Type</em>}' class.
@@ -1917,6 +2107,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int TYPE_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPE_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ArrayTypeImpl <em>Array Type</em>}' class.
@@ -2019,6 +2218,15 @@ public interface JavaPackage extends EPackage {
     int ARRAY_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Array Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ARRAY_TYPE_OPERATION_COUNT = TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.AssignmentImpl <em>Assignment</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2092,6 +2300,15 @@ public interface JavaPackage extends EPackage {
     int ASSIGNMENT_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Assignment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ASSIGNMENT_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.BooleanLiteralImpl <em>Boolean Literal</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2145,6 +2362,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int BOOLEAN_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Boolean Literal</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int BOOLEAN_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.CommentImpl <em>Comment</em>}' class.
@@ -2220,6 +2446,15 @@ public interface JavaPackage extends EPackage {
     int COMMENT_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Comment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int COMMENT_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.BlockCommentImpl <em>Block Comment</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2293,6 +2528,15 @@ public interface JavaPackage extends EPackage {
     int BLOCK_COMMENT_FEATURE_COUNT = COMMENT_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Block Comment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int BLOCK_COMMENT_OPERATION_COUNT = COMMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.BlockImpl <em>Block</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2348,6 +2592,15 @@ public interface JavaPackage extends EPackage {
     int BLOCK_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Block</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int BLOCK_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.BreakStatementImpl <em>Break Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2401,6 +2654,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int BREAK_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Break Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int BREAK_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.CastExpressionImpl <em>Cast Expression</em>}' class.
@@ -2467,6 +2729,15 @@ public interface JavaPackage extends EPackage {
     int CAST_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Cast Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CAST_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.CatchClauseImpl <em>Catch Clause</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2531,6 +2802,15 @@ public interface JavaPackage extends EPackage {
     int CATCH_CLAUSE_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Catch Clause</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CATCH_CLAUSE_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.CharacterLiteralImpl <em>Character Literal</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2584,6 +2864,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int CHARACTER_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Character Literal</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHARACTER_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ClassFileImpl <em>Class File</em>}' class.
@@ -2695,6 +2984,15 @@ public interface JavaPackage extends EPackage {
     int CLASS_FILE_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 4;
 
     /**
+     * The number of operations of the '<em>Class File</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CLASS_FILE_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ClassInstanceCreationImpl <em>Class Instance Creation</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2793,6 +3091,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int CLASS_INSTANCE_CREATION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 6;
+
+    /**
+     * The number of operations of the '<em>Class Instance Creation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CLASS_INSTANCE_CREATION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ConstructorDeclarationImpl <em>Constructor Declaration</em>}' class.
@@ -2958,6 +3265,15 @@ public interface JavaPackage extends EPackage {
     int CONSTRUCTOR_DECLARATION_FEATURE_COUNT = ABSTRACT_METHOD_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Constructor Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONSTRUCTOR_DECLARATION_OPERATION_COUNT = ABSTRACT_METHOD_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ConditionalExpressionImpl <em>Conditional Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3031,6 +3347,15 @@ public interface JavaPackage extends EPackage {
     int CONDITIONAL_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Conditional Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONDITIONAL_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ConstructorInvocationImpl <em>Constructor Invocation</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3102,6 +3427,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int CONSTRUCTOR_INVOCATION_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 3;
+
+    /**
+     * The number of operations of the '<em>Constructor Invocation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONSTRUCTOR_INVOCATION_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TypeDeclarationImpl <em>Type Declaration</em>}' class.
@@ -3274,6 +3608,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int TYPE_DECLARATION_FEATURE_COUNT = ABSTRACT_TYPE_DECLARATION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Type Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPE_DECLARATION_OPERATION_COUNT = ABSTRACT_TYPE_DECLARATION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ClassDeclarationImpl <em>Class Declaration</em>}' class.
@@ -3457,6 +3800,15 @@ public interface JavaPackage extends EPackage {
     int CLASS_DECLARATION_FEATURE_COUNT = TYPE_DECLARATION_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Class Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CLASS_DECLARATION_OPERATION_COUNT = TYPE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.CompilationUnitImpl <em>Compilation Unit</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3575,6 +3927,15 @@ public interface JavaPackage extends EPackage {
     int COMPILATION_UNIT_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 5;
 
     /**
+     * The number of operations of the '<em>Compilation Unit</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int COMPILATION_UNIT_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ContinueStatementImpl <em>Continue Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3628,6 +3989,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int CONTINUE_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Continue Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONTINUE_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.DoStatementImpl <em>Do Statement</em>}' class.
@@ -3694,6 +4064,15 @@ public interface JavaPackage extends EPackage {
     int DO_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Do Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DO_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.EmptyStatementImpl <em>Empty Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3738,6 +4117,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int EMPTY_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Empty Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EMPTY_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.EnhancedForStatementImpl <em>Enhanced For Statement</em>}' class.
@@ -3811,6 +4199,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ENHANCED_FOR_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 3;
+
+    /**
+     * The number of operations of the '<em>Enhanced For Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ENHANCED_FOR_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.EnumConstantDeclarationImpl <em>Enum Constant Declaration</em>}' class.
@@ -3965,6 +4362,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int ENUM_CONSTANT_DECLARATION_FEATURE_COUNT = BODY_DECLARATION_FEATURE_COUNT + 5;
+
+    /**
+     * The number of operations of the '<em>Enum Constant Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ENUM_CONSTANT_DECLARATION_OPERATION_COUNT = BODY_DECLARATION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.EnumDeclarationImpl <em>Enum Declaration</em>}' class.
@@ -4139,6 +4545,15 @@ public interface JavaPackage extends EPackage {
     int ENUM_DECLARATION_FEATURE_COUNT = ABSTRACT_TYPE_DECLARATION_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Enum Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ENUM_DECLARATION_OPERATION_COUNT = ABSTRACT_TYPE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ExpressionStatementImpl <em>Expression Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4192,6 +4607,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int EXPRESSION_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Expression Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXPRESSION_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.FieldAccessImpl <em>Field Access</em>}' class.
@@ -4256,6 +4680,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int FIELD_ACCESS_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Field Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FIELD_ACCESS_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.FieldDeclarationImpl <em>Field Declaration</em>}' class.
@@ -4385,6 +4818,15 @@ public interface JavaPackage extends EPackage {
     int FIELD_DECLARATION_FEATURE_COUNT = BODY_DECLARATION_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Field Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FIELD_DECLARATION_OPERATION_COUNT = BODY_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ForStatementImpl <em>For Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4467,6 +4909,15 @@ public interface JavaPackage extends EPackage {
     int FOR_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 4;
 
     /**
+     * The number of operations of the '<em>For Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FOR_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.IfStatementImpl <em>If Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4540,6 +4991,15 @@ public interface JavaPackage extends EPackage {
     int IF_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>If Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IF_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ImportDeclarationImpl <em>Import Declaration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4602,6 +5062,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int IMPORT_DECLARATION_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Import Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT_DECLARATION_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.InfixExpressionImpl <em>Infix Expression</em>}' class.
@@ -4684,6 +5153,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int INFIX_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 4;
+
+    /**
+     * The number of operations of the '<em>Infix Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INFIX_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.InitializerImpl <em>Initializer</em>}' class.
@@ -4804,6 +5282,15 @@ public interface JavaPackage extends EPackage {
     int INITIALIZER_FEATURE_COUNT = BODY_DECLARATION_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Initializer</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INITIALIZER_OPERATION_COUNT = BODY_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.InstanceofExpressionImpl <em>Instanceof Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4866,6 +5353,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int INSTANCEOF_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Instanceof Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INSTANCEOF_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.InterfaceDeclarationImpl <em>Interface Declaration</em>}' class.
@@ -5040,6 +5536,15 @@ public interface JavaPackage extends EPackage {
     int INTERFACE_DECLARATION_FEATURE_COUNT = TYPE_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Interface Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INTERFACE_DECLARATION_OPERATION_COUNT = TYPE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.JavadocImpl <em>Javadoc</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5120,6 +5625,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int JAVADOC_FEATURE_COUNT = COMMENT_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Javadoc</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int JAVADOC_OPERATION_COUNT = COMMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.LabeledStatementImpl <em>Labeled Statement</em>}' class.
@@ -5222,6 +5736,15 @@ public interface JavaPackage extends EPackage {
     int LABELED_STATEMENT_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Labeled Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LABELED_STATEMENT_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.LineCommentImpl <em>Line Comment</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5295,6 +5818,15 @@ public interface JavaPackage extends EPackage {
     int LINE_COMMENT_FEATURE_COUNT = COMMENT_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Line Comment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LINE_COMMENT_OPERATION_COUNT = COMMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ManifestImpl <em>Manifest</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5330,6 +5862,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int MANIFEST_FEATURE_COUNT = 2;
+
+    /**
+     * The number of operations of the '<em>Manifest</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MANIFEST_OPERATION_COUNT = 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ManifestAttributeImpl <em>Manifest Attribute</em>}' class.
@@ -5369,6 +5910,15 @@ public interface JavaPackage extends EPackage {
     int MANIFEST_ATTRIBUTE_FEATURE_COUNT = 2;
 
     /**
+     * The number of operations of the '<em>Manifest Attribute</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MANIFEST_ATTRIBUTE_OPERATION_COUNT = 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ManifestEntryImpl <em>Manifest Entry</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5404,6 +5954,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int MANIFEST_ENTRY_FEATURE_COUNT = 2;
+
+    /**
+     * The number of operations of the '<em>Manifest Entry</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MANIFEST_ENTRY_OPERATION_COUNT = 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.MemberRefImpl <em>Member Ref</em>}' class.
@@ -5468,6 +6027,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int MEMBER_REF_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Member Ref</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MEMBER_REF_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.MethodDeclarationImpl <em>Method Declaration</em>}' class.
@@ -5669,6 +6237,15 @@ public interface JavaPackage extends EPackage {
     int METHOD_DECLARATION_FEATURE_COUNT = ABSTRACT_METHOD_DECLARATION_FEATURE_COUNT + 4;
 
     /**
+     * The number of operations of the '<em>Method Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int METHOD_DECLARATION_OPERATION_COUNT = ABSTRACT_METHOD_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.MethodInvocationImpl <em>Method Invocation</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5751,6 +6328,15 @@ public interface JavaPackage extends EPackage {
     int METHOD_INVOCATION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 4;
 
     /**
+     * The number of operations of the '<em>Method Invocation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int METHOD_INVOCATION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.MethodRefImpl <em>Method Ref</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5824,6 +6410,15 @@ public interface JavaPackage extends EPackage {
     int METHOD_REF_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Method Ref</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int METHOD_REF_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.MethodRefParameterImpl <em>Method Ref Parameter</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5895,6 +6490,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int METHOD_REF_PARAMETER_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 3;
+
+    /**
+     * The number of operations of the '<em>Method Ref Parameter</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int METHOD_REF_PARAMETER_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ModelImpl <em>Model</em>}' class.
@@ -5977,6 +6581,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int MODEL_FEATURE_COUNT = 7;
+
+    /**
+     * The number of operations of the '<em>Model</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MODEL_OPERATION_COUNT = 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ModifierImpl <em>Modifier</em>}' class.
@@ -6133,6 +6746,15 @@ public interface JavaPackage extends EPackage {
     int MODIFIER_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 12;
 
     /**
+     * The number of operations of the '<em>Modifier</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MODIFIER_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.NamespaceAccessImpl <em>Namespace Access</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6177,6 +6799,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int NAMESPACE_ACCESS_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Namespace Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NAMESPACE_ACCESS_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.NumberLiteralImpl <em>Number Literal</em>}' class.
@@ -6234,6 +6865,15 @@ public interface JavaPackage extends EPackage {
     int NUMBER_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Number Literal</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NUMBER_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.NullLiteralImpl <em>Null Literal</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6278,6 +6918,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int NULL_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Null Literal</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NULL_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PackageImpl <em>Package</em>}' class.
@@ -6398,6 +7047,15 @@ public interface JavaPackage extends EPackage {
     int PACKAGE_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 5;
 
     /**
+     * The number of operations of the '<em>Package</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACKAGE_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PackageAccessImpl <em>Package Access</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6460,6 +7118,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int PACKAGE_ACCESS_FEATURE_COUNT = NAMESPACE_ACCESS_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Package Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PACKAGE_ACCESS_OPERATION_COUNT = NAMESPACE_ACCESS_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ParameterizedTypeImpl <em>Parameterized Type</em>}' class.
@@ -6562,6 +7229,15 @@ public interface JavaPackage extends EPackage {
     int PARAMETERIZED_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Parameterized Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PARAMETERIZED_TYPE_OPERATION_COUNT = TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ParenthesizedExpressionImpl <em>Parenthesized Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6615,6 +7291,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int PARENTHESIZED_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Parenthesized Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PARENTHESIZED_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PostfixExpressionImpl <em>Postfix Expression</em>}' class.
@@ -6681,6 +7366,15 @@ public interface JavaPackage extends EPackage {
     int POSTFIX_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Postfix Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int POSTFIX_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrefixExpressionImpl <em>Prefix Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6743,6 +7437,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int PREFIX_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Prefix Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PREFIX_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeImpl <em>Primitive Type</em>}' class.
@@ -6827,6 +7530,15 @@ public interface JavaPackage extends EPackage {
     int PRIMITIVE_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Primitive Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_OPERATION_COUNT = TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeBooleanImpl <em>Primitive Type Boolean</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6907,6 +7619,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int PRIMITIVE_TYPE_BOOLEAN_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Primitive Type Boolean</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_BOOLEAN_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeByteImpl <em>Primitive Type Byte</em>}' class.
@@ -6991,6 +7712,15 @@ public interface JavaPackage extends EPackage {
     int PRIMITIVE_TYPE_BYTE_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Primitive Type Byte</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_BYTE_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeCharImpl <em>Primitive Type Char</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -7071,6 +7801,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int PRIMITIVE_TYPE_CHAR_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Primitive Type Char</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_CHAR_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeDoubleImpl <em>Primitive Type Double</em>}' class.
@@ -7155,6 +7894,15 @@ public interface JavaPackage extends EPackage {
     int PRIMITIVE_TYPE_DOUBLE_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Primitive Type Double</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_DOUBLE_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeShortImpl <em>Primitive Type Short</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -7235,6 +7983,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int PRIMITIVE_TYPE_SHORT_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Primitive Type Short</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_SHORT_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeFloatImpl <em>Primitive Type Float</em>}' class.
@@ -7319,6 +8076,15 @@ public interface JavaPackage extends EPackage {
     int PRIMITIVE_TYPE_FLOAT_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Primitive Type Float</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_FLOAT_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeIntImpl <em>Primitive Type Int</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -7399,6 +8165,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int PRIMITIVE_TYPE_INT_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Primitive Type Int</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_INT_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeLongImpl <em>Primitive Type Long</em>}' class.
@@ -7483,6 +8258,15 @@ public interface JavaPackage extends EPackage {
     int PRIMITIVE_TYPE_LONG_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Primitive Type Long</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_LONG_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.PrimitiveTypeVoidImpl <em>Primitive Type Void</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -7565,6 +8349,15 @@ public interface JavaPackage extends EPackage {
     int PRIMITIVE_TYPE_VOID_FEATURE_COUNT = PRIMITIVE_TYPE_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Primitive Type Void</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int PRIMITIVE_TYPE_VOID_OPERATION_COUNT = PRIMITIVE_TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ReturnStatementImpl <em>Return Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -7618,6 +8411,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int RETURN_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Return Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RETURN_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SingleVariableAccessImpl <em>Single Variable Access</em>}' class.
@@ -7682,6 +8484,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int SINGLE_VARIABLE_ACCESS_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Single Variable Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SINGLE_VARIABLE_ACCESS_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationImpl <em>Variable Declaration</em>}' class.
@@ -7782,6 +8593,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int VARIABLE_DECLARATION_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 3;
+
+    /**
+     * The number of operations of the '<em>Variable Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VARIABLE_DECLARATION_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SingleVariableDeclarationImpl <em>Single Variable Declaration</em>}' class.
@@ -7947,6 +8767,15 @@ public interface JavaPackage extends EPackage {
     int SINGLE_VARIABLE_DECLARATION_FEATURE_COUNT = VARIABLE_DECLARATION_FEATURE_COUNT + 7;
 
     /**
+     * The number of operations of the '<em>Single Variable Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SINGLE_VARIABLE_DECLARATION_OPERATION_COUNT = VARIABLE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.StringLiteralImpl <em>String Literal</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8000,6 +8829,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int STRING_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>String Literal</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int STRING_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SuperConstructorInvocationImpl <em>Super Constructor Invocation</em>}' class.
@@ -8084,6 +8922,15 @@ public interface JavaPackage extends EPackage {
     int SUPER_CONSTRUCTOR_INVOCATION_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 4;
 
     /**
+     * The number of operations of the '<em>Super Constructor Invocation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUPER_CONSTRUCTOR_INVOCATION_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SuperFieldAccessImpl <em>Super Field Access</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8146,6 +8993,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int SUPER_FIELD_ACCESS_FEATURE_COUNT = ABSTRACT_TYPE_QUALIFIED_EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Super Field Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUPER_FIELD_ACCESS_OPERATION_COUNT = ABSTRACT_TYPE_QUALIFIED_EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SuperMethodInvocationImpl <em>Super Method Invocation</em>}' class.
@@ -8230,6 +9086,15 @@ public interface JavaPackage extends EPackage {
     int SUPER_METHOD_INVOCATION_FEATURE_COUNT = ABSTRACT_TYPE_QUALIFIED_EXPRESSION_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Super Method Invocation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUPER_METHOD_INVOCATION_OPERATION_COUNT = ABSTRACT_TYPE_QUALIFIED_EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SwitchCaseImpl <em>Switch Case</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8292,6 +9157,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int SWITCH_CASE_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Switch Case</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SWITCH_CASE_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SwitchStatementImpl <em>Switch Statement</em>}' class.
@@ -8358,6 +9232,15 @@ public interface JavaPackage extends EPackage {
     int SWITCH_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Switch Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SWITCH_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.SynchronizedStatementImpl <em>Synchronized Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8420,6 +9303,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int SYNCHRONIZED_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Synchronized Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SYNCHRONIZED_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TagElementImpl <em>Tag Element</em>}' class.
@@ -8486,6 +9378,15 @@ public interface JavaPackage extends EPackage {
     int TAG_ELEMENT_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Tag Element</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TAG_ELEMENT_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TextElementImpl <em>Text Element</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8539,6 +9440,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int TEXT_ELEMENT_FEATURE_COUNT = AST_NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Text Element</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TEXT_ELEMENT_OPERATION_COUNT = AST_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ThisExpressionImpl <em>This Expression</em>}' class.
@@ -8596,6 +9506,15 @@ public interface JavaPackage extends EPackage {
     int THIS_EXPRESSION_FEATURE_COUNT = ABSTRACT_TYPE_QUALIFIED_EXPRESSION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>This Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int THIS_EXPRESSION_OPERATION_COUNT = ABSTRACT_TYPE_QUALIFIED_EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.ThrowStatementImpl <em>Throw Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8649,6 +9568,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int THROW_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Throw Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int THROW_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TryStatementImpl <em>Try Statement</em>}' class.
@@ -8724,6 +9652,15 @@ public interface JavaPackage extends EPackage {
     int TRY_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 3;
 
     /**
+     * The number of operations of the '<em>Try Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TRY_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TypeAccessImpl <em>Type Access</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8788,6 +9725,15 @@ public interface JavaPackage extends EPackage {
     int TYPE_ACCESS_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Type Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPE_ACCESS_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TypeDeclarationStatementImpl <em>Type Declaration Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8843,6 +9789,15 @@ public interface JavaPackage extends EPackage {
     int TYPE_DECLARATION_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Type Declaration Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPE_DECLARATION_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TypeLiteralImpl <em>Type Literal</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -8896,6 +9851,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int TYPE_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Type Literal</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPE_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.TypeParameterImpl <em>Type Parameter</em>}' class.
@@ -8989,6 +9953,15 @@ public interface JavaPackage extends EPackage {
     int TYPE_PARAMETER_FEATURE_COUNT = TYPE_FEATURE_COUNT + 1;
 
     /**
+     * The number of operations of the '<em>Type Parameter</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPE_PARAMETER_OPERATION_COUNT = TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedItemImpl <em>Unresolved Item</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9062,6 +10035,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_ITEM_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Item</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_ITEM_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedItemAccessImpl <em>Unresolved Item Access</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9124,6 +10106,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int UNRESOLVED_ITEM_ACCESS_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>Unresolved Item Access</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_ITEM_ACCESS_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedAnnotationDeclarationImpl <em>Unresolved Annotation Declaration</em>}' class.
@@ -9289,6 +10280,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_ANNOTATION_DECLARATION_FEATURE_COUNT = ANNOTATION_TYPE_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Annotation Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_ANNOTATION_DECLARATION_OPERATION_COUNT = ANNOTATION_TYPE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedAnnotationTypeMemberDeclarationImpl <em>Unresolved Annotation Type Member Declaration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9423,6 +10423,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int UNRESOLVED_ANNOTATION_TYPE_MEMBER_DECLARATION_FEATURE_COUNT = ANNOTATION_TYPE_MEMBER_DECLARATION_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Unresolved Annotation Type Member Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_ANNOTATION_TYPE_MEMBER_DECLARATION_OPERATION_COUNT = ANNOTATION_TYPE_MEMBER_DECLARATION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedClassDeclarationImpl <em>Unresolved Class Declaration</em>}' class.
@@ -9606,6 +10615,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_CLASS_DECLARATION_FEATURE_COUNT = CLASS_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Class Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_CLASS_DECLARATION_OPERATION_COUNT = CLASS_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedEnumDeclarationImpl <em>Unresolved Enum Declaration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9776,6 +10794,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int UNRESOLVED_ENUM_DECLARATION_FEATURE_COUNT = ENUM_DECLARATION_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Unresolved Enum Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_ENUM_DECLARATION_OPERATION_COUNT = ENUM_DECLARATION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedInterfaceDeclarationImpl <em>Unresolved Interface Declaration</em>}' class.
@@ -9950,6 +10977,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_INTERFACE_DECLARATION_FEATURE_COUNT = INTERFACE_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Interface Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_INTERFACE_DECLARATION_OPERATION_COUNT = INTERFACE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedLabeledStatementImpl <em>Unresolved Labeled Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -10048,6 +11084,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int UNRESOLVED_LABELED_STATEMENT_FEATURE_COUNT = LABELED_STATEMENT_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Unresolved Labeled Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_LABELED_STATEMENT_OPERATION_COUNT = LABELED_STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedMethodDeclarationImpl <em>Unresolved Method Declaration</em>}' class.
@@ -10249,6 +11294,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_METHOD_DECLARATION_FEATURE_COUNT = METHOD_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Method Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_METHOD_DECLARATION_OPERATION_COUNT = METHOD_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedSingleVariableDeclarationImpl <em>Unresolved Single Variable Declaration</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -10412,6 +11466,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_SINGLE_VARIABLE_DECLARATION_FEATURE_COUNT = SINGLE_VARIABLE_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Single Variable Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_SINGLE_VARIABLE_DECLARATION_OPERATION_COUNT = SINGLE_VARIABLE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedTypeImpl <em>Unresolved Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -10492,6 +11555,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int UNRESOLVED_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Unresolved Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_TYPE_OPERATION_COUNT = TYPE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedTypeDeclarationImpl <em>Unresolved Type Declaration</em>}' class.
@@ -10657,6 +11729,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_TYPE_DECLARATION_FEATURE_COUNT = ABSTRACT_TYPE_DECLARATION_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Type Declaration</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_TYPE_DECLARATION_OPERATION_COUNT = ABSTRACT_TYPE_DECLARATION_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationFragmentImpl <em>Variable Declaration Fragment</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -10764,6 +11845,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int VARIABLE_DECLARATION_FRAGMENT_FEATURE_COUNT = VARIABLE_DECLARATION_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Variable Declaration Fragment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VARIABLE_DECLARATION_FRAGMENT_OPERATION_COUNT = VARIABLE_DECLARATION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.UnresolvedVariableDeclarationFragmentImpl <em>Unresolved Variable Declaration Fragment</em>}' class.
@@ -10875,6 +11965,15 @@ public interface JavaPackage extends EPackage {
     int UNRESOLVED_VARIABLE_DECLARATION_FRAGMENT_FEATURE_COUNT = VARIABLE_DECLARATION_FRAGMENT_FEATURE_COUNT + 0;
 
     /**
+     * The number of operations of the '<em>Unresolved Variable Declaration Fragment</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int UNRESOLVED_VARIABLE_DECLARATION_FRAGMENT_OPERATION_COUNT = VARIABLE_DECLARATION_FRAGMENT_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationExpressionImpl <em>Variable Declaration Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -10955,6 +12054,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int VARIABLE_DECLARATION_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 4;
+
+    /**
+     * The number of operations of the '<em>Variable Declaration Expression</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VARIABLE_DECLARATION_EXPRESSION_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationStatementImpl <em>Variable Declaration Statement</em>}' class.
@@ -11046,6 +12154,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int VARIABLE_DECLARATION_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 5;
+
+    /**
+     * The number of operations of the '<em>Variable Declaration Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VARIABLE_DECLARATION_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.WildCardTypeImpl <em>Wild Card Type</em>}' class.
@@ -11148,6 +12265,15 @@ public interface JavaPackage extends EPackage {
     int WILD_CARD_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 2;
 
     /**
+     * The number of operations of the '<em>Wild Card Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int WILD_CARD_TYPE_OPERATION_COUNT = TYPE_OPERATION_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.emf.impl.WhileStatementImpl <em>While Statement</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -11210,6 +12336,15 @@ public interface JavaPackage extends EPackage {
      * @ordered
      */
     int WHILE_STATEMENT_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 2;
+
+    /**
+     * The number of operations of the '<em>While Statement</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int WHILE_STATEMENT_OPERATION_COUNT = STATEMENT_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link org.eclipse.gmt.modisco.java.AssignmentKind <em>Assignment Kind</em>}' enum.

@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaFactory
  * @model kind="package"
+ *        annotation="http://www.eclipse.org/emf/2002/GenModel modelDirectory='/org.eclipse.gmt.modisco.java.neoemf/src' metaDataPackageSuffix='neoemf.meta' classPackageSuffix='neoemf.impl' utilityPackageSuffix='neoemf.util' providerPackageSuffix='neoemf.provider' presentationPackageSuffix='neoemf.presentation' testsPackageSuffix='neoemf.tests' rootExtendsInterface='fr.inria.atlanmod.neoemf.core.PersistentEObject' rootExtendsClass='fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl' reflectiveDelegation='true' importerID='fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter' featureDelegation='Reflective' complianceLevel='7.0' basePackage='org.eclipse.gmt.modisco'"
  * @generated
  */
 public interface JavaPackage extends EPackage {

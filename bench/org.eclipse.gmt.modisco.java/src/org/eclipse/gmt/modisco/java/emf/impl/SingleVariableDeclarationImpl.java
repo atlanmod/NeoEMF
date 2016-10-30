@@ -256,6 +256,16 @@ public class SingleVariableDeclarationImpl extends VariableDeclarationImpl imple
      */
     public AbstractMethodDeclaration getMethodDeclaration() {
         if (eContainerFeatureID() != JavaPackage.SINGLE_VARIABLE_DECLARATION__METHOD_DECLARATION) return null;
+        return (AbstractMethodDeclaration)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AbstractMethodDeclaration basicGetMethodDeclaration() {
+        if (eContainerFeatureID() != JavaPackage.SINGLE_VARIABLE_DECLARATION__METHOD_DECLARATION) return null;
         return (AbstractMethodDeclaration)eInternalContainer();
     }
 
@@ -297,6 +307,16 @@ public class SingleVariableDeclarationImpl extends VariableDeclarationImpl imple
      */
     public CatchClause getCatchClause() {
         if (eContainerFeatureID() != JavaPackage.SINGLE_VARIABLE_DECLARATION__CATCH_CLAUSE) return null;
+        return (CatchClause)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public CatchClause basicGetCatchClause() {
+        if (eContainerFeatureID() != JavaPackage.SINGLE_VARIABLE_DECLARATION__CATCH_CLAUSE) return null;
         return (CatchClause)eInternalContainer();
     }
 
@@ -337,6 +357,16 @@ public class SingleVariableDeclarationImpl extends VariableDeclarationImpl imple
      * @generated
      */
     public EnhancedForStatement getEnhancedForStatement() {
+        if (eContainerFeatureID() != JavaPackage.SINGLE_VARIABLE_DECLARATION__ENHANCED_FOR_STATEMENT) return null;
+        return (EnhancedForStatement)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EnhancedForStatement basicGetEnhancedForStatement() {
         if (eContainerFeatureID() != JavaPackage.SINGLE_VARIABLE_DECLARATION__ENHANCED_FOR_STATEMENT) return null;
         return (EnhancedForStatement)eInternalContainer();
     }
@@ -459,11 +489,14 @@ public class SingleVariableDeclarationImpl extends VariableDeclarationImpl imple
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__ANNOTATIONS:
                 return getAnnotations();
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__METHOD_DECLARATION:
-                return getMethodDeclaration();
+                if (resolve) return getMethodDeclaration();
+                return basicGetMethodDeclaration();
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__CATCH_CLAUSE:
-                return getCatchClause();
+                if (resolve) return getCatchClause();
+                return basicGetCatchClause();
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__ENHANCED_FOR_STATEMENT:
-                return getEnhancedForStatement();
+                if (resolve) return getEnhancedForStatement();
+                return basicGetEnhancedForStatement();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -553,11 +586,11 @@ public class SingleVariableDeclarationImpl extends VariableDeclarationImpl imple
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__ANNOTATIONS:
                 return annotations != null && !annotations.isEmpty();
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__METHOD_DECLARATION:
-                return getMethodDeclaration() != null;
+                return basicGetMethodDeclaration() != null;
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__CATCH_CLAUSE:
-                return getCatchClause() != null;
+                return basicGetCatchClause() != null;
             case JavaPackage.SINGLE_VARIABLE_DECLARATION__ENHANCED_FOR_STATEMENT:
-                return getEnhancedForStatement() != null;
+                return basicGetEnhancedForStatement() != null;
         }
         return super.eIsSet(featureID);
     }

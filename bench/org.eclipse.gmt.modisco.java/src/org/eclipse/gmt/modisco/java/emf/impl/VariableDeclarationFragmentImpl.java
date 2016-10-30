@@ -70,6 +70,16 @@ public class VariableDeclarationFragmentImpl extends VariableDeclarationImpl imp
      */
     public AbstractVariablesContainer getVariablesContainer() {
         if (eContainerFeatureID() != JavaPackage.VARIABLE_DECLARATION_FRAGMENT__VARIABLES_CONTAINER) return null;
+        return (AbstractVariablesContainer)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AbstractVariablesContainer basicGetVariablesContainer() {
+        if (eContainerFeatureID() != JavaPackage.VARIABLE_DECLARATION_FRAGMENT__VARIABLES_CONTAINER) return null;
         return (AbstractVariablesContainer)eInternalContainer();
     }
 
@@ -157,7 +167,8 @@ public class VariableDeclarationFragmentImpl extends VariableDeclarationImpl imp
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case JavaPackage.VARIABLE_DECLARATION_FRAGMENT__VARIABLES_CONTAINER:
-                return getVariablesContainer();
+                if (resolve) return getVariablesContainer();
+                return basicGetVariablesContainer();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -201,7 +212,7 @@ public class VariableDeclarationFragmentImpl extends VariableDeclarationImpl imp
     public boolean eIsSet(int featureID) {
         switch (featureID) {
             case JavaPackage.VARIABLE_DECLARATION_FRAGMENT__VARIABLES_CONTAINER:
-                return getVariablesContainer() != null;
+                return basicGetVariablesContainer() != null;
         }
         return super.eIsSet(featureID);
     }

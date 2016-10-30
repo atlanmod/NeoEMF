@@ -184,6 +184,16 @@ public abstract class AbstractTypeDeclarationImpl extends BodyDeclarationImpl im
      */
     public org.eclipse.gmt.modisco.java.Package getPackage() {
         if (eContainerFeatureID() != JavaPackage.ABSTRACT_TYPE_DECLARATION__PACKAGE) return null;
+        return (org.eclipse.gmt.modisco.java.Package)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public org.eclipse.gmt.modisco.java.Package basicGetPackage() {
+        if (eContainerFeatureID() != JavaPackage.ABSTRACT_TYPE_DECLARATION__PACKAGE) return null;
         return (org.eclipse.gmt.modisco.java.Package)eInternalContainer();
     }
 
@@ -306,7 +316,8 @@ public abstract class AbstractTypeDeclarationImpl extends BodyDeclarationImpl im
             case JavaPackage.ABSTRACT_TYPE_DECLARATION__COMMENTS_AFTER_BODY:
                 return getCommentsAfterBody();
             case JavaPackage.ABSTRACT_TYPE_DECLARATION__PACKAGE:
-                return getPackage();
+                if (resolve) return getPackage();
+                return basicGetPackage();
             case JavaPackage.ABSTRACT_TYPE_DECLARATION__SUPER_INTERFACES:
                 return getSuperInterfaces();
         }
@@ -396,7 +407,7 @@ public abstract class AbstractTypeDeclarationImpl extends BodyDeclarationImpl im
             case JavaPackage.ABSTRACT_TYPE_DECLARATION__COMMENTS_AFTER_BODY:
                 return commentsAfterBody != null && !commentsAfterBody.isEmpty();
             case JavaPackage.ABSTRACT_TYPE_DECLARATION__PACKAGE:
-                return getPackage() != null;
+                return basicGetPackage() != null;
             case JavaPackage.ABSTRACT_TYPE_DECLARATION__SUPER_INTERFACES:
                 return superInterfaces != null && !superInterfaces.isEmpty();
         }

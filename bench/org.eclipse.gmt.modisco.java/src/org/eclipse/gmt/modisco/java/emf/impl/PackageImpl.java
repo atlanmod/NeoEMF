@@ -124,6 +124,16 @@ public class PackageImpl extends NamedElementImpl implements org.eclipse.gmt.mod
      */
     public Model getModel() {
         if (eContainerFeatureID() != JavaPackage.PACKAGE__MODEL) return null;
+        return (Model)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Model basicGetModel() {
+        if (eContainerFeatureID() != JavaPackage.PACKAGE__MODEL) return null;
         return (Model)eInternalContainer();
     }
 
@@ -176,6 +186,16 @@ public class PackageImpl extends NamedElementImpl implements org.eclipse.gmt.mod
      * @generated
      */
     public org.eclipse.gmt.modisco.java.Package getPackage() {
+        if (eContainerFeatureID() != JavaPackage.PACKAGE__PACKAGE) return null;
+        return (org.eclipse.gmt.modisco.java.Package)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public org.eclipse.gmt.modisco.java.Package basicGetPackage() {
         if (eContainerFeatureID() != JavaPackage.PACKAGE__PACKAGE) return null;
         return (org.eclipse.gmt.modisco.java.Package)eInternalContainer();
     }
@@ -299,11 +319,13 @@ public class PackageImpl extends NamedElementImpl implements org.eclipse.gmt.mod
             case JavaPackage.PACKAGE__OWNED_ELEMENTS:
                 return getOwnedElements();
             case JavaPackage.PACKAGE__MODEL:
-                return getModel();
+                if (resolve) return getModel();
+                return basicGetModel();
             case JavaPackage.PACKAGE__OWNED_PACKAGES:
                 return getOwnedPackages();
             case JavaPackage.PACKAGE__PACKAGE:
-                return getPackage();
+                if (resolve) return getPackage();
+                return basicGetPackage();
             case JavaPackage.PACKAGE__USAGES_IN_PACKAGE_ACCESS:
                 return getUsagesInPackageAccess();
         }
@@ -379,11 +401,11 @@ public class PackageImpl extends NamedElementImpl implements org.eclipse.gmt.mod
             case JavaPackage.PACKAGE__OWNED_ELEMENTS:
                 return ownedElements != null && !ownedElements.isEmpty();
             case JavaPackage.PACKAGE__MODEL:
-                return getModel() != null;
+                return basicGetModel() != null;
             case JavaPackage.PACKAGE__OWNED_PACKAGES:
                 return ownedPackages != null && !ownedPackages.isEmpty();
             case JavaPackage.PACKAGE__PACKAGE:
-                return getPackage() != null;
+                return basicGetPackage() != null;
             case JavaPackage.PACKAGE__USAGES_IN_PACKAGE_ACCESS:
                 return usagesInPackageAccess != null && !usagesInPackageAccess.isEmpty();
         }

@@ -414,6 +414,16 @@ public class ModifierImpl extends ASTNodeImpl implements Modifier {
      */
     public BodyDeclaration getBodyDeclaration() {
         if (eContainerFeatureID() != JavaPackage.MODIFIER__BODY_DECLARATION) return null;
+        return (BodyDeclaration)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public BodyDeclaration basicGetBodyDeclaration() {
+        if (eContainerFeatureID() != JavaPackage.MODIFIER__BODY_DECLARATION) return null;
         return (BodyDeclaration)eInternalContainer();
     }
 
@@ -454,6 +464,16 @@ public class ModifierImpl extends ASTNodeImpl implements Modifier {
      * @generated
      */
     public SingleVariableDeclaration getSingleVariableDeclaration() {
+        if (eContainerFeatureID() != JavaPackage.MODIFIER__SINGLE_VARIABLE_DECLARATION) return null;
+        return (SingleVariableDeclaration)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SingleVariableDeclaration basicGetSingleVariableDeclaration() {
         if (eContainerFeatureID() != JavaPackage.MODIFIER__SINGLE_VARIABLE_DECLARATION) return null;
         return (SingleVariableDeclaration)eInternalContainer();
     }
@@ -496,6 +516,16 @@ public class ModifierImpl extends ASTNodeImpl implements Modifier {
      */
     public VariableDeclarationStatement getVariableDeclarationStatement() {
         if (eContainerFeatureID() != JavaPackage.MODIFIER__VARIABLE_DECLARATION_STATEMENT) return null;
+        return (VariableDeclarationStatement)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public VariableDeclarationStatement basicGetVariableDeclarationStatement() {
+        if (eContainerFeatureID() != JavaPackage.MODIFIER__VARIABLE_DECLARATION_STATEMENT) return null;
         return (VariableDeclarationStatement)eInternalContainer();
     }
 
@@ -536,6 +566,16 @@ public class ModifierImpl extends ASTNodeImpl implements Modifier {
      * @generated
      */
     public VariableDeclarationExpression getVariableDeclarationExpression() {
+        if (eContainerFeatureID() != JavaPackage.MODIFIER__VARIABLE_DECLARATION_EXPRESSION) return null;
+        return (VariableDeclarationExpression)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public VariableDeclarationExpression basicGetVariableDeclarationExpression() {
         if (eContainerFeatureID() != JavaPackage.MODIFIER__VARIABLE_DECLARATION_EXPRESSION) return null;
         return (VariableDeclarationExpression)eInternalContainer();
     }
@@ -664,13 +704,17 @@ public class ModifierImpl extends ASTNodeImpl implements Modifier {
             case JavaPackage.MODIFIER__SYNCHRONIZED:
                 return isSynchronized();
             case JavaPackage.MODIFIER__BODY_DECLARATION:
-                return getBodyDeclaration();
+                if (resolve) return getBodyDeclaration();
+                return basicGetBodyDeclaration();
             case JavaPackage.MODIFIER__SINGLE_VARIABLE_DECLARATION:
-                return getSingleVariableDeclaration();
+                if (resolve) return getSingleVariableDeclaration();
+                return basicGetSingleVariableDeclaration();
             case JavaPackage.MODIFIER__VARIABLE_DECLARATION_STATEMENT:
-                return getVariableDeclarationStatement();
+                if (resolve) return getVariableDeclarationStatement();
+                return basicGetVariableDeclarationStatement();
             case JavaPackage.MODIFIER__VARIABLE_DECLARATION_EXPRESSION:
-                return getVariableDeclarationExpression();
+                if (resolve) return getVariableDeclarationExpression();
+                return basicGetVariableDeclarationExpression();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -796,13 +840,13 @@ public class ModifierImpl extends ASTNodeImpl implements Modifier {
             case JavaPackage.MODIFIER__SYNCHRONIZED:
                 return synchronized_ != SYNCHRONIZED_EDEFAULT;
             case JavaPackage.MODIFIER__BODY_DECLARATION:
-                return getBodyDeclaration() != null;
+                return basicGetBodyDeclaration() != null;
             case JavaPackage.MODIFIER__SINGLE_VARIABLE_DECLARATION:
-                return getSingleVariableDeclaration() != null;
+                return basicGetSingleVariableDeclaration() != null;
             case JavaPackage.MODIFIER__VARIABLE_DECLARATION_STATEMENT:
-                return getVariableDeclarationStatement() != null;
+                return basicGetVariableDeclarationStatement() != null;
             case JavaPackage.MODIFIER__VARIABLE_DECLARATION_EXPRESSION:
-                return getVariableDeclarationExpression() != null;
+                return basicGetVariableDeclarationExpression() != null;
         }
         return super.eIsSet(featureID);
     }

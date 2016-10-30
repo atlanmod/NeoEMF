@@ -102,6 +102,16 @@ public abstract class BodyDeclarationImpl extends NamedElementImpl implements Bo
      */
     public AbstractTypeDeclaration getAbstractTypeDeclaration() {
         if (eContainerFeatureID() != JavaPackage.BODY_DECLARATION__ABSTRACT_TYPE_DECLARATION) return null;
+        return (AbstractTypeDeclaration)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AbstractTypeDeclaration basicGetAbstractTypeDeclaration() {
+        if (eContainerFeatureID() != JavaPackage.BODY_DECLARATION__ABSTRACT_TYPE_DECLARATION) return null;
         return (AbstractTypeDeclaration)eInternalContainer();
     }
 
@@ -154,6 +164,16 @@ public abstract class BodyDeclarationImpl extends NamedElementImpl implements Bo
      * @generated
      */
     public AnonymousClassDeclaration getAnonymousClassDeclarationOwner() {
+        if (eContainerFeatureID() != JavaPackage.BODY_DECLARATION__ANONYMOUS_CLASS_DECLARATION_OWNER) return null;
+        return (AnonymousClassDeclaration)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public AnonymousClassDeclaration basicGetAnonymousClassDeclarationOwner() {
         if (eContainerFeatureID() != JavaPackage.BODY_DECLARATION__ANONYMOUS_CLASS_DECLARATION_OWNER) return null;
         return (AnonymousClassDeclaration)eInternalContainer();
     }
@@ -301,11 +321,13 @@ public abstract class BodyDeclarationImpl extends NamedElementImpl implements Bo
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case JavaPackage.BODY_DECLARATION__ABSTRACT_TYPE_DECLARATION:
-                return getAbstractTypeDeclaration();
+                if (resolve) return getAbstractTypeDeclaration();
+                return basicGetAbstractTypeDeclaration();
             case JavaPackage.BODY_DECLARATION__ANNOTATIONS:
                 return getAnnotations();
             case JavaPackage.BODY_DECLARATION__ANONYMOUS_CLASS_DECLARATION_OWNER:
-                return getAnonymousClassDeclarationOwner();
+                if (resolve) return getAnonymousClassDeclarationOwner();
+                return basicGetAnonymousClassDeclarationOwner();
             case JavaPackage.BODY_DECLARATION__MODIFIER:
                 return getModifier();
         }
@@ -371,11 +393,11 @@ public abstract class BodyDeclarationImpl extends NamedElementImpl implements Bo
     public boolean eIsSet(int featureID) {
         switch (featureID) {
             case JavaPackage.BODY_DECLARATION__ABSTRACT_TYPE_DECLARATION:
-                return getAbstractTypeDeclaration() != null;
+                return basicGetAbstractTypeDeclaration() != null;
             case JavaPackage.BODY_DECLARATION__ANNOTATIONS:
                 return annotations != null && !annotations.isEmpty();
             case JavaPackage.BODY_DECLARATION__ANONYMOUS_CLASS_DECLARATION_OWNER:
-                return getAnonymousClassDeclarationOwner() != null;
+                return basicGetAnonymousClassDeclarationOwner() != null;
             case JavaPackage.BODY_DECLARATION__MODIFIER:
                 return modifier != null;
         }

@@ -3,11 +3,13 @@ Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Built-By: hudsonBuild
 Bundle-SymbolicName: org.eclipse.gmt.modisco.java.cdo;singleton:=true
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
  org.eclipse.emf.ecore;bundle-version="2.5.0";visibility:=reexport,
- org.eclipse.emf.cdo;bundle-version="2.0.0";visibility:=reexport,
  org.eclipse.emf.ecore.xmi;bundle-version="2.5.0";visibility:=reexport,
- org.eclipse.gmt.modisco.java
+ org.eclipse.emf.cdo;bundle-version="4.3.0",
+ org.eclipse.gmt.modisco.java,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.7.3",
+ org.eclipse.emf.ecore.xcore.lib;bundle-version="1.1.0"
 Bundle-Version: 0.11.1.201309110624
 Export-Package: org.eclipse.gmt.modisco.java,
  org.eclipse.gmt.modisco.java.cdo.impl,

@@ -100,6 +100,16 @@ public class AnonymousClassDeclarationImpl extends ASTNodeImpl implements Anonym
      */
     public ClassInstanceCreation getClassInstanceCreation() {
         if (eContainerFeatureID() != JavaPackage.ANONYMOUS_CLASS_DECLARATION__CLASS_INSTANCE_CREATION) return null;
+        return (ClassInstanceCreation)eContainer();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ClassInstanceCreation basicGetClassInstanceCreation() {
+        if (eContainerFeatureID() != JavaPackage.ANONYMOUS_CLASS_DECLARATION__CLASS_INSTANCE_CREATION) return null;
         return (ClassInstanceCreation)eInternalContainer();
     }
 
@@ -194,7 +204,8 @@ public class AnonymousClassDeclarationImpl extends ASTNodeImpl implements Anonym
             case JavaPackage.ANONYMOUS_CLASS_DECLARATION__BODY_DECLARATIONS:
                 return getBodyDeclarations();
             case JavaPackage.ANONYMOUS_CLASS_DECLARATION__CLASS_INSTANCE_CREATION:
-                return getClassInstanceCreation();
+                if (resolve) return getClassInstanceCreation();
+                return basicGetClassInstanceCreation();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -248,7 +259,7 @@ public class AnonymousClassDeclarationImpl extends ASTNodeImpl implements Anonym
             case JavaPackage.ANONYMOUS_CLASS_DECLARATION__BODY_DECLARATIONS:
                 return bodyDeclarations != null && !bodyDeclarations.isEmpty();
             case JavaPackage.ANONYMOUS_CLASS_DECLARATION__CLASS_INSTANCE_CREATION:
-                return getClassInstanceCreation() != null;
+                return basicGetClassInstanceCreation() != null;
         }
         return super.eIsSet(featureID);
     }
