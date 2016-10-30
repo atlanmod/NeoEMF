@@ -44,8 +44,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
 
 public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
@@ -143,20 +141,19 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(CachedManyDirectWriteBlueprintsRespirceEStoreImpl.class));
+        assertThat(eStore).isInstanceOf(CachedManyDirectWriteBlueprintsRespirceEStoreImpl.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
-
-    @Test(expected = InvalidDataStoreException.class)
+    @Test
     public void testCreatePersistentEStoreAutocommitOptionNoBase() throws InvalidDataStoreException {
         storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(AutocommitEStoreDecorator.class); // "Invalid EStore created";
+        assertThat(eStore).isInstanceOf(AutocommitEStoreDecorator.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
@@ -169,7 +166,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreDecorator.class));
+        assertThat(eStore).isInstanceOf(AutocommitEStoreDecorator.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
@@ -182,7 +179,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, Collections.emptyMap());
 
         PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat("Invalid EStore created", eStore, instanceOf(AutocommitEStoreDecorator.class));
+        assertThat(eStore).isInstanceOf(AutocommitEStoreDecorator.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
