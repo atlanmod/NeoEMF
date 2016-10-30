@@ -22,6 +22,7 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.Model#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Model#getOwnedElements <em>Owned Elements</em>}</li>
@@ -31,7 +32,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.gmt.modisco.java.Model#getClassFiles <em>Class Files</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Model#getArchives <em>Archives</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getModel()
  * @model

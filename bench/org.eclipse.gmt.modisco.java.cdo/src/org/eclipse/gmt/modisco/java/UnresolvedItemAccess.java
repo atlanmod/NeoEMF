@@ -19,11 +19,11 @@ package org.eclipse.gmt.modisco.java;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.UnresolvedItemAccess#getElement <em>Element</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.UnresolvedItemAccess#getQualifier <em>Qualifier</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getUnresolvedItemAccess()
  * @model

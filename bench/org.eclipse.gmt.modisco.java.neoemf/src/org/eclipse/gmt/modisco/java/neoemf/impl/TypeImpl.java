@@ -17,10 +17,10 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.TypeImpl#getUsagesInTypeAccess <em>Usages In Type Access</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

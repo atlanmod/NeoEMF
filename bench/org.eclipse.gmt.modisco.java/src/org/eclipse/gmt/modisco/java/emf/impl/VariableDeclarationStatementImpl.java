@@ -46,6 +46,7 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationStatementImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationStatementImpl#getFragments <em>Fragments</em>}</li>
@@ -53,7 +54,6 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationStatementImpl#getModifier <em>Modifier</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.VariableDeclarationStatementImpl#getAnnotations <em>Annotations</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -33,11 +33,11 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.PackageAccessImpl#getPackage <em>Package</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.PackageAccessImpl#getQualifier <em>Qualifier</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

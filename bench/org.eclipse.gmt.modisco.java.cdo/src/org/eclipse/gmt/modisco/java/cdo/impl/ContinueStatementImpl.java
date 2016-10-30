@@ -24,10 +24,10 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.ContinueStatementImpl#getLabel <em>Label</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -20,11 +20,11 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.VariableDeclarationExpression#getModifier <em>Modifier</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.VariableDeclarationExpression#getAnnotations <em>Annotations</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getVariableDeclarationExpression()
  * @model

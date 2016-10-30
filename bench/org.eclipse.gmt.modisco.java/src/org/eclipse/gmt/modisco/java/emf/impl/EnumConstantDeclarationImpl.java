@@ -45,6 +45,7 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.EnumConstantDeclarationImpl#getExtraArrayDimensions <em>Extra Array Dimensions</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.EnumConstantDeclarationImpl#getInitializer <em>Initializer</em>}</li>
@@ -52,7 +53,6 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.EnumConstantDeclarationImpl#getAnonymousClassDeclaration <em>Anonymous Class Declaration</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.EnumConstantDeclarationImpl#getArguments <em>Arguments</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

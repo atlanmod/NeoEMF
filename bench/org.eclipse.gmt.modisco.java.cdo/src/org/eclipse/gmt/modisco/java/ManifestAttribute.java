@@ -20,11 +20,11 @@ import org.eclipse.emf.cdo.CDOObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.ManifestAttribute#getKey <em>Key</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ManifestAttribute#getValue <em>Value</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getManifestAttribute()
  * @model

@@ -25,11 +25,11 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.MemberRefImpl#getMember <em>Member</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.MemberRefImpl#getQualifier <em>Qualifier</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

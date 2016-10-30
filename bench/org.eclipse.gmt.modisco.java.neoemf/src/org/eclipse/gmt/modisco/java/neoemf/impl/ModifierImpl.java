@@ -20,6 +20,7 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModifierImpl#getVisibility <em>Visibility</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModifierImpl#getInheritance <em>Inheritance</em>}</li>
@@ -34,7 +35,6 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModifierImpl#getVariableDeclarationStatement <em>Variable Declaration Statement</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModifierImpl#getVariableDeclarationExpression <em>Variable Declaration Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

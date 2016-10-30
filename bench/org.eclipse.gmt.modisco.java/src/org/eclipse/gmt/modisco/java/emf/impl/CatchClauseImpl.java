@@ -35,11 +35,11 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.CatchClauseImpl#getException <em>Exception</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.CatchClauseImpl#getBody <em>Body</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

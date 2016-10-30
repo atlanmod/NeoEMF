@@ -25,11 +25,11 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.InstanceofExpressionImpl#getRightOperand <em>Right Operand</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.InstanceofExpressionImpl#getLeftOperand <em>Left Operand</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -43,12 +43,12 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.LabeledStatementImpl#getBody <em>Body</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.LabeledStatementImpl#getUsagesInBreakStatements <em>Usages In Break Statements</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.LabeledStatementImpl#getUsagesInContinueStatements <em>Usages In Continue Statements</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -11,12 +11,12 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.Archive#getOriginalFilePath <em>Original File Path</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Archive#getClassFiles <em>Class Files</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Archive#getManifest <em>Manifest</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage#getArchive()
  * @model

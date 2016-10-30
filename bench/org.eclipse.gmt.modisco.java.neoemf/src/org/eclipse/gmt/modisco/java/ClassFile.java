@@ -10,13 +10,13 @@ package org.eclipse.gmt.modisco.java;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.ClassFile#getOriginalFilePath <em>Original File Path</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ClassFile#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ClassFile#getAttachedSource <em>Attached Source</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ClassFile#getPackage <em>Package</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage#getClassFile()
  * @model

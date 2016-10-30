@@ -20,13 +20,13 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.BodyDeclaration#getAbstractTypeDeclaration <em>Abstract Type Declaration</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.BodyDeclaration#getAnnotations <em>Annotations</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.BodyDeclaration#getAnonymousClassDeclarationOwner <em>Anonymous Class Declaration Owner</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.BodyDeclaration#getModifier <em>Modifier</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getBodyDeclaration()
  * @model abstract="true"

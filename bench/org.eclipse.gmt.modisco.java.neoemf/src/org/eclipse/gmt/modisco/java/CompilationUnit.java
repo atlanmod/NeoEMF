@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.CompilationUnit#getOriginalFilePath <em>Original File Path</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.CompilationUnit#getCommentList <em>Comment List</em>}</li>
@@ -18,7 +19,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.gmt.modisco.java.CompilationUnit#getPackage <em>Package</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.CompilationUnit#getTypes <em>Types</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage#getCompilationUnit()
  * @model

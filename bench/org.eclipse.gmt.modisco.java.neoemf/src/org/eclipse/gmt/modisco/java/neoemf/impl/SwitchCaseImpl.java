@@ -15,11 +15,11 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.SwitchCaseImpl#isDefault <em>Default</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.SwitchCaseImpl#getExpression <em>Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

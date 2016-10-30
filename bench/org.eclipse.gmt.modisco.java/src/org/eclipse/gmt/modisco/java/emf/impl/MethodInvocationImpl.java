@@ -44,13 +44,13 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.MethodInvocationImpl#getMethod <em>Method</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.MethodInvocationImpl#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.MethodInvocationImpl#getTypeArguments <em>Type Arguments</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.MethodInvocationImpl#getExpression <em>Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

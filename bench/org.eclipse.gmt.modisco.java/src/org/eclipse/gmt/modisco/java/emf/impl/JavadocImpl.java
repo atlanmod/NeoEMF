@@ -38,10 +38,10 @@ import org.eclipse.gmt.modisco.java.emf.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.emf.impl.JavadocImpl#getTags <em>Tags</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

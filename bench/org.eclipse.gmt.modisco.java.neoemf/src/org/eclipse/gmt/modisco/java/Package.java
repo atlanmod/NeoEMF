@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.Package#getOwnedElements <em>Owned Elements</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Package#getModel <em>Model</em>}</li>
@@ -18,7 +19,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.gmt.modisco.java.Package#getPackage <em>Package</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.Package#getUsagesInPackageAccess <em>Usages In Package Access</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage#getPackage()
  * @model

@@ -20,12 +20,12 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.TryStatement#getBody <em>Body</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.TryStatement#getFinally <em>Finally</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.TryStatement#getCatchClauses <em>Catch Clauses</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getTryStatement()
  * @model

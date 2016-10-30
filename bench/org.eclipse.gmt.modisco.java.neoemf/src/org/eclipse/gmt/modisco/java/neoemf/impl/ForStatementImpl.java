@@ -18,13 +18,13 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ForStatementImpl#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ForStatementImpl#getUpdaters <em>Updaters</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ForStatementImpl#getInitializers <em>Initializers</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ForStatementImpl#getBody <em>Body</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -29,13 +29,13 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.BodyDeclarationImpl#getAbstractTypeDeclaration <em>Abstract Type Declaration</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.BodyDeclarationImpl#getAnnotations <em>Annotations</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.BodyDeclarationImpl#getAnonymousClassDeclarationOwner <em>Anonymous Class Declaration Owner</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.BodyDeclarationImpl#getModifier <em>Modifier</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -20,12 +20,12 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.SuperMethodInvocationImpl#getMethod <em>Method</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.SuperMethodInvocationImpl#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.SuperMethodInvocationImpl#getTypeArguments <em>Type Arguments</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

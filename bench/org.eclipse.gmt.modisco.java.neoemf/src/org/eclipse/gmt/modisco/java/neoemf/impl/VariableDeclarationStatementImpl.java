@@ -21,6 +21,7 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.VariableDeclarationStatementImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.VariableDeclarationStatementImpl#getFragments <em>Fragments</em>}</li>
@@ -28,7 +29,6 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.VariableDeclarationStatementImpl#getModifier <em>Modifier</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.VariableDeclarationStatementImpl#getAnnotations <em>Annotations</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

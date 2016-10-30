@@ -20,12 +20,12 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.AbstractMethodInvocation#getMethod <em>Method</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.AbstractMethodInvocation#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.AbstractMethodInvocation#getTypeArguments <em>Type Arguments</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getAbstractMethodInvocation()
  * @model abstract="true"

@@ -23,6 +23,7 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModelImpl#getOwnedElements <em>Owned Elements</em>}</li>
@@ -32,7 +33,6 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModelImpl#getClassFiles <em>Class Files</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ModelImpl#getArchives <em>Archives</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

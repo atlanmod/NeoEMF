@@ -18,13 +18,13 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.InfixExpressionImpl#getOperator <em>Operator</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.InfixExpressionImpl#getRightOperand <em>Right Operand</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.InfixExpressionImpl#getLeftOperand <em>Left Operand</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.InfixExpressionImpl#getExtendedOperands <em>Extended Operands</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

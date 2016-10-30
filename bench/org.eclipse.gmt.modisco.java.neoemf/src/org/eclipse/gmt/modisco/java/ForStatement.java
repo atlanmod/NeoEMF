@@ -11,13 +11,13 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.ForStatement#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ForStatement#getUpdaters <em>Updaters</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ForStatement#getInitializers <em>Initializers</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.ForStatement#getBody <em>Body</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage#getForStatement()
  * @model

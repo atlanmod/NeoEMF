@@ -25,12 +25,12 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.AssignmentImpl#getLeftHandSide <em>Left Hand Side</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.AssignmentImpl#getOperator <em>Operator</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.AssignmentImpl#getRightHandSide <em>Right Hand Side</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

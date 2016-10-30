@@ -16,11 +16,11 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.SynchronizedStatementImpl#getBody <em>Body</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.SynchronizedStatementImpl#getExpression <em>Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

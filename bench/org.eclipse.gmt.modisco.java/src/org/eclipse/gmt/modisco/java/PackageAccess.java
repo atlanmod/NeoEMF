@@ -23,11 +23,11 @@ package org.eclipse.gmt.modisco.java;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.PackageAccess#getPackage <em>Package</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.PackageAccess#getQualifier <em>Qualifier</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.emf.JavaPackage#getPackageAccess()
  * @model

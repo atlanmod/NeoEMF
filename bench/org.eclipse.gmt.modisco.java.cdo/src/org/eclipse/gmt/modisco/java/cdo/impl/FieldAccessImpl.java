@@ -25,11 +25,11 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.FieldAccessImpl#getField <em>Field</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.FieldAccessImpl#getExpression <em>Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

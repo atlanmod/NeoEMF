@@ -17,11 +17,11 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ParameterizedTypeImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ParameterizedTypeImpl#getTypeArguments <em>Type Arguments</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

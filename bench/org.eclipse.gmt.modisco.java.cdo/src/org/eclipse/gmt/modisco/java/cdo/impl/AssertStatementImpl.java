@@ -24,11 +24,11 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.AssertStatementImpl#getMessage <em>Message</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.AssertStatementImpl#getExpression <em>Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

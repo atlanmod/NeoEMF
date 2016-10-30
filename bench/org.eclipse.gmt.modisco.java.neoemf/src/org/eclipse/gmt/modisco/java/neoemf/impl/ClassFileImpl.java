@@ -16,13 +16,13 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ClassFileImpl#getOriginalFilePath <em>Original File Path</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ClassFileImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ClassFileImpl#getAttachedSource <em>Attached Source</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ClassFileImpl#getPackage <em>Package</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

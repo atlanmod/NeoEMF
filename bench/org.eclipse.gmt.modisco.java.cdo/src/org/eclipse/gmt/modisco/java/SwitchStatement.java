@@ -20,11 +20,11 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.SwitchStatement#getExpression <em>Expression</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.SwitchStatement#getStatements <em>Statements</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getSwitchStatement()
  * @model

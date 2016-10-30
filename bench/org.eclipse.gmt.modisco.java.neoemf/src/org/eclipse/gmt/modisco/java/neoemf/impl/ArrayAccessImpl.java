@@ -15,11 +15,11 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ArrayAccessImpl#getArray <em>Array</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ArrayAccessImpl#getIndex <em>Index</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

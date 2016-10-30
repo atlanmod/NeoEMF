@@ -23,12 +23,12 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.CommentImpl#getContent <em>Content</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.CommentImpl#isEnclosedByParent <em>Enclosed By Parent</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.cdo.impl.CommentImpl#isPrefixOfParent <em>Prefix Of Parent</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

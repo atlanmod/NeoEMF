@@ -19,11 +19,11 @@ package org.eclipse.gmt.modisco.java;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.FieldAccess#getField <em>Field</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.FieldAccess#getExpression <em>Expression</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage#getFieldAccess()
  * @model

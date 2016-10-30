@@ -11,13 +11,13 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.InfixExpression#getOperator <em>Operator</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.InfixExpression#getRightOperand <em>Right Operand</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.InfixExpression#getLeftOperand <em>Left Operand</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.InfixExpression#getExtendedOperands <em>Extended Operands</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage#getInfixExpression()
  * @model

@@ -20,11 +20,11 @@ import org.eclipse.gmt.modisco.java.neoemf.meta.JavaPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ManifestImpl#getMainAttributes <em>Main Attributes</em>}</li>
  *   <li>{@link org.eclipse.gmt.modisco.java.neoemf.impl.ManifestImpl#getEntryAttributes <em>Entry Attributes</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
