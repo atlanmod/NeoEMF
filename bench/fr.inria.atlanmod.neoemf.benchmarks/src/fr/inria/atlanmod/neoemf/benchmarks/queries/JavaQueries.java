@@ -42,7 +42,7 @@ public class JavaQueries {
 
     /**
      * Returns the orphan and non Primitive Types of a java model this is a common query to all both standard and
-     * customized methods
+     * customized methods.
      */
     public static EList<Type> getOrphanNonPrimitivesTypes(Resource resource) {
         Model model;
@@ -119,7 +119,7 @@ public class JavaQueries {
     }
 
     /**
-     * Renames all the method names with the given String
+     * Renames all the method names with the given String.
      */
     public static void renameAllMethods(Resource resource, String name) {
         EList<? extends EObject> methodList = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
@@ -130,7 +130,7 @@ public class JavaQueries {
     }
 
     /**
-     * returns the list of classes
+     * Returns the list of classes.
      */
     public static EList<ClassDeclaration> grabats09(Resource resource) {
         EList<ClassDeclaration> listResult = new BasicEList<>();
@@ -239,7 +239,7 @@ public class JavaQueries {
         return false;
     }
 
-    public static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
+    private static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
         Iterator<EObject> iterator = resource.getAllContents();
         EList<EObject> resultList = new BasicEList<>();
         while (iterator.hasNext()) {

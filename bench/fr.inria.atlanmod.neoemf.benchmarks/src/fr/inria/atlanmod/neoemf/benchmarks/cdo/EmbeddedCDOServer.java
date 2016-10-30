@@ -99,14 +99,14 @@ public class EmbeddedCDOServer {
         }
     }
 
-    protected JdbcDataSource getJdbcDataSource(String url) {
+    private JdbcDataSource getJdbcDataSource(String url) {
         // Setup JdbcDataSource
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL(url);
         return dataSource;
     }
 
-    protected IStore getStore(JdbcDataSource dataSource) {
+    private IStore getStore(JdbcDataSource dataSource) {
         // Setup Store
         IMappingStrategy mappingStrategy = CDODBUtil.createHorizontalMappingStrategy(true);
         IDBAdapter dbAdapter = new H2Adapter();
@@ -114,7 +114,7 @@ public class EmbeddedCDOServer {
         return CDODBUtil.createStore(mappingStrategy, dbAdapter, dbConnectionProvider);
     }
 
-    protected IRepository getRepository(IStore store) {
+    private IRepository getRepository(IStore store) {
         // Setup Repository
         Map<String, String> props = new HashMap<>();
         props.put(IRepository.Props.OVERRIDE_UUID, repositoryName);
@@ -123,7 +123,7 @@ public class EmbeddedCDOServer {
         return CDOServerUtil.createRepository(repositoryName, store, props);
     }
 
-    protected IManagedContainer getContainer() {
+    private IManagedContainer getContainer() {
         IManagedContainer container = ContainerUtil.createContainer();
         Net4jUtil.prepareContainer(container);
         JVMUtil.prepareContainer(container);
