@@ -1,21 +1,21 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Name: %pluginName
+Bundle-Vendor: %providerName
 Bundle-SymbolicName: org.eclipse.gmt.modisco.java.neoemf;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
-Bundle-Vendor: %providerName
-Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
+ org.eclipse.emf.ecore;bundle-version="2.5.0";visibility:=reexport,
+ org.eclipse.emf.ecore.xmi;bundle-version="2.5.0";visibility:=reexport,
+ org.eclipse.emf.ecore.xcore.lib;bundle-version="1.1.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.7.3",
+ org.eclipse.gmt.modisco.java,
+ fr.inria.atlanmod.neoemf.core;visibility:=reexport
 Export-Package: org.eclipse.gmt.modisco.java,
  org.eclipse.gmt.modisco.java.neoemf.impl,
  org.eclipse.gmt.modisco.java.neoemf.meta,
  org.eclipse.gmt.modisco.java.neoemf.util
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
- org.eclipse.emf.ecore;bundle-version="2.5.0";visibility:=reexport,
- org.eclipse.emf.ecore.xmi;bundle-version="2.5.0";visibility:=reexport,
- org.eclipse.gmt.modisco.java,
- fr.inria.atlanmod.neoemf.core;visibility:=reexport,
- org.eclipse.xtext.xbase.lib;bundle-version="2.7.3",
- org.eclipse.emf.ecore.xcore.lib;bundle-version="1.1.0"
-Bundle-ActivationPolicy: lazy
