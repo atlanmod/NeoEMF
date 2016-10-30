@@ -143,7 +143,7 @@
 	<target name="execute.benchmarks.xmi">
 		<antcall target="build"/>
 		<antcall target="migrate.xmi"/>
-		<antcall target="traverse.resources.xmi"/>
+	    <!--<antcall target="traverse.resources.xmi"/>-->
 	</target>
 	
 	<target name="extract.resources">
