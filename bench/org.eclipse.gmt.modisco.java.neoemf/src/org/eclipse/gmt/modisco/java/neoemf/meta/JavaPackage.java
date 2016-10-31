@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see org.eclipse.gmt.modisco.java.neoemf.meta.JavaFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/GenModel modelDirectory='/org.eclipse.gmt.modisco.java.neoemf/src' complianceLevel='8.0' metaDataPackageSuffix='neoemf.meta' classPackageSuffix='neoemf.impl' utilityPackageSuffix='neoemf.util' providerPackageSuffix='neoemf.provider' presentationPackageSuffix='neoemf.presentation' testsPackageSuffix='neoemf.tests' rootExtendsInterface='fr.inria.atlanmod.neoemf.core.PersistentEObject' rootExtendsClass='fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl' reflectiveDelegation='true' importerID='fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter' featureDelegation='Reflective' basePackage='org.eclipse.gmt.modisco'"
+ *        annotation="http://www.eclipse.org/emf/2002/GenModel modelDirectory='/org.eclipse.gmt.modisco.java.neoemf/src' metaDataPackageSuffix='neoemf.meta' classPackageSuffix='neoemf.impl' utilityPackageSuffix='neoemf.util' providerPackageSuffix='neoemf.provider' presentationPackageSuffix='neoemf.presentation' testsPackageSuffix='neoemf.tests' rootExtendsInterface='fr.inria.atlanmod.neoemf.core.PersistentEObject' rootExtendsClass='fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl' importerID='fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter' literalsInterface='false' loadInitialization='false' complianceLevel='8.0' reflectiveDelegation='true' featureDelegation='Reflective' operationReflection='true' importOrganizing='true' basePackage='org.eclipse.gmt.modisco'"
  * @generated
  */
 public interface JavaPackage extends EPackage {

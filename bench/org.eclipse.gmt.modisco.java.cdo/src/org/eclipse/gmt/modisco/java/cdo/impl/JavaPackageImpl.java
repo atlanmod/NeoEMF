@@ -11,16 +11,8 @@
  */
 package org.eclipse.gmt.modisco.java.cdo.impl;
 
-import java.io.IOException;
-
-import java.net.URL;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.common.util.WrappedException;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -28,9 +20,137 @@ import org.eclipse.emf.ecore.EcorePackage;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
-import org.eclipse.emf.ecore.resource.Resource;
-
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
+import org.eclipse.gmt.modisco.java.ASTNode;
+import org.eclipse.gmt.modisco.java.AbstractMethodDeclaration;
+import org.eclipse.gmt.modisco.java.AbstractMethodInvocation;
+import org.eclipse.gmt.modisco.java.AbstractTypeDeclaration;
+import org.eclipse.gmt.modisco.java.AbstractTypeQualifiedExpression;
+import org.eclipse.gmt.modisco.java.AbstractVariablesContainer;
+import org.eclipse.gmt.modisco.java.Annotation;
+import org.eclipse.gmt.modisco.java.AnnotationMemberValuePair;
+import org.eclipse.gmt.modisco.java.AnnotationTypeDeclaration;
+import org.eclipse.gmt.modisco.java.AnnotationTypeMemberDeclaration;
+import org.eclipse.gmt.modisco.java.AnonymousClassDeclaration;
+import org.eclipse.gmt.modisco.java.Archive;
+import org.eclipse.gmt.modisco.java.ArrayAccess;
+import org.eclipse.gmt.modisco.java.ArrayCreation;
+import org.eclipse.gmt.modisco.java.ArrayInitializer;
+import org.eclipse.gmt.modisco.java.ArrayLengthAccess;
+import org.eclipse.gmt.modisco.java.ArrayType;
+import org.eclipse.gmt.modisco.java.AssertStatement;
+import org.eclipse.gmt.modisco.java.Assignment;
+import org.eclipse.gmt.modisco.java.AssignmentKind;
+import org.eclipse.gmt.modisco.java.Block;
+import org.eclipse.gmt.modisco.java.BlockComment;
+import org.eclipse.gmt.modisco.java.BodyDeclaration;
+import org.eclipse.gmt.modisco.java.BooleanLiteral;
+import org.eclipse.gmt.modisco.java.BreakStatement;
+import org.eclipse.gmt.modisco.java.CastExpression;
+import org.eclipse.gmt.modisco.java.CatchClause;
+import org.eclipse.gmt.modisco.java.CharacterLiteral;
+import org.eclipse.gmt.modisco.java.ClassDeclaration;
+import org.eclipse.gmt.modisco.java.ClassFile;
+import org.eclipse.gmt.modisco.java.ClassInstanceCreation;
+import org.eclipse.gmt.modisco.java.Comment;
+import org.eclipse.gmt.modisco.java.CompilationUnit;
+import org.eclipse.gmt.modisco.java.ConditionalExpression;
+import org.eclipse.gmt.modisco.java.ConstructorDeclaration;
+import org.eclipse.gmt.modisco.java.ConstructorInvocation;
+import org.eclipse.gmt.modisco.java.ContinueStatement;
+import org.eclipse.gmt.modisco.java.DoStatement;
+import org.eclipse.gmt.modisco.java.EmptyStatement;
+import org.eclipse.gmt.modisco.java.EnhancedForStatement;
+import org.eclipse.gmt.modisco.java.EnumConstantDeclaration;
+import org.eclipse.gmt.modisco.java.EnumDeclaration;
+import org.eclipse.gmt.modisco.java.Expression;
+import org.eclipse.gmt.modisco.java.ExpressionStatement;
+import org.eclipse.gmt.modisco.java.FieldAccess;
+import org.eclipse.gmt.modisco.java.FieldDeclaration;
+import org.eclipse.gmt.modisco.java.ForStatement;
+import org.eclipse.gmt.modisco.java.IfStatement;
+import org.eclipse.gmt.modisco.java.ImportDeclaration;
+import org.eclipse.gmt.modisco.java.InfixExpression;
+import org.eclipse.gmt.modisco.java.InfixExpressionKind;
+import org.eclipse.gmt.modisco.java.InheritanceKind;
+import org.eclipse.gmt.modisco.java.Initializer;
+import org.eclipse.gmt.modisco.java.InstanceofExpression;
+import org.eclipse.gmt.modisco.java.InterfaceDeclaration;
+import org.eclipse.gmt.modisco.java.Javadoc;
+import org.eclipse.gmt.modisco.java.LabeledStatement;
+import org.eclipse.gmt.modisco.java.LineComment;
+import org.eclipse.gmt.modisco.java.Manifest;
+import org.eclipse.gmt.modisco.java.ManifestAttribute;
+import org.eclipse.gmt.modisco.java.ManifestEntry;
+import org.eclipse.gmt.modisco.java.MemberRef;
+import org.eclipse.gmt.modisco.java.MethodDeclaration;
+import org.eclipse.gmt.modisco.java.MethodInvocation;
+import org.eclipse.gmt.modisco.java.MethodRef;
+import org.eclipse.gmt.modisco.java.MethodRefParameter;
+import org.eclipse.gmt.modisco.java.Model;
+import org.eclipse.gmt.modisco.java.Modifier;
+import org.eclipse.gmt.modisco.java.NamedElement;
+import org.eclipse.gmt.modisco.java.NamespaceAccess;
+import org.eclipse.gmt.modisco.java.NullLiteral;
+import org.eclipse.gmt.modisco.java.NumberLiteral;
+import org.eclipse.gmt.modisco.java.PackageAccess;
+import org.eclipse.gmt.modisco.java.ParameterizedType;
+import org.eclipse.gmt.modisco.java.ParenthesizedExpression;
+import org.eclipse.gmt.modisco.java.PostfixExpression;
+import org.eclipse.gmt.modisco.java.PostfixExpressionKind;
+import org.eclipse.gmt.modisco.java.PrefixExpression;
+import org.eclipse.gmt.modisco.java.PrefixExpressionKind;
+import org.eclipse.gmt.modisco.java.PrimitiveType;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeBoolean;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeByte;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeChar;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeDouble;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeFloat;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeInt;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeLong;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeShort;
+import org.eclipse.gmt.modisco.java.PrimitiveTypeVoid;
+import org.eclipse.gmt.modisco.java.ReturnStatement;
+import org.eclipse.gmt.modisco.java.SingleVariableAccess;
+import org.eclipse.gmt.modisco.java.SingleVariableDeclaration;
+import org.eclipse.gmt.modisco.java.Statement;
+import org.eclipse.gmt.modisco.java.StringLiteral;
+import org.eclipse.gmt.modisco.java.SuperConstructorInvocation;
+import org.eclipse.gmt.modisco.java.SuperFieldAccess;
+import org.eclipse.gmt.modisco.java.SuperMethodInvocation;
+import org.eclipse.gmt.modisco.java.SwitchCase;
+import org.eclipse.gmt.modisco.java.SwitchStatement;
+import org.eclipse.gmt.modisco.java.SynchronizedStatement;
+import org.eclipse.gmt.modisco.java.TagElement;
+import org.eclipse.gmt.modisco.java.TextElement;
+import org.eclipse.gmt.modisco.java.ThisExpression;
+import org.eclipse.gmt.modisco.java.ThrowStatement;
+import org.eclipse.gmt.modisco.java.TryStatement;
+import org.eclipse.gmt.modisco.java.Type;
+import org.eclipse.gmt.modisco.java.TypeAccess;
+import org.eclipse.gmt.modisco.java.TypeDeclaration;
+import org.eclipse.gmt.modisco.java.TypeDeclarationStatement;
+import org.eclipse.gmt.modisco.java.TypeLiteral;
+import org.eclipse.gmt.modisco.java.TypeParameter;
+import org.eclipse.gmt.modisco.java.UnresolvedAnnotationDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedAnnotationTypeMemberDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedClassDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedEnumDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedInterfaceDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedItem;
+import org.eclipse.gmt.modisco.java.UnresolvedItemAccess;
+import org.eclipse.gmt.modisco.java.UnresolvedLabeledStatement;
+import org.eclipse.gmt.modisco.java.UnresolvedMethodDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedSingleVariableDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedType;
+import org.eclipse.gmt.modisco.java.UnresolvedTypeDeclaration;
+import org.eclipse.gmt.modisco.java.UnresolvedVariableDeclarationFragment;
+import org.eclipse.gmt.modisco.java.VariableDeclaration;
+import org.eclipse.gmt.modisco.java.VariableDeclarationExpression;
+import org.eclipse.gmt.modisco.java.VariableDeclarationFragment;
+import org.eclipse.gmt.modisco.java.VariableDeclarationStatement;
+import org.eclipse.gmt.modisco.java.VisibilityKind;
+import org.eclipse.gmt.modisco.java.WhileStatement;
+import org.eclipse.gmt.modisco.java.WildCardType;
 
 import org.eclipse.gmt.modisco.java.cdo.meta.JavaFactory;
 import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
@@ -42,13 +162,6 @@ import org.eclipse.gmt.modisco.java.cdo.meta.JavaPackage;
  * @generated
  */
 public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    protected String packageFilename = "java.ecore";
-
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1007,6 +1120,8 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @see #eNS_URI
+     * @see #createPackageContents()
+     * @see #initializePackageContents()
      * @generated
      */
     public static JavaPackage init() {
@@ -1020,11 +1135,11 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
         // Initialize simple dependencies
         EcorePackage.eINSTANCE.eClass();
 
-        // Load packages
-        theJavaPackage.loadPackage();
+        // Create package meta-data objects
+        theJavaPackage.createPackageContents();
 
-        // Fix loaded packages
-        theJavaPackage.fixPackageContents();
+        // Initialize created meta-data
+        theJavaPackage.initializePackageContents();
 
         // Mark meta-data to indicate it can't be changed
         theJavaPackage.freeze();
@@ -1041,9 +1156,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAbstractMethodDeclaration() {
-        if (abstractMethodDeclarationEClass == null) {
-            abstractMethodDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(0);
-        }
         return abstractMethodDeclarationEClass;
     }
 
@@ -1053,7 +1165,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodDeclaration_Body() {
-        return (EReference)getAbstractMethodDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)abstractMethodDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1062,7 +1174,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodDeclaration_Parameters() {
-        return (EReference)getAbstractMethodDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)abstractMethodDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1071,7 +1183,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodDeclaration_ThrownExceptions() {
-        return (EReference)getAbstractMethodDeclaration().getEStructuralFeatures().get(2);
+        return (EReference)abstractMethodDeclarationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1080,7 +1192,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodDeclaration_TypeParameters() {
-        return (EReference)getAbstractMethodDeclaration().getEStructuralFeatures().get(3);
+        return (EReference)abstractMethodDeclarationEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1089,7 +1201,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodDeclaration_UsagesInDocComments() {
-        return (EReference)getAbstractMethodDeclaration().getEStructuralFeatures().get(4);
+        return (EReference)abstractMethodDeclarationEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -1098,7 +1210,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodDeclaration_Usages() {
-        return (EReference)getAbstractMethodDeclaration().getEStructuralFeatures().get(5);
+        return (EReference)abstractMethodDeclarationEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -1107,9 +1219,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAbstractMethodInvocation() {
-        if (abstractMethodInvocationEClass == null) {
-            abstractMethodInvocationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(1);
-        }
         return abstractMethodInvocationEClass;
     }
 
@@ -1119,7 +1228,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodInvocation_Method() {
-        return (EReference)getAbstractMethodInvocation().getEStructuralFeatures().get(0);
+        return (EReference)abstractMethodInvocationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1128,7 +1237,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodInvocation_Arguments() {
-        return (EReference)getAbstractMethodInvocation().getEStructuralFeatures().get(1);
+        return (EReference)abstractMethodInvocationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1137,7 +1246,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractMethodInvocation_TypeArguments() {
-        return (EReference)getAbstractMethodInvocation().getEStructuralFeatures().get(2);
+        return (EReference)abstractMethodInvocationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1146,9 +1255,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAbstractTypeDeclaration() {
-        if (abstractTypeDeclarationEClass == null) {
-            abstractTypeDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(2);
-        }
         return abstractTypeDeclarationEClass;
     }
 
@@ -1158,7 +1264,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractTypeDeclaration_BodyDeclarations() {
-        return (EReference)getAbstractTypeDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)abstractTypeDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1167,7 +1273,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractTypeDeclaration_CommentsBeforeBody() {
-        return (EReference)getAbstractTypeDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)abstractTypeDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1176,7 +1282,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractTypeDeclaration_CommentsAfterBody() {
-        return (EReference)getAbstractTypeDeclaration().getEStructuralFeatures().get(2);
+        return (EReference)abstractTypeDeclarationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1185,7 +1291,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractTypeDeclaration_Package() {
-        return (EReference)getAbstractTypeDeclaration().getEStructuralFeatures().get(3);
+        return (EReference)abstractTypeDeclarationEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1194,7 +1300,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractTypeDeclaration_SuperInterfaces() {
-        return (EReference)getAbstractTypeDeclaration().getEStructuralFeatures().get(4);
+        return (EReference)abstractTypeDeclarationEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -1203,9 +1309,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAbstractTypeQualifiedExpression() {
-        if (abstractTypeQualifiedExpressionEClass == null) {
-            abstractTypeQualifiedExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(3);
-        }
         return abstractTypeQualifiedExpressionEClass;
     }
 
@@ -1215,7 +1318,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractTypeQualifiedExpression_Qualifier() {
-        return (EReference)getAbstractTypeQualifiedExpression().getEStructuralFeatures().get(0);
+        return (EReference)abstractTypeQualifiedExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1224,9 +1327,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAbstractVariablesContainer() {
-        if (abstractVariablesContainerEClass == null) {
-            abstractVariablesContainerEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(4);
-        }
         return abstractVariablesContainerEClass;
     }
 
@@ -1236,7 +1336,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractVariablesContainer_Type() {
-        return (EReference)getAbstractVariablesContainer().getEStructuralFeatures().get(0);
+        return (EReference)abstractVariablesContainerEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1245,7 +1345,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAbstractVariablesContainer_Fragments() {
-        return (EReference)getAbstractVariablesContainer().getEStructuralFeatures().get(1);
+        return (EReference)abstractVariablesContainerEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1254,9 +1354,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAnnotation() {
-        if (annotationEClass == null) {
-            annotationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(5);
-        }
         return annotationEClass;
     }
 
@@ -1266,7 +1363,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnnotation_Type() {
-        return (EReference)getAnnotation().getEStructuralFeatures().get(0);
+        return (EReference)annotationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1275,7 +1372,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnnotation_Values() {
-        return (EReference)getAnnotation().getEStructuralFeatures().get(1);
+        return (EReference)annotationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1284,9 +1381,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getArchive() {
-        if (archiveEClass == null) {
-            archiveEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(6);
-        }
         return archiveEClass;
     }
 
@@ -1296,7 +1390,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getArchive_OriginalFilePath() {
-        return (EAttribute)getArchive().getEStructuralFeatures().get(0);
+        return (EAttribute)archiveEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1305,7 +1399,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArchive_ClassFiles() {
-        return (EReference)getArchive().getEStructuralFeatures().get(1);
+        return (EReference)archiveEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1314,7 +1408,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArchive_Manifest() {
-        return (EReference)getArchive().getEStructuralFeatures().get(2);
+        return (EReference)archiveEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1323,9 +1417,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAssertStatement() {
-        if (assertStatementEClass == null) {
-            assertStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(7);
-        }
         return assertStatementEClass;
     }
 
@@ -1335,7 +1426,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAssertStatement_Message() {
-        return (EReference)getAssertStatement().getEStructuralFeatures().get(0);
+        return (EReference)assertStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1344,7 +1435,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAssertStatement_Expression() {
-        return (EReference)getAssertStatement().getEStructuralFeatures().get(1);
+        return (EReference)assertStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1353,9 +1444,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getASTNode() {
-        if (astNodeEClass == null) {
-            astNodeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(8);
-        }
         return astNodeEClass;
     }
 
@@ -1365,7 +1453,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getASTNode_Comments() {
-        return (EReference)getASTNode().getEStructuralFeatures().get(0);
+        return (EReference)astNodeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1374,7 +1462,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getASTNode_OriginalCompilationUnit() {
-        return (EReference)getASTNode().getEStructuralFeatures().get(1);
+        return (EReference)astNodeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1383,7 +1471,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getASTNode_OriginalClassFile() {
-        return (EReference)getASTNode().getEStructuralFeatures().get(2);
+        return (EReference)astNodeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1392,9 +1480,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAnnotationMemberValuePair() {
-        if (annotationMemberValuePairEClass == null) {
-            annotationMemberValuePairEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(9);
-        }
         return annotationMemberValuePairEClass;
     }
 
@@ -1404,7 +1489,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnnotationMemberValuePair_Member() {
-        return (EReference)getAnnotationMemberValuePair().getEStructuralFeatures().get(0);
+        return (EReference)annotationMemberValuePairEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1413,7 +1498,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnnotationMemberValuePair_Value() {
-        return (EReference)getAnnotationMemberValuePair().getEStructuralFeatures().get(1);
+        return (EReference)annotationMemberValuePairEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1422,9 +1507,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAnnotationTypeDeclaration() {
-        if (annotationTypeDeclarationEClass == null) {
-            annotationTypeDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(10);
-        }
         return annotationTypeDeclarationEClass;
     }
 
@@ -1434,9 +1516,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAnnotationTypeMemberDeclaration() {
-        if (annotationTypeMemberDeclarationEClass == null) {
-            annotationTypeMemberDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(11);
-        }
         return annotationTypeMemberDeclarationEClass;
     }
 
@@ -1446,7 +1525,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnnotationTypeMemberDeclaration_Default() {
-        return (EReference)getAnnotationTypeMemberDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)annotationTypeMemberDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1455,7 +1534,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnnotationTypeMemberDeclaration_Type() {
-        return (EReference)getAnnotationTypeMemberDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)annotationTypeMemberDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1464,7 +1543,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnnotationTypeMemberDeclaration_Usages() {
-        return (EReference)getAnnotationTypeMemberDeclaration().getEStructuralFeatures().get(2);
+        return (EReference)annotationTypeMemberDeclarationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1473,9 +1552,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAnonymousClassDeclaration() {
-        if (anonymousClassDeclarationEClass == null) {
-            anonymousClassDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(12);
-        }
         return anonymousClassDeclarationEClass;
     }
 
@@ -1485,7 +1561,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnonymousClassDeclaration_BodyDeclarations() {
-        return (EReference)getAnonymousClassDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)anonymousClassDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1494,7 +1570,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAnonymousClassDeclaration_ClassInstanceCreation() {
-        return (EReference)getAnonymousClassDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)anonymousClassDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1503,9 +1579,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getArrayAccess() {
-        if (arrayAccessEClass == null) {
-            arrayAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(13);
-        }
         return arrayAccessEClass;
     }
 
@@ -1515,7 +1588,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayAccess_Array() {
-        return (EReference)getArrayAccess().getEStructuralFeatures().get(0);
+        return (EReference)arrayAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1524,7 +1597,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayAccess_Index() {
-        return (EReference)getArrayAccess().getEStructuralFeatures().get(1);
+        return (EReference)arrayAccessEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1533,9 +1606,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getArrayCreation() {
-        if (arrayCreationEClass == null) {
-            arrayCreationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(14);
-        }
         return arrayCreationEClass;
     }
 
@@ -1545,7 +1615,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayCreation_Dimensions() {
-        return (EReference)getArrayCreation().getEStructuralFeatures().get(0);
+        return (EReference)arrayCreationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1554,7 +1624,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayCreation_Initializer() {
-        return (EReference)getArrayCreation().getEStructuralFeatures().get(1);
+        return (EReference)arrayCreationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1563,7 +1633,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayCreation_Type() {
-        return (EReference)getArrayCreation().getEStructuralFeatures().get(2);
+        return (EReference)arrayCreationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1572,9 +1642,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getArrayInitializer() {
-        if (arrayInitializerEClass == null) {
-            arrayInitializerEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(15);
-        }
         return arrayInitializerEClass;
     }
 
@@ -1584,7 +1651,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayInitializer_Expressions() {
-        return (EReference)getArrayInitializer().getEStructuralFeatures().get(0);
+        return (EReference)arrayInitializerEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1593,9 +1660,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getArrayLengthAccess() {
-        if (arrayLengthAccessEClass == null) {
-            arrayLengthAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(16);
-        }
         return arrayLengthAccessEClass;
     }
 
@@ -1605,7 +1669,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayLengthAccess_Array() {
-        return (EReference)getArrayLengthAccess().getEStructuralFeatures().get(0);
+        return (EReference)arrayLengthAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1614,9 +1678,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getArrayType() {
-        if (arrayTypeEClass == null) {
-            arrayTypeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(17);
-        }
         return arrayTypeEClass;
     }
 
@@ -1626,7 +1687,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getArrayType_Dimensions() {
-        return (EAttribute)getArrayType().getEStructuralFeatures().get(0);
+        return (EAttribute)arrayTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1635,7 +1696,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getArrayType_ElementType() {
-        return (EReference)getArrayType().getEStructuralFeatures().get(1);
+        return (EReference)arrayTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1644,9 +1705,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getAssignment() {
-        if (assignmentEClass == null) {
-            assignmentEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(18);
-        }
         return assignmentEClass;
     }
 
@@ -1656,7 +1714,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAssignment_LeftHandSide() {
-        return (EReference)getAssignment().getEStructuralFeatures().get(0);
+        return (EReference)assignmentEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1665,7 +1723,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getAssignment_Operator() {
-        return (EAttribute)getAssignment().getEStructuralFeatures().get(1);
+        return (EAttribute)assignmentEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1674,7 +1732,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getAssignment_RightHandSide() {
-        return (EReference)getAssignment().getEStructuralFeatures().get(2);
+        return (EReference)assignmentEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1683,9 +1741,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getBodyDeclaration() {
-        if (bodyDeclarationEClass == null) {
-            bodyDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(20);
-        }
         return bodyDeclarationEClass;
     }
 
@@ -1695,7 +1750,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getBodyDeclaration_AbstractTypeDeclaration() {
-        return (EReference)getBodyDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)bodyDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1704,7 +1759,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getBodyDeclaration_Annotations() {
-        return (EReference)getBodyDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)bodyDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1713,7 +1768,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getBodyDeclaration_AnonymousClassDeclarationOwner() {
-        return (EReference)getBodyDeclaration().getEStructuralFeatures().get(2);
+        return (EReference)bodyDeclarationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1722,7 +1777,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getBodyDeclaration_Modifier() {
-        return (EReference)getBodyDeclaration().getEStructuralFeatures().get(3);
+        return (EReference)bodyDeclarationEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1731,9 +1786,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getBooleanLiteral() {
-        if (booleanLiteralEClass == null) {
-            booleanLiteralEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(21);
-        }
         return booleanLiteralEClass;
     }
 
@@ -1743,7 +1795,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getBooleanLiteral_Value() {
-        return (EAttribute)getBooleanLiteral().getEStructuralFeatures().get(0);
+        return (EAttribute)booleanLiteralEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1752,9 +1804,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getBlockComment() {
-        if (blockCommentEClass == null) {
-            blockCommentEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(22);
-        }
         return blockCommentEClass;
     }
 
@@ -1764,9 +1813,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getBlock() {
-        if (blockEClass == null) {
-            blockEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(23);
-        }
         return blockEClass;
     }
 
@@ -1776,7 +1822,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getBlock_Statements() {
-        return (EReference)getBlock().getEStructuralFeatures().get(0);
+        return (EReference)blockEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1785,9 +1831,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getBreakStatement() {
-        if (breakStatementEClass == null) {
-            breakStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(24);
-        }
         return breakStatementEClass;
     }
 
@@ -1797,7 +1840,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getBreakStatement_Label() {
-        return (EReference)getBreakStatement().getEStructuralFeatures().get(0);
+        return (EReference)breakStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1806,9 +1849,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getCastExpression() {
-        if (castExpressionEClass == null) {
-            castExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(25);
-        }
         return castExpressionEClass;
     }
 
@@ -1818,7 +1858,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCastExpression_Expression() {
-        return (EReference)getCastExpression().getEStructuralFeatures().get(0);
+        return (EReference)castExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1827,7 +1867,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCastExpression_Type() {
-        return (EReference)getCastExpression().getEStructuralFeatures().get(1);
+        return (EReference)castExpressionEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1836,9 +1876,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getCatchClause() {
-        if (catchClauseEClass == null) {
-            catchClauseEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(26);
-        }
         return catchClauseEClass;
     }
 
@@ -1848,7 +1885,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCatchClause_Exception() {
-        return (EReference)getCatchClause().getEStructuralFeatures().get(0);
+        return (EReference)catchClauseEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1857,7 +1894,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCatchClause_Body() {
-        return (EReference)getCatchClause().getEStructuralFeatures().get(1);
+        return (EReference)catchClauseEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1866,9 +1903,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getCharacterLiteral() {
-        if (characterLiteralEClass == null) {
-            characterLiteralEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(27);
-        }
         return characterLiteralEClass;
     }
 
@@ -1878,7 +1912,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getCharacterLiteral_EscapedValue() {
-        return (EAttribute)getCharacterLiteral().getEStructuralFeatures().get(0);
+        return (EAttribute)characterLiteralEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1887,9 +1921,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getClassFile() {
-        if (classFileEClass == null) {
-            classFileEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(28);
-        }
         return classFileEClass;
     }
 
@@ -1899,7 +1930,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getClassFile_OriginalFilePath() {
-        return (EAttribute)getClassFile().getEStructuralFeatures().get(0);
+        return (EAttribute)classFileEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1908,7 +1939,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getClassFile_Type() {
-        return (EReference)getClassFile().getEStructuralFeatures().get(1);
+        return (EReference)classFileEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1917,7 +1948,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getClassFile_AttachedSource() {
-        return (EReference)getClassFile().getEStructuralFeatures().get(2);
+        return (EReference)classFileEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1926,7 +1957,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getClassFile_Package() {
-        return (EReference)getClassFile().getEStructuralFeatures().get(3);
+        return (EReference)classFileEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1935,9 +1966,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getClassInstanceCreation() {
-        if (classInstanceCreationEClass == null) {
-            classInstanceCreationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(29);
-        }
         return classInstanceCreationEClass;
     }
 
@@ -1947,7 +1975,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getClassInstanceCreation_AnonymousClassDeclaration() {
-        return (EReference)getClassInstanceCreation().getEStructuralFeatures().get(0);
+        return (EReference)classInstanceCreationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1956,7 +1984,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getClassInstanceCreation_Expression() {
-        return (EReference)getClassInstanceCreation().getEStructuralFeatures().get(1);
+        return (EReference)classInstanceCreationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1965,7 +1993,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getClassInstanceCreation_Type() {
-        return (EReference)getClassInstanceCreation().getEStructuralFeatures().get(2);
+        return (EReference)classInstanceCreationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1974,9 +2002,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getConstructorDeclaration() {
-        if (constructorDeclarationEClass == null) {
-            constructorDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(30);
-        }
         return constructorDeclarationEClass;
     }
 
@@ -1986,9 +2011,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getConditionalExpression() {
-        if (conditionalExpressionEClass == null) {
-            conditionalExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(31);
-        }
         return conditionalExpressionEClass;
     }
 
@@ -1998,7 +2020,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getConditionalExpression_ElseExpression() {
-        return (EReference)getConditionalExpression().getEStructuralFeatures().get(0);
+        return (EReference)conditionalExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2007,7 +2029,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getConditionalExpression_Expression() {
-        return (EReference)getConditionalExpression().getEStructuralFeatures().get(1);
+        return (EReference)conditionalExpressionEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2016,7 +2038,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getConditionalExpression_ThenExpression() {
-        return (EReference)getConditionalExpression().getEStructuralFeatures().get(2);
+        return (EReference)conditionalExpressionEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2025,9 +2047,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getConstructorInvocation() {
-        if (constructorInvocationEClass == null) {
-            constructorInvocationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(32);
-        }
         return constructorInvocationEClass;
     }
 
@@ -2037,9 +2056,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getClassDeclaration() {
-        if (classDeclarationEClass == null) {
-            classDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(33);
-        }
         return classDeclarationEClass;
     }
 
@@ -2049,7 +2065,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getClassDeclaration_SuperClass() {
-        return (EReference)getClassDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)classDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2058,9 +2074,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getComment() {
-        if (commentEClass == null) {
-            commentEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(34);
-        }
         return commentEClass;
     }
 
@@ -2070,7 +2083,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getComment_Content() {
-        return (EAttribute)getComment().getEStructuralFeatures().get(0);
+        return (EAttribute)commentEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2079,7 +2092,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getComment_EnclosedByParent() {
-        return (EAttribute)getComment().getEStructuralFeatures().get(1);
+        return (EAttribute)commentEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2088,7 +2101,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getComment_PrefixOfParent() {
-        return (EAttribute)getComment().getEStructuralFeatures().get(2);
+        return (EAttribute)commentEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2097,9 +2110,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getCompilationUnit() {
-        if (compilationUnitEClass == null) {
-            compilationUnitEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(35);
-        }
         return compilationUnitEClass;
     }
 
@@ -2109,7 +2119,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getCompilationUnit_OriginalFilePath() {
-        return (EAttribute)getCompilationUnit().getEStructuralFeatures().get(0);
+        return (EAttribute)compilationUnitEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2118,7 +2128,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCompilationUnit_CommentList() {
-        return (EReference)getCompilationUnit().getEStructuralFeatures().get(1);
+        return (EReference)compilationUnitEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2127,7 +2137,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCompilationUnit_Imports() {
-        return (EReference)getCompilationUnit().getEStructuralFeatures().get(2);
+        return (EReference)compilationUnitEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2136,7 +2146,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCompilationUnit_Package() {
-        return (EReference)getCompilationUnit().getEStructuralFeatures().get(3);
+        return (EReference)compilationUnitEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -2145,7 +2155,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getCompilationUnit_Types() {
-        return (EReference)getCompilationUnit().getEStructuralFeatures().get(4);
+        return (EReference)compilationUnitEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -2154,9 +2164,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getContinueStatement() {
-        if (continueStatementEClass == null) {
-            continueStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(36);
-        }
         return continueStatementEClass;
     }
 
@@ -2166,7 +2173,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getContinueStatement_Label() {
-        return (EReference)getContinueStatement().getEStructuralFeatures().get(0);
+        return (EReference)continueStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2175,9 +2182,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getDoStatement() {
-        if (doStatementEClass == null) {
-            doStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(37);
-        }
         return doStatementEClass;
     }
 
@@ -2187,7 +2191,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getDoStatement_Expression() {
-        return (EReference)getDoStatement().getEStructuralFeatures().get(0);
+        return (EReference)doStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2196,7 +2200,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getDoStatement_Body() {
-        return (EReference)getDoStatement().getEStructuralFeatures().get(1);
+        return (EReference)doStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2205,9 +2209,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getEmptyStatement() {
-        if (emptyStatementEClass == null) {
-            emptyStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(38);
-        }
         return emptyStatementEClass;
     }
 
@@ -2217,9 +2218,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getEnhancedForStatement() {
-        if (enhancedForStatementEClass == null) {
-            enhancedForStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(39);
-        }
         return enhancedForStatementEClass;
     }
 
@@ -2229,7 +2227,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getEnhancedForStatement_Body() {
-        return (EReference)getEnhancedForStatement().getEStructuralFeatures().get(0);
+        return (EReference)enhancedForStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2238,7 +2236,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getEnhancedForStatement_Expression() {
-        return (EReference)getEnhancedForStatement().getEStructuralFeatures().get(1);
+        return (EReference)enhancedForStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2247,7 +2245,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getEnhancedForStatement_Parameter() {
-        return (EReference)getEnhancedForStatement().getEStructuralFeatures().get(2);
+        return (EReference)enhancedForStatementEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2256,9 +2254,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getEnumConstantDeclaration() {
-        if (enumConstantDeclarationEClass == null) {
-            enumConstantDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(40);
-        }
         return enumConstantDeclarationEClass;
     }
 
@@ -2268,7 +2263,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getEnumConstantDeclaration_AnonymousClassDeclaration() {
-        return (EReference)getEnumConstantDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)enumConstantDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2277,7 +2272,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getEnumConstantDeclaration_Arguments() {
-        return (EReference)getEnumConstantDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)enumConstantDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2286,9 +2281,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getEnumDeclaration() {
-        if (enumDeclarationEClass == null) {
-            enumDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(41);
-        }
         return enumDeclarationEClass;
     }
 
@@ -2298,7 +2290,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getEnumDeclaration_EnumConstants() {
-        return (EReference)getEnumDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)enumDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2307,9 +2299,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getExpression() {
-        if (expressionEClass == null) {
-            expressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(42);
-        }
         return expressionEClass;
     }
 
@@ -2319,9 +2308,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getExpressionStatement() {
-        if (expressionStatementEClass == null) {
-            expressionStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(43);
-        }
         return expressionStatementEClass;
     }
 
@@ -2331,7 +2317,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getExpressionStatement_Expression() {
-        return (EReference)getExpressionStatement().getEStructuralFeatures().get(0);
+        return (EReference)expressionStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2340,9 +2326,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getFieldAccess() {
-        if (fieldAccessEClass == null) {
-            fieldAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(44);
-        }
         return fieldAccessEClass;
     }
 
@@ -2352,7 +2335,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getFieldAccess_Field() {
-        return (EReference)getFieldAccess().getEStructuralFeatures().get(0);
+        return (EReference)fieldAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2361,7 +2344,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getFieldAccess_Expression() {
-        return (EReference)getFieldAccess().getEStructuralFeatures().get(1);
+        return (EReference)fieldAccessEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2370,9 +2353,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getFieldDeclaration() {
-        if (fieldDeclarationEClass == null) {
-            fieldDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(45);
-        }
         return fieldDeclarationEClass;
     }
 
@@ -2382,9 +2362,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getForStatement() {
-        if (forStatementEClass == null) {
-            forStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(46);
-        }
         return forStatementEClass;
     }
 
@@ -2394,7 +2371,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getForStatement_Expression() {
-        return (EReference)getForStatement().getEStructuralFeatures().get(0);
+        return (EReference)forStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2403,7 +2380,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getForStatement_Updaters() {
-        return (EReference)getForStatement().getEStructuralFeatures().get(1);
+        return (EReference)forStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2412,7 +2389,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getForStatement_Initializers() {
-        return (EReference)getForStatement().getEStructuralFeatures().get(2);
+        return (EReference)forStatementEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2421,7 +2398,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getForStatement_Body() {
-        return (EReference)getForStatement().getEStructuralFeatures().get(3);
+        return (EReference)forStatementEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -2430,9 +2407,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getIfStatement() {
-        if (ifStatementEClass == null) {
-            ifStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(47);
-        }
         return ifStatementEClass;
     }
 
@@ -2442,7 +2416,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getIfStatement_Expression() {
-        return (EReference)getIfStatement().getEStructuralFeatures().get(0);
+        return (EReference)ifStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2451,7 +2425,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getIfStatement_ThenStatement() {
-        return (EReference)getIfStatement().getEStructuralFeatures().get(1);
+        return (EReference)ifStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2460,7 +2434,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getIfStatement_ElseStatement() {
-        return (EReference)getIfStatement().getEStructuralFeatures().get(2);
+        return (EReference)ifStatementEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2469,9 +2443,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getImportDeclaration() {
-        if (importDeclarationEClass == null) {
-            importDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(48);
-        }
         return importDeclarationEClass;
     }
 
@@ -2481,7 +2452,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getImportDeclaration_Static() {
-        return (EAttribute)getImportDeclaration().getEStructuralFeatures().get(0);
+        return (EAttribute)importDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2490,7 +2461,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getImportDeclaration_ImportedElement() {
-        return (EReference)getImportDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)importDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2499,9 +2470,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getInfixExpression() {
-        if (infixExpressionEClass == null) {
-            infixExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(49);
-        }
         return infixExpressionEClass;
     }
 
@@ -2511,7 +2479,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getInfixExpression_Operator() {
-        return (EAttribute)getInfixExpression().getEStructuralFeatures().get(0);
+        return (EAttribute)infixExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2520,7 +2488,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getInfixExpression_RightOperand() {
-        return (EReference)getInfixExpression().getEStructuralFeatures().get(1);
+        return (EReference)infixExpressionEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2529,7 +2497,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getInfixExpression_LeftOperand() {
-        return (EReference)getInfixExpression().getEStructuralFeatures().get(2);
+        return (EReference)infixExpressionEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2538,7 +2506,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getInfixExpression_ExtendedOperands() {
-        return (EReference)getInfixExpression().getEStructuralFeatures().get(3);
+        return (EReference)infixExpressionEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -2547,9 +2515,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getInitializer() {
-        if (initializerEClass == null) {
-            initializerEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(52);
-        }
         return initializerEClass;
     }
 
@@ -2559,7 +2524,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getInitializer_Body() {
-        return (EReference)getInitializer().getEStructuralFeatures().get(0);
+        return (EReference)initializerEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2568,9 +2533,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getInstanceofExpression() {
-        if (instanceofExpressionEClass == null) {
-            instanceofExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(53);
-        }
         return instanceofExpressionEClass;
     }
 
@@ -2580,7 +2542,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getInstanceofExpression_RightOperand() {
-        return (EReference)getInstanceofExpression().getEStructuralFeatures().get(0);
+        return (EReference)instanceofExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2589,7 +2551,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getInstanceofExpression_LeftOperand() {
-        return (EReference)getInstanceofExpression().getEStructuralFeatures().get(1);
+        return (EReference)instanceofExpressionEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2598,9 +2560,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getInterfaceDeclaration() {
-        if (interfaceDeclarationEClass == null) {
-            interfaceDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(54);
-        }
         return interfaceDeclarationEClass;
     }
 
@@ -2610,9 +2569,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getJavadoc() {
-        if (javadocEClass == null) {
-            javadocEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(55);
-        }
         return javadocEClass;
     }
 
@@ -2622,7 +2578,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getJavadoc_Tags() {
-        return (EReference)getJavadoc().getEStructuralFeatures().get(0);
+        return (EReference)javadocEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2631,9 +2587,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getLabeledStatement() {
-        if (labeledStatementEClass == null) {
-            labeledStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(56);
-        }
         return labeledStatementEClass;
     }
 
@@ -2643,7 +2596,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getLabeledStatement_Body() {
-        return (EReference)getLabeledStatement().getEStructuralFeatures().get(0);
+        return (EReference)labeledStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2652,7 +2605,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getLabeledStatement_UsagesInBreakStatements() {
-        return (EReference)getLabeledStatement().getEStructuralFeatures().get(1);
+        return (EReference)labeledStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2661,7 +2614,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getLabeledStatement_UsagesInContinueStatements() {
-        return (EReference)getLabeledStatement().getEStructuralFeatures().get(2);
+        return (EReference)labeledStatementEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2670,9 +2623,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getLineComment() {
-        if (lineCommentEClass == null) {
-            lineCommentEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(57);
-        }
         return lineCommentEClass;
     }
 
@@ -2682,9 +2632,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getManifest() {
-        if (manifestEClass == null) {
-            manifestEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(58);
-        }
         return manifestEClass;
     }
 
@@ -2694,7 +2641,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getManifest_MainAttributes() {
-        return (EReference)getManifest().getEStructuralFeatures().get(0);
+        return (EReference)manifestEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2703,7 +2650,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getManifest_EntryAttributes() {
-        return (EReference)getManifest().getEStructuralFeatures().get(1);
+        return (EReference)manifestEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2712,9 +2659,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getManifestAttribute() {
-        if (manifestAttributeEClass == null) {
-            manifestAttributeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(59);
-        }
         return manifestAttributeEClass;
     }
 
@@ -2724,7 +2668,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getManifestAttribute_Key() {
-        return (EAttribute)getManifestAttribute().getEStructuralFeatures().get(0);
+        return (EAttribute)manifestAttributeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2733,7 +2677,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getManifestAttribute_Value() {
-        return (EAttribute)getManifestAttribute().getEStructuralFeatures().get(1);
+        return (EAttribute)manifestAttributeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2742,9 +2686,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getManifestEntry() {
-        if (manifestEntryEClass == null) {
-            manifestEntryEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(60);
-        }
         return manifestEntryEClass;
     }
 
@@ -2754,7 +2695,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getManifestEntry_Name() {
-        return (EAttribute)getManifestEntry().getEStructuralFeatures().get(0);
+        return (EAttribute)manifestEntryEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2763,7 +2704,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getManifestEntry_Attributes() {
-        return (EReference)getManifestEntry().getEStructuralFeatures().get(1);
+        return (EReference)manifestEntryEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2772,9 +2713,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getMemberRef() {
-        if (memberRefEClass == null) {
-            memberRefEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(61);
-        }
         return memberRefEClass;
     }
 
@@ -2784,7 +2722,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMemberRef_Member() {
-        return (EReference)getMemberRef().getEStructuralFeatures().get(0);
+        return (EReference)memberRefEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2793,7 +2731,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMemberRef_Qualifier() {
-        return (EReference)getMemberRef().getEStructuralFeatures().get(1);
+        return (EReference)memberRefEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2802,9 +2740,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getMethodDeclaration() {
-        if (methodDeclarationEClass == null) {
-            methodDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(62);
-        }
         return methodDeclarationEClass;
     }
 
@@ -2814,7 +2749,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getMethodDeclaration_ExtraArrayDimensions() {
-        return (EAttribute)getMethodDeclaration().getEStructuralFeatures().get(0);
+        return (EAttribute)methodDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2823,7 +2758,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodDeclaration_ReturnType() {
-        return (EReference)getMethodDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)methodDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2832,7 +2767,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodDeclaration_RedefinedMethodDeclaration() {
-        return (EReference)getMethodDeclaration().getEStructuralFeatures().get(2);
+        return (EReference)methodDeclarationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2841,7 +2776,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodDeclaration_Redefinitions() {
-        return (EReference)getMethodDeclaration().getEStructuralFeatures().get(3);
+        return (EReference)methodDeclarationEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -2850,9 +2785,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getMethodInvocation() {
-        if (methodInvocationEClass == null) {
-            methodInvocationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(63);
-        }
         return methodInvocationEClass;
     }
 
@@ -2862,7 +2794,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodInvocation_Expression() {
-        return (EReference)getMethodInvocation().getEStructuralFeatures().get(0);
+        return (EReference)methodInvocationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2871,9 +2803,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getMethodRef() {
-        if (methodRefEClass == null) {
-            methodRefEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(64);
-        }
         return methodRefEClass;
     }
 
@@ -2883,7 +2812,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodRef_Method() {
-        return (EReference)getMethodRef().getEStructuralFeatures().get(0);
+        return (EReference)methodRefEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2892,7 +2821,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodRef_Qualifier() {
-        return (EReference)getMethodRef().getEStructuralFeatures().get(1);
+        return (EReference)methodRefEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2901,7 +2830,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodRef_Parameters() {
-        return (EReference)getMethodRef().getEStructuralFeatures().get(2);
+        return (EReference)methodRefEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2910,9 +2839,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getMethodRefParameter() {
-        if (methodRefParameterEClass == null) {
-            methodRefParameterEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(65);
-        }
         return methodRefParameterEClass;
     }
 
@@ -2922,7 +2848,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getMethodRefParameter_Name() {
-        return (EAttribute)getMethodRefParameter().getEStructuralFeatures().get(0);
+        return (EAttribute)methodRefParameterEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2931,7 +2857,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getMethodRefParameter_Varargs() {
-        return (EAttribute)getMethodRefParameter().getEStructuralFeatures().get(1);
+        return (EAttribute)methodRefParameterEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2940,7 +2866,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getMethodRefParameter_Type() {
-        return (EReference)getMethodRefParameter().getEStructuralFeatures().get(2);
+        return (EReference)methodRefParameterEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2949,9 +2875,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getModel() {
-        if (modelEClass == null) {
-            modelEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(66);
-        }
         return modelEClass;
     }
 
@@ -2961,7 +2884,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModel_Name() {
-        return (EAttribute)getModel().getEStructuralFeatures().get(0);
+        return (EAttribute)modelEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -2970,7 +2893,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModel_OwnedElements() {
-        return (EReference)getModel().getEStructuralFeatures().get(1);
+        return (EReference)modelEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -2979,7 +2902,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModel_OrphanTypes() {
-        return (EReference)getModel().getEStructuralFeatures().get(2);
+        return (EReference)modelEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -2988,7 +2911,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModel_UnresolvedItems() {
-        return (EReference)getModel().getEStructuralFeatures().get(3);
+        return (EReference)modelEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -2997,7 +2920,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModel_CompilationUnits() {
-        return (EReference)getModel().getEStructuralFeatures().get(4);
+        return (EReference)modelEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -3006,7 +2929,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModel_ClassFiles() {
-        return (EReference)getModel().getEStructuralFeatures().get(5);
+        return (EReference)modelEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -3015,7 +2938,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModel_Archives() {
-        return (EReference)getModel().getEStructuralFeatures().get(6);
+        return (EReference)modelEClass.getEStructuralFeatures().get(6);
     }
 
     /**
@@ -3024,9 +2947,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getModifier() {
-        if (modifierEClass == null) {
-            modifierEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(67);
-        }
         return modifierEClass;
     }
 
@@ -3036,7 +2956,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Visibility() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(0);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3045,7 +2965,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Inheritance() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(1);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3054,7 +2974,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Static() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(2);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -3063,7 +2983,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Transient() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(3);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -3072,7 +2992,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Volatile() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(4);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -3081,7 +3001,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Native() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(5);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -3090,7 +3010,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Strictfp() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(6);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(6);
     }
 
     /**
@@ -3099,7 +3019,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getModifier_Synchronized() {
-        return (EAttribute)getModifier().getEStructuralFeatures().get(7);
+        return (EAttribute)modifierEClass.getEStructuralFeatures().get(7);
     }
 
     /**
@@ -3108,7 +3028,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModifier_BodyDeclaration() {
-        return (EReference)getModifier().getEStructuralFeatures().get(8);
+        return (EReference)modifierEClass.getEStructuralFeatures().get(8);
     }
 
     /**
@@ -3117,7 +3037,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModifier_SingleVariableDeclaration() {
-        return (EReference)getModifier().getEStructuralFeatures().get(9);
+        return (EReference)modifierEClass.getEStructuralFeatures().get(9);
     }
 
     /**
@@ -3126,7 +3046,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModifier_VariableDeclarationStatement() {
-        return (EReference)getModifier().getEStructuralFeatures().get(10);
+        return (EReference)modifierEClass.getEStructuralFeatures().get(10);
     }
 
     /**
@@ -3135,7 +3055,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getModifier_VariableDeclarationExpression() {
-        return (EReference)getModifier().getEStructuralFeatures().get(11);
+        return (EReference)modifierEClass.getEStructuralFeatures().get(11);
     }
 
     /**
@@ -3144,9 +3064,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getNamedElement() {
-        if (namedElementEClass == null) {
-            namedElementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(68);
-        }
         return namedElementEClass;
     }
 
@@ -3156,7 +3073,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getNamedElement_Name() {
-        return (EAttribute)getNamedElement().getEStructuralFeatures().get(0);
+        return (EAttribute)namedElementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3165,7 +3082,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getNamedElement_Proxy() {
-        return (EAttribute)getNamedElement().getEStructuralFeatures().get(1);
+        return (EAttribute)namedElementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3174,7 +3091,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getNamedElement_UsagesInImports() {
-        return (EReference)getNamedElement().getEStructuralFeatures().get(2);
+        return (EReference)namedElementEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -3183,9 +3100,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getNamespaceAccess() {
-        if (namespaceAccessEClass == null) {
-            namespaceAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(69);
-        }
         return namespaceAccessEClass;
     }
 
@@ -3195,9 +3109,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getNumberLiteral() {
-        if (numberLiteralEClass == null) {
-            numberLiteralEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(70);
-        }
         return numberLiteralEClass;
     }
 
@@ -3207,7 +3118,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getNumberLiteral_TokenValue() {
-        return (EAttribute)getNumberLiteral().getEStructuralFeatures().get(0);
+        return (EAttribute)numberLiteralEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3216,9 +3127,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getNullLiteral() {
-        if (nullLiteralEClass == null) {
-            nullLiteralEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(71);
-        }
         return nullLiteralEClass;
     }
 
@@ -3228,9 +3136,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPackage() {
-        if (packageEClass == null) {
-            packageEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(72);
-        }
         return packageEClass;
     }
 
@@ -3240,7 +3145,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPackage_OwnedElements() {
-        return (EReference)getPackage().getEStructuralFeatures().get(0);
+        return (EReference)packageEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3249,7 +3154,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPackage_Model() {
-        return (EReference)getPackage().getEStructuralFeatures().get(1);
+        return (EReference)packageEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3258,7 +3163,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPackage_OwnedPackages() {
-        return (EReference)getPackage().getEStructuralFeatures().get(2);
+        return (EReference)packageEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -3267,7 +3172,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPackage_Package() {
-        return (EReference)getPackage().getEStructuralFeatures().get(3);
+        return (EReference)packageEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -3276,7 +3181,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPackage_UsagesInPackageAccess() {
-        return (EReference)getPackage().getEStructuralFeatures().get(4);
+        return (EReference)packageEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -3285,9 +3190,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPackageAccess() {
-        if (packageAccessEClass == null) {
-            packageAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(73);
-        }
         return packageAccessEClass;
     }
 
@@ -3297,7 +3199,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPackageAccess_Package() {
-        return (EReference)getPackageAccess().getEStructuralFeatures().get(0);
+        return (EReference)packageAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3306,7 +3208,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPackageAccess_Qualifier() {
-        return (EReference)getPackageAccess().getEStructuralFeatures().get(1);
+        return (EReference)packageAccessEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3315,9 +3217,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getParameterizedType() {
-        if (parameterizedTypeEClass == null) {
-            parameterizedTypeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(74);
-        }
         return parameterizedTypeEClass;
     }
 
@@ -3327,7 +3226,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getParameterizedType_Type() {
-        return (EReference)getParameterizedType().getEStructuralFeatures().get(0);
+        return (EReference)parameterizedTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3336,7 +3235,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getParameterizedType_TypeArguments() {
-        return (EReference)getParameterizedType().getEStructuralFeatures().get(1);
+        return (EReference)parameterizedTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3345,9 +3244,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getParenthesizedExpression() {
-        if (parenthesizedExpressionEClass == null) {
-            parenthesizedExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(75);
-        }
         return parenthesizedExpressionEClass;
     }
 
@@ -3357,7 +3253,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getParenthesizedExpression_Expression() {
-        return (EReference)getParenthesizedExpression().getEStructuralFeatures().get(0);
+        return (EReference)parenthesizedExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3366,9 +3262,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPostfixExpression() {
-        if (postfixExpressionEClass == null) {
-            postfixExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(76);
-        }
         return postfixExpressionEClass;
     }
 
@@ -3378,7 +3271,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getPostfixExpression_Operator() {
-        return (EAttribute)getPostfixExpression().getEStructuralFeatures().get(0);
+        return (EAttribute)postfixExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3387,7 +3280,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPostfixExpression_Operand() {
-        return (EReference)getPostfixExpression().getEStructuralFeatures().get(1);
+        return (EReference)postfixExpressionEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3396,9 +3289,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrefixExpression() {
-        if (prefixExpressionEClass == null) {
-            prefixExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(78);
-        }
         return prefixExpressionEClass;
     }
 
@@ -3408,7 +3298,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getPrefixExpression_Operator() {
-        return (EAttribute)getPrefixExpression().getEStructuralFeatures().get(0);
+        return (EAttribute)prefixExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3417,7 +3307,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getPrefixExpression_Operand() {
-        return (EReference)getPrefixExpression().getEStructuralFeatures().get(1);
+        return (EReference)prefixExpressionEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3426,9 +3316,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveType() {
-        if (primitiveTypeEClass == null) {
-            primitiveTypeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(80);
-        }
         return primitiveTypeEClass;
     }
 
@@ -3438,9 +3325,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeBoolean() {
-        if (primitiveTypeBooleanEClass == null) {
-            primitiveTypeBooleanEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(81);
-        }
         return primitiveTypeBooleanEClass;
     }
 
@@ -3450,9 +3334,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeByte() {
-        if (primitiveTypeByteEClass == null) {
-            primitiveTypeByteEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(82);
-        }
         return primitiveTypeByteEClass;
     }
 
@@ -3462,9 +3343,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeChar() {
-        if (primitiveTypeCharEClass == null) {
-            primitiveTypeCharEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(83);
-        }
         return primitiveTypeCharEClass;
     }
 
@@ -3474,9 +3352,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeDouble() {
-        if (primitiveTypeDoubleEClass == null) {
-            primitiveTypeDoubleEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(84);
-        }
         return primitiveTypeDoubleEClass;
     }
 
@@ -3486,9 +3361,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeShort() {
-        if (primitiveTypeShortEClass == null) {
-            primitiveTypeShortEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(85);
-        }
         return primitiveTypeShortEClass;
     }
 
@@ -3498,9 +3370,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeFloat() {
-        if (primitiveTypeFloatEClass == null) {
-            primitiveTypeFloatEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(86);
-        }
         return primitiveTypeFloatEClass;
     }
 
@@ -3510,9 +3379,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeInt() {
-        if (primitiveTypeIntEClass == null) {
-            primitiveTypeIntEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(87);
-        }
         return primitiveTypeIntEClass;
     }
 
@@ -3522,9 +3388,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeLong() {
-        if (primitiveTypeLongEClass == null) {
-            primitiveTypeLongEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(88);
-        }
         return primitiveTypeLongEClass;
     }
 
@@ -3534,9 +3397,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getPrimitiveTypeVoid() {
-        if (primitiveTypeVoidEClass == null) {
-            primitiveTypeVoidEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(89);
-        }
         return primitiveTypeVoidEClass;
     }
 
@@ -3546,9 +3406,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getReturnStatement() {
-        if (returnStatementEClass == null) {
-            returnStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(90);
-        }
         return returnStatementEClass;
     }
 
@@ -3558,7 +3415,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getReturnStatement_Expression() {
-        return (EReference)getReturnStatement().getEStructuralFeatures().get(0);
+        return (EReference)returnStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3567,9 +3424,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSingleVariableAccess() {
-        if (singleVariableAccessEClass == null) {
-            singleVariableAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(91);
-        }
         return singleVariableAccessEClass;
     }
 
@@ -3579,7 +3433,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableAccess_Variable() {
-        return (EReference)getSingleVariableAccess().getEStructuralFeatures().get(0);
+        return (EReference)singleVariableAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3588,7 +3442,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableAccess_Qualifier() {
-        return (EReference)getSingleVariableAccess().getEStructuralFeatures().get(1);
+        return (EReference)singleVariableAccessEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3597,9 +3451,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSingleVariableDeclaration() {
-        if (singleVariableDeclarationEClass == null) {
-            singleVariableDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(92);
-        }
         return singleVariableDeclarationEClass;
     }
 
@@ -3609,7 +3460,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableDeclaration_Modifier() {
-        return (EReference)getSingleVariableDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)singleVariableDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3618,7 +3469,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getSingleVariableDeclaration_Varargs() {
-        return (EAttribute)getSingleVariableDeclaration().getEStructuralFeatures().get(1);
+        return (EAttribute)singleVariableDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3627,7 +3478,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableDeclaration_Type() {
-        return (EReference)getSingleVariableDeclaration().getEStructuralFeatures().get(2);
+        return (EReference)singleVariableDeclarationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -3636,7 +3487,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableDeclaration_Annotations() {
-        return (EReference)getSingleVariableDeclaration().getEStructuralFeatures().get(3);
+        return (EReference)singleVariableDeclarationEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -3645,7 +3496,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableDeclaration_MethodDeclaration() {
-        return (EReference)getSingleVariableDeclaration().getEStructuralFeatures().get(4);
+        return (EReference)singleVariableDeclarationEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -3654,7 +3505,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableDeclaration_CatchClause() {
-        return (EReference)getSingleVariableDeclaration().getEStructuralFeatures().get(5);
+        return (EReference)singleVariableDeclarationEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -3663,7 +3514,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSingleVariableDeclaration_EnhancedForStatement() {
-        return (EReference)getSingleVariableDeclaration().getEStructuralFeatures().get(6);
+        return (EReference)singleVariableDeclarationEClass.getEStructuralFeatures().get(6);
     }
 
     /**
@@ -3672,9 +3523,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getStatement() {
-        if (statementEClass == null) {
-            statementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(93);
-        }
         return statementEClass;
     }
 
@@ -3684,9 +3532,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getStringLiteral() {
-        if (stringLiteralEClass == null) {
-            stringLiteralEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(94);
-        }
         return stringLiteralEClass;
     }
 
@@ -3696,7 +3541,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getStringLiteral_EscapedValue() {
-        return (EAttribute)getStringLiteral().getEStructuralFeatures().get(0);
+        return (EAttribute)stringLiteralEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3705,9 +3550,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSuperConstructorInvocation() {
-        if (superConstructorInvocationEClass == null) {
-            superConstructorInvocationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(95);
-        }
         return superConstructorInvocationEClass;
     }
 
@@ -3717,7 +3559,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSuperConstructorInvocation_Expression() {
-        return (EReference)getSuperConstructorInvocation().getEStructuralFeatures().get(0);
+        return (EReference)superConstructorInvocationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3726,9 +3568,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSuperFieldAccess() {
-        if (superFieldAccessEClass == null) {
-            superFieldAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(96);
-        }
         return superFieldAccessEClass;
     }
 
@@ -3738,7 +3577,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSuperFieldAccess_Field() {
-        return (EReference)getSuperFieldAccess().getEStructuralFeatures().get(0);
+        return (EReference)superFieldAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3747,9 +3586,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSuperMethodInvocation() {
-        if (superMethodInvocationEClass == null) {
-            superMethodInvocationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(97);
-        }
         return superMethodInvocationEClass;
     }
 
@@ -3759,9 +3595,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSwitchCase() {
-        if (switchCaseEClass == null) {
-            switchCaseEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(98);
-        }
         return switchCaseEClass;
     }
 
@@ -3771,7 +3604,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getSwitchCase_Default() {
-        return (EAttribute)getSwitchCase().getEStructuralFeatures().get(0);
+        return (EAttribute)switchCaseEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3780,7 +3613,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSwitchCase_Expression() {
-        return (EReference)getSwitchCase().getEStructuralFeatures().get(1);
+        return (EReference)switchCaseEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3789,9 +3622,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSwitchStatement() {
-        if (switchStatementEClass == null) {
-            switchStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(99);
-        }
         return switchStatementEClass;
     }
 
@@ -3801,7 +3631,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSwitchStatement_Expression() {
-        return (EReference)getSwitchStatement().getEStructuralFeatures().get(0);
+        return (EReference)switchStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3810,7 +3640,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSwitchStatement_Statements() {
-        return (EReference)getSwitchStatement().getEStructuralFeatures().get(1);
+        return (EReference)switchStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3819,9 +3649,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getSynchronizedStatement() {
-        if (synchronizedStatementEClass == null) {
-            synchronizedStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(100);
-        }
         return synchronizedStatementEClass;
     }
 
@@ -3831,7 +3658,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSynchronizedStatement_Body() {
-        return (EReference)getSynchronizedStatement().getEStructuralFeatures().get(0);
+        return (EReference)synchronizedStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3840,7 +3667,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getSynchronizedStatement_Expression() {
-        return (EReference)getSynchronizedStatement().getEStructuralFeatures().get(1);
+        return (EReference)synchronizedStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3849,9 +3676,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTagElement() {
-        if (tagElementEClass == null) {
-            tagElementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(101);
-        }
         return tagElementEClass;
     }
 
@@ -3861,7 +3685,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getTagElement_TagName() {
-        return (EAttribute)getTagElement().getEStructuralFeatures().get(0);
+        return (EAttribute)tagElementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3870,7 +3694,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTagElement_Fragments() {
-        return (EReference)getTagElement().getEStructuralFeatures().get(1);
+        return (EReference)tagElementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3879,9 +3703,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTextElement() {
-        if (textElementEClass == null) {
-            textElementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(102);
-        }
         return textElementEClass;
     }
 
@@ -3891,7 +3712,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getTextElement_Text() {
-        return (EAttribute)getTextElement().getEStructuralFeatures().get(0);
+        return (EAttribute)textElementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3900,9 +3721,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getThisExpression() {
-        if (thisExpressionEClass == null) {
-            thisExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(103);
-        }
         return thisExpressionEClass;
     }
 
@@ -3912,9 +3730,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getThrowStatement() {
-        if (throwStatementEClass == null) {
-            throwStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(104);
-        }
         return throwStatementEClass;
     }
 
@@ -3924,7 +3739,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getThrowStatement_Expression() {
-        return (EReference)getThrowStatement().getEStructuralFeatures().get(0);
+        return (EReference)throwStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3933,9 +3748,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTryStatement() {
-        if (tryStatementEClass == null) {
-            tryStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(105);
-        }
         return tryStatementEClass;
     }
 
@@ -3945,7 +3757,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTryStatement_Body() {
-        return (EReference)getTryStatement().getEStructuralFeatures().get(0);
+        return (EReference)tryStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3954,7 +3766,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTryStatement_Finally() {
-        return (EReference)getTryStatement().getEStructuralFeatures().get(1);
+        return (EReference)tryStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3963,7 +3775,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTryStatement_CatchClauses() {
-        return (EReference)getTryStatement().getEStructuralFeatures().get(2);
+        return (EReference)tryStatementEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -3972,9 +3784,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getType() {
-        if (typeEClass == null) {
-            typeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(106);
-        }
         return typeEClass;
     }
 
@@ -3984,7 +3793,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getType_UsagesInTypeAccess() {
-        return (EReference)getType().getEStructuralFeatures().get(0);
+        return (EReference)typeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3993,9 +3802,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTypeAccess() {
-        if (typeAccessEClass == null) {
-            typeAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(107);
-        }
         return typeAccessEClass;
     }
 
@@ -4005,7 +3811,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTypeAccess_Type() {
-        return (EReference)getTypeAccess().getEStructuralFeatures().get(0);
+        return (EReference)typeAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4014,7 +3820,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTypeAccess_Qualifier() {
-        return (EReference)getTypeAccess().getEStructuralFeatures().get(1);
+        return (EReference)typeAccessEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -4023,9 +3829,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTypeDeclaration() {
-        if (typeDeclarationEClass == null) {
-            typeDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(108);
-        }
         return typeDeclarationEClass;
     }
 
@@ -4035,7 +3838,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTypeDeclaration_TypeParameters() {
-        return (EReference)getTypeDeclaration().getEStructuralFeatures().get(0);
+        return (EReference)typeDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4044,9 +3847,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTypeDeclarationStatement() {
-        if (typeDeclarationStatementEClass == null) {
-            typeDeclarationStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(109);
-        }
         return typeDeclarationStatementEClass;
     }
 
@@ -4056,7 +3856,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTypeDeclarationStatement_Declaration() {
-        return (EReference)getTypeDeclarationStatement().getEStructuralFeatures().get(0);
+        return (EReference)typeDeclarationStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4065,9 +3865,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTypeLiteral() {
-        if (typeLiteralEClass == null) {
-            typeLiteralEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(110);
-        }
         return typeLiteralEClass;
     }
 
@@ -4077,7 +3874,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTypeLiteral_Type() {
-        return (EReference)getTypeLiteral().getEStructuralFeatures().get(0);
+        return (EReference)typeLiteralEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4086,9 +3883,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getTypeParameter() {
-        if (typeParameterEClass == null) {
-            typeParameterEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(111);
-        }
         return typeParameterEClass;
     }
 
@@ -4098,7 +3892,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getTypeParameter_Bounds() {
-        return (EReference)getTypeParameter().getEStructuralFeatures().get(0);
+        return (EReference)typeParameterEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4107,9 +3901,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedItem() {
-        if (unresolvedItemEClass == null) {
-            unresolvedItemEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(112);
-        }
         return unresolvedItemEClass;
     }
 
@@ -4119,9 +3910,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedItemAccess() {
-        if (unresolvedItemAccessEClass == null) {
-            unresolvedItemAccessEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(113);
-        }
         return unresolvedItemAccessEClass;
     }
 
@@ -4131,7 +3919,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getUnresolvedItemAccess_Element() {
-        return (EReference)getUnresolvedItemAccess().getEStructuralFeatures().get(0);
+        return (EReference)unresolvedItemAccessEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4140,7 +3928,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getUnresolvedItemAccess_Qualifier() {
-        return (EReference)getUnresolvedItemAccess().getEStructuralFeatures().get(1);
+        return (EReference)unresolvedItemAccessEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -4149,9 +3937,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedAnnotationDeclaration() {
-        if (unresolvedAnnotationDeclarationEClass == null) {
-            unresolvedAnnotationDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(114);
-        }
         return unresolvedAnnotationDeclarationEClass;
     }
 
@@ -4161,9 +3946,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedAnnotationTypeMemberDeclaration() {
-        if (unresolvedAnnotationTypeMemberDeclarationEClass == null) {
-            unresolvedAnnotationTypeMemberDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(115);
-        }
         return unresolvedAnnotationTypeMemberDeclarationEClass;
     }
 
@@ -4173,9 +3955,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedClassDeclaration() {
-        if (unresolvedClassDeclarationEClass == null) {
-            unresolvedClassDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(116);
-        }
         return unresolvedClassDeclarationEClass;
     }
 
@@ -4185,9 +3964,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedEnumDeclaration() {
-        if (unresolvedEnumDeclarationEClass == null) {
-            unresolvedEnumDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(117);
-        }
         return unresolvedEnumDeclarationEClass;
     }
 
@@ -4197,9 +3973,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedInterfaceDeclaration() {
-        if (unresolvedInterfaceDeclarationEClass == null) {
-            unresolvedInterfaceDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(118);
-        }
         return unresolvedInterfaceDeclarationEClass;
     }
 
@@ -4209,9 +3982,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedLabeledStatement() {
-        if (unresolvedLabeledStatementEClass == null) {
-            unresolvedLabeledStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(119);
-        }
         return unresolvedLabeledStatementEClass;
     }
 
@@ -4221,9 +3991,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedMethodDeclaration() {
-        if (unresolvedMethodDeclarationEClass == null) {
-            unresolvedMethodDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(120);
-        }
         return unresolvedMethodDeclarationEClass;
     }
 
@@ -4233,9 +4000,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedSingleVariableDeclaration() {
-        if (unresolvedSingleVariableDeclarationEClass == null) {
-            unresolvedSingleVariableDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(121);
-        }
         return unresolvedSingleVariableDeclarationEClass;
     }
 
@@ -4245,9 +4009,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedType() {
-        if (unresolvedTypeEClass == null) {
-            unresolvedTypeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(122);
-        }
         return unresolvedTypeEClass;
     }
 
@@ -4257,9 +4018,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedTypeDeclaration() {
-        if (unresolvedTypeDeclarationEClass == null) {
-            unresolvedTypeDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(123);
-        }
         return unresolvedTypeDeclarationEClass;
     }
 
@@ -4269,9 +4027,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getUnresolvedVariableDeclarationFragment() {
-        if (unresolvedVariableDeclarationFragmentEClass == null) {
-            unresolvedVariableDeclarationFragmentEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(124);
-        }
         return unresolvedVariableDeclarationFragmentEClass;
     }
 
@@ -4281,9 +4036,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getVariableDeclaration() {
-        if (variableDeclarationEClass == null) {
-            variableDeclarationEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(125);
-        }
         return variableDeclarationEClass;
     }
 
@@ -4293,7 +4045,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getVariableDeclaration_ExtraArrayDimensions() {
-        return (EAttribute)getVariableDeclaration().getEStructuralFeatures().get(0);
+        return (EAttribute)variableDeclarationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4302,7 +4054,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getVariableDeclaration_Initializer() {
-        return (EReference)getVariableDeclaration().getEStructuralFeatures().get(1);
+        return (EReference)variableDeclarationEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -4311,7 +4063,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getVariableDeclaration_UsageInVariableAccess() {
-        return (EReference)getVariableDeclaration().getEStructuralFeatures().get(2);
+        return (EReference)variableDeclarationEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -4320,9 +4072,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getVariableDeclarationExpression() {
-        if (variableDeclarationExpressionEClass == null) {
-            variableDeclarationExpressionEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(126);
-        }
         return variableDeclarationExpressionEClass;
     }
 
@@ -4332,7 +4081,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getVariableDeclarationExpression_Modifier() {
-        return (EReference)getVariableDeclarationExpression().getEStructuralFeatures().get(0);
+        return (EReference)variableDeclarationExpressionEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4341,7 +4090,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getVariableDeclarationExpression_Annotations() {
-        return (EReference)getVariableDeclarationExpression().getEStructuralFeatures().get(1);
+        return (EReference)variableDeclarationExpressionEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -4350,9 +4099,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getVariableDeclarationFragment() {
-        if (variableDeclarationFragmentEClass == null) {
-            variableDeclarationFragmentEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(127);
-        }
         return variableDeclarationFragmentEClass;
     }
 
@@ -4362,7 +4108,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getVariableDeclarationFragment_VariablesContainer() {
-        return (EReference)getVariableDeclarationFragment().getEStructuralFeatures().get(0);
+        return (EReference)variableDeclarationFragmentEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4371,9 +4117,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getVariableDeclarationStatement() {
-        if (variableDeclarationStatementEClass == null) {
-            variableDeclarationStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(128);
-        }
         return variableDeclarationStatementEClass;
     }
 
@@ -4383,7 +4126,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getVariableDeclarationStatement_ExtraArrayDimensions() {
-        return (EAttribute)getVariableDeclarationStatement().getEStructuralFeatures().get(0);
+        return (EAttribute)variableDeclarationStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4392,7 +4135,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getVariableDeclarationStatement_Modifier() {
-        return (EReference)getVariableDeclarationStatement().getEStructuralFeatures().get(1);
+        return (EReference)variableDeclarationStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -4401,7 +4144,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getVariableDeclarationStatement_Annotations() {
-        return (EReference)getVariableDeclarationStatement().getEStructuralFeatures().get(2);
+        return (EReference)variableDeclarationStatementEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -4410,9 +4153,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getWildCardType() {
-        if (wildCardTypeEClass == null) {
-            wildCardTypeEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(130);
-        }
         return wildCardTypeEClass;
     }
 
@@ -4422,7 +4162,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EAttribute getWildCardType_UpperBound() {
-        return (EAttribute)getWildCardType().getEStructuralFeatures().get(0);
+        return (EAttribute)wildCardTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4431,7 +4171,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getWildCardType_Bound() {
-        return (EReference)getWildCardType().getEStructuralFeatures().get(1);
+        return (EReference)wildCardTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -4440,9 +4180,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EClass getWhileStatement() {
-        if (whileStatementEClass == null) {
-            whileStatementEClass = (EClass)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(131);
-        }
         return whileStatementEClass;
     }
 
@@ -4452,7 +4189,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getWhileStatement_Expression() {
-        return (EReference)getWhileStatement().getEStructuralFeatures().get(0);
+        return (EReference)whileStatementEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -4461,7 +4198,7 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EReference getWhileStatement_Body() {
-        return (EReference)getWhileStatement().getEStructuralFeatures().get(1);
+        return (EReference)whileStatementEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -4470,9 +4207,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EEnum getAssignmentKind() {
-        if (assignmentKindEEnum == null) {
-            assignmentKindEEnum = (EEnum)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(19);
-        }
         return assignmentKindEEnum;
     }
 
@@ -4482,9 +4216,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EEnum getInfixExpressionKind() {
-        if (infixExpressionKindEEnum == null) {
-            infixExpressionKindEEnum = (EEnum)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(50);
-        }
         return infixExpressionKindEEnum;
     }
 
@@ -4494,9 +4225,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EEnum getInheritanceKind() {
-        if (inheritanceKindEEnum == null) {
-            inheritanceKindEEnum = (EEnum)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(51);
-        }
         return inheritanceKindEEnum;
     }
 
@@ -4506,9 +4234,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EEnum getPostfixExpressionKind() {
-        if (postfixExpressionKindEEnum == null) {
-            postfixExpressionKindEEnum = (EEnum)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(77);
-        }
         return postfixExpressionKindEEnum;
     }
 
@@ -4518,9 +4243,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EEnum getPrefixExpressionKind() {
-        if (prefixExpressionKindEEnum == null) {
-            prefixExpressionKindEEnum = (EEnum)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(79);
-        }
         return prefixExpressionKindEEnum;
     }
 
@@ -4530,9 +4252,6 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * @generated
      */
     public EEnum getVisibilityKind() {
-        if (visibilityKindEEnum == null) {
-            visibilityKindEEnum = (EEnum)EPackage.Registry.INSTANCE.getEPackage(JavaPackage.eNS_URI).getEClassifiers().get(129);
-        }
         return visibilityKindEEnum;
     }
 
@@ -4550,66 +4269,1198 @@ public class JavaPackageImpl extends EPackageImpl implements JavaPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    private boolean isLoaded = false;
+    private boolean isCreated = false;
 
     /**
-     * Laods the package and any sub-packages from their serialized form.
+     * Creates the meta-model objects for the package.  This method is
+     * guarded to have no affect on any invocation but its first.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public void loadPackage() {
-        if (isLoaded) return;
-        isLoaded = true;
+    public void createPackageContents() {
+        if (isCreated) return;
+        isCreated = true;
 
-        URL url = getClass().getResource(packageFilename);
-        if (url == null) {
-            throw new RuntimeException("Missing serialized package: " + packageFilename);
-        }
-        URI uri = URI.createURI(url.toString());
-        Resource resource = new EcoreResourceFactoryImpl().createResource(uri);
-        try {
-            resource.load(null);
-        }
-        catch (IOException exception) {
-            throw new WrappedException(exception);
-        }
-        initializeFromLoadedEPackage(this, (EPackage)resource.getContents().get(0));
+        // Create classes and their features
+        abstractMethodDeclarationEClass = createEClass(ABSTRACT_METHOD_DECLARATION);
+        createEReference(abstractMethodDeclarationEClass, ABSTRACT_METHOD_DECLARATION__BODY);
+        createEReference(abstractMethodDeclarationEClass, ABSTRACT_METHOD_DECLARATION__PARAMETERS);
+        createEReference(abstractMethodDeclarationEClass, ABSTRACT_METHOD_DECLARATION__THROWN_EXCEPTIONS);
+        createEReference(abstractMethodDeclarationEClass, ABSTRACT_METHOD_DECLARATION__TYPE_PARAMETERS);
+        createEReference(abstractMethodDeclarationEClass, ABSTRACT_METHOD_DECLARATION__USAGES_IN_DOC_COMMENTS);
+        createEReference(abstractMethodDeclarationEClass, ABSTRACT_METHOD_DECLARATION__USAGES);
+
+        abstractMethodInvocationEClass = createEClass(ABSTRACT_METHOD_INVOCATION);
+        createEReference(abstractMethodInvocationEClass, ABSTRACT_METHOD_INVOCATION__METHOD);
+        createEReference(abstractMethodInvocationEClass, ABSTRACT_METHOD_INVOCATION__ARGUMENTS);
+        createEReference(abstractMethodInvocationEClass, ABSTRACT_METHOD_INVOCATION__TYPE_ARGUMENTS);
+
+        abstractTypeDeclarationEClass = createEClass(ABSTRACT_TYPE_DECLARATION);
+        createEReference(abstractTypeDeclarationEClass, ABSTRACT_TYPE_DECLARATION__BODY_DECLARATIONS);
+        createEReference(abstractTypeDeclarationEClass, ABSTRACT_TYPE_DECLARATION__COMMENTS_BEFORE_BODY);
+        createEReference(abstractTypeDeclarationEClass, ABSTRACT_TYPE_DECLARATION__COMMENTS_AFTER_BODY);
+        createEReference(abstractTypeDeclarationEClass, ABSTRACT_TYPE_DECLARATION__PACKAGE);
+        createEReference(abstractTypeDeclarationEClass, ABSTRACT_TYPE_DECLARATION__SUPER_INTERFACES);
+
+        abstractTypeQualifiedExpressionEClass = createEClass(ABSTRACT_TYPE_QUALIFIED_EXPRESSION);
+        createEReference(abstractTypeQualifiedExpressionEClass, ABSTRACT_TYPE_QUALIFIED_EXPRESSION__QUALIFIER);
+
+        abstractVariablesContainerEClass = createEClass(ABSTRACT_VARIABLES_CONTAINER);
+        createEReference(abstractVariablesContainerEClass, ABSTRACT_VARIABLES_CONTAINER__TYPE);
+        createEReference(abstractVariablesContainerEClass, ABSTRACT_VARIABLES_CONTAINER__FRAGMENTS);
+
+        annotationEClass = createEClass(ANNOTATION);
+        createEReference(annotationEClass, ANNOTATION__TYPE);
+        createEReference(annotationEClass, ANNOTATION__VALUES);
+
+        archiveEClass = createEClass(ARCHIVE);
+        createEAttribute(archiveEClass, ARCHIVE__ORIGINAL_FILE_PATH);
+        createEReference(archiveEClass, ARCHIVE__CLASS_FILES);
+        createEReference(archiveEClass, ARCHIVE__MANIFEST);
+
+        assertStatementEClass = createEClass(ASSERT_STATEMENT);
+        createEReference(assertStatementEClass, ASSERT_STATEMENT__MESSAGE);
+        createEReference(assertStatementEClass, ASSERT_STATEMENT__EXPRESSION);
+
+        astNodeEClass = createEClass(AST_NODE);
+        createEReference(astNodeEClass, AST_NODE__COMMENTS);
+        createEReference(astNodeEClass, AST_NODE__ORIGINAL_COMPILATION_UNIT);
+        createEReference(astNodeEClass, AST_NODE__ORIGINAL_CLASS_FILE);
+
+        annotationMemberValuePairEClass = createEClass(ANNOTATION_MEMBER_VALUE_PAIR);
+        createEReference(annotationMemberValuePairEClass, ANNOTATION_MEMBER_VALUE_PAIR__MEMBER);
+        createEReference(annotationMemberValuePairEClass, ANNOTATION_MEMBER_VALUE_PAIR__VALUE);
+
+        annotationTypeDeclarationEClass = createEClass(ANNOTATION_TYPE_DECLARATION);
+
+        annotationTypeMemberDeclarationEClass = createEClass(ANNOTATION_TYPE_MEMBER_DECLARATION);
+        createEReference(annotationTypeMemberDeclarationEClass, ANNOTATION_TYPE_MEMBER_DECLARATION__DEFAULT);
+        createEReference(annotationTypeMemberDeclarationEClass, ANNOTATION_TYPE_MEMBER_DECLARATION__TYPE);
+        createEReference(annotationTypeMemberDeclarationEClass, ANNOTATION_TYPE_MEMBER_DECLARATION__USAGES);
+
+        anonymousClassDeclarationEClass = createEClass(ANONYMOUS_CLASS_DECLARATION);
+        createEReference(anonymousClassDeclarationEClass, ANONYMOUS_CLASS_DECLARATION__BODY_DECLARATIONS);
+        createEReference(anonymousClassDeclarationEClass, ANONYMOUS_CLASS_DECLARATION__CLASS_INSTANCE_CREATION);
+
+        arrayAccessEClass = createEClass(ARRAY_ACCESS);
+        createEReference(arrayAccessEClass, ARRAY_ACCESS__ARRAY);
+        createEReference(arrayAccessEClass, ARRAY_ACCESS__INDEX);
+
+        arrayCreationEClass = createEClass(ARRAY_CREATION);
+        createEReference(arrayCreationEClass, ARRAY_CREATION__DIMENSIONS);
+        createEReference(arrayCreationEClass, ARRAY_CREATION__INITIALIZER);
+        createEReference(arrayCreationEClass, ARRAY_CREATION__TYPE);
+
+        arrayInitializerEClass = createEClass(ARRAY_INITIALIZER);
+        createEReference(arrayInitializerEClass, ARRAY_INITIALIZER__EXPRESSIONS);
+
+        arrayLengthAccessEClass = createEClass(ARRAY_LENGTH_ACCESS);
+        createEReference(arrayLengthAccessEClass, ARRAY_LENGTH_ACCESS__ARRAY);
+
+        arrayTypeEClass = createEClass(ARRAY_TYPE);
+        createEAttribute(arrayTypeEClass, ARRAY_TYPE__DIMENSIONS);
+        createEReference(arrayTypeEClass, ARRAY_TYPE__ELEMENT_TYPE);
+
+        assignmentEClass = createEClass(ASSIGNMENT);
+        createEReference(assignmentEClass, ASSIGNMENT__LEFT_HAND_SIDE);
+        createEAttribute(assignmentEClass, ASSIGNMENT__OPERATOR);
+        createEReference(assignmentEClass, ASSIGNMENT__RIGHT_HAND_SIDE);
+
+        bodyDeclarationEClass = createEClass(BODY_DECLARATION);
+        createEReference(bodyDeclarationEClass, BODY_DECLARATION__ABSTRACT_TYPE_DECLARATION);
+        createEReference(bodyDeclarationEClass, BODY_DECLARATION__ANNOTATIONS);
+        createEReference(bodyDeclarationEClass, BODY_DECLARATION__ANONYMOUS_CLASS_DECLARATION_OWNER);
+        createEReference(bodyDeclarationEClass, BODY_DECLARATION__MODIFIER);
+
+        booleanLiteralEClass = createEClass(BOOLEAN_LITERAL);
+        createEAttribute(booleanLiteralEClass, BOOLEAN_LITERAL__VALUE);
+
+        blockCommentEClass = createEClass(BLOCK_COMMENT);
+
+        blockEClass = createEClass(BLOCK);
+        createEReference(blockEClass, BLOCK__STATEMENTS);
+
+        breakStatementEClass = createEClass(BREAK_STATEMENT);
+        createEReference(breakStatementEClass, BREAK_STATEMENT__LABEL);
+
+        castExpressionEClass = createEClass(CAST_EXPRESSION);
+        createEReference(castExpressionEClass, CAST_EXPRESSION__EXPRESSION);
+        createEReference(castExpressionEClass, CAST_EXPRESSION__TYPE);
+
+        catchClauseEClass = createEClass(CATCH_CLAUSE);
+        createEReference(catchClauseEClass, CATCH_CLAUSE__EXCEPTION);
+        createEReference(catchClauseEClass, CATCH_CLAUSE__BODY);
+
+        characterLiteralEClass = createEClass(CHARACTER_LITERAL);
+        createEAttribute(characterLiteralEClass, CHARACTER_LITERAL__ESCAPED_VALUE);
+
+        classFileEClass = createEClass(CLASS_FILE);
+        createEAttribute(classFileEClass, CLASS_FILE__ORIGINAL_FILE_PATH);
+        createEReference(classFileEClass, CLASS_FILE__TYPE);
+        createEReference(classFileEClass, CLASS_FILE__ATTACHED_SOURCE);
+        createEReference(classFileEClass, CLASS_FILE__PACKAGE);
+
+        classInstanceCreationEClass = createEClass(CLASS_INSTANCE_CREATION);
+        createEReference(classInstanceCreationEClass, CLASS_INSTANCE_CREATION__ANONYMOUS_CLASS_DECLARATION);
+        createEReference(classInstanceCreationEClass, CLASS_INSTANCE_CREATION__EXPRESSION);
+        createEReference(classInstanceCreationEClass, CLASS_INSTANCE_CREATION__TYPE);
+
+        constructorDeclarationEClass = createEClass(CONSTRUCTOR_DECLARATION);
+
+        conditionalExpressionEClass = createEClass(CONDITIONAL_EXPRESSION);
+        createEReference(conditionalExpressionEClass, CONDITIONAL_EXPRESSION__ELSE_EXPRESSION);
+        createEReference(conditionalExpressionEClass, CONDITIONAL_EXPRESSION__EXPRESSION);
+        createEReference(conditionalExpressionEClass, CONDITIONAL_EXPRESSION__THEN_EXPRESSION);
+
+        constructorInvocationEClass = createEClass(CONSTRUCTOR_INVOCATION);
+
+        classDeclarationEClass = createEClass(CLASS_DECLARATION);
+        createEReference(classDeclarationEClass, CLASS_DECLARATION__SUPER_CLASS);
+
+        commentEClass = createEClass(COMMENT);
+        createEAttribute(commentEClass, COMMENT__CONTENT);
+        createEAttribute(commentEClass, COMMENT__ENCLOSED_BY_PARENT);
+        createEAttribute(commentEClass, COMMENT__PREFIX_OF_PARENT);
+
+        compilationUnitEClass = createEClass(COMPILATION_UNIT);
+        createEAttribute(compilationUnitEClass, COMPILATION_UNIT__ORIGINAL_FILE_PATH);
+        createEReference(compilationUnitEClass, COMPILATION_UNIT__COMMENT_LIST);
+        createEReference(compilationUnitEClass, COMPILATION_UNIT__IMPORTS);
+        createEReference(compilationUnitEClass, COMPILATION_UNIT__PACKAGE);
+        createEReference(compilationUnitEClass, COMPILATION_UNIT__TYPES);
+
+        continueStatementEClass = createEClass(CONTINUE_STATEMENT);
+        createEReference(continueStatementEClass, CONTINUE_STATEMENT__LABEL);
+
+        doStatementEClass = createEClass(DO_STATEMENT);
+        createEReference(doStatementEClass, DO_STATEMENT__EXPRESSION);
+        createEReference(doStatementEClass, DO_STATEMENT__BODY);
+
+        emptyStatementEClass = createEClass(EMPTY_STATEMENT);
+
+        enhancedForStatementEClass = createEClass(ENHANCED_FOR_STATEMENT);
+        createEReference(enhancedForStatementEClass, ENHANCED_FOR_STATEMENT__BODY);
+        createEReference(enhancedForStatementEClass, ENHANCED_FOR_STATEMENT__EXPRESSION);
+        createEReference(enhancedForStatementEClass, ENHANCED_FOR_STATEMENT__PARAMETER);
+
+        enumConstantDeclarationEClass = createEClass(ENUM_CONSTANT_DECLARATION);
+        createEReference(enumConstantDeclarationEClass, ENUM_CONSTANT_DECLARATION__ANONYMOUS_CLASS_DECLARATION);
+        createEReference(enumConstantDeclarationEClass, ENUM_CONSTANT_DECLARATION__ARGUMENTS);
+
+        enumDeclarationEClass = createEClass(ENUM_DECLARATION);
+        createEReference(enumDeclarationEClass, ENUM_DECLARATION__ENUM_CONSTANTS);
+
+        expressionEClass = createEClass(EXPRESSION);
+
+        expressionStatementEClass = createEClass(EXPRESSION_STATEMENT);
+        createEReference(expressionStatementEClass, EXPRESSION_STATEMENT__EXPRESSION);
+
+        fieldAccessEClass = createEClass(FIELD_ACCESS);
+        createEReference(fieldAccessEClass, FIELD_ACCESS__FIELD);
+        createEReference(fieldAccessEClass, FIELD_ACCESS__EXPRESSION);
+
+        fieldDeclarationEClass = createEClass(FIELD_DECLARATION);
+
+        forStatementEClass = createEClass(FOR_STATEMENT);
+        createEReference(forStatementEClass, FOR_STATEMENT__EXPRESSION);
+        createEReference(forStatementEClass, FOR_STATEMENT__UPDATERS);
+        createEReference(forStatementEClass, FOR_STATEMENT__INITIALIZERS);
+        createEReference(forStatementEClass, FOR_STATEMENT__BODY);
+
+        ifStatementEClass = createEClass(IF_STATEMENT);
+        createEReference(ifStatementEClass, IF_STATEMENT__EXPRESSION);
+        createEReference(ifStatementEClass, IF_STATEMENT__THEN_STATEMENT);
+        createEReference(ifStatementEClass, IF_STATEMENT__ELSE_STATEMENT);
+
+        importDeclarationEClass = createEClass(IMPORT_DECLARATION);
+        createEAttribute(importDeclarationEClass, IMPORT_DECLARATION__STATIC);
+        createEReference(importDeclarationEClass, IMPORT_DECLARATION__IMPORTED_ELEMENT);
+
+        infixExpressionEClass = createEClass(INFIX_EXPRESSION);
+        createEAttribute(infixExpressionEClass, INFIX_EXPRESSION__OPERATOR);
+        createEReference(infixExpressionEClass, INFIX_EXPRESSION__RIGHT_OPERAND);
+        createEReference(infixExpressionEClass, INFIX_EXPRESSION__LEFT_OPERAND);
+        createEReference(infixExpressionEClass, INFIX_EXPRESSION__EXTENDED_OPERANDS);
+
+        initializerEClass = createEClass(INITIALIZER);
+        createEReference(initializerEClass, INITIALIZER__BODY);
+
+        instanceofExpressionEClass = createEClass(INSTANCEOF_EXPRESSION);
+        createEReference(instanceofExpressionEClass, INSTANCEOF_EXPRESSION__RIGHT_OPERAND);
+        createEReference(instanceofExpressionEClass, INSTANCEOF_EXPRESSION__LEFT_OPERAND);
+
+        interfaceDeclarationEClass = createEClass(INTERFACE_DECLARATION);
+
+        javadocEClass = createEClass(JAVADOC);
+        createEReference(javadocEClass, JAVADOC__TAGS);
+
+        labeledStatementEClass = createEClass(LABELED_STATEMENT);
+        createEReference(labeledStatementEClass, LABELED_STATEMENT__BODY);
+        createEReference(labeledStatementEClass, LABELED_STATEMENT__USAGES_IN_BREAK_STATEMENTS);
+        createEReference(labeledStatementEClass, LABELED_STATEMENT__USAGES_IN_CONTINUE_STATEMENTS);
+
+        lineCommentEClass = createEClass(LINE_COMMENT);
+
+        manifestEClass = createEClass(MANIFEST);
+        createEReference(manifestEClass, MANIFEST__MAIN_ATTRIBUTES);
+        createEReference(manifestEClass, MANIFEST__ENTRY_ATTRIBUTES);
+
+        manifestAttributeEClass = createEClass(MANIFEST_ATTRIBUTE);
+        createEAttribute(manifestAttributeEClass, MANIFEST_ATTRIBUTE__KEY);
+        createEAttribute(manifestAttributeEClass, MANIFEST_ATTRIBUTE__VALUE);
+
+        manifestEntryEClass = createEClass(MANIFEST_ENTRY);
+        createEAttribute(manifestEntryEClass, MANIFEST_ENTRY__NAME);
+        createEReference(manifestEntryEClass, MANIFEST_ENTRY__ATTRIBUTES);
+
+        memberRefEClass = createEClass(MEMBER_REF);
+        createEReference(memberRefEClass, MEMBER_REF__MEMBER);
+        createEReference(memberRefEClass, MEMBER_REF__QUALIFIER);
+
+        methodDeclarationEClass = createEClass(METHOD_DECLARATION);
+        createEAttribute(methodDeclarationEClass, METHOD_DECLARATION__EXTRA_ARRAY_DIMENSIONS);
+        createEReference(methodDeclarationEClass, METHOD_DECLARATION__RETURN_TYPE);
+        createEReference(methodDeclarationEClass, METHOD_DECLARATION__REDEFINED_METHOD_DECLARATION);
+        createEReference(methodDeclarationEClass, METHOD_DECLARATION__REDEFINITIONS);
+
+        methodInvocationEClass = createEClass(METHOD_INVOCATION);
+        createEReference(methodInvocationEClass, METHOD_INVOCATION__EXPRESSION);
+
+        methodRefEClass = createEClass(METHOD_REF);
+        createEReference(methodRefEClass, METHOD_REF__METHOD);
+        createEReference(methodRefEClass, METHOD_REF__QUALIFIER);
+        createEReference(methodRefEClass, METHOD_REF__PARAMETERS);
+
+        methodRefParameterEClass = createEClass(METHOD_REF_PARAMETER);
+        createEAttribute(methodRefParameterEClass, METHOD_REF_PARAMETER__NAME);
+        createEAttribute(methodRefParameterEClass, METHOD_REF_PARAMETER__VARARGS);
+        createEReference(methodRefParameterEClass, METHOD_REF_PARAMETER__TYPE);
+
+        modelEClass = createEClass(MODEL);
+        createEAttribute(modelEClass, MODEL__NAME);
+        createEReference(modelEClass, MODEL__OWNED_ELEMENTS);
+        createEReference(modelEClass, MODEL__ORPHAN_TYPES);
+        createEReference(modelEClass, MODEL__UNRESOLVED_ITEMS);
+        createEReference(modelEClass, MODEL__COMPILATION_UNITS);
+        createEReference(modelEClass, MODEL__CLASS_FILES);
+        createEReference(modelEClass, MODEL__ARCHIVES);
+
+        modifierEClass = createEClass(MODIFIER);
+        createEAttribute(modifierEClass, MODIFIER__VISIBILITY);
+        createEAttribute(modifierEClass, MODIFIER__INHERITANCE);
+        createEAttribute(modifierEClass, MODIFIER__STATIC);
+        createEAttribute(modifierEClass, MODIFIER__TRANSIENT);
+        createEAttribute(modifierEClass, MODIFIER__VOLATILE);
+        createEAttribute(modifierEClass, MODIFIER__NATIVE);
+        createEAttribute(modifierEClass, MODIFIER__STRICTFP);
+        createEAttribute(modifierEClass, MODIFIER__SYNCHRONIZED);
+        createEReference(modifierEClass, MODIFIER__BODY_DECLARATION);
+        createEReference(modifierEClass, MODIFIER__SINGLE_VARIABLE_DECLARATION);
+        createEReference(modifierEClass, MODIFIER__VARIABLE_DECLARATION_STATEMENT);
+        createEReference(modifierEClass, MODIFIER__VARIABLE_DECLARATION_EXPRESSION);
+
+        namedElementEClass = createEClass(NAMED_ELEMENT);
+        createEAttribute(namedElementEClass, NAMED_ELEMENT__NAME);
+        createEAttribute(namedElementEClass, NAMED_ELEMENT__PROXY);
+        createEReference(namedElementEClass, NAMED_ELEMENT__USAGES_IN_IMPORTS);
+
+        namespaceAccessEClass = createEClass(NAMESPACE_ACCESS);
+
+        numberLiteralEClass = createEClass(NUMBER_LITERAL);
+        createEAttribute(numberLiteralEClass, NUMBER_LITERAL__TOKEN_VALUE);
+
+        nullLiteralEClass = createEClass(NULL_LITERAL);
+
+        packageEClass = createEClass(PACKAGE);
+        createEReference(packageEClass, PACKAGE__OWNED_ELEMENTS);
+        createEReference(packageEClass, PACKAGE__MODEL);
+        createEReference(packageEClass, PACKAGE__OWNED_PACKAGES);
+        createEReference(packageEClass, PACKAGE__PACKAGE);
+        createEReference(packageEClass, PACKAGE__USAGES_IN_PACKAGE_ACCESS);
+
+        packageAccessEClass = createEClass(PACKAGE_ACCESS);
+        createEReference(packageAccessEClass, PACKAGE_ACCESS__PACKAGE);
+        createEReference(packageAccessEClass, PACKAGE_ACCESS__QUALIFIER);
+
+        parameterizedTypeEClass = createEClass(PARAMETERIZED_TYPE);
+        createEReference(parameterizedTypeEClass, PARAMETERIZED_TYPE__TYPE);
+        createEReference(parameterizedTypeEClass, PARAMETERIZED_TYPE__TYPE_ARGUMENTS);
+
+        parenthesizedExpressionEClass = createEClass(PARENTHESIZED_EXPRESSION);
+        createEReference(parenthesizedExpressionEClass, PARENTHESIZED_EXPRESSION__EXPRESSION);
+
+        postfixExpressionEClass = createEClass(POSTFIX_EXPRESSION);
+        createEAttribute(postfixExpressionEClass, POSTFIX_EXPRESSION__OPERATOR);
+        createEReference(postfixExpressionEClass, POSTFIX_EXPRESSION__OPERAND);
+
+        prefixExpressionEClass = createEClass(PREFIX_EXPRESSION);
+        createEAttribute(prefixExpressionEClass, PREFIX_EXPRESSION__OPERATOR);
+        createEReference(prefixExpressionEClass, PREFIX_EXPRESSION__OPERAND);
+
+        primitiveTypeEClass = createEClass(PRIMITIVE_TYPE);
+
+        primitiveTypeBooleanEClass = createEClass(PRIMITIVE_TYPE_BOOLEAN);
+
+        primitiveTypeByteEClass = createEClass(PRIMITIVE_TYPE_BYTE);
+
+        primitiveTypeCharEClass = createEClass(PRIMITIVE_TYPE_CHAR);
+
+        primitiveTypeDoubleEClass = createEClass(PRIMITIVE_TYPE_DOUBLE);
+
+        primitiveTypeShortEClass = createEClass(PRIMITIVE_TYPE_SHORT);
+
+        primitiveTypeFloatEClass = createEClass(PRIMITIVE_TYPE_FLOAT);
+
+        primitiveTypeIntEClass = createEClass(PRIMITIVE_TYPE_INT);
+
+        primitiveTypeLongEClass = createEClass(PRIMITIVE_TYPE_LONG);
+
+        primitiveTypeVoidEClass = createEClass(PRIMITIVE_TYPE_VOID);
+
+        returnStatementEClass = createEClass(RETURN_STATEMENT);
+        createEReference(returnStatementEClass, RETURN_STATEMENT__EXPRESSION);
+
+        singleVariableAccessEClass = createEClass(SINGLE_VARIABLE_ACCESS);
+        createEReference(singleVariableAccessEClass, SINGLE_VARIABLE_ACCESS__VARIABLE);
+        createEReference(singleVariableAccessEClass, SINGLE_VARIABLE_ACCESS__QUALIFIER);
+
+        singleVariableDeclarationEClass = createEClass(SINGLE_VARIABLE_DECLARATION);
+        createEReference(singleVariableDeclarationEClass, SINGLE_VARIABLE_DECLARATION__MODIFIER);
+        createEAttribute(singleVariableDeclarationEClass, SINGLE_VARIABLE_DECLARATION__VARARGS);
+        createEReference(singleVariableDeclarationEClass, SINGLE_VARIABLE_DECLARATION__TYPE);
+        createEReference(singleVariableDeclarationEClass, SINGLE_VARIABLE_DECLARATION__ANNOTATIONS);
+        createEReference(singleVariableDeclarationEClass, SINGLE_VARIABLE_DECLARATION__METHOD_DECLARATION);
+        createEReference(singleVariableDeclarationEClass, SINGLE_VARIABLE_DECLARATION__CATCH_CLAUSE);
+        createEReference(singleVariableDeclarationEClass, SINGLE_VARIABLE_DECLARATION__ENHANCED_FOR_STATEMENT);
+
+        statementEClass = createEClass(STATEMENT);
+
+        stringLiteralEClass = createEClass(STRING_LITERAL);
+        createEAttribute(stringLiteralEClass, STRING_LITERAL__ESCAPED_VALUE);
+
+        superConstructorInvocationEClass = createEClass(SUPER_CONSTRUCTOR_INVOCATION);
+        createEReference(superConstructorInvocationEClass, SUPER_CONSTRUCTOR_INVOCATION__EXPRESSION);
+
+        superFieldAccessEClass = createEClass(SUPER_FIELD_ACCESS);
+        createEReference(superFieldAccessEClass, SUPER_FIELD_ACCESS__FIELD);
+
+        superMethodInvocationEClass = createEClass(SUPER_METHOD_INVOCATION);
+
+        switchCaseEClass = createEClass(SWITCH_CASE);
+        createEAttribute(switchCaseEClass, SWITCH_CASE__DEFAULT);
+        createEReference(switchCaseEClass, SWITCH_CASE__EXPRESSION);
+
+        switchStatementEClass = createEClass(SWITCH_STATEMENT);
+        createEReference(switchStatementEClass, SWITCH_STATEMENT__EXPRESSION);
+        createEReference(switchStatementEClass, SWITCH_STATEMENT__STATEMENTS);
+
+        synchronizedStatementEClass = createEClass(SYNCHRONIZED_STATEMENT);
+        createEReference(synchronizedStatementEClass, SYNCHRONIZED_STATEMENT__BODY);
+        createEReference(synchronizedStatementEClass, SYNCHRONIZED_STATEMENT__EXPRESSION);
+
+        tagElementEClass = createEClass(TAG_ELEMENT);
+        createEAttribute(tagElementEClass, TAG_ELEMENT__TAG_NAME);
+        createEReference(tagElementEClass, TAG_ELEMENT__FRAGMENTS);
+
+        textElementEClass = createEClass(TEXT_ELEMENT);
+        createEAttribute(textElementEClass, TEXT_ELEMENT__TEXT);
+
+        thisExpressionEClass = createEClass(THIS_EXPRESSION);
+
+        throwStatementEClass = createEClass(THROW_STATEMENT);
+        createEReference(throwStatementEClass, THROW_STATEMENT__EXPRESSION);
+
+        tryStatementEClass = createEClass(TRY_STATEMENT);
+        createEReference(tryStatementEClass, TRY_STATEMENT__BODY);
+        createEReference(tryStatementEClass, TRY_STATEMENT__FINALLY);
+        createEReference(tryStatementEClass, TRY_STATEMENT__CATCH_CLAUSES);
+
+        typeEClass = createEClass(TYPE);
+        createEReference(typeEClass, TYPE__USAGES_IN_TYPE_ACCESS);
+
+        typeAccessEClass = createEClass(TYPE_ACCESS);
+        createEReference(typeAccessEClass, TYPE_ACCESS__TYPE);
+        createEReference(typeAccessEClass, TYPE_ACCESS__QUALIFIER);
+
+        typeDeclarationEClass = createEClass(TYPE_DECLARATION);
+        createEReference(typeDeclarationEClass, TYPE_DECLARATION__TYPE_PARAMETERS);
+
+        typeDeclarationStatementEClass = createEClass(TYPE_DECLARATION_STATEMENT);
+        createEReference(typeDeclarationStatementEClass, TYPE_DECLARATION_STATEMENT__DECLARATION);
+
+        typeLiteralEClass = createEClass(TYPE_LITERAL);
+        createEReference(typeLiteralEClass, TYPE_LITERAL__TYPE);
+
+        typeParameterEClass = createEClass(TYPE_PARAMETER);
+        createEReference(typeParameterEClass, TYPE_PARAMETER__BOUNDS);
+
+        unresolvedItemEClass = createEClass(UNRESOLVED_ITEM);
+
+        unresolvedItemAccessEClass = createEClass(UNRESOLVED_ITEM_ACCESS);
+        createEReference(unresolvedItemAccessEClass, UNRESOLVED_ITEM_ACCESS__ELEMENT);
+        createEReference(unresolvedItemAccessEClass, UNRESOLVED_ITEM_ACCESS__QUALIFIER);
+
+        unresolvedAnnotationDeclarationEClass = createEClass(UNRESOLVED_ANNOTATION_DECLARATION);
+
+        unresolvedAnnotationTypeMemberDeclarationEClass = createEClass(UNRESOLVED_ANNOTATION_TYPE_MEMBER_DECLARATION);
+
+        unresolvedClassDeclarationEClass = createEClass(UNRESOLVED_CLASS_DECLARATION);
+
+        unresolvedEnumDeclarationEClass = createEClass(UNRESOLVED_ENUM_DECLARATION);
+
+        unresolvedInterfaceDeclarationEClass = createEClass(UNRESOLVED_INTERFACE_DECLARATION);
+
+        unresolvedLabeledStatementEClass = createEClass(UNRESOLVED_LABELED_STATEMENT);
+
+        unresolvedMethodDeclarationEClass = createEClass(UNRESOLVED_METHOD_DECLARATION);
+
+        unresolvedSingleVariableDeclarationEClass = createEClass(UNRESOLVED_SINGLE_VARIABLE_DECLARATION);
+
+        unresolvedTypeEClass = createEClass(UNRESOLVED_TYPE);
+
+        unresolvedTypeDeclarationEClass = createEClass(UNRESOLVED_TYPE_DECLARATION);
+
+        unresolvedVariableDeclarationFragmentEClass = createEClass(UNRESOLVED_VARIABLE_DECLARATION_FRAGMENT);
+
+        variableDeclarationEClass = createEClass(VARIABLE_DECLARATION);
+        createEAttribute(variableDeclarationEClass, VARIABLE_DECLARATION__EXTRA_ARRAY_DIMENSIONS);
+        createEReference(variableDeclarationEClass, VARIABLE_DECLARATION__INITIALIZER);
+        createEReference(variableDeclarationEClass, VARIABLE_DECLARATION__USAGE_IN_VARIABLE_ACCESS);
+
+        variableDeclarationExpressionEClass = createEClass(VARIABLE_DECLARATION_EXPRESSION);
+        createEReference(variableDeclarationExpressionEClass, VARIABLE_DECLARATION_EXPRESSION__MODIFIER);
+        createEReference(variableDeclarationExpressionEClass, VARIABLE_DECLARATION_EXPRESSION__ANNOTATIONS);
+
+        variableDeclarationFragmentEClass = createEClass(VARIABLE_DECLARATION_FRAGMENT);
+        createEReference(variableDeclarationFragmentEClass, VARIABLE_DECLARATION_FRAGMENT__VARIABLES_CONTAINER);
+
+        variableDeclarationStatementEClass = createEClass(VARIABLE_DECLARATION_STATEMENT);
+        createEAttribute(variableDeclarationStatementEClass, VARIABLE_DECLARATION_STATEMENT__EXTRA_ARRAY_DIMENSIONS);
+        createEReference(variableDeclarationStatementEClass, VARIABLE_DECLARATION_STATEMENT__MODIFIER);
+        createEReference(variableDeclarationStatementEClass, VARIABLE_DECLARATION_STATEMENT__ANNOTATIONS);
+
+        wildCardTypeEClass = createEClass(WILD_CARD_TYPE);
+        createEAttribute(wildCardTypeEClass, WILD_CARD_TYPE__UPPER_BOUND);
+        createEReference(wildCardTypeEClass, WILD_CARD_TYPE__BOUND);
+
+        whileStatementEClass = createEClass(WHILE_STATEMENT);
+        createEReference(whileStatementEClass, WHILE_STATEMENT__EXPRESSION);
+        createEReference(whileStatementEClass, WHILE_STATEMENT__BODY);
+
+        // Create enums
+        assignmentKindEEnum = createEEnum(ASSIGNMENT_KIND);
+        infixExpressionKindEEnum = createEEnum(INFIX_EXPRESSION_KIND);
+        inheritanceKindEEnum = createEEnum(INHERITANCE_KIND);
+        postfixExpressionKindEEnum = createEEnum(POSTFIX_EXPRESSION_KIND);
+        prefixExpressionKindEEnum = createEEnum(PREFIX_EXPRESSION_KIND);
+        visibilityKindEEnum = createEEnum(VISIBILITY_KIND);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private boolean isInitialized = false;
+
+    /**
+     * Complete the initialization of the package and its meta-model.  This
+     * method is guarded to have no affect on any invocation but its first.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void initializePackageContents() {
+        if (isInitialized) return;
+        isInitialized = true;
+
+        // Initialize package
+        setName(eNAME);
+        setNsPrefix(eNS_PREFIX);
+        setNsURI(eNS_URI);
+
+        // Obtain other dependent packages
+        EcorePackage theEcorePackage = (EcorePackage)EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI);
+
+        // Create type parameters
+
+        // Set bounds for type parameters
+
+        // Add supertypes to classes
+        abstractMethodDeclarationEClass.getESuperTypes().add(this.getBodyDeclaration());
+        abstractMethodInvocationEClass.getESuperTypes().add(this.getASTNode());
+        abstractTypeDeclarationEClass.getESuperTypes().add(this.getBodyDeclaration());
+        abstractTypeDeclarationEClass.getESuperTypes().add(this.getType());
+        abstractTypeQualifiedExpressionEClass.getESuperTypes().add(this.getExpression());
+        abstractVariablesContainerEClass.getESuperTypes().add(this.getASTNode());
+        annotationEClass.getESuperTypes().add(this.getExpression());
+        archiveEClass.getESuperTypes().add(this.getNamedElement());
+        assertStatementEClass.getESuperTypes().add(this.getStatement());
+        annotationMemberValuePairEClass.getESuperTypes().add(this.getNamedElement());
+        annotationTypeDeclarationEClass.getESuperTypes().add(this.getAbstractTypeDeclaration());
+        annotationTypeMemberDeclarationEClass.getESuperTypes().add(this.getBodyDeclaration());
+        anonymousClassDeclarationEClass.getESuperTypes().add(this.getASTNode());
+        arrayAccessEClass.getESuperTypes().add(this.getExpression());
+        arrayCreationEClass.getESuperTypes().add(this.getExpression());
+        arrayInitializerEClass.getESuperTypes().add(this.getExpression());
+        arrayLengthAccessEClass.getESuperTypes().add(this.getExpression());
+        arrayTypeEClass.getESuperTypes().add(this.getType());
+        assignmentEClass.getESuperTypes().add(this.getExpression());
+        bodyDeclarationEClass.getESuperTypes().add(this.getNamedElement());
+        booleanLiteralEClass.getESuperTypes().add(this.getExpression());
+        blockCommentEClass.getESuperTypes().add(this.getComment());
+        blockEClass.getESuperTypes().add(this.getStatement());
+        breakStatementEClass.getESuperTypes().add(this.getStatement());
+        castExpressionEClass.getESuperTypes().add(this.getExpression());
+        catchClauseEClass.getESuperTypes().add(this.getStatement());
+        characterLiteralEClass.getESuperTypes().add(this.getExpression());
+        classFileEClass.getESuperTypes().add(this.getNamedElement());
+        classInstanceCreationEClass.getESuperTypes().add(this.getExpression());
+        classInstanceCreationEClass.getESuperTypes().add(this.getAbstractMethodInvocation());
+        constructorDeclarationEClass.getESuperTypes().add(this.getAbstractMethodDeclaration());
+        conditionalExpressionEClass.getESuperTypes().add(this.getExpression());
+        constructorInvocationEClass.getESuperTypes().add(this.getStatement());
+        constructorInvocationEClass.getESuperTypes().add(this.getAbstractMethodInvocation());
+        classDeclarationEClass.getESuperTypes().add(this.getTypeDeclaration());
+        commentEClass.getESuperTypes().add(this.getASTNode());
+        compilationUnitEClass.getESuperTypes().add(this.getNamedElement());
+        continueStatementEClass.getESuperTypes().add(this.getStatement());
+        doStatementEClass.getESuperTypes().add(this.getStatement());
+        emptyStatementEClass.getESuperTypes().add(this.getStatement());
+        enhancedForStatementEClass.getESuperTypes().add(this.getStatement());
+        enumConstantDeclarationEClass.getESuperTypes().add(this.getBodyDeclaration());
+        enumConstantDeclarationEClass.getESuperTypes().add(this.getVariableDeclaration());
+        enumDeclarationEClass.getESuperTypes().add(this.getAbstractTypeDeclaration());
+        expressionEClass.getESuperTypes().add(this.getASTNode());
+        expressionStatementEClass.getESuperTypes().add(this.getStatement());
+        fieldAccessEClass.getESuperTypes().add(this.getExpression());
+        fieldDeclarationEClass.getESuperTypes().add(this.getBodyDeclaration());
+        fieldDeclarationEClass.getESuperTypes().add(this.getAbstractVariablesContainer());
+        forStatementEClass.getESuperTypes().add(this.getStatement());
+        ifStatementEClass.getESuperTypes().add(this.getStatement());
+        importDeclarationEClass.getESuperTypes().add(this.getASTNode());
+        infixExpressionEClass.getESuperTypes().add(this.getExpression());
+        initializerEClass.getESuperTypes().add(this.getBodyDeclaration());
+        instanceofExpressionEClass.getESuperTypes().add(this.getExpression());
+        interfaceDeclarationEClass.getESuperTypes().add(this.getTypeDeclaration());
+        javadocEClass.getESuperTypes().add(this.getComment());
+        labeledStatementEClass.getESuperTypes().add(this.getNamedElement());
+        labeledStatementEClass.getESuperTypes().add(this.getStatement());
+        lineCommentEClass.getESuperTypes().add(this.getComment());
+        memberRefEClass.getESuperTypes().add(this.getASTNode());
+        methodDeclarationEClass.getESuperTypes().add(this.getAbstractMethodDeclaration());
+        methodInvocationEClass.getESuperTypes().add(this.getExpression());
+        methodInvocationEClass.getESuperTypes().add(this.getAbstractMethodInvocation());
+        methodRefEClass.getESuperTypes().add(this.getASTNode());
+        methodRefParameterEClass.getESuperTypes().add(this.getASTNode());
+        modifierEClass.getESuperTypes().add(this.getASTNode());
+        namedElementEClass.getESuperTypes().add(this.getASTNode());
+        namespaceAccessEClass.getESuperTypes().add(this.getASTNode());
+        numberLiteralEClass.getESuperTypes().add(this.getExpression());
+        nullLiteralEClass.getESuperTypes().add(this.getExpression());
+        packageEClass.getESuperTypes().add(this.getNamedElement());
+        packageAccessEClass.getESuperTypes().add(this.getNamespaceAccess());
+        parameterizedTypeEClass.getESuperTypes().add(this.getType());
+        parenthesizedExpressionEClass.getESuperTypes().add(this.getExpression());
+        postfixExpressionEClass.getESuperTypes().add(this.getExpression());
+        prefixExpressionEClass.getESuperTypes().add(this.getExpression());
+        primitiveTypeEClass.getESuperTypes().add(this.getType());
+        primitiveTypeBooleanEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeByteEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeCharEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeDoubleEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeShortEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeFloatEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeIntEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeLongEClass.getESuperTypes().add(this.getPrimitiveType());
+        primitiveTypeVoidEClass.getESuperTypes().add(this.getPrimitiveType());
+        returnStatementEClass.getESuperTypes().add(this.getStatement());
+        singleVariableAccessEClass.getESuperTypes().add(this.getExpression());
+        singleVariableDeclarationEClass.getESuperTypes().add(this.getVariableDeclaration());
+        statementEClass.getESuperTypes().add(this.getASTNode());
+        stringLiteralEClass.getESuperTypes().add(this.getExpression());
+        superConstructorInvocationEClass.getESuperTypes().add(this.getStatement());
+        superConstructorInvocationEClass.getESuperTypes().add(this.getAbstractMethodInvocation());
+        superFieldAccessEClass.getESuperTypes().add(this.getAbstractTypeQualifiedExpression());
+        superMethodInvocationEClass.getESuperTypes().add(this.getAbstractTypeQualifiedExpression());
+        superMethodInvocationEClass.getESuperTypes().add(this.getAbstractMethodInvocation());
+        switchCaseEClass.getESuperTypes().add(this.getStatement());
+        switchStatementEClass.getESuperTypes().add(this.getStatement());
+        synchronizedStatementEClass.getESuperTypes().add(this.getStatement());
+        tagElementEClass.getESuperTypes().add(this.getASTNode());
+        textElementEClass.getESuperTypes().add(this.getASTNode());
+        thisExpressionEClass.getESuperTypes().add(this.getAbstractTypeQualifiedExpression());
+        throwStatementEClass.getESuperTypes().add(this.getStatement());
+        tryStatementEClass.getESuperTypes().add(this.getStatement());
+        typeEClass.getESuperTypes().add(this.getNamedElement());
+        typeAccessEClass.getESuperTypes().add(this.getExpression());
+        typeAccessEClass.getESuperTypes().add(this.getNamespaceAccess());
+        typeDeclarationEClass.getESuperTypes().add(this.getAbstractTypeDeclaration());
+        typeDeclarationStatementEClass.getESuperTypes().add(this.getStatement());
+        typeLiteralEClass.getESuperTypes().add(this.getExpression());
+        typeParameterEClass.getESuperTypes().add(this.getType());
+        unresolvedItemEClass.getESuperTypes().add(this.getNamedElement());
+        unresolvedItemAccessEClass.getESuperTypes().add(this.getExpression());
+        unresolvedItemAccessEClass.getESuperTypes().add(this.getNamespaceAccess());
+        unresolvedAnnotationDeclarationEClass.getESuperTypes().add(this.getAnnotationTypeDeclaration());
+        unresolvedAnnotationDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedAnnotationTypeMemberDeclarationEClass.getESuperTypes().add(this.getAnnotationTypeMemberDeclaration());
+        unresolvedAnnotationTypeMemberDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedClassDeclarationEClass.getESuperTypes().add(this.getClassDeclaration());
+        unresolvedClassDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedEnumDeclarationEClass.getESuperTypes().add(this.getEnumDeclaration());
+        unresolvedEnumDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedInterfaceDeclarationEClass.getESuperTypes().add(this.getInterfaceDeclaration());
+        unresolvedInterfaceDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedLabeledStatementEClass.getESuperTypes().add(this.getLabeledStatement());
+        unresolvedLabeledStatementEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedMethodDeclarationEClass.getESuperTypes().add(this.getMethodDeclaration());
+        unresolvedMethodDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedSingleVariableDeclarationEClass.getESuperTypes().add(this.getSingleVariableDeclaration());
+        unresolvedSingleVariableDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedTypeEClass.getESuperTypes().add(this.getType());
+        unresolvedTypeEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedTypeDeclarationEClass.getESuperTypes().add(this.getAbstractTypeDeclaration());
+        unresolvedTypeDeclarationEClass.getESuperTypes().add(this.getUnresolvedItem());
+        unresolvedVariableDeclarationFragmentEClass.getESuperTypes().add(this.getVariableDeclarationFragment());
+        unresolvedVariableDeclarationFragmentEClass.getESuperTypes().add(this.getUnresolvedItem());
+        variableDeclarationEClass.getESuperTypes().add(this.getNamedElement());
+        variableDeclarationExpressionEClass.getESuperTypes().add(this.getExpression());
+        variableDeclarationExpressionEClass.getESuperTypes().add(this.getAbstractVariablesContainer());
+        variableDeclarationFragmentEClass.getESuperTypes().add(this.getVariableDeclaration());
+        variableDeclarationStatementEClass.getESuperTypes().add(this.getStatement());
+        variableDeclarationStatementEClass.getESuperTypes().add(this.getAbstractVariablesContainer());
+        wildCardTypeEClass.getESuperTypes().add(this.getType());
+        whileStatementEClass.getESuperTypes().add(this.getStatement());
+
+        // Initialize classes, features, and operations; add parameters
+        initEClass(abstractMethodDeclarationEClass, AbstractMethodDeclaration.class, "AbstractMethodDeclaration", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAbstractMethodDeclaration_Body(), this.getBlock(), null, "body", null, 0, 1, AbstractMethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAbstractMethodDeclaration_Parameters(), this.getSingleVariableDeclaration(), this.getSingleVariableDeclaration_MethodDeclaration(), "parameters", null, 0, -1, AbstractMethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractMethodDeclaration_ThrownExceptions(), this.getTypeAccess(), null, "thrownExceptions", null, 0, -1, AbstractMethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractMethodDeclaration_TypeParameters(), this.getTypeParameter(), null, "typeParameters", null, 0, -1, AbstractMethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractMethodDeclaration_UsagesInDocComments(), this.getMethodRef(), this.getMethodRef_Method(), "usagesInDocComments", null, 0, -1, AbstractMethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAbstractMethodDeclaration_Usages(), this.getAbstractMethodInvocation(), this.getAbstractMethodInvocation_Method(), "usages", null, 0, -1, AbstractMethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(abstractMethodInvocationEClass, AbstractMethodInvocation.class, "AbstractMethodInvocation", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAbstractMethodInvocation_Method(), this.getAbstractMethodDeclaration(), this.getAbstractMethodDeclaration_Usages(), "method", null, 1, 1, AbstractMethodInvocation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAbstractMethodInvocation_Arguments(), this.getExpression(), null, "arguments", null, 0, -1, AbstractMethodInvocation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractMethodInvocation_TypeArguments(), this.getTypeAccess(), null, "typeArguments", null, 0, -1, AbstractMethodInvocation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(abstractTypeDeclarationEClass, AbstractTypeDeclaration.class, "AbstractTypeDeclaration", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAbstractTypeDeclaration_BodyDeclarations(), this.getBodyDeclaration(), this.getBodyDeclaration_AbstractTypeDeclaration(), "bodyDeclarations", null, 0, -1, AbstractTypeDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractTypeDeclaration_CommentsBeforeBody(), this.getComment(), null, "commentsBeforeBody", null, 0, -1, AbstractTypeDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractTypeDeclaration_CommentsAfterBody(), this.getComment(), null, "commentsAfterBody", null, 0, -1, AbstractTypeDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAbstractTypeDeclaration_Package(), this.getPackage(), this.getPackage_OwnedElements(), "package", null, 0, 1, AbstractTypeDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAbstractTypeDeclaration_SuperInterfaces(), this.getTypeAccess(), null, "superInterfaces", null, 0, -1, AbstractTypeDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(abstractTypeQualifiedExpressionEClass, AbstractTypeQualifiedExpression.class, "AbstractTypeQualifiedExpression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAbstractTypeQualifiedExpression_Qualifier(), this.getTypeAccess(), null, "qualifier", null, 0, 1, AbstractTypeQualifiedExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(abstractVariablesContainerEClass, AbstractVariablesContainer.class, "AbstractVariablesContainer", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAbstractVariablesContainer_Type(), this.getTypeAccess(), null, "type", null, 0, 1, AbstractVariablesContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAbstractVariablesContainer_Fragments(), this.getVariableDeclarationFragment(), this.getVariableDeclarationFragment_VariablesContainer(), "fragments", null, 0, -1, AbstractVariablesContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(annotationEClass, Annotation.class, "Annotation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAnnotation_Type(), this.getTypeAccess(), null, "type", null, 1, 1, Annotation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAnnotation_Values(), this.getAnnotationMemberValuePair(), null, "values", null, 0, -1, Annotation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(archiveEClass, Archive.class, "Archive", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getArchive_OriginalFilePath(), theEcorePackage.getEString(), "originalFilePath", null, 1, 1, Archive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getArchive_ClassFiles(), this.getClassFile(), null, "classFiles", null, 0, -1, Archive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getArchive_Manifest(), this.getManifest(), null, "manifest", null, 0, 1, Archive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(assertStatementEClass, AssertStatement.class, "AssertStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAssertStatement_Message(), this.getExpression(), null, "message", null, 0, 1, AssertStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAssertStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, AssertStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(astNodeEClass, ASTNode.class, "ASTNode", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getASTNode_Comments(), this.getComment(), null, "comments", null, 0, -1, ASTNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getASTNode_OriginalCompilationUnit(), this.getCompilationUnit(), null, "originalCompilationUnit", null, 0, 1, ASTNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getASTNode_OriginalClassFile(), this.getClassFile(), null, "originalClassFile", null, 0, 1, ASTNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(annotationMemberValuePairEClass, AnnotationMemberValuePair.class, "AnnotationMemberValuePair", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAnnotationMemberValuePair_Member(), this.getAnnotationTypeMemberDeclaration(), this.getAnnotationTypeMemberDeclaration_Usages(), "member", null, 0, 1, AnnotationMemberValuePair.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAnnotationMemberValuePair_Value(), this.getExpression(), null, "value", null, 1, 1, AnnotationMemberValuePair.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(annotationTypeDeclarationEClass, AnnotationTypeDeclaration.class, "AnnotationTypeDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(annotationTypeMemberDeclarationEClass, AnnotationTypeMemberDeclaration.class, "AnnotationTypeMemberDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAnnotationTypeMemberDeclaration_Default(), this.getExpression(), null, "default", null, 0, 1, AnnotationTypeMemberDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAnnotationTypeMemberDeclaration_Type(), this.getTypeAccess(), null, "type", null, 1, 1, AnnotationTypeMemberDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAnnotationTypeMemberDeclaration_Usages(), this.getAnnotationMemberValuePair(), this.getAnnotationMemberValuePair_Member(), "usages", null, 0, -1, AnnotationTypeMemberDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(anonymousClassDeclarationEClass, AnonymousClassDeclaration.class, "AnonymousClassDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAnonymousClassDeclaration_BodyDeclarations(), this.getBodyDeclaration(), this.getBodyDeclaration_AnonymousClassDeclarationOwner(), "bodyDeclarations", null, 0, -1, AnonymousClassDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getAnonymousClassDeclaration_ClassInstanceCreation(), this.getClassInstanceCreation(), this.getClassInstanceCreation_AnonymousClassDeclaration(), "classInstanceCreation", null, 0, 1, AnonymousClassDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(arrayAccessEClass, ArrayAccess.class, "ArrayAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getArrayAccess_Array(), this.getExpression(), null, "array", null, 1, 1, ArrayAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getArrayAccess_Index(), this.getExpression(), null, "index", null, 1, 1, ArrayAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(arrayCreationEClass, ArrayCreation.class, "ArrayCreation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getArrayCreation_Dimensions(), this.getExpression(), null, "dimensions", null, 0, -1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getArrayCreation_Initializer(), this.getArrayInitializer(), null, "initializer", null, 0, 1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getArrayCreation_Type(), this.getTypeAccess(), null, "type", null, 1, 1, ArrayCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(arrayInitializerEClass, ArrayInitializer.class, "ArrayInitializer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getArrayInitializer_Expressions(), this.getExpression(), null, "expressions", null, 0, -1, ArrayInitializer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(arrayLengthAccessEClass, ArrayLengthAccess.class, "ArrayLengthAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getArrayLengthAccess_Array(), this.getExpression(), null, "array", null, 1, 1, ArrayLengthAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(arrayTypeEClass, ArrayType.class, "ArrayType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getArrayType_Dimensions(), theEcorePackage.getEInt(), "dimensions", null, 1, 1, ArrayType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getArrayType_ElementType(), this.getTypeAccess(), null, "elementType", null, 1, 1, ArrayType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(assignmentEClass, Assignment.class, "Assignment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getAssignment_LeftHandSide(), this.getExpression(), null, "leftHandSide", null, 1, 1, Assignment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getAssignment_Operator(), this.getAssignmentKind(), "operator", null, 1, 1, Assignment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getAssignment_RightHandSide(), this.getExpression(), null, "rightHandSide", null, 1, 1, Assignment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(bodyDeclarationEClass, BodyDeclaration.class, "BodyDeclaration", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getBodyDeclaration_AbstractTypeDeclaration(), this.getAbstractTypeDeclaration(), this.getAbstractTypeDeclaration_BodyDeclarations(), "abstractTypeDeclaration", null, 0, 1, BodyDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getBodyDeclaration_Annotations(), this.getAnnotation(), null, "annotations", null, 0, -1, BodyDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getBodyDeclaration_AnonymousClassDeclarationOwner(), this.getAnonymousClassDeclaration(), this.getAnonymousClassDeclaration_BodyDeclarations(), "anonymousClassDeclarationOwner", null, 0, 1, BodyDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getBodyDeclaration_Modifier(), this.getModifier(), this.getModifier_BodyDeclaration(), "modifier", null, 0, 1, BodyDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(booleanLiteralEClass, BooleanLiteral.class, "BooleanLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getBooleanLiteral_Value(), theEcorePackage.getEBoolean(), "value", null, 1, 1, BooleanLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(blockCommentEClass, BlockComment.class, "BlockComment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(blockEClass, Block.class, "Block", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getBlock_Statements(), this.getStatement(), null, "statements", null, 0, -1, Block.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(breakStatementEClass, BreakStatement.class, "BreakStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getBreakStatement_Label(), this.getLabeledStatement(), this.getLabeledStatement_UsagesInBreakStatements(), "label", null, 0, 1, BreakStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(castExpressionEClass, CastExpression.class, "CastExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getCastExpression_Expression(), this.getExpression(), null, "expression", null, 1, 1, CastExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getCastExpression_Type(), this.getTypeAccess(), null, "type", null, 1, 1, CastExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(catchClauseEClass, CatchClause.class, "CatchClause", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getCatchClause_Exception(), this.getSingleVariableDeclaration(), this.getSingleVariableDeclaration_CatchClause(), "exception", null, 1, 1, CatchClause.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getCatchClause_Body(), this.getBlock(), null, "body", null, 1, 1, CatchClause.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(characterLiteralEClass, CharacterLiteral.class, "CharacterLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getCharacterLiteral_EscapedValue(), theEcorePackage.getEString(), "escapedValue", null, 1, 1, CharacterLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(classFileEClass, ClassFile.class, "ClassFile", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getClassFile_OriginalFilePath(), theEcorePackage.getEString(), "originalFilePath", null, 1, 1, ClassFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getClassFile_Type(), this.getAbstractTypeDeclaration(), null, "type", null, 0, 1, ClassFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getClassFile_AttachedSource(), this.getCompilationUnit(), null, "attachedSource", null, 0, 1, ClassFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getClassFile_Package(), this.getPackage(), null, "package", null, 0, 1, ClassFile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(classInstanceCreationEClass, ClassInstanceCreation.class, "ClassInstanceCreation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getClassInstanceCreation_AnonymousClassDeclaration(), this.getAnonymousClassDeclaration(), this.getAnonymousClassDeclaration_ClassInstanceCreation(), "anonymousClassDeclaration", null, 0, 1, ClassInstanceCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getClassInstanceCreation_Expression(), this.getExpression(), null, "expression", null, 0, 1, ClassInstanceCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getClassInstanceCreation_Type(), this.getTypeAccess(), null, "type", null, 1, 1, ClassInstanceCreation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(constructorDeclarationEClass, ConstructorDeclaration.class, "ConstructorDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(conditionalExpressionEClass, ConditionalExpression.class, "ConditionalExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getConditionalExpression_ElseExpression(), this.getExpression(), null, "elseExpression", null, 1, 1, ConditionalExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getConditionalExpression_Expression(), this.getExpression(), null, "expression", null, 1, 1, ConditionalExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getConditionalExpression_ThenExpression(), this.getExpression(), null, "thenExpression", null, 1, 1, ConditionalExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(constructorInvocationEClass, ConstructorInvocation.class, "ConstructorInvocation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(classDeclarationEClass, ClassDeclaration.class, "ClassDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getClassDeclaration_SuperClass(), this.getTypeAccess(), null, "superClass", null, 0, 1, ClassDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(commentEClass, Comment.class, "Comment", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getComment_Content(), theEcorePackage.getEString(), "content", null, 1, 1, Comment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getComment_EnclosedByParent(), theEcorePackage.getEBoolean(), "enclosedByParent", null, 1, 1, Comment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getComment_PrefixOfParent(), theEcorePackage.getEBoolean(), "prefixOfParent", null, 1, 1, Comment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(compilationUnitEClass, CompilationUnit.class, "CompilationUnit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getCompilationUnit_OriginalFilePath(), theEcorePackage.getEString(), "originalFilePath", null, 1, 1, CompilationUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getCompilationUnit_CommentList(), this.getComment(), null, "commentList", null, 0, -1, CompilationUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getCompilationUnit_Imports(), this.getImportDeclaration(), null, "imports", null, 0, -1, CompilationUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getCompilationUnit_Package(), this.getPackage(), null, "package", null, 0, 1, CompilationUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getCompilationUnit_Types(), this.getAbstractTypeDeclaration(), null, "types", null, 0, -1, CompilationUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(continueStatementEClass, ContinueStatement.class, "ContinueStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getContinueStatement_Label(), this.getLabeledStatement(), this.getLabeledStatement_UsagesInContinueStatements(), "label", null, 0, 1, ContinueStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(doStatementEClass, DoStatement.class, "DoStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getDoStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, DoStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getDoStatement_Body(), this.getStatement(), null, "body", null, 1, 1, DoStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(emptyStatementEClass, EmptyStatement.class, "EmptyStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(enhancedForStatementEClass, EnhancedForStatement.class, "EnhancedForStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getEnhancedForStatement_Body(), this.getStatement(), null, "body", null, 1, 1, EnhancedForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getEnhancedForStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, EnhancedForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getEnhancedForStatement_Parameter(), this.getSingleVariableDeclaration(), this.getSingleVariableDeclaration_EnhancedForStatement(), "parameter", null, 1, 1, EnhancedForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(enumConstantDeclarationEClass, EnumConstantDeclaration.class, "EnumConstantDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getEnumConstantDeclaration_AnonymousClassDeclaration(), this.getAnonymousClassDeclaration(), null, "anonymousClassDeclaration", null, 0, 1, EnumConstantDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getEnumConstantDeclaration_Arguments(), this.getExpression(), null, "arguments", null, 0, -1, EnumConstantDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(enumDeclarationEClass, EnumDeclaration.class, "EnumDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getEnumDeclaration_EnumConstants(), this.getEnumConstantDeclaration(), null, "enumConstants", null, 0, -1, EnumDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(expressionStatementEClass, ExpressionStatement.class, "ExpressionStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getExpressionStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, ExpressionStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(fieldAccessEClass, FieldAccess.class, "FieldAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getFieldAccess_Field(), this.getSingleVariableAccess(), null, "field", null, 1, 1, FieldAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getFieldAccess_Expression(), this.getExpression(), null, "expression", null, 1, 1, FieldAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(fieldDeclarationEClass, FieldDeclaration.class, "FieldDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(forStatementEClass, ForStatement.class, "ForStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getForStatement_Expression(), this.getExpression(), null, "expression", null, 0, 1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getForStatement_Updaters(), this.getExpression(), null, "updaters", null, 0, -1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getForStatement_Initializers(), this.getExpression(), null, "initializers", null, 0, -1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getForStatement_Body(), this.getStatement(), null, "body", null, 1, 1, ForStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(ifStatementEClass, IfStatement.class, "IfStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getIfStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, IfStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getIfStatement_ThenStatement(), this.getStatement(), null, "thenStatement", null, 1, 1, IfStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getIfStatement_ElseStatement(), this.getStatement(), null, "elseStatement", null, 0, 1, IfStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(importDeclarationEClass, ImportDeclaration.class, "ImportDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getImportDeclaration_Static(), theEcorePackage.getEBoolean(), "static", null, 0, 1, ImportDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getImportDeclaration_ImportedElement(), this.getNamedElement(), this.getNamedElement_UsagesInImports(), "importedElement", null, 1, 1, ImportDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(infixExpressionEClass, InfixExpression.class, "InfixExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getInfixExpression_Operator(), this.getInfixExpressionKind(), "operator", null, 1, 1, InfixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getInfixExpression_RightOperand(), this.getExpression(), null, "rightOperand", null, 1, 1, InfixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getInfixExpression_LeftOperand(), this.getExpression(), null, "leftOperand", null, 1, 1, InfixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getInfixExpression_ExtendedOperands(), this.getExpression(), null, "extendedOperands", null, 0, -1, InfixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(initializerEClass, Initializer.class, "Initializer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getInitializer_Body(), this.getBlock(), null, "body", null, 1, 1, Initializer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(instanceofExpressionEClass, InstanceofExpression.class, "InstanceofExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getInstanceofExpression_RightOperand(), this.getTypeAccess(), null, "rightOperand", null, 1, 1, InstanceofExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getInstanceofExpression_LeftOperand(), this.getExpression(), null, "leftOperand", null, 1, 1, InstanceofExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(interfaceDeclarationEClass, InterfaceDeclaration.class, "InterfaceDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(javadocEClass, Javadoc.class, "Javadoc", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getJavadoc_Tags(), this.getTagElement(), null, "tags", null, 0, -1, Javadoc.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(labeledStatementEClass, LabeledStatement.class, "LabeledStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getLabeledStatement_Body(), this.getStatement(), null, "body", null, 1, 1, LabeledStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getLabeledStatement_UsagesInBreakStatements(), this.getBreakStatement(), this.getBreakStatement_Label(), "usagesInBreakStatements", null, 0, -1, LabeledStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getLabeledStatement_UsagesInContinueStatements(), this.getContinueStatement(), this.getContinueStatement_Label(), "usagesInContinueStatements", null, 0, -1, LabeledStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(lineCommentEClass, LineComment.class, "LineComment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(manifestEClass, Manifest.class, "Manifest", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getManifest_MainAttributes(), this.getManifestAttribute(), null, "mainAttributes", null, 0, -1, Manifest.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getManifest_EntryAttributes(), this.getManifestEntry(), null, "entryAttributes", null, 0, -1, Manifest.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(manifestAttributeEClass, ManifestAttribute.class, "ManifestAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getManifestAttribute_Key(), theEcorePackage.getEString(), "key", null, 1, 1, ManifestAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getManifestAttribute_Value(), theEcorePackage.getEString(), "value", null, 1, 1, ManifestAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(manifestEntryEClass, ManifestEntry.class, "ManifestEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getManifestEntry_Name(), theEcorePackage.getEString(), "name", null, 0, 1, ManifestEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getManifestEntry_Attributes(), this.getManifestAttribute(), null, "attributes", null, 0, -1, ManifestEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(memberRefEClass, MemberRef.class, "MemberRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getMemberRef_Member(), this.getNamedElement(), null, "member", null, 1, 1, MemberRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getMemberRef_Qualifier(), this.getTypeAccess(), null, "qualifier", null, 0, 1, MemberRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(methodDeclarationEClass, MethodDeclaration.class, "MethodDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMethodDeclaration_ExtraArrayDimensions(), theEcorePackage.getEInt(), "extraArrayDimensions", null, 1, 1, MethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getMethodDeclaration_ReturnType(), this.getTypeAccess(), null, "returnType", null, 0, 1, MethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getMethodDeclaration_RedefinedMethodDeclaration(), this.getMethodDeclaration(), this.getMethodDeclaration_Redefinitions(), "redefinedMethodDeclaration", null, 0, 1, MethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getMethodDeclaration_Redefinitions(), this.getMethodDeclaration(), this.getMethodDeclaration_RedefinedMethodDeclaration(), "redefinitions", null, 0, -1, MethodDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(methodInvocationEClass, MethodInvocation.class, "MethodInvocation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getMethodInvocation_Expression(), this.getExpression(), null, "expression", null, 0, 1, MethodInvocation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(methodRefEClass, MethodRef.class, "MethodRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getMethodRef_Method(), this.getAbstractMethodDeclaration(), this.getAbstractMethodDeclaration_UsagesInDocComments(), "method", null, 1, 1, MethodRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getMethodRef_Qualifier(), this.getTypeAccess(), null, "qualifier", null, 0, 1, MethodRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getMethodRef_Parameters(), this.getMethodRefParameter(), null, "parameters", null, 0, -1, MethodRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(methodRefParameterEClass, MethodRefParameter.class, "MethodRefParameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMethodRefParameter_Name(), theEcorePackage.getEString(), "name", null, 0, 1, MethodRefParameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getMethodRefParameter_Varargs(), theEcorePackage.getEBoolean(), "varargs", null, 1, 1, MethodRefParameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getMethodRefParameter_Type(), this.getTypeAccess(), null, "type", null, 1, 1, MethodRefParameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getModel_Name(), theEcorePackage.getEString(), "name", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModel_OwnedElements(), this.getPackage(), this.getPackage_Model(), "ownedElements", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModel_OrphanTypes(), this.getType(), null, "orphanTypes", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModel_UnresolvedItems(), this.getUnresolvedItem(), null, "unresolvedItems", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModel_CompilationUnits(), this.getCompilationUnit(), null, "compilationUnits", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModel_ClassFiles(), this.getClassFile(), null, "classFiles", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModel_Archives(), this.getArchive(), null, "archives", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(modifierEClass, Modifier.class, "Modifier", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getModifier_Visibility(), this.getVisibilityKind(), "visibility", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getModifier_Inheritance(), this.getInheritanceKind(), "inheritance", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getModifier_Static(), theEcorePackage.getEBoolean(), "static", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getModifier_Transient(), theEcorePackage.getEBoolean(), "transient", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getModifier_Volatile(), theEcorePackage.getEBoolean(), "volatile", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getModifier_Native(), theEcorePackage.getEBoolean(), "native", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getModifier_Strictfp(), theEcorePackage.getEBoolean(), "strictfp", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getModifier_Synchronized(), theEcorePackage.getEBoolean(), "synchronized", null, 1, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModifier_BodyDeclaration(), this.getBodyDeclaration(), this.getBodyDeclaration_Modifier(), "bodyDeclaration", null, 0, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModifier_SingleVariableDeclaration(), this.getSingleVariableDeclaration(), this.getSingleVariableDeclaration_Modifier(), "singleVariableDeclaration", null, 0, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModifier_VariableDeclarationStatement(), this.getVariableDeclarationStatement(), this.getVariableDeclarationStatement_Modifier(), "variableDeclarationStatement", null, 0, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getModifier_VariableDeclarationExpression(), this.getVariableDeclarationExpression(), this.getVariableDeclarationExpression_Modifier(), "variableDeclarationExpression", null, 0, 1, Modifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(namedElementEClass, NamedElement.class, "NamedElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getNamedElement_Name(), theEcorePackage.getEString(), "name", null, 0, 1, NamedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getNamedElement_Proxy(), theEcorePackage.getEBoolean(), "proxy", null, 1, 1, NamedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getNamedElement_UsagesInImports(), this.getImportDeclaration(), this.getImportDeclaration_ImportedElement(), "usagesInImports", null, 0, -1, NamedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(namespaceAccessEClass, NamespaceAccess.class, "NamespaceAccess", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(numberLiteralEClass, NumberLiteral.class, "NumberLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getNumberLiteral_TokenValue(), theEcorePackage.getEString(), "tokenValue", null, 1, 1, NumberLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(nullLiteralEClass, NullLiteral.class, "NullLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(packageEClass, org.eclipse.gmt.modisco.java.Package.class, "Package", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getPackage_OwnedElements(), this.getAbstractTypeDeclaration(), this.getAbstractTypeDeclaration_Package(), "ownedElements", null, 0, -1, org.eclipse.gmt.modisco.java.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getPackage_Model(), this.getModel(), this.getModel_OwnedElements(), "model", null, 0, 1, org.eclipse.gmt.modisco.java.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getPackage_OwnedPackages(), this.getPackage(), this.getPackage_Package(), "ownedPackages", null, 0, -1, org.eclipse.gmt.modisco.java.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getPackage_Package(), this.getPackage(), this.getPackage_OwnedPackages(), "package", null, 0, 1, org.eclipse.gmt.modisco.java.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getPackage_UsagesInPackageAccess(), this.getPackageAccess(), this.getPackageAccess_Package(), "usagesInPackageAccess", null, 0, -1, org.eclipse.gmt.modisco.java.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(packageAccessEClass, PackageAccess.class, "PackageAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getPackageAccess_Package(), this.getPackage(), this.getPackage_UsagesInPackageAccess(), "package", null, 1, 1, PackageAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getPackageAccess_Qualifier(), this.getPackageAccess(), null, "qualifier", null, 0, 1, PackageAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(parameterizedTypeEClass, ParameterizedType.class, "ParameterizedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getParameterizedType_Type(), this.getTypeAccess(), null, "type", null, 1, 1, ParameterizedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getParameterizedType_TypeArguments(), this.getTypeAccess(), null, "typeArguments", null, 0, -1, ParameterizedType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(parenthesizedExpressionEClass, ParenthesizedExpression.class, "ParenthesizedExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getParenthesizedExpression_Expression(), this.getExpression(), null, "expression", null, 1, 1, ParenthesizedExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(postfixExpressionEClass, PostfixExpression.class, "PostfixExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getPostfixExpression_Operator(), this.getPostfixExpressionKind(), "operator", null, 1, 1, PostfixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getPostfixExpression_Operand(), this.getExpression(), null, "operand", null, 1, 1, PostfixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(prefixExpressionEClass, PrefixExpression.class, "PrefixExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getPrefixExpression_Operator(), this.getPrefixExpressionKind(), "operator", null, 1, 1, PrefixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getPrefixExpression_Operand(), this.getExpression(), null, "operand", null, 1, 1, PrefixExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(primitiveTypeEClass, PrimitiveType.class, "PrimitiveType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeBooleanEClass, PrimitiveTypeBoolean.class, "PrimitiveTypeBoolean", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeByteEClass, PrimitiveTypeByte.class, "PrimitiveTypeByte", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeCharEClass, PrimitiveTypeChar.class, "PrimitiveTypeChar", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeDoubleEClass, PrimitiveTypeDouble.class, "PrimitiveTypeDouble", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeShortEClass, PrimitiveTypeShort.class, "PrimitiveTypeShort", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeFloatEClass, PrimitiveTypeFloat.class, "PrimitiveTypeFloat", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeIntEClass, PrimitiveTypeInt.class, "PrimitiveTypeInt", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeLongEClass, PrimitiveTypeLong.class, "PrimitiveTypeLong", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(primitiveTypeVoidEClass, PrimitiveTypeVoid.class, "PrimitiveTypeVoid", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(returnStatementEClass, ReturnStatement.class, "ReturnStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getReturnStatement_Expression(), this.getExpression(), null, "expression", null, 0, 1, ReturnStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(singleVariableAccessEClass, SingleVariableAccess.class, "SingleVariableAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getSingleVariableAccess_Variable(), this.getVariableDeclaration(), this.getVariableDeclaration_UsageInVariableAccess(), "variable", null, 1, 1, SingleVariableAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSingleVariableAccess_Qualifier(), this.getExpression(), null, "qualifier", null, 0, 1, SingleVariableAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(singleVariableDeclarationEClass, SingleVariableDeclaration.class, "SingleVariableDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getSingleVariableDeclaration_Modifier(), this.getModifier(), this.getModifier_SingleVariableDeclaration(), "modifier", null, 0, 1, SingleVariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEAttribute(getSingleVariableDeclaration_Varargs(), theEcorePackage.getEBoolean(), "varargs", null, 1, 1, SingleVariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSingleVariableDeclaration_Type(), this.getTypeAccess(), null, "type", null, 1, 1, SingleVariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSingleVariableDeclaration_Annotations(), this.getAnnotation(), null, "annotations", null, 0, -1, SingleVariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getSingleVariableDeclaration_MethodDeclaration(), this.getAbstractMethodDeclaration(), this.getAbstractMethodDeclaration_Parameters(), "methodDeclaration", null, 0, 1, SingleVariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSingleVariableDeclaration_CatchClause(), this.getCatchClause(), this.getCatchClause_Exception(), "catchClause", null, 0, 1, SingleVariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSingleVariableDeclaration_EnhancedForStatement(), this.getEnhancedForStatement(), this.getEnhancedForStatement_Parameter(), "enhancedForStatement", null, 0, 1, SingleVariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(statementEClass, Statement.class, "Statement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(stringLiteralEClass, StringLiteral.class, "StringLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getStringLiteral_EscapedValue(), theEcorePackage.getEString(), "escapedValue", null, 1, 1, StringLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(superConstructorInvocationEClass, SuperConstructorInvocation.class, "SuperConstructorInvocation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getSuperConstructorInvocation_Expression(), this.getExpression(), null, "expression", null, 0, 1, SuperConstructorInvocation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(superFieldAccessEClass, SuperFieldAccess.class, "SuperFieldAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getSuperFieldAccess_Field(), this.getSingleVariableAccess(), null, "field", null, 1, 1, SuperFieldAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(superMethodInvocationEClass, SuperMethodInvocation.class, "SuperMethodInvocation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(switchCaseEClass, SwitchCase.class, "SwitchCase", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getSwitchCase_Default(), theEcorePackage.getEBoolean(), "default", null, 1, 1, SwitchCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSwitchCase_Expression(), this.getExpression(), null, "expression", null, 0, 1, SwitchCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(switchStatementEClass, SwitchStatement.class, "SwitchStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getSwitchStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, SwitchStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSwitchStatement_Statements(), this.getStatement(), null, "statements", null, 0, -1, SwitchStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(synchronizedStatementEClass, SynchronizedStatement.class, "SynchronizedStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getSynchronizedStatement_Body(), this.getBlock(), null, "body", null, 1, 1, SynchronizedStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getSynchronizedStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, SynchronizedStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(tagElementEClass, TagElement.class, "TagElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getTagElement_TagName(), theEcorePackage.getEString(), "tagName", null, 0, 1, TagElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getTagElement_Fragments(), this.getASTNode(), null, "fragments", null, 0, -1, TagElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(textElementEClass, TextElement.class, "TextElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getTextElement_Text(), theEcorePackage.getEString(), "text", null, 1, 1, TextElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(thisExpressionEClass, ThisExpression.class, "ThisExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(throwStatementEClass, ThrowStatement.class, "ThrowStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getThrowStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, ThrowStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(tryStatementEClass, TryStatement.class, "TryStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getTryStatement_Body(), this.getBlock(), null, "body", null, 1, 1, TryStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getTryStatement_Finally(), this.getBlock(), null, "finally", null, 0, 1, TryStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getTryStatement_CatchClauses(), this.getCatchClause(), null, "catchClauses", null, 0, -1, TryStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(typeEClass, Type.class, "Type", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getType_UsagesInTypeAccess(), this.getTypeAccess(), this.getTypeAccess_Type(), "usagesInTypeAccess", null, 0, -1, Type.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(typeAccessEClass, TypeAccess.class, "TypeAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getTypeAccess_Type(), this.getType(), this.getType_UsagesInTypeAccess(), "type", null, 1, 1, TypeAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getTypeAccess_Qualifier(), this.getNamespaceAccess(), null, "qualifier", null, 0, 1, TypeAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(typeDeclarationEClass, TypeDeclaration.class, "TypeDeclaration", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getTypeDeclaration_TypeParameters(), this.getTypeParameter(), null, "typeParameters", null, 0, -1, TypeDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(typeDeclarationStatementEClass, TypeDeclarationStatement.class, "TypeDeclarationStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getTypeDeclarationStatement_Declaration(), this.getAbstractTypeDeclaration(), null, "declaration", null, 1, 1, TypeDeclarationStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(typeLiteralEClass, TypeLiteral.class, "TypeLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getTypeLiteral_Type(), this.getTypeAccess(), null, "type", null, 1, 1, TypeLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(typeParameterEClass, TypeParameter.class, "TypeParameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getTypeParameter_Bounds(), this.getTypeAccess(), null, "bounds", null, 0, -1, TypeParameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(unresolvedItemEClass, UnresolvedItem.class, "UnresolvedItem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedItemAccessEClass, UnresolvedItemAccess.class, "UnresolvedItemAccess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getUnresolvedItemAccess_Element(), this.getUnresolvedItem(), null, "element", null, 0, 1, UnresolvedItemAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getUnresolvedItemAccess_Qualifier(), this.getASTNode(), null, "qualifier", null, 0, 1, UnresolvedItemAccess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(unresolvedAnnotationDeclarationEClass, UnresolvedAnnotationDeclaration.class, "UnresolvedAnnotationDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedAnnotationTypeMemberDeclarationEClass, UnresolvedAnnotationTypeMemberDeclaration.class, "UnresolvedAnnotationTypeMemberDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedClassDeclarationEClass, UnresolvedClassDeclaration.class, "UnresolvedClassDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedEnumDeclarationEClass, UnresolvedEnumDeclaration.class, "UnresolvedEnumDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedInterfaceDeclarationEClass, UnresolvedInterfaceDeclaration.class, "UnresolvedInterfaceDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedLabeledStatementEClass, UnresolvedLabeledStatement.class, "UnresolvedLabeledStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedMethodDeclarationEClass, UnresolvedMethodDeclaration.class, "UnresolvedMethodDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedSingleVariableDeclarationEClass, UnresolvedSingleVariableDeclaration.class, "UnresolvedSingleVariableDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedTypeEClass, UnresolvedType.class, "UnresolvedType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedTypeDeclarationEClass, UnresolvedTypeDeclaration.class, "UnresolvedTypeDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(unresolvedVariableDeclarationFragmentEClass, UnresolvedVariableDeclarationFragment.class, "UnresolvedVariableDeclarationFragment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(variableDeclarationEClass, VariableDeclaration.class, "VariableDeclaration", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getVariableDeclaration_ExtraArrayDimensions(), theEcorePackage.getEInt(), "extraArrayDimensions", null, 1, 1, VariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getVariableDeclaration_Initializer(), this.getExpression(), null, "initializer", null, 0, 1, VariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getVariableDeclaration_UsageInVariableAccess(), this.getSingleVariableAccess(), this.getSingleVariableAccess_Variable(), "usageInVariableAccess", null, 0, -1, VariableDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(variableDeclarationExpressionEClass, VariableDeclarationExpression.class, "VariableDeclarationExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getVariableDeclarationExpression_Modifier(), this.getModifier(), this.getModifier_VariableDeclarationExpression(), "modifier", null, 0, 1, VariableDeclarationExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getVariableDeclarationExpression_Annotations(), this.getAnnotation(), null, "annotations", null, 0, -1, VariableDeclarationExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(variableDeclarationFragmentEClass, VariableDeclarationFragment.class, "VariableDeclarationFragment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getVariableDeclarationFragment_VariablesContainer(), this.getAbstractVariablesContainer(), this.getAbstractVariablesContainer_Fragments(), "variablesContainer", null, 0, 1, VariableDeclarationFragment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(variableDeclarationStatementEClass, VariableDeclarationStatement.class, "VariableDeclarationStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getVariableDeclarationStatement_ExtraArrayDimensions(), theEcorePackage.getEInt(), "extraArrayDimensions", null, 1, 1, VariableDeclarationStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getVariableDeclarationStatement_Modifier(), this.getModifier(), this.getModifier_VariableDeclarationStatement(), "modifier", null, 0, 1, VariableDeclarationStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getVariableDeclarationStatement_Annotations(), this.getAnnotation(), null, "annotations", null, 0, -1, VariableDeclarationStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(wildCardTypeEClass, WildCardType.class, "WildCardType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getWildCardType_UpperBound(), theEcorePackage.getEBoolean(), "upperBound", null, 1, 1, WildCardType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getWildCardType_Bound(), this.getTypeAccess(), null, "bound", null, 0, 1, WildCardType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        initEClass(whileStatementEClass, WhileStatement.class, "WhileStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getWhileStatement_Expression(), this.getExpression(), null, "expression", null, 1, 1, WhileStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+        initEReference(getWhileStatement_Body(), this.getStatement(), null, "body", null, 1, 1, WhileStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+        // Initialize enums and add enum literals
+        initEEnum(assignmentKindEEnum, AssignmentKind.class, "AssignmentKind");
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.PLUS_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.MINUS_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.TIMES_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.DIVIDE_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.BIT_AND_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.BIT_OR_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.BIT_XOR_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.REMAINDER_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.LEFT_SHIFT_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.RIGHT_SHIFT_SIGNED_ASSIGN);
+        addEEnumLiteral(assignmentKindEEnum, AssignmentKind.RIGHT_SHIFT_UNSIGNED_ASSIGN);
+
+        initEEnum(infixExpressionKindEEnum, InfixExpressionKind.class, "InfixExpressionKind");
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.TIMES);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.DIVIDE);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.REMAINDER);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.PLUS);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.MINUS);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.LEFT_SHIFT);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.RIGHT_SHIFT_SIGNED);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.RIGHT_SHIFT_UNSIGNED);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.LESS);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.GREATER);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.LESS_EQUALS);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.GREATER_EQUALS);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.EQUALS);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.NOT_EQUALS);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.XOR);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.AND);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.OR);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.CONDITIONAL_AND);
+        addEEnumLiteral(infixExpressionKindEEnum, InfixExpressionKind.CONDITIONAL_OR);
+
+        initEEnum(inheritanceKindEEnum, InheritanceKind.class, "InheritanceKind");
+        addEEnumLiteral(inheritanceKindEEnum, InheritanceKind.NONE);
+        addEEnumLiteral(inheritanceKindEEnum, InheritanceKind.ABSTRACT);
+        addEEnumLiteral(inheritanceKindEEnum, InheritanceKind.FINAL);
+
+        initEEnum(postfixExpressionKindEEnum, PostfixExpressionKind.class, "PostfixExpressionKind");
+        addEEnumLiteral(postfixExpressionKindEEnum, PostfixExpressionKind.INCREMENT);
+        addEEnumLiteral(postfixExpressionKindEEnum, PostfixExpressionKind.DECREMENT);
+
+        initEEnum(prefixExpressionKindEEnum, PrefixExpressionKind.class, "PrefixExpressionKind");
+        addEEnumLiteral(prefixExpressionKindEEnum, PrefixExpressionKind.INCREMENT);
+        addEEnumLiteral(prefixExpressionKindEEnum, PrefixExpressionKind.DECREMENT);
+        addEEnumLiteral(prefixExpressionKindEEnum, PrefixExpressionKind.PLUS);
+        addEEnumLiteral(prefixExpressionKindEEnum, PrefixExpressionKind.MINUS);
+        addEEnumLiteral(prefixExpressionKindEEnum, PrefixExpressionKind.COMPLEMENT);
+        addEEnumLiteral(prefixExpressionKindEEnum, PrefixExpressionKind.NOT);
+
+        initEEnum(visibilityKindEEnum, VisibilityKind.class, "VisibilityKind");
+        addEEnumLiteral(visibilityKindEEnum, VisibilityKind.NONE);
+        addEEnumLiteral(visibilityKindEEnum, VisibilityKind.PUBLIC);
+        addEEnumLiteral(visibilityKindEEnum, VisibilityKind.PRIVATE);
+        addEEnumLiteral(visibilityKindEEnum, VisibilityKind.PROTECTED);
+
+        // Create resource
         createResource(eNS_URI);
-    }
-
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    private boolean isFixed = false;
-
-    /**
-     * Fixes up the loaded package, to make it appear as if it had been programmatically built.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void fixPackageContents() {
-        if (isFixed) return;
-        isFixed = true;
-        fixEClassifiers();
-    }
-
-    /**
-     * Sets the instance class on the given classifier.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    protected void fixInstanceClass(EClassifier eClassifier) {
-        if (eClassifier.getInstanceClassName() == null) {
-            eClassifier.setInstanceClassName("org.eclipse.gmt.modisco.java." + eClassifier.getName());
-            setGeneratedClassName(eClassifier);
-        }
     }
 
 } //JavaPackageImpl

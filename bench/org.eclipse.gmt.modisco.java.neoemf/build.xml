@@ -5,7 +5,7 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="org.eclipse.gmt.modisco.java.neoemf">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="C:/WS/ide/eclipse/modeling-neon/eclipse/"/>
+    <property name="ECLIPSE_HOME" value="C:/WS/ide/eclipse/modeling-latest-released/eclipse/"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
@@ -23,21 +23,21 @@
         <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.emf.ecore_2.12.0.v20160420-0247.jar"/>
         <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.emf.common_2.12.0.v20160420-0247.jar"/>
         <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.emf.ecore.xmi_2.12.0.v20160420-0247.jar"/>
-        <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.gmt.modisco.java_1.0.0.201605180829.jar"/>
-        <pathelement location="C:/Users/Yoann/.p2/pool/plugins/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/cglib-nodep-3.2.4.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/commons-lang3-3.5.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/commons-io-2.5.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/commons-configuration-1.10.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/commons-lang-2.6.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/commons-logging-1.1.1.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/guava-19.0.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/log4j-core-2.7.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/log4j-api-2.7.jar"/>
-        <pathelement location="../../../../modeling/neon/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161030021652/log4j-jcl-2.7.jar"/>
+        <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.emf.ecore.xcore.lib_1.1.100.v20160526-0606.jar"/>
         <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.xtext.xbase.lib_2.10.0.v201605250459.jar"/>
         <pathelement location="C:/Users/Yoann/.p2/pool/plugins/com.google.guava_15.0.0.v201403281430.jar"/>
-        <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.emf.ecore.xcore.lib_1.1.100.v20160526-0606.jar"/>
+        <pathelement location="C:/Users/Yoann/.p2/pool/plugins/org.eclipse.gmt.modisco.java_1.0.0.201605180829.jar"/>
+        <pathelement location="C:/Users/Yoann/.p2/pool/plugins/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/cglib-nodep-3.2.4.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/commons-lang3-3.5.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/commons-io-2.5.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/commons-configuration-1.10.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/commons-lang-2.6.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/commons-logging-1.1.1.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/guava-19.0.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/log4j-core-2.7.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/log4j-api-2.7.jar"/>
+        <pathelement location="../../../../modeling/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/fr.inria.atlanmod.neoemf.core_0.0.1.20161031050032/log4j-jcl-2.7.jar"/>
     </path>
     <path id="org.eclipse.gmt.modisco.java.neoemf.classpath">
         <path refid="Plug-in Dependencies.libraryclasspath"/>
