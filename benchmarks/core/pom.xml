@@ -45,13 +45,21 @@
             <version>2.11.1-v20150805-0538</version>
         </dependency>
 
+        <!-- CDO -->
+
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.192</version>
+            <groupId>org.eclipselabs</groupId>
+            <artifactId>cdo</artifactId>
+            <version>4.4.0</version>
+            <type>pom</type>
         </dependency>
 
-        <!-- CDO : missing Maven dependencies -->
+        <dependency>
+            <groupId>org.eclipselabs</groupId>
+            <artifactId>net4j.h2</artifactId>
+            <version>4.4.0</version>
+            <type>pom</type>
+        </dependency>
 
         <!-- NeoEMF -->
 
