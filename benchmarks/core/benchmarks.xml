@@ -1,0 +1,1863 @@
+<?eclipse.ant.import ?>
+<project basedir="." name="benchmarks">
+	<!-- Set the directory for running the benchmarks -->
+	<property name="benchmarks.dir" value="${java.io.tmpdir}/neoemf-benchmarks"/>
+	<property name="resources.dir" value="resources"/>
+	<property name="tests.dir" value="${benchmarks.dir}/temp"/>
+	<property name="timeout" value="7200000"/>
+	
+	<tstamp> 
+		<format property="time.stamp" pattern="yyyyMMddHHmmss"/>
+	</tstamp>
+	<property name="log.file" value="${benchmarks.dir}/antlog-${time.stamp}.txt"/>
+	<mkdir dir="${benchmarks.dir}"/>
+	<record name="${log.file}"/>
+
+	<!-- Default JVM arguments for creating test resources -->
+	<property name="creator.vmargs" value="-Xmx8g" />
+
+	<!-- Default JVM argument for traversing and querying test resources -->
+	<property name="tester.vmargs" value="-server -Xmx250m -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -XX:+CMSClassUnloadingEnabled" />
+	
+	<property name="debug.vmargs" value="" />
+	<!--<property name="debug.vmargs" value="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,address=8000" />-->
+
+	<property name="creator.vmargs.value" value="-Dfile.encoding=utf-8 ${creator.vmargs} ${debug.vmargs}" />
+	<property name="tester.vmargs.value" value="-Dfile.encoding=utf-8 ${tester.vmargs} ${debug.vmargs}" />
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	  <classpath>
+	    <pathelement location="${basedir}/lib/ant-contrib.jar"/>
+	  </classpath>
+	</taskdef>
+	
+	<macrodef name="timestamp.echo">
+		<attribute name="message"/>    
+		<sequential> 
+			<local name="current.time" />
+			<tstamp> 
+				<format property="current.time" pattern="dd/MM/yyyy HH:mm:ss"/> 
+			</tstamp>          
+			<echo message="${current.time} @{message}" />
+		</sequential>
+	</macrodef>
+	
+	
+	<target name="execute.benchmarks.all" description="Prepares the benchmarks environment and executed the benchmarks for ALL (-Xmx8g, -Xmx512m &amp; -Xmx256m)">
+		<antcall target="execute.benchmarks.all.cdo" inheritall="no" />
+		<antcall target="execute.benchmarks.all.neoemf.map" inheritall="no" />
+		<antcall target="execute.benchmarks.all.neoemf.graph" inheritall="no" />
+		<antcall target="execute.benchmarks.all.xmi" inheritall="no" />
+	</target>
+	
+	<target name="execute.benchmarks.all.cdo" description="Prepares the benchmarks environment and executes the benchmarks for CDO (-Xmx8g &amp; -Xmx512m &amp; -Xmx256m)">
+		<antcall target="execute.benchmarks.cdo" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx8g"/>
+		</antcall>
+		<antcall target="execute.benchmarks.cdo" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx512m"/>
+		</antcall>
+		<antcall target="execute.benchmarks.cdo" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx256m"/>
+		</antcall>
+	</target>
+	
+	<target name="execute.benchmarks.all.neoemf.map" description="Prepares the benchmarks environment and executes the benchmarks for NeoEMF:Map (-Xmx8g &amp; -Xmx512m &amp; -Xmx256m)">
+		<antcall target="execute.benchmarks.neoemf.map" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx8g"/>
+		</antcall>
+		<antcall target="execute.benchmarks.neoemf.map" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx512m"/>
+		</antcall>
+		<antcall target="execute.benchmarks.neoemf.map" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx256m"/>
+		</antcall>
+	</target>
+	
+	<target name="execute.benchmarks.all.neoemf.graph" description="Prepares the benchmarks environment and executes the benchmarks for NeoEMF:Graph (-Xmx8g, -Xmx512m &amp; -Xmx256m)">
+		<antcall target="execute.benchmarks.neoemf.graph" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx8g"/>
+		</antcall>
+		<antcall target="execute.benchmarks.neoemf.graph" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx512m"/>
+		</antcall>
+		<antcall target="execute.benchmarks.neoemf.graph" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx256m"/>
+		</antcall>
+	</target>
+
+	<target name="execute.benchmarks.all.xmi" description="Prepares the benchmarks environment and executes the benchmarks for XMI (-Xmx8g, -Xmx512m &amp; -Xmx256m)">
+		<antcall target="execute.benchmarks.xmi" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx8g"/>
+		</antcall>
+		<antcall target="execute.benchmarks.xmi" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx512m"/>
+		</antcall>
+		<antcall target="execute.benchmarks.xmi" inheritall="no">
+			<param name="tester.vmargs" value="-Xmx256m"/>
+		</antcall>
+	</target>
+	
+	<target name="execute.benchmarks.cdo">
+		<antcall target="build"/>
+		<antcall target="migrate.cdo"/>
+		<antcall target="traverse.resources.cdo"/>
+		<antcall target="query.orphan.resources.cdo"/>
+		<antcall target="query.grabats.resources.cdo"/>
+		<antcall target="query.unusedmethods.resources.cdo"/>
+		<antcall target="query.thrownexceptions.resources.cdo"/>
+		<antcall target="query.invmethods.resources.cdo"/>
+		<antcall target="query.classdecl.resources.cdo"/>
+		<antcall target="query.unusedmethods.complex.resources.cdo"/>
+		<antcall target="query.rename.resources.cdo"/>
+	</target>
+	
+	<target name="execute.benchmarks.neoemf.map">
+		<antcall target="build"/>
+		<antcall target="migrate.neoemf"/>
+		<antcall target="traverse.resources.neoemf.map"/>
+		<antcall target="query.orphan.resources.neoemf.map"/>
+		<antcall target="query.grabats.resources.neoemf.map"/>
+		<antcall target="query.unusedmethods.resources.neoemf.map"/>
+		<antcall target="query.thrownexceptions.resources.neoemf.map"/>
+		<antcall target="query.invmethods.resources.neoemf.map"/>
+		<antcall target="query.classdecl.resources.neoemf.map"/>
+		<antcall target="query.unusedmethods.complex.resources.neoemf.map"/>
+		<antcall target="query.rename.resources.neoemf.map"/>
+	</target>
+	
+	<target name="execute.benchmarks.neoemf.graph">
+		<antcall target="build"/>
+		<antcall target="migrate.neoemf"/>
+		<antcall target="traverse.resources.neoemf.graph"/>
+		<antcall target="query.orphan.resources.neoemf.graph"/>
+		<antcall target="query.grabats.resources.neoemf.graph"/>
+		<antcall target="query.unusedmethods.resources.neoemf.graph"/>
+		<antcall target="query.thrownexceptions.resources.neoemf.graph"/>
+		<antcall target="query.invmethods.resources.neoemf.graph"/>
+		<antcall target="query.classdecl.resources.neoemf.graph"/>
+		<antcall target="query.unusedmethods.complex.resources.neoemf.graph"/>
+		<antcall target="query.rename.resources.neoemf.graph"/>
+	</target>
+	
+	<target name="execute.benchmarks.xmi">
+		<antcall target="build"/>
+		<antcall target="migrate.xmi"/>
+	    <!--<antcall target="traverse.resources.xmi"/>-->
+	</target>
+	
+	<target name="extract.resources">
+		<if>
+			<not>
+				<available file="${resources.dir}" type="dir"/>
+			</not>
+			<then>
+				<unzip src="${basedir}/resources.zip" dest="${basedir}"/>
+			</then>
+		</if>
+	</target>
+	
+    <target name="migrate.cdo.file">
+    	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
+		<property name="cdo.out" value="${benchmarks.dir}/${xmi.filename}.cdo.zxmi"/>
+    	<if>
+			<not>
+				<available file="${cdo.out}" />
+			</not>
+    		<then>
+    			<echo>Creating ${cdo.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${xmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${cdo.out}"/>
+		        	<arg value="-input_epackage_class"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		        	<arg value="-output_epackage_class"/>
+		        	<arg value="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+			</then>
+    		<else>
+    			<echo>${cdo.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+	
+    <target name="migrate.neoemf.file">
+    	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
+		<property name="neoemf.out" value="${benchmarks.dir}/${xmi.filename}.neoemf.zxmi"/>
+    	<if>
+			<not>
+				<available file="${neoemf.out}" />
+			</not>
+    		<then>
+    			<echo>Creating ${neoemf.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${xmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${neoemf.out}"/>
+		        	<arg value="-input_epackage_class"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		        	<arg value="-output_epackage_class"/>
+		        	<arg value="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+			</then>
+    		<else>
+    			<echo>${neoemf.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+
+	<!--
+	<target name="migrate.morsa.file">
+    	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
+		<property name="morsa.out" value="${benchmarks.dir}/${xmi.filename}.morsa.zxmi"/>
+    	<if>
+			<not>
+				<available file="${morsa.out}" />
+			</not>
+    		<then>
+    			<echo>Creating ${morsa.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${xmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${morsa.out}"/>
+		        	<arg value="-input_epackage_class"/>
+		        	<arg value="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		        	<arg value="-output_epackage_class"/>
+		        	<arg value="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+			</then>
+    		<else>
+    			<echo>${morsa.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+    -->
+	
+	<target name="migrate.xmi.file">
+    	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
+		<property name="xmi.out" value="${benchmarks.dir}/${xmi.filename}.xmi.zxmi"/>
+    	<if>
+			<not>
+				<available file="${xmi.out}" />
+			</not>
+    		<then>
+    			<echo>Creating ${xmi.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${xmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${xmi.out}"/>
+		        	<arg value="-input_epackage_class"/>
+		        	<arg value="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		        	<arg value="-output_epackage_class"/>
+		        	<arg value="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+			</then>
+    		<else>
+    			<echo>${xmi.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+
+	<target name="migrate.cdo" description="Migrates and initializes the source models into the benchmarks location for CDO" depends="extract.resources">
+		<foreach inheritall="true" target="migrate.cdo.file" param="xmi.file">
+			<path>
+				<fileset dir="${resources.dir}">
+					<include name="**/*.xmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="migrate.neoemf" description="Migrates and initializes the source models into the benchmarks location for NeoEMF" depends="extract.resources">
+		<foreach inheritall="true" target="migrate.neoemf.file" param="xmi.file">
+			<path>
+				<fileset dir="${resources.dir}">
+					<include name="**/*.xmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+	<!--
+	<target name="migrate.morsa" description="Migrates and initializes the source models into the benchmarks location for Morsa" depends="extract.resources">
+		<foreach inheritall="true" target="migrate.morsa.file" param="xmi.file">
+			<path>
+				<fileset dir="${resources.dir}">
+					<include name="**/*.xmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	-->
+	
+	<target name="migrate.xmi" description="Migrates and initializes the source models into the benchmarks location for XMI" depends="extract.resources">
+		<foreach inheritall="true" target="migrate.xmi.file" param="xmi.file">
+			<path>
+				<fileset dir="${resources.dir}">
+					<include name="**/*.xmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+    <target name="gen.test.resource.cdo">
+    	<basename property="cdo.zxmi.filename" file="${cdo.zxmi.file}" suffix="cdo.zxmi"/>
+		<property name="resource.out" value="${benchmarks.dir}/${cdo.zxmi.filename}.cdoresource"/>
+    	<if>
+			<not>
+				<available file="${resource.out}" />
+			</not>
+    		<then>
+    			<timestamp.echo message="Start" />
+    			<echo>Creating ${resource.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${cdo.zxmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${resource.out}"/>
+		        	<arg value="-epackage_class"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+		        	<arg value="-reponame"/>
+		        	<arg value="repo"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+    			<timestamp.echo message="End" />
+			</then>
+    		<else>
+    			<echo>${resource.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+	
+    <target name="gen.test.resource.neoemf.map">
+    	<basename property="neoemf.zxmi.filename" file="${neoemf.zxmi.file}" suffix="neoemf.zxmi"/>
+		<property name="resource.out" value="${benchmarks.dir}/${neoemf.zxmi.filename}.neoemfmapresource"/>
+    	<if>
+			<not>
+				<available file="${resource.out}" />
+			</not>
+    		<then>
+    			<timestamp.echo message="Start" />
+    			<echo>Creating ${resource.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${neoemf.zxmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${resource.out}"/>
+		        	<arg value="-epackage_class"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+    			<timestamp.echo message="End" />
+			</then>
+    		<else>
+    			<echo>${resource.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+	
+    <target name="gen.test.resource.neoemf.graph">
+    	<basename property="neoemf.zxmi.filename" file="${neoemf.zxmi.file}" suffix="neoemf.zxmi"/>
+		<property name="resource.out" value="${benchmarks.dir}/${neoemf.zxmi.filename}.neoemfgraphresource"/>
+		<property name="resource.properties.out" value="${benchmarks.dir}/${neoemf.zxmi.filename}.neoemfgraphresource.properties"/>
+    	<if>
+			<not>
+				<available file="${resource.out}" />
+			</not>
+    		<then>
+    			<!-- Modify NeoEMF resource load/save properties here -->
+    			<propertyfile file="${resource.properties.out}">
+    			  <entry key="blueprints.graph" value="com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph"/>
+    			</propertyfile>
+    			<timestamp.echo message="Start" />
+    			<echo>Creating ${resource.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${neoemf.zxmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${resource.out}"/>
+		        	<arg value="-epackage_class"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+		        	<arg value="-options_file"/>
+		        	<arg value="${resource.properties.out}"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			
+    			<stopwatch name="timer" action="total"/>
+    			<timestamp.echo message="End" />
+			</then>
+    		<else>
+    			<echo>${resource.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+	
+	<!--
+    <target name="gen.test.resource.morsa">
+    	<basename property="morsa.zxmi.filename" file="${morsa.zxmi.file}" suffix="morsa.zxmi"/>
+		<property name="resource.out" value="${benchmarks.dir}/${morsa.zxmi.filename}.morsaresource"/>
+    	<if>
+			<not>
+				<available file="${resource.out}" />
+			</not>
+    		<then>
+    			<timestamp.echo message="Start" />
+    			<echo>Creating ${resource.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.MorsaCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${morsa.zxmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${resource.out}"/>
+		        	<arg value="-epackage_class"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+    			<timestamp.echo message="End" />
+			</then>
+    		<else>
+    			<echo>${resource.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+	-->
+	
+    <target name="gen.test.resource.xmi">
+    	<basename property="xmi.zxmi.filename" file="${xmi.zxmi.file}" suffix="xmi.zxmi"/>
+		<property name="resource.out" value="${benchmarks.dir}/${xmi.zxmi.filename}.xmi"/>
+    	<if>
+			<not>
+				<available file="${resource.out}" />
+			</not>
+    		<then>
+    			<timestamp.echo message="Start" />
+    			<echo>Creating ${resource.out}</echo>
+    			<echo>JVM args: ${creator.vmargs.value}</echo>
+    			<stopwatch name="timer"/>
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.XmiCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        	<jvmarg line="${creator.vmargs.value}"/>
+		            <arg value="-input"/>
+		            <arg value="${xmi.zxmi.file}"/>
+		            <arg value="-output"/>
+		            <arg value="${resource.out}"/>
+		        	<arg value="-epackage_class"/>
+		        	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		        </java>
+    			<stopwatch name="timer" action="total"/>
+    			<timestamp.echo message="End" />
+			</then>
+    		<else>
+    			<echo>${resource.out} already exists</echo>
+    		</else>
+    	</if>
+    </target>
+	
+	<target name="gen.test.resources.cdo">
+		<foreach inheritall="true" target="gen.test.resource.cdo" param="cdo.zxmi.file">
+			<path>
+				<fileset dir="${benchmarks.dir}">
+					<include name="**/*.cdo.zxmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+
+	<target name="gen.test.resources.neoemf.map">
+		<foreach inheritall="true" target="gen.test.resource.neoemf.map" param="neoemf.zxmi.file">
+			<path>
+				<fileset dir="${benchmarks.dir}">
+					<include name="**/*.neoemf.zxmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="gen.test.resources.neoemf.graph">
+		<foreach inheritall="true" target="gen.test.resource.neoemf.graph" param="neoemf.zxmi.file">
+			<path>
+				<fileset dir="${benchmarks.dir}">
+					<include name="**/*.neoemf.zxmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+	<!--
+	<target name="gen.test.resources.morsa">
+		<foreach inheritall="true" target="gen.test.resource.morsa" param="morsa.zxmi.file">
+			<path>
+				<fileset dir="${benchmarks.dir}">
+					<include name="**/*.morsa.zxmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	-->
+	
+	<target name="gen.test.resources.xmi">
+		<foreach inheritall="true" target="gen.test.resource.xmi" param="xmi.zxmi.file">
+			<path>
+				<fileset dir="${benchmarks.dir}">
+					<include name="**/*.xmi.zxmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="prepare.test.resources.cdo">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.cdoresource/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="prepare.test.resources.neoemf.map">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.neoemfmapresource/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="prepare.test.resources.neoemf.graph">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.neoemfgraphresource/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="prepare.test.resources.xmi">
+		<delete dir="${tests.dir}" failonerror="false"/>
+		<mkdir dir="${tests.dir}"/>
+		<copy todir="${tests.dir}">
+			<fileset dir="${benchmarks.dir}">
+				<include name="*.xmi"/>
+			</fileset>
+		</copy>
+	</target>
+	
+    <target name="traverse.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Traversing ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoTraverser" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="traverse.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Traversing ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapTraverser" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="traverse.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Traversing ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphTraverser" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<!--
+    <target name="traverse.resource.morsa">
+		<timestamp.echo message="Start" />
+		<echo>Traversing ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.MorsaTraverser" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${morsaresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	-->
+	
+    <target name="traverse.resource.xmi">
+		<timestamp.echo message="Start" />
+		<echo>Traversing ${xmiresource}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.XmiTraverser" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${xmiresource}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="traverse.resources.cdo" description="Simple model traversal (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="traverse.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="traverse.resources.neoemf.map" description="Simple model traversal (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="traverse.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="traverse.resources.neoemf.graph" description="Simple model traversal (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="traverse.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<!--
+	<target name="traverse.resources.morsa" description="Simple model traversal (Morsa)">
+		<foreach inheritall="true" target="traverse.resource.morsa" param="morsaresource.dir" 
+		list="c:/Benchmarks/neoemf-benchmarks/fr.inria.atlanmod.neoemf.tests.morsaresource,c:/Benchmarks/neoemf-benchmarks/fr.inria.atlanmod.neo4emf.neo4jresolver.morsaresource,c:/Benchmarks/neoemf-benchmarks/org.eclipse.gmt.modisco.java.neoemf.morsaresource,c:/Benchmarks/neoemf-benchmarks/org.eclipse.jdt.core.morsaresource,c:/Benchmarks/neoemf-benchmarks/org.eclipse.jdt.source.all.morsaresource" />
+	</target>
+	
+	<target name="traverse.resources.xmi" description="Simple model traversal (XMI)" depends="gen.test.resources.xmi">
+		<antcall target="prepare.test.resources.xmi" />
+		<foreach inheritall="true" target="traverse.resource.xmi" param="xmiresource">
+			<path>
+				<fileset dir="${tests.dir}">
+					<include name="*.xmi"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	-->
+	
+    <target name="query.orphan.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryOrphanNonPrimitiveTypes" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.orphan.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryOrphanNonPrimitiveTypes" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.orphan.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryOrphanNonPrimitiveTypes" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.orphan.resources.cdo" description="Query without full traversal (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.orphan.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.orphan.resources.neoemf.map" description="Query without full traversal (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.orphan.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.orphan.resources.neoemf.graph" description="Query without full traversal (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.orphan.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+    <target name="query.grabats.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryGrabats" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.grabats.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryGrabats" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.grabats.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryGrabats" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.grabats.resources.cdo" description="Grabats (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.grabats.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.grabats.resources.neoemf.map" description="Grabats (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.grabats.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.grabats.resources.neoemf.graph" description="Grabats (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.grabats.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+    <target name="query.unusedmethods.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryUnusedMethodsList" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.unusedmethods.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryUnusedMethodsList" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.unusedmethods.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryUnusedMethodsList" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.unusedmethods.resources.cdo" description="Unused methods (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.unusedmethods.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.unusedmethods.resources.neoemf.map" description="Unused methods (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.unusedmethods.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.unusedmethods.resources.neoemf.graph" description="Unused methods (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.unusedmethods.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+    <target name="query.thrownexceptions.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryThrownExceptionsPerPackage" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.thrownexceptions.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryThrownExceptionsPerPackage" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.thrownexceptions.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryThrownExceptionsPerPackage" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.thrownexceptions.resources.cdo" description="Thrown exceptions per package (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.thrownexceptions.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.thrownexceptions.resources.neoemf.map" description="Thrown exception per package (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.thrownexceptions.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+
+	<target name="query.thrownexceptions.resources.neoemf.graph" description="Thrown exception per package (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.thrownexceptions.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+
+    <target name="query.invmethods.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.invmethods.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.invmethods.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.invmethods.resources.cdo" description="Invisible methods (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.invmethods.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.invmethods.resources.neoemf.map" description="Invisible methods (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.invmethods.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.invmethods.resources.neoemf.graph" description="Invisible methods (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.invmethods.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.classdecl.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryClassDeclarationAttributes" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.classdecl.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryClassDeclarationAttributes" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.classdecl.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryClassDeclarationAttributes" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.classdecl.resources.cdo" description="Class declaration attributes (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.classdecl.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.classdecl.resources.neoemf.map" description="Class declaration attributes (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.classdecl.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.classdecl.resources.neoemf.graph" description="Class declaration attributes (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.classdecl.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+    <target name="query.unusedmethods.complex.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryLoop" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.unusedmethods.complex.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryLoop" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.unusedmethods.complex.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryLoop" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.unusedmethods.complex.resources.cdo" description="Complex query (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.unusedmethods.complex.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.unusedmethods.complex.resources.neoemf.map" description="Complex query (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.unusedmethods.complex.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.unusedmethods.complex.resources.neoemf.graph" description="Complex query (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.unusedmethods.complex.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+    <target name="query.rename.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryRenameAllMethods" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.rename.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryRenameAllMethods" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+    <target name="query.rename.resource.neoemf.graph">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryRenameAllMethods" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="query.rename.resources.cdo" description="Model modification and saving (CDO)" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="query.rename.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.rename.resources.neoemf.map" description="Model modification and saving (NeoEMF:Map)" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="query.rename.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="query.rename.resources.neoemf.graph" description="Model modification and saving (NeoEMF:Graph)" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="query.rename.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	
+	<!-- Targets for ASE 2015 benchmarks !-->
+	<target name="ase15.query.invmethods.resources.neoemf.graph" description="Invisible Methods" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="ase15.query.invmethods.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.invmethods.resource.neoemf.graph">
+		<basename property="neoemf.zxmi.filename" file="${neoemf.zxmi.file}" suffix="neoemf.zxmi"/>
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.neoemfgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFGraphQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.grabats09.resources.neoemf.graph" description="Grabats09" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="ase15.query.grabats09.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.grabats09.resource.neoemf.graph">
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.neoemfgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFGraphQueryGrabats09" failonerror="false" fork="yes" timeout="${timeout}">
+	    	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+		<classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.thrownExceptions.resources.neoemf.graph" description="Thrown Exceptions" depends="gen.test.resources.neoemf.graph">
+			<antcall target="prepare.test.resources.neoemf.graph" />
+			<foreach inheritall="true" target="ase15.query.thrownExceptions.resource.neoemf.graph" param="neoemfresource.dir">
+				<path>
+					<dirset dir="${tests.dir}">
+						<include name="**/*.neoemfgraphresource"/>
+					</dirset>
+				</path>
+			</foreach>
+		</target>
+		
+		<target name="ase15.query.thrownExceptions.resource.neoemf.graph">
+			<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.neoemfgraphresource.properties"/>
+			<timestamp.echo message="Start" />
+			<echo>Querying ${neoemfresource.dir}</echo>
+			<echo>JVM args: ${tester.vmargs.value}</echo>
+			<stopwatch name="timer"/>
+		    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFGraphQueryThrownExceptions" failonerror="false" fork="yes" timeout="${timeout}">
+		    	<jvmarg line="${tester.vmargs.value}"/>
+		        <arg value="-input"/>
+		        <arg value="${neoemfresource.dir}"/>
+		    	<arg value="-epackage_class"/>
+		    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+		    	<arg value="-options_file"/>
+		    	<arg value="${resource.properties.out}"/>
+			<classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+		    </java>
+			<stopwatch name="timer" action="total"/>
+			<timestamp.echo message="End" />
+	    </target>
+	
+	<target name="ase15.query.invmethods.specific.resources.neoemf.graph" description="Invisible Methods" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="ase15.query.invmethods.specific.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.specific.resource.neoemf.graph">
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.neoemfgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFGraphQuerySpecificInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+	    	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+		<classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.branchstatements.specific.resources.neoemf.graph" description="Invisible Methods" depends="gen.test.resources.neoemf.graph">
+		<antcall target="prepare.test.resources.neoemf.graph" />
+		<foreach inheritall="true" target="ase15.query.branchstatements.specific.resource.neoemf.graph" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfgraphresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.branchstatements.specific.resource.neoemf.graph">
+		<property name="resource.properties.out" value="${benchmarks.dir}/org.eclipse.jdt.core.neoemfgraphresource.properties"/>
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFGraphQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+	    	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	    	<arg value="-options_file"/>
+	    	<arg value="${resource.properties.out}"/>
+		<classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.invmethods.resources.neoemf.map" description="Invisible Methods" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="ase15.query.invmethods.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFMapQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.grabats09.resources.neoemf.map" description="Grabats09" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="ase15.query.grabats09.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.grabats09.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFMapQueryGrabats09" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.thrownExceptions.resources.neoemf.map" description="Thrown Exceptions" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="ase15.query.thrownExceptions.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.thrownExceptions.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFMapQueryThrownExceptions" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.invmethods.specific.resources.neoemf.map" description="Invisible Methods" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="ase15.query.invmethods.specific.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.specific.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFMapQuerySpecificInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.branchstatements.specific.resources.neoemf.map" description="Invisible Methods" depends="gen.test.resources.neoemf.map">
+		<antcall target="prepare.test.resources.neoemf.map" />
+		<foreach inheritall="true" target="ase15.query.branchstatements.specific.resource.neoemf.map" param="neoemfresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.neoemfmapresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.branchstatements.specific.resource.neoemf.map">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${neoemfresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFMapQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${neoemfresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.invmethods.resources.cdo" description="Invisible Methods" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.invmethods.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.CdoQueryInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+			<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+	<target name="ase15.query.grabats09.resources.cdo" description="Grabats09" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.grabats09.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.grabats09.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.CdoQueryGrabats09" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+        	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+		
+	<target name="ase15.query.thrownExceptions.resources.cdo" description="Thrown Exceptions" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.thrownExceptions.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="ase15.query.thrownExceptions.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.CdoQueryThrownExceptions" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+			<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+		
+	<target name="ase15.query.invmethods.specific.resources.cdo" description="Invisible Methods" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.invmethods.specific.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.invmethods.specific.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.CdoQuerySpecificInvisibleMethodDeclarations" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	    	<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+		
+	<target name="ase15.query.branchstatements.specific.resources.cdo" description="Invisible Methods" depends="gen.test.resources.cdo">
+		<antcall target="prepare.test.resources.cdo" />
+		<foreach inheritall="true" target="ase15.query.branchstatements.specific.resource.cdo" param="cdoresource.dir">
+			<path>
+				<dirset dir="${tests.dir}">
+					<include name="**/*.cdoresource"/>
+				</dirset>
+			</path>
+		</foreach>
+	</target>
+		
+	<target name="ase15.query.branchstatements.specific.resource.cdo">
+		<timestamp.echo message="Start" />
+		<echo>Querying ${cdoresource.dir}</echo>
+		<echo>JVM args: ${tester.vmargs.value}</echo>
+		<stopwatch name="timer"/>
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.CdoQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+        	<jvmarg line="${tester.vmargs.value}"/>
+	        <arg value="-input"/>
+	        <arg value="${cdoresource.dir}"/>
+	    	<arg value="-epackage_class"/>
+	    	<arg value ="org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl"/>
+	    	<arg value="-reponame"/>
+	  		<arg value="repo"/>
+	        <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
+	    </java>
+		<stopwatch name="timer" action="total"/>
+		<timestamp.echo message="End" />
+    </target>
+	
+</project>
