@@ -27,6 +27,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -36,7 +38,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,12 +45,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NeoEMFGraphCreator {
 
-    private static final Logger LOG = Logger.getLogger(NeoEMFGraphCreator.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -116,14 +115,14 @@ public class NeoEMFGraphCreator {
 
             Runtime.getRuntime().gc();
             long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.log(Level.INFO, MessageFormat.format("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
-            LOG.log(Level.INFO, "Loading source resource");
+            LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+            LOG.info("Loading source resource");
             sourceResource.load(loadOpts);
-            LOG.log(Level.INFO, "Source resource loaded");
+            LOG.info("Source resource loaded");
             Runtime.getRuntime().gc();
             long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.log(Level.INFO, MessageFormat.format("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
-            LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
+            LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
+            LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
 
             Resource targetResource = resourceSet.createResource(targetUri);
 
@@ -142,13 +141,13 @@ public class NeoEMFGraphCreator {
             saveOpts.put(BlueprintsResourceOptions.STORE_OPTIONS, storeOptions);
             targetResource.save(saveOpts);
 
-            LOG.log(Level.INFO, "Start moving elements");
+            LOG.info("Start moving elements");
             targetResource.getContents().clear();
             targetResource.getContents().addAll(sourceResource.getContents());
-            LOG.log(Level.INFO, "End moving elements");
-            LOG.log(Level.INFO, "Start saving");
+            LOG.info("End moving elements");
+            LOG.info("Start saving");
             targetResource.save(saveOpts);
-            LOG.log(Level.INFO, "Saved");
+            LOG.info("Saved");
 
             if (targetResource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) targetResource);
@@ -158,13 +157,13 @@ public class NeoEMFGraphCreator {
             }
         }
         catch (ParseException e) {
-            MessageUtil.showError(e.toString());
-            MessageUtil.showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e.toString());
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            MessageUtil.showError(e.toString());
+            LOG.error(e.toString());
         }
     }
 }

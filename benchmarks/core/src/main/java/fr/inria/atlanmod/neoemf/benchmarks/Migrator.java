@@ -20,6 +20,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -31,12 +33,10 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Migrator {
 
-    private static final Logger LOG = Logger.getLogger(Migrator.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -98,28 +98,24 @@ public class Migrator {
             Resource targetResource = resourceSet.createResource(targetUri);
 
             targetResource.getContents().clear();
-            LOG.log(Level.INFO, "Start migration");
+            LOG.info("Start migration");
             targetResource.getContents().add(MigratorUtil.migrate(sourceResource.getContents().get(0), outEPackage));
-            LOG.log(Level.INFO, "Migration finished");
+            LOG.info("Migration finished");
 
             Map<String, Object> saveOpts = new HashMap<>();
             saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
-            LOG.log(Level.INFO, "Start saving");
+            LOG.info("Start saving");
             targetResource.save(saveOpts);
-            LOG.log(Level.INFO, "Saving done");
+            LOG.info("Saving done");
         }
         catch (ParseException e) {
-            showError(e.toString());
-            showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e.toString());
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            showError(e.toString());
+            LOG.error(e.toString());
         }
-    }
-
-    private static void showError(String message) {
-        System.err.println(message);
     }
 }

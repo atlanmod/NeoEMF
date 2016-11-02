@@ -11,7 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
+import com.google.common.collect.Iterators;
+
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
@@ -25,24 +26,23 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
-import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NeoEMFMapTraverser {
 
-    private static final Logger LOG = Logger.getLogger(NeoEMFMapTraverser.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -86,15 +86,13 @@ public class NeoEMFMapTraverser {
             resource.load(loadOpts);
             resource.getContents().get(0);
 
-            LOG.log(Level.INFO, "Start counting");
-            int count = 0;
-            long begin = System.currentTimeMillis();
-            for (Iterator<EObject> iterator = resource.getAllContents(); iterator.hasNext(); iterator.next(), count++) {
-            }
-            long end = System.currentTimeMillis();
-            LOG.log(Level.INFO, "End counting");
-            LOG.log(Level.INFO, MessageFormat.format("Resource {0} contains {1} elements", uri, count));
-            LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end - begin)));
+            LOG.info("Start counting");
+            Instant begin = Instant.now();
+            int count = Iterators.size(resource.getAllContents());
+            Instant end = Instant.now();
+            LOG.info("End counting");
+            LOG.info("Resource {0} contains {1} elements", uri, count);
+            LOG.info("Time spent: {0}", Duration.between(begin, end));
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -104,13 +102,13 @@ public class NeoEMFMapTraverser {
             }
         }
         catch (ParseException e) {
-            MessageUtil.showError(e.toString());
-            MessageUtil.showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e.toString());
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            MessageUtil.showError(e.toString());
+            LOG.error(e.toString());
         }
     }
 }

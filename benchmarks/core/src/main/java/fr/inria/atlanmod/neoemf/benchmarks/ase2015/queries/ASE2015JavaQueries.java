@@ -97,8 +97,8 @@ public class ASE2015JavaQueries extends JavaQueries {
     }
 
     public static Set<TextElement> getCommentsTagContent(Resource resource) {
+        Set<TextElement> result = new HashSet<>();
         try {
-            Set<TextElement> result = new HashSet<>();
             Model model = (Model) resource.getContents().get(0);
             if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
                 for (CompilationUnit cu : model.getCompilationUnits()) {
@@ -123,7 +123,7 @@ public class ASE2015JavaQueries extends JavaQueries {
         }
         catch (NullPointerException e) {
             e.printStackTrace();
-            return null;
+            return result;
         }
     }
 

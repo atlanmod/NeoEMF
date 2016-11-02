@@ -29,10 +29,6 @@ public class MessageUtil {
      */
     private static final int MB = 1024 * 1024;
 
-    public static void showError(String message) {
-        System.err.println(message);
-    }
-
     public static String formatMillis(long millis) {
         return String.format(TIME_FORMAT,
                 MILLISECONDS.toHours(millis),

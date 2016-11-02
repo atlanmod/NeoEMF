@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
@@ -26,6 +25,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -33,7 +34,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,12 +43,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NeoEMFGraphQueryRenameAllMethods {
 
-    private static final Logger LOG = Logger.getLogger(NeoEMFGraphQueryRenameAllMethods.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -106,13 +106,13 @@ public class NeoEMFGraphQueryRenameAllMethods {
             resource.load(loadOpts);
             String name = UUID.randomUUID().toString();
             {
-                LOG.log(Level.INFO, "Start query");
-                long begin = System.currentTimeMillis();
+                LOG.info("Start query");
+                Instant begin = Instant.now();
                 JavaQueries.renameAllMethods(resource, name);
-                long end = System.currentTimeMillis();
+                Instant end = Instant.now();
                 resource.save(Collections.emptyMap());
-                LOG.log(Level.INFO, "End query");
-                LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end - begin)));
+                LOG.info("End query");
+                LOG.info("Time spent: {0}", Duration.between(begin, end));
             }
 
             if (resource instanceof PersistentResourceImpl) {
@@ -123,13 +123,13 @@ public class NeoEMFGraphQueryRenameAllMethods {
             }
         }
         catch (ParseException e) {
-            MessageUtil.showError(e.toString());
-            MessageUtil.showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e.toString());
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            MessageUtil.showError(e.toString());
+            LOG.error(e.toString());
         }
     }
 }

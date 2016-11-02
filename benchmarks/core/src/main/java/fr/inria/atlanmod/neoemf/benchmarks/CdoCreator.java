@@ -21,6 +21,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
 import org.eclipse.emf.common.util.URI;
@@ -30,16 +32,13 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CdoCreator {
 
-    private static final Logger LOG = Logger.getLogger(CdoCreator.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -105,14 +104,14 @@ public class CdoCreator {
 
             Runtime.getRuntime().gc();
             long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.log(Level.INFO, MessageFormat.format("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
-            LOG.log(Level.INFO, "Loading source resource");
+            LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+            LOG.info("Loading source resource");
             sourceResource.load(loadOpts);
-            LOG.log(Level.INFO, "Source resource loaded");
+            LOG.info("Source resource loaded");
             Runtime.getRuntime().gc();
             long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.log(Level.INFO, MessageFormat.format("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
-            LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
+            LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
+            LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
 
             EmbeddedCDOServer server = new EmbeddedCDOServer(outputDir, repositoryName);
             try {
@@ -120,12 +119,12 @@ public class CdoCreator {
                 CDOSession session = server.openSession();
                 CDOTransaction transaction = session.openTransaction();
                 transaction.getRootResource().getContents().clear();
-                LOG.log(Level.INFO, "Start moving elements");
+                LOG.info("Start moving elements");
                 transaction.getRootResource().getContents().addAll(sourceResource.getContents());
-                LOG.log(Level.INFO, "End moving elements");
-                LOG.log(Level.INFO, "Commiting");
+                LOG.info("End moving elements");
+                LOG.info("Commiting");
                 transaction.commit();
-                LOG.log(Level.INFO, "Commit done");
+                LOG.info("Commit done");
                 transaction.close();
                 session.close();
             }
@@ -134,13 +133,13 @@ public class CdoCreator {
             }
         }
         catch (ParseException e) {
-            MessageUtil.showError(e.toString());
-            MessageUtil.showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e);
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            MessageUtil.showError(e.toString());
+            LOG.error(e);
         }
     }
 }

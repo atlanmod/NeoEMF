@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
+import com.google.common.collect.Iterators;
+
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -21,20 +22,19 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CdoTraverser {
 
-    private static final Logger LOG = Logger.getLogger(CdoTraverser.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -84,15 +84,13 @@ public class CdoTraverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                LOG.log(Level.INFO, "Start counting");
-                int count = 0;
-                long begin = System.currentTimeMillis();
-                for (Iterator<EObject> iterator = resource.getAllContents(); iterator.hasNext(); iterator.next(), count++) {
-                }
-                long end = System.currentTimeMillis();
-                LOG.log(Level.INFO, "End counting");
-                LOG.log(Level.INFO, MessageFormat.format("Resource {0} contains {1} elements", resource.getURI(), count));
-                LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end - begin)));
+                LOG.info("Start counting");
+                Instant begin = Instant.now();
+                int count = Iterators.size(resource.getAllContents());
+                Instant end = Instant.now();
+                LOG.info("End counting");
+                LOG.info("Resource {0} contains {1} elements", resource.getURI(), count);
+                LOG.info("Time spent: {0}", Duration.between(begin, end));
 
                 transaction.close();
                 session.close();
@@ -102,13 +100,13 @@ public class CdoTraverser {
             }
         }
         catch (ParseException e) {
-            MessageUtil.showError(e.toString());
-            MessageUtil.showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e.toString());
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            MessageUtil.showError(e.toString());
+            LOG.error(e.toString());
         }
     }
 }

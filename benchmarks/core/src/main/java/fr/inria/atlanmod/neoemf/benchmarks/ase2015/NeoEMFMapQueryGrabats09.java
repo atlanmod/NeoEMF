@@ -29,6 +29,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -38,7 +40,8 @@ import org.eclipse.gmt.modisco.java.ClassDeclaration;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,12 +49,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NeoEMFMapQueryGrabats09 {
 
-    private static final Logger LOG = Logger.getLogger(NeoEMFMapQueryGrabats09.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -121,18 +122,18 @@ public class NeoEMFMapQueryGrabats09 {
             {
                 Runtime.getRuntime().gc();
                 long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                LOG.log(Level.INFO, MessageFormat.format("Used memory before query: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory)));
-                LOG.log(Level.INFO, "Start query");
-                long begin = System.currentTimeMillis();
+                LOG.info("Used memory before query: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+                LOG.info("Start query");
+                Instant begin = Instant.now();
                 EList<ClassDeclaration> list = ASE2015JavaQueries.grabats09(resource);
-                long end = System.currentTimeMillis();
-                LOG.log(Level.INFO, "End query");
-                LOG.log(Level.INFO, MessageFormat.format("Query result contains {0} elements", list.size()));
-                LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end - begin)));
+                Instant end = Instant.now();
+                LOG.info("End query");
+                LOG.info("Query result contains {0} elements", list.size());
+                LOG.info("Time spent: {0}", Duration.between(begin, end));
                 Runtime.getRuntime().gc();
                 long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                LOG.log(Level.INFO, MessageFormat.format("Used memory after query: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory)));
-                LOG.log(Level.INFO, MessageFormat.format("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory)));
+                LOG.info("Used memory after query: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
+                LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
             }
 
             if (resource instanceof PersistentResourceImpl) {
@@ -143,13 +144,13 @@ public class NeoEMFMapQueryGrabats09 {
             }
         }
         catch (ParseException e) {
-            MessageUtil.showError(e.toString());
-            MessageUtil.showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e.toString());
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            MessageUtil.showError(e.toString());
+            LOG.error(e.toString());
         }
     }
 }

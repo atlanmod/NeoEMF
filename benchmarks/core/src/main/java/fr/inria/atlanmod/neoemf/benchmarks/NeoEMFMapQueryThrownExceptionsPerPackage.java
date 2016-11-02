@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
@@ -26,6 +25,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -34,16 +35,15 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.TypeAccess;
 
 import java.io.File;
-import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NeoEMFMapQueryThrownExceptionsPerPackage {
 
-    private static final Logger LOG = Logger.getLogger(NeoEMFMapQueryThrownExceptionsPerPackage.class.getName());
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String IN = "input";
 
@@ -86,13 +86,13 @@ public class NeoEMFMapQueryThrownExceptionsPerPackage {
             Map<String, Object> loadOpts = new HashMap<>();
             resource.load(loadOpts);
             {
-                LOG.log(Level.INFO, "Start query");
-                long begin = System.currentTimeMillis();
+                LOG.info("Start query");
+                Instant begin = Instant.now();
                 HashMap<String, EList<TypeAccess>> list = JavaQueries.getThrownExceptionsPerPackage(resource);
-                long end = System.currentTimeMillis();
-                LOG.log(Level.INFO, "End query");
-                LOG.log(Level.INFO, MessageFormat.format("Query result contains {0} elements", list.size()));
-                LOG.log(Level.INFO, MessageFormat.format("Time spent: {0}", MessageUtil.formatMillis(end - begin)));
+                Instant end = Instant.now();
+                LOG.info("End query");
+                LOG.info("Query result contains {0} elements", list.size());
+                LOG.info("Time spent: {0}", Duration.between(begin, end));
             }
 
             if (resource instanceof PersistentResourceImpl) {
@@ -103,13 +103,13 @@ public class NeoEMFMapQueryThrownExceptionsPerPackage {
             }
         }
         catch (ParseException e) {
-            MessageUtil.showError(e.toString());
-            MessageUtil.showError("Current arguments: " + Arrays.toString(args));
+            LOG.error(e.toString());
+            LOG.error("Current arguments: " + Arrays.toString(args));
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar <this-file.jar>", options, true);
         }
         catch (Throwable e) {
-            MessageUtil.showError(e.toString());
+            LOG.error(e.toString());
         }
     }
 }

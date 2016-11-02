@@ -239,9 +239,9 @@ public class JavaQueries {
         return false;
     }
 
-    protected static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
-        Iterator<EObject> iterator = resource.getAllContents();
+    public static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
         EList<EObject> resultList = new BasicEList<>();
+        Iterator<EObject> iterator = resource.getAllContents();
         while (iterator.hasNext()) {
             EObject eObject = iterator.next();
             if (eClass.isInstance(eObject)) {
