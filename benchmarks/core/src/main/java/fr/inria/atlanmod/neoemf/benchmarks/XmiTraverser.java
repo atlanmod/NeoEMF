@@ -15,12 +15,11 @@ import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -47,22 +46,21 @@ public class XmiTraverser {
     public static void main(String[] args) {
         Options options = new Options();
 
-        Option inputOpt = OptionBuilder.create(IN);
-        inputOpt.setArgName("INPUT");
-        inputOpt.setDescription("Input model");
-        inputOpt.setArgs(1);
-        inputOpt.setRequired(true);
+        options.addOption(Option.builder(IN)
+                .argName("INPUT")
+                .desc("Input model")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        Option inClassOpt = OptionBuilder.create(EPACKAGE_CLASS);
-        inClassOpt.setArgName("CLASS");
-        inClassOpt.setDescription("FQN of EPackage implementation class");
-        inClassOpt.setArgs(1);
-        inClassOpt.setRequired(true);
+        options.addOption(Option.builder(EPACKAGE_CLASS)
+                .argName("CLASS")
+                .desc("FQN of EPackage implementation class")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        options.addOption(inputOpt);
-        options.addOption(inClassOpt);
-
-        CommandLineParser parser = new PosixParser();
+        CommandLineParser parser = new DefaultParser();
 
         try {
             CommandLine commandLine = parser.parse(options, args);

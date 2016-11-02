@@ -19,19 +19,28 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class MessageUtil {
 
+    /**
+     * 'HH:mm:ss' format for time.
+     */
+    private static final String TIME_FORMAT = "%02d:%02d:%02d";
+
+    /**
+     * 10^6 factor for bytes.
+     */
+    private static final int MB = 1024 * 1024;
+
     public static void showError(String message) {
         System.err.println(message);
     }
 
     public static String formatMillis(long millis) {
-        return String.format("%02d:%02d:%02d",
+        return String.format(TIME_FORMAT,
                 MILLISECONDS.toHours(millis),
                 MILLISECONDS.toMinutes(millis) - HOURS.toMinutes(MILLISECONDS.toHours(millis)),
                 MILLISECONDS.toSeconds(millis) - MINUTES.toSeconds(MILLISECONDS.toMinutes(millis)));
     }
 
     public static String byteCountToDisplaySize(long size) {
-        int MB = 1024 * 1024;
         return MessageFormat.format("{0} MB", size / MB);
     }
 }

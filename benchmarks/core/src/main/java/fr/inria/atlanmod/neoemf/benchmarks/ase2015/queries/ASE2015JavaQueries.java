@@ -11,9 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries;
 
+import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
+
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gmt.modisco.java.ASTNode;
@@ -35,33 +36,9 @@ import org.eclipse.gmt.modisco.java.VisibilityKind;
 import org.eclipse.gmt.modisco.java.emf.JavaPackage;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-public class ASE2015JavaQueries {
-
-    public static EList<MethodDeclaration> getInvisibleMethodDeclarations(Resource resource) {
-        EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
-        EList<? extends EObject> allClasses = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
-        for (EObject cls : allClasses) {
-            for (BodyDeclaration method : ((ClassDeclaration) cls).getBodyDeclarations()) {
-
-                if (!(method instanceof MethodDeclaration)) {
-                    continue;
-                }
-                if (method.getModifier() == null) {
-                    continue;
-                }
-                if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
-                    methodDeclarations.add((MethodDeclaration) method);
-                }
-                else if (method.getModifier().getVisibility() == VisibilityKind.PROTECTED) {
-                    methodDeclarations.add((MethodDeclaration) method);
-                }
-            }
-        }
-        return methodDeclarations;
-    }
+public class ASE2015JavaQueries extends JavaQueries {
 
     public static EList<ClassDeclaration> grabats09(Resource resource) {
         EList<ClassDeclaration> listResult = new BasicEList<>();
@@ -232,17 +209,5 @@ public class ASE2015JavaQueries {
                 result.add((MethodDeclaration) method);
             }
         }
-    }
-
-    public static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
-        Iterator<EObject> iterator = resource.getAllContents();
-        EList<EObject> resultList = new BasicEList<>();
-        while (iterator.hasNext()) {
-            EObject eObject = iterator.next();
-            if (eClass.isInstance(eObject)) {
-                resultList.add(eObject);
-            }
-        }
-        return resultList;
     }
 }

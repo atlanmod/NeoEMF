@@ -76,7 +76,7 @@ public class JavaQueries {
 
         EList<NamedElement> fields = new BasicEList<>();
         for (BodyDeclaration declaration : bodyDeclarations) {
-            if (declaration instanceof NamedElement) {
+            if (declaration != null) {
                 if (declaration instanceof FieldDeclaration) {
                     if (((FieldDeclaration) declaration).getFragments().isEmpty()) {
                         fields.add(declaration);
@@ -239,7 +239,7 @@ public class JavaQueries {
         return false;
     }
 
-    private static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
+    protected static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
         Iterator<EObject> iterator = resource.getAllContents();
         EList<EObject> resultList = new BasicEList<>();
         while (iterator.hasNext()) {

@@ -13,12 +13,11 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -52,36 +51,35 @@ public class ReferencesCounter {
     public static void main(String[] args) {
         Options options = new Options();
 
-        Option inputOpt = OptionBuilder.create(IN);
-        inputOpt.setArgName("INPUT");
-        inputOpt.setDescription("Input file");
-        inputOpt.setArgs(1);
-        inputOpt.setRequired(true);
+        options.addOption(Option.builder(IN)
+                .argName("INPUT")
+                .desc("Input file")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        Option outputOpt = OptionBuilder.create(OUT);
-        outputOpt.setArgName("OUTPUT");
-        outputOpt.setDescription("Output file");
-        outputOpt.setArgs(1);
-        outputOpt.setRequired(true);
+        options.addOption(Option.builder(OUT)
+                .argName("OUTPUT")
+                .desc("Output file")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        Option inClassOpt = OptionBuilder.create(IN_EPACKAGE_CLASS);
-        inClassOpt.setArgName("CLASS");
-        inClassOpt.setDescription("FQN of input EPackage implementation class");
-        inClassOpt.setArgs(1);
-        inClassOpt.setRequired(true);
+        options.addOption(Option.builder(IN_EPACKAGE_CLASS)
+                .argName("CLASS")
+                .desc("FQN of input EPackage implementation class")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        Option labelOpt = OptionBuilder.create(LABEL);
-        labelOpt.setArgName("LABEL");
-        labelOpt.setDescription("Label for the data set");
-        labelOpt.setArgs(1);
-        labelOpt.setRequired(true);
+        options.addOption(Option.builder(LABEL)
+                .argName("LABEL")
+                .desc("Label for the data set")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        options.addOption(inputOpt);
-        options.addOption(outputOpt);
-        options.addOption(inClassOpt);
-        options.addOption(labelOpt);
-
-        CommandLineParser parser = new PosixParser();
+        CommandLineParser parser = new DefaultParser();
 
         try {
             CommandLine commandLine = parser.parse(options, args);

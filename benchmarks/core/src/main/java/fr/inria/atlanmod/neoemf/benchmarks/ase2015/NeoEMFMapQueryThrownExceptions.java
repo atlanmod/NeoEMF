@@ -24,12 +24,11 @@ import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -63,28 +62,27 @@ public class NeoEMFMapQueryThrownExceptions {
     public static void main(String[] args) {
         Options options = new Options();
 
-        Option inputOpt = OptionBuilder.create(IN);
-        inputOpt.setArgName("INPUT");
-        inputOpt.setDescription("Input NeoEMF resource directory");
-        inputOpt.setArgs(1);
-        inputOpt.setRequired(true);
+        options.addOption(Option.builder(IN)
+                .argName("INPUT")
+                .desc("Input NeoEMF resource directory")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        Option inClassOpt = OptionBuilder.create(EPACKAGE_CLASS);
-        inClassOpt.setArgName("CLASS");
-        inClassOpt.setDescription("FQN of EPackage implementation class");
-        inClassOpt.setArgs(1);
-        inClassOpt.setRequired(true);
+        options.addOption(Option.builder(EPACKAGE_CLASS)
+                .argName("CLASS")
+                .desc("FQN of EPackage implementation class")
+                .numberOfArgs(1)
+                .required()
+                .build());
 
-        Option optFileOpt = OptionBuilder.create(OPTIONS_FILE);
-        optFileOpt.setArgName("FILE");
-        optFileOpt.setDescription("Properties file holding the options to be used in the NeoEMF Resource");
-        optFileOpt.setArgs(1);
+        options.addOption(Option.builder(OPTIONS_FILE)
+                .argName("FILE")
+                .desc("Properties file holding the options to be used in the NeoEMF Resource")
+                .numberOfArgs(1)
+                .build());
 
-        options.addOption(inputOpt);
-        options.addOption(inClassOpt);
-        options.addOption(optFileOpt);
-
-        CommandLineParser parser = new PosixParser();
+        CommandLineParser parser = new DefaultParser();
 
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
