@@ -129,28 +129,28 @@ public class NeoEMFGraphCreator {
         options.addOption(Option.builder(IN)
                 .argName("INPUT")
                 .desc("Input file")
-                .numberOfArgs(1)
+                .hasArg()
                 .required()
                 .build());
 
         options.addOption(Option.builder(OUT)
                 .argName("OUTPUT")
                 .desc("Output directory")
-                .numberOfArgs(1)
+                .hasArg()
                 .required()
                 .build());
 
         options.addOption(Option.builder(EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of EPackage implementation class")
-                .numberOfArgs(1)
+                .hasArg()
                 .required()
                 .build());
 
         options.addOption(Option.builder(OPTIONS_FILE)
                 .argName("FILE")
                 .desc("Properties file holding the options to be used in the NeoEMF Resource")
-                .numberOfArgs(1)
+                .hasArg()
                 .build());
 
         return CommandLineUtil.getValues(options, args);

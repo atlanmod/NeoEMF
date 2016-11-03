@@ -80,28 +80,28 @@ public class Migrator {
         options.addOption(Option.builder(IN)
                 .argName("INPUT")
                 .desc("Input file")
-                .numberOfArgs(1)
+                .hasArg()
                 .required()
                 .build());
 
         options.addOption(Option.builder(OUT)
                 .argName("OUTPUT")
                 .desc("Output file")
-                .numberOfArgs(1)
+                .hasArg()
                 .required()
                 .build());
 
         options.addOption(Option.builder(IN_EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of input EPackage implementation class")
-                .numberOfArgs(1)
+                .hasArg()
                 .required()
                 .build());
 
         options.addOption(Option.builder(OUT_EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of output EPackage implementation class")
-                .numberOfArgs(1)
+                .hasArg()
                 .required()
                 .build());
 
