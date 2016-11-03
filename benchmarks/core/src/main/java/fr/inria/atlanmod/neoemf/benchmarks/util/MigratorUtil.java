@@ -26,6 +26,9 @@ import java.util.Map;
 
 public class MigratorUtil {
 
+    private MigratorUtil() {
+    }
+
     public static EObject migrate(EObject eObject, EPackage targetEPackage) {
         Map<EObject, EObject> correspondencesMap = new HashMap<>();
         EObject returnEObject = getCorrespondingEObject(correspondencesMap, eObject, targetEPackage);

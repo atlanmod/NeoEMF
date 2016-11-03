@@ -37,10 +37,12 @@ import org.eclipse.net4j.util.container.IContainer;
 import org.eclipse.net4j.util.container.IManagedContainer;
 import org.h2.jdbcx.JdbcDataSource;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EmbeddedCDOServer {
+public class EmbeddedCDOServer implements Closeable {
 
     private String path;
 
@@ -90,7 +92,7 @@ public class EmbeddedCDOServer {
         }
     }
 
-    public void stop() {
+    private void stop() {
         if (connector != null) {
             connector.close();
         }
@@ -142,8 +144,7 @@ public class EmbeddedCDOServer {
     }
 
     @Override
-    protected void finalize() throws Throwable {
+    public void close() throws IOException {
         stop();
-        super.finalize();
     }
 }

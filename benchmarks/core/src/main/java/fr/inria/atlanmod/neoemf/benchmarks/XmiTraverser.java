@@ -13,10 +13,8 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 import com.google.common.collect.Iterators;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
+import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
+
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -30,7 +28,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,35 +35,13 @@ public class XmiTraverser {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    private static final String IN = "input";
-
-    private static final String EPACKAGE_CLASS = "epackage_class";
-
     public static void main(String[] args) {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input model")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        CommandLineParser parser = new DefaultParser();
-
         try {
-            CommandLine commandLine = parser.parse(options, args);
+            Map<String, String> cli = processCommandLineArgs(args);
 
-            URI uri = URI.createFileURI(commandLine.getOptionValue(IN));
+            URI uri = URI.createFileURI(cli.get(CommandLineUtil.Key.IN));
 
-            Class<?> inClazz = XmiTraverser.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+            Class<?> inClazz = XmiTraverser.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.EPACKAGE_CLASS));
             inClazz.getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
@@ -88,14 +63,28 @@ public class XmiTraverser {
 
             resource.unload();
         }
-        catch (ParseException e) {
-            LOG.error(e.toString());
-            LOG.error("Current arguments: " + Arrays.toString(args));
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar <this-file.jar>", options, true);
+        catch (Exception e) {
+            LOG.error(e);
         }
-        catch (Throwable e) {
-            LOG.error(e.toString());
-        }
+    }
+
+    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
+        Options options = new Options();
+
+        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+                .argName("INPUT")
+                .desc("Input model")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.EPACKAGE_CLASS)
+                .argName("CLASS")
+                .desc("FQN of EPackage implementation class")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        return CommandLineUtil.getOptionsValues(options, args);
     }
 }

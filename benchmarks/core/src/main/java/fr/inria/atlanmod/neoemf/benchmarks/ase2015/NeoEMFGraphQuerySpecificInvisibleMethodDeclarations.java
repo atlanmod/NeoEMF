@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
 
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
@@ -22,10 +23,6 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -43,7 +40,6 @@ import java.io.FileInputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,45 +50,15 @@ public class NeoEMFGraphQuerySpecificInvisibleMethodDeclarations {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    private static final String IN = "input";
-
-    private static final String EPACKAGE_CLASS = "epackage_class";
-
-    private static final String OPTIONS_FILE = "options_file";
-
     public static void main(String[] args) {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input NeoEMF resource directory")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OPTIONS_FILE)
-                .argName("FILE")
-                .desc("Properties file holding the options to be used in the NeoEMF Resource")
-                .numberOfArgs(1)
-                .build());
-
-        CommandLineParser parser = new DefaultParser();
-
         try {
+            Map<String, String> cli = processCommandLineArgs(args);
+
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
-            CommandLine commandLine = parser.parse(options, args);
+            URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(cli.get(CommandLineUtil.Key.IN)));
 
-            URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(commandLine.getOptionValue(IN)));
-
-            Class<?> inClazz = NeoEMFGraphQuerySpecificInvisibleMethodDeclarations.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+            Class<?> inClazz = NeoEMFGraphQuerySpecificInvisibleMethodDeclarations.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.EPACKAGE_CLASS));
             inClazz.getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
@@ -102,9 +68,9 @@ public class NeoEMFGraphQuerySpecificInvisibleMethodDeclarations {
 
             Map<String, Object> loadOpts = new HashMap<>();
 
-            if (commandLine.hasOption(OPTIONS_FILE)) {
+            if (cli.containsKey(CommandLineUtil.Key.OPTIONS_FILE)) {
                 Properties properties = new Properties();
-                properties.load(new FileInputStream(new File(commandLine.getOptionValue(OPTIONS_FILE))));
+                properties.load(new FileInputStream(new File(cli.get(CommandLineUtil.Key.OPTIONS_FILE))));
                 for (final Entry<Object, Object> entry : properties.entrySet()) {
                     loadOpts.put((String) entry.getKey(), entry.getValue());
                 }
@@ -140,14 +106,34 @@ public class NeoEMFGraphQuerySpecificInvisibleMethodDeclarations {
                 resource.unload();
             }
         }
-        catch (ParseException e) {
-            LOG.error(e.toString());
-            LOG.error("Current arguments: " + Arrays.toString(args));
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar <this-file.jar>", options, true);
-        }
-        catch (Throwable e) {
+        catch (Exception e) {
             LOG.error(e.toString());
         }
+    }
+
+    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
+        Options options = new Options();
+
+        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+                .argName("INPUT")
+                .desc("Input NeoEMF resource directory")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.EPACKAGE_CLASS)
+                .argName("CLASS")
+                .desc("FQN of EPackage implementation class")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.OPTIONS_FILE)
+                .argName("FILE")
+                .desc("Properties file holding the options to be used in the NeoEMF Resource")
+                .numberOfArgs(1)
+                .build());
+
+        return CommandLineUtil.getOptionsValues(options, args);
     }
 }

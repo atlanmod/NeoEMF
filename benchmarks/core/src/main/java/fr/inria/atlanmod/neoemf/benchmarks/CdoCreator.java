@@ -12,12 +12,9 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
+import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -31,8 +28,11 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Mode;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,55 +40,15 @@ public class CdoCreator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    private static final String IN = "input";
-
-    private static final String OUT = "output";
-
-    private static final String REPO_NAME = "reponame";
-
-    private static final String EPACKAGE_CLASS = "epackage_class";
-
     public static void main(String[] args) {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input file")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OUT)
-                .argName("OUTPUT")
-                .desc("Output directory")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(REPO_NAME)
-                .argName("REPO_NAME")
-                .desc("CDO Repository name")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        CommandLineParser parser = new DefaultParser();
-
         try {
-            CommandLine commandLine = parser.parse(options, args);
-            URI sourceUri = URI.createFileURI(commandLine.getOptionValue(IN));
+            Map<String, String> cli = processCommandLineArgs(args);
+            URI sourceUri = URI.createFileURI(cli.get(CommandLineUtil.Key.IN));
 
-            String outputDir = commandLine.getOptionValue(OUT);
-            String repositoryName = commandLine.getOptionValue(REPO_NAME);
+            String outputDir = cli.get(CommandLineUtil.Key.OUT);
+            String repositoryName = cli.get(CommandLineUtil.Key.REPO_NAME);
 
-            Class<?> inClazz = CdoCreator.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+            Class<?> inClazz = CdoCreator.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.EPACKAGE_CLASS));
             inClazz.getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
@@ -102,44 +62,99 @@ public class CdoCreator {
                 loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
             }
 
-            Runtime.getRuntime().gc();
-            long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
-            LOG.info("Loading source resource");
-            sourceResource.load(loadOpts);
-            LOG.info("Source resource loaded");
-            Runtime.getRuntime().gc();
-            long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-            LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+            {
+                Runtime.getRuntime().gc();
+                long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+                LOG.info("Loading source resource");
+                sourceResource.load(loadOpts);
+                LOG.info("Source resource loaded");
+                Runtime.getRuntime().gc();
+                long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
+                LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+            }
 
-            EmbeddedCDOServer server = new EmbeddedCDOServer(outputDir, repositoryName);
-            try {
+            try (EmbeddedCDOServer server = new EmbeddedCDOServer(outputDir, repositoryName)) {
                 server.run();
                 CDOSession session = server.openSession();
                 CDOTransaction transaction = session.openTransaction();
                 transaction.getRootResource().getContents().clear();
-                LOG.info("Start moving elements");
-                transaction.getRootResource().getContents().addAll(sourceResource.getContents());
-                LOG.info("End moving elements");
-                LOG.info("Commiting");
-                transaction.commit();
-                LOG.info("Commit done");
+
+                {
+                    LOG.info("Start moving elements");
+                    transaction.getRootResource().getContents().addAll(sourceResource.getContents());
+                    LOG.info("End moving elements");
+                    LOG.info("Commiting");
+                    transaction.commit();
+                    LOG.info("Commit done");
+                }
+
                 transaction.close();
                 session.close();
             }
-            finally {
-                server.stop();
-            }
         }
-        catch (ParseException e) {
-            LOG.error(e);
-            LOG.error("Current arguments: " + Arrays.toString(args));
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar <this-file.jar>", options, true);
-        }
-        catch (Throwable e) {
+        catch (Exception e) {
             LOG.error(e);
         }
+    }
+
+    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
+        Options options = new Options();
+
+        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+                .argName("INPUT")
+                .desc("Input file")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.OUT)
+                .argName("OUTPUT")
+                .desc("Output directory")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.EPACKAGE_CLASS)
+                .argName("CLASS")
+                .desc("FQN of EPackage implementation class")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.REPO_NAME)
+                .argName("REPO_NAME")
+                .desc("CDO Repository name")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        return CommandLineUtil.getOptionsValues(options, args);
+    }
+
+    /*
+     * Sample methods to complete.
+     */
+
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    @Fork(jvmArgs = {"-Xmx8g"})
+    public void benchmarkWith8G() {
+
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    @Fork(jvmArgs = {"-Xmx512m"})
+    public void benchmarkWith512M() {
+
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    @Fork(jvmArgs = {"-Xmx256m"})
+    public void benchmarkWith256M() {
+
     }
 }

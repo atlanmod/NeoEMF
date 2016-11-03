@@ -13,11 +13,8 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
 import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -31,55 +28,23 @@ import org.eclipse.gmt.modisco.java.MethodDeclaration;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.Map;
 
 public class CdoQueryLoop {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    private static final String IN = "input";
-
-    private static final String REPO_NAME = "reponame";
-
-    private static final String EPACKAGE_CLASS = "epackage_class";
-
     public static void main(String[] args) {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input CDO resource directory")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        options.addOption(Option.builder(REPO_NAME)
-                .argName("REPO_NAME")
-                .desc("CDO Repository name")
-                .numberOfArgs(1)
-                .required()
-                .build());
-
-        CommandLineParser parser = new DefaultParser();
-
         try {
-            CommandLine commandLine = parser.parse(options, args);
+            Map<String, String> cli = processCommandLineArgs(args);
 
-            String repositoryDir = commandLine.getOptionValue(IN);
-            String repositoryName = commandLine.getOptionValue(REPO_NAME);
+            String repositoryDir = cli.get(CommandLineUtil.Key.IN);
+            String repositoryName = cli.get(CommandLineUtil.Key.REPO_NAME);
 
-            Class<?> inClazz = CdoQueryLoop.class.getClassLoader().loadClass(commandLine.getOptionValue(EPACKAGE_CLASS));
+            Class<?> inClazz = CdoQueryLoop.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.EPACKAGE_CLASS));
             inClazz.getMethod("init").invoke(null);
 
-            EmbeddedCDOServer server = new EmbeddedCDOServer(repositoryDir, repositoryName);
-            try {
+            try (EmbeddedCDOServer server = new EmbeddedCDOServer(repositoryDir, repositoryName)) {
                 server.run();
                 CDOSession session = server.openSession();
                 CDOTransaction transaction = session.openTransaction();
@@ -98,18 +63,36 @@ public class CdoQueryLoop {
                 transaction.close();
                 session.close();
             }
-            finally {
-                server.stop();
-            }
         }
-        catch (ParseException e) {
-            LOG.error(e.toString());
-            LOG.error("Current arguments: " + Arrays.toString(args));
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar <this-file.jar>", options, true);
-        }
-        catch (Throwable e) {
+        catch (Exception e) {
             LOG.error(e.toString());
         }
+    }
+
+    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
+        Options options = new Options();
+
+        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+                .argName("INPUT")
+                .desc("Input CDO resource directory")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.EPACKAGE_CLASS)
+                .argName("CLASS")
+                .desc("FQN of EPackage implementation class")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        options.addOption(Option.builder(CommandLineUtil.Key.REPO_NAME)
+                .argName("REPO_NAME")
+                .desc("CDO Repository name")
+                .numberOfArgs(1)
+                .required()
+                .build());
+
+        return CommandLineUtil.getOptionsValues(options, args);
     }
 }

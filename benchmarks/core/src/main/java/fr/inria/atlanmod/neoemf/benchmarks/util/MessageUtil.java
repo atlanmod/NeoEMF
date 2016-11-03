@@ -19,6 +19,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class MessageUtil {
 
+    private MessageUtil() {
+    }
+
     /**
      * 'HH:mm:ss' format for time.
      */
