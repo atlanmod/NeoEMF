@@ -42,6 +42,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OPTIONS_FILE;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
+
 public class NeoEMFGraphCreator {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -52,10 +57,10 @@ public class NeoEMFGraphCreator {
 
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
-            URI sourceUri = URI.createFileURI(cli.get(CommandLineUtil.Key.IN));
-            URI targetUri = NeoBlueprintsURI.createNeoGraphURI(new File(cli.get(CommandLineUtil.Key.OUT)));
+            URI sourceUri = URI.createFileURI(cli.get(IN));
+            URI targetUri = NeoBlueprintsURI.createNeoGraphURI(new File(cli.get(OUT)));
 
-            Class<?> inClazz = NeoEMFGraphCreator.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.EPACKAGE_CLASS));
+            Class<?> inClazz = NeoEMFGraphCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
             inClazz.getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
@@ -85,9 +90,9 @@ public class NeoEMFGraphCreator {
 
             Map<String, Object> saveOpts = new HashMap<>();
 
-            if (cli.containsKey(CommandLineUtil.Key.OPTIONS_FILE)) {
+            if (cli.containsKey(OPTIONS_FILE)) {
                 Properties properties = new Properties();
-                properties.load(new FileInputStream(new File(cli.get(CommandLineUtil.Key.OPTIONS_FILE))));
+                properties.load(new FileInputStream(new File(cli.get(OPTIONS_FILE))));
                 for (final Entry<Object, Object> entry : properties.entrySet()) {
                     saveOpts.put((String) entry.getKey(), entry.getValue());
                 }
@@ -121,33 +126,33 @@ public class NeoEMFGraphCreator {
     private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
         Options options = new Options();
 
-        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+        options.addOption(Option.builder(IN)
                 .argName("INPUT")
                 .desc("Input file")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.OUT)
+        options.addOption(Option.builder(OUT)
                 .argName("OUTPUT")
                 .desc("Output directory")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.EPACKAGE_CLASS)
+        options.addOption(Option.builder(EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of EPackage implementation class")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.OPTIONS_FILE)
+        options.addOption(Option.builder(OPTIONS_FILE)
                 .argName("FILE")
                 .desc("Properties file holding the options to be used in the NeoEMF Resource")
                 .numberOfArgs(1)
                 .build());
 
-        return CommandLineUtil.getOptionsValues(options, args);
+        return CommandLineUtil.getValues(options, args);
     }
 }

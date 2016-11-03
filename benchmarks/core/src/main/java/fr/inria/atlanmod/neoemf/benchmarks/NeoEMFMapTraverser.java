@@ -36,6 +36,9 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+
 public class NeoEMFMapTraverser {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -46,9 +49,9 @@ public class NeoEMFMapTraverser {
 
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-            URI uri = NeoMapURI.createNeoMapURI(new File(cli.get(CommandLineUtil.Key.IN)));
+            URI uri = NeoMapURI.createNeoMapURI(new File(cli.get(IN)));
 
-            Class<?> inClazz = NeoEMFMapTraverser.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.EPACKAGE_CLASS));
+            Class<?> inClazz = NeoEMFMapTraverser.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
             inClazz.getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
@@ -83,20 +86,20 @@ public class NeoEMFMapTraverser {
     private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
         Options options = new Options();
 
-        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+        options.addOption(Option.builder(IN)
                 .argName("INPUT")
                 .desc("Input NeoEMF resource directory")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.EPACKAGE_CLASS)
+        options.addOption(Option.builder(EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of EPackage implementation class")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        return CommandLineUtil.getOptionsValues(options, args);
+        return CommandLineUtil.getValues(options, args);
     }
 }

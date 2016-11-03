@@ -31,6 +31,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.REPO_NAME;
+
 public class CdoQuerySpecificInvisibleMethodDeclarations {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -39,10 +43,10 @@ public class CdoQuerySpecificInvisibleMethodDeclarations {
         try {
             Map<String, String> cli = processCommandLineArgs(args);
 
-            String repositoryDir = cli.get(CommandLineUtil.Key.IN);
-            String repositoryName = cli.get(CommandLineUtil.Key.REPO_NAME);
+            String repositoryDir = cli.get(IN);
+            String repositoryName = cli.get(REPO_NAME);
 
-            Class<?> inClazz = CdoQuerySpecificInvisibleMethodDeclarations.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.EPACKAGE_CLASS));
+            Class<?> inClazz = CdoQuerySpecificInvisibleMethodDeclarations.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
             inClazz.getMethod("init").invoke(null);
 
             try (EmbeddedCDOServer server = new EmbeddedCDOServer(repositoryDir, repositoryName)) {
@@ -79,27 +83,27 @@ public class CdoQuerySpecificInvisibleMethodDeclarations {
     private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
         Options options = new Options();
 
-        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+        options.addOption(Option.builder(IN)
                 .argName("INPUT")
                 .desc("Input CDO resource directory")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.EPACKAGE_CLASS)
+        options.addOption(Option.builder(EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of EPackage implementation class")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.REPO_NAME)
+        options.addOption(Option.builder(REPO_NAME)
                 .argName("REPO_NAME")
                 .desc("CDO Repository name")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        return CommandLineUtil.getOptionsValues(options, args);
+        return CommandLineUtil.getValues(options, args);
     }
 }

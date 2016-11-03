@@ -15,6 +15,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,6 @@ public class CommandLineUtil {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // TODO: Replace by an enum with included options
     public static class Key {
         public static final String IN = "input";
 
@@ -50,16 +50,18 @@ public class CommandLineUtil {
     private CommandLineUtil() {
     }
 
-    public static Map<String, String> getOptionsValues(Options options, String... args) throws ParseException {
+    public static Map<String, String> getValues(Options options, String... args) throws ParseException {
         Map<String, String> values = new HashMap<>();
 
         try {
             CommandLineParser parser = new DefaultParser();
             CommandLine commandLine = parser.parse(options, args);
 
-            options.getOptions().stream()
-                    .filter(o -> o.isRequired() || (!o.isRequired() && commandLine.hasOption(o.getOpt())))
-                    .forEach(o -> values.put(o.getOpt(), commandLine.getOptionValue(o.getOpt())));
+            for (Option o : options.getOptions()) {
+                if (o.isRequired() || (!o.isRequired() && commandLine.hasOption(o.getOpt()))) {
+                    values.put(o.getOpt(), commandLine.getOptionValue(o.getOpt()));
+                }
+            }
         }
         catch (ParseException e) {
             LOG.error(e.toString());

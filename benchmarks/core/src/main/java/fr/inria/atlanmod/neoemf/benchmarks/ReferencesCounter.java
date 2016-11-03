@@ -34,6 +34,11 @@ import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN_EPACKAGE_CLASS;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.LABEL;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
+
 public class ReferencesCounter {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -42,8 +47,8 @@ public class ReferencesCounter {
         try {
             Map<String, String> cli = processCommandLineArgs(args);
 
-            URI sourceUri = URI.createFileURI(cli.get(CommandLineUtil.Key.IN));
-            Class<?> inClazz = ReferencesCounter.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.IN_EPACKAGE_CLASS));
+            URI sourceUri = URI.createFileURI(cli.get(IN));
+            Class<?> inClazz = ReferencesCounter.class.getClassLoader().loadClass(cli.get(IN_EPACKAGE_CLASS));
             @SuppressWarnings("unused")
             EPackage inEPackage = (EPackage) inClazz.getMethod("init").invoke(null);
 
@@ -53,9 +58,9 @@ public class ReferencesCounter {
 
             Resource sourceResource = resourceSet.getResource(sourceUri, true);
 
-            FileWriter writer = new FileWriter(new File(cli.get(CommandLineUtil.Key.OUT)));
+            FileWriter writer = new FileWriter(new File(cli.get(OUT)));
             try {
-                writer.write(cli.get(CommandLineUtil.Key.LABEL));
+                writer.write(cli.get(LABEL));
                 writer.write("\n");
 
                 for (Iterator<EObject> iterator = sourceResource.getAllContents(); iterator.hasNext(); ) {
@@ -81,34 +86,34 @@ public class ReferencesCounter {
     private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
         Options options = new Options();
 
-        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+        options.addOption(Option.builder(IN)
                 .argName("INPUT")
                 .desc("Input file")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.OUT)
+        options.addOption(Option.builder(OUT)
                 .argName("OUTPUT")
                 .desc("Output file")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.IN_EPACKAGE_CLASS)
+        options.addOption(Option.builder(IN_EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of input EPackage implementation class")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.LABEL)
+        options.addOption(Option.builder(LABEL)
                 .argName("LABEL")
                 .desc("Label for the data set")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        return CommandLineUtil.getOptionsValues(options, args);
+        return CommandLineUtil.getValues(options, args);
     }
 }

@@ -30,6 +30,11 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import java.util.HashMap;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN_EPACKAGE_CLASS;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT_EPACKAGE_CLASS;
+
 public class Migrator {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -37,10 +42,10 @@ public class Migrator {
     public static void main(String[] args) {
         try {
             Map<String, String> cli = processCommandLineArgs(args);
-            URI sourceUri = URI.createFileURI(cli.get(CommandLineUtil.Key.IN));
-            URI targetUri = URI.createFileURI(cli.get(CommandLineUtil.Key.OUT));
-            Class<?> inClazz = Migrator.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.IN_EPACKAGE_CLASS));
-            Class<?> outClazz = Migrator.class.getClassLoader().loadClass(cli.get(CommandLineUtil.Key.OUT_EPACKAGE_CLASS));
+            URI sourceUri = URI.createFileURI(cli.get(IN));
+            URI targetUri = URI.createFileURI(cli.get(OUT));
+            Class<?> inClazz = Migrator.class.getClassLoader().loadClass(cli.get(IN_EPACKAGE_CLASS));
+            Class<?> outClazz = Migrator.class.getClassLoader().loadClass(cli.get(OUT_EPACKAGE_CLASS));
 
             @SuppressWarnings("unused")
             EPackage inEPackage = (EPackage) inClazz.getMethod("init").invoke(null);
@@ -72,34 +77,34 @@ public class Migrator {
     private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
         Options options = new Options();
 
-        options.addOption(Option.builder(CommandLineUtil.Key.IN)
+        options.addOption(Option.builder(IN)
                 .argName("INPUT")
                 .desc("Input file")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.OUT)
+        options.addOption(Option.builder(OUT)
                 .argName("OUTPUT")
                 .desc("Output file")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.IN_EPACKAGE_CLASS)
+        options.addOption(Option.builder(IN_EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of input EPackage implementation class")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        options.addOption(Option.builder(CommandLineUtil.Key.OUT_EPACKAGE_CLASS)
+        options.addOption(Option.builder(OUT_EPACKAGE_CLASS)
                 .argName("CLASS")
                 .desc("FQN of output EPackage implementation class")
                 .numberOfArgs(1)
                 .required()
                 .build());
 
-        return CommandLineUtil.getOptionsValues(options, args);
+        return CommandLineUtil.getValues(options, args);
     }
 }
