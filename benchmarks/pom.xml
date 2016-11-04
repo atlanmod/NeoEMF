@@ -14,7 +14,6 @@
 
     <modules>
         <module>core</module>
-        <module>feature</module>
         <module>org.eclipse.gmt.modisco</module>
     </modules>
 
