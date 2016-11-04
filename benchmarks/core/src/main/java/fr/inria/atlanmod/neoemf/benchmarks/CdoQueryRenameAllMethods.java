@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -56,15 +57,9 @@ public class CdoQueryRenameAllMethods {
                 Resource resource = transaction.getRootResource();
 
                 String name = UUID.randomUUID().toString();
-                {
-                    LOG.info("Start query");
-                    Instant begin = Instant.now();
-                    JavaQueries.renameAllMethods(resource, name);
-                    Instant end = Instant.now();
-                    transaction.commit();
-                    LOG.info("End query");
-                    LOG.info("Time spent: {0}", Duration.between(begin, end));
-                }
+
+                Queries.renameAllMethods(resource, name).callWithTimeSpent();
+                transaction.commit();
 
 //				{
 //					transaction.close();
@@ -74,7 +69,7 @@ public class CdoQueryRenameAllMethods {
 //					transaction = session.openTransaction();
 //					resource = transaction.getRootResource();
 //					
-//					EList<? extends EObject> methodList = JavaQueries.getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+//					EList<? extends EObject> methodList = Queries.getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
 //					int i = 0;
 //					for (EObject eObject: methodList) {
 //						MethodDeclaration method = (MethodDeclaration) eObject;

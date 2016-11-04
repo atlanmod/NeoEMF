@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
 
-import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
@@ -32,19 +32,15 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.gmt.modisco.java.TextElement;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
@@ -89,22 +85,8 @@ public class NeoEMFMapQueryGetBranchStatements {
             storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
-            {
-                Runtime.getRuntime().gc();
-                long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                LOG.info("Used memory before query: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
-                LOG.info("Start query");
-                Instant begin = Instant.now();
-                Set<TextElement> list = ASE2015JavaQueries.getCommentsTagContent(resource);
-                Instant end = Instant.now();
-                LOG.info("End query");
-                LOG.info("Query result contains {0} elements", list.size());
-                LOG.info("Time spent: {0}", Duration.between(begin, end));
-                Runtime.getRuntime().gc();
-                long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                LOG.info("Used memory after query: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-                LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
-            }
+
+            ASE2015Queries.getCommentsTagContent(resource).callWithMemoryUsage();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);

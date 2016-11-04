@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -22,13 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gmt.modisco.java.NamedElement;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
@@ -55,15 +51,7 @@ public class CdoQueryClassDeclarationAttributes {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                {
-                    LOG.info("Start query");
-                    Instant begin = Instant.now();
-                    HashMap<String, EList<NamedElement>> map = JavaQueries.getClassDeclarationAttributes(resource);
-                    Instant end = Instant.now();
-                    LOG.info("End query");
-                    LOG.info("Query result contains {0} elements", map.entrySet().size());
-                    LOG.info("Time spent: {0}", Duration.between(begin, end));
-                }
+                Queries.getClassDeclarationAttributes(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();

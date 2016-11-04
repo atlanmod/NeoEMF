@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -22,12 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gmt.modisco.java.MethodDeclaration;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Map;
 
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
@@ -54,25 +51,8 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                {
-                    LOG.info("Start query");
-                    Instant begin = Instant.now();
-                    EList<MethodDeclaration> list = JavaQueries.getUnusedMethodsList(resource);
-                    Instant end = Instant.now();
-                    LOG.info("End query");
-                    LOG.info("Query result (list) contains {0} elements", list.size());
-                    LOG.info("Time spent: {0}", Duration.between(begin, end));
-                }
-
-                {
-                    LOG.info("Start query");
-                    Instant begin = Instant.now();
-                    EList<MethodDeclaration> list = JavaQueries.getUnusedMethodsLoop(resource);
-                    Instant end = Instant.now();
-                    LOG.info("End query");
-                    LOG.info("Query result (loops) contains {0} elements", list.size());
-                    LOG.info("Time spent: {0}", Duration.between(begin, end));
-                }
+                Queries.getUnusedMethodsList(resource).callWithTimeSpent(); // Query result (list)
+                Queries.getUnusedMethodsLoop(resource).callWithTimeSpent(); // Query result (loops)
 
                 transaction.close();
                 session.close();

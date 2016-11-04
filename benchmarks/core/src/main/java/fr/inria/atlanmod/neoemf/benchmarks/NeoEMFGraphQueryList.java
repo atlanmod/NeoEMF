@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
-import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
@@ -74,15 +75,8 @@ public class NeoEMFGraphQueryList {
                 }
             }
             resource.load(loadOpts);
-            {
-                LOG.info("Start query");
-                Instant begin = Instant.now();
-                EList<MethodDeclaration> list = JavaQueries.getUnusedMethodsList(resource);
-                Instant end = Instant.now();
-                LOG.info("End query");
-                LOG.info("Query result (list) contains {0} elements", list.size());
-                LOG.info("Time spent: {0}", Duration.between(begin, end));
-            }
+
+            Queries.getUnusedMethodsList(resource).callWithTimeSpent(); // Query result (lists)
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);

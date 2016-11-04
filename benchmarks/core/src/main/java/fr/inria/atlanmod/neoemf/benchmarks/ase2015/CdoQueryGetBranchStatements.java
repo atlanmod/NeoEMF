@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
 
-import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
@@ -24,12 +24,8 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gmt.modisco.java.TextElement;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Map;
-import java.util.Set;
 
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
@@ -54,22 +50,8 @@ public class CdoQueryGetBranchStatements {
                 CDOSession session = server.openSession();
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
-                {
-                    Runtime.getRuntime().gc();
-                    long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                    LOG.info("Used memory before query: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
-                    LOG.info("Start query");
-                    Instant begin = Instant.now();
-                    Set<TextElement> list = ASE2015JavaQueries.getCommentsTagContent(resource);
-                    Instant end = Instant.now();
-                    LOG.info("End query");
-                    LOG.info("Query result contains {0} elements", list.size());
-                    LOG.info("Time spent: {0}", Duration.between(begin, end));
-                    Runtime.getRuntime().gc();
-                    long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                    LOG.info("Used memory after query: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-                    LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
-                }
+
+                ASE2015Queries.getCommentsTagContent(resource).callWithMemoryUsage();
 
                 transaction.close();
                 session.close();

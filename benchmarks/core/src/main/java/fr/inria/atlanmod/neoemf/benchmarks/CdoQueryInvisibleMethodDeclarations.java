@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.queries.JavaQueries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -54,15 +55,7 @@ public class CdoQueryInvisibleMethodDeclarations {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                {
-                    LOG.info("Start query");
-                    Instant begin = Instant.now();
-                    EList<MethodDeclaration> list = JavaQueries.getInvisibleMethodDeclarations(resource);
-                    Instant end = Instant.now();
-                    LOG.info("End query");
-                    LOG.info("Query result contains {0} elements", list.size());
-                    LOG.info("Time spent: {0}", Duration.between(begin, end));
-                }
+                Queries.getInvisibleMethodDeclarations(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();
