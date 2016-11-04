@@ -43,7 +43,7 @@ import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACK
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OPTIONS_FILE;
 
-public class NeoEMFGraphTraverser {
+public class NeoEMFGraphTraverser extends NeoEMFGraphQuery {
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -92,31 +92,5 @@ public class NeoEMFGraphTraverser {
         catch (Exception e) {
             LOG.error(e.toString());
         }
-    }
-
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input NeoEMF resource directory")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OPTIONS_FILE)
-                .argName("FILE")
-                .desc("Properties file holding the options to be used in the NeoEMF Resource")
-                .hasArg()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
     }
 }

@@ -34,13 +34,16 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OPTIONS_FILE;
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
 
 public class NeoEMFMapCreator {
@@ -86,6 +89,15 @@ public class NeoEMFMapCreator {
             Resource targetResource = resourceSet.createResource(targetUri);
 
             Map<String, Object> saveOpts = new HashMap<>();
+
+            if (cli.containsKey(OPTIONS_FILE)) {
+                Properties properties = new Properties();
+                properties.load(new FileInputStream(new File(cli.get(OPTIONS_FILE))));
+                for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
+                    saveOpts.put((String) entry.getKey(), entry.getValue());
+                }
+            }
+
             List<StoreOption> storeOptions = new ArrayList<>();
             storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
             saveOpts.put(MapResourceOptions.STORE_OPTIONS, storeOptions);
@@ -133,6 +145,12 @@ public class NeoEMFMapCreator {
                 .desc("FQN of EPackage implementation class")
                 .hasArg()
                 .required()
+                .build());
+
+        options.addOption(Option.builder(OPTIONS_FILE)
+                .argName("FILE")
+                .desc("Properties file holding the options to be used in the NeoEMF Resource")
+                .hasArg()
                 .build());
 
         return CommandLineUtil.getValues(options, args);

@@ -63,7 +63,7 @@ public class CdoQuery {
         }
     }
 
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
+    protected static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
         Options options = new Options();
 
         options.addOption(Option.builder(IN)

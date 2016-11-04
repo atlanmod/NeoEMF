@@ -33,15 +33,18 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.gmt.modisco.java.NamedElement;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OPTIONS_FILE;
 
-public class NeoEMFMapQueryClassDeclarationAttributes {
+public class NeoEMFMapQueryClassDeclarationAttributes extends NeoEMFMapQuery {
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -62,6 +65,14 @@ public class NeoEMFMapQueryClassDeclarationAttributes {
             Resource resource = resourceSet.createResource(uri);
 
             Map<String, Object> loadOpts = new HashMap<>();
+
+            if (cli.containsKey(OPTIONS_FILE)) {
+                Properties properties = new Properties();
+                properties.load(new FileInputStream(new File(cli.get(OPTIONS_FILE))));
+                for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
+                    loadOpts.put((String) entry.getKey(), entry.getValue());
+                }
+            }
             resource.load(loadOpts);
 
             Queries.getClassDeclarationAttributes(resource).callWithTimeSpent();
@@ -76,25 +87,5 @@ public class NeoEMFMapQueryClassDeclarationAttributes {
         catch (Exception e) {
             LOG.error(e);
         }
-    }
-
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input NeoEMF resource directory")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
     }
 }

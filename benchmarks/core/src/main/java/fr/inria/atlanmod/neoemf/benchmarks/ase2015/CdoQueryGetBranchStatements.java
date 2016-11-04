@@ -11,14 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
 
+import fr.inria.atlanmod.neoemf.benchmarks.CdoQuery;
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
@@ -31,7 +27,7 @@ import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACK
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.REPO_NAME;
 
-public class CdoQueryGetBranchStatements {
+public class CdoQueryGetBranchStatements extends CdoQuery {
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -60,32 +56,5 @@ public class CdoQueryGetBranchStatements {
         catch (Exception e) {
             LOG.error(e.toString());
         }
-    }
-
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input CDO resource directory")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(REPO_NAME)
-                .argName("REPO_NAME")
-                .desc("CDO Repository name")
-                .hasArg()
-                .required()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
     }
 }

@@ -148,6 +148,7 @@ public class ASE2015Queries extends Queries {
         };
     }
 
+    @SuppressWarnings("unused")
     public static Query getBranchStatements(Resource resource) {
         return new Query() {
             @Override
