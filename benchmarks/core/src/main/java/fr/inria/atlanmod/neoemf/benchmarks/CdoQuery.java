@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
 import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
 import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;

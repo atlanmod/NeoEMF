@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
 
 import fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQuery;
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015Queries;
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
@@ -24,9 +22,6 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;

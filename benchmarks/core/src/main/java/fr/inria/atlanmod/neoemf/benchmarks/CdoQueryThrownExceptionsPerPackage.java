@@ -13,23 +13,13 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
 import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.gmt.modisco.java.TypeAccess;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
