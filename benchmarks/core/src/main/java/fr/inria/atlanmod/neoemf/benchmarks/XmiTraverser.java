@@ -44,8 +44,7 @@ public class XmiTraverser {
 
             URI uri = URI.createFileURI(cli.get(IN));
 
-            Class<?> inClazz = XmiTraverser.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            XmiTraverser.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());

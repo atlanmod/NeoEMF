@@ -60,8 +60,7 @@ public class NeoEMFGraphCreator {
             URI sourceUri = URI.createFileURI(cli.get(IN));
             URI targetUri = NeoBlueprintsURI.createNeoGraphURI(new File(cli.get(OUT)));
 
-            Class<?> inClazz = NeoEMFGraphCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            NeoEMFGraphCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
 

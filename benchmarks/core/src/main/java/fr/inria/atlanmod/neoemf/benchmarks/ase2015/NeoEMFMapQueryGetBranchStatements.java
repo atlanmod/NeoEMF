@@ -59,8 +59,7 @@ public class NeoEMFMapQueryGetBranchStatements extends NeoEMFMapQuery {
 
             URI uri = NeoMapURI.createNeoMapURI(new File(cli.get(IN)));
 
-            Class<?> inClazz = NeoEMFMapQueryGetBranchStatements.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            NeoEMFMapQuery.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());

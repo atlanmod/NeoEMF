@@ -31,7 +31,7 @@ import org.eclipse.gmt.modisco.java.Type;
 import org.eclipse.gmt.modisco.java.TypeAccess;
 import org.eclipse.gmt.modisco.java.TypeDeclaration;
 import org.eclipse.gmt.modisco.java.VisibilityKind;
-import org.eclipse.gmt.modisco.java.emf.JavaPackage;
+import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.HashMap;
 import java.util.HashSet;

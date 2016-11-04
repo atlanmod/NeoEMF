@@ -59,8 +59,7 @@ public class NeoEMFMapCreator {
             URI sourceUri = URI.createFileURI(cli.get(IN));
             URI targetUri = NeoMapURI.createNeoMapURI(new File(cli.get(OUT)));
 
-            Class<?> inClazz = NeoEMFMapCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            NeoEMFMapCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
 

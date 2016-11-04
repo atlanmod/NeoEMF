@@ -47,8 +47,7 @@ public class CdoQueryThrownExceptionsPerPackage extends CdoQuery {
             String repositoryDir = cli.get(IN);
             String repositoryName = cli.get(REPO_NAME);
 
-            Class<?> inClazz = CdoQueryThrownExceptionsPerPackage.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            CdoQuery.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             try (EmbeddedCDOServer server = new EmbeddedCDOServer(repositoryDir, repositoryName)) {
                 server.run();

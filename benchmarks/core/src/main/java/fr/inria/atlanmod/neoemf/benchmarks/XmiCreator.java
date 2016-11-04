@@ -44,8 +44,7 @@ public class XmiCreator {
             URI sourceUri = URI.createFileURI(cli.get(IN));
             URI targetUri = URI.createFileURI(cli.get(OUT));
 
-            Class<?> inClazz = XmiCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            XmiCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
 

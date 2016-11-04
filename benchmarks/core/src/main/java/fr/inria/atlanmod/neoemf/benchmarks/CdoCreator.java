@@ -53,8 +53,7 @@ public class CdoCreator {
             String outputDir = cli.get(OUT);
             String repositoryName = cli.get(REPO_NAME);
 
-            Class<?> inClazz = CdoCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            CdoCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
 
@@ -71,9 +70,11 @@ public class CdoCreator {
                 Runtime.getRuntime().gc();
                 long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
                 LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+
                 LOG.info("Loading source resource");
                 sourceResource.load(loadOpts);
                 LOG.info("Source resource loaded");
+
                 Runtime.getRuntime().gc();
                 long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
                 LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));

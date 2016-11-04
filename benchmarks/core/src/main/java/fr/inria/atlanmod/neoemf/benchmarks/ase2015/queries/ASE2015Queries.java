@@ -34,7 +34,7 @@ import org.eclipse.gmt.modisco.java.TextElement;
 import org.eclipse.gmt.modisco.java.TypeAccess;
 import org.eclipse.gmt.modisco.java.TypeDeclaration;
 import org.eclipse.gmt.modisco.java.VisibilityKind;
-import org.eclipse.gmt.modisco.java.emf.JavaPackage;
+import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.HashSet;
 import java.util.Set;

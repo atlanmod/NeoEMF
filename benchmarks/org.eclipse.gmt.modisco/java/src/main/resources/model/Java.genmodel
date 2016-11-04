@@ -7,7 +7,7 @@
     importOrganizing="true">
   <foreignModel>Java.ecore</foreignModel>
   <genPackages prefix="Java" basePackage="org.eclipse.gmt.modisco" disposableProviderFactory="true"
-      metaDataPackageSuffix="emf" classPackageSuffix="emf.impl" utilityPackageSuffix="emf.util"
+      metaDataPackageSuffix="emf.meta" classPackageSuffix="emf.impl" utilityPackageSuffix="emf.util"
       providerPackageSuffix="emf.provider" presentationPackageSuffix="emf.presentation"
       testsPackageSuffix="emf.tests" literalsInterface="false" loadInitialization="false" ecorePackage="Java.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Java.ecore#//AssignmentKind">

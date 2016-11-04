@@ -59,8 +59,7 @@ public class NeoEMFGraphQueryGrabats09 extends NeoEMFGraphQuery {
 
             URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(cli.get(IN)));
 
-            Class<?> inClazz = NeoEMFGraphQueryGrabats09.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS));
-            inClazz.getMethod("init").invoke(null);
+            NeoEMFGraphQuery.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());

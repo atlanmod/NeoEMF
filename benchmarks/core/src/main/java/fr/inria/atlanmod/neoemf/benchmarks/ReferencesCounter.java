@@ -48,9 +48,7 @@ public class ReferencesCounter {
             Map<String, String> cli = processCommandLineArgs(args);
 
             URI sourceUri = URI.createFileURI(cli.get(IN));
-            Class<?> inClazz = ReferencesCounter.class.getClassLoader().loadClass(cli.get(IN_EPACKAGE_CLASS));
-            @SuppressWarnings("unused")
-            EPackage inEPackage = (EPackage) inClazz.getMethod("init").invoke(null);
+            ReferencesCounter.class.getClassLoader().loadClass(cli.get(IN_EPACKAGE_CLASS)).getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
