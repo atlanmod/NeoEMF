@@ -9,11 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
+package fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor;
 
-import fr.inria.atlanmod.neoemf.benchmarks.CdoQuery;
-import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015QueryExecutor;
+import fr.inria.atlanmod.neoemf.benchmarks.executor.CdoExecutor;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.query.ASE2015QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,10 +22,11 @@ import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
 import org.eclipse.emf.ecore.resource.Resource;
 
-public class ASE2015CdoQuery extends CdoQuery {
+public class ASE2015CdoExecutor extends CdoExecutor implements ASE2015QueryExecutor {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    @Override
     public void queryASE2015GetBranchStatements(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -46,6 +48,7 @@ public class ASE2015CdoQuery extends CdoQuery {
         }
     }
 
+    @Override
     public void queryASE2015Grabats09(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -67,6 +70,7 @@ public class ASE2015CdoQuery extends CdoQuery {
         }
     }
 
+    @Override
     public void queryASE2015InvisibleMethodDeclarations(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -88,6 +92,7 @@ public class ASE2015CdoQuery extends CdoQuery {
         }
     }
 
+    @Override
     public void queryASE2015SpecificInvisibleMethodDeclarations(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -109,6 +114,7 @@ public class ASE2015CdoQuery extends CdoQuery {
         }
     }
 
+    @Override
     public void queryASE2015ThrownExceptions(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();

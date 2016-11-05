@@ -9,16 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.creator;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,33 +23,28 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class NeoEMFMapCreator {
+public class XmiCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.neoemf.zxmi
-    // out =    java.io.tmpdir}/neoemf-benchmarks/${in.filename}.neoemfmapresource
+    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.xmi.zxmi
+    // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.xmi
 
+    @Override
     public void create(String in, String out) {
         try {
-            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
-
             URI sourceUri = URI.createFileURI(in);
-            URI targetUri = NeoMapURI.createNeoMapURI(new File(out));
+            URI targetUri = URI.createFileURI(out);
 
-            org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
+            org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
 
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
-            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
 
             Resource sourceResource = resourceSet.createResource(sourceUri);
             Map<String, Object> loadOpts = new HashMap<>();
@@ -68,7 +57,6 @@ public class NeoEMFMapCreator {
             LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
             LOG.info("Loading source resource");
             sourceResource.load(loadOpts);
-
             LOG.info("Source resource loaded");
             Runtime.getRuntime().gc();
             long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -78,10 +66,6 @@ public class NeoEMFMapCreator {
             Resource targetResource = resourceSet.createResource(targetUri);
 
             Map<String, Object> saveOpts = new HashMap<>();
-
-            List<StoreOption> storeOptions = new ArrayList<>();
-            storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
-            saveOpts.put(MapResourceOptions.STORE_OPTIONS, storeOptions);
             targetResource.save(saveOpts);
 
             LOG.info("Start moving elements");
@@ -92,12 +76,7 @@ public class NeoEMFMapCreator {
             targetResource.save(saveOpts);
             LOG.info("Saved");
 
-            if (targetResource instanceof PersistentResourceImpl) {
-                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) targetResource);
-            }
-            else {
-                targetResource.unload();
-            }
+            targetResource.unload();
         }
         catch (Exception e) {
             LOG.error(e);

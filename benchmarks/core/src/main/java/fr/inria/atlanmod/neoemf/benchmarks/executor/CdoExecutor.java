@@ -9,12 +9,14 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
 import com.google.common.collect.Iterators;
 
-import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.queries.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
+import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
+import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,10 +31,11 @@ import java.util.UUID;
 
 // in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.cdoresource
 
-public class CdoQuery {
+public class CdoExecutor implements QueryExecutor, Traverser {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    @Override
     public void queryClassDeclarationAttributes(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -54,6 +57,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void queryGrabats(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -75,6 +79,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void queryInvisibleMethodDeclarations(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -96,6 +101,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void queryOrphanNonPrimitiveTypes(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -117,6 +123,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void queryRenameAllMethods(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -160,6 +167,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void queryThrownExceptionsPerPackage(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -181,6 +189,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void queryUnusedMethodsList(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -202,6 +211,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void queryUnusedMethodsLoop(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
@@ -223,6 +233,7 @@ public class CdoQuery {
         }
     }
 
+    @Override
     public void traverse(String in) {
         try {
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();

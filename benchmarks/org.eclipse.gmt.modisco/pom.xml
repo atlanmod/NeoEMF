@@ -8,7 +8,6 @@
         <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
         <artifactId>benchmarks</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
     </parent>
 
     <packaging>pom</packaging>

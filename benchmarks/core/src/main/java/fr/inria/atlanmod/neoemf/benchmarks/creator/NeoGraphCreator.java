@@ -9,8 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.creator;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
@@ -36,13 +37,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NeoEMFGraphCreator {
+public class NeoGraphCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
     // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.neoemf.zxmi
     // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.neoemfgraphresource
 
+    @Override
     public void create(String in, String out) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());

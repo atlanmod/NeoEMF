@@ -9,14 +9,15 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
+package fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor;
 
-import fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQuery;
-import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015QueryExecutor;
+import fr.inria.atlanmod.neoemf.benchmarks.executor.NeoMapExecutor;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.query.ASE2015QueryFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
+import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
@@ -35,20 +36,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
+public class ASE2015NeoMapExecutor extends NeoMapExecutor implements ASE2015QueryExecutor {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    @Override
     public void queryASE2015GetBranchStatements(String in) {
         try {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-            URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(in));
+            URI uri = NeoMapURI.createNeoMapURI(new File(in));
 
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
 
             Resource resource = resourceSet.createResource(uri);
 
@@ -57,7 +59,10 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             // Add the LoadedObjectCounter store
             List<StoreOption> storeOptions = new ArrayList<>();
 //			storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
-            storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
+            storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
@@ -71,20 +76,21 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
+    @Override
     public void queryASE2015Grabats09(String in) {
         try {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-            URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(in));
+            URI uri = NeoMapURI.createNeoMapURI(new File(in));
 
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
 
             Resource resource = resourceSet.createResource(uri);
 
@@ -93,7 +99,10 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             // Add the LoadedObjectCounter store
             List<StoreOption> storeOptions = new ArrayList<>();
 //			storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
-            storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
+            storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
@@ -107,20 +116,21 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
+    @Override
     public void queryASE2015InvisibleMethodDeclarations(String in) {
         try {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-            URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(in));
+            URI uri = NeoMapURI.createNeoMapURI(new File(in));
 
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
 
             Resource resource = resourceSet.createResource(uri);
 
@@ -129,9 +139,11 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             // Add the LoadedObjectCounter store
             List<StoreOption> storeOptions = new ArrayList<>();
 //			storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
-            storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
+            storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
-            System.out.println(loadOpts);
             resource.load(loadOpts);
 
             ASE2015QueryFactory.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
@@ -144,20 +156,21 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
+    @Override
     public void queryASE2015SpecificInvisibleMethodDeclarations(String in) {
         try {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-            URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(in));
+            URI uri = NeoMapURI.createNeoMapURI(new File(in));
 
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
 
             Resource resource = resourceSet.createResource(uri);
 
@@ -166,7 +179,10 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             // Add the LoadedObjectCounter store
             List<StoreOption> storeOptions = new ArrayList<>();
 //			storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
-            storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
+            storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
@@ -180,20 +196,21 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
+    @Override
     public void queryASE2015ThrownExceptions(String in) {
         try {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-            URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(in));
+            URI uri = NeoMapURI.createNeoMapURI(new File(in));
 
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+            resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
 
             Resource resource = resourceSet.createResource(uri);
 
@@ -202,7 +219,10 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             // Add the LoadedObjectCounter store
             List<StoreOption> storeOptions = new ArrayList<>();
 //			storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
-            storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
+            storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
+            storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
@@ -216,7 +236,7 @@ public class ASE2015NeoEMFGraphQuery extends NeoEMFGraphQuery {
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 }

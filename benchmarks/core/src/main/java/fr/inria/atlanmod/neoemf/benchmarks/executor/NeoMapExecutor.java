@@ -9,11 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
 import com.google.common.collect.Iterators;
 
-import fr.inria.atlanmod.neoemf.benchmarks.queries.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
+import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
@@ -37,10 +39,11 @@ import java.util.UUID;
 
 // in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.neoemfmapresource
 
-public class NeoEMFMapQuery {
+public class NeoMapExecutor implements QueryExecutor, Traverser {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    @Override
     public void queryClassDeclarationAttributes(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -72,6 +75,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void queryGrabats(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -103,6 +107,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void queryInvisibleMethodDeclarations(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -134,6 +139,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void queryOrphanNonPrimitiveTypes(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -165,6 +171,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void queryRenameAllMethods(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -198,6 +205,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void queryThrownExceptionsPerPackage(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -229,6 +237,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void queryUnusedMethodsList(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -260,6 +269,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void queryUnusedMethodsLoop(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
@@ -291,6 +301,7 @@ public class NeoEMFMapQuery {
         }
     }
 
+    @Override
     public void traverse(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());

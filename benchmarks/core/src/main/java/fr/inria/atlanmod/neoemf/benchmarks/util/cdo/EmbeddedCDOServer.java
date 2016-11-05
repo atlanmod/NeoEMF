@@ -9,7 +9,7 @@
  *     Stephan Zehrer - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.cdo;
+package fr.inria.atlanmod.neoemf.benchmarks.util.cdo;
 
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
 import org.eclipse.emf.cdo.net4j.CDONet4jUtil;

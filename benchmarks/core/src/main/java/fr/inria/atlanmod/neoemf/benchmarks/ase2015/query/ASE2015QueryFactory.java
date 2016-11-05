@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries;
+package fr.inria.atlanmod.neoemf.benchmarks.ase2015.query;
 
-import fr.inria.atlanmod.neoemf.benchmarks.queries.QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.queries.Query;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;

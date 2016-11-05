@@ -9,9 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
 import com.google.common.collect.Iterators;
+
+import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,10 +30,11 @@ import java.util.Map;
 
 // in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.xmi
 
-public class XmiQuery {
+public class XmiExecutor implements Traverser {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    @Override
     public void traverse(String in) {
         try {
             URI uri = URI.createFileURI(in);

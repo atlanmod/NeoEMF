@@ -9,9 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.creator;
 
-import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
+import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,13 +29,14 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CdoCreator {
+public class CdoCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
     // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.cdo.zxmi
     // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.cdoresource
 
+    @Override
     public void create(String in, String out) {
         try {
             URI srcUri = URI.createFileURI(in);

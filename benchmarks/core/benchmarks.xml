@@ -304,7 +304,7 @@
     			<echo>Creating ${resource.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.creator.CdoCreator" failonerror="false" fork="yes" timeout="${timeout}">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${cdo.zxmi.file}"/>
@@ -337,7 +337,7 @@
     			<echo>Creating ${resource.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.creator.NeoMapCreator" failonerror="false" fork="yes" timeout="${timeout}">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${neoemf.zxmi.file}"/>
@@ -373,7 +373,7 @@
     			<echo>Creating ${resource.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.creator.NeoGraphCreator" failonerror="false" fork="yes" timeout="${timeout}">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${neoemf.zxmi.file}"/>
@@ -440,7 +440,7 @@
     			<echo>Creating ${resource.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.XmiCreator" failonerror="false" fork="yes" timeout="${timeout}">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.creator.XmiCreator" failonerror="false" fork="yes" timeout="${timeout}">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${xmi.zxmi.file}"/>
@@ -628,7 +628,7 @@
 		<echo>Traversing ${xmiresource}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.XmiQuery" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.executor.XmiExecutor" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${xmiresource}"/>
@@ -1523,7 +1523,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015NeoEMFGraphQuery" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor.ASE2015NeoGraphExecutor" failonerror="false" fork="yes" timeout="${timeout}">
 	    	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1665,7 +1665,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015NeoEMFMapQuery" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor.ASE2015NeoMapExecutor" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1813,7 +1813,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015CdoQuery" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor.ASE2015CdoExecutor" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>

@@ -9,11 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
 import com.google.common.collect.Iterators;
 
-import fr.inria.atlanmod.neoemf.benchmarks.queries.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
+import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
@@ -37,10 +39,11 @@ import java.util.UUID;
 
 // in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.neoemfgraphresource
 
-public class NeoEMFGraphQuery {
+public class NeoGraphExecutor implements QueryExecutor, Traverser {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    @Override
     public void queryClassDeclarationAttributes(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -72,6 +75,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void queryGrabats(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -103,6 +107,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void queryInvisibleMethodDeclarations(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -134,6 +139,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void queryOrphanNonPrimitiveTypes(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -165,6 +171,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void queryRenameAllMethods(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -198,6 +205,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void queryThrownExceptionsPerPackage(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -229,6 +237,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void queryUnusedMethodsList(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -260,6 +269,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void queryUnusedMethodsLoop(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
@@ -291,6 +301,7 @@ public class NeoEMFGraphQuery {
         }
     }
 
+    @Override
     public void traverse(String in) {
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());

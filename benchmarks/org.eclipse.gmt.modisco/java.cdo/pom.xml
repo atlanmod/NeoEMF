@@ -8,7 +8,6 @@
         <groupId>org.eclipse.gmt</groupId>
         <artifactId>org.eclipse.gmt.modisco</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
     </parent>
 
     <artifactId>org.eclipse.gmt.modisco.java.cdo</artifactId>
