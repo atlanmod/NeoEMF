@@ -11,12 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
@@ -29,22 +25,19 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
-
 public class XmiCreator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    public static void main(String[] args) {
+    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.xmi.zxmi
+    // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.xmi
+
+    public void create(String in, String out) {
         try {
-            Map<String, String> cli = processCommandLineArgs(args);
+            URI sourceUri = URI.createFileURI(in);
+            URI targetUri = URI.createFileURI(out);
 
-            URI sourceUri = URI.createFileURI(cli.get(IN));
-            URI targetUri = URI.createFileURI(cli.get(OUT));
-
-            XmiCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
+            org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
 
@@ -86,32 +79,5 @@ public class XmiCreator {
         catch (Exception e) {
             LOG.error(e);
         }
-    }
-
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input file")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OUT)
-                .argName("OUTPUT")
-                .desc("Output file")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
     }
 }

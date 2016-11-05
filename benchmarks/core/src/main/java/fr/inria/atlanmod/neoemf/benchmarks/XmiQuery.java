@@ -13,11 +13,6 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 import com.google.common.collect.Iterators;
 
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
-
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
@@ -31,20 +26,17 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
+// in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.xmi
 
-public class XmiTraverser {
+public class XmiQuery {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    public static void main(String[] args) {
+    public void traverse(String in) {
         try {
-            Map<String, String> cli = processCommandLineArgs(args);
+            URI uri = URI.createFileURI(in);
 
-            URI uri = URI.createFileURI(cli.get(IN));
-
-            XmiTraverser.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
+            org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
@@ -68,25 +60,5 @@ public class XmiTraverser {
         catch (Exception e) {
             LOG.error(e);
         }
-    }
-
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input model")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
     }
 }

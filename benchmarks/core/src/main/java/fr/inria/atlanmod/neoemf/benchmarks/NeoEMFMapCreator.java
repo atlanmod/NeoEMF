@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
@@ -21,9 +20,6 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
@@ -34,32 +30,26 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OPTIONS_FILE;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
 
 public class NeoEMFMapCreator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    public static void main(String[] args) {
-        try {
-            Map<String, String> cli = processCommandLineArgs(args);
+    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.neoemf.zxmi
+    // out =    java.io.tmpdir}/neoemf-benchmarks/${in.filename}.neoemfmapresource
 
+    public void create(String in, String out) {
+        try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-            URI sourceUri = URI.createFileURI(cli.get(IN));
-            URI targetUri = NeoMapURI.createNeoMapURI(new File(cli.get(OUT)));
+            URI sourceUri = URI.createFileURI(in);
+            URI targetUri = NeoMapURI.createNeoMapURI(new File(out));
 
-            NeoEMFMapCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
+            org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
 
@@ -89,14 +79,6 @@ public class NeoEMFMapCreator {
 
             Map<String, Object> saveOpts = new HashMap<>();
 
-            if (cli.containsKey(OPTIONS_FILE)) {
-                Properties properties = new Properties();
-                properties.load(new FileInputStream(new File(cli.get(OPTIONS_FILE))));
-                for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
-                    saveOpts.put((String) entry.getKey(), entry.getValue());
-                }
-            }
-
             List<StoreOption> storeOptions = new ArrayList<>();
             storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
             saveOpts.put(MapResourceOptions.STORE_OPTIONS, storeOptions);
@@ -120,38 +102,5 @@ public class NeoEMFMapCreator {
         catch (Exception e) {
             LOG.error(e);
         }
-    }
-
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input file")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OUT)
-                .argName("OUTPUT")
-                .desc("Output directory")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OPTIONS_FILE)
-                .argName("FILE")
-                .desc("Properties file holding the options to be used in the NeoEMF Resource")
-                .hasArg()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
     }
 }

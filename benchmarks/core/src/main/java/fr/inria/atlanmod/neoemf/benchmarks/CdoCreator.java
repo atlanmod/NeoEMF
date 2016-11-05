@@ -12,12 +12,8 @@
 package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
 import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.session.CDOSession;
@@ -28,41 +24,31 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Mode;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.EPACKAGE_CLASS;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.REPO_NAME;
 
 public class CdoCreator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    public static void main(String[] args) {
+    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.cdo.zxmi
+    // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.cdoresource
+
+    public void create(String in, String out) {
         try {
-            Map<String, String> cli = processCommandLineArgs(args);
-            URI sourceUri = URI.createFileURI(cli.get(IN));
+            URI srcUri = URI.createFileURI(in);
 
-            String outputDir = cli.get(OUT);
-            String repositoryName = cli.get(REPO_NAME);
-
-            CdoCreator.class.getClassLoader().loadClass(cli.get(EPACKAGE_CLASS)).getMethod("init").invoke(null);
+            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
 
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
-            Resource sourceResource = resourceSet.createResource(sourceUri);
+            Resource sourceResource = resourceSet.createResource(srcUri);
             Map<String, Object> loadOpts = new HashMap<>();
-            if ("zxmi".equals(sourceUri.fileExtension())) {
+            if ("zxmi".equals(srcUri.fileExtension())) {
                 loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
             }
 
@@ -81,7 +67,7 @@ public class CdoCreator {
                 LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
             }
 
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(outputDir, repositoryName)) {
+            try (EmbeddedCDOServer server = new EmbeddedCDOServer(out)) {
                 server.run();
                 CDOSession session = server.openSession();
                 CDOTransaction transaction = session.openTransaction();
@@ -103,64 +89,5 @@ public class CdoCreator {
         catch (Exception e) {
             LOG.error(e);
         }
-    }
-
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
-
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input file")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OUT)
-                .argName("OUTPUT")
-                .desc("Output directory")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(REPO_NAME)
-                .argName("REPO_NAME")
-                .desc("CDO Repository name")
-                .hasArg()
-                .required()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
-    }
-
-    /*
-     * Sample methods to complete.
-     */
-
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
-    @Fork(jvmArgs = {"-Xmx8g"})
-    public void benchmarkWith8G() {
-
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
-    @Fork(jvmArgs = {"-Xmx512m"})
-    public void benchmarkWith512M() {
-
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
-    @Fork(jvmArgs = {"-Xmx256m"})
-    public void benchmarkWith256M() {
-
     }
 }

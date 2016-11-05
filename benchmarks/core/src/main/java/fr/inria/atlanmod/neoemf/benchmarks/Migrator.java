@@ -11,56 +11,63 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
-import fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MigratorUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.IN_EPACKAGE_CLASS;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT;
-import static fr.inria.atlanmod.neoemf.benchmarks.util.CommandLineUtil.Key.OUT_EPACKAGE_CLASS;
 
 public class Migrator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    public static void main(String[] args) {
-        try {
-            Map<String, String> cli = processCommandLineArgs(args);
-            URI sourceUri = URI.createFileURI(cli.get(IN));
-            URI targetUri = URI.createFileURI(cli.get(OUT));
-            Class<?> inClazz = Migrator.class.getClassLoader().loadClass(cli.get(IN_EPACKAGE_CLASS));
-            Class<?> outClazz = Migrator.class.getClassLoader().loadClass(cli.get(OUT_EPACKAGE_CLASS));
+    // XMI =    ".xmi.zxmi"
+    // CDO =    ".cdo.zxmi"
+    // NeoEMF = ".neoemf.zxmi"
 
-            @SuppressWarnings("unused")
-            EPackage inEPackage = (EPackage) inClazz.getMethod("init").invoke(null);
-            EPackage outEPackage = (EPackage) outClazz.getMethod("init").invoke(null);
+    // file =   ${resources.dir}/*.xmi
+
+    public static void migrate(File file, String destExtension, Class<?> destClass) {
+        migrate(file, BenchmarkUtil.getBaseDirectory().resolve(getDestFileName(file, destExtension)).toFile(), destClass);
+    }
+
+    private static void migrate(File src, File dest, Class<?> destClass) {
+        try {
+            URI srcUri = URI.createFileURI(src.getAbsolutePath());
+            URI destUri = URI.createFileURI(dest.getAbsolutePath());
+
+            EPackage destEPackage = (EPackage) destClass.getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
-            Resource sourceResource = resourceSet.getResource(sourceUri, true);
-            Resource targetResource = resourceSet.createResource(targetUri);
+            Resource sourceResource = resourceSet.getResource(srcUri, true);
+            Resource targetResource = resourceSet.createResource(destUri);
 
             targetResource.getContents().clear();
             LOG.info("Start migration");
-            targetResource.getContents().add(MigratorUtil.migrate(sourceResource.getContents().get(0), outEPackage));
+            targetResource.getContents().add(migrate(sourceResource.getContents().get(0), destEPackage));
             LOG.info("Migration finished");
 
             Map<String, Object> saveOpts = new HashMap<>();
@@ -74,37 +81,55 @@ public class Migrator {
         }
     }
 
-    private static Map<String, String> processCommandLineArgs(String... args) throws ParseException {
-        Options options = new Options();
+    private static EObject migrate(EObject eObject, EPackage targetEPackage) {
+        Map<EObject, EObject> correspondencesMap = new HashMap<>();
+        EObject returnEObject = getCorrespondingEObject(correspondencesMap, eObject, targetEPackage);
+        copy(correspondencesMap, eObject, returnEObject);
+        for (Iterator<EObject> iterator = EcoreUtil.getAllContents(eObject, true); iterator.hasNext(); ) {
+            EObject sourceEObject = iterator.next();
+            EObject targetEObject = getCorrespondingEObject(correspondencesMap, sourceEObject, targetEPackage);
+            copy(correspondencesMap, sourceEObject, targetEObject);
+        }
+        return returnEObject;
+    }
 
-        options.addOption(Option.builder(IN)
-                .argName("INPUT")
-                .desc("Input file")
-                .hasArg()
-                .required()
-                .build());
+    private static void copy(Map<EObject, EObject> correspondencesMap, EObject sourceEObject, EObject targetEObject) {
+        for (EStructuralFeature sourceFeature : sourceEObject.eClass().getEAllStructuralFeatures()) {
+            if (sourceEObject.eIsSet(sourceFeature)) {
+                EStructuralFeature targetFeature = targetEObject.eClass().getEStructuralFeature(sourceFeature.getName());
+                if (sourceFeature instanceof EAttribute) {
+                    targetEObject.eSet(targetFeature, sourceEObject.eGet(sourceFeature));
+                }
+                else { // EReference
+                    if (!sourceFeature.isMany()) {
+                        targetEObject.eSet(targetFeature, getCorrespondingEObject(correspondencesMap, (EObject) sourceEObject.eGet(targetFeature), targetEObject.eClass().getEPackage()));
+                    }
+                    else {
+                        @SuppressWarnings({"unchecked"})
+                        EList<EObject> sourceList = (EList<EObject>) sourceEObject.eGet(sourceFeature);
+                        EList<EObject> targetList = new BasicEList<>();
+                        for (EObject aSourceList : sourceList) {
+                            targetList.add(getCorrespondingEObject(correspondencesMap, aSourceList, targetEObject.eClass().getEPackage()));
+                        }
+                        targetEObject.eSet(targetFeature, targetList);
+                    }
+                }
+            }
+        }
+    }
 
-        options.addOption(Option.builder(OUT)
-                .argName("OUTPUT")
-                .desc("Output file")
-                .hasArg()
-                .required()
-                .build());
+    private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondencesMap, EObject eObject, EPackage ePackage) {
+        EObject targetEObject = correspondencesMap.get(eObject);
+        if (targetEObject == null) {
+            EClass eClass = eObject.eClass();
+            EClass targetClass = (EClass) ePackage.getEClassifier(eClass.getName());
+            targetEObject = EcoreUtil.create(targetClass);
+            correspondencesMap.put(eObject, targetEObject);
+        }
+        return targetEObject;
+    }
 
-        options.addOption(Option.builder(IN_EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of input EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        options.addOption(Option.builder(OUT_EPACKAGE_CLASS)
-                .argName("CLASS")
-                .desc("FQN of output EPackage implementation class")
-                .hasArg()
-                .required()
-                .build());
-
-        return CommandLineUtil.getValues(options, args);
+    private static Path getDestFileName(File file, String destExtension) {
+        return Paths.get(file.getName().replaceFirst("[.][^.]+$", "") + destExtension);
     }
 }

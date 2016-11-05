@@ -218,39 +218,6 @@
     		</else>
     	</if>
     </target>
-
-	<!--
-	<target name="migrate.morsa.file">
-    	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
-		<property name="morsa.out" value="${benchmarks.dir}/${xmi.filename}.morsa.zxmi"/>
-    	<if>
-			<not>
-				<available file="${morsa.out}" />
-			</not>
-    		<then>
-    			<echo>Creating ${morsa.out}</echo>
-    			<echo>JVM args: ${creator.vmargs.value}</echo>
-    			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
-		        	<jvmarg line="${creator.vmargs.value}"/>
-		            <arg value="-input"/>
-		            <arg value="${xmi.file}"/>
-		            <arg value="-output"/>
-		            <arg value="${morsa.out}"/>
-		        	<arg value="-input_epackage_class"/>
-		        	<arg value="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
-		        	<arg value="-output_epackage_class"/>
-		        	<arg value="org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl"/>
-		            <classpath refid="fr.inria.atlanmod.neoemf.benchmarks.classpath"/>
-		        </java>
-    			<stopwatch name="timer" action="total"/>
-			</then>
-    		<else>
-    			<echo>${morsa.out} already exists</echo>
-    		</else>
-    	</if>
-    </target>
-    -->
 	
 	<target name="migrate.xmi.file">
     	<basename property="xmi.filename" file="${xmi.file}" suffix="xmi"/>
@@ -661,7 +628,7 @@
 		<echo>Traversing ${xmiresource}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.XmiTraverser" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.XmiQuery" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${xmiresource}"/>
@@ -1245,7 +1212,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryLoop" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.CdoQueryUnusedMethodsLoop" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>
@@ -1264,7 +1231,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryLoop" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQueryUnusedMethodsLoop" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1281,7 +1248,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryLoop" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.NeoEMFGraphQueryUnusedMethodsLoop" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1556,7 +1523,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFGraphQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015NeoEMFGraphQuery" failonerror="false" fork="yes" timeout="${timeout}">
 	    	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1698,7 +1665,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.NeoEMFMapQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015NeoEMFMapQuery" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1846,7 +1813,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.CdoQueryGetBranchStatements" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015CdoQuery" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>

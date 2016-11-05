@@ -44,6 +44,8 @@ import java.util.Map;
 
 public class EmbeddedCDOServer implements Closeable {
 
+    private static final String DEFAULT_REPOSITORY_NAME = "repo";
+
     private String path;
 
     private String repositoryName;
@@ -55,6 +57,10 @@ public class EmbeddedCDOServer implements Closeable {
     public EmbeddedCDOServer(String path, String repositoryName) {
         this.path = path;
         this.repositoryName = repositoryName;
+    }
+
+    public EmbeddedCDOServer(String path) {
+        this(path, DEFAULT_REPOSITORY_NAME);
     }
 
     public void run() {
