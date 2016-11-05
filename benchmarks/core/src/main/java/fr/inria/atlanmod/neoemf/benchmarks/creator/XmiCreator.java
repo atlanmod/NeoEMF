@@ -30,8 +30,8 @@ public class XmiCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.xmi.zxmi
-    // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.xmi
+    // in =     BenchmarkUtil.getBaseDirectory()/*.xmi.zxmi
+    // out =    BenchmarkUtil.getBaseDirectory()/${in.filename}.xmi
 
     @Override
     public void create(String in, String out) {

@@ -28,7 +28,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-// in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.xmi
+// in = BenchmarkUtil.getTestDirectory()/*.xmi
 
 public class XmiExecutor implements Traverser {
 

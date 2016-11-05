@@ -41,19 +41,21 @@ public class Migrator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // XMI =    ".xmi.zxmi"
-    // CDO =    ".cdo.zxmi"
-    // NeoEMF = ".neoemf.zxmi"
+    // zipUrl = Migrator.class.getResource("/resources.zip")
+    // zip =    new ZipFile(new File(zipUrl.toUri()));
+    // in =     zip.getInputStream(zip.getEntry("*.xmi"))
 
-    // file =   ${resources.dir}/*.xmi
+    // XMI =    "xmi"
+    // CDO =    "cdo"
+    // NeoEMF = "neoemf"
 
-    public static void migrate(File file, String destExtension, Class<?> destClass) {
-        migrate(file, BenchmarkUtil.getBaseDirectory().resolve(getDestFileName(file, destExtension)).toFile(), destClass);
+    public static void migrate(File in, String destExtension, Class<?> destClass) {
+        migrate(in, BenchmarkUtil.getBaseDirectory().resolve(getDestFileName(in, destExtension)).toFile(), destClass);
     }
 
-    private static void migrate(File src, File dest, Class<?> destClass) {
+    private static void migrate(File in, File dest, Class<?> destClass) {
         try {
-            URI srcUri = URI.createFileURI(src.getAbsolutePath());
+            URI srcUri = URI.createFileURI(in.getAbsolutePath());
             URI destUri = URI.createFileURI(dest.getAbsolutePath());
 
             EPackage destEPackage = (EPackage) destClass.getMethod("init").invoke(null);
@@ -129,7 +131,7 @@ public class Migrator {
         return targetEObject;
     }
 
-    private static Path getDestFileName(File file, String destExtension) {
-        return Paths.get(file.getName().replaceFirst("[.][^.]+$", "") + destExtension);
+    private static Path getDestFileName(File in, String destExtension) {
+        return Paths.get(in.getName().replaceFirst("[.][^.]+$", "") + "." + destExtension + ".zxmi");
     }
 }

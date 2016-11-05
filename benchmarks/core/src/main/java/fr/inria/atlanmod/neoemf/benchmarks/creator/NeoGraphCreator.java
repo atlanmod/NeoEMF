@@ -41,8 +41,8 @@ public class NeoGraphCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.neoemf.zxmi
-    // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.neoemfgraphresource
+    // in =     BenchmarkUtil.getBaseDirectory()/*.neoemf.zxmi
+    // out =    BenchmarkUtil.getBaseDirectory()/${in.filename}.neoemfgraphresource
 
     @Override
     public void create(String in, String out) {

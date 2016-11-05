@@ -29,7 +29,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
-// in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.cdoresource
+// in = BenchmarkUtil.getTestDirectory()/*.cdoresource
 
 public class CdoExecutor implements QueryExecutor, Traverser {
 

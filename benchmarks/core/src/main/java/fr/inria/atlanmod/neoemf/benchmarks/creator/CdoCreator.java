@@ -33,8 +33,8 @@ public class CdoCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // in =     ${java.io.tmpdir}/neoemf-benchmarks/*.cdo.zxmi
-    // out =    ${java.io.tmpdir}/neoemf-benchmarks/${in.filename}.cdoresource
+    // in =     BenchmarkUtil.getBaseDirectory()/*.cdo.zxmi
+    // out =    BenchmarkUtil.getBaseDirectory()/${in.filename}.cdoresource
 
     @Override
     public void create(String in, String out) {

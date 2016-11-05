@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-// in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.neoemfgraphresource
+// in = BenchmarkUtil.getTestDirectory()/*.neoemfgraphresource
 
 public class NeoGraphExecutor implements QueryExecutor, Traverser {
 

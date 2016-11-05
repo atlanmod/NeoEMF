@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-// in = ${java.io.tmpdir}/neoemf-benchmarks/temp/*.neoemfmapresource
+// in = BenchmarkUtil.getTestDirectory()/*.neoemfmapresource
 
 public class NeoMapExecutor implements QueryExecutor, Traverser {
 
