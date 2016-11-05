@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
 
 import fr.inria.atlanmod.neoemf.benchmarks.CdoQuery;
-import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015Queries;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +35,7 @@ public class ASE2015CdoQuery extends CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015Queries.getCommentsTagContent(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.getCommentsTagContent(resource).callWithMemoryUsage();
 
                 transaction.close();
                 session.close();
@@ -56,7 +56,7 @@ public class ASE2015CdoQuery extends CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015Queries.grabats09(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.grabats09(resource).callWithMemoryUsage();
 
                 transaction.close();
                 session.close();
@@ -77,7 +77,7 @@ public class ASE2015CdoQuery extends CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015Queries.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
 
                 transaction.close();
                 session.close();
@@ -98,7 +98,7 @@ public class ASE2015CdoQuery extends CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015Queries.getSpecificInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.getSpecificInvisibleMethodDeclarations(resource).callWithMemoryUsage();
 
                 transaction.close();
                 session.close();
@@ -119,7 +119,7 @@ public class ASE2015CdoQuery extends CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015Queries.getThrownExceptions(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.getThrownExceptions(resource).callWithMemoryUsage();
 
                 transaction.close();
                 session.close();

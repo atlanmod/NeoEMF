@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 import com.google.common.collect.Iterators;
 
-import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.QueryFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
@@ -58,7 +58,7 @@ public class NeoEMFGraphQuery {
 
             resource.load(loadOpts);
 
-            Queries.getClassDeclarationAttributes(resource).callWithTimeSpent();
+            QueryFactory.getClassDeclarationAttributes(resource).callWithTimeSpent();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -89,7 +89,7 @@ public class NeoEMFGraphQuery {
 
             resource.load(loadOpts);
 
-            Queries.grabats09(resource).callWithTimeSpent();
+            QueryFactory.grabats09(resource).callWithTimeSpent();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -120,7 +120,7 @@ public class NeoEMFGraphQuery {
 
             resource.load(loadOpts);
 
-            Queries.getInvisibleMethodDeclarations(resource).callWithTimeSpent();
+            QueryFactory.getInvisibleMethodDeclarations(resource).callWithTimeSpent();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -151,7 +151,7 @@ public class NeoEMFGraphQuery {
 
             resource.load(loadOpts);
 
-            Queries.getOrphanNonPrimitivesTypes(resource).callWithTimeSpent();
+            QueryFactory.getOrphanNonPrimitivesTypes(resource).callWithTimeSpent();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -183,7 +183,7 @@ public class NeoEMFGraphQuery {
             resource.load(loadOpts);
             String name = UUID.randomUUID().toString();
 
-            Queries.renameAllMethods(resource, name).callWithTimeSpent();
+            QueryFactory.renameAllMethods(resource, name).callWithTimeSpent();
             resource.save(Collections.emptyMap());
 
             if (resource instanceof PersistentResourceImpl) {
@@ -215,7 +215,7 @@ public class NeoEMFGraphQuery {
 
             resource.load(loadOpts);
 
-            Queries.getThrownExceptionsPerPackage(resource).callWithTimeSpent();
+            QueryFactory.getThrownExceptionsPerPackage(resource).callWithTimeSpent();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -246,7 +246,7 @@ public class NeoEMFGraphQuery {
 
             resource.load(loadOpts);
 
-            Queries.getUnusedMethodsList(resource).callWithTimeSpent();
+            QueryFactory.getUnusedMethodsList(resource).callWithTimeSpent();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -277,7 +277,7 @@ public class NeoEMFGraphQuery {
 
             resource.load(loadOpts);
 
-            Queries.getUnusedMethodsLoop(resource).callWithTimeSpent(); // Query result (loops)
+            QueryFactory.getUnusedMethodsLoop(resource).callWithTimeSpent(); // Query result (loops)
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);

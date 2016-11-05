@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries;
 
-import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.queries.Query;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -39,7 +39,7 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ASE2015Queries extends Queries {
+public class ASE2015QueryFactory extends QueryFactory {
 
     public static Query grabats09(Resource resource) {
         return new Query() {

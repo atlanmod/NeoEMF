@@ -34,11 +34,11 @@ public abstract class Query implements Callable<Integer> {
         int result;
 
         LOG.info("Start query");
-
         Instant begin = Instant.now();
-        result = call();
-        Instant end = Instant.now();
 
+        result = call();
+
+        Instant end = Instant.now();
         LOG.info("End query");
         LOG.info("Query result contains {0} elements", result);
         LOG.info("Time spent: {0}", Duration.between(begin, end));

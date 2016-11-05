@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
 
 import fr.inria.atlanmod.neoemf.benchmarks.NeoEMFMapQuery;
-import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015Queries;
+import fr.inria.atlanmod.neoemf.benchmarks.ase2015.queries.ASE2015QueryFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
@@ -64,7 +64,7 @@ public class ASE2015NeoEMFMapQuery extends NeoEMFMapQuery {
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015Queries.getCommentsTagContent(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.getCommentsTagContent(resource).callWithMemoryUsage();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -103,7 +103,7 @@ public class ASE2015NeoEMFMapQuery extends NeoEMFMapQuery {
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015Queries.grabats09(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.grabats09(resource).callWithMemoryUsage();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -142,7 +142,7 @@ public class ASE2015NeoEMFMapQuery extends NeoEMFMapQuery {
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015Queries.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -181,7 +181,7 @@ public class ASE2015NeoEMFMapQuery extends NeoEMFMapQuery {
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015Queries.getSpecificInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.getSpecificInvisibleMethodDeclarations(resource).callWithMemoryUsage();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -220,7 +220,7 @@ public class ASE2015NeoEMFMapQuery extends NeoEMFMapQuery {
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015Queries.getThrownExceptions(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.getThrownExceptions(resource).callWithMemoryUsage();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);

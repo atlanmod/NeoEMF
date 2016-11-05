@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class Queries {
+public class QueryFactory {
 
     /**
      * Returns the orphan and non Primitive Types of a java model this is a common query to all both standard and

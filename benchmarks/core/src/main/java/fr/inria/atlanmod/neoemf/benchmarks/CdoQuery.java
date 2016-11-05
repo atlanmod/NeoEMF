@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 import com.google.common.collect.Iterators;
 
 import fr.inria.atlanmod.neoemf.benchmarks.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.queries.Queries;
+import fr.inria.atlanmod.neoemf.benchmarks.queries.QueryFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +43,7 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                Queries.getClassDeclarationAttributes(resource).callWithTimeSpent();
+                QueryFactory.getClassDeclarationAttributes(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();
@@ -64,7 +64,7 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                Queries.grabats09(resource).callWithTimeSpent();
+                QueryFactory.grabats09(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();
@@ -85,7 +85,7 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                Queries.getInvisibleMethodDeclarations(resource).callWithTimeSpent();
+                QueryFactory.getInvisibleMethodDeclarations(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();
@@ -106,7 +106,7 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                Queries.getOrphanNonPrimitivesTypes(resource).callWithTimeSpent();
+                QueryFactory.getOrphanNonPrimitivesTypes(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();
@@ -129,7 +129,7 @@ public class CdoQuery {
                 Resource resource = transaction.getRootResource();
 
                 String name = UUID.randomUUID().toString();
-                Queries.renameAllMethods(resource, name).callWithTimeSpent();
+                QueryFactory.renameAllMethods(resource, name).callWithTimeSpent();
                 transaction.commit();
 
 //				{
@@ -140,7 +140,7 @@ public class CdoQuery {
 //					transaction = session.openTransaction();
 //					resource = transaction.getRootResource();
 //
-//					EList<? extends EObject> methodList = Queries.getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+//					EList<? extends EObject> methodList = QueryFactory.getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
 //					int i = 0;
 //					for (EObject eObject: methodList) {
 //						MethodDeclaration method = (MethodDeclaration) eObject;
@@ -170,7 +170,7 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                Queries.getThrownExceptionsPerPackage(resource).callWithTimeSpent();
+                QueryFactory.getThrownExceptionsPerPackage(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();
@@ -191,7 +191,7 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                Queries.getUnusedMethodsList(resource).callWithTimeSpent();
+                QueryFactory.getUnusedMethodsList(resource).callWithTimeSpent();
 
                 transaction.close();
                 session.close();
@@ -212,7 +212,7 @@ public class CdoQuery {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                Queries.getUnusedMethodsLoop(resource).callWithTimeSpent(); // Query result (loops)
+                QueryFactory.getUnusedMethodsLoop(resource).callWithTimeSpent(); // Query result (loops)
 
                 transaction.close();
                 session.close();
