@@ -74,12 +74,17 @@ public class NeoGraphCreator implements Creator {
 
     @Override
     public File create(String in, String out) {
-        File file = new File(out);
+        File destFile = new File(out);
+
+        if (destFile.exists()) {
+            return destFile;
+        }
+
         try {
             PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
             URI sourceUri = URI.createFileURI(in);
-            URI targetUri = NeoBlueprintsURI.createNeoGraphURI(new File(out));
+            URI targetUri = NeoBlueprintsURI.createNeoGraphURI(destFile);
 
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
@@ -136,6 +141,6 @@ public class NeoGraphCreator implements Creator {
             LOG.error(e);
             return null;
         }
-        return file;
+        return destFile;
     }
 }

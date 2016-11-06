@@ -16,19 +16,19 @@ package fr.inria.atlanmod.neoemf.benchmarks;
  */
 public interface QueryExecutor {
 
-    void queryClassDeclarationAttributes(String in);
+    void queryClassDeclarationAttributes();
 
-    void queryGrabats(String in);
+    void queryGrabats();
 
-    void queryInvisibleMethodDeclarations(String in);
+    void queryInvisibleMethodDeclarations();
 
-    void queryOrphanNonPrimitiveTypes(String in);
+    void queryOrphanNonPrimitiveTypes();
 
-    void queryRenameAllMethods(String in);
+    void queryRenameAllMethods();
 
-    void queryThrownExceptionsPerPackage(String in);
+    void queryThrownExceptionsPerPackage();
 
-    void queryUnusedMethodsList(String in);
+    void queryUnusedMethodsList();
 
-    void queryUnusedMethodsLoop(String in);
+    void queryUnusedMethodsLoop();
 }

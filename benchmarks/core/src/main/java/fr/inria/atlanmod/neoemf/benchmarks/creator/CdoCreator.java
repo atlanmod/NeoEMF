@@ -68,6 +68,11 @@ public class CdoCreator implements Creator {
     @Override
     public File create(String in, String out) {
         File file = new File(out);
+
+        if (file.exists()) {
+            return file;
+        }
+
         try {
             URI sourceUri = URI.createFileURI(in);
 
@@ -95,13 +100,12 @@ public class CdoCreator implements Creator {
 
             Resource targetResource;
 
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(out)) {
+            EmbeddedCDOServer server = new EmbeddedCDOServer(out);
+            try {
                 server.run();
                 CDOSession session = server.openSession();
                 CDOTransaction transaction = session.openTransaction();
                 targetResource = transaction.getRootResource();
-
-                Map<String, Object> saveOpts = new HashMap<>();
 
                 targetResource.getContents().clear();
 
@@ -110,13 +114,15 @@ public class CdoCreator implements Creator {
                     targetResource.getContents().addAll(sourceResource.getContents());
                     LOG.info("End moving elements");
                     LOG.info("Commiting");
-                    targetResource.save(saveOpts);
-//                  transaction.commit();
+                    transaction.commit();
                     LOG.info("Commit done");
                 }
 
                 transaction.close();
                 session.close();
+            }
+            finally {
+                server.stop();
             }
 
             sourceResource.unload();

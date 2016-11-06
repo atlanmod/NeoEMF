@@ -37,12 +37,10 @@ import org.eclipse.net4j.util.container.IContainer;
 import org.eclipse.net4j.util.container.IManagedContainer;
 import org.h2.jdbcx.JdbcDataSource;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EmbeddedCDOServer implements Closeable {
+public class EmbeddedCDOServer {
 
     private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
@@ -98,7 +96,7 @@ public class EmbeddedCDOServer implements Closeable {
         }
     }
 
-    private void stop() {
+    public void stop() {
         if (connector != null) {
             connector.close();
         }
@@ -147,10 +145,5 @@ public class EmbeddedCDOServer implements Closeable {
         config.setRepositoryName(repositoryName);
 
         return config.openNet4jSession();
-    }
-
-    @Override
-    public void close() throws IOException {
-        stop();
     }
 }

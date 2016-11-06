@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.ase2015.query;
+package fr.inria.atlanmod.neoemf.benchmarks.query.ase2015;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
@@ -41,7 +41,7 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ASE2015QueryFactory extends QueryFactory {
+public class QueryFactoryASE2015 extends QueryFactory {
 
     private static final Logger LOG = LogManager.getLogger();
 

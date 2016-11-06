@@ -11,10 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
-import com.google.common.collect.Iterators;
-
-import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
-import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
+import fr.inria.atlanmod.neoemf.benchmarks.creator.CdoCreator;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 
@@ -23,238 +20,56 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.net4j.CDONet4jSession;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.ecore.resource.Resource;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.io.IOException;
 import java.util.UUID;
 
-// in = BenchmarkUtil.getTestDirectory()/*.cdoresource
-
-public class CdoExecutor implements QueryExecutor, Traverser {
+public class CdoExecutor extends AbstractQueryExecutor {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    private EmbeddedCDOServer server;
+    private CDOSession session;
+    private CDOTransaction transaction;
+
     @Override
-    public void queryClassDeclarationAttributes(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
+    public void loadResourcesAndStores() {
+        System.out.println();
+        LOG.info("Initializing resources");
+        PATHS = CdoCreator.getInstance().createAll();
+        LOG.info("Resources initialized");
+    }
 
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
+    @Override
+    public void createResource() throws IOException {
+        org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
 
-                QueryFactory.queryClassDeclarationAttributes(resource).callWithTime();
+        server = new EmbeddedCDOServer(getPath());
+        server.run();
 
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
+        session = server.openSession();
+        transaction = session.openTransaction();
+        resource = transaction.getRootResource();
+    }
+
+    @Override
+    public void destroyResource() {
+        transaction.close();
+        session.close();
+        server.stop();
+
+        if (resource != null && resource.isLoaded()) {
+            resource.unload();
         }
     }
 
     @Override
-    public void queryGrabats(String in) {
+    public void queryRenameAllMethods() {
         try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                QueryFactory.queryGrabats09(resource).callWithTime();
-
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public void queryInvisibleMethodDeclarations(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                QueryFactory.queryInvisibleMethodDeclarations(resource).callWithTime();
-
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public void queryOrphanNonPrimitiveTypes(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                QueryFactory.queryOrphanNonPrimitivesTypes(resource).callWithTime();
-
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public void queryRenameAllMethods(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                ((CDONet4jSession) session).options().setCommitTimeout(50 * 1000);
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                String name = UUID.randomUUID().toString();
-                QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
-                transaction.commit();
-
-//				{
-//					transaction.close();
-//					session.close();
-//
-//					session = server.openSession();
-//					transaction = session.openTransaction();
-//					resource = transaction.getRootResource();
-//
-//					EList<? extends EObject> methodList = QueryFactory.getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
-//					int i = 0;
-//					for (EObject eObject: methodList) {
-//						MethodDeclaration method = (MethodDeclaration) eObject;
-//						if (name.equals(method.getName())) {
-//							i++;
-//						}
-//					}
-//					LOG.info("Renamed {0} methods", i);
-//				}
-
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public void queryThrownExceptionsPerPackage(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                QueryFactory.queryThrownExceptionsPerPackage(resource).callWithTime();
-
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public void queryUnusedMethodsList(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                QueryFactory.queryUnusedMethodsList(resource).callWithTime();
-
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public void queryUnusedMethodsLoop(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                QueryFactory.queryUnusedMethodsLoop(resource).callWithTime(); // Query result (loops)
-
-                transaction.close();
-                session.close();
-            }
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-    }
-
-    @Override
-    public void traverse(String in) {
-        try {
-            org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-            try (EmbeddedCDOServer server = new EmbeddedCDOServer(in)) {
-                server.run();
-                CDOSession session = server.openSession();
-                CDOTransaction transaction = session.openTransaction();
-                Resource resource = transaction.getRootResource();
-
-                LOG.info("Start counting");
-                Instant begin = Instant.now();
-                int count = Iterators.size(resource.getAllContents());
-                Instant end = Instant.now();
-                LOG.info("End counting");
-                LOG.info("Resource {0} contains {1} elements", resource.getURI(), count);
-                LOG.info("Time spent: {0}", Duration.between(begin, end));
-
-                transaction.close();
-                session.close();
-            }
+            ((CDONet4jSession) session).options().setCommitTimeout(50 * 1000);
+            String name = UUID.randomUUID().toString();
+            QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
+            transaction.commit();
         }
         catch (Exception e) {
             LOG.error(e);

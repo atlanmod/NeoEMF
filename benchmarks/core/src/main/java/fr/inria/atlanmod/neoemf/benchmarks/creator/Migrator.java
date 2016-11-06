@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.creator;
 
 import com.google.common.io.Files;
 
@@ -32,17 +32,18 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class Migrator {
 
@@ -66,21 +67,16 @@ public class Migrator {
     public Iterable<File> migrateAll(String destExtension, Class<?> destClass) {
         List<File> files = new ArrayList<>();
         try {
-            URL zipUrl = Migrator.class.getResource("/resources.zip");
-            String rootUrl = "jar:" + zipUrl + "!/";
+            ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/resources.zip"));
 
-            ZipFile zipFile = new ZipFile(new File(zipUrl.toURI()));
-            zipFile.stream()
-                    .filter(e -> !e.isDirectory() && e.getName().endsWith(".xmi"))
-                    .map(ZipEntry::getName)
-                    .forEach(e -> {
-                        File f = migrate(rootUrl + e, destExtension, destClass);
-                        if (f != null && f.exists()) {
-                            files.add(f);
-                        }
-                    });
+            for (File resourceFile : unzip(zis, BenchmarkUtil.getResourcesDirectory())) {
+                File migratedFile = migrate(BenchmarkUtil.getResourcesDirectory().resolve(resourceFile.getName()).toFile(), destExtension, destClass);
+                if (migratedFile != null && migratedFile.exists()) {
+                    files.add(migratedFile);
+                }
+            }
         }
-        catch (IOException | URISyntaxException e) {
+        catch (IOException e) {
             LOG.error(e);
         }
         return files;
@@ -89,7 +85,7 @@ public class Migrator {
     /**
      * Migrates a XMI file and returns the newly created file.
      */
-    public File migrate(String in, String destExtension, Class<?> destClass) {
+    public File migrate(File in, String destExtension, Class<?> destClass) {
         File destFile = new File(getDestFile(in, destExtension));
 
         if (destFile.exists()) {
@@ -97,7 +93,7 @@ public class Migrator {
         }
 
         try {
-            URI srcUri = URI.createURI(in);
+            URI srcUri = URI.createFileURI(in.getAbsolutePath());
             URI destUri = URI.createFileURI(destFile.getAbsolutePath());
 
             // Default source EPackage
@@ -125,8 +121,6 @@ public class Migrator {
             LOG.info("Start saving to '{}'", destUri);
             targetResource.save(saveOpts);
             LOG.info("Saving done");
-
-            destFile.deleteOnExit();
 
             sourceResource.unload();
             targetResource.unload();
@@ -186,7 +180,39 @@ public class Migrator {
         return targetEObject;
     }
 
-    private String getDestFile(String in, String destExtension) {
-        return BenchmarkUtil.getBaseDirectory().resolve(Files.getNameWithoutExtension(in) + "." + destExtension + ".zxmi").toString();
+    private String getDestFile(File in, String destExtension) {
+        return BenchmarkUtil.getResourcesDirectory().resolve(Files.getNameWithoutExtension(in.getName()) + "." + destExtension + ".zxmi").toString();
+    }
+
+    private Iterable<File> unzip(ZipInputStream zipIn, Path destDirectory) throws IOException {
+        List<File> files = new ArrayList<>();
+
+        File destDir = destDirectory.toFile();
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+
+        ZipEntry entry = zipIn.getNextEntry();
+
+        while (entry != null) {
+            File file = destDirectory.resolve(new File(entry.getName()).getName()).toFile();
+            if (!entry.isDirectory() && entry.getName().endsWith(".xmi")) {
+                if (!file.exists()) {
+                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+                        byte[] bytesIn = new byte[4096];
+                        int read;
+                        while ((read = zipIn.read(bytesIn)) != -1) {
+                            bos.write(bytesIn, 0, read);
+                        }
+                    }
+                }
+                files.add(file);
+            }
+            zipIn.closeEntry();
+            entry = zipIn.getNextEntry();
+        }
+        zipIn.close();
+
+        return files;
     }
 }

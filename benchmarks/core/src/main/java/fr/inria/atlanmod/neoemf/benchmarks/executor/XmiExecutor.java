@@ -11,57 +11,51 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
-import com.google.common.collect.Iterators;
-
-import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
+import fr.inria.atlanmod.neoemf.benchmarks.creator.XmiCreator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-// in = BenchmarkUtil.getTestDirectory()/*.xmi
-
-public class XmiExecutor implements Traverser {
+public class XmiExecutor extends AbstractExecutor {
 
     private static final Logger LOG = LogManager.getLogger();
 
     @Override
-    public void traverse(String in) {
-        try {
-            URI uri = URI.createFileURI(in);
+    public void loadResourcesAndStores() {
+        System.out.println();
+        LOG.info("Initializing resources");
+        PATHS = XmiCreator.getInstance().createAll();
+        LOG.info("Resources initialized");
+    }
 
-            org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
+    @Override
+    public void createResource() throws IOException {
+        URI uri = URI.createFileURI(getPath());
 
-            ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
+        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
-            Resource resource = resourceSet.createResource(uri);
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
-            Map<String, Object> loadOpts = new HashMap<>();
-            resource.load(loadOpts);
+        resource = resourceSet.createResource(uri);
 
-            LOG.info("Start counting");
-            Instant begin = Instant.now();
-            int count = Iterators.size(resource.getAllContents());
-            Instant end = Instant.now();
-            LOG.info("End counting");
-            LOG.info("Resource {0} contains {1} elements", uri, count);
-            LOG.info("Time spent: {0}", Duration.between(begin, end));
+        Map<String, Object> loadOpts = new HashMap<>();
+        resource.load(loadOpts);
+    }
 
+    @Override
+    public void destroyResource() {
+        if (resource != null && resource.isLoaded()) {
             resource.unload();
-        }
-        catch (Exception e) {
-            LOG.error(e);
         }
     }
 }

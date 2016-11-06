@@ -16,5 +16,5 @@ package fr.inria.atlanmod.neoemf.benchmarks;
  */
 public interface Traverser {
 
-    void traverse(String in);
+    void traverse();
 }

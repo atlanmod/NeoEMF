@@ -9,22 +9,22 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.ase2015;
+package fr.inria.atlanmod.neoemf.benchmarks;
 
 import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
 
 /**
  *
  */
-public interface ASE2015QueryExecutor extends QueryExecutor {
+public interface QueryExecutorASE2015 extends QueryExecutor {
 
-    void queryASE2015GetBranchStatements(String in);
+    void queryASE2015GetBranchStatements();
 
-    void queryASE2015Grabats09(String in);
+    void queryASE2015Grabats09();
 
-    void queryASE2015InvisibleMethodDeclarations(String in);
+    void queryASE2015InvisibleMethodDeclarations();
 
-    void queryASE2015SpecificInvisibleMethodDeclarations(String in);
+    void queryASE2015SpecificInvisibleMethodDeclarations();
 
-    void queryASE2015ThrownExceptions(String in);
+    void queryASE2015ThrownExceptions();
 }

@@ -73,12 +73,17 @@ public class NeoMapCreator implements Creator {
 
     @Override
     public File create(String in, String out) {
-        File file = new File(out);
+        File destFile = new File(out);
+
+        if (destFile.exists()) {
+            return destFile;
+        }
+
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
             URI sourceUri = URI.createFileURI(in);
-            URI targetUri = NeoMapURI.createNeoMapURI(new File(out));
+            URI targetUri = NeoMapURI.createNeoMapURI(destFile);
 
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
@@ -134,6 +139,6 @@ public class NeoMapCreator implements Creator {
             LOG.error(e);
             return null;
         }
-        return file;
+        return destFile;
     }
 }

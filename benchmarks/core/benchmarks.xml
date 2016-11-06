@@ -168,7 +168,7 @@
     			<echo>Creating ${cdo.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.creator.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${xmi.file}"/>
@@ -199,7 +199,7 @@
     			<echo>Creating ${neoemf.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.creator.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${xmi.file}"/>
@@ -230,7 +230,7 @@
     			<echo>Creating ${xmi.out}</echo>
     			<echo>JVM args: ${creator.vmargs.value}</echo>
     			<stopwatch name="timer"/>
-		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
+		        <java classname="fr.inria.atlanmod.neoemf.benchmarks.creator.Migrator" failonerror="false" fork="yes" timeout="${timeout}">
 		        	<jvmarg line="${creator.vmargs.value}"/>
 		            <arg value="-input"/>
 		            <arg value="${xmi.file}"/>
