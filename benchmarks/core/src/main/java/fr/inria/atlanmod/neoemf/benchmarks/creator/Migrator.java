@@ -49,6 +49,8 @@ public class Migrator {
 
     private static final Logger LOG = LogManager.getLogger();
 
+    private static final String ZIP_FILENAME = "resources-light.zip";
+
     private static Migrator INSTANCE;
 
     private Migrator() {
@@ -67,7 +69,7 @@ public class Migrator {
     public Iterable<File> migrateAll(String destExtension, Class<?> destClass) {
         List<File> files = new ArrayList<>();
         try {
-            ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/resources.zip"));
+            ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME));
 
             for (File resourceFile : unzip(zis, BenchmarkUtil.getResourcesDirectory())) {
                 File migratedFile = migrate(BenchmarkUtil.getResourcesDirectory().resolve(resourceFile.getName()).toFile(), destExtension, destClass);
