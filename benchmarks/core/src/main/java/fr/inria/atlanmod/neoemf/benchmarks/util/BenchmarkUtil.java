@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.benchmarks.util;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openjdk.jmh.annotations.Mode;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,6 +21,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class BenchmarkUtil {
+
+    private static final Logger LOG = LogManager.getLogger();
 
     /**
      * Default JVM arguments for creating test resources.
@@ -40,6 +44,10 @@ public class BenchmarkUtil {
 
     public static final int DEFAULT_TIMEOUT = 7200000;
 
+    public static final int DEFAULT_ITERATIONS = 5;
+    public static final int DEFAULT_BATCH_SIZE = 1;
+    public static final int DEFAULT_FORKS = 1;
+
     private static Path BASE_DIR;
     private static Path BENCH_DIR;
 
@@ -52,7 +60,7 @@ public class BenchmarkUtil {
                 BASE_DIR = Files.createDirectories(Paths.get(System.getProperty("java.io.tmpdir"), "neoemf-benchmarks"));
             }
             catch (IOException e) {
-                LogManager.getLogger().warn(e);
+                LOG.warn(e);
             }
         }
         return BASE_DIR;
@@ -64,7 +72,7 @@ public class BenchmarkUtil {
                 BENCH_DIR = Files.createTempDirectory(getBaseDirectory(), "bench");
             }
             catch (IOException e) {
-                LogManager.getLogger().error(e);
+                LOG.error(e);
             }
         }
         return BENCH_DIR;

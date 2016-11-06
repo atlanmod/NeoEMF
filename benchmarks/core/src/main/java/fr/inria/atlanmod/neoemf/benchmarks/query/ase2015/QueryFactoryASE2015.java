@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.query.ase2015;
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -42,8 +40,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class QueryFactoryASE2015 extends QueryFactory {
-
-    private static final Logger LOG = LogManager.getLogger();
 
     public static Query<Integer> queryAse2015Grabats09(Resource resource) {
         return new Query<Integer>() {

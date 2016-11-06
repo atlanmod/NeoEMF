@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
 import com.google.common.collect.Iterators;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
 import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
@@ -25,6 +26,8 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OperationsPerInvocation;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -32,15 +35,15 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
-@Fork(value = 1, jvmArgs = {
+@State(Scope.Thread)
+@BenchmarkMode(Mode.SampleTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@Fork(value = BenchmarkUtil.DEFAULT_FORKS, jvmArgs = {
         "-Dfile.encoding=utf-8",
         "-server",
         "-Xmx8g",
@@ -48,24 +51,28 @@ import java.time.Instant;
         "-XX:+DisableExplicitGC",
         "-XX:+CMSClassUnloadingEnabled"
 })
-@Warmup(iterations = 5)
-@Measurement(iterations = 5)
-@BenchmarkMode(Mode.AverageTime)
-@State(Scope.Thread)
+@Warmup(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
+@Measurement(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
+@OperationsPerInvocation(BenchmarkUtil.DEFAULT_BATCH_SIZE)
 public abstract class AbstractExecutor implements Traverser {
 
-    private static final Logger LOG = LogManager.getLogger();
+    protected static final Logger LOG = LogManager.getLogger();
 
-    protected static String[] PATHS;
+    private static String[] PATHS;
 
     protected Resource resource;
 
-    @Param({"0", "1", "2", "3", "4"})
+    // TODO: Find a better way to navigate between the differents resources
     @SuppressWarnings("unused")
+    @Param({"0", "1", "2"})
     private int currentIndex;
 
     @Setup(Level.Trial)
-    public abstract void loadResourcesAndStores();
+    public final void loadResourcesAndStores() {
+        PATHS = getCreator().createAll();
+    }
+
+    protected abstract Creator getCreator();
 
     @Setup(Level.Iteration)
     public abstract void createResource() throws IOException;
@@ -73,15 +80,9 @@ public abstract class AbstractExecutor implements Traverser {
     @TearDown(Level.Iteration)
     public abstract void destroyResource();
 
-    protected String getPath() throws IOException {
-        Path source = Paths.get(PATHS[currentIndex]);
-        Path target = BenchmarkUtil.getBenchDirectory().resolve(new File(PATHS[currentIndex]).getName());
-
-        Files.copy(source, target);
-
-        target.toFile().deleteOnExit();
-
-        return target.toAbsolutePath().toString();
+    // TODO: Copy resource in a temp dir to avoid overwritting
+    protected final String getPath() throws IOException {
+        return PATHS[currentIndex];
     }
 
     @Benchmark

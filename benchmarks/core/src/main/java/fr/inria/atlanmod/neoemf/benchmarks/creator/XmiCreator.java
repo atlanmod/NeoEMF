@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.creator;
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -27,9 +25,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class XmiCreator implements Creator {
-
-    private static final Logger LOG = LogManager.getLogger();
+public class XmiCreator extends AbstractCreator {
 
     private static Creator INSTANCE;
 

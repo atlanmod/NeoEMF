@@ -11,12 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.creator.CdoCreator;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.net4j.CDONet4jSession;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
@@ -26,18 +25,13 @@ import java.util.UUID;
 
 public class CdoExecutor extends AbstractQueryExecutor {
 
-    private static final Logger LOG = LogManager.getLogger();
-
     private EmbeddedCDOServer server;
     private CDOSession session;
     private CDOTransaction transaction;
 
     @Override
-    public void loadResourcesAndStores() {
-        System.out.println();
-        LOG.info("Initializing resources");
-        PATHS = CdoCreator.getInstance().createAll();
-        LOG.info("Resources initialized");
+    protected Creator getCreator() {
+        return CdoCreator.getInstance();
     }
 
     @Override
@@ -54,9 +48,16 @@ public class CdoExecutor extends AbstractQueryExecutor {
 
     @Override
     public void destroyResource() {
-        transaction.close();
-        session.close();
-        server.stop();
+        if (transaction != null && !transaction.isClosed()) {
+            transaction.close();
+        }
+
+        if (session != null && !session.isClosed()) {
+            session.close();
+        }
+
+        if (server != null && !server.isClosed())
+        server.close();
 
         if (resource != null && resource.isLoaded()) {
             resource.unload();

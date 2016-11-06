@@ -9,20 +9,17 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.creator;
+
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  */
-public interface QueryExecutorASE2015 extends QueryExecutor {
+public abstract class AbstractCreator implements Creator {
 
-    void queryASE2015GetBranchStatements();
-
-    void queryASE2015Grabats09();
-
-    void queryASE2015InvisibleMethodDeclarations();
-
-    void queryASE2015SpecificInvisibleMethodDeclarations();
-
-    void queryASE2015ThrownExceptions();
+    protected static final Logger LOG = LogManager.getLogger();
 }

@@ -22,8 +22,6 @@ import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -37,9 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NeoGraphCreator implements Creator {
-
-    private static final Logger LOG = LogManager.getLogger();
+public class NeoGraphCreator extends AbstractCreator{
 
     private static Creator INSTANCE;
 

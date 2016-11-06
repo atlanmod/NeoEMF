@@ -11,15 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.creator.NeoGraphCreator;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -31,14 +32,9 @@ import java.util.Map;
 
 public class NeoGraphExecutor extends AbstractQueryExecutor {
 
-    private static final Logger LOG = LogManager.getLogger();
-
     @Override
-    public void loadResourcesAndStores() {
-        System.out.println();
-        LOG.info("Initializing resources");
-        PATHS = NeoGraphCreator.getInstance().createAll();
-        LOG.info("Resources initialized");
+    protected Creator getCreator() {
+        return NeoGraphCreator.getInstance();
     }
 
     @Override
@@ -55,6 +51,7 @@ public class NeoGraphExecutor extends AbstractQueryExecutor {
         resource = resourceSet.createResource(uri);
 
         Map<String, Object> loadOpts = new HashMap<>();
+        loadOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
 
 //      List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 //      storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
@@ -68,11 +65,13 @@ public class NeoGraphExecutor extends AbstractQueryExecutor {
 
     @Override
     public void destroyResource() {
-        if (resource instanceof PersistentResourceImpl) {
-            PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
-        }
-        else {
-            resource.unload();
+        if (resource != null && resource.isLoaded()) {
+            if (resource instanceof PersistentResourceImpl) {
+                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
+            }
+            else {
+                resource.unload();
+            }
         }
     }
 }

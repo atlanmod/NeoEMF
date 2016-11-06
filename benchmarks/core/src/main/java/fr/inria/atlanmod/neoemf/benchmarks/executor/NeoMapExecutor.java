@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.creator.NeoMapCreator;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
@@ -18,8 +19,6 @@ import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -31,14 +30,9 @@ import java.util.Map;
 
 public class NeoMapExecutor extends AbstractQueryExecutor {
 
-    private static final Logger LOG = LogManager.getLogger();
-
     @Override
-    public void loadResourcesAndStores() {
-        System.out.println();
-        LOG.info("Initializing resources");
-        PATHS = NeoMapCreator.getInstance().createAll();
-        LOG.info("Resources initialized");
+    protected Creator getCreator() {
+        return NeoMapCreator.getInstance();
     }
 
     @Override
@@ -68,11 +62,13 @@ public class NeoMapExecutor extends AbstractQueryExecutor {
 
     @Override
     public void destroyResource() {
-        if (resource instanceof PersistentResourceImpl) {
-            PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
-        }
-        else {
-            resource.unload();
+        if (resource != null && resource.isLoaded()) {
+            if (resource instanceof PersistentResourceImpl) {
+                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
+            }
+            else {
+                resource.unload();
+            }
         }
     }
 }

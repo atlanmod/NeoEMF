@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.creator.XmiCreator;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -26,14 +25,9 @@ import java.util.Map;
 
 public class XmiExecutor extends AbstractExecutor {
 
-    private static final Logger LOG = LogManager.getLogger();
-
     @Override
-    public void loadResourcesAndStores() {
-        System.out.println();
-        LOG.info("Initializing resources");
-        PATHS = XmiCreator.getInstance().createAll();
-        LOG.info("Resources initialized");
+    protected Creator getCreator() {
+        return XmiCreator.getInstance();
     }
 
     @Override

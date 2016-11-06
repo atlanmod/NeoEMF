@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -39,6 +41,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class QueryFactory {
+
+    protected static final Logger LOG = LogManager.getLogger();
 
     /**
      * Returns the orphan and non Primitive Types of a java model this is a common query to all both standard and

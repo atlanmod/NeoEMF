@@ -12,12 +12,11 @@
 package fr.inria.atlanmod.neoemf.benchmarks.executor;
 
 import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
-import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutorASE2015;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openjdk.jmh.annotations.Benchmark;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -27,9 +26,7 @@ import java.util.UUID;
  */
 public abstract class AbstractQueryExecutor extends AbstractExecutor implements QueryExecutor, QueryExecutorASE2015 {
 
-    private static final Logger LOG = LogManager.getLogger();
-
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryClassDeclarationAttributes() {
         try {
@@ -40,7 +37,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryGrabats() {
         try {
@@ -51,7 +48,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryInvisibleMethodDeclarations() {
         try {
@@ -62,7 +59,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryOrphanNonPrimitiveTypes() {
         try {
@@ -86,7 +83,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryThrownExceptionsPerPackage() {
         try {
@@ -97,7 +94,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryUnusedMethodsList() {
         try {
@@ -108,7 +105,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryUnusedMethodsLoop() {
         try {
@@ -119,7 +116,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryASE2015GetBranchStatements() {
         try {
@@ -130,7 +127,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryASE2015Grabats09() {
         try {
@@ -141,7 +138,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryASE2015InvisibleMethodDeclarations() {
         try {
@@ -152,7 +149,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryASE2015SpecificInvisibleMethodDeclarations() {
         try {
@@ -163,7 +160,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
         }
     }
 
-    //@Benchmark
+    @Benchmark
     @Override
     public void queryASE2015ThrownExceptions() {
         try {

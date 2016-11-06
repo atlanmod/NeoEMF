@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.util.cdo;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
 import org.eclipse.emf.cdo.net4j.CDONet4jUtil;
 import org.eclipse.emf.cdo.server.CDOServerUtil;
@@ -41,6 +43,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EmbeddedCDOServer {
+
+    private static final Logger LOG = LogManager.getLogger();
 
     private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
@@ -90,19 +94,24 @@ public class EmbeddedCDOServer {
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
-                    EmbeddedCDOServer.this.stop();
+                    EmbeddedCDOServer.this.close();
                 }
             });
         }
     }
 
-    public void stop() {
-        if (connector != null) {
+    public void close() {
+        if (connector != null && !connector.isClosed()) {
             connector.close();
         }
-        if (container != null) {
-            container.deactivate();
+        if (container != null && container.isActive()) {
+            Exception e = container.deactivate();
+            LOG.error(e);
         }
+    }
+
+    public boolean isClosed() {
+        return connector == null || connector.isClosed();
     }
 
     private JdbcDataSource getJdbcDataSource(String url) {
