@@ -42,132 +42,117 @@ import java.util.Set;
 public class QueryFactoryASE2015 extends QueryFactory {
 
     public static Query<Integer> queryGrabatsAse2015(Resource resource) {
-        return new Query<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                EList<ClassDeclaration> listResult = new BasicEList<>();
-                EList<? extends EObject> allTypeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
-                for (EObject eObj : allTypeDeclarations) {
-                    TypeDeclaration typeDecl = (TypeDeclaration) eObj;
-                    for (BodyDeclaration method : typeDecl.getBodyDeclarations()) {
-                        if ((method instanceof MethodDeclaration)) {
-                            MethodDeclaration methDecl = (MethodDeclaration) method;
-                            if (methDecl.getModifier() != null && methDecl.getModifier().isStatic() && methDecl.getReturnType() != null && methDecl.getReturnType().getType() == typeDecl) {
-                                listResult.add((ClassDeclaration) typeDecl);
-                            }
+        return () -> {
+            EList<ClassDeclaration> listResult = new BasicEList<>();
+            EList<? extends EObject> allTypeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
+            for (EObject eObj : allTypeDeclarations) {
+                TypeDeclaration typeDecl = (TypeDeclaration) eObj;
+                for (BodyDeclaration method : typeDecl.getBodyDeclarations()) {
+                    if ((method instanceof MethodDeclaration)) {
+                        MethodDeclaration methDecl = (MethodDeclaration) method;
+                        if (methDecl.getModifier() != null && methDecl.getModifier().isStatic() && methDecl.getReturnType() != null && methDecl.getReturnType().getType() == typeDecl) {
+                            listResult.add((ClassDeclaration) typeDecl);
                         }
                     }
                 }
-                return listResult.size();
             }
+            return listResult.size();
         };
     }
 
     public static Query<Integer> queryThrownExceptionsAse2015(Resource resource) {
-        return new Query<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                EList<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
-                EList<TypeAccess> thrownExceptions = new BasicEList<>();
-                for (EObject object : classes) {
-                    if (object instanceof ClassDeclaration) {
-                        for (BodyDeclaration declaration : ((ClassDeclaration) object).getBodyDeclarations()) {
-                            if (declaration instanceof MethodDeclaration) {
-                                for (TypeAccess type : ((MethodDeclaration) declaration).getThrownExceptions()) {
-                                    if (!thrownExceptions.contains(type)) {
-                                        thrownExceptions.add(type);
-                                    }
+        return () -> {
+            EList<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            EList<TypeAccess> thrownExceptions = new BasicEList<>();
+            for (EObject object : classes) {
+                if (object instanceof ClassDeclaration) {
+                    for (BodyDeclaration declaration : ((ClassDeclaration) object).getBodyDeclarations()) {
+                        if (declaration instanceof MethodDeclaration) {
+                            for (TypeAccess type : ((MethodDeclaration) declaration).getThrownExceptions()) {
+                                if (!thrownExceptions.contains(type)) {
+                                    thrownExceptions.add(type);
                                 }
                             }
                         }
                     }
                 }
-                return thrownExceptions.size();
             }
+            return thrownExceptions.size();
         };
     }
 
     public static Query<Integer> querySpecificInvisibleMethodDeclarationsAse2015(Resource resource) {
-        return new Query<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
-                Model model = (Model) resource.getContents().get(0);
-                if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
-                    try {
-                        for (org.eclipse.gmt.modisco.java.Package pack : model.getOwnedElements()) {
-                            getInvisibleMethods(pack, methodDeclarations);
-                        }
+        return () -> {
+            EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
+            Model model = (Model) resource.getContents().get(0);
+            if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
+                try {
+                    for (org.eclipse.gmt.modisco.java.Package pack : model.getOwnedElements()) {
+                        getInvisibleMethods(pack, methodDeclarations);
                     }
-                    catch (NullPointerException e) {
-                        LOG.error(e);
-                    }
-                    return methodDeclarations.size();
                 }
-                else {
-                    return methodDeclarations.size();
+                catch (NullPointerException e) {
+                    Query.LOG.error(e);
                 }
+                return methodDeclarations.size();
+            }
+            else {
+                return methodDeclarations.size();
             }
         };
     }
 
     public static Query<Integer> queryCommentsTagContentAse2015(Resource resource) {
-        return new Query<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                Set<TextElement> result = new HashSet<>();
-                try {
-                    Model model = (Model) resource.getContents().get(0);
-                    if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
-                        for (CompilationUnit cu : model.getCompilationUnits()) {
-                            for (Comment com : cu.getCommentList()) {
-                                if (com instanceof Javadoc) {
-                                    Javadoc jd = (Javadoc) com;
-                                    for (TagElement te : jd.getTags()) {
-                                        for (ASTNode node : te.getFragments()) {
-                                            if (node instanceof TextElement) {
-                                                result.add((TextElement) node);
-                                            }
+        return () -> {
+            Set<TextElement> result = new HashSet<>();
+            try {
+                Model model = (Model) resource.getContents().get(0);
+                if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
+                    for (CompilationUnit cu : model.getCompilationUnits()) {
+                        for (Comment com : cu.getCommentList()) {
+                            if (com instanceof Javadoc) {
+                                Javadoc jd = (Javadoc) com;
+                                for (TagElement te : jd.getTags()) {
+                                    for (ASTNode node : te.getFragments()) {
+                                        if (node instanceof TextElement) {
+                                            result.add((TextElement) node);
                                         }
                                     }
                                 }
                             }
                         }
-                        return result.size();
                     }
-                    else {
-                        return result.size();
-                    }
-                }
-                catch (NullPointerException e) {
-                    LOG.error(e);
                     return result.size();
                 }
+                else {
+                    return result.size();
+                }
+            }
+            catch (NullPointerException e) {
+                Query.LOG.error(e);
+                return result.size();
             }
         };
     }
 
     @SuppressWarnings("unused")
     public static Query<Integer> queryAse2015BranchStatements(Resource resource) {
-        return new Query<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                EList<Statement> result = new BasicEList<>();
-                Model model = (Model) resource.getContents().get(0);
-                if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
-                    try {
-                        for (org.eclipse.gmt.modisco.java.Package pack : model.getOwnedElements()) {
-                            getAccessedTypes(pack, result);
-                        }
+        return () -> {
+            EList<Statement> result = new BasicEList<>();
+            Model model = (Model) resource.getContents().get(0);
+            if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
+                try {
+                    for (org.eclipse.gmt.modisco.java.Package pack : model.getOwnedElements()) {
+                        getAccessedTypes(pack, result);
                     }
-                    catch (NullPointerException e) {
-                        LOG.error(e);
-                    }
-                    return result.size();
                 }
-                else {
-                    return result.size();
+                catch (NullPointerException e) {
+                    Query.LOG.error(e);
                 }
+                return result.size();
+            }
+            else {
+                return result.size();
             }
         };
     }

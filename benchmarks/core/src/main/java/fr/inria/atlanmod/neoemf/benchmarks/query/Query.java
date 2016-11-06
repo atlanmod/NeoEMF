@@ -20,12 +20,19 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-public abstract class Query<T> implements Callable<T> {
+/**
+ * @param <V> the result type of method {@code call}
+ */
+@FunctionalInterface
+public interface Query<V> extends Callable<V> {
 
-    private static final Logger LOG = LogManager.getLogger();
+    Logger LOG = LogManager.getLogger();
 
-    public final T callWithTime() throws Exception {
-        T result;
+    @Override
+    V call() throws Exception;
+
+    default V callWithTime() throws Exception {
+        V result;
 
         LOG.info("Start query");
         Instant begin = Instant.now();
@@ -44,8 +51,8 @@ public abstract class Query<T> implements Callable<T> {
         return result;
     }
 
-    public final T callWithMemory() throws Exception {
-        T result;
+    default V callWithMemory() throws Exception {
+        V result;
 
         Runtime.getRuntime().gc();
         long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -61,8 +68,8 @@ public abstract class Query<T> implements Callable<T> {
         return result;
     }
 
-    public final T callWithMemoryAndTime() throws Exception {
-        T result;
+    default V callWithMemoryAndTime() throws Exception {
+        V result;
 
         Runtime.getRuntime().gc();
         long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();

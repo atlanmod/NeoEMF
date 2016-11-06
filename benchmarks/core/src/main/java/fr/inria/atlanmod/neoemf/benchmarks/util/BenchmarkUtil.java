@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openjdk.jmh.annotations.Mode;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,8 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class BenchmarkUtil {
-
-    private static final Logger LOG = LogManager.getLogger();
 
     /**
      * Default JVM arguments for creating test resources.
@@ -47,6 +44,8 @@ public class BenchmarkUtil {
     public static final int DEFAULT_ITERATIONS = 5;
     public static final int DEFAULT_BATCH_SIZE = 1;
     public static final int DEFAULT_FORKS = 1;
+
+    private static final Logger LOG = LogManager.getLogger();
 
     private static Path BASE_DIR;
     private static Path BENCH_DIR;

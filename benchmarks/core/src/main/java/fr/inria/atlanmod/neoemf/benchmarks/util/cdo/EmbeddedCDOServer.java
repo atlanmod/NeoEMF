@@ -76,8 +76,8 @@ public class EmbeddedCDOServer {
             CDOServerUtil.addRepository(container, cdoRepository);
 
             @SuppressWarnings("unused")
-            IAcceptor acceptor = JVMUtil.getAcceptor(container, "default"); //$NON-NLS-1$
-            connector = JVMUtil.getConnector(container, "default"); //$NON-NLS-1$
+            IAcceptor acceptor = JVMUtil.getAcceptor(container, "default");
+            connector = JVMUtil.getConnector(container, "default");
 
             cdoRepository.getSessionManager().addListener(new ContainerEventAdapter<ISession>() {
                 @Override

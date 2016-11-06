@@ -56,8 +56,9 @@ public class CdoRunner extends AbstractQueryRunner {
             session.close();
         }
 
-        if (server != null && !server.isClosed())
-        server.close();
+        if (server != null && !server.isClosed()) {
+            server.close();
+        }
 
         if (resource != null && resource.isLoaded()) {
             resource.unload();

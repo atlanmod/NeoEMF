@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NeoGraphCreator extends AbstractCreator{
+public class NeoGraphCreator extends AbstractCreator {
 
     private static Creator INSTANCE;
 
@@ -95,15 +95,12 @@ public class NeoGraphCreator extends AbstractCreator{
                 loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
             }
 
-            new Query<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    LOG.info("Loading source resource");
-                    sourceResource.load(loadOpts);
-                    LOG.info("Source resource loaded");
-                    return null;
-                }
-            }.callWithMemory();
+            ((Query<Void>) () -> {
+                Query.LOG.info("Loading source resource");
+                sourceResource.load(loadOpts);
+                Query.LOG.info("Source resource loaded");
+                return null;
+            }).callWithMemory();
 
             Resource targetResource = resourceSet.createResource(targetUri);
 
