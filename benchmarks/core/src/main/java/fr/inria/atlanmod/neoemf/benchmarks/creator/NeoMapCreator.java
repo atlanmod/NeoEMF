@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.creator;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
@@ -40,11 +40,40 @@ public class NeoMapCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // in =     BenchmarkUtil.getBaseDirectory()/*.neoemf.zxmi
-    // out =    BenchmarkUtil.getBaseDirectory()/${in.filename}.neoemfmapresource
+    private static Creator INSTANCE;
+
+    private NeoMapCreator() {
+    }
+
+    public static Creator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new NeoMapCreator();
+        }
+        return INSTANCE;
+    }
+
+    public static void main(String[] args) {
+        NeoMapCreator.getInstance().createAll();
+    }
 
     @Override
-    public void create(String in, String out) {
+    public String getBaseName() {
+        return "neoemf";
+    }
+
+    @Override
+    public String getResourceName() {
+        return "neoemfmapresource";
+    }
+
+    @Override
+    public Class<?> getAssociatedClass() {
+        return org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
+    }
+
+    @Override
+    public File create(String in, String out) {
+        File file = new File(out);
         try {
             PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
@@ -54,7 +83,6 @@ public class NeoMapCreator implements Creator {
             org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
@@ -65,17 +93,15 @@ public class NeoMapCreator implements Creator {
                 loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
             }
 
-            Runtime.getRuntime().gc();
-            long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
-            LOG.info("Loading source resource");
-            sourceResource.load(loadOpts);
-
-            LOG.info("Source resource loaded");
-            Runtime.getRuntime().gc();
-            long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-            LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+            new Query<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    LOG.info("Loading source resource");
+                    sourceResource.load(loadOpts);
+                    LOG.info("Source resource loaded");
+                    return null;
+                }
+            }.callWithMemory();
 
             Resource targetResource = resourceSet.createResource(targetUri);
 
@@ -85,15 +111,18 @@ public class NeoMapCreator implements Creator {
             storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
             saveOpts.put(MapResourceOptions.STORE_OPTIONS, storeOptions);
             targetResource.save(saveOpts);
-
-            LOG.info("Start moving elements");
             targetResource.getContents().clear();
-            targetResource.getContents().addAll(sourceResource.getContents());
-            LOG.info("End moving elements");
-            LOG.info("Start saving");
-            targetResource.save(saveOpts);
-            LOG.info("Saved");
 
+            {
+                LOG.info("Start moving elements");
+                targetResource.getContents().addAll(sourceResource.getContents());
+                LOG.info("End moving elements");
+                LOG.info("Start saving");
+                targetResource.save(saveOpts);
+                LOG.info("Saved");
+            }
+
+            sourceResource.unload();
             if (targetResource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) targetResource);
             }
@@ -103,6 +132,8 @@ public class NeoMapCreator implements Creator {
         }
         catch (Exception e) {
             LOG.error(e);
+            return null;
         }
+        return file;
     }
 }

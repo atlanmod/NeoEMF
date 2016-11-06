@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor;
 
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015QueryExecutor;
-import fr.inria.atlanmod.neoemf.benchmarks.executor.NeoMapExecutor;
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.query.ASE2015QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.executor.NeoMapExecutor;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
@@ -66,7 +66,7 @@ public class ASE2015NeoMapExecutor extends NeoMapExecutor implements ASE2015Quer
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getCommentsTagContent(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015GetCommentsTagContent(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -106,7 +106,7 @@ public class ASE2015NeoMapExecutor extends NeoMapExecutor implements ASE2015Quer
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.grabats09(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015Grabats09(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -146,7 +146,7 @@ public class ASE2015NeoMapExecutor extends NeoMapExecutor implements ASE2015Quer
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -186,7 +186,7 @@ public class ASE2015NeoMapExecutor extends NeoMapExecutor implements ASE2015Quer
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getSpecificInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015SpecificInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -226,7 +226,7 @@ public class ASE2015NeoMapExecutor extends NeoMapExecutor implements ASE2015Quer
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getThrownExceptions(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015ThrownExceptions(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);

@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor;
 
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015QueryExecutor;
-import fr.inria.atlanmod.neoemf.benchmarks.executor.CdoExecutor;
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.query.ASE2015QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.executor.CdoExecutor;
 import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,14 +37,14 @@ public class ASE2015CdoExecutor extends CdoExecutor implements ASE2015QueryExecu
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015QueryFactory.getCommentsTagContent(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.queryAse2015GetCommentsTagContent(resource).callWithMemoryAndTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -59,14 +59,14 @@ public class ASE2015CdoExecutor extends CdoExecutor implements ASE2015QueryExecu
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015QueryFactory.grabats09(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.queryAse2015Grabats09(resource).callWithMemoryAndTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -81,14 +81,14 @@ public class ASE2015CdoExecutor extends CdoExecutor implements ASE2015QueryExecu
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015QueryFactory.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.queryInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -103,14 +103,14 @@ public class ASE2015CdoExecutor extends CdoExecutor implements ASE2015QueryExecu
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015QueryFactory.getSpecificInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.queryAse2015SpecificInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -125,14 +125,14 @@ public class ASE2015CdoExecutor extends CdoExecutor implements ASE2015QueryExecu
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                ASE2015QueryFactory.getThrownExceptions(resource).callWithMemoryUsage();
+                ASE2015QueryFactory.queryAse2015ThrownExceptions(resource).callWithMemoryAndTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 }

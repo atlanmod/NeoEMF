@@ -15,8 +15,8 @@ import com.google.common.collect.Iterators;
 
 import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
 import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
-import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,14 +46,14 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                QueryFactory.getClassDeclarationAttributes(resource).callWithTimeSpent();
+                QueryFactory.queryClassDeclarationAttributes(resource).callWithTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -68,14 +68,14 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                QueryFactory.grabats09(resource).callWithTimeSpent();
+                QueryFactory.queryGrabats09(resource).callWithTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -90,14 +90,14 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                QueryFactory.getInvisibleMethodDeclarations(resource).callWithTimeSpent();
+                QueryFactory.queryInvisibleMethodDeclarations(resource).callWithTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -112,14 +112,14 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                QueryFactory.getOrphanNonPrimitivesTypes(resource).callWithTimeSpent();
+                QueryFactory.queryOrphanNonPrimitivesTypes(resource).callWithTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -136,7 +136,7 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 Resource resource = transaction.getRootResource();
 
                 String name = UUID.randomUUID().toString();
-                QueryFactory.renameAllMethods(resource, name).callWithTimeSpent();
+                QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
                 transaction.commit();
 
 //				{
@@ -163,7 +163,7 @@ public class CdoExecutor implements QueryExecutor, Traverser {
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -178,14 +178,14 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                QueryFactory.getThrownExceptionsPerPackage(resource).callWithTimeSpent();
+                QueryFactory.queryThrownExceptionsPerPackage(resource).callWithTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -200,14 +200,14 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                QueryFactory.getUnusedMethodsList(resource).callWithTimeSpent();
+                QueryFactory.queryUnusedMethodsList(resource).callWithTime();
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -222,14 +222,14 @@ public class CdoExecutor implements QueryExecutor, Traverser {
                 CDOTransaction transaction = session.openTransaction();
                 Resource resource = transaction.getRootResource();
 
-                QueryFactory.getUnusedMethodsLoop(resource).callWithTimeSpent(); // Query result (loops)
+                QueryFactory.queryUnusedMethodsLoop(resource).callWithTime(); // Query result (loops)
 
                 transaction.close();
                 session.close();
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -257,7 +257,7 @@ public class CdoExecutor implements QueryExecutor, Traverser {
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 }

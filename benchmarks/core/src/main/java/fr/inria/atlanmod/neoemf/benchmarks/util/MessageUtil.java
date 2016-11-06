@@ -19,18 +19,17 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class MessageUtil {
 
-    private MessageUtil() {
-    }
-
     /**
      * 'HH:mm:ss' format for time.
      */
     private static final String TIME_FORMAT = "%02d:%02d:%02d";
-
     /**
      * 10^6 factor for bytes.
      */
     private static final int MB = 1024 * 1024;
+
+    private MessageUtil() {
+    }
 
     public static String formatMillis(long millis) {
         return String.format(TIME_FORMAT,

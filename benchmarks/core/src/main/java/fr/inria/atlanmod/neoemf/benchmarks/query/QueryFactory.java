@@ -44,8 +44,8 @@ public class QueryFactory {
      * Returns the orphan and non Primitive Types of a java model this is a common query to all both standard and
      * customized methods.
      */
-    public static Query getOrphanNonPrimitivesTypes(Resource resource) {
-        return new Query() {
+    public static Query<Integer> queryOrphanNonPrimitivesTypes(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Model model;
@@ -61,8 +61,8 @@ public class QueryFactory {
         };
     }
 
-    public static Query getClassDeclarationAttributes(Resource resource) {
-        return new Query() {
+    public static Query<Integer> queryClassDeclarationAttributes(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 HashMap<String, EList<NamedElement>> resultMap = new HashMap<>();
@@ -93,8 +93,8 @@ public class QueryFactory {
         return fields;
     }
 
-    public static Query getThrownExceptionsPerPackage(Resource resource) {
-        return new Query() {
+    public static Query<Integer> queryThrownExceptionsPerPackage(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 HashMap<String, EList<TypeAccess>> resultMap = new HashMap<>();
@@ -125,16 +125,16 @@ public class QueryFactory {
     /**
      * Renames all the method names with the given String.
      */
-    public static Query renameAllMethods(Resource resource, String name) {
-        return new Query() {
+    public static Query<Void> queryRenameAllMethods(Resource resource, String name) {
+        return new Query<Void>() {
             @Override
-            public Integer call() throws Exception {
+            public Void call() throws Exception {
                 EList<? extends EObject> methodList = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
                 for (EObject eObject : methodList) {
                     MethodDeclaration method = (MethodDeclaration) eObject;
                     method.setName(name);
                 }
-                return methodList.size();
+                return null;
             }
         };
     }
@@ -142,21 +142,20 @@ public class QueryFactory {
     /**
      * Returns the list of classes.
      */
-    public static Query grabats09(Resource resource) {
-        return new Query() {
+    public static Query<Integer> queryGrabats09(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<ClassDeclaration> listResult = new BasicEList<>();
                 for (EObject owner : getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration())) {
                     TypeDeclaration typeOwner = (TypeDeclaration) owner;
                     for (BodyDeclaration method : typeOwner.getBodyDeclarations()) {
-                        if (!(method instanceof MethodDeclaration)) {
-                            continue;
-                        }
-                        if (method.getModifier() != null) {
-                            if (method.getModifier().isStatic()) {
-                                if (((MethodDeclaration) method).getReturnType() == typeOwner) {
-                                    listResult.add((ClassDeclaration) typeOwner);
+                        if (method instanceof MethodDeclaration) {
+                            if (method.getModifier() != null) {
+                                if (method.getModifier().isStatic()) {
+                                    if (((MethodDeclaration) method).getReturnType() == typeOwner) {
+                                        listResult.add((ClassDeclaration) typeOwner);
+                                    }
                                 }
                             }
                         }
@@ -167,8 +166,8 @@ public class QueryFactory {
         };
     }
 
-    public static Query getInvisibleMethodDeclarations(Resource resource) {
-        return new Query() {
+    public static Query<Integer> queryInvisibleMethodDeclarations(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
@@ -176,18 +175,14 @@ public class QueryFactory {
                 for (EObject cls : allClasses) {
                     for (BodyDeclaration method : ((ClassDeclaration) cls).getBodyDeclarations()) {
 
-                        if (!(method instanceof MethodDeclaration)) {
-                            continue;
-                        }
-                        if (method.getModifier() == null) {
-                            continue;
-                        }
-                        if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
-                            methodDeclarations.add((MethodDeclaration) method);
-                        }
-                        else if (method.getModifier().getVisibility() == VisibilityKind.PROTECTED) {
-                            if (hasNoChildTypes(allClasses, cls)) {
+                        if (method instanceof MethodDeclaration && method.getModifier() != null) {
+                            if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                                 methodDeclarations.add((MethodDeclaration) method);
+                            }
+                            else if (method.getModifier().getVisibility() == VisibilityKind.PROTECTED) {
+                                if (hasNoChildTypes(allClasses, cls)) {
+                                    methodDeclarations.add((MethodDeclaration) method);
+                                }
                             }
                         }
                     }
@@ -206,8 +201,8 @@ public class QueryFactory {
         return true;
     }
 
-    public static Query getUnusedMethodsList(Resource resource) {
-        return new Query(){
+    public static Query<Integer> queryUnusedMethodsList(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<MethodDeclaration> unusedMethods = new BasicEList<>();
@@ -218,15 +213,11 @@ public class QueryFactory {
                     hasBeenInvoked.add(((MethodInvocation) methodInv).getMethod());
                 }
                 for (EObject method : allInstances) {
-                    if (!(method instanceof MethodDeclaration)) {
-                        continue;
-                    }
-                    if (((BodyDeclaration) method).getModifier() == null) {
-                        continue;
-                    }
-                    if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
-                        if (!hasBeenInvoked.contains(method)) {
-                            unusedMethods.add((MethodDeclaration) method);
+                    if (method instanceof MethodDeclaration && ((BodyDeclaration) method).getModifier() != null) {
+                        if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
+                            if (!hasBeenInvoked.contains(method)) {
+                                unusedMethods.add((MethodDeclaration) method);
+                            }
                         }
                     }
                 }
@@ -235,23 +226,19 @@ public class QueryFactory {
         };
     }
 
-    public static Query getUnusedMethodsLoop(Resource resource) {
-        return new Query(){
+    public static Query<Integer> queryUnusedMethodsLoop(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<MethodDeclaration> unusedMethods = new BasicEList<>();
                 EList<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
                 EList<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
                 for (EObject method : allInstances) {
-                    if (!(method instanceof MethodDeclaration)) {
-                        continue;
-                    }
-                    if (((BodyDeclaration) method).getModifier() == null) {
-                        continue;
-                    }
-                    if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
-                        if (!hasBeenInvoked(methodInvocations, method)) {
-                            unusedMethods.add((MethodDeclaration) method);
+                    if ((method instanceof MethodDeclaration) && ((BodyDeclaration) method).getModifier() != null) {
+                        if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
+                            if (!hasBeenInvoked(methodInvocations, method)) {
+                                unusedMethods.add((MethodDeclaration) method);
+                            }
                         }
                     }
                 }

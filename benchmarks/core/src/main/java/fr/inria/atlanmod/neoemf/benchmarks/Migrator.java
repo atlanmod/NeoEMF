@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
+import com.google.common.io.Files;
+
 import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,59 +33,112 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class Migrator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // zipUrl = Migrator.class.getResource("/resources.zip")
-    // zip =    new ZipFile(new File(zipUrl.toUri()));
-    // in =     zip.getInputStream(zip.getEntry("*.xmi"))
+    private static Migrator INSTANCE;
 
-    // XMI =    "xmi"
-    // CDO =    "cdo"
-    // NeoEMF = "neoemf"
-
-    public static void migrate(File in, String destExtension, Class<?> destClass) {
-        migrate(in, BenchmarkUtil.getBaseDirectory().resolve(getDestFileName(in, destExtension)).toFile(), destClass);
+    private Migrator() {
     }
 
-    private static void migrate(File in, File dest, Class<?> destClass) {
-        try {
-            URI srcUri = URI.createFileURI(in.getAbsolutePath());
-            URI destUri = URI.createFileURI(dest.getAbsolutePath());
+    public static Migrator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new Migrator();
+        }
+        return INSTANCE;
+    }
 
+    /**
+     * Migrates all XMI files present in {@code resources.zip} and returns a list of newly created files.
+     */
+    public Iterable<File> migrateAll(String destExtension, Class<?> destClass) {
+        List<File> files = new ArrayList<>();
+        try {
+            URL zipUrl = Migrator.class.getResource("/resources.zip");
+            String rootUrl = "jar:" + zipUrl + "!/";
+
+            ZipFile zipFile = new ZipFile(new File(zipUrl.toURI()));
+            zipFile.stream()
+                    .filter(e -> !e.isDirectory() && e.getName().endsWith(".xmi"))
+                    .map(ZipEntry::getName)
+                    .forEach(e -> {
+                        File f = migrate(rootUrl + e, destExtension, destClass);
+                        if (f != null && f.exists()) {
+                            files.add(f);
+                        }
+                    });
+        }
+        catch (IOException | URISyntaxException e) {
+            LOG.error(e);
+        }
+        return files;
+    }
+
+    /**
+     * Migrates a XMI file and returns the newly created file.
+     */
+    public File migrate(String in, String destExtension, Class<?> destClass) {
+        File destFile = new File(getDestFile(in, destExtension));
+
+        if (destFile.exists()) {
+            return destFile;
+        }
+
+        try {
+            URI srcUri = URI.createURI(in);
+            URI destUri = URI.createFileURI(destFile.getAbsolutePath());
+
+            // Default source EPackage
+            org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
+
+            // Destination EPackage
             EPackage destEPackage = (EPackage) destClass.getMethod("init").invoke(null);
 
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
+            LOG.info("Loading '{}'", srcUri);
             Resource sourceResource = resourceSet.getResource(srcUri, true);
             Resource targetResource = resourceSet.createResource(destUri);
 
             targetResource.getContents().clear();
-            LOG.info("Start migration");
+            LOG.info("Start migration from '{}'", srcUri);
             targetResource.getContents().add(migrate(sourceResource.getContents().get(0), destEPackage));
             LOG.info("Migration finished");
 
             Map<String, Object> saveOpts = new HashMap<>();
             saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
-            LOG.info("Start saving");
+
+            LOG.info("Start saving to '{}'", destUri);
             targetResource.save(saveOpts);
             LOG.info("Saving done");
+
+            destFile.deleteOnExit();
+
+            sourceResource.unload();
+            targetResource.unload();
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
+            return null;
         }
+        return destFile;
     }
 
-    private static EObject migrate(EObject eObject, EPackage targetEPackage) {
+    private EObject migrate(EObject eObject, EPackage targetEPackage) {
         Map<EObject, EObject> correspondencesMap = new HashMap<>();
         EObject returnEObject = getCorrespondingEObject(correspondencesMap, eObject, targetEPackage);
         copy(correspondencesMap, eObject, returnEObject);
@@ -95,7 +150,7 @@ public class Migrator {
         return returnEObject;
     }
 
-    private static void copy(Map<EObject, EObject> correspondencesMap, EObject sourceEObject, EObject targetEObject) {
+    private void copy(Map<EObject, EObject> correspondencesMap, EObject sourceEObject, EObject targetEObject) {
         for (EStructuralFeature sourceFeature : sourceEObject.eClass().getEAllStructuralFeatures()) {
             if (sourceEObject.eIsSet(sourceFeature)) {
                 EStructuralFeature targetFeature = targetEObject.eClass().getEStructuralFeature(sourceFeature.getName());
@@ -120,7 +175,7 @@ public class Migrator {
         }
     }
 
-    private static EObject getCorrespondingEObject(Map<EObject, EObject> correspondencesMap, EObject eObject, EPackage ePackage) {
+    private EObject getCorrespondingEObject(Map<EObject, EObject> correspondencesMap, EObject eObject, EPackage ePackage) {
         EObject targetEObject = correspondencesMap.get(eObject);
         if (targetEObject == null) {
             EClass eClass = eObject.eClass();
@@ -131,7 +186,7 @@ public class Migrator {
         return targetEObject;
     }
 
-    private static Path getDestFileName(File in, String destExtension) {
-        return Paths.get(in.getName().replaceFirst("[.][^.]+$", "") + "." + destExtension + ".zxmi");
+    private String getDestFile(String in, String destExtension) {
+        return BenchmarkUtil.getBaseDirectory().resolve(Files.getNameWithoutExtension(in) + "." + destExtension + ".zxmi").toString();
     }
 }

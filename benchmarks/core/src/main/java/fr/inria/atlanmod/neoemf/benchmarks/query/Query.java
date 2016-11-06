@@ -20,18 +20,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-/**
- *
- */
-public abstract class Query implements Callable<Integer> {
+public abstract class Query<T> implements Callable<T> {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    @Override
-    public abstract Integer call() throws Exception;
-
-    public Integer callWithTimeSpent() throws Exception {
-        int result;
+    public final T callWithTime() throws Exception {
+        T result;
 
         LOG.info("Start query");
         Instant begin = Instant.now();
@@ -40,25 +34,46 @@ public abstract class Query implements Callable<Integer> {
 
         Instant end = Instant.now();
         LOG.info("End query");
-        LOG.info("Query result contains {0} elements", result);
-        LOG.info("Time spent: {0}", Duration.between(begin, end));
+
+        if (Number.class.isInstance(result)) {
+            LOG.info("Query result contains {} elements", result);
+        }
+
+        LOG.info("Time spent: {}", Duration.between(begin, end));
 
         return result;
     }
 
-    public Integer callWithMemoryUsage() throws Exception {
-        int result;
+    public final T callWithMemory() throws Exception {
+        T result;
 
         Runtime.getRuntime().gc();
         long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory before query: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+        LOG.info("Used memory before call: {}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
 
-        result = callWithTimeSpent();
+        result = call();
 
         Runtime.getRuntime().gc();
         long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory after query: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-        LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+        LOG.info("Used memory after call: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
+        LOG.info("Memory use increase: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+
+        return result;
+    }
+
+    public final T callWithMemoryAndTime() throws Exception {
+        T result;
+
+        Runtime.getRuntime().gc();
+        long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        LOG.info("Used memory before call: {}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+
+        result = callWithTime();
+
+        Runtime.getRuntime().gc();
+        long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        LOG.info("Used memory after call: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
+        LOG.info("Memory use increase: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
 
         return result;
     }

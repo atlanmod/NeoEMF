@@ -17,29 +17,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/**
- * Export from ANT file.
- * <p>
- * TODO: Remove this file.
- */
 public class BenchmarkUtil {
 
     /**
      * Default JVM arguments for creating test resources.
      */
-    public static final String CREATOR_VMARGS = "" +
+    private static final String DEFAULT_CREATOR_VMARGS = "" +
             "-Dfile.encoding=utf-8 " +
             "-Xmx8g";
+
     /**
      * Default JVM argument for traversing and querying test resources.
      */
-    public static final String TESTER_VMARGS = "" +
+    private static final String DEFAULT_TESTER_VMARGS = "" +
             "-Dfile.encoding=utf-8 " +
             "-server " +
             "-Xmx250m " +
             "-XX:+UseConcMarkSweepGC " +
             "-XX:+DisableExplicitGC " +
             "-XX:+CMSClassUnloadingEnabled";
+
+    private static final int DEFAULT_TIMEOUT = 7200000;
+
     private static Path BENCHMARKS_DIR;
 
     private BenchmarkUtil() {
@@ -66,6 +65,14 @@ public class BenchmarkUtil {
     }
 
     public static int getDefaultTimeout() {
-        return 7200000;
+        return DEFAULT_TIMEOUT;
+    }
+
+    public static String getDefaultCreatorVmargs() {
+        return DEFAULT_CREATOR_VMARGS;
+    }
+
+    public static String getDefaultTesterVmargs() {
+        return DEFAULT_TESTER_VMARGS;
     }
 }

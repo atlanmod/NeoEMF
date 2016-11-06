@@ -11,9 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015.query;
 
-import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -41,8 +43,10 @@ import java.util.Set;
 
 public class ASE2015QueryFactory extends QueryFactory {
 
-    public static Query grabats09(Resource resource) {
-        return new Query() {
+    private static final Logger LOG = LogManager.getLogger();
+
+    public static Query<Integer> queryAse2015Grabats09(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<ClassDeclaration> listResult = new BasicEList<>();
@@ -50,12 +54,11 @@ public class ASE2015QueryFactory extends QueryFactory {
                 for (EObject eObj : allTypeDeclarations) {
                     TypeDeclaration typeDecl = (TypeDeclaration) eObj;
                     for (BodyDeclaration method : typeDecl.getBodyDeclarations()) {
-                        if (!(method instanceof MethodDeclaration)) {
-                            continue;
-                        }
-                        MethodDeclaration methDecl = (MethodDeclaration) method;
-                        if (methDecl.getModifier() != null && methDecl.getModifier().isStatic() && methDecl.getReturnType() != null && methDecl.getReturnType().getType() == typeDecl) {
-                            listResult.add((ClassDeclaration) typeDecl);
+                        if ((method instanceof MethodDeclaration)) {
+                            MethodDeclaration methDecl = (MethodDeclaration) method;
+                            if (methDecl.getModifier() != null && methDecl.getModifier().isStatic() && methDecl.getReturnType() != null && methDecl.getReturnType().getType() == typeDecl) {
+                                listResult.add((ClassDeclaration) typeDecl);
+                            }
                         }
                     }
                 }
@@ -64,8 +67,8 @@ public class ASE2015QueryFactory extends QueryFactory {
         };
     }
 
-    public static Query getThrownExceptions(Resource resource) {
-        return new Query() {
+    public static Query<Integer> queryAse2015ThrownExceptions(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
@@ -88,8 +91,8 @@ public class ASE2015QueryFactory extends QueryFactory {
         };
     }
 
-    public static Query getSpecificInvisibleMethodDeclarations(Resource resource) {
-        return new Query(){
+    public static Query<Integer> queryAse2015SpecificInvisibleMethodDeclarations(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
@@ -101,7 +104,7 @@ public class ASE2015QueryFactory extends QueryFactory {
                         }
                     }
                     catch (NullPointerException e) {
-                        e.printStackTrace();
+                        LOG.error(e);
                     }
                     return methodDeclarations.size();
                 }
@@ -112,8 +115,8 @@ public class ASE2015QueryFactory extends QueryFactory {
         };
     }
 
-    public static Query getCommentsTagContent(Resource resource) {
-        return new Query(){
+    public static Query<Integer> queryAse2015GetCommentsTagContent(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 Set<TextElement> result = new HashSet<>();
@@ -141,7 +144,7 @@ public class ASE2015QueryFactory extends QueryFactory {
                     }
                 }
                 catch (NullPointerException e) {
-                    e.printStackTrace();
+                    LOG.error(e);
                     return result.size();
                 }
             }
@@ -149,8 +152,8 @@ public class ASE2015QueryFactory extends QueryFactory {
     }
 
     @SuppressWarnings("unused")
-    public static Query getBranchStatements(Resource resource) {
-        return new Query() {
+    public static Query<Integer> queryAse2015BranchStatements(Resource resource) {
+        return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
                 EList<Statement> result = new BasicEList<>();
@@ -162,7 +165,7 @@ public class ASE2015QueryFactory extends QueryFactory {
                         }
                     }
                     catch (NullPointerException e) {
-                        e.printStackTrace();
+                        LOG.error(e);
                     }
                     return result.size();
                 }
@@ -186,14 +189,12 @@ public class ASE2015QueryFactory extends QueryFactory {
 
     private static void getAccessedTypes(ClassDeclaration cd, EList<Statement> result) {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
-            if (!(method instanceof MethodDeclaration)) {
-                continue;
+            if ((method instanceof MethodDeclaration)) {
+                MethodDeclaration meth = (MethodDeclaration) method;
+                if (meth.getBody() != null) {
+                    getAccessedTypesFromBody(meth.getBody().getStatements(), result);
+                }
             }
-            MethodDeclaration meth = (MethodDeclaration) method;
-            if (meth.getBody() == null) {
-                continue;
-            }
-            getAccessedTypesFromBody(meth.getBody().getStatements(), result);
         }
     }
 
@@ -223,17 +224,13 @@ public class ASE2015QueryFactory extends QueryFactory {
 
     private static void getInvisibleMethodsInClassDeclaration(ClassDeclaration cd, EList<MethodDeclaration> result) {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
-            if (!(method instanceof MethodDeclaration)) {
-                continue;
-            }
-            if (method.getModifier() == null) {
-                continue;
-            }
-            if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
-                result.add((MethodDeclaration) method);
-            }
-            else if (method.getModifier().getVisibility() == VisibilityKind.PROTECTED) {
-                result.add((MethodDeclaration) method);
+            if ((method instanceof MethodDeclaration) && method.getModifier() != null) {
+                if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
+                    result.add((MethodDeclaration) method);
+                }
+                else if (method.getModifier().getVisibility() == VisibilityKind.PROTECTED) {
+                    result.add((MethodDeclaration) method);
+                }
             }
         }
     }

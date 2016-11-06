@@ -11,10 +11,36 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
+import com.google.common.io.Files;
+
+import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  */
 public interface Creator {
 
-    void create(String in, String out);
+    String getBaseName();
+
+    String getResourceName();
+
+    Class<?> getAssociatedClass();
+
+    default Iterable<File> createAll() {
+        List<File> files = new ArrayList<>();
+        for (File f : Migrator.getInstance().migrateAll(getBaseName(), getAssociatedClass())) {
+            File file = create(f.getAbsolutePath(), BenchmarkUtil.getBaseDirectory().resolve(Files.getNameWithoutExtension(f.getAbsolutePath()) + "." + getResourceName()).toString());
+
+            if (file != null && file.exists()) {
+                files.add(file);
+            }
+        }
+        return files;
+    }
+
+    File create(String in, String out);
 }

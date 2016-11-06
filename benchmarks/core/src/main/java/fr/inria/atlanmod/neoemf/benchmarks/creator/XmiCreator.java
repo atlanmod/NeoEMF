@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.creator;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,11 +31,40 @@ public class XmiCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // in =     BenchmarkUtil.getBaseDirectory()/*.xmi.zxmi
-    // out =    BenchmarkUtil.getBaseDirectory()/${in.filename}.xmi
+    private static Creator INSTANCE;
+
+    private XmiCreator() {
+    }
+
+    public static Creator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new XmiCreator();
+        }
+        return INSTANCE;
+    }
+
+    public static void main(String[] args) {
+        XmiCreator.getInstance().createAll();
+    }
 
     @Override
-    public void create(String in, String out) {
+    public String getBaseName() {
+        return "xmi";
+    }
+
+    @Override
+    public String getResourceName() {
+        return "xmi";
+    }
+
+    @Override
+    public Class<?> getAssociatedClass() {
+        return org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
+    }
+
+    @Override
+    public File create(String in, String out) {
+        File file = new File(out);
         try {
             URI sourceUri = URI.createFileURI(in);
             URI targetUri = URI.createFileURI(out);
@@ -42,7 +72,6 @@ public class XmiCreator implements Creator {
             org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
@@ -52,34 +81,38 @@ public class XmiCreator implements Creator {
                 loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
             }
 
-            Runtime.getRuntime().gc();
-            long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
-            LOG.info("Loading source resource");
-            sourceResource.load(loadOpts);
-            LOG.info("Source resource loaded");
-            Runtime.getRuntime().gc();
-            long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-            LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+            new Query<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    LOG.info("Loading source resource");
+                    sourceResource.load(loadOpts);
+                    LOG.info("Source resource loaded");
+                    return null;
+                }
+            }.callWithMemory();
 
             Resource targetResource = resourceSet.createResource(targetUri);
 
             Map<String, Object> saveOpts = new HashMap<>();
             targetResource.save(saveOpts);
-
-            LOG.info("Start moving elements");
             targetResource.getContents().clear();
-            targetResource.getContents().addAll(sourceResource.getContents());
-            LOG.info("End moving elements");
-            LOG.info("Start saving");
-            targetResource.save(saveOpts);
-            LOG.info("Saved");
 
+            {
+                LOG.info("Start moving elements");
+                targetResource.getContents().addAll(sourceResource.getContents());
+                LOG.info("End moving elements");
+                LOG.info("Start saving");
+                targetResource.save(saveOpts);
+                LOG.info("Saved");
+            }
+
+            sourceResource.unload();
             targetResource.unload();
         }
         catch (Exception e) {
             LOG.error(e);
+            return null;
         }
+        return file;
     }
 }

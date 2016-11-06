@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor;
 
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.ASE2015QueryExecutor;
-import fr.inria.atlanmod.neoemf.benchmarks.executor.NeoGraphExecutor;
 import fr.inria.atlanmod.neoemf.benchmarks.ase2015.query.ASE2015QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.executor.NeoGraphExecutor;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
@@ -63,7 +63,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getCommentsTagContent(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015GetCommentsTagContent(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -73,7 +73,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -100,7 +100,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.grabats09(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015Grabats09(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -110,7 +110,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -138,7 +138,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             System.out.println(loadOpts);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -148,7 +148,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -175,7 +175,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getSpecificInvisibleMethodDeclarations(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015SpecificInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -185,7 +185,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 
@@ -212,7 +212,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
             resource.load(loadOpts);
 
-            ASE2015QueryFactory.getThrownExceptions(resource).callWithMemoryUsage();
+            ASE2015QueryFactory.queryAse2015ThrownExceptions(resource).callWithMemoryAndTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -222,7 +222,7 @@ public class ASE2015NeoGraphExecutor extends NeoGraphExecutor implements ASE2015
             }
         }
         catch (Exception e) {
-            LOG.error(e.toString());
+            LOG.error(e);
         }
     }
 }

@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.benchmarks.creator;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
+import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,63 +34,98 @@ public class CdoCreator implements Creator {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    // in =     BenchmarkUtil.getBaseDirectory()/*.cdo.zxmi
-    // out =    BenchmarkUtil.getBaseDirectory()/${in.filename}.cdoresource
+    private static Creator INSTANCE;
+
+    private CdoCreator() {
+    }
+
+    public static Creator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CdoCreator();
+        }
+        return INSTANCE;
+    }
+
+    public static void main(String[] args) {
+        CdoCreator.getInstance().createAll();
+    }
 
     @Override
-    public void create(String in, String out) {
+    public String getBaseName() {
+        return "cdo";
+    }
+
+    @Override
+    public String getResourceName() {
+        return "cdoresource";
+    }
+
+    @Override
+    public Class<?> getAssociatedClass() {
+        return org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
+    }
+
+    @Override
+    public File create(String in, String out) {
+        File file = new File(out);
         try {
-            URI srcUri = URI.createFileURI(in);
+            URI sourceUri = URI.createFileURI(in);
 
             org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
 
             ResourceSet resourceSet = new ResourceSetImpl();
-
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
-            Resource sourceResource = resourceSet.createResource(srcUri);
+            Resource sourceResource = resourceSet.createResource(sourceUri);
             Map<String, Object> loadOpts = new HashMap<>();
-            if ("zxmi".equals(srcUri.fileExtension())) {
+            if ("zxmi".equals(sourceUri.fileExtension())) {
                 loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
             }
 
-            {
-                Runtime.getRuntime().gc();
-                long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                LOG.info("Used memory before loading: {0}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+            new Query<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    LOG.info("Loading source resource");
+                    sourceResource.load(loadOpts);
+                    LOG.info("Source resource loaded");
+                    return null;
+                }
+            }.callWithMemory();
 
-                LOG.info("Loading source resource");
-                sourceResource.load(loadOpts);
-                LOG.info("Source resource loaded");
-
-                Runtime.getRuntime().gc();
-                long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                LOG.info("Used memory after loading: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-                LOG.info("Memory use increase: {0}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
-            }
+            Resource targetResource;
 
             try (EmbeddedCDOServer server = new EmbeddedCDOServer(out)) {
                 server.run();
                 CDOSession session = server.openSession();
                 CDOTransaction transaction = session.openTransaction();
-                transaction.getRootResource().getContents().clear();
+                targetResource = transaction.getRootResource();
+
+                Map<String, Object> saveOpts = new HashMap<>();
+
+                targetResource.getContents().clear();
 
                 {
                     LOG.info("Start moving elements");
-                    transaction.getRootResource().getContents().addAll(sourceResource.getContents());
+                    targetResource.getContents().addAll(sourceResource.getContents());
                     LOG.info("End moving elements");
                     LOG.info("Commiting");
-                    transaction.commit();
+                    targetResource.save(saveOpts);
+//                  transaction.commit();
                     LOG.info("Commit done");
                 }
 
                 transaction.close();
                 session.close();
             }
+
+            sourceResource.unload();
+            targetResource.unload();
         }
         catch (Exception e) {
             LOG.error(e);
+            return null;
         }
+        return file;
     }
 }

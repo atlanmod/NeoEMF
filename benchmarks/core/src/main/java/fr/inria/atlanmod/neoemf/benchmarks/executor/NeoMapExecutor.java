@@ -61,7 +61,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
 
             resource.load(loadOpts);
 
-            QueryFactory.getClassDeclarationAttributes(resource).callWithTimeSpent();
+            QueryFactory.queryClassDeclarationAttributes(resource).callWithTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -93,7 +93,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
 
             resource.load(loadOpts);
 
-            QueryFactory.grabats09(resource).callWithTimeSpent();
+            QueryFactory.queryGrabats09(resource).callWithTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -125,7 +125,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
 
             resource.load(loadOpts);
 
-            QueryFactory.getInvisibleMethodDeclarations(resource).callWithTimeSpent();
+            QueryFactory.queryInvisibleMethodDeclarations(resource).callWithTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -157,7 +157,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
 
             resource.load(loadOpts);
 
-            QueryFactory.getOrphanNonPrimitivesTypes(resource).callWithTimeSpent();
+            QueryFactory.queryOrphanNonPrimitivesTypes(resource).callWithTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -190,7 +190,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
             resource.load(loadOpts);
 
             String name = UUID.randomUUID().toString();
-            QueryFactory.renameAllMethods(resource, name).callWithTimeSpent();
+            QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
             resource.save(Collections.emptyMap());
 
             if (resource instanceof PersistentResourceImpl) {
@@ -223,7 +223,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
 
             resource.load(loadOpts);
 
-            QueryFactory.getThrownExceptionsPerPackage(resource).callWithTimeSpent();
+            QueryFactory.queryThrownExceptionsPerPackage(resource).callWithTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -255,7 +255,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
 
             resource.load(loadOpts);
 
-            QueryFactory.getUnusedMethodsList(resource).callWithTimeSpent();
+            QueryFactory.queryUnusedMethodsList(resource).callWithTime();
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
@@ -287,7 +287,7 @@ public class NeoMapExecutor implements QueryExecutor, Traverser {
 
             resource.load(loadOpts);
 
-            QueryFactory.getUnusedMethodsLoop(resource).callWithTimeSpent(); // Query result (loops)
+            QueryFactory.queryUnusedMethodsLoop(resource).callWithTime(); // Query result (loops)
 
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
