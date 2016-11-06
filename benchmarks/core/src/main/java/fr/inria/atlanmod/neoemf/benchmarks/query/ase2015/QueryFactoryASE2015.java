@@ -41,7 +41,7 @@ import java.util.Set;
 
 public class QueryFactoryASE2015 extends QueryFactory {
 
-    public static Query<Integer> queryAse2015Grabats09(Resource resource) {
+    public static Query<Integer> queryGrabatsAse2015(Resource resource) {
         return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -63,7 +63,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
-    public static Query<Integer> queryAse2015ThrownExceptions(Resource resource) {
+    public static Query<Integer> queryThrownExceptionsAse2015(Resource resource) {
         return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -87,7 +87,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
-    public static Query<Integer> queryAse2015SpecificInvisibleMethodDeclarations(Resource resource) {
+    public static Query<Integer> querySpecificInvisibleMethodDeclarationsAse2015(Resource resource) {
         return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -111,7 +111,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
-    public static Query<Integer> queryAse2015GetCommentsTagContent(Resource resource) {
+    public static Query<Integer> queryCommentsTagContentAse2015(Resource resource) {
         return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {

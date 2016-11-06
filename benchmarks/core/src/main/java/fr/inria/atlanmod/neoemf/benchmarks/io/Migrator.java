@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.creator;
+package fr.inria.atlanmod.neoemf.benchmarks.io;
 
 import com.google.common.io.Files;
 

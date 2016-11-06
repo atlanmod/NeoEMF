@@ -9,10 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.executor;
+package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutor;
-import fr.inria.atlanmod.neoemf.benchmarks.QueryExecutorASE2015;
+import fr.inria.atlanmod.neoemf.benchmarks.QueryRunner;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
 
@@ -24,11 +23,11 @@ import java.util.UUID;
 /**
  *
  */
-public abstract class AbstractQueryExecutor extends AbstractExecutor implements QueryExecutor, QueryExecutorASE2015 {
+public abstract class AbstractQueryRunner extends AbstractRunner implements QueryRunner {
 
     @Benchmark
     @Override
-    public void queryClassDeclarationAttributes() {
+    public void classDeclarationAttributes() {
         try {
             QueryFactory.queryClassDeclarationAttributes(resource).callWithTime();
         }
@@ -39,7 +38,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryGrabats() {
+    public void grabats() {
         try {
             QueryFactory.queryGrabats09(resource).callWithTime();
         }
@@ -50,7 +49,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryInvisibleMethodDeclarations() {
+    public void invisibleMethodDeclarations() {
         try {
             QueryFactory.queryInvisibleMethodDeclarations(resource).callWithTime();
         }
@@ -61,7 +60,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryOrphanNonPrimitiveTypes() {
+    public void orphanNonPrimitiveTypes() {
         try {
             QueryFactory.queryOrphanNonPrimitivesTypes(resource).callWithTime();
         }
@@ -72,7 +71,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     //@Benchmark
     @Override
-    public void queryRenameAllMethods() {
+    public void renameAllMethods() {
         try {
             String name = UUID.randomUUID().toString();
             QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
@@ -85,7 +84,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryThrownExceptionsPerPackage() {
+    public void thrownExceptionsPerPackage() {
         try {
             QueryFactory.queryThrownExceptionsPerPackage(resource).callWithTime();
         }
@@ -96,9 +95,9 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryUnusedMethodsList() {
+    public void unusedMethodsWithList() {
         try {
-            QueryFactory.queryUnusedMethodsList(resource).callWithTime();
+            QueryFactory.queryUnusedMethodsWithList(resource).callWithTime();
         }
         catch (Exception e) {
             LOG.error(e);
@@ -107,9 +106,9 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryUnusedMethodsLoop() {
+    public void unusedMethodsWithLoop() {
         try {
-            QueryFactory.queryUnusedMethodsLoop(resource).callWithTime(); // Query result (loops)
+            QueryFactory.queryUnusedMethodsWithLoop(resource).callWithTime(); // Query result (loops)
         }
         catch (Exception e) {
             LOG.error(e);
@@ -118,9 +117,9 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryASE2015GetBranchStatements() {
+    public void branchStatementsAse2015() {
         try {
-            QueryFactoryASE2015.queryAse2015GetCommentsTagContent(resource).callWithMemoryAndTime();
+            QueryFactoryASE2015.queryCommentsTagContentAse2015(resource).callWithMemoryAndTime();
         }
         catch (Exception e) {
             LOG.error(e);
@@ -129,9 +128,9 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryASE2015Grabats09() {
+    public void grabatsAse2015() {
         try {
-            QueryFactoryASE2015.queryAse2015Grabats09(resource).callWithMemoryAndTime();
+            QueryFactoryASE2015.queryGrabatsAse2015(resource).callWithMemoryAndTime();
         }
         catch (Exception e) {
             LOG.error(e);
@@ -140,7 +139,7 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryASE2015InvisibleMethodDeclarations() {
+    public void invisibleMethodDeclarationsAse2015() {
         try {
             QueryFactoryASE2015.queryInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
         }
@@ -151,9 +150,9 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryASE2015SpecificInvisibleMethodDeclarations() {
+    public void specificInvisibleMethodDeclarationsAse2015() {
         try {
-            QueryFactoryASE2015.queryAse2015SpecificInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
+            QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(resource).callWithMemoryAndTime();
         }
         catch (Exception e) {
             LOG.error(e);
@@ -162,9 +161,9 @@ public abstract class AbstractQueryExecutor extends AbstractExecutor implements 
 
     @Benchmark
     @Override
-    public void queryASE2015ThrownExceptions() {
+    public void thrownExceptionsAse2015() {
         try {
-            QueryFactoryASE2015.queryAse2015ThrownExceptions(resource).callWithMemoryAndTime();
+            QueryFactoryASE2015.queryThrownExceptionsAse2015(resource).callWithMemoryAndTime();
         }
         catch (Exception e) {
             LOG.error(e);

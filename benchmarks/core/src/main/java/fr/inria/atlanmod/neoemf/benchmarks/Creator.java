@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 import com.google.common.io.Files;
 
-import fr.inria.atlanmod.neoemf.benchmarks.creator.Migrator;
+import fr.inria.atlanmod.neoemf.benchmarks.io.Migrator;
 import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
 import java.io.File;

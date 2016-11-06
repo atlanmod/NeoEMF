@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.executor;
+package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
-import fr.inria.atlanmod.neoemf.benchmarks.creator.XmiCreator;
+import fr.inria.atlanmod.neoemf.benchmarks.io.XmiCreator;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class XmiExecutor extends AbstractExecutor {
+public class XmiRunner extends AbstractRunner {
 
     @Override
     protected Creator getCreator() {

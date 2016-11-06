@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.executor;
+package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import com.google.common.collect.Iterators;
 
@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
 @Measurement(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
 @OperationsPerInvocation(BenchmarkUtil.DEFAULT_BATCH_SIZE)
-public abstract class AbstractExecutor implements Traverser {
+public abstract class AbstractRunner implements Traverser {
 
     protected static final Logger LOG = LogManager.getLogger();
 

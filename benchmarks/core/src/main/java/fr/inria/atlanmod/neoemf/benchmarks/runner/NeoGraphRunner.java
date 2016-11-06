@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.executor;
+package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
-import fr.inria.atlanmod.neoemf.benchmarks.creator.NeoGraphCreator;
+import fr.inria.atlanmod.neoemf.benchmarks.io.NeoGraphCreator;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NeoGraphExecutor extends AbstractQueryExecutor {
+public class NeoGraphRunner extends AbstractQueryRunner {
 
     @Override
     protected Creator getCreator() {

@@ -65,6 +65,9 @@ public class QueryFactory {
         };
     }
 
+    /**
+     *
+     */
     public static Query<Integer> queryClassDeclarationAttributes(Resource resource) {
         return new Query<Integer>() {
             @Override
@@ -97,6 +100,9 @@ public class QueryFactory {
         return fields;
     }
 
+    /**
+     *
+     */
     public static Query<Integer> queryThrownExceptionsPerPackage(Resource resource) {
         return new Query<Integer>() {
             @Override
@@ -170,6 +176,9 @@ public class QueryFactory {
         };
     }
 
+    /**
+     *
+     */
     public static Query<Integer> queryInvisibleMethodDeclarations(Resource resource) {
         return new Query<Integer>() {
             @Override
@@ -205,7 +214,10 @@ public class QueryFactory {
         return true;
     }
 
-    public static Query<Integer> queryUnusedMethodsList(Resource resource) {
+    /**
+     *
+     */
+    public static Query<Integer> queryUnusedMethodsWithList(Resource resource) {
         return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -230,7 +242,10 @@ public class QueryFactory {
         };
     }
 
-    public static Query<Integer> queryUnusedMethodsLoop(Resource resource) {
+    /**
+     *
+     */
+    public static Query<Integer> queryUnusedMethodsWithLoop(Resource resource) {
         return new Query<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -260,7 +275,10 @@ public class QueryFactory {
         return false;
     }
 
-    public static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
+    /**
+     *
+     */
+    protected static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
         EList<EObject> resultList = new BasicEList<>();
         Iterator<EObject> iterator = resource.getAllContents();
         while (iterator.hasNext()) {

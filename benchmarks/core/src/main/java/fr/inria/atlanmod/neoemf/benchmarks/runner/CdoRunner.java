@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.executor;
+package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
-import fr.inria.atlanmod.neoemf.benchmarks.creator.CdoCreator;
+import fr.inria.atlanmod.neoemf.benchmarks.io.CdoCreator;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 
@@ -23,7 +23,7 @@ import org.eclipse.emf.cdo.transaction.CDOTransaction;
 import java.io.IOException;
 import java.util.UUID;
 
-public class CdoExecutor extends AbstractQueryExecutor {
+public class CdoRunner extends AbstractQueryRunner {
 
     private EmbeddedCDOServer server;
     private CDOSession session;
@@ -65,7 +65,7 @@ public class CdoExecutor extends AbstractQueryExecutor {
     }
 
     @Override
-    public void queryRenameAllMethods() {
+    public void renameAllMethods() {
         try {
             ((CDONet4jSession) session).options().setCommitTimeout(50 * 1000);
             String name = UUID.randomUUID().toString();
