@@ -50,8 +50,8 @@ import java.util.concurrent.TimeUnit;
         "-XX:+DisableExplicitGC",
         "-XX:+CMSClassUnloadingEnabled"
 })
-@Warmup(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
-@Measurement(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
+@Warmup(iterations = BenchmarkUtil.DEFAULT_WARMUP_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
+@Measurement(iterations = BenchmarkUtil.DEFAULT_MEASUREMENT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
 @OperationsPerInvocation(BenchmarkUtil.DEFAULT_BATCH_SIZE)
 public abstract class AbstractRunner implements Runner {
 
@@ -76,14 +76,9 @@ public abstract class AbstractRunner implements Runner {
     @Param({"0", "1", "2"})
     private int currentPathIndex;
 
-    /**
-     * Loads resources and stores them in {@link #paths}.
-     */
     @Setup(Level.Trial)
-    public final void setupTrial() {
-        LOG.info("Loading resources");
+    public void setupTrial() {
         paths = getCreator().createAll();
-        LOG.info("Resources loaded");
     }
 
     @Setup(Level.Iteration)
@@ -91,7 +86,7 @@ public abstract class AbstractRunner implements Runner {
         initResource();
     }
 
-    @TearDown
+    @TearDown(Level.Iteration)
     public void tearDownIteration() {
         destroyResource();
     }
@@ -117,12 +112,12 @@ public abstract class AbstractRunner implements Runner {
     /**
      * Initializes the {@link #resource}.
      */
-    public abstract void initResource() throws IOException;
+    protected abstract void initResource() throws IOException;
 
     /**
      * Destroy the {@link #resource}.
      */
-    public abstract void destroyResource();
+    protected abstract void destroyResource();
 
     /**
      * Returns the {@link Creator} associated with this {@link Runner}.

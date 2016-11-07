@@ -21,34 +21,15 @@ import java.nio.file.Paths;
 
 public class BenchmarkUtil {
 
-    /**
-     * Default JVM arguments for creating test resources.
-     */
-    public static final String[] DEFAULT_CREATOR_VMARGS = {
-            "-Dfile.encoding=utf-8",
-            "-Xmx8g"};
+    public static final int DEFAULT_WARMUP_ITERATIONS = 1;
+    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 10;
 
-    /**
-     * Default JVM argument for traversing and querying test resources.
-     */
-    public static final String[] DEFAULT_TESTER_VMARGS = {
-            "-Dfile.encoding=utf-8",
-            "-server",
-            "-Xmx250m",
-            "-XX:+UseConcMarkSweepGC",
-            "-XX:+DisableExplicitGC",
-            "-XX:+CMSClassUnloadingEnabled"};
-
-    public static final int DEFAULT_TIMEOUT = 7200000;
-
-    public static final int DEFAULT_ITERATIONS = 5;
     public static final int DEFAULT_BATCH_SIZE = 1;
     public static final int DEFAULT_FORKS = 1;
 
     private static final Logger LOG = LogManager.getLogger();
 
     private static Path BASE_DIR;
-    private static Path BENCH_DIR;
 
     private BenchmarkUtil() {
     }
@@ -66,15 +47,13 @@ public class BenchmarkUtil {
     }
 
     public static Path getBenchDirectory() {
-        if (BENCH_DIR == null) {
-            try {
-                BENCH_DIR = Files.createTempDirectory(getBaseDirectory(), "bench");
-            }
-            catch (IOException e) {
-                LOG.error(e);
-            }
+        try {
+            return Files.createTempDirectory(getBaseDirectory(), "bench");
         }
-        return BENCH_DIR;
+        catch (IOException e) {
+            LOG.error(e);
+            return null;
+        }
     }
 
     public static Path getResourcesDirectory() {
