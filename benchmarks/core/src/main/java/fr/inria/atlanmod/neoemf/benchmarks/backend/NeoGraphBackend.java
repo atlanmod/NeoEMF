@@ -31,32 +31,15 @@ import java.util.Map;
 
 public class NeoGraphBackend extends AbstractNeoBackend {
 
+    public static final String NAME = "neo-graph";
+
     @Override
-    public String getResourceName() {
+    protected String getResourceExportExtension() {
         return "tinker.resource";
     }
 
     @Override
-    public Resource loadResource(String path) throws Exception {
-        Resource resource;
-
-        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-
-        URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(path));
-
-        getEPackageClass().getMethod("init").invoke(null);
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
-
-        resource = resourceSet.createResource(uri);
-        resource.load(getLoadOptions());
-
-        return resource;
-    }
-
-    @Override
-    public File create(String in, String out) throws Exception {
+    protected File create(String in, String out) throws Exception {
         File destFile = new File(out);
 
         if (destFile.exists()) {
@@ -113,5 +96,24 @@ public class NeoGraphBackend extends AbstractNeoBackend {
         }
 
         return destFile;
+    }
+
+    @Override
+    public Resource loadResource(String path) throws Exception {
+        Resource resource;
+
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+
+        URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(path));
+
+        getEPackageClass().getMethod("init").invoke(null);
+
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+
+        resource = resourceSet.createResource(uri);
+        resource.load(getLoadOptions());
+
+        return resource;
     }
 }

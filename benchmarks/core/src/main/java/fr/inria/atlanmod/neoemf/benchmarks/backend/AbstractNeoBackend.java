@@ -20,12 +20,12 @@ import static java.util.Objects.isNull;
 public abstract class AbstractNeoBackend extends AbstractBackend {
 
     @Override
-    public String getName() {
+    protected String getResourceImportExtension() {
         return "neoemf";
     }
 
     @Override
-    public Class<?> getEPackageClass() {
+    protected Class<?> getEPackageClass() {
         return org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
     }
 

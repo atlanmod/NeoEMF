@@ -28,48 +28,25 @@ import static java.util.Objects.isNull;
 
 public class XmiBackend extends AbstractBackend {
 
+    public static final String NAME = "xmi";
+
     @Override
-    public String getName() {
+    protected String getResourceImportExtension() {
         return "xmi";
     }
 
     @Override
-    public String getResourceName() {
+    protected String getResourceExportExtension() {
         return "xmi";
     }
 
     @Override
-    public Class<?> getEPackageClass() {
+    protected Class<?> getEPackageClass() {
         return org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
     }
 
     @Override
-    public Resource loadResource(String path) throws Exception {
-        Resource resource;
-
-        URI uri = URI.createFileURI(path);
-
-        getEPackageClass().getMethod("init").invoke(null);
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
-
-        resource = resourceSet.createResource(uri);
-        resource.load(getLoadOptions());
-
-        return resource;
-    }
-
-    @Override
-    public void unloadResource(Resource resource) {
-        if (!isNull(resource) && resource.isLoaded()) {
-            resource.unload();
-        }
-    }
-
-    @Override
-    public File create(String in, String out) throws Exception {
+    protected File create(String in, String out) throws Exception {
         File destFile = new File(out);
 
         if (destFile.exists()) {
@@ -118,5 +95,30 @@ public class XmiBackend extends AbstractBackend {
         targetResource.unload();
 
         return destFile;
+    }
+
+    @Override
+    public Resource loadResource(String path) throws Exception {
+        Resource resource;
+
+        URI uri = URI.createFileURI(path);
+
+        getEPackageClass().getMethod("init").invoke(null);
+
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
+
+        resource = resourceSet.createResource(uri);
+        resource.load(getLoadOptions());
+
+        return resource;
+    }
+
+    @Override
+    public void unloadResource(Resource resource) {
+        if (!isNull(resource) && resource.isLoaded()) {
+            resource.unload();
+        }
     }
 }

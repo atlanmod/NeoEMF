@@ -11,7 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
+import com.google.common.base.CaseFormat;
+
 import fr.inria.atlanmod.neoemf.benchmarks.backend.Backend;
+import fr.inria.atlanmod.neoemf.benchmarks.backend.CdoBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoMapBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.backend.XmiBackend;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Level;
@@ -22,11 +28,13 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.File;
-import java.util.List;
 import java.util.Objects;
 
 @State(Scope.Thread)
 public class RunnerState {
+
+    private static final String CLASS_PREFIX = Backend.class.getPackage().getName() + ".";
+    private static final String CLASS_SUFFIX = Backend.class.getSimpleName();
 
     /**
      * The {@link Backend} instance.
@@ -38,28 +46,25 @@ public class RunnerState {
      */
     private Resource resourceInst;
 
-    private List<File> paths;
+    private File resourceFile;
 
     @Param({
-            "XmiBackend",
-            "CdoBackend",
-            "NeoMapBackend",
-            "NeoGraphBackend",
-//          "NeoGraphNeo4jBackend",
+            XmiBackend.NAME,
+            CdoBackend.NAME,
+            NeoMapBackend.NAME,
+            NeoGraphBackend.NAME,
+//            NeoGraphNeo4jBackend.NAME, // FIXME: dependencies issue
     })
     private String backend;
 
-//  @Param({
-//          "fr.inria.atlanmod.kyanos.tests",
-//          "fr.inria.atlanmod.neo4emf.neo4jresolver",
-//          "org.eclipse.gmt.modisco.java.kyanos",
-//          "org.eclipse.jdt.core",
-//          "org.eclipse.jdt.source.all",
-//  })
-//  private String resource;
-
-    @Param({"0", "1"})
-    private int resource;
+    @Param({
+            "fr.inria.atlanmod.kyanos.tests",
+//            "fr.inria.atlanmod.neo4emf.neo4jresolver",
+//            "org.eclipse.gmt.modisco.java.kyanos",
+//            "org.eclipse.jdt.core",
+//            "org.eclipse.jdt.source.all",
+    })
+    private String resource;
 
     public Backend getBackend() {
         if (Objects.isNull(backendInst)) {
@@ -77,13 +82,14 @@ public class RunnerState {
 
     @Setup(Level.Trial)
     public void setupTrial() throws Exception {
-        backendInst = (Backend) Runner.class.getClassLoader().loadClass(Backend.class.getPackage().getName() + "." + backend).newInstance();
-        paths = backendInst.createAll();
+        String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, backend) + CLASS_SUFFIX;
+        backendInst = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
+        resourceFile = backendInst.createResource(resource);
     }
 
     @Setup(Level.Invocation)
     public void setupInvocation() throws Exception {
-        resourceInst = backendInst.loadResource(paths.get(resource).getAbsolutePath());
+        resourceInst = backendInst.loadResource(resourceFile.getAbsolutePath());
     }
 
     @TearDown(Level.Invocation)

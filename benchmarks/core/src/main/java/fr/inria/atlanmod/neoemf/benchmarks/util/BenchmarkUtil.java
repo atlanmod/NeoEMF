@@ -23,15 +23,17 @@ import static java.util.Objects.isNull;
 
 public class BenchmarkUtil {
 
-    public static final int DEFAULT_WARMUP_ITERATIONS = 2;
-    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
+    public static final int DEFAULT_WARMUP_ITERATIONS = 5;
+    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 10;
 
-    public static final int DEFAULT_BATCH_SIZE = 1;
+    public static final int DEFAULT_BATCH_SIZE = 100;
     public static final int DEFAULT_FORKS = 1;
 
     private static final Logger LOG = LogManager.getLogger();
 
     private static Path BASE_DIR;
+    private static Path RESOURCE_DIR;
+    private static Path STORE_DIR;
 
     private BenchmarkUtil() {
     }
@@ -49,20 +51,37 @@ public class BenchmarkUtil {
     }
 
     public static Path getBenchDirectory() {
+        Path tempDirectory = null;
         try {
-            return Files.createTempDirectory(getBaseDirectory(), "bench");
+            tempDirectory = Files.createTempDirectory(getBaseDirectory(), "bench");
         }
         catch (IOException e) {
             LOG.error(e);
-            return null;
         }
+        return tempDirectory;
     }
 
     public static Path getResourcesDirectory() {
-        return getBaseDirectory().resolve("resources");
+        if (isNull(RESOURCE_DIR)) {
+            try {
+                RESOURCE_DIR = Files.createDirectories(getBaseDirectory().resolve("resources"));
+            }
+            catch (IOException e) {
+                LOG.warn(e);
+            }
+        }
+        return RESOURCE_DIR;
     }
 
     public static Path getStoreDirectory() {
-        return getBaseDirectory().resolve("stores");
+        if (isNull(STORE_DIR)) {
+            try {
+                STORE_DIR = Files.createDirectories(getBaseDirectory().resolve("stores"));
+            }
+            catch (IOException e) {
+                LOG.warn(e);
+            }
+        }
+        return STORE_DIR;
     }
 }

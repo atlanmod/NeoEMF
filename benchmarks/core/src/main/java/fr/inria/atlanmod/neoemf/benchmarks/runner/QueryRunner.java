@@ -19,69 +19,70 @@ import java.util.UUID;
 public class QueryRunner extends Runner {
 
     //@Benchmark
-    public void classDeclarationAttributes(RunnerState state) throws Exception {
-        QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithTime();
+    public Integer classDeclarationAttributes(RunnerState state) throws Exception {
+        return QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithTime();
     }
 
     //@Benchmark
-    public void grabats(RunnerState state) throws Exception {
-        QueryFactory.queryGrabats09(state.getResource()).callWithTime();
+    public Integer grabats(RunnerState state) throws Exception {
+        return QueryFactory.queryGrabats09(state.getResource()).callWithTime();
     }
 
     //@Benchmark
-    public void invisibleMethodDeclarations(RunnerState state) throws Exception {
-        QueryFactory.queryInvisibleMethodDeclarations(state.getResource()).callWithTime();
+    public Integer invisibleMethodDeclarations(RunnerState state) throws Exception {
+        return QueryFactory.queryInvisibleMethodDeclarations(state.getResource()).callWithTime();
     }
 
     //@Benchmark
-    public void orphanNonPrimitiveTypes(RunnerState state) throws Exception {
-        QueryFactory.queryOrphanNonPrimitivesTypes(state.getResource()).callWithTime();
+    public Integer orphanNonPrimitiveTypes(RunnerState state) throws Exception {
+        return QueryFactory.queryOrphanNonPrimitivesTypes(state.getResource()).callWithTime();
     }
 
     //@Benchmark
-    public void renameAllMethods(RunnerState state) throws Exception {
+    public Void renameAllMethods(RunnerState state) throws Exception {
         String name = UUID.randomUUID().toString();
-        QueryFactory.queryRenameAllMethods(state.getResource(), name).callWithTime();
+        Void result = QueryFactory.queryRenameAllMethods(state.getResource(), name).callWithTime();
         state.getBackend().saveResource(state.getResource());
+        return result;
     }
 
     //@Benchmark
-    public void thrownExceptionsPerPackage(RunnerState state) throws Exception {
-        QueryFactory.queryThrownExceptionsPerPackage(state.getResource()).callWithTime();
+    public Integer thrownExceptionsPerPackage(RunnerState state) throws Exception {
+        return QueryFactory.queryThrownExceptionsPerPackage(state.getResource()).callWithTime();
     }
 
     //@Benchmark
-    public void unusedMethodsWithList(RunnerState state) throws Exception {
-        QueryFactory.queryUnusedMethodsWithList(state.getResource()).callWithTime();
+    public Integer unusedMethodsWithList(RunnerState state) throws Exception {
+        return QueryFactory.queryUnusedMethodsWithList(state.getResource()).callWithTime();
     }
 
     //@Benchmark
-    public void unusedMethodsWithLoop(RunnerState state) throws Exception {
-        QueryFactory.queryUnusedMethodsWithLoop(state.getResource()).callWithTime();
+    public Integer unusedMethodsWithLoop(RunnerState state) throws Exception {
+        return QueryFactory.queryUnusedMethodsWithLoop(state.getResource()).callWithTime();
     }
 
     //@Benchmark
-    public void branchStatementsAse2015(RunnerState state) throws Exception {
-        QueryFactoryASE2015.queryCommentsTagContentAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer branchStatementsAse2015(RunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryCommentsTagContentAse2015(state.getResource()).callWithMemoryAndTime();
     }
 
     //@Benchmark
-    public void grabatsAse2015(RunnerState state) throws Exception {
-        QueryFactoryASE2015.queryGrabatsAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer grabatsAse2015(RunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryGrabatsAse2015(state.getResource()).callWithMemoryAndTime();
     }
 
     //@Benchmark
-    public void invisibleMethodDeclarationsAse2015(RunnerState state) throws Exception {
-        QueryFactoryASE2015.queryInvisibleMethodDeclarations(state.getResource()).callWithMemoryAndTime();
+    public Integer invisibleMethodDeclarationsAse2015(RunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryInvisibleMethodDeclarations(state.getResource()).callWithMemoryAndTime();
     }
 
     //@Benchmark
-    public void specificInvisibleMethodDeclarationsAse2015(RunnerState state) throws Exception {
-        QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer specificInvisibleMethodDeclarationsAse2015(RunnerState state) throws Exception {
+        return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(state.getResource()).callWithMemoryAndTime();
     }
 
     //@Benchmark
-    public void thrownExceptionsAse2015(RunnerState state) throws Exception {
-        QueryFactoryASE2015.queryThrownExceptionsAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer thrownExceptionsAse2015(RunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryThrownExceptionsAse2015(state.getResource()).callWithMemoryAndTime();
     }
 }

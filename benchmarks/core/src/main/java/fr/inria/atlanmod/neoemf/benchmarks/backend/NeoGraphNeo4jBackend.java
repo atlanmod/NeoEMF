@@ -19,8 +19,10 @@ import java.util.Map;
 
 public class NeoGraphNeo4jBackend extends NeoGraphBackend {
 
+    public static final String NAME = "neo-graph-neo4j";
+
     @Override
-    public String getResourceName() {
+    protected String getResourceExportExtension() {
         return "neo4j.resource";
     }
 
