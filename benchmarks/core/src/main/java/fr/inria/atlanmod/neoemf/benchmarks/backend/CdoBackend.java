@@ -29,6 +29,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class CdoBackend extends AbstractBackend {
 
     private EmbeddedCDOServer server;
@@ -42,7 +44,7 @@ public class CdoBackend extends AbstractBackend {
 
     @Override
     public String getResourceName() {
-        return "cdoresource";
+        return "resource";
     }
 
     @Override
@@ -71,19 +73,19 @@ public class CdoBackend extends AbstractBackend {
 
     @Override
     public void unloadResource(Resource resource) {
-        if (transaction != null && !transaction.isClosed()) {
+        if (!isNull(transaction) && !transaction.isClosed()) {
             transaction.close();
         }
 
-        if (session != null && !session.isClosed()) {
+        if (!isNull(session) && !session.isClosed()) {
             session.close();
         }
 
-        if (server != null && !server.isClosed()) {
+        if (!isNull(server) && !server.isClosed()) {
             server.close();
         }
 
-        if (resource != null && resource.isLoaded()) {
+        if (!isNull(resource) && resource.isLoaded()) {
             resource.unload();
         }
     }

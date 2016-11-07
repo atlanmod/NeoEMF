@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.backend;
 
-import fr.inria.atlanmod.neoemf.benchmarks.Backend;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.ecore.resource.Resource;

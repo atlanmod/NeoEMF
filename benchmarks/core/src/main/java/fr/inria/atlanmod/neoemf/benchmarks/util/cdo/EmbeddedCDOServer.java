@@ -42,6 +42,8 @@ import org.h2.jdbcx.JdbcDataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class EmbeddedCDOServer {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -101,20 +103,20 @@ public class EmbeddedCDOServer {
     }
 
     public void close() {
-        if (connector != null && !connector.isClosed()) {
+        if (!isNull(connector) && !connector.isClosed()) {
             connector.close();
         }
-        if (container != null && container.isActive()) {
+        if (!isNull(container) && container.isActive()) {
             Exception e = container.deactivate();
 
-            if (e != null) {
+            if (!isNull(e)) {
                 LOG.error(e);
             }
         }
     }
 
     public boolean isClosed() {
-        return connector == null || connector.isClosed();
+        return isNull(connector) || connector.isClosed();
     }
 
     private JdbcDataSource getJdbcDataSource(String url) {

@@ -45,6 +45,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static java.util.Objects.isNull;
+
 public class Migrator {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -57,7 +59,7 @@ public class Migrator {
     }
 
     public static Migrator getInstance() {
-        if (INSTANCE == null) {
+        if (isNull(INSTANCE)) {
             INSTANCE = new Migrator();
         }
         return INSTANCE;
@@ -71,9 +73,9 @@ public class Migrator {
 
         ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME));
 
-        for (File resourceFile : extract(zis, BenchmarkUtil.getResourcesDirectory())) {
+        for (File resourceFile : extractAll(zis, BenchmarkUtil.getResourcesDirectory())) {
             File migratedFile = migrate(BenchmarkUtil.getResourcesDirectory().resolve(resourceFile.getName()).toFile(), destExtension, destClass);
-            if (migratedFile != null && migratedFile.exists()) {
+            if (!isNull(migratedFile) && migratedFile.exists()) {
                 files.add(migratedFile);
             }
         }
@@ -82,7 +84,7 @@ public class Migrator {
     }
 
     // TODO: Migrate a resource according to its index
-    public File migrate(int index, String destExtension, Class<?> destClass) {
+    public File migrate(String name, String destExtension, Class<?> destClass) {
         return null;
     }
 
@@ -170,7 +172,7 @@ public class Migrator {
 
     private EObject getCorrespondingEObject(Map<EObject, EObject> correspondencesMap, EObject eObject, EPackage ePackage) {
         EObject targetEObject = correspondencesMap.get(eObject);
-        if (targetEObject == null) {
+        if (isNull(targetEObject)) {
             EClass eClass = eObject.eClass();
             EClass targetClass = (EClass) ePackage.getEClassifier(eClass.getName());
             targetEObject = EcoreUtil.create(targetClass);
@@ -183,7 +185,7 @@ public class Migrator {
         return BenchmarkUtil.getResourcesDirectory().resolve(Files.getNameWithoutExtension(in.getName()) + "." + destExtension + ".zxmi").toString();
     }
 
-    private Iterable<File> extract(ZipInputStream zipIn, Path destDirectory) throws IOException {
+    private Iterable<File> extractAll(ZipInputStream zipIn, Path destDirectory) throws IOException {
         List<File> files = new ArrayList<>();
 
         File destDir = destDirectory.toFile();
@@ -193,7 +195,7 @@ public class Migrator {
 
         ZipEntry entry = zipIn.getNextEntry();
 
-        while (entry != null) {
+        while (!isNull(entry)) {
             File file = destDirectory.resolve(new File(entry.getName()).getName()).toFile();
             if (!entry.isDirectory() && entry.getName().endsWith(".xmi")) {
                 if (!file.exists()) {
@@ -213,5 +215,9 @@ public class Migrator {
         zipIn.close();
 
         return files;
+    }
+
+    private File extract(String filename, ZipInputStream zipIn, Path destDirectory) {
+        return null;
     }
 }

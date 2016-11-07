@@ -21,7 +21,7 @@ public class NeoGraphNeo4jBackend extends NeoGraphBackend {
 
     @Override
     public String getResourceName() {
-        return "neoemf.neo4j.resource";
+        return "neo4j.resource";
     }
 
     @Override

@@ -39,6 +39,8 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
+
 public class QueryFactoryASE2015 extends QueryFactory {
 
     public static Query<Integer> queryGrabatsAse2015(Resource resource) {
@@ -50,7 +52,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
                 for (BodyDeclaration method : typeDecl.getBodyDeclarations()) {
                     if ((method instanceof MethodDeclaration)) {
                         MethodDeclaration methDecl = (MethodDeclaration) method;
-                        if (methDecl.getModifier() != null && methDecl.getModifier().isStatic() && methDecl.getReturnType() != null && methDecl.getReturnType().getType() == typeDecl) {
+                        if (!isNull(methDecl.getModifier()) && methDecl.getModifier().isStatic() && !isNull(methDecl.getReturnType()) && methDecl.getReturnType().getType() == typeDecl) {
                             listResult.add((ClassDeclaration) typeDecl);
                         }
                     }
@@ -172,7 +174,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
             if ((method instanceof MethodDeclaration)) {
                 MethodDeclaration meth = (MethodDeclaration) method;
-                if (meth.getBody() != null) {
+                if (!isNull(meth.getBody())) {
                     getAccessedTypesFromBody(meth.getBody().getStatements(), result);
                 }
             }
@@ -205,7 +207,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
 
     private static void getInvisibleMethodsInClassDeclaration(ClassDeclaration cd, EList<MethodDeclaration> result) {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
-            if ((method instanceof MethodDeclaration) && method.getModifier() != null) {
+            if ((method instanceof MethodDeclaration) && !isNull(method.getModifier())) {
                 if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                     result.add((MethodDeclaration) method);
                 }

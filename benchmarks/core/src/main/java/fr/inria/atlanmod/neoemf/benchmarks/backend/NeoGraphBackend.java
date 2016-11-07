@@ -33,7 +33,7 @@ public class NeoGraphBackend extends AbstractNeoBackend {
 
     @Override
     public String getResourceName() {
-        return "neoemf.tinker.resource";
+        return "tinker.resource";
     }
 
     @Override
@@ -44,7 +44,7 @@ public class NeoGraphBackend extends AbstractNeoBackend {
 
         URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(path));
 
-        org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
+        getEPackageClass().getMethod("init").invoke(null);
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());

@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.backend;
 
 import com.google.common.io.Files;
 
@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.isNull;
 
 public interface Backend {
 
@@ -53,7 +55,7 @@ public interface Backend {
         for (File f : Migrator.getInstance().migrateAll(getName(), getEPackageClass())) {
             File file = create(f.getAbsolutePath(), BenchmarkUtil.getStoreDirectory().resolve(Files.getNameWithoutExtension(f.getAbsolutePath()) + "." + getResourceName()).toString());
 
-            if (file != null && file.exists()) {
+            if (!isNull(file) && file.exists()) {
                 paths.add(file);
             }
         }

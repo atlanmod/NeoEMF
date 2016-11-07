@@ -19,10 +19,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.util.Objects.isNull;
+
 public class BenchmarkUtil {
 
-    public static final int DEFAULT_WARMUP_ITERATIONS = 1;
-    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 10;
+    public static final int DEFAULT_WARMUP_ITERATIONS = 2;
+    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
 
     public static final int DEFAULT_BATCH_SIZE = 1;
     public static final int DEFAULT_FORKS = 1;
@@ -35,7 +37,7 @@ public class BenchmarkUtil {
     }
 
     public static Path getBaseDirectory() {
-        if (BASE_DIR == null) {
+        if (isNull(BASE_DIR)) {
             try {
                 BASE_DIR = Files.createDirectories(Paths.get(System.getProperty("java.io.tmpdir"), "neoemf-benchmarks"));
             }

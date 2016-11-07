@@ -33,7 +33,7 @@ public class NeoMapBackend extends AbstractNeoBackend {
 
     @Override
     public String getResourceName() {
-        return "neoemf.mapdb.resource";
+        return "mapdb.resource";
     }
 
     @Override
@@ -44,7 +44,7 @@ public class NeoMapBackend extends AbstractNeoBackend {
 
         URI uri = NeoMapURI.createNeoMapURI(new File(path));
 
-        org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
+        getEPackageClass().getMethod("init").invoke(null);
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());

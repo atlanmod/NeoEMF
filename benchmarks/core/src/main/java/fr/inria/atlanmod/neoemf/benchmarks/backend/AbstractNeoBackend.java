@@ -15,6 +15,8 @@ import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
+import static java.util.Objects.isNull;
+
 public abstract class AbstractNeoBackend extends AbstractBackend {
 
     @Override
@@ -29,7 +31,7 @@ public abstract class AbstractNeoBackend extends AbstractBackend {
 
     @Override
     public void unloadResource(Resource resource) {
-        if (resource != null && resource.isLoaded()) {
+        if (!isNull(resource) && resource.isLoaded()) {
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
             }

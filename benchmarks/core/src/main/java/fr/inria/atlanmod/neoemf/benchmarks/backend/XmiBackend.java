@@ -24,6 +24,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class XmiBackend extends AbstractBackend {
 
     @Override
@@ -47,7 +49,7 @@ public class XmiBackend extends AbstractBackend {
 
         URI uri = URI.createFileURI(path);
 
-        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
+        getEPackageClass().getMethod("init").invoke(null);
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
@@ -61,7 +63,7 @@ public class XmiBackend extends AbstractBackend {
 
     @Override
     public void unloadResource(Resource resource) {
-        if (resource != null && resource.isLoaded()) {
+        if (!isNull(resource) && resource.isLoaded()) {
             resource.unload();
         }
     }

@@ -42,6 +42,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
+
 public class QueryFactory {
 
     protected static final Logger LOG = LogManager.getLogger();
@@ -136,7 +138,7 @@ public class QueryFactory {
                 TypeDeclaration typeOwner = (TypeDeclaration) owner;
                 for (BodyDeclaration method : typeOwner.getBodyDeclarations()) {
                     if (method instanceof MethodDeclaration) {
-                        if (method.getModifier() != null) {
+                        if (!isNull(method.getModifier())) {
                             if (method.getModifier().isStatic()) {
                                 if (((MethodDeclaration) method).getReturnType() == typeOwner) {
                                     listResult.add((ClassDeclaration) typeOwner);
@@ -160,7 +162,7 @@ public class QueryFactory {
             for (EObject cls : allClasses) {
                 for (BodyDeclaration method : ((ClassDeclaration) cls).getBodyDeclarations()) {
 
-                    if (method instanceof MethodDeclaration && method.getModifier() != null) {
+                    if (method instanceof MethodDeclaration && !isNull(method.getModifier())) {
                         if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                             methodDeclarations.add((MethodDeclaration) method);
                         }
@@ -189,7 +191,7 @@ public class QueryFactory {
                 hasBeenInvoked.add(((MethodInvocation) methodInv).getMethod());
             }
             for (EObject method : allInstances) {
-                if (method instanceof MethodDeclaration && ((BodyDeclaration) method).getModifier() != null) {
+                if (method instanceof MethodDeclaration && !isNull(((BodyDeclaration) method).getModifier())) {
                     if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                         if (!hasBeenInvoked.contains(method)) {
                             unusedMethods.add((MethodDeclaration) method);
@@ -210,7 +212,7 @@ public class QueryFactory {
             EList<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
             EList<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             for (EObject method : allInstances) {
-                if ((method instanceof MethodDeclaration) && ((BodyDeclaration) method).getModifier() != null) {
+                if ((method instanceof MethodDeclaration) && !isNull(((BodyDeclaration) method).getModifier())) {
                     if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                         if (!hasBeenInvoked(methodInvocations, method)) {
                             unusedMethods.add((MethodDeclaration) method);
@@ -240,7 +242,7 @@ public class QueryFactory {
     private static EList<NamedElement> separateFields(EList<BodyDeclaration> bodyDeclarations) {
         EList<NamedElement> fields = new BasicEList<>();
         for (BodyDeclaration declaration : bodyDeclarations) {
-            if (declaration != null) {
+            if (!isNull(declaration)) {
                 if (declaration instanceof FieldDeclaration) {
                     if (((FieldDeclaration) declaration).getFragments().isEmpty()) {
                         fields.add(declaration);
