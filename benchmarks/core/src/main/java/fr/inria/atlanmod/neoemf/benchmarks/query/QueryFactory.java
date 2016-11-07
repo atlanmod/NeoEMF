@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
+import com.google.common.collect.Iterators;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
@@ -43,6 +45,10 @@ import java.util.Set;
 public class QueryFactory {
 
     protected static final Logger LOG = LogManager.getLogger();
+
+    public static Query<Integer> queryCountAllElements(Resource resource) {
+        return () -> Iterators.size(resource.getAllContents());
+    }
 
     /**
      * Returns the orphan and non Primitive Types of a java model this is a common query to all both standard and

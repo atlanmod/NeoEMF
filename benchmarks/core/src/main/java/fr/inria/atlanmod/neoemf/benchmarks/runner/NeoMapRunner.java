@@ -30,15 +30,24 @@ import java.util.Map;
 public class NeoMapRunner extends AbstractNeoRunner {
 
     @Override
-    protected Creator getCreator() {
-        return NeoMapCreator.getInstance();
+    protected Map<Object, Object> getLoadOptions() {
+        Map<Object, Object> loadOpts = new HashMap<>();
+
+//      List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
+//		storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
+//      storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
+//      storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
+//      storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
+//      loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
+
+        return loadOpts;
     }
 
     @Override
-    public void createResource() throws IOException {
+    public void initResource() throws IOException {
         PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-        URI uri = NeoMapURI.createNeoMapURI(new File(getPath()));
+        URI uri = NeoMapURI.createNeoMapURI(new File(getCurrentPath()));
 
         org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
@@ -51,16 +60,7 @@ public class NeoMapRunner extends AbstractNeoRunner {
     }
 
     @Override
-    protected Map<Object, Object> getLoadOptions() {
-        Map<Object, Object> loadOpts = new HashMap<>();
-
-//      List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
-//		storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
-//      storeOptions.add(PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING);
-//      storeOptions.add(PersistentResourceOptions.EStoreOption.IS_SET_CACHING);
-//      storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
-//      loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
-
-        return loadOpts;
+    protected Creator getCreator() {
+        return NeoMapCreator.getInstance();
     }
 }

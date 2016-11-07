@@ -24,13 +24,8 @@ import java.io.IOException;
 public class XmiRunner extends AbstractRunner {
 
     @Override
-    protected Creator getCreator() {
-        return XmiCreator.getInstance();
-    }
-
-    @Override
-    public void createResource() throws IOException {
-        URI uri = URI.createFileURI(getPath());
+    public void initResource() throws IOException {
+        URI uri = URI.createFileURI(getCurrentPath());
 
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
@@ -48,5 +43,10 @@ public class XmiRunner extends AbstractRunner {
         if (resource != null && resource.isLoaded()) {
             resource.unload();
         }
+    }
+
+    @Override
+    protected Creator getCreator() {
+        return XmiCreator.getInstance();
     }
 }

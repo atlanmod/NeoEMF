@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-import fr.inria.atlanmod.neoemf.benchmarks.query.QueryRunner;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryRunner;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
 
 import org.openjdk.jmh.annotations.Benchmark;

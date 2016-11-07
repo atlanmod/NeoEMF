@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-import com.google.common.collect.Iterators;
-
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
 import fr.inria.atlanmod.neoemf.benchmarks.Runner;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -36,8 +35,6 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -60,33 +57,49 @@ public abstract class AbstractRunner implements Runner {
 
     protected static final Logger LOG = LogManager.getLogger();
 
-    /**
-     * All loaded global resource paths.
-     *
-     * @see #loadGlobalResourcesAndStores()
-     */
-    private static String[] PATHS;
-
     protected Resource resource;
 
     /**
-     * The current index in {@link #PATHS}.
+     * Array containing all the paths of loaded resources.
+     *
+     * @see #currentPathIndex
+     */
+    private String[] paths;
+
+    /**
+     * The current index in {@link #paths}.
+     *
+     * @see #getCurrentPath()
      */
     // TODO: Find a better way to navigate between the differents resources
     @SuppressWarnings("unused")
-    @Param({"0", "1", "2", "3", "4"})
-    private int currentIndex;
+    @Param({"0", "1", "2"})
+    private int currentPathIndex;
 
     /**
-     * Loads global resources and stores them in {@link #PATHS}.
+     * Loads resources and stores them in {@link #paths}.
      */
     @Setup(Level.Trial)
-    public final void loadGlobalResourcesAndStores() {
-        PATHS = getCreator().createAll();
+    public final void setupTrial() {
+        LOG.info("Loading resources");
+        paths = getCreator().createAll();
+        LOG.info("Resources loaded");
+    }
+
+    @Setup(Level.Iteration)
+    public void setupIteration() throws IOException {
+        initResource();
+    }
+
+    @TearDown
+    public void tearDownIteration() {
+        destroyResource();
     }
 
     /**
      * Returns the load options of a {@link Resource} for this {@link Runner}.
+     * <p/>
+     * The default method returns an {@link Collections#emptyMap() empty map}.
      */
     protected Map<Object, Object> getLoadOptions() {
         return Collections.emptyMap();
@@ -94,28 +107,38 @@ public abstract class AbstractRunner implements Runner {
 
     /**
      * Returns the save options of a {@link Resource} for this {@link Runner}.
+     * <p/>
+     * The default method returns an {@link Collections#emptyMap() empty map}.
      */
     protected Map<Object, Object> getSaveOptions() {
         return Collections.emptyMap();
     }
 
     /**
+     * Initializes the {@link #resource}.
+     */
+    public abstract void initResource() throws IOException;
+
+    /**
+     * Destroy the {@link #resource}.
+     */
+    public abstract void destroyResource();
+
+    /**
      * Returns the {@link Creator} associated with this {@link Runner}.
      */
     protected abstract Creator getCreator();
 
-    @Setup(Level.Iteration)
-    public abstract void createResource() throws IOException;
-
-    @TearDown(Level.Iteration)
-    public abstract void destroyResource();
-
+    /**
+     * Returns the current resource path.
+     */
     // TODO: Copy resource in a temp dir to avoid overwritting
-    protected final String getPath() throws IOException {
+    protected final String getCurrentPath() throws IOException {
         try {
-            return PATHS[currentIndex];
-        } catch (Exception e) {
-            throw new IOException("Unloaded resource at index " + currentIndex);
+            return paths[currentPathIndex];
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            throw new IOException("Resource at index " + currentPathIndex + " does not exist");
         }
     }
 
@@ -123,13 +146,7 @@ public abstract class AbstractRunner implements Runner {
     @Override
     public void traverse() {
         try {
-            LOG.info("Start counting");
-            Instant begin = Instant.now();
-            int count = Iterators.size(resource.getAllContents());
-            Instant end = Instant.now();
-            LOG.info("End counting");
-            LOG.info("Resource {} contains {} elements", resource.getURI(), count);
-            LOG.info("Time spent: {}", Duration.between(begin, end));
+            QueryFactory.queryCountAllElements(resource).callWithTime();
         }
         catch (Exception e) {
             LOG.error(e);

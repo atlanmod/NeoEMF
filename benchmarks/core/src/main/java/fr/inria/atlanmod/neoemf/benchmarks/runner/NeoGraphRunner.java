@@ -32,27 +32,6 @@ import java.util.Map;
 public class NeoGraphRunner extends AbstractNeoRunner {
 
     @Override
-    protected Creator getCreator() {
-        return NeoGraphCreator.getInstance();
-    }
-
-    @Override
-    public void createResource() throws IOException {
-        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-
-        URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(getPath()));
-
-        org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
-
-        resource = resourceSet.createResource(uri);
-
-        resource.load(getLoadOptions());
-    }
-
-    @Override
     protected Map<Object, Object> getLoadOptions() {
         Map<Object, Object> loadOpts = new HashMap<>();
 
@@ -66,5 +45,26 @@ public class NeoGraphRunner extends AbstractNeoRunner {
 //      loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
 
         return loadOpts;
+    }
+
+    @Override
+    public void initResource() throws IOException {
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+
+        URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(getCurrentPath()));
+
+        org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
+
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+
+        resource = resourceSet.createResource(uri);
+
+        resource.load(getLoadOptions());
+    }
+
+    @Override
+    protected Creator getCreator() {
+        return NeoGraphCreator.getInstance();
     }
 }

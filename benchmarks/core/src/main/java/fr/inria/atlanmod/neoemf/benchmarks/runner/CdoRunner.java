@@ -31,15 +31,17 @@ public class CdoRunner extends AbstractQueryRunner {
     private CDOTransaction transaction;
 
     @Override
-    protected Creator getCreator() {
-        return CdoCreator.getInstance();
+    protected Map<Object, Object> getSaveOptions() {
+        Map<Object, Object> saveOpts = new HashMap<>();
+        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
+        return saveOpts;
     }
 
     @Override
-    public void createResource() throws IOException {
+    public void initResource() throws IOException {
         org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
 
-        server = new EmbeddedCDOServer(getPath());
+        server = new EmbeddedCDOServer(getCurrentPath());
         server.run();
 
         session = server.openSession();
@@ -69,9 +71,7 @@ public class CdoRunner extends AbstractQueryRunner {
     }
 
     @Override
-    protected Map<Object, Object> getSaveOptions() {
-        Map<Object, Object> saveOpts = new HashMap<>();
-        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
-        return saveOpts;
+    protected Creator getCreator() {
+        return CdoCreator.getInstance();
     }
 }
