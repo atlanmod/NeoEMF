@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4j
 import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -30,7 +29,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NeoGraphRunner extends AbstractQueryRunner {
+public class NeoGraphRunner extends AbstractNeoRunner {
 
     @Override
     protected Creator getCreator() {
@@ -50,7 +49,13 @@ public class NeoGraphRunner extends AbstractQueryRunner {
 
         resource = resourceSet.createResource(uri);
 
-        Map<String, Object> loadOpts = new HashMap<>();
+        resource.load(getLoadOptions());
+    }
+
+    @Override
+    protected Map<Object, Object> getLoadOptions() {
+        Map<Object, Object> loadOpts = new HashMap<>();
+
         loadOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
 
 //      List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
@@ -60,18 +65,6 @@ public class NeoGraphRunner extends AbstractQueryRunner {
 //      storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
 //      loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
 
-        resource.load(loadOpts);
-    }
-
-    @Override
-    public void destroyResource() {
-        if (resource != null && resource.isLoaded()) {
-            if (resource instanceof PersistentResourceImpl) {
-                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
-            }
-            else {
-                resource.unload();
-            }
-        }
+        return loadOpts;
     }
 }

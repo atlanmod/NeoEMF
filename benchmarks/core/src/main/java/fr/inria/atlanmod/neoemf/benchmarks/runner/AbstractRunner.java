@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner;
 import com.google.common.collect.Iterators;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Creator;
-import fr.inria.atlanmod.neoemf.benchmarks.Traverser;
+import fr.inria.atlanmod.neoemf.benchmarks.Runner;
 import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +38,8 @@ import org.openjdk.jmh.annotations.Warmup;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
@@ -54,24 +56,52 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
 @Measurement(iterations = BenchmarkUtil.DEFAULT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
 @OperationsPerInvocation(BenchmarkUtil.DEFAULT_BATCH_SIZE)
-public abstract class AbstractRunner implements Traverser {
+public abstract class AbstractRunner implements Runner {
 
     protected static final Logger LOG = LogManager.getLogger();
 
+    /**
+     * All loaded global resource paths.
+     *
+     * @see #loadGlobalResourcesAndStores()
+     */
     private static String[] PATHS;
 
     protected Resource resource;
 
+    /**
+     * The current index in {@link #PATHS}.
+     */
     // TODO: Find a better way to navigate between the differents resources
     @SuppressWarnings("unused")
-    @Param({"0", "1", "2"})
+    @Param({"0", "1", "2", "3", "4"})
     private int currentIndex;
 
+    /**
+     * Loads global resources and stores them in {@link #PATHS}.
+     */
     @Setup(Level.Trial)
-    public final void loadResourcesAndStores() {
+    public final void loadGlobalResourcesAndStores() {
         PATHS = getCreator().createAll();
     }
 
+    /**
+     * Returns the load options of a {@link Resource} for this {@link Runner}.
+     */
+    protected Map<Object, Object> getLoadOptions() {
+        return Collections.emptyMap();
+    }
+
+    /**
+     * Returns the save options of a {@link Resource} for this {@link Runner}.
+     */
+    protected Map<Object, Object> getSaveOptions() {
+        return Collections.emptyMap();
+    }
+
+    /**
+     * Returns the {@link Creator} associated with this {@link Runner}.
+     */
     protected abstract Creator getCreator();
 
     @Setup(Level.Iteration)
@@ -82,7 +112,11 @@ public abstract class AbstractRunner implements Traverser {
 
     // TODO: Copy resource in a temp dir to avoid overwritting
     protected final String getPath() throws IOException {
-        return PATHS[currentIndex];
+        try {
+            return PATHS[currentIndex];
+        } catch (Exception e) {
+            throw new IOException("Unloaded resource at index " + currentIndex);
+        }
     }
 
     @Benchmark

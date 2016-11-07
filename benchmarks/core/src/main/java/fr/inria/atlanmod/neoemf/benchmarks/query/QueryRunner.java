@@ -9,12 +9,16 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.query;
+
+import fr.inria.atlanmod.neoemf.benchmarks.Runner;
 
 /**
+ * A {@link Runner} able to execute {@link fr.inria.atlanmod.neoemf.benchmarks.query.Query queries}.
  *
+ * @see fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory
  */
-public interface QueryRunner {
+public interface QueryRunner extends Runner {
 
     /*
      * Commons queries

@@ -20,8 +20,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class XmiRunner extends AbstractRunner {
 
@@ -42,8 +40,7 @@ public class XmiRunner extends AbstractRunner {
 
         resource = resourceSet.createResource(uri);
 
-        Map<String, Object> loadOpts = new HashMap<>();
-        resource.load(loadOpts);
+        resource.load(getLoadOptions());
     }
 
     @Override

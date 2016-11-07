@@ -11,10 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks;
 
-/**
- *
- */
-public interface Traverser {
+public interface Runner {
 
     void traverse();
 }

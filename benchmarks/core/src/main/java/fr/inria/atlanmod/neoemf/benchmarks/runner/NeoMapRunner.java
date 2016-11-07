@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -28,7 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NeoMapRunner extends AbstractQueryRunner {
+public class NeoMapRunner extends AbstractNeoRunner {
 
     @Override
     protected Creator getCreator() {
@@ -48,7 +47,12 @@ public class NeoMapRunner extends AbstractQueryRunner {
 
         resource = resourceSet.createResource(uri);
 
-        Map<String, Object> loadOpts = new HashMap<>();
+        resource.load(getLoadOptions());
+    }
+
+    @Override
+    protected Map<Object, Object> getLoadOptions() {
+        Map<Object, Object> loadOpts = new HashMap<>();
 
 //      List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 //		storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);
@@ -57,18 +61,6 @@ public class NeoMapRunner extends AbstractQueryRunner {
 //      storeOptions.add(PersistentResourceOptions.EStoreOption.SIZE_CACHING);
 //      loadOpts.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
 
-        resource.load(loadOpts);
-    }
-
-    @Override
-    public void destroyResource() {
-        if (resource != null && resource.isLoaded()) {
-            if (resource instanceof PersistentResourceImpl) {
-                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
-            }
-            else {
-                resource.unload();
-            }
-        }
+        return loadOpts;
     }
 }

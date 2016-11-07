@@ -11,18 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-import fr.inria.atlanmod.neoemf.benchmarks.QueryRunner;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryRunner;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
-import java.util.Collections;
 import java.util.UUID;
 
-/**
- *
- */
 public abstract class AbstractQueryRunner extends AbstractRunner implements QueryRunner {
 
     @Benchmark
@@ -75,7 +71,7 @@ public abstract class AbstractQueryRunner extends AbstractRunner implements Quer
         try {
             String name = UUID.randomUUID().toString();
             QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
-            resource.save(Collections.emptyMap());
+            resource.save(getSaveOptions());
         }
         catch (Exception e) {
             LOG.error(e);
