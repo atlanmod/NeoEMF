@@ -106,7 +106,10 @@ public class EmbeddedCDOServer {
         }
         if (container != null && container.isActive()) {
             Exception e = container.deactivate();
-            LOG.error(e);
+
+            if (e != null) {
+                LOG.error(e);
+            }
         }
     }
 

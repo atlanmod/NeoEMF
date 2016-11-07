@@ -23,146 +23,81 @@ public abstract class AbstractQueryRunner extends AbstractRunner implements Quer
 
     @Benchmark
     @Override
-    public void classDeclarationAttributes() {
-        try {
-            QueryFactory.queryClassDeclarationAttributes(resource).callWithTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void classDeclarationAttributes() throws Exception {
+        QueryFactory.queryClassDeclarationAttributes(resource).callWithTime();
     }
 
     @Benchmark
     @Override
-    public void grabats() {
-        try {
-            QueryFactory.queryGrabats09(resource).callWithTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void grabats() throws Exception {
+        QueryFactory.queryGrabats09(resource).callWithTime();
     }
 
     @Benchmark
     @Override
-    public void invisibleMethodDeclarations() {
-        try {
-            QueryFactory.queryInvisibleMethodDeclarations(resource).callWithTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void invisibleMethodDeclarations() throws Exception {
+        QueryFactory.queryInvisibleMethodDeclarations(resource).callWithTime();
     }
 
     @Benchmark
     @Override
-    public void orphanNonPrimitiveTypes() {
-        try {
-            QueryFactory.queryOrphanNonPrimitivesTypes(resource).callWithTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void orphanNonPrimitiveTypes() throws Exception {
+        QueryFactory.queryOrphanNonPrimitivesTypes(resource).callWithTime();
     }
 
     //@Benchmark
     @Override
-    public void renameAllMethods() {
-        try {
-            String name = UUID.randomUUID().toString();
-            QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
-            resource.save(getSaveOptions());
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void renameAllMethods() throws Exception {
+        String name = UUID.randomUUID().toString();
+        QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
+        resource.save(getSaveOptions());
     }
 
     @Benchmark
     @Override
-    public void thrownExceptionsPerPackage() {
-        try {
-            QueryFactory.queryThrownExceptionsPerPackage(resource).callWithTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void thrownExceptionsPerPackage() throws Exception {
+        QueryFactory.queryThrownExceptionsPerPackage(resource).callWithTime();
     }
 
     @Benchmark
     @Override
-    public void unusedMethodsWithList() {
-        try {
-            QueryFactory.queryUnusedMethodsWithList(resource).callWithTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void unusedMethodsWithList() throws Exception {
+        QueryFactory.queryUnusedMethodsWithList(resource).callWithTime();
     }
 
     @Benchmark
     @Override
-    public void unusedMethodsWithLoop() {
-        try {
-            QueryFactory.queryUnusedMethodsWithLoop(resource).callWithTime(); // Query result (loops)
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void unusedMethodsWithLoop() throws Exception {
+        QueryFactory.queryUnusedMethodsWithLoop(resource).callWithTime();
     }
 
     @Benchmark
     @Override
-    public void branchStatementsAse2015() {
-        try {
-            QueryFactoryASE2015.queryCommentsTagContentAse2015(resource).callWithMemoryAndTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void branchStatementsAse2015() throws Exception {
+        QueryFactoryASE2015.queryCommentsTagContentAse2015(resource).callWithMemoryAndTime();
     }
 
     @Benchmark
     @Override
-    public void grabatsAse2015() {
-        try {
-            QueryFactoryASE2015.queryGrabatsAse2015(resource).callWithMemoryAndTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void grabatsAse2015() throws Exception {
+        QueryFactoryASE2015.queryGrabatsAse2015(resource).callWithMemoryAndTime();
     }
 
     @Benchmark
     @Override
-    public void invisibleMethodDeclarationsAse2015() {
-        try {
-            QueryFactoryASE2015.queryInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void invisibleMethodDeclarationsAse2015() throws Exception {
+        QueryFactoryASE2015.queryInvisibleMethodDeclarations(resource).callWithMemoryAndTime();
     }
 
     @Benchmark
     @Override
-    public void specificInvisibleMethodDeclarationsAse2015() {
-        try {
-            QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(resource).callWithMemoryAndTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void specificInvisibleMethodDeclarationsAse2015() throws Exception {
+        QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(resource).callWithMemoryAndTime();
     }
 
     @Benchmark
     @Override
-    public void thrownExceptionsAse2015() {
-        try {
-            QueryFactoryASE2015.queryThrownExceptionsAse2015(resource).callWithMemoryAndTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void thrownExceptionsAse2015() throws Exception {
+        QueryFactoryASE2015.queryThrownExceptionsAse2015(resource).callWithMemoryAndTime();
     }
 }

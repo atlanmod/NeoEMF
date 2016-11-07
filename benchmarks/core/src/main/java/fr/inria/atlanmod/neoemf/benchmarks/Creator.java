@@ -31,7 +31,7 @@ public interface Creator {
 
     Class<?> getAssociatedClass();
 
-    default String[] createAll() {
+    default String[] createAll() throws Exception {
         List<String> paths = new ArrayList<>();
         for (File f : Migrator.getInstance().migrateAll(getBaseName(), getAssociatedClass())) {
             File file = create(f.getAbsolutePath(), BenchmarkUtil.getStoreDirectory().resolve(Files.getNameWithoutExtension(f.getAbsolutePath()) + "." + getResourceName()).toString());
@@ -43,5 +43,10 @@ public interface Creator {
         return paths.toArray(new String[paths.size()]);
     }
 
-    File create(String in, String out);
+    // TODO: Create a resource according to its index
+    default String create(int index) {
+        return null;
+    }
+
+    File create(String in, String out) throws Exception;
 }

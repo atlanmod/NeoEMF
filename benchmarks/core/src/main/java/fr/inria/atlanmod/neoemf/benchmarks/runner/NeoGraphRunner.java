@@ -35,7 +35,7 @@ public class NeoGraphRunner extends AbstractNeoRunner {
     protected Map<Object, Object> getLoadOptions() {
         Map<Object, Object> loadOpts = new HashMap<>();
 
-        loadOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
+//      loadOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
 
 //      List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
 //      storeOptions.add(PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING);

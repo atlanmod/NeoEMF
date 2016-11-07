@@ -66,71 +66,68 @@ public class Migrator {
     /**
      * Migrates all XMI files present in {@code resources.zip} and returns a list of newly created files.
      */
-    public Iterable<File> migrateAll(String destExtension, Class<?> destClass) {
+    public Iterable<File> migrateAll(String destExtension, Class<?> destClass) throws Exception {
         List<File> files = new ArrayList<>();
-        try {
-            ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME));
 
-            for (File resourceFile : unzip(zis, BenchmarkUtil.getResourcesDirectory())) {
-                File migratedFile = migrate(BenchmarkUtil.getResourcesDirectory().resolve(resourceFile.getName()).toFile(), destExtension, destClass);
-                if (migratedFile != null && migratedFile.exists()) {
-                    files.add(migratedFile);
-                }
+        ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME));
+
+        for (File resourceFile : extract(zis, BenchmarkUtil.getResourcesDirectory())) {
+            File migratedFile = migrate(BenchmarkUtil.getResourcesDirectory().resolve(resourceFile.getName()).toFile(), destExtension, destClass);
+            if (migratedFile != null && migratedFile.exists()) {
+                files.add(migratedFile);
             }
         }
-        catch (IOException e) {
-            LOG.error(e);
-        }
+
         return files;
+    }
+
+    // TODO: Migrate a resource according to its index
+    public File migrate(int index, String destExtension, Class<?> destClass) {
+        return null;
     }
 
     /**
      * Migrates a XMI file and returns the newly created file.
      */
-    public File migrate(File in, String destExtension, Class<?> destClass) {
+    public File migrate(File in, String destExtension, Class<?> destClass) throws Exception {
         File destFile = new File(getDestFile(in, destExtension));
 
         if (destFile.exists()) {
             return destFile;
         }
 
-        try {
-            URI srcUri = URI.createFileURI(in.getAbsolutePath());
-            URI destUri = URI.createFileURI(destFile.getAbsolutePath());
+        URI srcUri = URI.createFileURI(in.getAbsolutePath());
+        URI destUri = URI.createFileURI(destFile.getAbsolutePath());
 
-            // Default source EPackage
-            org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
+        // Default source EPackage
+        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
-            // Destination EPackage
-            EPackage destEPackage = (EPackage) destClass.getMethod("init").invoke(null);
+        // Destination EPackage
+        EPackage destEPackage = (EPackage) destClass.getMethod("init").invoke(null);
 
-            ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
-            LOG.info("Loading '{}'", srcUri);
-            Resource sourceResource = resourceSet.getResource(srcUri, true);
-            Resource targetResource = resourceSet.createResource(destUri);
+        LOG.info("Loading '{}'", srcUri);
+        Resource sourceResource = resourceSet.getResource(srcUri, true);
+        Resource targetResource = resourceSet.createResource(destUri);
 
-            targetResource.getContents().clear();
-            LOG.info("Start migration from '{}'", srcUri);
-            targetResource.getContents().add(migrate(sourceResource.getContents().get(0), destEPackage));
-            LOG.info("Migration finished");
+        targetResource.getContents().clear();
+        LOG.info("Start migration from '{}'", srcUri);
+        targetResource.getContents().add(migrate(sourceResource.getContents().get(0), destEPackage));
+        LOG.info("Migration finished");
 
-            Map<String, Object> saveOpts = new HashMap<>();
-            saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
+        Map<String, Object> saveOpts = new HashMap<>();
+        saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
 
-            LOG.info("Start saving to '{}'", destUri);
-            targetResource.save(saveOpts);
-            LOG.info("Saving done");
+        LOG.info("Start saving to '{}'", destUri);
+        targetResource.save(saveOpts);
+        LOG.info("Saving done");
 
-            sourceResource.unload();
-            targetResource.unload();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-            return null;
-        }
+        sourceResource.unload();
+        targetResource.unload();
+
         return destFile;
     }
 
@@ -186,7 +183,7 @@ public class Migrator {
         return BenchmarkUtil.getResourcesDirectory().resolve(Files.getNameWithoutExtension(in.getName()) + "." + destExtension + ".zxmi").toString();
     }
 
-    private Iterable<File> unzip(ZipInputStream zipIn, Path destDirectory) throws IOException {
+    private Iterable<File> extract(ZipInputStream zipIn, Path destDirectory) throws IOException {
         List<File> files = new ArrayList<>();
 
         File destDir = destDirectory.toFile();

@@ -49,10 +49,6 @@ public class NeoGraphCreator extends AbstractCreator {
         return INSTANCE;
     }
 
-    public static void main(String[] args) {
-        NeoGraphCreator.getInstance().createAll();
-    }
-
     @Override
     public String getBaseName() {
         return "neoemf";
@@ -69,7 +65,7 @@ public class NeoGraphCreator extends AbstractCreator {
     }
 
     @Override
-    public File create(String in, String out) {
+    public File create(String in, String out) throws Exception {
         File destFile = new File(out);
 
         if (destFile.exists()) {
@@ -105,7 +101,7 @@ public class NeoGraphCreator extends AbstractCreator {
             Resource targetResource = resourceSet.createResource(targetUri);
 
             Map<String, Object> saveOpts = new HashMap<>();
-            saveOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
+            //saveOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
 
             List<StoreOption> storeOptions = new ArrayList<>();
             storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT);
@@ -132,7 +128,7 @@ public class NeoGraphCreator extends AbstractCreator {
         }
         catch (Exception e) {
             LOG.error(e);
-            return null;
+            throw e;
         }
         return destFile;
     }

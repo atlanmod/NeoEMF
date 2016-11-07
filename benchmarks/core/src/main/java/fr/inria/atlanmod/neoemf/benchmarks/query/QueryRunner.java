@@ -24,33 +24,33 @@ public interface QueryRunner extends Runner {
      * Commons queries
      */
 
-    void classDeclarationAttributes();
+    void classDeclarationAttributes() throws Exception;
 
-    void grabats();
+    void grabats() throws Exception;
 
-    void invisibleMethodDeclarations();
+    void invisibleMethodDeclarations() throws Exception;
 
-    void orphanNonPrimitiveTypes();
+    void orphanNonPrimitiveTypes() throws Exception;
 
-    void renameAllMethods();
+    void renameAllMethods() throws Exception;
 
-    void thrownExceptionsPerPackage();
+    void thrownExceptionsPerPackage() throws Exception;
 
-    void unusedMethodsWithList();
+    void unusedMethodsWithList() throws Exception;
 
-    void unusedMethodsWithLoop();
+    void unusedMethodsWithLoop() throws Exception;
 
     /*
      * ASE 2015 queries
      */
 
-    void branchStatementsAse2015();
+    void branchStatementsAse2015() throws Exception;
 
-    void grabatsAse2015();
+    void grabatsAse2015() throws Exception;
 
-    void invisibleMethodDeclarationsAse2015();
+    void invisibleMethodDeclarationsAse2015() throws Exception;
 
-    void specificInvisibleMethodDeclarationsAse2015();
+    void specificInvisibleMethodDeclarationsAse2015() throws Exception;
 
-    void thrownExceptionsAse2015();
+    void thrownExceptionsAse2015() throws Exception;
 }

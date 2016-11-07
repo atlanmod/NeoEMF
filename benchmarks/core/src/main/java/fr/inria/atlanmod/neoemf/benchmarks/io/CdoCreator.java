@@ -42,10 +42,6 @@ public class CdoCreator extends AbstractCreator {
         return INSTANCE;
     }
 
-    public static void main(String[] args) {
-        CdoCreator.getInstance().createAll();
-    }
-
     @Override
     public String getBaseName() {
         return "cdo";
@@ -62,7 +58,7 @@ public class CdoCreator extends AbstractCreator {
     }
 
     @Override
-    public File create(String in, String out) {
+    public File create(String in, String out) throws Exception {
         File file = new File(out);
 
         if (file.exists()) {
@@ -123,7 +119,7 @@ public class CdoCreator extends AbstractCreator {
         }
         catch (Exception e) {
             LOG.error(e);
-            return null;
+            throw e;
         }
         return file;
     }

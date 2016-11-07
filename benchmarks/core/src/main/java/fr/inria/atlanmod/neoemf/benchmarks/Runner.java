@@ -13,5 +13,5 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 
 public interface Runner {
 
-    void traverse();
+    void traverse() throws Exception;
 }

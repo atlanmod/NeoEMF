@@ -77,12 +77,12 @@ public abstract class AbstractRunner implements Runner {
     private int currentPathIndex;
 
     @Setup(Level.Trial)
-    public void setupTrial() {
+    public void setupTrial() throws Exception {
         paths = getCreator().createAll();
     }
 
     @Setup(Level.Iteration)
-    public void setupIteration() throws IOException {
+    public void setupIteration() throws Exception {
         initResource();
     }
 
@@ -139,12 +139,7 @@ public abstract class AbstractRunner implements Runner {
 
     @Benchmark
     @Override
-    public void traverse() {
-        try {
-            QueryFactory.queryCountAllElements(resource).callWithTime();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
+    public void traverse() throws Exception {
+        QueryFactory.queryCountAllElements(resource).callWithTime();
     }
 }

@@ -39,10 +39,6 @@ public class XmiCreator extends AbstractCreator {
         return INSTANCE;
     }
 
-    public static void main(String[] args) {
-        XmiCreator.getInstance().createAll();
-    }
-
     @Override
     public String getBaseName() {
         return "xmi";
@@ -59,7 +55,7 @@ public class XmiCreator extends AbstractCreator {
     }
 
     @Override
-    public File create(String in, String out) {
+    public File create(String in, String out) throws Exception {
         File destFile = new File(out);
 
         if (destFile.exists()) {
@@ -109,7 +105,7 @@ public class XmiCreator extends AbstractCreator {
         }
         catch (Exception e) {
             LOG.error(e);
-            return null;
+            throw e;
         }
         return destFile;
     }

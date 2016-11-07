@@ -30,7 +30,7 @@
         <!-- EMF & Co -->
         <emf.version>2.11.0-v20150805-0538</emf.version>
         <ecore.version>2.11.1-v20150805-0538</ecore.version>
-        <cdo.version>4.4.0</cdo.version>
+        <cdo.version>4.3.0</cdo.version>
         <neoemf.version>0.0.1-SNAPSHOT</neoemf.version>
 
         <!-- Commons -->
