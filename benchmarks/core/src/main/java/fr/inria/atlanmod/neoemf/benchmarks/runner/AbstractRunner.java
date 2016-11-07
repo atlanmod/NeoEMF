@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-import fr.inria.atlanmod.neoemf.benchmarks.Creator;
+import fr.inria.atlanmod.neoemf.benchmarks.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.Runner;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
@@ -34,9 +34,9 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
@@ -57,84 +57,38 @@ public abstract class AbstractRunner implements Runner {
 
     protected static final Logger LOG = LogManager.getLogger();
 
+    protected final Backend backend;
+
     protected Resource resource;
 
-    /**
-     * Array containing all the paths of loaded resources.
-     *
-     * @see #currentPathIndex
-     */
-    private String[] paths;
+    private List<File> paths;
 
-    /**
-     * The current index in {@link #paths}.
-     *
-     * @see #getCurrentPath()
-     */
-    // TODO: Find a better way to navigate between the differents resources
-    @SuppressWarnings("unused")
-    @Param({"0", "1", "2"})
+    @Param({"0", "1"})
     private int currentPathIndex;
+
+    public AbstractRunner(Backend backend) {
+        this.backend = backend;
+    }
 
     @Setup(Level.Trial)
     public void setupTrial() throws Exception {
-        paths = getCreator().createAll();
+        paths = backend.createAll();
     }
 
     @Setup(Level.Iteration)
     public void setupIteration() throws Exception {
-        initResource();
-    }
-
-    @TearDown(Level.Iteration)
-    public void tearDownIteration() {
-        destroyResource();
-    }
-
-    /**
-     * Returns the load options of a {@link Resource} for this {@link Runner}.
-     * <p/>
-     * The default method returns an {@link Collections#emptyMap() empty map}.
-     */
-    protected Map<Object, Object> getLoadOptions() {
-        return Collections.emptyMap();
-    }
-
-    /**
-     * Returns the save options of a {@link Resource} for this {@link Runner}.
-     * <p/>
-     * The default method returns an {@link Collections#emptyMap() empty map}.
-     */
-    protected Map<Object, Object> getSaveOptions() {
-        return Collections.emptyMap();
-    }
-
-    /**
-     * Initializes the {@link #resource}.
-     */
-    protected abstract void initResource() throws IOException;
-
-    /**
-     * Destroy the {@link #resource}.
-     */
-    protected abstract void destroyResource();
-
-    /**
-     * Returns the {@link Creator} associated with this {@link Runner}.
-     */
-    protected abstract Creator getCreator();
-
-    /**
-     * Returns the current resource path.
-     */
-    // TODO: Copy resource in a temp dir to avoid overwritting
-    protected final String getCurrentPath() throws IOException {
         try {
-            return paths[currentPathIndex];
+            // TODO: Copy resource in a temp dir to avoid overwritting
+            resource = backend.loadResource(paths.get(currentPathIndex).getAbsolutePath());
         }
         catch (ArrayIndexOutOfBoundsException e) {
             throw new IOException("Resource at index " + currentPathIndex + " does not exist");
         }
+    }
+
+    @TearDown(Level.Iteration)
+    public void tearDownIteration() throws Exception {
+        backend.unloadResource(resource);
     }
 
     @Benchmark

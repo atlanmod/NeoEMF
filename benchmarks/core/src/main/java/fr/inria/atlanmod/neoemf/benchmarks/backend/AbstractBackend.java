@@ -9,17 +9,20 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.io;
+package fr.inria.atlanmod.neoemf.benchmarks.backend;
 
-import fr.inria.atlanmod.neoemf.benchmarks.Creator;
+import fr.inria.atlanmod.neoemf.benchmarks.Backend;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.emf.ecore.resource.Resource;
 
-/**
- *
- */
-public abstract class AbstractCreator implements Creator {
+public abstract class AbstractBackend implements Backend {
 
     protected static final Logger LOG = LogManager.getLogger();
+
+    @Override
+    public void saveResource(Resource resource) throws Exception {
+        resource.save(getSaveOptions());
+    }
 }

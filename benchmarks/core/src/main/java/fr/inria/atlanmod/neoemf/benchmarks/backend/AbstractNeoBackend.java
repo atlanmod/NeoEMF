@@ -9,14 +9,26 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.runner;
+package fr.inria.atlanmod.neoemf.benchmarks.backend;
 
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
-public abstract class AbstractNeoRunner extends AbstractQueryRunner {
+import org.eclipse.emf.ecore.resource.Resource;
+
+public abstract class AbstractNeoBackend extends AbstractBackend {
 
     @Override
-    public void destroyResource() {
+    public String getName() {
+        return "neoemf";
+    }
+
+    @Override
+    public Class<?> getEPackageClass() {
+        return org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
+    }
+
+    @Override
+    public void unloadResource(Resource resource) {
         if (resource != null && resource.isLoaded()) {
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);

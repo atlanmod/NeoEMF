@@ -66,7 +66,7 @@ public class Migrator {
     /**
      * Migrates all XMI files present in {@code resources.zip} and returns a list of newly created files.
      */
-    public Iterable<File> migrateAll(String destExtension, Class<?> destClass) throws Exception {
+    public List<File> migrateAll(String destExtension, Class<?> destClass) throws Exception {
         List<File> files = new ArrayList<>();
 
         ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME));

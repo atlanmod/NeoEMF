@@ -1523,7 +1523,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor.ASE2015NeoGraphExecutor" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.backend.ASE2015NeoGraphExecutor" failonerror="false" fork="yes" timeout="${timeout}">
 	    	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1665,7 +1665,7 @@
 		<echo>Querying ${neoemfresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor.ASE2015NeoMapExecutor" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.backend.ASE2015NeoMapExecutor" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${neoemfresource.dir}"/>
@@ -1813,7 +1813,7 @@
 		<echo>Querying ${cdoresource.dir}</echo>
 		<echo>JVM args: ${tester.vmargs.value}</echo>
 		<stopwatch name="timer"/>
-	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.executor.ASE2015CdoExecutor" failonerror="false" fork="yes" timeout="${timeout}">
+	    <java classname="fr.inria.atlanmod.neoemf.benchmarks.ase2015.backend.ASE2015CdoExecutor" failonerror="false" fork="yes" timeout="${timeout}">
         	<jvmarg line="${tester.vmargs.value}"/>
 	        <arg value="-input"/>
 	        <arg value="${cdoresource.dir}"/>

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryRunner;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
@@ -20,6 +21,10 @@ import org.openjdk.jmh.annotations.Benchmark;
 import java.util.UUID;
 
 public abstract class AbstractQueryRunner extends AbstractRunner implements QueryRunner {
+
+    public AbstractQueryRunner(Backend backend) {
+        super(backend);
+    }
 
     @Benchmark
     @Override
@@ -50,7 +55,7 @@ public abstract class AbstractQueryRunner extends AbstractRunner implements Quer
     public void renameAllMethods() throws Exception {
         String name = UUID.randomUUID().toString();
         QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
-        resource.save(getSaveOptions());
+        backend.saveResource(resource);
     }
 
     @Benchmark
