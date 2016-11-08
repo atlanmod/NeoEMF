@@ -34,13 +34,15 @@ public class NeoGraphBackend extends AbstractNeoBackend {
 
     public static final String NAME = "neo-graph";
 
+    private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
+
     @Override
-    protected String getResourceExportExtension() {
-        return "tinker.resource";
+    protected String getStoreExtension() {
+        return STORE_EXTENSION;
     }
 
     @Override
-    protected File createResource(File inputFile, Path outputPath) throws Exception {
+    protected File create(File inputFile, Path outputPath) throws Exception {
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
@@ -101,12 +103,12 @@ public class NeoGraphBackend extends AbstractNeoBackend {
     }
 
     @Override
-    public Resource loadResource(Path path) throws Exception {
+    public Resource load(File file) throws Exception {
         Resource resource;
 
         PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
-        URI uri = NeoBlueprintsURI.createNeoGraphURI(path.toFile());
+        URI uri = NeoBlueprintsURI.createNeoGraphURI(file);
 
         getEPackageClass().getMethod("init").invoke(null);
 

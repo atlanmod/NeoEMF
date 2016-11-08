@@ -16,7 +16,6 @@ import com.google.common.base.CaseFormat;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.CdoBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoMapBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.XmiBackend;
 
@@ -85,17 +84,17 @@ public class RunnerState {
     public void setupTrial() throws Exception {
         String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, backend) + CLASS_SUFFIX;
         backendInst = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
-        resourceFile = backendInst.createResource(resource);
+        resourceFile = backendInst.create(resource);
     }
 
     @Setup(Level.Invocation)
     public void setupInvocation() throws Exception {
-        resourceInst = backendInst.loadResource(resourceFile.toPath());
+        resourceInst = backendInst.load(resourceFile);
     }
 
     @TearDown(Level.Invocation)
     public void tearDownInvocation() throws Exception {
-        backendInst.unloadResource(resourceInst);
+        backendInst.unload(resourceInst);
         resourceInst = null;
     }
 }

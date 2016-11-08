@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
 
+import org.eclipse.emf.ecore.resource.Resource;
+
 import java.util.UUID;
 
 public class QueryRunner extends Runner {
@@ -41,8 +43,9 @@ public class QueryRunner extends Runner {
     //@Benchmark
     public Void renameAllMethods(RunnerState state) throws Exception {
         String name = UUID.randomUUID().toString();
-        Void result = QueryFactory.queryRenameAllMethods(state.getResource(), name).callWithTime();
-        state.getBackend().saveResource(state.getResource());
+        Resource resource = state.getResource();
+        Void result = QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
+        state.getBackend().save(resource);
         return result;
     }
 

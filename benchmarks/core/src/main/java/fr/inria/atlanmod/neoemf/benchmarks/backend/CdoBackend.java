@@ -36,27 +36,32 @@ public class CdoBackend extends AbstractBackend {
 
     public static final String NAME = "cdo";
 
+    private static final String RESOURCE_EXTENSION = "cdo";
+    private static final String STORE_EXTENSION = "resource"; // -> cdo.resource
+
+    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
+
     private EmbeddedCDOServer server;
     private CDOSession session;
     private CDOTransaction transaction;
 
     @Override
-    protected String getResourceImportExtension() {
-        return "cdo";
+    protected String getResourceExtension() {
+        return RESOURCE_EXTENSION;
     }
 
     @Override
-    protected String getResourceExportExtension() {
-        return "resource";
+    protected String getStoreExtension() {
+        return STORE_EXTENSION;
     }
 
     @Override
     protected Class<?> getEPackageClass() {
-        return org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
+        return EPACKAGE_CLASS;
     }
 
     @Override
-    protected File createResource(File inputFile, Path outputPath) throws Exception {
+    protected File create(File inputFile, Path outputPath) throws Exception {
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
@@ -122,12 +127,19 @@ public class CdoBackend extends AbstractBackend {
     }
 
     @Override
-    public Resource loadResource(Path path) throws Exception {
+    public Map<Object, Object> getSaveOptions() {
+        Map<Object, Object> saveOpts = new HashMap<>();
+        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
+        return saveOpts;
+    }
+
+    @Override
+    public Resource load(File file) throws Exception {
         Resource resource;
 
         getEPackageClass().getMethod("init").invoke(null);
 
-        server = new EmbeddedCDOServer(path);
+        server = new EmbeddedCDOServer(file.toPath());
         server.run();
 
         session = server.openSession();
@@ -141,7 +153,7 @@ public class CdoBackend extends AbstractBackend {
     }
 
     @Override
-    public void unloadResource(Resource resource) {
+    public void unload(Resource resource) {
         if (!isNull(transaction) && !transaction.isClosed()) {
             transaction.close();
         }
@@ -157,12 +169,5 @@ public class CdoBackend extends AbstractBackend {
         if (!isNull(resource) && resource.isLoaded()) {
             resource.unload();
         }
-    }
-
-    @Override
-    public Map<Object, Object> getSaveOptions() {
-        Map<Object, Object> saveOpts = new HashMap<>();
-        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
-        return saveOpts;
     }
 }

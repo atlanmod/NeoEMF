@@ -88,14 +88,14 @@ public class Migrator {
             throw new IllegalArgumentException("Resource '" + name + ".xmi' does not exist in " + ZIP_FILENAME);
         }
 
-        File extractedFile = extract(name, BenchmarkUtil.getResourcesDirectory());
-        Path migratedFilePath = BenchmarkUtil.getResourcesDirectory().resolve(extractedFile.getName());
+        File inputFile = extract(name, BenchmarkUtil.getResourcesDirectory());
 
-        return migrate(migratedFilePath.toFile(), outputExtension, outputClass);
+        return migrate(inputFile, outputExtension, outputClass);
     }
 
     private File migrate(File inputFile, String outputExtension, Class<?> outputClass) throws Exception {
-        Path outputPath = BenchmarkUtil.getResourcesDirectory().resolve(Files.getNameWithoutExtension(inputFile.getName()) + "." + outputExtension + "." + "zxmi");
+        String outputFileName = Files.getNameWithoutExtension(inputFile.getName()) + "." + outputExtension + "." + "zxmi";
+        Path outputPath = BenchmarkUtil.getResourcesDirectory().resolve(outputFileName);
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
@@ -187,14 +187,14 @@ public class Migrator {
         return targetEObject;
     }
 
-    private File extract(String filename, Path destDirectory) throws Exception {
+    private File extract(String filename, Path outputDir) throws Exception {
         File file = null;
         boolean fileFound = false;
         try (ZipInputStream inputStream = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME))) {
             ZipEntry entry = inputStream.getNextEntry();
             while (!isNull(entry) || !fileFound) {
                 if (!entry.isDirectory() && entry.getName().endsWith("." + "xmi") && Files.getNameWithoutExtension(entry.getName()).equals(filename)) {
-                    file = extractEntry(inputStream, entry, destDirectory);
+                    file = extractEntry(inputStream, entry, outputDir);
                     fileFound = true;
                 }
                 inputStream.closeEntry();
@@ -204,8 +204,8 @@ public class Migrator {
         return file;
     }
 
-    private File extractEntry(ZipInputStream inputStream, ZipEntry entry, Path outputPath) throws Exception {
-        File file = outputPath.resolve(new File(entry.getName()).getName()).toFile();
+    private File extractEntry(ZipInputStream inputStream, ZipEntry entry, Path outputDir) throws Exception {
+        File file = outputDir.resolve(new File(entry.getName()).getName()).toFile();
         if (file.exists()) {
             LOG.info("Already existing resource : " + file);
             return file;

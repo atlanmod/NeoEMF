@@ -34,13 +34,15 @@ public class NeoMapBackend extends AbstractNeoBackend {
 
     public static final String NAME = "neo-map";
 
+    private static final String STORE_EXTENSION = "map.resource"; // -> neoemf.map.resource
+
     @Override
-    protected String getResourceExportExtension() {
-        return "mapdb.resource";
+    protected String getStoreExtension() {
+        return STORE_EXTENSION;
     }
 
     @Override
-    protected File createResource(File inputFile, Path outputPath) throws Exception {
+    protected File create(File inputFile, Path outputPath) throws Exception {
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
@@ -101,12 +103,12 @@ public class NeoMapBackend extends AbstractNeoBackend {
     }
 
     @Override
-    public Resource loadResource(Path path) throws Exception {
+    public Resource load(File file) throws Exception {
         Resource resource;
 
         PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
 
-        URI uri = NeoMapURI.createNeoMapURI(path.toFile());
+        URI uri = NeoMapURI.createNeoMapURI(file);
 
         getEPackageClass().getMethod("init").invoke(null);
 

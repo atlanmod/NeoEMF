@@ -23,11 +23,11 @@ import static java.util.Objects.isNull;
 
 public class BenchmarkUtil {
 
-    public static final int DEFAULT_ITERATION_TIME_SEC = 30;
-    public static final int DEFAULT_WARMUP_ITERATIONS = 5;
-    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 10;
+    public static final int DEFAULT_ITERATION_TIME_SEC = 2;
+    public static final int DEFAULT_WARMUP_ITERATIONS = 2;
+    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
 
-    public static final int DEFAULT_BATCH_SIZE = 100;
+    public static final int DEFAULT_BATCH_SIZE = 50;
     public static final int DEFAULT_FORKS = 1;
 
     private static final Logger LOG = LogManager.getLogger();

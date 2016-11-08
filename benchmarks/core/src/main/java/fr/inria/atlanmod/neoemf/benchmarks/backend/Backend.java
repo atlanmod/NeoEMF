@@ -14,25 +14,14 @@ package fr.inria.atlanmod.neoemf.benchmarks.backend;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Map;
 
 public interface Backend {
 
-    File createResource(String name) throws Exception;
+    File create(String name) throws Exception;
 
-    Resource loadResource(Path path) throws Exception;
+    Resource load(File file) throws Exception;
 
-    void saveResource(Resource resource) throws Exception;
+    void save(Resource resource) throws Exception;
 
-    void unloadResource(Resource resource) throws Exception;
-
-    default Map<Object, Object> getLoadOptions() {
-        return Collections.emptyMap();
-    }
-
-    default Map<Object, Object> getSaveOptions() {
-        return Collections.emptyMap();
-    }
+    void unload(Resource resource) throws Exception;
 }

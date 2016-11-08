@@ -19,18 +19,22 @@ import static java.util.Objects.isNull;
 
 public abstract class AbstractNeoBackend extends AbstractBackend {
 
+    private static final String RESOURCE_EXTENSION = "neoemf";
+
+    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
+
     @Override
-    protected String getResourceImportExtension() {
-        return "neoemf";
+    protected String getResourceExtension() {
+        return RESOURCE_EXTENSION;
     }
 
     @Override
     protected Class<?> getEPackageClass() {
-        return org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
+        return EPACKAGE_CLASS;
     }
 
     @Override
-    public void unloadResource(Resource resource) {
+    public void unload(Resource resource) {
         if (!isNull(resource) && resource.isLoaded()) {
             if (resource instanceof PersistentResourceImpl) {
                 PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);

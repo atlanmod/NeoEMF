@@ -22,6 +22,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -29,18 +31,21 @@ public abstract class AbstractBackend implements Backend {
 
     protected static final Logger LOG = LogManager.getLogger();
 
-    protected abstract String getResourceImportExtension();
+    protected abstract String getResourceExtension();
 
-    protected abstract String getResourceExportExtension();
+    protected abstract String getStoreExtension();
 
     protected abstract Class<?> getEPackageClass();
 
-    @Override
-    public File createResource(String name) throws Exception {
-        File migratedFile = Migrator.getInstance().migrate(name, getResourceImportExtension(), getEPackageClass());
+    protected abstract File create(File inputFile, Path outputPath) throws Exception;
 
-        Path createdFilePath = BenchmarkUtil.getStoreDirectory().resolve(Files.getNameWithoutExtension(migratedFile.getAbsolutePath()) + "." + getResourceExportExtension());
-        File file = createResource(migratedFile, createdFilePath);
+    @Override
+    public File create(String name) throws Exception {
+        File inputFile = Migrator.getInstance().migrate(name, getResourceExtension(), getEPackageClass());
+
+        String outputFileName = Files.getNameWithoutExtension(inputFile.getAbsolutePath()) + "." + getStoreExtension();
+        Path outputPath = BenchmarkUtil.getStoreDirectory().resolve(outputFileName);
+        File file = create(inputFile, outputPath);
 
         if (isNull(file) || !file.exists()) {
             throw new IllegalArgumentException("'" + name + ".xmi' does not exist in resource directory");
@@ -50,9 +55,15 @@ public abstract class AbstractBackend implements Backend {
     }
 
     @Override
-    public void saveResource(Resource resource) throws Exception {
+    public void save(Resource resource) throws Exception {
         resource.save(getSaveOptions());
     }
 
-    protected abstract File createResource(File inputFile, Path outputPath) throws Exception;
+    protected Map<Object, Object> getLoadOptions() {
+        return Collections.emptyMap();
+    }
+
+    protected Map<Object, Object> getSaveOptions() {
+        return Collections.emptyMap();
+    }
 }

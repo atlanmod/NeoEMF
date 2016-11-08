@@ -31,23 +31,28 @@ public class XmiBackend extends AbstractBackend {
 
     public static final String NAME = "xmi";
 
+    private static final String RESOURCE_EXTENSION = "xmi";
+    private static final String STORE_EXTENSION = "xmi";  // -> xmi.xmi
+
+    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
+
     @Override
-    protected String getResourceImportExtension() {
-        return "xmi";
+    protected String getResourceExtension() {
+        return RESOURCE_EXTENSION;
     }
 
     @Override
-    protected String getResourceExportExtension() {
-        return "xmi";
+    protected String getStoreExtension() {
+        return STORE_EXTENSION;
     }
 
     @Override
     protected Class<?> getEPackageClass() {
-        return org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
+        return EPACKAGE_CLASS;
     }
 
     @Override
-    protected File createResource(File inputFile, Path outputPath) throws Exception {
+    protected File create(File inputFile, Path outputPath) throws Exception {
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
@@ -100,10 +105,10 @@ public class XmiBackend extends AbstractBackend {
     }
 
     @Override
-    public Resource loadResource(Path path) throws Exception {
+    public Resource load(File file) throws Exception {
         Resource resource;
 
-        URI uri = URI.createFileURI(path.toString());
+        URI uri = URI.createFileURI(file.getAbsolutePath());
 
         getEPackageClass().getMethod("init").invoke(null);
 
@@ -118,7 +123,7 @@ public class XmiBackend extends AbstractBackend {
     }
 
     @Override
-    public void unloadResource(Resource resource) {
+    public void unload(Resource resource) {
         if (!isNull(resource) && resource.isLoaded()) {
             resource.unload();
         }
