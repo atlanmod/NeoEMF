@@ -36,7 +36,7 @@
         <neo4j.version>1.9.6</neo4j.version>
 
         <!-- Commons -->
-        <guava.version>20.0</guava.version>
+        <guava.version>19.0</guava.version>
         <log4j.version>2.7</log4j.version>
 
         <!-- Benchmark -->
