@@ -36,16 +36,11 @@ public abstract class AbstractBackend implements Backend {
     protected abstract Class<?> getEPackageClass();
 
     @Override
-    public void saveResource(Resource resource) throws Exception {
-        resource.save(getSaveOptions());
-    }
-
-    @Override
     public File createResource(String name) throws Exception {
         File migratedFile = Migrator.getInstance().migrate(name, getResourceImportExtension(), getEPackageClass());
 
         Path createdFilePath = BenchmarkUtil.getStoreDirectory().resolve(Files.getNameWithoutExtension(migratedFile.getAbsolutePath()) + "." + getResourceExportExtension());
-        File file = create(migratedFile.getAbsolutePath(), createdFilePath.toString());
+        File file = createResource(migratedFile, createdFilePath);
 
         if (isNull(file) || !file.exists()) {
             throw new IllegalArgumentException("'" + name + ".xmi' does not exist in resource directory");
@@ -54,5 +49,10 @@ public abstract class AbstractBackend implements Backend {
         return file;
     }
 
-    protected abstract File create(String in, String out) throws Exception;
+    @Override
+    public void saveResource(Resource resource) throws Exception {
+        resource.save(getSaveOptions());
+    }
+
+    protected abstract File createResource(File inputFile, Path outputPath) throws Exception;
 }

@@ -39,6 +39,7 @@ import org.eclipse.net4j.util.container.IContainer;
 import org.eclipse.net4j.util.container.IManagedContainer;
 import org.h2.jdbcx.JdbcDataSource;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class EmbeddedCDOServer {
 
     private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
-    private String path;
+    private Path path;
 
     private String repositoryName;
 
@@ -58,12 +59,12 @@ public class EmbeddedCDOServer {
 
     private IManagedContainer container;
 
-    public EmbeddedCDOServer(String path, String repositoryName) {
+    public EmbeddedCDOServer(Path path, String repositoryName) {
         this.path = path;
         this.repositoryName = repositoryName;
     }
 
-    public EmbeddedCDOServer(String path) {
+    public EmbeddedCDOServer(Path path) {
         this(path, DEFAULT_REPOSITORY_NAME);
     }
 

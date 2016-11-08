@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,14 +56,14 @@ public class CdoBackend extends AbstractBackend {
     }
 
     @Override
-    protected File create(String in, String out) throws Exception {
-        File file = new File(out);
+    protected File createResource(File inputFile, Path outputPath) throws Exception {
+        File outputFile = outputPath.toFile();
 
-        if (file.exists()) {
-            return file;
+        if (outputFile.exists()) {
+            return outputFile;
         }
 
-        URI sourceUri = URI.createFileURI(in);
+        URI sourceUri = URI.createFileURI(inputFile.getAbsolutePath());
 
         org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
 
@@ -85,7 +86,7 @@ public class CdoBackend extends AbstractBackend {
 
         Resource targetResource;
 
-        EmbeddedCDOServer server = new EmbeddedCDOServer(out);
+        EmbeddedCDOServer server = new EmbeddedCDOServer(outputPath);
         try {
             server.run();
             CDOSession session = server.openSession();
@@ -116,11 +117,11 @@ public class CdoBackend extends AbstractBackend {
         sourceResource.unload();
         targetResource.unload();
 
-        return file;
+        return outputFile;
     }
 
     @Override
-    public Resource loadResource(String path) throws Exception {
+    public Resource loadResource(Path path) throws Exception {
         Resource resource;
 
         getEPackageClass().getMethod("init").invoke(null);

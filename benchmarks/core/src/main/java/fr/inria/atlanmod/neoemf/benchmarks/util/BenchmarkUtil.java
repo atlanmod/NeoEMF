@@ -23,6 +23,7 @@ import static java.util.Objects.isNull;
 
 public class BenchmarkUtil {
 
+    public static final int DEFAULT_ITERATION_TIME_SEC = 30;
     public static final int DEFAULT_WARMUP_ITERATIONS = 5;
     public static final int DEFAULT_MEASUREMENT_ITERATIONS = 10;
 

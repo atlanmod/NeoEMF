@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,17 +40,17 @@ public class NeoGraphBackend extends AbstractNeoBackend {
     }
 
     @Override
-    protected File create(String in, String out) throws Exception {
-        File destFile = new File(out);
+    protected File createResource(File inputFile, Path outputPath) throws Exception {
+        File outputFile = outputPath.toFile();
 
-        if (destFile.exists()) {
-            return destFile;
+        if (outputFile.exists()) {
+            return outputFile;
         }
 
         PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
-        URI sourceUri = URI.createFileURI(in);
-        URI targetUri = NeoBlueprintsURI.createNeoGraphURI(destFile);
+        URI sourceUri = URI.createFileURI(inputFile.getAbsolutePath());
+        URI targetUri = NeoBlueprintsURI.createNeoGraphURI(outputFile);
 
         org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
@@ -95,16 +96,16 @@ public class NeoGraphBackend extends AbstractNeoBackend {
             targetResource.unload();
         }
 
-        return destFile;
+        return outputFile;
     }
 
     @Override
-    public Resource loadResource(String path) throws Exception {
+    public Resource loadResource(Path path) throws Exception {
         Resource resource;
 
         PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
-        URI uri = NeoBlueprintsURI.createNeoGraphURI(new File(path));
+        URI uri = NeoBlueprintsURI.createNeoGraphURI(path.toFile());
 
         getEPackageClass().getMethod("init").invoke(null);
 

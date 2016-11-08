@@ -51,8 +51,8 @@ public class Migrator {
     private static final Logger LOG = LogManager.getLogger();
 
     private static final String ZIP_FILENAME = "resources.zip";
-
     private static Migrator INSTANCE;
+    public List<String> availableResources;
 
     private Migrator() {
     }
@@ -65,24 +65,25 @@ public class Migrator {
     }
 
     private List<String> getAvailableResources() throws Exception {
-        List<String> resources = new ArrayList<>();
+        if (availableResources == null) {
+            availableResources = new ArrayList<>();
 
-        try (ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME))) {
-            ZipEntry entry = zis.getNextEntry();
+            try (ZipInputStream inputStream = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME))) {
+                ZipEntry entry = inputStream.getNextEntry();
 
-            while (!isNull(entry)) {
-                if (!entry.isDirectory() && entry.getName().endsWith(".xmi")) {
-                    resources.add(Files.getNameWithoutExtension(new File(entry.getName()).getName()));
+                while (!isNull(entry)) {
+                    if (!entry.isDirectory() && entry.getName().endsWith("." + "xmi")) {
+                        availableResources.add(Files.getNameWithoutExtension(new File(entry.getName()).getName()));
+                    }
+                    inputStream.closeEntry();
+                    entry = inputStream.getNextEntry();
                 }
-                zis.closeEntry();
-                entry = zis.getNextEntry();
             }
         }
-
-        return resources;
+        return availableResources;
     }
 
-    public File migrate(String name, String destExtension, Class<?> destClass) throws Exception {
+    public File migrate(String name, String outputExtension, Class<?> outputClass) throws Exception {
         if (!getAvailableResources().contains(name)) {
             throw new IllegalArgumentException("Resource '" + name + ".xmi' does not exist in " + ZIP_FILENAME);
         }
@@ -90,24 +91,25 @@ public class Migrator {
         File extractedFile = extract(name, BenchmarkUtil.getResourcesDirectory());
         Path migratedFilePath = BenchmarkUtil.getResourcesDirectory().resolve(extractedFile.getName());
 
-        return migrate(migratedFilePath.toFile(), destExtension, destClass);
+        return migrate(migratedFilePath.toFile(), outputExtension, outputClass);
     }
 
-    private File migrate(File in, String destExtension, Class<?> destClass) throws Exception {
-        File destFile = new File(getDestFile(in, destExtension));
+    private File migrate(File inputFile, String outputExtension, Class<?> outputClass) throws Exception {
+        Path outputPath = BenchmarkUtil.getResourcesDirectory().resolve(Files.getNameWithoutExtension(inputFile.getName()) + "." + outputExtension + "." + "zxmi");
+        File outputFile = outputPath.toFile();
 
-        if (destFile.exists()) {
-            return destFile;
+        if (outputFile.exists()) {
+            return outputFile;
         }
 
-        URI srcUri = URI.createFileURI(in.getAbsolutePath());
-        URI destUri = URI.createFileURI(destFile.getAbsolutePath());
+        URI srcUri = URI.createFileURI(inputFile.getAbsolutePath());
+        URI destUri = URI.createFileURI(outputFile.getAbsolutePath());
 
         // Default source EPackage
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
         // Destination EPackage
-        EPackage destEPackage = (EPackage) destClass.getMethod("init").invoke(null);
+        EPackage destEPackage = (EPackage) outputClass.getMethod("init").invoke(null);
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
@@ -132,14 +134,15 @@ public class Migrator {
         sourceResource.unload();
         targetResource.unload();
 
-        return destFile;
+        return outputFile;
     }
 
     private EObject migrate(EObject eObject, EPackage targetEPackage) {
         Map<EObject, EObject> correspondencesMap = new HashMap<>();
         EObject returnEObject = getCorrespondingEObject(correspondencesMap, eObject, targetEPackage);
         copy(correspondencesMap, eObject, returnEObject);
-        for (Iterator<EObject> iterator = EcoreUtil.getAllContents(eObject, true); iterator.hasNext(); ) {
+        Iterator<EObject> iterator = EcoreUtil.getAllContents(eObject, true);
+        while (iterator.hasNext()) {
             EObject sourceEObject = iterator.next();
             EObject targetEObject = getCorrespondingEObject(correspondencesMap, sourceEObject, targetEPackage);
             copy(correspondencesMap, sourceEObject, targetEObject);
@@ -183,37 +186,30 @@ public class Migrator {
         return targetEObject;
     }
 
-    private String getDestFile(File in, String destExtension) {
-        return BenchmarkUtil.getResourcesDirectory().resolve(Files.getNameWithoutExtension(in.getName()) + "." + destExtension + ".zxmi").toString();
-    }
-
     private File extract(String filename, Path destDirectory) throws Exception {
         File file = null;
-
         boolean fileFound = false;
-
-        try (ZipInputStream zis = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME))) {
-            ZipEntry entry = zis.getNextEntry();
+        try (ZipInputStream inputStream = new ZipInputStream(Migrator.class.getResourceAsStream("/" + ZIP_FILENAME))) {
+            ZipEntry entry = inputStream.getNextEntry();
             while (!isNull(entry) || !fileFound) {
-                if (!entry.isDirectory() && entry.getName().endsWith(".xmi") && Files.getNameWithoutExtension(entry.getName()).equals(filename)) {
-                    file = extractEntry(zis, entry, destDirectory);
+                if (!entry.isDirectory() && entry.getName().endsWith("." + "xmi") && Files.getNameWithoutExtension(entry.getName()).equals(filename)) {
+                    file = extractEntry(inputStream, entry, destDirectory);
                     fileFound = true;
                 }
-                zis.closeEntry();
-                entry = zis.getNextEntry();
+                inputStream.closeEntry();
+                entry = inputStream.getNextEntry();
             }
         }
-
         return file;
     }
 
-    private File extractEntry(ZipInputStream zis, ZipEntry entry, Path destDirectory) throws Exception {
-        File file = destDirectory.resolve(new File(entry.getName()).getName()).toFile();
+    private File extractEntry(ZipInputStream inputStream, ZipEntry entry, Path outputPath) throws Exception {
+        File file = outputPath.resolve(new File(entry.getName()).getName()).toFile();
         if (!file.exists()) {
             try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
                 byte[] bytesIn = new byte[4096];
                 int read;
-                while ((read = zis.read(bytesIn)) != -1) {
+                while ((read = inputStream.read(bytesIn)) != -1) {
                     bos.write(bytesIn, 0, read);
                 }
             }

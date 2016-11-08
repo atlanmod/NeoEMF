@@ -89,7 +89,7 @@ public class RunnerState {
 
     @Setup(Level.Invocation)
     public void setupInvocation() throws Exception {
-        resourceInst = backendInst.loadResource(resourceFile.getAbsolutePath());
+        resourceInst = backendInst.loadResource(resourceFile.toPath());
     }
 
     @TearDown(Level.Invocation)

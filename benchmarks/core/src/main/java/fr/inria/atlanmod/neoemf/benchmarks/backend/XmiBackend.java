@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,15 +47,15 @@ public class XmiBackend extends AbstractBackend {
     }
 
     @Override
-    protected File create(String in, String out) throws Exception {
-        File destFile = new File(out);
+    protected File createResource(File inputFile, Path outputPath) throws Exception {
+        File outputFile = outputPath.toFile();
 
-        if (destFile.exists()) {
-            return destFile;
+        if (outputFile.exists()) {
+            return outputFile;
         }
 
-        URI sourceUri = URI.createFileURI(in);
-        URI targetUri = URI.createFileURI(out);
+        URI sourceUri = URI.createFileURI(inputFile.getAbsolutePath());
+        URI targetUri = URI.createFileURI(outputPath.toString());
 
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
@@ -94,14 +95,14 @@ public class XmiBackend extends AbstractBackend {
         sourceResource.unload();
         targetResource.unload();
 
-        return destFile;
+        return outputFile;
     }
 
     @Override
-    public Resource loadResource(String path) throws Exception {
+    public Resource loadResource(Path path) throws Exception {
         Resource resource;
 
-        URI uri = URI.createFileURI(path);
+        URI uri = URI.createFileURI(path.toString());
 
         getEPackageClass().getMethod("init").invoke(null);
 

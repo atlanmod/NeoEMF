@@ -37,8 +37,16 @@ import java.util.concurrent.TimeUnit;
         "-XX:+DisableExplicitGC",
         "-XX:+CMSClassUnloadingEnabled"
 })
-@Warmup(iterations = BenchmarkUtil.DEFAULT_WARMUP_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
-@Measurement(iterations = BenchmarkUtil.DEFAULT_MEASUREMENT_ITERATIONS, batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE)
+@Warmup(
+        iterations = BenchmarkUtil.DEFAULT_WARMUP_ITERATIONS,
+        time = BenchmarkUtil.DEFAULT_ITERATION_TIME_SEC,
+        batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE
+)
+@Measurement(
+        iterations = BenchmarkUtil.DEFAULT_MEASUREMENT_ITERATIONS,
+        time = BenchmarkUtil.DEFAULT_ITERATION_TIME_SEC,
+        batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE
+)
 @OperationsPerInvocation(BenchmarkUtil.DEFAULT_BATCH_SIZE)
 public abstract class Runner {
 
