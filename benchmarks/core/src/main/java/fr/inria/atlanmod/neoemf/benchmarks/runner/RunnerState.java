@@ -16,6 +16,7 @@ import com.google.common.base.CaseFormat;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.CdoBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoMapBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.XmiBackend;
 

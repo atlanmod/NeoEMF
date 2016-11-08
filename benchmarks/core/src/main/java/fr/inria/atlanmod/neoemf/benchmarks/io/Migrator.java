@@ -99,6 +99,7 @@ public class Migrator {
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
+            LOG.info("Already existing resource : " + outputFile);
             return outputFile;
         }
 
@@ -205,13 +206,15 @@ public class Migrator {
 
     private File extractEntry(ZipInputStream inputStream, ZipEntry entry, Path outputPath) throws Exception {
         File file = outputPath.resolve(new File(entry.getName()).getName()).toFile();
-        if (!file.exists()) {
-            try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
-                byte[] bytesIn = new byte[4096];
-                int read;
-                while ((read = inputStream.read(bytesIn)) != -1) {
-                    bos.write(bytesIn, 0, read);
-                }
+        if (file.exists()) {
+            LOG.info("Already existing resource : " + file);
+            return file;
+        }
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+            byte[] bytesIn = new byte[4096];
+            int read;
+            while ((read = inputStream.read(bytesIn)) != -1) {
+                bos.write(bytesIn, 0, read);
             }
         }
         return file;

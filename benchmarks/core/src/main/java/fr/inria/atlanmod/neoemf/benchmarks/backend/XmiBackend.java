@@ -51,6 +51,7 @@ public class XmiBackend extends AbstractBackend {
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
+            LOG.info("Already existing resource : " + outputFile);
             return outputFile;
         }
 
