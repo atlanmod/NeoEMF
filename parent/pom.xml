@@ -76,7 +76,7 @@
         <!-- Dependencies -->
 
         <!-- DB -->
-        <blueprints.version>2.5.0</blueprints.version>              <!-- Update available ! -->
+        <blueprints.version>2.6.0</blueprints.version>
         <mapdb.version>3.0.2</mapdb.version>
         <hbase.version>0.98.13-hadoop2</hbase.version>              <!-- Update available ! -->
         <hadoop.version>2.6.0</hadoop.version>                      <!-- Update available ! -->
@@ -87,7 +87,7 @@
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
-        <guava.version>19.0</guava.version>                         <!-- Update available (RC) ! -->
+        <guava.version>20.0</guava.version>
         <osgi.version>3.10.101.v20150820-1432</osgi.version>
 
         <!-- Logging -->
@@ -102,7 +102,6 @@
         <assertj.version>3.5.2</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>                  <!-- Update available (BETA) ! -->
-        <joda-time.version>2.9.4</joda-time.version>
     </properties>
 
     <dependencyManagement>
