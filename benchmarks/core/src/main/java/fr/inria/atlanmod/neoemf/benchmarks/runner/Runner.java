@@ -38,25 +38,24 @@ import java.util.concurrent.TimeUnit;
 )
 @Warmup(
         iterations = Configuration.DEFAULT_WARMUP_ITERATIONS,
-        time = Configuration.DEFAULT_ITERATION_TIME,
-        timeUnit = TimeUnit.SECONDS,
         batchSize = Configuration.DEFAULT_OPERATIONS
 )
 @Measurement(
         iterations = Configuration.DEFAULT_MEASUREMENT_ITERATIONS,
-        time = Configuration.DEFAULT_ITERATION_TIME,
-        timeUnit = TimeUnit.SECONDS,
         batchSize = Configuration.DEFAULT_OPERATIONS
 )
 @OperationsPerInvocation(Configuration.DEFAULT_OPERATIONS)
-@Fork(value = Configuration.DEFAULT_FORKS, jvmArgs = {
-        "-Dfile.encoding=utf-8",
-        "-server",
-        "-Xmx8g",
-        "-XX:+UseConcMarkSweepGC",
-        "-XX:+DisableExplicitGC",
-        "-XX:+CMSClassUnloadingEnabled"
-})
+@Fork(
+        value = Configuration.DEFAULT_FORKS,
+        jvmArgs = {
+                "-Dfile.encoding=utf-8",
+                "-server",
+                "-Xmx8g",
+                "-XX:+UseConcMarkSweepGC",
+                "-XX:+DisableExplicitGC",
+                "-XX:+CMSClassUnloadingEnabled"
+        }
+)
 public abstract class Runner {
 
     protected static final Logger LOG = LogManager.getLogger();

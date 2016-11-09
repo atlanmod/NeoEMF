@@ -16,12 +16,12 @@ public class Configuration {
     /**
      * Default number of warm-up iterations.
      */
-    public static final int DEFAULT_WARMUP_ITERATIONS = 2;
+    public static final int DEFAULT_WARMUP_ITERATIONS = 5;
 
     /**
      * Default number of measurement iterations.
      */
-    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
+    public static final int DEFAULT_MEASUREMENT_ITERATIONS = 10;
 
     /**
      * Default number of operations for each iterations.
@@ -34,14 +34,9 @@ public class Configuration {
     public static final int DEFAULT_FORKS = 1;
 
     /**
-     * Default execution time for each iterations, in seconds.
-     */
-    public static final int DEFAULT_ITERATION_TIME = 60;
-
-    /**
      * Default timeout for each iterations, in minutes.
      */
-    public static final int DEFAULT_ITERATION_TIMEOUT = 120;
+    public static final int DEFAULT_ITERATION_TIMEOUT = 60;
 
     private Configuration() {
     }
