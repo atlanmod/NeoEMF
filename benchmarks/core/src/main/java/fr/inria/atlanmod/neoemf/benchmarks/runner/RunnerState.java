@@ -16,6 +16,7 @@ import com.google.common.base.CaseFormat;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.CdoBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoMapBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.XmiBackend;
 
@@ -53,16 +54,16 @@ public class RunnerState {
             CdoBackend.NAME,
             NeoMapBackend.NAME,
             NeoGraphBackend.NAME,
-//            NeoGraphNeo4jBackend.NAME, // FIXME: dependencies issue
+            NeoGraphNeo4jBackend.NAME,
     })
     private String backend;
 
     @Param({
             "fr.inria.atlanmod.kyanos.tests",
-//            "fr.inria.atlanmod.neo4emf.neo4jresolver",
-//            "org.eclipse.gmt.modisco.java.kyanos",
-//            "org.eclipse.jdt.core",
-//            "org.eclipse.jdt.source.all",
+            "fr.inria.atlanmod.neo4emf.neo4jresolver",
+            "org.eclipse.gmt.modisco.java.kyanos",
+            "org.eclipse.jdt.core",
+            "org.eclipse.jdt.source.all",
     })
     private String resource;
 
