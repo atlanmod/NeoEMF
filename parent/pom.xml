@@ -34,7 +34,7 @@
     </licenses>
 
     <prerequisites>
-        <maven>3.3.9</maven>
+        <maven>3.0</maven>
     </prerequisites>
 
     <properties>
@@ -50,11 +50,11 @@
         <!-- Plugins -->
         <build-helper-plugin.version>1.12</build-helper-plugin.version>
         <bundle-plugin.version>3.2.0</bundle-plugin.version>
-        <changes-plugin.version>2.12</changes-plugin.version>
+        <changes-plugin.version>2.12.1</changes-plugin.version>
         <checkstyle-plugin.version>2.17</checkstyle-plugin.version>
         <clean-plugin.version>3.0.0</clean-plugin.version>
         <cobertura-plugin.version>2.7</cobertura-plugin.version>
-        <compiler-plugin.version>3.5.1</compiler-plugin.version>
+        <compiler-plugin.version>3.6.0</compiler-plugin.version>
         <deploy-plugin.version>2.8.2</deploy-plugin.version>
         <dependency-plugin.version>2.10</dependency-plugin.version>
         <findbugs-plugin.version>3.0.4</findbugs-plugin.version>
@@ -76,7 +76,7 @@
         <!-- Dependencies -->
 
         <!-- DB -->
-        <blueprints.version>2.5.0</blueprints.version>              <!-- Update available ! -->
+        <blueprints.version>2.6.0</blueprints.version>
         <mapdb.version>3.0.2</mapdb.version>
         <hbase.version>0.98.13-hadoop2</hbase.version>              <!-- Update available ! -->
         <hadoop.version>2.6.0</hadoop.version>                      <!-- Update available ! -->
@@ -87,22 +87,21 @@
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
-        <guava.version>19.0</guava.version>                         <!-- Update available (RC) ! -->
-        <osgi.version>3.10.101.v20150820-1432</osgi.version>
+        <guava.version>19.0</guava.version>                         <!-- Update available ! -->
+        <osgi.version>3.11.0.v20160603-1336</osgi.version>
 
         <!-- Logging -->
         <log4j.version>2.7</log4j.version>
 
         <!-- EMF -->
         <emf.version>2.11.0-v20150805-0538</emf.version>
-        <emf-ecore.version>2.11.1-v20150805-0538</emf-ecore.version>
-        <emf-ecore-xcore-lib.version>1.1.100</emf-ecore-xcore-lib.version>
+        <ecore.version>2.11.1-v20150805-0538</ecore.version>
+        <xcore.version>1.1.100</xcore.version>
 
         <!-- Test -->
         <assertj.version>3.5.2</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>                  <!-- Update available (BETA) ! -->
-        <joda-time.version>2.9.4</joda-time.version>
     </properties>
 
     <dependencyManagement>
@@ -239,20 +238,20 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore</artifactId>
-                <version>${emf-ecore.version}</version>
+                <version>${ecore.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-                <version>${emf-ecore.version}</version>
+                <version>${ecore.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
-                <version>${emf-ecore-xcore-lib.version}</version>
+                <version>${xcore.version}</version>
             </dependency>
 
             <!-- Test -->

@@ -38,18 +38,21 @@
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
             <version>1.9.6</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
             <version>3.6.2</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-lucene-index</artifactId>
             <version>1.9.6</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Common dependencies -->
@@ -132,11 +135,10 @@
                             org.neo4j.kernel.impl.cache;-split-package:=merge-last,
                             org.neo4j.*;-split-package:=first,
                         </Export-Package>
-                        <Private-Package>
-                            javax.transaction,
-                            javax.transaction.xa
-                        </Private-Package>
+                        <Private-Package/>
                         <_exportcontents>
+                            javax.transaction,
+                            javax.transaction.xa,
                             org.apache.commons.configuration,
                             org.apache.commons.configuration.beanutils,
                             org.apache.commons.configuration.event,
