@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
+import fr.inria.atlanmod.neoemf.benchmarks.Configuration;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,12 +24,13 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Fork(value = BenchmarkUtil.DEFAULT_FORKS, jvmArgs = {
+@Fork(value = Configuration.DEFAULT_FORKS, jvmArgs = {
         "-Dfile.encoding=utf-8",
         "-server",
         "-Xmx8g",
@@ -38,22 +39,30 @@ import java.util.concurrent.TimeUnit;
         "-XX:+CMSClassUnloadingEnabled"
 })
 @Warmup(
-        iterations = BenchmarkUtil.DEFAULT_WARMUP_ITERATIONS,
-        time = BenchmarkUtil.DEFAULT_ITERATION_TIME_SEC,
-        batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE
+        iterations = Configuration.DEFAULT_WARMUP_ITERATIONS,
+        time = Configuration.DEFAULT_ITERATION_TIME_MS,
+        timeUnit = TimeUnit.MILLISECONDS,
+        batchSize = Configuration.DEFAULT_BATCH_SIZE
 )
 @Measurement(
-        iterations = BenchmarkUtil.DEFAULT_MEASUREMENT_ITERATIONS,
-        time = BenchmarkUtil.DEFAULT_ITERATION_TIME_SEC,
-        batchSize = BenchmarkUtil.DEFAULT_BATCH_SIZE
+        iterations = Configuration.DEFAULT_MEASUREMENT_ITERATIONS,
+        time = Configuration.DEFAULT_ITERATION_TIME_MS,
+        timeUnit = TimeUnit.MILLISECONDS,
+        batchSize = Configuration.DEFAULT_BATCH_SIZE
 )
-@OperationsPerInvocation(BenchmarkUtil.DEFAULT_BATCH_SIZE)
+@OperationsPerInvocation(Configuration.DEFAULT_BATCH_SIZE)
 public abstract class Runner {
 
     protected static final Logger LOG = LogManager.getLogger();
 
     @Benchmark
-    public void traverse(RunnerState state) throws Exception {
-        QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
+    public void loadUnload(RunnerState state, Blackhole bh) throws Exception {
+        // Run @Setup and @TearDown implicitly
+        bh.consume(state.getResource());
+    }
+
+    @Benchmark
+    public Integer traverse(RunnerState state) throws Exception {
+        return QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
     }
 }

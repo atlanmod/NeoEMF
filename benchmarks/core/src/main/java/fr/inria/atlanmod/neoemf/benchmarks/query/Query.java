@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
-import fr.inria.atlanmod.neoemf.benchmarks.util.MessageUtil;
+import fr.inria.atlanmod.neoemf.benchmarks.util.BytesUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,36 +51,19 @@ public interface Query<V> extends Callable<V> {
         return result;
     }
 
-    default V callWithMemory() throws Exception {
-        V result;
-
-        Runtime.getRuntime().gc();
-        long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory before call: {}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
-
-        result = call();
-
-        Runtime.getRuntime().gc();
-        long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory after call: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-        LOG.info("Memory use increase: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
-
-        return result;
-    }
-
     default V callWithMemoryAndTime() throws Exception {
         V result;
 
         Runtime.getRuntime().gc();
         long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory before call: {}", MessageUtil.byteCountToDisplaySize(initialUsedMemory));
+        LOG.info("Used memory before call: {}", BytesUtil.toMegabytes(initialUsedMemory));
 
         result = callWithTime();
 
         Runtime.getRuntime().gc();
         long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory after call: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory));
-        LOG.info("Memory use increase: {}", MessageUtil.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
+        LOG.info("Used memory after call: {}", BytesUtil.toMegabytes(finalUsedMemory));
+        LOG.info("Memory use increase: {}", BytesUtil.toMegabytes(finalUsedMemory - initialUsedMemory));
 
         return result;
     }

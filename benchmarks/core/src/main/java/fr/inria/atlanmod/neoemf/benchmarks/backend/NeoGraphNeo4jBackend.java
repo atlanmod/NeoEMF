@@ -41,4 +41,9 @@ public class NeoGraphNeo4jBackend extends NeoGraphBackend {
         saveOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
         return saveOpts;
     }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }

@@ -41,8 +41,7 @@ public class QueryRunner extends Runner {
         return QueryFactory.queryOrphanNonPrimitivesTypes(state.getResource()).callWithTime();
     }
 
-    // TODO: Create a temporary copy of the current resource before querying to avoid overwritting
-    //@Benchmark
+    @Benchmark
     public Void renameAllMethods(RunnerState state) throws Exception {
         String name = UUID.randomUUID().toString();
         Resource resource = state.getResource();

@@ -31,7 +31,6 @@ import org.openjdk.jmh.annotations.TearDown;
 import java.io.File;
 import java.util.Objects;
 
-// TODO : Try to ignore @Setup and @TearDown from total time
 @State(Scope.Thread)
 public class RunnerState {
 
@@ -91,7 +90,7 @@ public class RunnerState {
 
     @Setup(Level.Invocation)
     public void setupInvocation() throws Exception {
-        resourceInst = backendInst.load(resourceFile);
+        resourceInst = backendInst.load(backendInst.copy(resourceFile));
     }
 
     @TearDown(Level.Invocation)

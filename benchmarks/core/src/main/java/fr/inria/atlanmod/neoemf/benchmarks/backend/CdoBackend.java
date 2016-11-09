@@ -88,7 +88,7 @@ public class CdoBackend extends AbstractBackend {
             sourceResource.load(loadOpts);
             Query.LOG.info("Source resource loaded");
             return null;
-        }).callWithMemory();
+        }).callWithMemoryAndTime();
 
         Resource targetResource;
 
@@ -131,6 +131,11 @@ public class CdoBackend extends AbstractBackend {
         Map<Object, Object> saveOpts = new HashMap<>();
         saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
         return saveOpts;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override

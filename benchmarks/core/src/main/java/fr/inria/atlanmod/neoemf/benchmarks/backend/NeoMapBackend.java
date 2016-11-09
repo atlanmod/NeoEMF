@@ -73,7 +73,7 @@ public class NeoMapBackend extends AbstractNeoBackend {
             sourceResource.load(loadOpts);
             Query.LOG.info("Source resource loaded");
             return null;
-        }).callWithMemory();
+        }).callWithMemoryAndTime();
 
         Resource targetResource = resourceSet.createResource(targetUri);
 
@@ -100,6 +100,11 @@ public class NeoMapBackend extends AbstractNeoBackend {
         }
 
         return outputFile;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override

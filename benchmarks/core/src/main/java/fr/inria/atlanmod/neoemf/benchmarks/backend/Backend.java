@@ -11,11 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.backend;
 
+import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
+
+import org.apache.logging.log4j.LogManager;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public interface Backend {
+
+    String getName();
 
     File create(String name) throws Exception;
 
@@ -24,4 +31,13 @@ public interface Backend {
     void save(Resource resource) throws Exception;
 
     void unload(Resource resource) throws Exception;
+
+    default File copy(File inputFile) throws Exception {
+        Path inputPath = inputFile.toPath();
+        Path outputPath = Workspace.newTempDirectory(getName()).resolve(inputFile.getName());
+
+        LogManager.getLogger().info("Copy {} to {}", inputPath, outputPath);
+
+        return Files.copy(inputPath, outputPath).toFile();
+    }
 }

@@ -80,7 +80,7 @@ public class XmiBackend extends AbstractBackend {
             sourceResource.load(loadOpts);
             Query.LOG.info("Source resource loaded");
             return null;
-        }).callWithMemory();
+        }).callWithMemoryAndTime();
 
         Resource targetResource = resourceSet.createResource(targetUri);
 
@@ -102,6 +102,11 @@ public class XmiBackend extends AbstractBackend {
         targetResource.unload();
 
         return outputFile;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override

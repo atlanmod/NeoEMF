@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.benchmarks.backend;
 
 import com.google.common.io.Files;
 
+import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.io.Migrator;
-import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +44,7 @@ public abstract class AbstractBackend implements Backend {
         File inputFile = Migrator.getInstance().migrate(name, getResourceExtension(), getEPackageClass());
 
         String outputFileName = Files.getNameWithoutExtension(inputFile.getAbsolutePath()) + "." + getStoreExtension();
-        Path outputPath = BenchmarkUtil.getStoreDirectory().resolve(outputFileName);
+        Path outputPath = Workspace.getStoreDirectory().resolve(outputFileName);
         File file = create(inputFile, outputPath);
 
         if (isNull(file) || !file.exists()) {

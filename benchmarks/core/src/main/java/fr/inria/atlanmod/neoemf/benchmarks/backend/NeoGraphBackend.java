@@ -73,7 +73,7 @@ public class NeoGraphBackend extends AbstractNeoBackend {
             sourceResource.load(loadOpts);
             Query.LOG.info("Source resource loaded");
             return null;
-        }).callWithMemory();
+        }).callWithMemoryAndTime();
 
         Resource targetResource = resourceSet.createResource(targetUri);
 
@@ -100,6 +100,11 @@ public class NeoGraphBackend extends AbstractNeoBackend {
         }
 
         return outputFile;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override

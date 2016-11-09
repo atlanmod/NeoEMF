@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.io;
 
 import com.google.common.io.Files;
 
-import fr.inria.atlanmod.neoemf.benchmarks.util.BenchmarkUtil;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
@@ -51,7 +49,9 @@ public class Migrator {
     private static final Logger LOG = LogManager.getLogger();
 
     private static final String ZIP_FILENAME = "resources.zip";
+
     private static Migrator INSTANCE;
+
     public List<String> availableResources;
 
     private Migrator() {
@@ -88,14 +88,14 @@ public class Migrator {
             throw new IllegalArgumentException("Resource '" + name + ".xmi' does not exist in " + ZIP_FILENAME);
         }
 
-        File inputFile = extract(name, BenchmarkUtil.getResourcesDirectory());
+        File inputFile = extract(name, Workspace.getResourcesDirectory());
 
         return migrate(inputFile, outputExtension, outputClass);
     }
 
     private File migrate(File inputFile, String outputExtension, Class<?> outputClass) throws Exception {
         String outputFileName = Files.getNameWithoutExtension(inputFile.getName()) + "." + outputExtension + "." + "zxmi";
-        Path outputPath = BenchmarkUtil.getResourcesDirectory().resolve(outputFileName);
+        Path outputPath = Workspace.getResourcesDirectory().resolve(outputFileName);
         File outputFile = outputPath.toFile();
 
         if (outputFile.exists()) {
