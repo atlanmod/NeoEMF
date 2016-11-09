@@ -269,6 +269,16 @@
                             <arguments>
                                 <argument>-jar</argument>
                                 <argument>${uberjar.directory}/${uberjar.name}.jar</argument>
+
+                                <!-- JMH args : see 'java ${uberjar.name}.jar -help' for more information -->
+
+                                <!-- Output result format : JSON -->
+                                <argument>-rf</argument>
+                                <argument>json</argument>
+
+                                <!-- Output result directory -->
+                                <argument>-rff</argument>
+                                <argument>${uberjar.directory}/result-${maven.build.timestamp}.json</argument>
                             </arguments>
                         </configuration>
                     </execution>

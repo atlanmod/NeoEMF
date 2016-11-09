@@ -14,11 +14,6 @@ package fr.inria.atlanmod.neoemf.benchmarks;
 public class Configuration {
 
     /**
-     * Default execution time of an iteration.
-     */
-    public static final int DEFAULT_ITERATION_TIME_MS = 2;
-
-    /**
      * Default number of warm-up iterations.
      */
     public static final int DEFAULT_WARMUP_ITERATIONS = 2;
@@ -29,14 +24,24 @@ public class Configuration {
     public static final int DEFAULT_MEASUREMENT_ITERATIONS = 5;
 
     /**
-     * Default number of operations by iterations.
+     * Default number of operations for each iterations.
      */
-    public static final int DEFAULT_BATCH_SIZE = 50;
+    public static final int DEFAULT_OPERATIONS = 50;
 
     /**
-     * Default number of fork for an iteration.
+     * Default number of fork for each iterations.
      */
     public static final int DEFAULT_FORKS = 1;
+
+    /**
+     * Default execution time for each iterations, in milliseconds.
+     */
+    public static final int DEFAULT_ITERATION_TIME = 2;
+
+    /**
+     * Default timeout for each iterations, in minutes.
+     */
+    public static final int DEFAULT_ITERATION_TIMEOUT = 120;
 
     private Configuration() {
     }

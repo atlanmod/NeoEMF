@@ -43,8 +43,8 @@ public abstract class AbstractRunnerState {
             "fr.inria.atlanmod.kyanos.tests",
             "fr.inria.atlanmod.neo4emf.neo4jresolver",
             "org.eclipse.gmt.modisco.java.kyanos",
-//            "org.eclipse.jdt.core",
-//            "org.eclipse.jdt.source.all",
+            "org.eclipse.jdt.core",
+            "org.eclipse.jdt.source.all",
     })
     protected String resource;
 

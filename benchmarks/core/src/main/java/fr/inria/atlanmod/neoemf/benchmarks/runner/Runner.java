@@ -24,6 +24,7 @@ import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Timeout;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 
@@ -31,6 +32,23 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
+@Timeout(
+        time = Configuration.DEFAULT_ITERATION_TIMEOUT,
+        timeUnit = TimeUnit.MINUTES
+)
+@Warmup(
+        iterations = Configuration.DEFAULT_WARMUP_ITERATIONS,
+        time = Configuration.DEFAULT_ITERATION_TIME,
+        timeUnit = TimeUnit.MILLISECONDS,
+        batchSize = Configuration.DEFAULT_OPERATIONS
+)
+@Measurement(
+        iterations = Configuration.DEFAULT_MEASUREMENT_ITERATIONS,
+        time = Configuration.DEFAULT_ITERATION_TIME,
+        timeUnit = TimeUnit.MILLISECONDS,
+        batchSize = Configuration.DEFAULT_OPERATIONS
+)
+@OperationsPerInvocation(Configuration.DEFAULT_OPERATIONS)
 @Fork(value = Configuration.DEFAULT_FORKS, jvmArgs = {
         "-Dfile.encoding=utf-8",
         "-server",
@@ -39,19 +57,6 @@ import java.util.concurrent.TimeUnit;
         "-XX:+DisableExplicitGC",
         "-XX:+CMSClassUnloadingEnabled"
 })
-@Warmup(
-        iterations = Configuration.DEFAULT_WARMUP_ITERATIONS,
-        time = Configuration.DEFAULT_ITERATION_TIME_MS,
-        timeUnit = TimeUnit.MILLISECONDS,
-        batchSize = Configuration.DEFAULT_BATCH_SIZE
-)
-@Measurement(
-        iterations = Configuration.DEFAULT_MEASUREMENT_ITERATIONS,
-        time = Configuration.DEFAULT_ITERATION_TIME_MS,
-        timeUnit = TimeUnit.MILLISECONDS,
-        batchSize = Configuration.DEFAULT_BATCH_SIZE
-)
-@OperationsPerInvocation(Configuration.DEFAULT_BATCH_SIZE)
 public abstract class Runner {
 
     protected static final Logger LOG = LogManager.getLogger();
