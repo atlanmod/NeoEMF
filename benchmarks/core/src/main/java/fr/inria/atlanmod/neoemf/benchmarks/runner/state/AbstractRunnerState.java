@@ -1,15 +1,4 @@
-/*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- */
-
-package fr.inria.atlanmod.neoemf.benchmarks.runner;
+package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import com.google.common.base.CaseFormat;
 
@@ -19,6 +8,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoMapBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.backend.XmiBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Level;
@@ -32,7 +22,7 @@ import java.io.File;
 import java.util.Objects;
 
 @State(Scope.Thread)
-public class RunnerState {
+public abstract class AbstractRunnerState {
 
     private static final String CLASS_PREFIX = Backend.class.getPackage().getName() + ".";
     private static final String CLASS_SUFFIX = Backend.class.getSimpleName();
@@ -40,23 +30,23 @@ public class RunnerState {
     /**
      * The {@link Resource} instance.
      */
-    private Resource resourceInst;
+    protected Resource resourceInst;
 
-    private File resourceFile;
+    protected File resourceFile;
 
     /**
      * The {@link Backend} instance.
      */
-    private Backend backendInst;
+    protected Backend backendInst;
 
     @Param({
             "fr.inria.atlanmod.kyanos.tests",
             "fr.inria.atlanmod.neo4emf.neo4jresolver",
             "org.eclipse.gmt.modisco.java.kyanos",
-            "org.eclipse.jdt.core",
-            "org.eclipse.jdt.source.all",
+//            "org.eclipse.jdt.core",
+//            "org.eclipse.jdt.source.all",
     })
-    private String resource;
+    protected String resource;
 
     @Param({
             XmiBackend.NAME,
@@ -65,7 +55,7 @@ public class RunnerState {
             NeoGraphBackend.NAME,
             NeoGraphNeo4jBackend.NAME,
     })
-    private String backend;
+    protected String backend;
 
     public Backend getBackend() {
         if (Objects.isNull(backendInst)) {
@@ -89,9 +79,8 @@ public class RunnerState {
     }
 
     @Setup(Level.Invocation)
-    // TODO: Copy file only when necessary
     public void setupInvocation() throws Exception {
-        resourceInst = backendInst.load(backendInst.copy(resourceFile));
+        resourceInst = backendInst.load(getResourceFile());
     }
 
     @TearDown(Level.Invocation)
@@ -99,4 +88,6 @@ public class RunnerState {
         backendInst.unload(resourceInst);
         resourceInst = null;
     }
+
+    protected abstract File getResourceFile() throws Exception;
 }

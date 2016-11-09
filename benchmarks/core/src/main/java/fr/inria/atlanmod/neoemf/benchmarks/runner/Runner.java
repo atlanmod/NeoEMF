@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.Configuration;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadRunnerState;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,13 +57,13 @@ public abstract class Runner {
     protected static final Logger LOG = LogManager.getLogger();
 
     @Benchmark
-    public void loadUnload(RunnerState state, Blackhole bh) throws Exception {
+    public void loadUnload(ReadRunnerState state, Blackhole bh) throws Exception {
         // Run @Setup and @TearDown implicitly
         bh.consume(state.getResource());
     }
 
     @Benchmark
-    public Integer traverse(RunnerState state) throws Exception {
+    public Integer traverse(ReadRunnerState state) throws Exception {
         return QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
     }
 }

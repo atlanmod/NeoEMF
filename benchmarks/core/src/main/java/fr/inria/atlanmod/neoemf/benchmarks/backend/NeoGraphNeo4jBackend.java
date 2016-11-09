@@ -29,6 +29,11 @@ public class NeoGraphNeo4jBackend extends NeoGraphBackend {
     }
 
     @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
     public Map<Object, Object> getLoadOptions() {
         Map<Object, Object> loadOpts = new HashMap<>();
         loadOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
@@ -40,10 +45,5 @@ public class NeoGraphNeo4jBackend extends NeoGraphBackend {
         Map<Object, Object> saveOpts = new HashMap<>();
         saveOpts.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
         return saveOpts;
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 }

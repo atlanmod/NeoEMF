@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.benchmarks.backend;
 
 import com.google.common.io.Files;
 
-import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.io.Migrator;
+import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
