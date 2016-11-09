@@ -8,6 +8,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoGraphBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoGraphNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -40,11 +41,11 @@ public abstract class AbstractRunnerState {
     protected Backend backendInst;
 
     @Param({
-            "fr.inria.atlanmod.kyanos.tests",
-            "fr.inria.atlanmod.neo4emf.neo4jresolver",
-            "org.eclipse.gmt.modisco.java.kyanos",
-            "org.eclipse.jdt.core",
-            "org.eclipse.jdt.source.all",
+            "fr.inria.atlanmod.kyanos.tests.xmi",
+            "fr.inria.atlanmod.neo4emf.neo4jresolver.xmi",
+            "org.eclipse.gmt.modisco.java.kyanos.xmi",
+            "org.eclipse.jdt.core.xmi",
+            "org.eclipse.jdt.source.all.xmi",
     })
     protected String resource;
 
@@ -87,6 +88,11 @@ public abstract class AbstractRunnerState {
     public void tearDownInvocation() throws Exception {
         backendInst.unload(resourceInst);
         resourceInst = null;
+    }
+
+    @TearDown(Level.Trial)
+    public void tearDownTrial() throws Exception {
+        Workspace.cleanTempDirectory();
     }
 
     protected abstract File getResourceFile() throws Exception;

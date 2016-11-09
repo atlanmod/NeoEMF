@@ -19,16 +19,16 @@ Possible values for `<args>` can be found by using the `-help` argument, or [her
 #### Parameters
 
 By default, all resources are executed on all backends. But you can choose to execute one (or more) specific resource on one (or more) specific backend by using the `-p` argument with the following parameters:
-- `backend=<xmi|cdo|neo-map|neo-graph|neo-graph-neo4j>,...`
-- `resource=<resource name without extension>,...`
-
-Actually, only XMI files included in `src/main/resources/resources.zip` are taked in account.
+- `backend=[xmi|cdo|neo-map|neo-graph|neo-graph-neo4j],...`
+- `resource=<file>,...` where `<file>` is :
+ - the file name if it's included in `/resources.zip`
+ - the absolute file path otherwise (only `*.xmi` and `*.zxmi` are allowed)
 
 #### Example
 
 So, to run the query `traverse` on XMI and Neo4j backends with the resource "fr.inria.atlanmod.kyanos.tests.xmi", you need to execute the following command:
 
-    java -jar ... traverse -p backend=xmi,neo-graph-neo4j -p resource=fr.inria.atlanmod.kyanos.tests
+    java -jar ... traverse -p backend=xmi,neo-graph-neo4j -p resource=fr.inria.atlanmod.kyanos.tests.xmi
 
 ### Running with Maven
 You can also run a pre-configured execution from Maven:
