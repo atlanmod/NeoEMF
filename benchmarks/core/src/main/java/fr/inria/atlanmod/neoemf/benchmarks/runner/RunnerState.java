@@ -31,6 +31,7 @@ import org.openjdk.jmh.annotations.TearDown;
 import java.io.File;
 import java.util.Objects;
 
+// TODO : Try to ignore @Setup and @TearDown from total time
 @State(Scope.Thread)
 public class RunnerState {
 
