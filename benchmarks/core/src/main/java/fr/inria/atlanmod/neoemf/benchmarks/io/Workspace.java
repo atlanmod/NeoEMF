@@ -86,12 +86,10 @@ public class Workspace {
 
     public static void cleanTempDirectory() {
         if (!isNull(TEMP_DIRECTORY)) {
-            if(!FileUtils.deleteQuietly(TEMP_DIRECTORY.toFile())) {
-                try {
-                    FileUtils.forceDeleteOnExit(TEMP_DIRECTORY.toFile());
-                }
-                catch (IOException ignore) {
-                }
+            try {
+                FileUtils.cleanDirectory(TEMP_DIRECTORY.toFile());
+            }
+            catch (IOException ignore) {
             }
         }
     }
