@@ -77,7 +77,6 @@ public class Workspace {
         Path tempDirectory = null;
         try {
             tempDirectory = Files.createTempDirectory(getTempDirectory(), prefix);
-            deleteOnExit(tempDirectory);
         }
         catch (IOException e) {
             LOG.error(e);
@@ -85,13 +84,15 @@ public class Workspace {
         return tempDirectory;
     }
 
-    // FIXME: Directories are not deleted
-    private static void deleteOnExit(Path path) {
-        try {
-            FileUtils.forceDeleteOnExit(path.toFile());
-        }
-        catch (IOException e) {
-            LOG.error(e);
+    public static void cleanTempDirectory() {
+        if (!isNull(TEMP_DIRECTORY)) {
+            if(!FileUtils.deleteQuietly(TEMP_DIRECTORY.toFile())) {
+                try {
+                    FileUtils.forceDeleteOnExit(TEMP_DIRECTORY.toFile());
+                }
+                catch (IOException ignore) {
+                }
+            }
         }
     }
 }

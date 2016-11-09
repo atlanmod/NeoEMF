@@ -24,6 +24,7 @@ public interface Backend {
 
     String getName();
 
+    // TODO: Use inheritance to remove duplicated code
     File create(String name) throws Exception;
 
     Resource load(File file) throws Exception;
