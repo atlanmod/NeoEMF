@@ -49,11 +49,11 @@ import java.util.concurrent.TimeUnit;
         jvmArgs = {
                 "-Dfile.encoding=utf-8",
                 "-server",
-                "-Xmx8g",
                 "-XX:+UseConcMarkSweepGC",
                 "-XX:+DisableExplicitGC",
                 "-XX:+CMSClassUnloadingEnabled"
-        }
+        },
+        jvmArgsAppend = RunnerConstants.DEFAULT_XMX
 )
 public abstract class Runner {
 
