@@ -260,6 +260,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <!-- Execute JMH : 'mvn exec:exec'-->
                         <id>default-cli</id>
                         <goals>
                             <goal>exec</goal>
@@ -267,18 +268,33 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
+                                <argument>-Dfile.encoding=utf-8</argument>
                                 <argument>-jar</argument>
                                 <argument>${uberjar.directory}/${uberjar.name}.jar</argument>
-
-                                <!-- JMH args : see 'java ${uberjar.name}.jar -help' for more information -->
 
                                 <!-- Output result format : JSON -->
                                 <argument>-rf</argument>
                                 <argument>json</argument>
 
-                                <!-- Output result directory -->
+                                <!-- Output result file -->
                                 <argument>-rff</argument>
                                 <argument>${uberjar.directory}/result-${maven.build.timestamp}.json</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Display JMH help : 'mvn exec:exec@help' -->
+                        <id>help</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Dfile.encoding=utf-8</argument>
+                                <argument>-jar</argument>
+                                <argument>${uberjar.directory}/${uberjar.name}.jar</argument>
+                                <argument>-help</argument>
                             </arguments>
                         </configuration>
                     </execution>
