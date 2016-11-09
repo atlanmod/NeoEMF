@@ -18,7 +18,7 @@
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

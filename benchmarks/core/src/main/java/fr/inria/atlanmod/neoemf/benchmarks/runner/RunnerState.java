@@ -39,25 +39,16 @@ public class RunnerState {
     private static final String CLASS_SUFFIX = Backend.class.getSimpleName();
 
     /**
-     * The {@link Backend} instance.
-     */
-    private Backend backendInst;
-
-    /**
      * The {@link Resource} instance.
      */
     private Resource resourceInst;
 
     private File resourceFile;
 
-    @Param({
-            XmiBackend.NAME,
-            CdoBackend.NAME,
-            NeoMapBackend.NAME,
-            NeoGraphBackend.NAME,
-            NeoGraphNeo4jBackend.NAME,
-    })
-    private String backend;
+    /**
+     * The {@link Backend} instance.
+     */
+    private Backend backendInst;
 
     @Param({
             "fr.inria.atlanmod.kyanos.tests",
@@ -67,6 +58,15 @@ public class RunnerState {
             "org.eclipse.jdt.source.all",
     })
     private String resource;
+
+    @Param({
+            XmiBackend.NAME,
+            CdoBackend.NAME,
+            NeoMapBackend.NAME,
+            NeoGraphBackend.NAME,
+            NeoGraphNeo4jBackend.NAME,
+    })
+    private String backend;
 
     public Backend getBackend() {
         if (Objects.isNull(backendInst)) {

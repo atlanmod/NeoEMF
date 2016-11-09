@@ -17,24 +17,12 @@
     <name>NeoEMF :: Benchmarks :: Core</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-
         <uberjar.name>benchmarks</uberjar.name>
         <uberjar.directory>${project.build.directory}/exec</uberjar.directory>
 
         <!-- EMF & Co -->
-        <emf.version>2.11.0-v20150805-0538</emf.version>
-        <ecore.version>2.11.1-v20150805-0538</ecore.version>
         <cdo.version>4.3.0</cdo.version>
-        <neoemf.version>0.0.1-SNAPSHOT</neoemf.version>
-
         <neo4j.version>1.9.6</neo4j.version>
-
-        <!-- Commons -->
-        <guava.version>20.0</guava.version>
-        <log4j.version>2.7</log4j.version>
 
         <!-- Benchmark -->
         <jmh.version>1.15</jmh.version>
@@ -47,19 +35,18 @@
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.common</artifactId>
-            <version>${emf.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
-            <version>${ecore.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-            <version>${ecore.version}</version>
         </dependency>
 
         <!-- CDO -->
@@ -67,14 +54,12 @@
         <dependency>
             <groupId>org.eclipselabs</groupId>
             <artifactId>cdo</artifactId>
-            <version>${cdo.version}</version>
             <type>pom</type>
         </dependency>
 
         <dependency>
             <groupId>org.eclipselabs</groupId>
             <artifactId>net4j.h2</artifactId>
-            <version>${cdo.version}</version>
             <type>pom</type>
         </dependency>
 
@@ -83,25 +68,25 @@
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>core</artifactId>
-            <version>${neoemf.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>graph.blueprints</artifactId>
-            <version>${neoemf.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>graph.blueprints.neo4j</artifactId>
-            <version>${neoemf.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>map</artifactId>
-            <version>${neoemf.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Commons -->
@@ -109,26 +94,22 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jcl</artifactId>
-            <version>${log4j.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -157,16 +138,45 @@
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>${jmh.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>${jmh.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipselabs</groupId>
+                <artifactId>cdo</artifactId>
+                <version>${cdo.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipselabs</groupId>
+                <artifactId>net4j.h2</artifactId>
+                <version>${cdo.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>${jmh.version}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
