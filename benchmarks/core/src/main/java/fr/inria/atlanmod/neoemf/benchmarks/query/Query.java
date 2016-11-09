@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,16 +65,18 @@ public interface Query<V> extends Callable<V> {
     default V callWithMemoryUsage() throws Exception {
         V result;
 
-        Runtime.getRuntime().gc();
-        long initialUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory before call: {}", QueryHelper.toMegabytes(initialUsedMemory));
+        Runtime runtime = Runtime.getRuntime();
+
+        runtime.gc();
+        long initialUsedMemory = runtime.totalMemory() - runtime.freeMemory();
+        LOG.info("Used memory before call: {}", FileUtils.byteCountToDisplaySize(initialUsedMemory));
 
         result = callWithTime();
 
-        Runtime.getRuntime().gc();
-        long finalUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        LOG.info("Used memory after call: {}", QueryHelper.toMegabytes(finalUsedMemory));
-        LOG.info("Memory use increase: {}", QueryHelper.toMegabytes(finalUsedMemory - initialUsedMemory));
+        runtime.gc();
+        long finalUsedMemory = runtime.totalMemory() - runtime.freeMemory();
+        LOG.info("Used memory after call: {}", FileUtils.byteCountToDisplaySize(finalUsedMemory));
+        LOG.info("Memory use increase: {}", FileUtils.byteCountToDisplaySize(finalUsedMemory - initialUsedMemory));
 
         return result;
     }

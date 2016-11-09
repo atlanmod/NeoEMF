@@ -72,6 +72,8 @@ public abstract class AbstractRunnerState {
         return resourceInst;
     }
 
+    protected abstract File getResourceFile() throws Exception;
+
     @Setup(Level.Trial)
     public void setupTrial() throws Exception {
         String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, backend) + CLASS_SUFFIX;
@@ -88,12 +90,6 @@ public abstract class AbstractRunnerState {
     public void tearDownInvocation() throws Exception {
         backendInst.unload(resourceInst);
         resourceInst = null;
-    }
-
-    @TearDown(Level.Trial)
-    public void tearDownTrial() throws Exception {
         Workspace.cleanTempDirectory();
     }
-
-    protected abstract File getResourceFile() throws Exception;
 }
