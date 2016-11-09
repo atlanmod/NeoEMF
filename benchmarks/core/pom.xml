@@ -278,7 +278,7 @@
 
                                 <!-- Output result file -->
                                 <argument>-rff</argument>
-                                <argument>${uberjar.directory}/result-${maven.build.timestamp}.json</argument>
+                                <argument>${env.TEMP}/neoemf-benchmarks-${maven.build.timestamp}.json</argument>
                             </arguments>
                         </configuration>
                     </execution>

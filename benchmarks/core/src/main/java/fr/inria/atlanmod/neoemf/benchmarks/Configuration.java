@@ -34,9 +34,9 @@ public class Configuration {
     public static final int DEFAULT_FORKS = 1;
 
     /**
-     * Default execution time for each iterations, in milliseconds.
+     * Default execution time for each iterations, in seconds.
      */
-    public static final int DEFAULT_ITERATION_TIME = 2;
+    public static final int DEFAULT_ITERATION_TIME = 60;
 
     /**
      * Default timeout for each iterations, in minutes.

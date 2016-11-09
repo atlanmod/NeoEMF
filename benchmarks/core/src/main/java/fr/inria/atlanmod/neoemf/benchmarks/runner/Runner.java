@@ -39,13 +39,13 @@ import java.util.concurrent.TimeUnit;
 @Warmup(
         iterations = Configuration.DEFAULT_WARMUP_ITERATIONS,
         time = Configuration.DEFAULT_ITERATION_TIME,
-        timeUnit = TimeUnit.MILLISECONDS,
+        timeUnit = TimeUnit.SECONDS,
         batchSize = Configuration.DEFAULT_OPERATIONS
 )
 @Measurement(
         iterations = Configuration.DEFAULT_MEASUREMENT_ITERATIONS,
         time = Configuration.DEFAULT_ITERATION_TIME,
-        timeUnit = TimeUnit.MILLISECONDS,
+        timeUnit = TimeUnit.SECONDS,
         batchSize = Configuration.DEFAULT_OPERATIONS
 )
 @OperationsPerInvocation(Configuration.DEFAULT_OPERATIONS)
