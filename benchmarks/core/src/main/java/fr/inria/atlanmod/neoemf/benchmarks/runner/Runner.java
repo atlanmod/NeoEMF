@@ -11,9 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-import fr.inria.atlanmod.neoemf.benchmarks.Configuration;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadRunnerState;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,20 +32,20 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Timeout(
-        time = Configuration.DEFAULT_ITERATION_TIMEOUT,
+        time = RunnerConstants.DEFAULT_ITERATION_TIMEOUT,
         timeUnit = TimeUnit.MINUTES
 )
 @Warmup(
-        iterations = Configuration.DEFAULT_WARMUP_ITERATIONS,
-        batchSize = Configuration.DEFAULT_OPERATIONS
+        iterations = RunnerConstants.DEFAULT_WARMUP_ITERATIONS,
+        batchSize = RunnerConstants.DEFAULT_OPERATIONS
 )
 @Measurement(
-        iterations = Configuration.DEFAULT_MEASUREMENT_ITERATIONS,
-        batchSize = Configuration.DEFAULT_OPERATIONS
+        iterations = RunnerConstants.DEFAULT_MEASUREMENT_ITERATIONS,
+        batchSize = RunnerConstants.DEFAULT_OPERATIONS
 )
-@OperationsPerInvocation(Configuration.DEFAULT_OPERATIONS)
+@OperationsPerInvocation(RunnerConstants.DEFAULT_OPERATIONS)
 @Fork(
-        value = Configuration.DEFAULT_FORKS,
+        value = RunnerConstants.DEFAULT_FORKS,
         jvmArgs = {
                 "-Dfile.encoding=utf-8",
                 "-server",
@@ -61,13 +60,13 @@ public abstract class Runner {
     protected static final Logger LOG = LogManager.getLogger();
 
     @Benchmark
-    public void loadUnload(ReadRunnerState state, Blackhole bh) throws Exception {
+    public void loadUnload(ReadOnlyRunnerState state, Blackhole bh) throws Exception {
         // Run @Setup and @TearDown implicitly
         bh.consume(state.getResource());
     }
 
     @Benchmark
-    public Integer traverse(ReadRunnerState state) throws Exception {
+    public Integer traverse(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
     }
 }

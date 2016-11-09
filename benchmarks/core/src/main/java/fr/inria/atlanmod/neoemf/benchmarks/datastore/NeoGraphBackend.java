@@ -9,12 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.backend;
+package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
@@ -30,11 +30,11 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NeoMapBackend extends AbstractNeoBackend {
+public class NeoGraphBackend extends AbstractNeoBackend {
 
-    public static final String NAME = "neo-map";
+    public static final String NAME = "neo-graph";
 
-    private static final String STORE_EXTENSION = "map.resource"; // -> neoemf.map.resource
+    private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
 
     @Override
     protected String getStoreExtension() {
@@ -50,17 +50,17 @@ public class NeoMapBackend extends AbstractNeoBackend {
             return outputFile;
         }
 
-        PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
         URI sourceUri = URI.createFileURI(inputFile.getAbsolutePath());
-        URI targetUri = NeoMapURI.createNeoMapURI(outputFile);
+        URI targetUri = NeoBlueprintsURI.createNeoGraphURI(outputFile);
 
         org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
 
         Resource sourceResource = resourceSet.createResource(sourceUri);
         Map<Object, Object> loadOpts = new HashMap<>();
@@ -73,7 +73,7 @@ public class NeoMapBackend extends AbstractNeoBackend {
             sourceResource.load(loadOpts);
             Query.LOG.info("Source resource loaded");
             return null;
-        }).callWithMemoryAndTime();
+        }).callWithMemoryUsage();
 
         Resource targetResource = resourceSet.createResource(targetUri);
 
@@ -111,14 +111,14 @@ public class NeoMapBackend extends AbstractNeoBackend {
     public Resource load(File file) throws Exception {
         Resource resource;
 
-        PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
-        URI uri = NeoMapURI.createNeoMapURI(file);
+        URI uri = NeoBlueprintsURI.createNeoGraphURI(file);
 
         getEPackageClass().getMethod("init").invoke(null);
 
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
 
         resource = resourceSet.createResource(uri);
         resource.load(getLoadOptions());

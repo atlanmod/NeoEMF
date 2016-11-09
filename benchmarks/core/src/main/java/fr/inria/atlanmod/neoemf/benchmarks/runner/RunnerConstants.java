@@ -9,9 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks;
+package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-public class Configuration {
+class RunnerConstants {
 
     /**
      * Default number of warm-up iterations.
@@ -38,6 +38,6 @@ public class Configuration {
      */
     public static final int DEFAULT_ITERATION_TIMEOUT = 60;
 
-    private Configuration() {
+    private RunnerConstants() {
     }
 }

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
-import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadRunnerState;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteRunnerState;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -28,63 +28,63 @@ public class QueryRunner extends Runner {
      */
 
     @Benchmark
-    public Integer classDeclarationAttributes(ReadRunnerState state) throws Exception {
+    public Integer classDeclarationAttributes(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithTime();
     }
 
     @Benchmark
-    public Integer grabats(ReadRunnerState state) throws Exception {
+    public Integer grabats(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryGrabats09(state.getResource()).callWithTime();
     }
 
     @Benchmark
-    public Integer invisibleMethodDeclarations(ReadRunnerState state) throws Exception {
+    public Integer invisibleMethodDeclarations(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryInvisibleMethodDeclarations(state.getResource()).callWithTime();
     }
 
     @Benchmark
-    public Integer orphanNonPrimitiveTypes(ReadRunnerState state) throws Exception {
+    public Integer orphanNonPrimitiveTypes(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryOrphanNonPrimitivesTypes(state.getResource()).callWithTime();
     }
 
     @Benchmark
-    public Integer thrownExceptionsPerPackage(ReadRunnerState state) throws Exception {
+    public Integer thrownExceptionsPerPackage(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryThrownExceptionsPerPackage(state.getResource()).callWithTime();
     }
 
     @Benchmark
-    public Integer unusedMethodsWithList(ReadRunnerState state) throws Exception {
+    public Integer unusedMethodsWithList(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryUnusedMethodsWithList(state.getResource()).callWithTime();
     }
 
     @Benchmark
-    public Integer unusedMethodsWithLoop(ReadRunnerState state) throws Exception {
+    public Integer unusedMethodsWithLoop(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryUnusedMethodsWithLoop(state.getResource()).callWithTime();
     }
 
     @Benchmark
-    public Integer branchStatementsAse2015(ReadRunnerState state) throws Exception {
-        return QueryFactoryASE2015.queryCommentsTagContentAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer branchStatementsAse2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryCommentsTagContentAse2015(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
-    public Integer grabatsAse2015(ReadRunnerState state) throws Exception {
-        return QueryFactoryASE2015.queryGrabatsAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer grabatsAse2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryGrabatsAse2015(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
-    public Integer invisibleMethodDeclarationsAse2015(ReadRunnerState state) throws Exception {
-        return QueryFactoryASE2015.queryInvisibleMethodDeclarations(state.getResource()).callWithMemoryAndTime();
+    public Integer invisibleMethodDeclarationsAse2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryInvisibleMethodDeclarations(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
-    public Integer specificInvisibleMethodDeclarationsAse2015(ReadRunnerState state) throws Exception {
-        return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer specificInvisibleMethodDeclarationsAse2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
-    public Integer thrownExceptionsAse2015(ReadRunnerState state) throws Exception {
-        return QueryFactoryASE2015.queryThrownExceptionsAse2015(state.getResource()).callWithMemoryAndTime();
+    public Integer thrownExceptionsAse2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryThrownExceptionsAse2015(state.getResource()).callWithMemoryUsage();
     }
 
     /*

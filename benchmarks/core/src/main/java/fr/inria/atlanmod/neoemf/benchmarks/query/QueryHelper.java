@@ -9,28 +9,18 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.util;
+package fr.inria.atlanmod.neoemf.benchmarks.query;
 
 import java.text.MessageFormat;
 
-public class BytesUtil {
+class QueryHelper {
 
-    private static final long KB = 1024L;
-    private static final long MB = KB * KB;
-    private static final long GB = KB * KB * KB;
+    private static final long MB = 1024L * 1024L;
 
-    private BytesUtil() {
-    }
-
-    public static String toKilobytes(long bytes) {
-        return MessageFormat.format("{0} {1}", bytes / KB, "KB");
+    private QueryHelper() {
     }
 
     public static String toMegabytes(long bytes) {
         return MessageFormat.format("{0} {1}", bytes / MB, "MB");
-    }
-
-    public static String toGigabytes(long bytes) {
-        return MessageFormat.format("{0} {1}", bytes / GB, "GB");
     }
 }

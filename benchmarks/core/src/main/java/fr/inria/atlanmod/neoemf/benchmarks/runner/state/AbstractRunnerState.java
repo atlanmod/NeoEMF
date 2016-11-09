@@ -2,12 +2,12 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import com.google.common.base.CaseFormat;
 
-import fr.inria.atlanmod.neoemf.benchmarks.backend.Backend;
-import fr.inria.atlanmod.neoemf.benchmarks.backend.CdoBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoGraphNeo4jBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.backend.NeoMapBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.backend.XmiBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoGraphBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoGraphNeo4jBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
 
 import org.eclipse.emf.ecore.resource.Resource;

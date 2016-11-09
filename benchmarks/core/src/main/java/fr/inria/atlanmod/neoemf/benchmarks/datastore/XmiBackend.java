@@ -9,15 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.backend;
+package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
-import fr.inria.atlanmod.neoemf.benchmarks.util.cdo.EmbeddedCDOServer;
 
-import org.eclipse.emf.cdo.eresource.CDOResource;
-import org.eclipse.emf.cdo.net4j.CDONet4jSession;
-import org.eclipse.emf.cdo.session.CDOSession;
-import org.eclipse.emf.cdo.transaction.CDOTransaction;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -32,18 +27,14 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-public class CdoBackend extends AbstractBackend {
+public class XmiBackend extends AbstractBackend {
 
-    public static final String NAME = "cdo";
+    public static final String NAME = "xmi";
 
-    private static final String RESOURCE_EXTENSION = "cdo";
-    private static final String STORE_EXTENSION = "resource"; // -> cdo.resource
+    private static final String RESOURCE_EXTENSION = "xmi";
+    private static final String STORE_EXTENSION = "xmi";  // -> xmi.xmi
 
-    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class;
-
-    private EmbeddedCDOServer server;
-    private CDOSession session;
-    private CDOTransaction transaction;
+    private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
 
     @Override
     protected String getResourceExtension() {
@@ -70,15 +61,16 @@ public class CdoBackend extends AbstractBackend {
         }
 
         URI sourceUri = URI.createFileURI(inputFile.getAbsolutePath());
+        URI targetUri = URI.createFileURI(outputPath.toString());
 
-        org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
+        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
         Resource sourceResource = resourceSet.createResource(sourceUri);
-        Map<Object, Object> loadOpts = new HashMap<>();
+        Map<String, Object> loadOpts = new HashMap<>();
         if ("zxmi".equals(sourceUri.fileExtension())) {
             loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         }
@@ -88,49 +80,28 @@ public class CdoBackend extends AbstractBackend {
             sourceResource.load(loadOpts);
             Query.LOG.info("Source resource loaded");
             return null;
-        }).callWithMemoryAndTime();
+        }).callWithMemoryUsage();
 
-        Resource targetResource;
+        Resource targetResource = resourceSet.createResource(targetUri);
 
-        EmbeddedCDOServer server = new EmbeddedCDOServer(outputPath);
-        try {
-            server.run();
-            CDOSession session = server.openSession();
-            CDOTransaction transaction = session.openTransaction();
-            targetResource = transaction.getRootResource();
+        targetResource.getContents().clear();
 
-            targetResource.getContents().clear();
-
-            {
-                LOG.info("Start moving elements");
-                targetResource.getContents().addAll(sourceResource.getContents());
-                LOG.info("End moving elements");
-            }
-
-            {
-                LOG.info("Start saving");
-                targetResource.save(getSaveOptions());
-                LOG.info("Saved");
-            }
-
-            transaction.close();
-            session.close();
+        {
+            LOG.info("Start moving elements");
+            targetResource.getContents().addAll(sourceResource.getContents());
+            LOG.info("End moving elements");
         }
-        finally {
-            server.close();
+
+        {
+            LOG.info("Start saving");
+            targetResource.save(getSaveOptions());
+            LOG.info("Saved");
         }
 
         sourceResource.unload();
         targetResource.unload();
 
         return outputFile;
-    }
-
-    @Override
-    public Map<Object, Object> getSaveOptions() {
-        Map<Object, Object> saveOpts = new HashMap<>();
-        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
-        return saveOpts;
     }
 
     @Override
@@ -142,35 +113,22 @@ public class CdoBackend extends AbstractBackend {
     public Resource load(File file) throws Exception {
         Resource resource;
 
+        URI uri = URI.createFileURI(file.getAbsolutePath());
+
         getEPackageClass().getMethod("init").invoke(null);
 
-        server = new EmbeddedCDOServer(file.toPath());
-        server.run();
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
-        session = server.openSession();
-        ((CDONet4jSession) session).options().setCommitTimeout(50 * 1000);
-
-        transaction = session.openTransaction();
-
-        resource = transaction.getRootResource();
+        resource = resourceSet.createResource(uri);
+        resource.load(getLoadOptions());
 
         return resource;
     }
 
     @Override
     public void unload(Resource resource) {
-        if (!isNull(transaction) && !transaction.isClosed()) {
-            transaction.close();
-        }
-
-        if (!isNull(session) && !session.isClosed()) {
-            session.close();
-        }
-
-        if (!isNull(server) && !server.isClosed()) {
-            server.close();
-        }
-
         if (!isNull(resource) && resource.isLoaded()) {
             resource.unload();
         }
