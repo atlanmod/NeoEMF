@@ -5,7 +5,7 @@ NeoEMF [![Build Status](https://travis-ci.org/atlanmod/NeoEMF.svg?branch=master)
 
 NeoEMF is an [AtlanMod](http://www.emn.fr/z-info/atlanmod/index.php/Main_Page) research team project that aims at handling large EMF models in an efficient and scalable way.
 
-It is based on our work on Neo4EMF, a scalable and graph based backend for persisting EMF models.
+It is based on our work on Neo4EMF, a scalable and graph-based backend for persisting EMF models.
 
 NeoEMF is a multi-backend framework developped to allow an easy integration of custom backends depending on user needs.
 
@@ -19,11 +19,11 @@ Some Blueprints connectors are also available to ease the integration of graph d
 
 NeoEMF comes with some features depending on the backend used:
 
-- __Lazy-loading__ mechanism: a model is loaded part by part while needed (**All the backends**)
+- __Lazy-loading__ mechanism: A model is loaded part by part while needed (**All backends**)
 - __Caching__: NeoEMF relies on database caches to retrieve EObjects. But in some situation where time performance is important this is not enough and it is possible to use application-level caches to speed up 
-information loading (**All the backends**)
-- __Auto-commit__: For the backend having restrictions on transaction sizes it is possible to use the Auto-commit feature to split large transaction into several small ones (**Blueprints backend**)
-- __Dirty saving__: handle large models that haven't been persisted to avoid memory overhead (**Blueprints backend**)
+information loading (**All backends**)
+- __Auto-commit__: For the backend having restrictions on transaction sizes it is possible to use the auto-commit feature to split large transaction into several small ones (**Blueprints backend**)
+- __Dirty saving__: Handle large models that haven't been persisted to avoid memory overhead (**Blueprints backend**)
 
 ## Why should I use NeoEMF?
 
@@ -36,8 +36,8 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 ## Installation
 
 ## Update site
-The simplest way to install NeoEMF is to use the update site that is available [here](http://atlanmod.github.io/NeoEMF/).
-Install the **Base** compenent, which provides NeoEMF core classes and utils.
+The simplest way to install NeoEMF is to use the update-site that is available [here](http://atlanmod.github.io/NeoEMF/).
+Install the **Base** component, which provides NeoEMF core classes and utils.
 Select the backend specific implementation(s) you want to plug in NeoEMF (currently Blueprints and MapDB are available).
 
 ### Specific backend setup
@@ -45,8 +45,8 @@ Backend specific implementations may need configuration files or require other p
 These requirements are available in the root of the related subprojects.
 
 ## Local build
-You can build locally NeoEMF by following the instructions in th Build section.
-It is then possible to install NeoEMF from the local built update site, or by importing the generated plugins.
+You can build locally NeoEMF by following the instructions in the Build section.
+It is then possible to install NeoEMF from the local built update-site, or by importing the generated plugins.
 
 ## Build
 
@@ -67,7 +67,7 @@ To build NeoEMF Eclipse plugin, you need to run the following command:
 
     mvn clean install -f plugins/eclipse
 
-NeoEMF plugins and update site are built and stored in your local m2 repository (.m2/fr/inria/atlanmod/neoemf)
+NeoEMF plugins and update-site are built and stored in your local m2 repository at (`.m2/fr/inria/atlanmod/neoemf`).
 
 ## Opening in your IDE
 
@@ -90,7 +90,7 @@ Steps:
 
 The projects **project**, **parent**, **core**, **graph**, **graph.blueprints** and **map** will be imported and built.
 
-If you want to import the projects generating Eclipse specific plugins (features, update site), you have to import them by
+If you want to import the projects generating Eclipse specific plugins (features, update-site), you have to import them by
 hand using `File > Import > Maven > Existing Maven Projects`, and select the projects under the "plugins" folder in your local repository.
 
 ## Issues
