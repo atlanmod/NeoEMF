@@ -85,6 +85,7 @@ public class Workspace {
         return tempDirectory;
     }
 
+    // FIXME: Directories are not deleted
     private static void deleteOnExit(Path path) {
         try {
             FileUtils.forceDeleteOnExit(path.toFile());

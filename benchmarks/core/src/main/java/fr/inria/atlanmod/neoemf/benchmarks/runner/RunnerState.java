@@ -89,6 +89,7 @@ public class RunnerState {
     }
 
     @Setup(Level.Invocation)
+    // TODO: Copy file only when necessary
     public void setupInvocation() throws Exception {
         resourceInst = backendInst.load(backendInst.copy(resourceFile));
     }
