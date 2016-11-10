@@ -13,10 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.query;
 
 import com.google.common.collect.Iterators;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -40,13 +37,12 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
 
 public class QueryFactory {
-
-    protected static final Logger LOG = LogManager.getLogger();
 
     public static Query<Integer> queryCountAllElements(Resource resource) {
         return () -> Iterators.size(resource.getAllContents());
@@ -59,7 +55,7 @@ public class QueryFactory {
     public static Query<Integer> queryOrphanNonPrimitivesTypes(Resource resource) {
         return () -> {
             Model model;
-            EList<Type> orphanTypes = new BasicEList<>();
+            List<Type> orphanTypes = new BasicEList<>();
             model = (Model) resource.getContents().get(0);
             for (Type currentType : model.getOrphanTypes()) {
                 if (!(currentType instanceof PrimitiveType)) {
@@ -75,10 +71,10 @@ public class QueryFactory {
      */
     public static Query<Integer> queryClassDeclarationAttributes(Resource resource) {
         return () -> {
-            HashMap<String, EList<NamedElement>> resultMap = new HashMap<>();
-            EList<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            HashMap<String, List<NamedElement>> resultMap = new HashMap<>();
+            List<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
             for (EObject object : classes) {
-                EList<NamedElement> declarations = separateFields(((ClassDeclaration) object).getBodyDeclarations());
+                List<NamedElement> declarations = separateFields(((ClassDeclaration) object).getBodyDeclarations());
                 resultMap.put(((ClassDeclaration) object).getName(), declarations);
             }
             return resultMap.size();
@@ -90,11 +86,11 @@ public class QueryFactory {
      */
     public static Query<Integer> queryThrownExceptionsPerPackage(Resource resource) {
         return () -> {
-            HashMap<String, EList<TypeAccess>> resultMap = new HashMap<>();
-            EList<? extends EObject> packages = getAllInstances(resource, JavaPackage.eINSTANCE.getPackage());
+            HashMap<String, List<TypeAccess>> resultMap = new HashMap<>();
+            List<? extends EObject> packages = getAllInstances(resource, JavaPackage.eINSTANCE.getPackage());
             for (EObject object : packages) {
-                EList<AbstractTypeDeclaration> elements = ((Package) object).getOwnedElements();
-                EList<TypeAccess> thrownExceptions = new BasicEList<>();
+                List<AbstractTypeDeclaration> elements = ((Package) object).getOwnedElements();
+                List<TypeAccess> thrownExceptions = new BasicEList<>();
                 for (AbstractTypeDeclaration element : elements) {
                     if (element instanceof ClassDeclaration) {
                         for (BodyDeclaration declaration : element.getBodyDeclarations()) {
@@ -119,7 +115,7 @@ public class QueryFactory {
      */
     public static Query<Void> queryRenameAllMethods(Resource resource, String name) {
         return () -> {
-            EList<? extends EObject> methodList = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            List<? extends EObject> methodList = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             for (EObject eObject : methodList) {
                 MethodDeclaration method = (MethodDeclaration) eObject;
                 method.setName(name);
@@ -133,7 +129,7 @@ public class QueryFactory {
      */
     public static Query<Integer> queryGrabats09(Resource resource) {
         return () -> {
-            EList<ClassDeclaration> listResult = new BasicEList<>();
+            List<ClassDeclaration> listResult = new BasicEList<>();
             for (EObject owner : getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration())) {
                 TypeDeclaration typeOwner = (TypeDeclaration) owner;
                 for (BodyDeclaration method : typeOwner.getBodyDeclarations()) {
@@ -157,8 +153,8 @@ public class QueryFactory {
      */
     public static Query<Integer> queryInvisibleMethodDeclarations(Resource resource) {
         return () -> {
-            EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
-            EList<? extends EObject> allClasses = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            List<MethodDeclaration> methodDeclarations = new BasicEList<>();
+            List<? extends EObject> allClasses = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
             for (EObject cls : allClasses) {
                 for (BodyDeclaration method : ((ClassDeclaration) cls).getBodyDeclarations()) {
 
@@ -183,9 +179,9 @@ public class QueryFactory {
      */
     public static Query<Integer> queryUnusedMethodsWithList(Resource resource) {
         return () -> {
-            EList<MethodDeclaration> unusedMethods = new BasicEList<>();
-            EList<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
-            EList<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            List<MethodDeclaration> unusedMethods = new BasicEList<>();
+            List<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
+            List<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             Set<AbstractMethodDeclaration> hasBeenInvoked = new HashSet<>();
             for (EObject methodInv : methodInvocations) {
                 hasBeenInvoked.add(((MethodInvocation) methodInv).getMethod());
@@ -208,9 +204,9 @@ public class QueryFactory {
      */
     public static Query<Integer> queryUnusedMethodsWithLoop(Resource resource) {
         return () -> {
-            EList<MethodDeclaration> unusedMethods = new BasicEList<>();
-            EList<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
-            EList<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            List<MethodDeclaration> unusedMethods = new BasicEList<>();
+            List<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
+            List<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
             for (EObject method : allInstances) {
                 if ((method instanceof MethodDeclaration) && !isNull(((BodyDeclaration) method).getModifier())) {
                     if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
@@ -227,8 +223,8 @@ public class QueryFactory {
     /**
      *
      */
-    protected static EList<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
-        EList<EObject> resultList = new BasicEList<>();
+    protected static List<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
+        List<EObject> resultList = new BasicEList<>();
         Iterator<EObject> iterator = resource.getAllContents();
         while (iterator.hasNext()) {
             EObject eObject = iterator.next();
@@ -239,8 +235,8 @@ public class QueryFactory {
         return resultList;
     }
 
-    private static EList<NamedElement> separateFields(EList<BodyDeclaration> bodyDeclarations) {
-        EList<NamedElement> fields = new BasicEList<>();
+    private static List<NamedElement> separateFields(List<BodyDeclaration> bodyDeclarations) {
+        List<NamedElement> fields = new BasicEList<>();
         for (BodyDeclaration declaration : bodyDeclarations) {
             if (!isNull(declaration)) {
                 if (declaration instanceof FieldDeclaration) {
@@ -256,7 +252,7 @@ public class QueryFactory {
         return fields;
     }
 
-    private static boolean hasNoChildTypes(EList<? extends EObject> allClasses, EObject cls) {
+    private static boolean hasNoChildTypes(List<? extends EObject> allClasses, EObject cls) {
         for (EObject obj : allClasses) {
             if (((ClassDeclaration) obj).getSuperClass() == cls) {
                 return false;
@@ -265,7 +261,7 @@ public class QueryFactory {
         return true;
     }
 
-    private static boolean hasBeenInvoked(EList<? extends EObject> methodInvocations, EObject method) {
+    private static boolean hasBeenInvoked(List<? extends EObject> methodInvocations, EObject method) {
         for (EObject methodInv : methodInvocations) {
             if (((MethodInvocation) methodInv).getMethod().equals(method)) {
                 return true;

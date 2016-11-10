@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 
 import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gmt.modisco.java.ASTNode;
@@ -37,6 +36,7 @@ import org.eclipse.gmt.modisco.java.VisibilityKind;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
@@ -45,8 +45,8 @@ public class QueryFactoryASE2015 extends QueryFactory {
 
     public static Query<Integer> queryGrabatsAse2015(Resource resource) {
         return () -> {
-            EList<ClassDeclaration> listResult = new BasicEList<>();
-            EList<? extends EObject> allTypeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
+            List<ClassDeclaration> listResult = new BasicEList<>();
+            List<? extends EObject> allTypeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
             for (EObject eObj : allTypeDeclarations) {
                 TypeDeclaration typeDecl = (TypeDeclaration) eObj;
                 for (BodyDeclaration method : typeDecl.getBodyDeclarations()) {
@@ -64,8 +64,8 @@ public class QueryFactoryASE2015 extends QueryFactory {
 
     public static Query<Integer> queryThrownExceptionsAse2015(Resource resource) {
         return () -> {
-            EList<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
-            EList<TypeAccess> thrownExceptions = new BasicEList<>();
+            List<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            List<TypeAccess> thrownExceptions = new BasicEList<>();
             for (EObject object : classes) {
                 if (object instanceof ClassDeclaration) {
                     for (BodyDeclaration declaration : ((ClassDeclaration) object).getBodyDeclarations()) {
@@ -85,7 +85,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
 
     public static Query<Integer> querySpecificInvisibleMethodDeclarationsAse2015(Resource resource) {
         return () -> {
-            EList<MethodDeclaration> methodDeclarations = new BasicEList<>();
+            List<MethodDeclaration> methodDeclarations = new BasicEList<>();
             Model model = (Model) resource.getContents().get(0);
             if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
                 try {
@@ -140,7 +140,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
     @SuppressWarnings("unused")
     public static Query<Integer> queryAse2015BranchStatements(Resource resource) {
         return () -> {
-            EList<Statement> result = new BasicEList<>();
+            List<Statement> result = new BasicEList<>();
             Model model = (Model) resource.getContents().get(0);
             if (model.getName().equals("org.eclipse.gmt.modisco.java.neoemf") || model.getName().equals("org.eclipse.jdt.core")) {
                 try {
@@ -159,7 +159,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
-    private static void getAccessedTypes(org.eclipse.gmt.modisco.java.Package pack, EList<Statement> result) {
+    private static void getAccessedTypes(org.eclipse.gmt.modisco.java.Package pack, List<Statement> result) {
         for (AbstractTypeDeclaration el : pack.getOwnedElements()) {
             if (JavaPackage.eINSTANCE.getClassDeclaration().isInstance(el)) {
                 getAccessedTypes((ClassDeclaration) el, result);
@@ -170,7 +170,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         }
     }
 
-    private static void getAccessedTypes(ClassDeclaration cd, EList<Statement> result) {
+    private static void getAccessedTypes(ClassDeclaration cd, List<Statement> result) {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
             if ((method instanceof MethodDeclaration)) {
                 MethodDeclaration meth = (MethodDeclaration) method;
@@ -181,20 +181,20 @@ public class QueryFactoryASE2015 extends QueryFactory {
         }
     }
 
-    private static void getAccessedTypesFromBody(EList<Statement> statements, EList<Statement> result) {
+    private static void getAccessedTypesFromBody(List<Statement> statements, List<Statement> result) {
         for (Statement s : statements) {
             getAccessedTypesFromStatement(s, result);
         }
     }
 
-    private static void getAccessedTypesFromStatement(Statement statement, EList<Statement> result) {
+    private static void getAccessedTypesFromStatement(Statement statement, List<Statement> result) {
         if (statement instanceof Block) {
             getAccessedTypesFromBody(((Block) statement).getStatements(), result);
         }
         result.add(statement);
     }
 
-    private static void getInvisibleMethods(org.eclipse.gmt.modisco.java.Package pack, EList<MethodDeclaration> result) {
+    private static void getInvisibleMethods(org.eclipse.gmt.modisco.java.Package pack, List<MethodDeclaration> result) {
         for (AbstractTypeDeclaration el : pack.getOwnedElements()) {
             if (JavaPackage.eINSTANCE.getClassDeclaration().isInstance(el)) {
                 getInvisibleMethodsInClassDeclaration((ClassDeclaration) el, result);
@@ -205,7 +205,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         }
     }
 
-    private static void getInvisibleMethodsInClassDeclaration(ClassDeclaration cd, EList<MethodDeclaration> result) {
+    private static void getInvisibleMethodsInClassDeclaration(ClassDeclaration cd, List<MethodDeclaration> result) {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
             if ((method instanceof MethodDeclaration) && !isNull(method.getModifier())) {
                 if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {

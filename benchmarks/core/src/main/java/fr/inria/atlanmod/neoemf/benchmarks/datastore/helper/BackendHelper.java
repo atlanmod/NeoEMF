@@ -50,7 +50,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
-// TODO: Try to make this class more understandable
 public class BackendHelper {
 
     private static final Logger LOG = LogManager.getLogger();
@@ -60,7 +59,7 @@ public class BackendHelper {
 
     private static final String ZIP_FILENAME = "resources.zip";
 
-    public static List<String> AVAILABLE_RESOURCES;
+    private static List<String> AVAILABLE_RESOURCES;
 
     private BackendHelper() {
     }
@@ -97,7 +96,7 @@ public class BackendHelper {
         File targetFile = Workspace.getStoreDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            LOG.info("Already existing resource : " + targetFile);
+            LOG.info("Already existing resource : {}", targetFile);
             return targetFile;
         }
 
@@ -145,7 +144,7 @@ public class BackendHelper {
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            LOG.info("Already existing resource : " + targetFile);
+            LOG.info("Already existing resource : {}", targetFile);
             return targetFile;
         }
 
@@ -171,6 +170,10 @@ public class BackendHelper {
 
         return targetFile;
     }
+
+    /*
+     * EMF migration
+     */
 
     private static ResourceSet loadResourceSet() {
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
@@ -230,6 +233,10 @@ public class BackendHelper {
         return targetEObject;
     }
 
+    /*
+     * ZIP extraction
+     */
+
     private static List<String> getZipResources() throws IOException {
         if (AVAILABLE_RESOURCES == null) {
             AVAILABLE_RESOURCES = new ArrayList<>();
@@ -249,29 +256,29 @@ public class BackendHelper {
     }
 
     private static File extractFromZip(String filename, Path outputDir) throws IOException {
-        File file = null;
+        File outputFile = null;
         boolean fileFound = false;
         try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
             ZipEntry entry = inputStream.getNextEntry();
             while (!isNull(entry) || !fileFound) {
                 if (!entry.isDirectory() && new File(entry.getName()).getName().equals(filename)) {
-                    file = extractEntryFromZip(inputStream, entry, outputDir);
+                    outputFile = extractEntryFromZip(inputStream, entry, outputDir);
                     fileFound = true;
                 }
                 inputStream.closeEntry();
                 entry = inputStream.getNextEntry();
             }
         }
-        return file;
+        return outputFile;
     }
 
     private static File extractEntryFromZip(ZipInputStream inputStream, ZipEntry entry, Path outputDir) throws IOException {
-        File file = outputDir.resolve(new File(entry.getName()).getName()).toFile();
-        if (file.exists()) {
-            LOG.info("Already existing resource : " + file);
-            return file;
+        File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
+        if (outputFile.exists()) {
+            LOG.info("Already existing resource : {}", outputFile);
+            return outputFile;
         }
-        IOUtils.copy(inputStream, new FileOutputStream(file));
-        return file;
+        IOUtils.copy(inputStream, new FileOutputStream(outputFile));
+        return outputFile;
     }
 }
