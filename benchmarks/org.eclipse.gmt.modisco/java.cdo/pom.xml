@@ -14,16 +14,10 @@
 
     <packaging>jar</packaging>
 
-    <properties>
-        <!-- EMF & Co -->
-        <cdo.version>4.3.0</cdo.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.eclipselabs</groupId>
             <artifactId>cdo</artifactId>
-            <version>${cdo.version}</version>
             <type>pom</type>
         </dependency>
     </dependencies>
