@@ -11,48 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import com.google.common.io.Files;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.BackendHelper;
 
-import fr.inria.atlanmod.neoemf.benchmarks.io.Migrator;
-import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Map;
 
 import static java.util.Objects.isNull;
 
-public abstract class AbstractBackend implements Backend {
-
-    protected static final Logger LOG = LogManager.getLogger();
-
-    protected abstract String getResourceExtension();
-
-    protected abstract String getStoreExtension();
-
-    protected abstract Class<?> getEPackageClass();
-
-    protected abstract File create(File inputFile, Path outputPath) throws Exception;
+abstract class AbstractBackend implements Backend, InternalBackend {
 
     @Override
     public File create(String name) throws Exception {
-        File inputFile = Migrator.getInstance().migrate(name, getResourceExtension(), getEPackageClass());
+        File resourceFile = BackendHelper.createResourceFrom(name, this);
+        File storeFile = BackendHelper.createStoreFrom(resourceFile, this);
 
-        String outputFileName = Files.getNameWithoutExtension(inputFile.getAbsolutePath()) + "." + getStoreExtension();
-        Path outputPath = Workspace.getStoreDirectory().resolve(outputFileName);
-        File file = create(inputFile, outputPath);
-
-        if (isNull(file) || !file.exists()) {
+        if (isNull(storeFile) || !storeFile.exists()) {
             throw new IllegalArgumentException("'" + name + ".xmi' does not exist in resource directory");
         }
 
-        return file;
+        return storeFile;
     }
 
     @Override
@@ -62,25 +40,6 @@ public abstract class AbstractBackend implements Backend {
 
     @Override
     public File copy(File inputFile) throws Exception {
-        File outputFile = Workspace.newTempDirectory(getName()).resolve(inputFile.getName()).toFile();
-
-        LOG.info("Copy {} to {}", inputFile, outputFile);
-
-        if (inputFile.isDirectory()) {
-            FileUtils.copyDirectory(inputFile, outputFile, true);
-        }
-        else {
-            FileUtils.copyFile(inputFile, outputFile);
-        }
-
-        return outputFile;
-    }
-
-    protected Map<Object, Object> getLoadOptions() {
-        return Collections.emptyMap();
-    }
-
-    protected Map<Object, Object> getSaveOptions() {
-        return Collections.emptyMap();
+        return BackendHelper.copyStoreFrom(inputFile);
     }
 }

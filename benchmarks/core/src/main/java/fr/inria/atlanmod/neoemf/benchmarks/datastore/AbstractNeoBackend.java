@@ -13,24 +13,37 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+
+import java.io.File;
 
 import static java.util.Objects.isNull;
 
-public abstract class AbstractNeoBackend extends AbstractBackend {
+abstract class AbstractNeoBackend extends AbstractBackend {
 
     private static final String RESOURCE_EXTENSION = "neoemf";
-
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class;
 
     @Override
-    protected String getResourceExtension() {
+    public String getResourceExtension() {
         return RESOURCE_EXTENSION;
     }
 
     @Override
-    protected Class<?> getEPackageClass() {
-        return EPACKAGE_CLASS;
+    public EPackage getEPackage() throws Exception {
+        return (EPackage) EPACKAGE_CLASS.getMethod("init").invoke(null);
+    }
+
+    @Override
+    public Resource load(File file) throws Exception {
+        getEPackage();
+
+        Resource resource = createResource(file, new ResourceSetImpl());
+        resource.load(getLoadOptions());
+
+        return resource;
     }
 
     @Override
