@@ -50,6 +50,7 @@ import org.eclipse.net4j.util.container.IContainer;
 import org.eclipse.net4j.util.container.IManagedContainer;
 import org.h2.jdbcx.JdbcDataSource;
 
+import java.io.Closeable;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -117,8 +118,7 @@ public class CdoBackend extends AbstractBackend {
 
         Resource targetResource;
 
-        EmbeddedCdoServer server = new EmbeddedCdoServer(outputPath);
-        try {
+        try (EmbeddedCdoServer server = new EmbeddedCdoServer(outputPath)) {
             server.run();
             CDOSession session = server.openSession();
             CDOTransaction transaction = session.openTransaction();
@@ -140,9 +140,6 @@ public class CdoBackend extends AbstractBackend {
 
             transaction.close();
             session.close();
-        }
-        finally {
-            server.close();
         }
 
         sourceResource.unload();
@@ -204,7 +201,7 @@ public class CdoBackend extends AbstractBackend {
     /**
      * Embedded implementation of CDO server.
      */
-    public static class EmbeddedCdoServer {
+    public static class EmbeddedCdoServer implements Closeable {
 
         private static final Logger LOG = LogManager.getLogger();
 
@@ -262,6 +259,7 @@ public class CdoBackend extends AbstractBackend {
             }
         }
 
+        @Override
         public void close() {
             if (!isNull(connector) && !connector.isClosed()) {
                 connector.close();
