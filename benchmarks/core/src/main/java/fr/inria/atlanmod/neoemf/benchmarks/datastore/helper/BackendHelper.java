@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 import com.google.common.io.Files;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.InternalBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -75,7 +74,7 @@ public class BackendHelper {
         return true;
     }
 
-    public static File copyStoreFrom(File sourceFile) throws IOException {
+    public static File copyStore(File sourceFile) throws IOException {
         File outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName()).toFile();
 
         LOG.info("Copy {} to {}", sourceFile, outputFile);
@@ -90,7 +89,7 @@ public class BackendHelper {
         return outputFile;
     }
 
-    public static File createStoreFrom(File sourceFile, InternalBackend targetBackend) throws Exception {
+    public static File createStore(File sourceFile, InternalBackend targetBackend) throws Exception {
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
 
@@ -126,7 +125,7 @@ public class BackendHelper {
         return targetFile;
     }
 
-    public static File createResourceFrom(String sourceFilename, InternalBackend targetBackend) throws Exception {
+    public static File createResource(String sourceFilename, InternalBackend targetBackend) throws Exception {
         File sourceFile;
         if (getZipResources().contains(sourceFilename)) {
             // Get file from the resources/resource.zip
@@ -138,10 +137,10 @@ public class BackendHelper {
         }
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
-        return createResourceFrom(sourceFile, targetBackend);
+        return createResource(sourceFile, targetBackend);
     }
 
-    private static File createResourceFrom(File sourceFile, InternalBackend targetBackend) throws Exception {
+    private static File createResource(File sourceFile, InternalBackend targetBackend) throws Exception {
         String targetFileName = Files.getNameWithoutExtension(sourceFile.getName()) + "." + targetBackend.getResourceExtension() + "." + ZXMI;
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 

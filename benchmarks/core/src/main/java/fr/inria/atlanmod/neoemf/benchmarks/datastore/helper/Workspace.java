@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.benchmarks.io;
+package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;

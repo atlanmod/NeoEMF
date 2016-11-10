@@ -11,11 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.Workspace;
+
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
 public interface Backend {
+
+    static void clean() {
+        Workspace.cleanTempDirectory();
+    }
 
     File create(String name) throws Exception;
 
