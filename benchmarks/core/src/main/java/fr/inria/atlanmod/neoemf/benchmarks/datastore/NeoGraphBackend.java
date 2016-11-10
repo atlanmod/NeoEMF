@@ -11,24 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMIResource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 public class NeoGraphBackend extends AbstractNeoBackend {
 
@@ -37,92 +29,22 @@ public class NeoGraphBackend extends AbstractNeoBackend {
     private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
 
     @Override
-    protected String getStoreExtension() {
-        return STORE_EXTENSION;
-    }
-
-    @Override
-    protected File create(File inputFile, Path outputPath) throws Exception {
-        File outputFile = outputPath.toFile();
-
-        if (outputFile.exists()) {
-            LOG.info("Already existing resource : " + outputFile);
-            return outputFile;
-        }
-
-        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-
-        URI sourceUri = URI.createFileURI(inputFile.getAbsolutePath());
-        URI targetUri = NeoBlueprintsURI.createNeoGraphURI(outputFile);
-
-        org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.init();
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
-
-        Resource sourceResource = resourceSet.createResource(sourceUri);
-        Map<Object, Object> loadOpts = new HashMap<>();
-        if ("zxmi".equals(sourceUri.fileExtension())) {
-            loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
-        }
-
-        ((Query<Void>) () -> {
-            Query.LOG.info("Loading source resource");
-            sourceResource.load(loadOpts);
-            Query.LOG.info("Source resource loaded");
-            return null;
-        }).callWithMemoryUsage();
-
-        Resource targetResource = resourceSet.createResource(targetUri);
-
-        targetResource.getContents().clear();
-
-        {
-            LOG.info("Start moving elements");
-            targetResource.getContents().addAll(sourceResource.getContents());
-            LOG.info("End moving elements");
-        }
-
-        {
-            LOG.info("Start saving");
-            targetResource.save(getSaveOptions());
-            LOG.info("Saved");
-        }
-
-        sourceResource.unload();
-        if (targetResource instanceof PersistentResourceImpl) {
-            PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) targetResource);
-        }
-        else {
-            targetResource.unload();
-        }
-
-        return outputFile;
-    }
-
-    @Override
     public String getName() {
         return NAME;
     }
 
     @Override
-    public Resource load(File file) throws Exception {
-        Resource resource;
+    public String getStoreExtension() {
+        return STORE_EXTENSION;
+    }
 
+    @Override
+    public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
         PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
 
         URI uri = NeoBlueprintsURI.createNeoGraphURI(file);
 
-        getEPackageClass().getMethod("init").invoke(null);
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
-
-        resource = resourceSet.createResource(uri);
-        resource.load(getLoadOptions());
-
-        return resource;
+        return resourceSet.createResource(uri);
     }
 }

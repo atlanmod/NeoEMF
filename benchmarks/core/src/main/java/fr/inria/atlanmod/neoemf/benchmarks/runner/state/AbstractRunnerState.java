@@ -8,7 +8,6 @@ import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoGraphBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoGraphNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -90,6 +89,6 @@ public abstract class AbstractRunnerState {
     public void tearDownInvocation() throws Exception {
         backendInst.unload(resourceInst);
         resourceInst = null;
-        Workspace.cleanTempDirectory();
+        Backend.clean();
     }
 }

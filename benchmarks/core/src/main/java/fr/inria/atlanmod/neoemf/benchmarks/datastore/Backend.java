@@ -11,15 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.Workspace;
+
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
 public interface Backend {
 
-    String getName();
+    static void clean() {
+        Workspace.cleanTempDirectory();
+    }
 
-    // TODO: Use inheritance to remove duplicated code
     File create(String name) throws Exception;
 
     Resource load(File file) throws Exception;

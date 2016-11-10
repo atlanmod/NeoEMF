@@ -11,12 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.benchmarks.query.Query;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.cdo.eresource.CDOResource;
-import org.eclipse.emf.cdo.net4j.CDONet4jSession;
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
 import org.eclipse.emf.cdo.net4j.CDONet4jUtil;
 import org.eclipse.emf.cdo.server.CDOServerUtil;
@@ -29,12 +26,10 @@ import org.eclipse.emf.cdo.server.net4j.CDONet4jServerUtil;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.spi.server.ISessionProtocol;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMIResource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.net4j.Net4jUtil;
 import org.eclipse.net4j.acceptor.IAcceptor;
 import org.eclipse.net4j.db.DBUtil;
@@ -50,6 +45,7 @@ import org.eclipse.net4j.util.container.IContainer;
 import org.eclipse.net4j.util.container.IManagedContainer;
 import org.h2.jdbcx.JdbcDataSource;
 
+import java.io.Closeable;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -71,84 +67,33 @@ public class CdoBackend extends AbstractBackend {
     private CDOTransaction transaction;
 
     @Override
-    protected String getResourceExtension() {
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public String getResourceExtension() {
         return RESOURCE_EXTENSION;
     }
 
     @Override
-    protected String getStoreExtension() {
+    public String getStoreExtension() {
         return STORE_EXTENSION;
     }
 
     @Override
-    protected Class<?> getEPackageClass() {
-        return EPACKAGE_CLASS;
+    public EPackage getEPackage() throws Exception {
+        return (EPackage) EPACKAGE_CLASS.getMethod("init").invoke(null);
     }
 
     @Override
-    protected File create(File inputFile, Path outputPath) throws Exception {
-        File outputFile = outputPath.toFile();
+    public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
+        server = new EmbeddedCdoServer(file.toPath());
+        server.run();
+        session = server.openSession();
+        transaction = session.openTransaction();
 
-        if (outputFile.exists()) {
-            LOG.info("Already existing resource : " + outputFile);
-            return outputFile;
-        }
-
-        URI sourceUri = URI.createFileURI(inputFile.getAbsolutePath());
-
-        org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.init();
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
-
-        Resource sourceResource = resourceSet.createResource(sourceUri);
-        Map<Object, Object> loadOpts = new HashMap<>();
-        if ("zxmi".equals(sourceUri.fileExtension())) {
-            loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
-        }
-
-        ((Query<Void>) () -> {
-            Query.LOG.info("Loading source resource");
-            sourceResource.load(loadOpts);
-            Query.LOG.info("Source resource loaded");
-            return null;
-        }).callWithMemoryUsage();
-
-        Resource targetResource;
-
-        EmbeddedCdoServer server = new EmbeddedCdoServer(outputPath);
-        try {
-            server.run();
-            CDOSession session = server.openSession();
-            CDOTransaction transaction = session.openTransaction();
-            targetResource = transaction.getRootResource();
-
-            targetResource.getContents().clear();
-
-            {
-                LOG.info("Start moving elements");
-                targetResource.getContents().addAll(sourceResource.getContents());
-                LOG.info("End moving elements");
-            }
-
-            {
-                LOG.info("Start saving");
-                targetResource.save(getSaveOptions());
-                LOG.info("Saved");
-            }
-
-            transaction.close();
-            session.close();
-        }
-        finally {
-            server.close();
-        }
-
-        sourceResource.unload();
-        targetResource.unload();
-
-        return outputFile;
+        return transaction.getRootResource();
     }
 
     @Override
@@ -159,26 +104,11 @@ public class CdoBackend extends AbstractBackend {
     }
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
     public Resource load(File file) throws Exception {
-        Resource resource;
+        getEPackage();
 
-        getEPackageClass().getMethod("init").invoke(null);
-
-        server = new EmbeddedCdoServer(file.toPath());
-        server.run();
-
-        session = server.openSession();
-        ((CDONet4jSession) session).options().setCommitTimeout(50 * 1000);
-
-        transaction = session.openTransaction();
-
-        resource = transaction.getRootResource();
-
+        Resource resource = createResource(file, new ResourceSetImpl());
+        resource.load(getLoadOptions());
         return resource;
     }
 
@@ -204,7 +134,7 @@ public class CdoBackend extends AbstractBackend {
     /**
      * Embedded implementation of CDO server.
      */
-    public static class EmbeddedCdoServer {
+    public static class EmbeddedCdoServer implements Closeable {
 
         private static final Logger LOG = LogManager.getLogger();
 
@@ -218,13 +148,9 @@ public class CdoBackend extends AbstractBackend {
 
         private IManagedContainer container;
 
-        public EmbeddedCdoServer(Path path, String repositoryName) {
-            this.path = path;
-            this.repositoryName = repositoryName;
-        }
-
         public EmbeddedCdoServer(Path path) {
-            this(path, DEFAULT_REPOSITORY_NAME);
+            this.path = path;
+            this.repositoryName = DEFAULT_REPOSITORY_NAME;
         }
 
         public void run() {
@@ -262,6 +188,7 @@ public class CdoBackend extends AbstractBackend {
             }
         }
 
+        @Override
         public void close() {
             if (!isNull(connector) && !connector.isClosed()) {
                 connector.close();

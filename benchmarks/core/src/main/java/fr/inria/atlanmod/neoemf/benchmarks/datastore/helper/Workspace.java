@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.benchmarks.io;
+package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -73,10 +73,10 @@ public class Workspace {
         return TEMP_DIRECTORY;
     }
 
-    public static Path newTempDirectory(String prefix) {
+    public static Path newTempDirectory() {
         Path tempDirectory = null;
         try {
-            tempDirectory = Files.createTempDirectory(getTempDirectory(), prefix);
+            tempDirectory = Files.createTempDirectory(getTempDirectory(), "tmp");
         }
         catch (IOException e) {
             LOG.error(e);

@@ -24,13 +24,13 @@ public class NeoGraphNeo4jBackend extends NeoGraphBackend {
     private static final String STORE_EXTENSION = "neo4j.resource"; // -> neoemf.neo4j.resource
 
     @Override
-    protected String getStoreExtension() {
-        return STORE_EXTENSION;
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public String getName() {
-        return NAME;
+    public String getStoreExtension() {
+        return STORE_EXTENSION;
     }
 
     @Override
