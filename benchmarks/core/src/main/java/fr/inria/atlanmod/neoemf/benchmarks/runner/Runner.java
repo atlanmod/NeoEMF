@@ -31,10 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Timeout(
-        time = RunnerConstants.DEFAULT_ITERATION_TIMEOUT,
-        timeUnit = TimeUnit.MINUTES
-)
+@Timeout(time = 1, timeUnit = TimeUnit.HOURS)
 @Warmup(
         iterations = RunnerConstants.DEFAULT_WARMUP_ITERATIONS,
         batchSize = RunnerConstants.DEFAULT_OPERATIONS
@@ -57,11 +54,9 @@ import java.util.concurrent.TimeUnit;
 )
 public abstract class Runner {
 
-    protected static final Logger LOG = LogManager.getLogger();
-
     @Benchmark
     public void loadUnload(ReadOnlyRunnerState state, Blackhole bh) throws Exception {
-        // Run @Setup and @TearDown implicitly
+        // Run @Setup and @TearDown to show their impact on results
         bh.consume(state.getResource());
     }
 

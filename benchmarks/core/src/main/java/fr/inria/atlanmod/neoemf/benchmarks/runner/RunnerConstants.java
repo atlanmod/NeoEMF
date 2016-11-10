@@ -34,11 +34,6 @@ class RunnerConstants {
     public static final int DEFAULT_FORKS = 1;
 
     /**
-     * Default timeout for each iterations, in minutes.
-     */
-    public static final int DEFAULT_ITERATION_TIMEOUT = 60;
-
-    /**
      * Default Xmx java argument.
      */
     public static final String DEFAULT_XMX = "-Xmx8g";
