@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -52,7 +51,7 @@ import static java.util.Objects.isNull;
 
 public class BackendHelper {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger();
 
     private static final String XMI = "xmi";
     private static final String ZXMI = "zxmi";
@@ -76,7 +75,7 @@ public class BackendHelper {
     public static File copyStore(File sourceFile) throws IOException {
         File outputFile = Workspace.newTempDirectory().resolve(sourceFile.getName()).toFile();
 
-        LOG.info("Copy {} to {}", sourceFile, outputFile);
+        log.info("Copy {} to {}", sourceFile, outputFile);
 
         if (sourceFile.isDirectory()) {
             FileUtils.copyDirectory(sourceFile, outputFile, true);
@@ -96,7 +95,7 @@ public class BackendHelper {
         File targetFile = Workspace.getStoreDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            LOG.info("Already existing resource : {}", targetFile);
+            log.info("Already existing resource : {}", targetFile);
             return targetFile;
         }
 
@@ -109,14 +108,14 @@ public class BackendHelper {
 
         targetBackend.initAndGetEPackage();
 
-        LOG.info("Loading '{}'", sourceUri);
+        log.info("Loading '{}'", sourceUri);
         Map<Object, Object> loadOpts = new HashMap<>();
         if (ZXMI.equals(sourceUri.fileExtension())) {
             loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         }
         sourceResource.load(loadOpts);
 
-        LOG.info("Migrate to '{}'", targetResource.getURI(), sourceResource.getURI());
+        log.info("Migrate to '{}'", targetResource.getURI(), sourceResource.getURI());
         targetResource.getContents().addAll(sourceResource.getContents());
         targetResource.save(targetBackend.getSaveOptions());
 
@@ -146,7 +145,7 @@ public class BackendHelper {
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            LOG.info("Already existing resource : {}", targetFile);
+            log.info("Already existing resource : {}", targetFile);
             return targetFile;
         }
 
@@ -154,13 +153,13 @@ public class BackendHelper {
 
         URI sourceURI = URI.createFileURI(sourceFile.getAbsolutePath());
 
-        LOG.info("Loading '{}'", sourceURI);
+        log.info("Loading '{}'", sourceURI);
         Resource sourceResource = resourceSet.getResource(sourceURI, true);
 
         URI targetURI = URI.createFileURI(targetFile.getAbsolutePath());
         Resource targetResource = resourceSet.createResource(targetURI);
 
-        LOG.info("Migrate to '{}'", sourceResource.getURI(), targetResource.getURI());
+        log.info("Migrate to '{}'", sourceResource.getURI(), targetResource.getURI());
         targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.initAndGetEPackage()));
 
         Map<Object, Object> saveOpts = new HashMap<>();
@@ -190,12 +189,14 @@ public class BackendHelper {
         Map<EObject, EObject> correspondencesMap = new HashMap<>();
         EObject returnEObject = getCorrespondingEObject(correspondencesMap, eObject, targetEPackage);
         copy(correspondencesMap, eObject, returnEObject);
-        Iterator<EObject> iterator = EcoreUtil.getAllContents(eObject, true);
-        while (iterator.hasNext()) {
-            EObject sourceEObject = iterator.next();
+
+        Iterable<EObject> allContents = () -> EcoreUtil.getAllContents(eObject, true);
+
+        for (EObject sourceEObject : allContents) {
             EObject targetEObject = getCorrespondingEObject(correspondencesMap, sourceEObject, targetEPackage);
             copy(correspondencesMap, sourceEObject, targetEObject);
         }
+
         return returnEObject;
     }
 
@@ -277,7 +278,7 @@ public class BackendHelper {
     private static File extractEntryFromZip(ZipInputStream inputStream, ZipEntry entry, Path outputDir) throws IOException {
         File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
         if (outputFile.exists()) {
-            LOG.info("Already existing resource : {}", outputFile);
+            log.info("Already existing resource : {}", outputFile);
             return outputFile;
         }
         IOUtils.copy(inputStream, new FileOutputStream(outputFile));

@@ -25,7 +25,7 @@ import static java.util.Objects.isNull;
 
 abstract class AbstractBackend implements Backend, InternalBackend {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger();
 
     protected final String name;
 
@@ -59,7 +59,7 @@ abstract class AbstractBackend implements Backend, InternalBackend {
     @Override
     public EPackage initAndGetEPackage() throws Exception {
         EPackage ePackage = (EPackage) packageClass.getMethod("init").invoke(null);
-        LOG.info("Loading package with uri '{}'", ePackage.getNsURI());
+        log.info("Loading package with uri '{}'", ePackage.getNsURI());
         return ePackage;
     }
 

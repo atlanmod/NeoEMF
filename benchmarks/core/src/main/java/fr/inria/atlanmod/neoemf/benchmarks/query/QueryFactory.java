@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.benchmarks.query;
 
 import com.google.common.collect.Iterators;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -36,13 +38,14 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
 
 public class QueryFactory {
+
+    protected static final Logger log = LogManager.getLogger();
 
     public static Query<Integer> queryCountAllElements(Resource resource) {
         return () -> Iterators.size(resource.getAllContents());
@@ -54,52 +57,50 @@ public class QueryFactory {
      */
     public static Query<Integer> queryOrphanNonPrimitivesTypes(Resource resource) {
         return () -> {
-            Model model;
             List<Type> orphanTypes = new BasicEList<>();
-            model = (Model) resource.getContents().get(0);
-            for (Type currentType : model.getOrphanTypes()) {
-                if (!(currentType instanceof PrimitiveType)) {
-                    orphanTypes.add(currentType);
+
+            Model model = (Model) resource.getContents().get(0);
+            for (Type t : model.getOrphanTypes()) {
+                if (!(t instanceof PrimitiveType)) {
+                    orphanTypes.add(t);
                 }
             }
+
             return orphanTypes.size();
         };
     }
 
     public static Query<Integer> queryClassDeclarationAttributes(Resource resource) {
         return () -> {
-            HashMap<String, List<NamedElement>> resultMap = new HashMap<>();
-            List<? extends EObject> classes = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
-            for (EObject object : classes) {
-                List<NamedElement> declarations = separateFields(((ClassDeclaration) object).getBodyDeclarations());
-                resultMap.put(((ClassDeclaration) object).getName(), declarations);
+            HashMap<String, Iterable<NamedElement>> resultMap = new HashMap<>();
+
+            Iterable<ClassDeclaration> classDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            for (ClassDeclaration cd : classDeclarations) {
+                Iterable<NamedElement> declarations = separateFields(cd.getBodyDeclarations());
+                resultMap.put(cd.getName(), declarations);
             }
+
             return resultMap.size();
         };
     }
 
     public static Query<Integer> queryThrownExceptionsPerPackage(Resource resource) {
         return () -> {
-            HashMap<String, List<TypeAccess>> resultMap = new HashMap<>();
-            List<? extends EObject> packages = getAllInstances(resource, JavaPackage.eINSTANCE.getPackage());
-            for (EObject object : packages) {
-                List<AbstractTypeDeclaration> elements = ((Package) object).getOwnedElements();
+            HashMap<String, Iterable<TypeAccess>> resultMap = new HashMap<>();
+
+            Iterable<Package> packages = getAllInstances(resource, JavaPackage.eINSTANCE.getPackage());
+            for (Package pack : packages) {
                 List<TypeAccess> thrownExceptions = new BasicEList<>();
+
+                Iterable<AbstractTypeDeclaration> elements = pack.getOwnedElements();
                 for (AbstractTypeDeclaration element : elements) {
                     if (element instanceof ClassDeclaration) {
-                        for (BodyDeclaration declaration : element.getBodyDeclarations()) {
-                            if (declaration instanceof MethodDeclaration) {
-                                for (TypeAccess type : ((MethodDeclaration) declaration).getThrownExceptions()) {
-                                    if (!thrownExceptions.contains(type)) {
-                                        thrownExceptions.add(type);
-                                    }
-                                }
-                            }
-                        }
+                        appendThrownExceptions((ClassDeclaration) element, thrownExceptions);
                     }
                 }
-                resultMap.put(((Package) object).getName(), thrownExceptions);
+                resultMap.put(pack.getName(), thrownExceptions);
             }
+
             return resultMap.size();
         };
     }
@@ -109,11 +110,11 @@ public class QueryFactory {
      */
     public static Query<Void> queryRenameAllMethods(Resource resource, String name) {
         return () -> {
-            List<? extends EObject> methodList = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
-            for (EObject eObject : methodList) {
-                MethodDeclaration method = (MethodDeclaration) eObject;
-                method.setName(name);
+            Iterable<MethodDeclaration> methodDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            for (MethodDeclaration m : methodDeclarations) {
+                m.setName(name);
             }
+
             return null;
         };
     }
@@ -121,17 +122,19 @@ public class QueryFactory {
     public static Query<Integer> queryGrabats(Resource resource) {
         return () -> {
             List<ClassDeclaration> listResult = new BasicEList<>();
-            for (EObject owner : getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration())) {
-                TypeDeclaration typeOwner = (TypeDeclaration) owner;
-                for (BodyDeclaration method : typeOwner.getBodyDeclarations()) {
+
+            Iterable<TypeDeclaration> typeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
+            for (TypeDeclaration owner : typeDeclarations) {
+                for (BodyDeclaration method : owner.getBodyDeclarations()) {
                     if (method instanceof MethodDeclaration) {
                         MethodDeclaration methDecl = (MethodDeclaration) method;
-                        if(!isNull(methDecl.getModifier()) && methDecl.getModifier().isStatic() && methDecl.getReturnType() == typeOwner) {
-                            listResult.add((ClassDeclaration) typeOwner);
+                        if (!isNull(methDecl.getModifier()) && methDecl.getModifier().isStatic() && methDecl.getReturnType() == owner) {
+                            listResult.add((ClassDeclaration) owner);
                         }
                     }
                 }
             }
+
             return listResult.size();
         };
     }
@@ -139,21 +142,23 @@ public class QueryFactory {
     public static Query<Integer> queryInvisibleMethodDeclarations(Resource resource) {
         return () -> {
             List<MethodDeclaration> methodDeclarations = new BasicEList<>();
-            List<? extends EObject> allClasses = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
-            for (EObject cls : allClasses) {
-                for (BodyDeclaration method : ((ClassDeclaration) cls).getBodyDeclarations()) {
+
+            Iterable<ClassDeclaration> classDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
+            for (ClassDeclaration clazz : classDeclarations) {
+                for (BodyDeclaration method : clazz.getBodyDeclarations()) {
                     if (method instanceof MethodDeclaration && !isNull(method.getModifier())) {
                         if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                             methodDeclarations.add((MethodDeclaration) method);
                         }
                         else if (method.getModifier().getVisibility() == VisibilityKind.PROTECTED) {
-                            if (hasNoChildTypes(allClasses, cls)) {
+                            if (hasNoChildTypes(classDeclarations, clazz)) {
                                 methodDeclarations.add((MethodDeclaration) method);
                             }
                         }
                     }
                 }
             }
+
             return methodDeclarations.size();
         };
     }
@@ -161,21 +166,25 @@ public class QueryFactory {
     public static Query<Integer> queryUnusedMethodsWithList(Resource resource) {
         return () -> {
             List<MethodDeclaration> unusedMethods = new BasicEList<>();
-            List<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
-            List<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+
             Set<AbstractMethodDeclaration> hasBeenInvoked = new HashSet<>();
-            for (EObject methodInv : methodInvocations) {
-                hasBeenInvoked.add(((MethodInvocation) methodInv).getMethod());
+
+            Iterable<MethodInvocation> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
+            for (MethodInvocation method : methodInvocations) {
+                hasBeenInvoked.add(method.getMethod());
             }
-            for (EObject method : allInstances) {
-                if (method instanceof MethodDeclaration && !isNull(((BodyDeclaration) method).getModifier())) {
-                    if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
+
+            Iterable<MethodDeclaration> methodDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            for (MethodDeclaration method : methodDeclarations) {
+                if (!isNull(method.getModifier())) {
+                    if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                         if (!hasBeenInvoked.contains(method)) {
-                            unusedMethods.add((MethodDeclaration) method);
+                            unusedMethods.add(method);
                         }
                     }
                 }
             }
+
             return unusedMethods.size();
         };
     }
@@ -183,62 +192,80 @@ public class QueryFactory {
     public static Query<Integer> queryUnusedMethodsWithLoop(Resource resource) {
         return () -> {
             List<MethodDeclaration> unusedMethods = new BasicEList<>();
-            List<? extends EObject> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
-            List<? extends EObject> allInstances = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
-            for (EObject method : allInstances) {
-                if ((method instanceof MethodDeclaration) && !isNull(((BodyDeclaration) method).getModifier())) {
-                    if (((MethodDeclaration) method).getModifier().getVisibility() == VisibilityKind.PRIVATE) {
+
+            Iterable<MethodInvocation> methodInvocations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodInvocation());
+
+            Iterable<MethodDeclaration> methodDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
+            for (MethodDeclaration method : methodDeclarations) {
+                if (!isNull(method.getModifier())) {
+                    if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                         if (!hasBeenInvoked(methodInvocations, method)) {
-                            unusedMethods.add((MethodDeclaration) method);
+                            unusedMethods.add(method);
                         }
                     }
                 }
             }
+
             return unusedMethods.size();
         };
     }
 
-    protected static List<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
-        List<EObject> resultList = new BasicEList<>();
-        Iterator<EObject> iterator = resource.getAllContents();
-        while (iterator.hasNext()) {
-            EObject eObject = iterator.next();
+    @SuppressWarnings("unchecked") // <Any>: Allows the use of generics without type check
+    protected static <Any> Iterable<Any> getAllInstances(Resource resource, EClass eClass) {
+        List<Any> resultList = new BasicEList<>();
+
+        Iterable<EObject> allContents = resource::getAllContents;
+        for (EObject eObject : allContents) {
             if (eClass.isInstance(eObject)) {
-                resultList.add(eObject);
+                resultList.add((Any) eObject);
             }
         }
+
         return resultList;
     }
 
-    private static List<NamedElement> separateFields(List<BodyDeclaration> bodyDeclarations) {
+    private static Iterable<NamedElement> separateFields(Iterable<BodyDeclaration> bodyDeclarations) {
         List<NamedElement> fields = new BasicEList<>();
+
         for (BodyDeclaration declaration : bodyDeclarations) {
-            if (!isNull(declaration)) {
-                if (declaration instanceof FieldDeclaration) {
-                    if (((FieldDeclaration) declaration).getFragments().isEmpty()) {
-                        fields.add(declaration);
-                    }
-                    else {
-                        fields.addAll(((FieldDeclaration) declaration).getFragments());
+            if (!isNull(declaration) && declaration instanceof FieldDeclaration) {
+                FieldDeclaration field = (FieldDeclaration) declaration;
+                if (field.getFragments().isEmpty()) {
+                    fields.add(declaration);
+                }
+                else {
+                    fields.addAll(field.getFragments());
+                }
+            }
+        }
+
+        return fields;
+    }
+
+    protected static void appendThrownExceptions(ClassDeclaration cd, List<TypeAccess> thrownExceptions) {
+        for (BodyDeclaration declaration : cd.getBodyDeclarations()) {
+            if (declaration instanceof MethodDeclaration) {
+                for (TypeAccess type : ((MethodDeclaration) declaration).getThrownExceptions()) {
+                    if (!thrownExceptions.contains(type)) {
+                        thrownExceptions.add(type);
                     }
                 }
             }
         }
-        return fields;
     }
 
-    private static boolean hasNoChildTypes(List<? extends EObject> allClasses, EObject cls) {
-        for (EObject obj : allClasses) {
-            if (((ClassDeclaration) obj).getSuperClass() == cls) {
+    private static boolean hasNoChildTypes(Iterable<ClassDeclaration> allClasses, ClassDeclaration superClass) {
+        for (ClassDeclaration c : allClasses) {
+            if (c.getSuperClass() == superClass) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean hasBeenInvoked(List<? extends EObject> methodInvocations, EObject method) {
-        for (EObject methodInv : methodInvocations) {
-            if (((MethodInvocation) methodInv).getMethod().equals(method)) {
+    private static boolean hasBeenInvoked(Iterable<MethodInvocation> methodInvocations, EObject method) {
+        for (MethodInvocation methodInvocation : methodInvocations) {
+            if (methodInvocation.getMethod().equals(method)) {
                 return true;
             }
         }

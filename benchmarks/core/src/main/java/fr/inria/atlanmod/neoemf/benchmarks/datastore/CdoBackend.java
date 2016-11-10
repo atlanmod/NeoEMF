@@ -119,7 +119,7 @@ public class CdoBackend extends AbstractBackend {
      */
     public static class EmbeddedCdoServer implements Closeable {
 
-        private static final Logger LOG = LogManager.getLogger();
+        private static final Logger log = LogManager.getLogger();
 
         private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
@@ -180,7 +180,7 @@ public class CdoBackend extends AbstractBackend {
                 Exception e = container.deactivate();
 
                 if (!isNull(e)) {
-                    LOG.error(e);
+                    log.error(e);
                 }
             }
         }

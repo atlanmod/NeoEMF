@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
 
 public class Workspace {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger();
 
     private static Path BASE_DIRECTORY;
     private static Path RESOURCES_DIRECTORY;
@@ -30,7 +30,7 @@ public class Workspace {
                 BASE_DIRECTORY = Files.createDirectories(Paths.get(System.getProperty("java.io.tmpdir"), BASE_DIRECTORY_NAME));
             }
             catch (IOException e) {
-                LOG.warn(e);
+                log.warn(e);
             }
         }
         return BASE_DIRECTORY;
@@ -43,7 +43,7 @@ public class Workspace {
                 RESOURCES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve(RESOURCES_DIRECTORY_NAME));
             }
             catch (IOException e) {
-                LOG.warn(e);
+                log.warn(e);
             }
         }
         return RESOURCES_DIRECTORY;
@@ -55,7 +55,7 @@ public class Workspace {
                 STORES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("stores"));
             }
             catch (IOException e) {
-                LOG.warn(e);
+                log.warn(e);
             }
         }
         return STORES_DIRECTORY;
@@ -67,7 +67,7 @@ public class Workspace {
                 TEMP_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("tmp"));
             }
             catch (IOException e) {
-                LOG.warn(e);
+                log.warn(e);
             }
         }
         return TEMP_DIRECTORY;
@@ -79,7 +79,7 @@ public class Workspace {
             tempDirectory = Files.createTempDirectory(getTempDirectory(), "tmp");
         }
         catch (IOException e) {
-            LOG.error(e);
+            log.error(e);
         }
         return tempDirectory;
     }

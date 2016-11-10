@@ -31,7 +31,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@OutputTimeUnit(TimeUnit.SECONDS)
 @Timeout(time = 1, timeUnit = TimeUnit.HOURS)
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
@@ -121,21 +121,21 @@ public class Runner {
 
     @Benchmark
     public Integer commentsTagContentAse2015(ReadOnlyRunnerState state) throws Exception {
-        return QueryFactoryASE2015.queryCommentsTagContentASE2015(state.getResource()).callWithMemoryUsage();
+        return QueryFactoryASE2015.queryCommentsTagContent(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
     public Integer grabatsAse2015(ReadOnlyRunnerState state) throws Exception {
-        return QueryFactoryASE2015.queryGrabatsASE2015(state.getResource()).callWithMemoryUsage();
+        return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
     public Integer specificInvisibleMethodDeclarationsASE2015(ReadOnlyRunnerState state) throws Exception {
-        return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(state.getResource()).callWithMemoryUsage();
+        return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarations(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
     public Integer thrownExceptionsASE2015(ReadOnlyRunnerState state) throws Exception {
-        return QueryFactoryASE2015.queryThrownExceptionsAse2015(state.getResource()).callWithMemoryUsage();
+        return QueryFactoryASE2015.queryThrownExceptions(state.getResource()).callWithMemoryUsage();
     }
 }
