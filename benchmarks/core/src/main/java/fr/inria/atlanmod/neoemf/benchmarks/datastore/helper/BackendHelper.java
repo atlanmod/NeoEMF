@@ -107,6 +107,8 @@ public class BackendHelper {
         Resource sourceResource = resourceSet.createResource(sourceUri);
         Resource targetResource = targetBackend.createResource(targetFile, resourceSet);
 
+        targetBackend.initAndGetEPackage();
+
         LOG.info("Loading '{}'", sourceUri);
         Map<Object, Object> loadOpts = new HashMap<>();
         if (ZXMI.equals(sourceUri.fileExtension())) {
@@ -159,7 +161,7 @@ public class BackendHelper {
         Resource targetResource = resourceSet.createResource(targetURI);
 
         LOG.info("Migrate to '{}'", sourceResource.getURI(), targetResource.getURI());
-        targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.getEPackage()));
+        targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.initAndGetEPackage()));
 
         Map<Object, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);

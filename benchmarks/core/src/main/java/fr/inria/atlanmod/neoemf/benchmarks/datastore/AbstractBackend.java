@@ -13,13 +13,55 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.helper.BackendHelper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 abstract class AbstractBackend implements Backend, InternalBackend {
+
+    private static final Logger LOG = LogManager.getLogger();
+
+    protected final String name;
+
+    protected final String resourceExtension;
+    protected final String storeExtension;
+
+    protected final Class<?> packageClass;
+
+    protected AbstractBackend(String name, String resourceExtension, String storeExtension, Class<?> packageClass) {
+        this.name = checkNotNull(name);
+        this.resourceExtension = checkNotNull(resourceExtension);
+        this.storeExtension = checkNotNull(storeExtension);
+        this.packageClass = checkNotNull(packageClass);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getResourceExtension() {
+        return resourceExtension;
+    }
+
+    @Override
+    public String getStoreExtension() {
+        return storeExtension;
+    }
+
+    @Override
+    public EPackage initAndGetEPackage() throws Exception {
+        EPackage ePackage = (EPackage) packageClass.getMethod("init").invoke(null);
+        LOG.info("Loading package with uri '{}'", ePackage.getNsURI());
+        return ePackage;
+    }
 
     @Override
     public File create(String name) throws Exception {

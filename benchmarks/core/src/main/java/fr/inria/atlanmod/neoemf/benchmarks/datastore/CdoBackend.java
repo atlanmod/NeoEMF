@@ -26,7 +26,6 @@ import org.eclipse.emf.cdo.server.net4j.CDONet4jServerUtil;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.spi.server.ISessionProtocol;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -66,24 +65,8 @@ public class CdoBackend extends AbstractBackend {
     private CDOSession session;
     private CDOTransaction transaction;
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public String getResourceExtension() {
-        return RESOURCE_EXTENSION;
-    }
-
-    @Override
-    public String getStoreExtension() {
-        return STORE_EXTENSION;
-    }
-
-    @Override
-    public EPackage getEPackage() throws Exception {
-        return (EPackage) EPACKAGE_CLASS.getMethod("init").invoke(null);
+    public CdoBackend() {
+        super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }
 
     @Override
@@ -105,7 +88,7 @@ public class CdoBackend extends AbstractBackend {
 
     @Override
     public Resource load(File file) throws Exception {
-        getEPackage();
+        initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
         resource.load(getLoadOptions());

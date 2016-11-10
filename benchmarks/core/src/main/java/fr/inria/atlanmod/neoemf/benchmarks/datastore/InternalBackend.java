@@ -16,7 +16,7 @@ public interface InternalBackend extends Backend {
 
     String getStoreExtension();
 
-    EPackage getEPackage() throws Exception;
+    EPackage initAndGetEPackage() throws Exception;
 
     Resource createResource(File file, ResourceSet resourceSet) throws Exception;
 

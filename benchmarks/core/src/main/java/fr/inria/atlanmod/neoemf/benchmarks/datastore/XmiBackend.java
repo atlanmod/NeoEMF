@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -31,24 +30,8 @@ public class XmiBackend extends AbstractBackend {
 
     private static final Class<?> EPACKAGE_CLASS = org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class;
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public String getResourceExtension() {
-        return RESOURCE_EXTENSION;
-    }
-
-    @Override
-    public String getStoreExtension() {
-        return STORE_EXTENSION;
-    }
-
-    @Override
-    public EPackage getEPackage() throws Exception {
-        return (EPackage) EPACKAGE_CLASS.getMethod("init").invoke(null);
+    public XmiBackend() {
+        super(NAME, RESOURCE_EXTENSION, STORE_EXTENSION, EPACKAGE_CLASS);
     }
 
     @Override
@@ -60,7 +43,7 @@ public class XmiBackend extends AbstractBackend {
 
     @Override
     public Resource load(File file) throws Exception {
-        getEPackage();
+        initAndGetEPackage();
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());

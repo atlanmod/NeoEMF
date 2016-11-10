@@ -28,14 +28,12 @@ public class NeoGraphBackend extends AbstractNeoBackend {
 
     private static final String STORE_EXTENSION = "tinker.resource"; // -> neoemf.tinker.resource
 
-    @Override
-    public String getName() {
-        return NAME;
+    public NeoGraphBackend() {
+        this(NAME, STORE_EXTENSION);
     }
 
-    @Override
-    public String getStoreExtension() {
-        return STORE_EXTENSION;
+    protected NeoGraphBackend(String name, String storeExtension) {
+        super(name, storeExtension);
     }
 
     @Override

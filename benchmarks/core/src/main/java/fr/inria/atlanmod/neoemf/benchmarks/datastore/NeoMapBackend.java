@@ -28,14 +28,8 @@ public class NeoMapBackend extends AbstractNeoBackend {
 
     private static final String STORE_EXTENSION = "map.resource"; // -> neoemf.map.resource
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public String getStoreExtension() {
-        return STORE_EXTENSION;
+    public NeoMapBackend() {
+        super(NAME, STORE_EXTENSION);
     }
 
     @Override
