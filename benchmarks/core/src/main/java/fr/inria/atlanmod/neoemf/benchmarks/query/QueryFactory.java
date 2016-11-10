@@ -49,7 +49,7 @@ public class QueryFactory {
     }
 
     /**
-     * Returns the orphan and non Primitive Types of a java model this is a common query to all both standard and
+     * Returns the orphan and non Primitive Types of a Java model. This is a common query to all both standard and
      * customized methods.
      */
     public static Query<Integer> queryOrphanNonPrimitivesTypes(Resource resource) {
@@ -66,9 +66,6 @@ public class QueryFactory {
         };
     }
 
-    /**
-     *
-     */
     public static Query<Integer> queryClassDeclarationAttributes(Resource resource) {
         return () -> {
             HashMap<String, List<NamedElement>> resultMap = new HashMap<>();
@@ -81,9 +78,6 @@ public class QueryFactory {
         };
     }
 
-    /**
-     *
-     */
     public static Query<Integer> queryThrownExceptionsPerPackage(Resource resource) {
         return () -> {
             HashMap<String, List<TypeAccess>> resultMap = new HashMap<>();
@@ -111,7 +105,7 @@ public class QueryFactory {
     }
 
     /**
-     * Renames all the method names with the given String.
+     * Renames all the method names with the given {@code name}.
      */
     public static Query<Void> queryRenameAllMethods(Resource resource, String name) {
         return () -> {
@@ -124,22 +118,16 @@ public class QueryFactory {
         };
     }
 
-    /**
-     * Returns the list of classes.
-     */
-    public static Query<Integer> queryGrabats09(Resource resource) {
+    public static Query<Integer> queryGrabats(Resource resource) {
         return () -> {
             List<ClassDeclaration> listResult = new BasicEList<>();
             for (EObject owner : getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration())) {
                 TypeDeclaration typeOwner = (TypeDeclaration) owner;
                 for (BodyDeclaration method : typeOwner.getBodyDeclarations()) {
                     if (method instanceof MethodDeclaration) {
-                        if (!isNull(method.getModifier())) {
-                            if (method.getModifier().isStatic()) {
-                                if (((MethodDeclaration) method).getReturnType() == typeOwner) {
-                                    listResult.add((ClassDeclaration) typeOwner);
-                                }
-                            }
+                        MethodDeclaration methDecl = (MethodDeclaration) method;
+                        if(!isNull(methDecl.getModifier()) && methDecl.getModifier().isStatic() && methDecl.getReturnType() == typeOwner) {
+                            listResult.add((ClassDeclaration) typeOwner);
                         }
                     }
                 }
@@ -148,16 +136,12 @@ public class QueryFactory {
         };
     }
 
-    /**
-     *
-     */
     public static Query<Integer> queryInvisibleMethodDeclarations(Resource resource) {
         return () -> {
             List<MethodDeclaration> methodDeclarations = new BasicEList<>();
             List<? extends EObject> allClasses = getAllInstances(resource, JavaPackage.eINSTANCE.getClassDeclaration());
             for (EObject cls : allClasses) {
                 for (BodyDeclaration method : ((ClassDeclaration) cls).getBodyDeclarations()) {
-
                     if (method instanceof MethodDeclaration && !isNull(method.getModifier())) {
                         if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                             methodDeclarations.add((MethodDeclaration) method);
@@ -174,9 +158,6 @@ public class QueryFactory {
         };
     }
 
-    /**
-     *
-     */
     public static Query<Integer> queryUnusedMethodsWithList(Resource resource) {
         return () -> {
             List<MethodDeclaration> unusedMethods = new BasicEList<>();
@@ -199,9 +180,6 @@ public class QueryFactory {
         };
     }
 
-    /**
-     *
-     */
     public static Query<Integer> queryUnusedMethodsWithLoop(Resource resource) {
         return () -> {
             List<MethodDeclaration> unusedMethods = new BasicEList<>();
@@ -220,9 +198,6 @@ public class QueryFactory {
         };
     }
 
-    /**
-     *
-     */
     protected static List<? extends EObject> getAllInstances(Resource resource, EClass eClass) {
         List<EObject> resultList = new BasicEList<>();
         Iterator<EObject> iterator = resource.getAllContents();

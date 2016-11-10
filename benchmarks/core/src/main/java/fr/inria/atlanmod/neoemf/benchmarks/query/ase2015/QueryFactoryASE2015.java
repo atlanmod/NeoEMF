@@ -43,11 +43,10 @@ import static java.util.Objects.isNull;
 
 public class QueryFactoryASE2015 extends QueryFactory {
 
-    public static Query<Integer> queryGrabatsAse2015(Resource resource) {
+    public static Query<Integer> queryGrabatsASE2015(Resource resource) {
         return () -> {
             List<ClassDeclaration> listResult = new BasicEList<>();
-            List<? extends EObject> allTypeDeclarations = getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration());
-            for (EObject eObj : allTypeDeclarations) {
+            for (EObject eObj : getAllInstances(resource, JavaPackage.eINSTANCE.getTypeDeclaration())) {
                 TypeDeclaration typeDecl = (TypeDeclaration) eObj;
                 for (BodyDeclaration method : typeDecl.getBodyDeclarations()) {
                     if ((method instanceof MethodDeclaration)) {
@@ -104,7 +103,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         };
     }
 
-    public static Query<Integer> queryCommentsTagContentAse2015(Resource resource) {
+    public static Query<Integer> queryCommentsTagContentASE2015(Resource resource) {
         return () -> {
             Set<TextElement> result = new HashSet<>();
             try {

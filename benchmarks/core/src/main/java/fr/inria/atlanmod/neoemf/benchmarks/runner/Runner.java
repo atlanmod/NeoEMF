@@ -12,37 +12,31 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
+import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteRunnerState;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Timeout;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@BenchmarkMode(Mode.SampleTime)
+@BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Timeout(time = 1, timeUnit = TimeUnit.HOURS)
-@Warmup(
-        iterations = RunnerConstants.DEFAULT_WARMUP_ITERATIONS,
-        batchSize = RunnerConstants.DEFAULT_OPERATIONS
-)
-@Measurement(
-        iterations = RunnerConstants.DEFAULT_MEASUREMENT_ITERATIONS,
-        batchSize = RunnerConstants.DEFAULT_OPERATIONS
-)
-@OperationsPerInvocation(RunnerConstants.DEFAULT_OPERATIONS)
+@Warmup(iterations = 5)
+@Measurement(iterations = 5)
 @Fork(
-        value = RunnerConstants.DEFAULT_FORKS,
+        value = 1,
         jvmArgs = {
                 "-Dfile.encoding=utf-8",
                 "-server",
@@ -50,9 +44,13 @@ import java.util.concurrent.TimeUnit;
                 "-XX:+DisableExplicitGC",
                 "-XX:+CMSClassUnloadingEnabled"
         },
-        jvmArgsAppend = RunnerConstants.DEFAULT_XMX
+        jvmArgsAppend = "-Xmx8g"
 )
-public abstract class Runner {
+public class Runner {
+
+    /*
+     * Simple queries.
+     */
 
     @Benchmark
     public void loadUnload(ReadOnlyRunnerState state, Blackhole bh) throws Exception {
@@ -63,5 +61,81 @@ public abstract class Runner {
     @Benchmark
     public Integer traverse(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
+    }
+
+    /*
+     * Read-only queries.
+     */
+
+    @Benchmark
+    public Integer classDeclarationAttributes(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithTime();
+    }
+
+    @Benchmark
+    public Integer grabats(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactory.queryGrabats(state.getResource()).callWithTime();
+    }
+
+    @Benchmark
+    public Integer invisibleMethodDeclarations(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactory.queryInvisibleMethodDeclarations(state.getResource()).callWithTime();
+    }
+
+    @Benchmark
+    public Integer orphanNonPrimitiveTypes(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactory.queryOrphanNonPrimitivesTypes(state.getResource()).callWithTime();
+    }
+
+    @Benchmark
+    public Integer thrownExceptionsPerPackage(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactory.queryThrownExceptionsPerPackage(state.getResource()).callWithTime();
+    }
+
+    @Benchmark
+    public Integer unusedMethodsWithList(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactory.queryUnusedMethodsWithList(state.getResource()).callWithTime();
+    }
+
+    @Benchmark
+    public Integer unusedMethodsWithLoop(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactory.queryUnusedMethodsWithLoop(state.getResource()).callWithTime();
+    }
+
+    /*
+     * Read/Write queries.
+     */
+
+    @Benchmark
+    public Void renameAllMethods(ReadWriteRunnerState state) throws Exception {
+        String name = UUID.randomUUID().toString();
+        Resource resource = state.getResource();
+        Void result = QueryFactory.queryRenameAllMethods(resource, name).callWithTime();
+        state.getBackend().save(resource);
+        return result;
+    }
+
+    /*
+     * ASE 2015 queries.
+     */
+
+    @Benchmark
+    public Integer commentsTagContentAse2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryCommentsTagContentASE2015(state.getResource()).callWithMemoryUsage();
+    }
+
+    @Benchmark
+    public Integer grabatsAse2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryGrabatsASE2015(state.getResource()).callWithMemoryUsage();
+    }
+
+    @Benchmark
+    public Integer specificInvisibleMethodDeclarationsASE2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.querySpecificInvisibleMethodDeclarationsAse2015(state.getResource()).callWithMemoryUsage();
+    }
+
+    @Benchmark
+    public Integer thrownExceptionsASE2015(ReadOnlyRunnerState state) throws Exception {
+        return QueryFactoryASE2015.queryThrownExceptionsAse2015(state.getResource()).callWithMemoryUsage();
     }
 }
