@@ -27,17 +27,10 @@ public abstract class AbstractRunnerState {
     private static final String CLASS_PREFIX = Backend.class.getPackage().getName() + ".";
     private static final String CLASS_SUFFIX = Backend.class.getSimpleName();
 
-    /**
-     * The {@link Resource} instance.
-     */
-    protected Resource resourceInst;
-
+    protected Resource resource;
     protected File resourceFile;
 
-    /**
-     * The {@link Backend} instance.
-     */
-    protected Backend backendInst;
+    protected Backend backend;
 
     @Param({
             "fr.inria.atlanmod.kyanos.tests.xmi",
@@ -46,7 +39,7 @@ public abstract class AbstractRunnerState {
             "org.eclipse.jdt.core.xmi",
             "org.eclipse.jdt.source.all.xmi",
     })
-    protected String resource;
+    private String r;
 
     @Param({
             XmiBackend.NAME,
@@ -55,40 +48,42 @@ public abstract class AbstractRunnerState {
             NeoGraphBackend.NAME,
             NeoGraphNeo4jBackend.NAME,
     })
-    protected String backend;
+    private String b;
 
     public Backend getBackend() {
-        if (Objects.isNull(backendInst)) {
+        if (Objects.isNull(backend)) {
             throw new NullPointerException();
         }
-        return backendInst;
+        return backend;
     }
 
     public Resource getResource() {
-        if (Objects.isNull(resourceInst)) {
+        if (Objects.isNull(resource)) {
             throw new NullPointerException();
         }
-        return resourceInst;
+        return resource;
     }
 
     protected abstract File getResourceFile() throws Exception;
 
     @Setup(Level.Trial)
     public void setupTrial() throws Exception {
-        String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, backend) + CLASS_SUFFIX;
-        backendInst = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
-        resourceFile = backendInst.create(resource);
+        String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, b) + CLASS_SUFFIX;
+        backend = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
+        resourceFile = backend.create(r);
     }
 
     @Setup(Level.Invocation)
     public void setupInvocation() throws Exception {
-        resourceInst = backendInst.load(getResourceFile());
+        resource = backend.load(getResourceFile());
     }
 
     @TearDown(Level.Invocation)
     public void tearDownInvocation() throws Exception {
-        backendInst.unload(resourceInst);
-        resourceInst = null;
+        if (!Objects.isNull(resource)) {
+            backend.unload(resource);
+            resource = null;
+        }
         Backend.clean();
     }
 }

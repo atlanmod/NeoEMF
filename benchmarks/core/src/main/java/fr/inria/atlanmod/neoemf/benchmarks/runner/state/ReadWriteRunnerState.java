@@ -5,7 +5,12 @@ import java.io.File;
 public class ReadWriteRunnerState extends AbstractRunnerState {
 
     @Override
-    protected File getResourceFile() throws Exception {
-        return backendInst.copy(resourceFile);
+    protected File getResourceFile() {
+        try {
+            return backend.copy(resourceFile);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

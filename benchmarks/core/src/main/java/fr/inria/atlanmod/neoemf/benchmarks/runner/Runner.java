@@ -25,14 +25,13 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Timeout;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Timeout(time = 1, timeUnit = TimeUnit.HOURS)
+@Timeout(time = 2, timeUnit = TimeUnit.HOURS)
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
 @Fork(
@@ -56,9 +55,8 @@ public class Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 1)
     @Measurement(iterations = 0)
-    public void init(ReadOnlyRunnerState state, Blackhole bh) {
+    public void init(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
         // Let setup and tear down methods create resource and stores
-        bh.consume(state.getResource());
     }
 
     @Benchmark

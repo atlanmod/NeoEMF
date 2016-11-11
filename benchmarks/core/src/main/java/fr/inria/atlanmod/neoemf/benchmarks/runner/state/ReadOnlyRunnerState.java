@@ -5,7 +5,7 @@ import java.io.File;
 public class ReadOnlyRunnerState extends AbstractRunnerState {
 
     @Override
-    protected File getResourceFile() throws Exception {
+    protected File getResourceFile() {
         return resourceFile;
     }
 }
