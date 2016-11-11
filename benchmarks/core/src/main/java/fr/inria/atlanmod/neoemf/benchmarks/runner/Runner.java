@@ -53,12 +53,6 @@ public class Runner {
      */
 
     @Benchmark
-    public void loadUnload(ReadOnlyRunnerState state, Blackhole bh) throws Exception {
-        // Run @Setup and @TearDown to show their impact on results
-        bh.consume(state.getResource());
-    }
-
-    @Benchmark
     public Integer traverse(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
     }
