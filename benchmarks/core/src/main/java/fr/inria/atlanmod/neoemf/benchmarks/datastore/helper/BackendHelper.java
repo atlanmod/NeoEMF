@@ -117,11 +117,12 @@ public class BackendHelper {
         log.info("Migrating");
         targetResource.getContents().addAll(sourceResource.getContents());
 
+        sourceResource.unload();
+
         log.info("Saving to '{}'", targetResource.getURI());
-        targetResource.save(targetBackend.getSaveOptions());
+        targetResource.save(targetBackend.getOptions());
 
         targetBackend.unload(targetResource);
-        sourceResource.unload();
 
         return targetFile;
     }
@@ -163,13 +164,14 @@ public class BackendHelper {
         log.info("Migrating");
         targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.initAndGetEPackage()));
 
+        sourceResource.unload();
+
         log.info("Saving to '{}'", targetResource.getURI());
         Map<Object, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         targetResource.save(saveOpts);
 
         targetResource.unload();
-        sourceResource.unload();
 
         return targetFile;
     }

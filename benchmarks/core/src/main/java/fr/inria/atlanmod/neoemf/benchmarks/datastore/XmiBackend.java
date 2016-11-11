@@ -50,7 +50,7 @@ public class XmiBackend extends AbstractBackend {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
 
         Resource resource = createResource(file, resourceSet);
-        resource.load(getLoadOptions());
+        resource.load(getOptions());
 
         return resource;
     }

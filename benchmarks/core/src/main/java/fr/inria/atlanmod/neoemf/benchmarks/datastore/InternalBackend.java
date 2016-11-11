@@ -20,11 +20,7 @@ public interface InternalBackend extends Backend {
 
     Resource createResource(File file, ResourceSet resourceSet) throws Exception;
 
-    default Map<Object, Object> getLoadOptions() {
-        return Collections.emptyMap();
-    }
-
-    default Map<Object, Object> getSaveOptions() {
+    default Map<Object, Object> getOptions() {
         return Collections.emptyMap();
     }
 }

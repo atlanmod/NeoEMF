@@ -35,7 +35,7 @@ abstract class AbstractNeoBackend extends AbstractBackend {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
-        resource.load(getLoadOptions());
+        resource.load(getOptions());
 
         return resource;
     }

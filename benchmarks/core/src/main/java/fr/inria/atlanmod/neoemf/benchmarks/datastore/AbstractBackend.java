@@ -77,7 +77,7 @@ abstract class AbstractBackend implements Backend, InternalBackend {
 
     @Override
     public void save(Resource resource) throws Exception {
-        resource.save(getSaveOptions());
+        resource.save(getOptions());
     }
 
     @Override
