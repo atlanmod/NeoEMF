@@ -20,7 +20,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -212,9 +211,10 @@ public class BackendHelper {
                         targetEObject.eSet(targetFeature, getCorrespondingEObject(correspondencesMap, (EObject) sourceEObject.eGet(targetFeature), targetEObject.eClass().getEPackage()));
                     }
                     else {
+                        List<EObject> targetList = new BasicEList<>();
+
                         @SuppressWarnings({"unchecked"})
-                        EList<EObject> sourceList = (EList<EObject>) sourceEObject.eGet(sourceFeature);
-                        EList<EObject> targetList = new BasicEList<>();
+                        Iterable<EObject> sourceList = (Iterable<EObject>) sourceEObject.eGet(sourceFeature);
                         for (EObject aSourceList : sourceList) {
                             targetList.add(getCorrespondingEObject(correspondencesMap, aSourceList, targetEObject.eClass().getEPackage()));
                         }

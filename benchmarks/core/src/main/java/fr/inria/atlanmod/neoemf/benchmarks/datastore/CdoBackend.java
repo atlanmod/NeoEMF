@@ -123,9 +123,9 @@ public class CdoBackend extends AbstractBackend {
 
         private static final String DEFAULT_REPOSITORY_NAME = "repo";
 
-        private Path path;
+        private final Path path;
 
-        private String repositoryName;
+        private final String repositoryName;
 
         private IJVMConnector connector;
 
