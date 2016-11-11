@@ -25,6 +25,7 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Timeout;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +51,15 @@ public class Runner {
     /*
      * Simple queries.
      */
+
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    @Warmup(iterations = 1)
+    @Measurement(iterations = 0)
+    public void init(ReadOnlyRunnerState state, Blackhole bh) {
+        // Let setup and tear down methods create resource and stores
+        bh.consume(state.getResource());
+    }
 
     @Benchmark
     public Integer traverse(ReadOnlyRunnerState state) throws Exception {
