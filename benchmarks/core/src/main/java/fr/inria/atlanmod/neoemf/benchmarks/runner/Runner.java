@@ -36,12 +36,10 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 5)
 @Fork(
         value = 1,
+        jvmArgsPrepend = "-Dfile.encoding=utf-8",
         jvmArgs = {
-                "-Dfile.encoding=utf-8",
-                "-server",
                 "-XX:+UseConcMarkSweepGC",
                 "-XX:+DisableExplicitGC",
-                "-XX:+CMSClassUnloadingEnabled"
         },
         jvmArgsAppend = "-Xmx8g"
 )
@@ -55,6 +53,7 @@ public class Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 1)
     @Measurement(iterations = 0)
+    @Fork(jvmArgs = "")
     public void init(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
         // Let setup and tear down methods create resource and stores
     }

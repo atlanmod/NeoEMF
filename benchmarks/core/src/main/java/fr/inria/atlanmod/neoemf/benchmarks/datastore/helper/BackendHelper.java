@@ -94,7 +94,7 @@ public class BackendHelper {
         File targetFile = Workspace.getStoreDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            log.info("Already existing resource : {}", targetFile);
+            log.info("Already existing store {}", targetFile);
             return targetFile;
         }
 
@@ -114,8 +114,10 @@ public class BackendHelper {
         }
         sourceResource.load(loadOpts);
 
-        log.info("Migrate to '{}'", targetResource.getURI(), sourceResource.getURI());
+        log.info("Migrating");
         targetResource.getContents().addAll(sourceResource.getContents());
+
+        log.info("Saving to '{}'", targetResource.getURI());
         targetResource.save(targetBackend.getSaveOptions());
 
         targetBackend.unload(targetResource);
@@ -144,7 +146,7 @@ public class BackendHelper {
         File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
-            log.info("Already existing resource : {}", targetFile);
+            log.info("Already existing resource {}", targetFile);
             return targetFile;
         }
 
@@ -158,9 +160,10 @@ public class BackendHelper {
         URI targetURI = URI.createFileURI(targetFile.getAbsolutePath());
         Resource targetResource = resourceSet.createResource(targetURI);
 
-        log.info("Migrate to '{}'", sourceResource.getURI(), targetResource.getURI());
+        log.info("Migrating");
         targetResource.getContents().add(migrate(sourceResource.getContents().get(0), targetBackend.initAndGetEPackage()));
 
+        log.info("Saving to '{}'", targetResource.getURI());
         Map<Object, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         targetResource.save(saveOpts);
@@ -278,7 +281,7 @@ public class BackendHelper {
     private static File extractEntryFromZip(ZipInputStream inputStream, ZipEntry entry, Path outputDir) throws IOException {
         File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
         if (outputFile.exists()) {
-            log.info("Already existing resource : {}", outputFile);
+            log.info("Already extracted resource {}", outputFile);
             return outputFile;
         }
         IOUtils.copy(inputStream, new FileOutputStream(outputFile));
