@@ -113,12 +113,12 @@ public class Runner {
      */
 
     @Benchmark
-    public Integer commentsTagContentAse2015(ReadOnlyRunnerState state) throws Exception {
+    public Integer commentsTagContentASE2015(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryCommentsTagContent(state.getResource()).callWithMemoryUsage();
     }
 
     @Benchmark
-    public Integer grabatsAse2015(ReadOnlyRunnerState state) throws Exception {
+    public Integer grabatsASE2015(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithMemoryUsage();
     }
 
