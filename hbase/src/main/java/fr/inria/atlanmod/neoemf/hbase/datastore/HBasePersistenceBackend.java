@@ -15,10 +15,6 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
 import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
 
-import org.eclipse.emf.ecore.EClass;
-
-import java.util.Map;
-
 /**
  * Dummy backend implementation for HBase to fit core architecture.
  * <p/>
@@ -28,26 +24,15 @@ import java.util.Map;
 public class HBasePersistenceBackend implements PersistenceBackend {
 
     @Override
-    public void start(Map<?, ?> options) {
-    }
-
-    @Override
-    public boolean isStarted() {
-        return false;
+    public boolean isClosed() {
+        return true;
     }
 
     @Override
     public void close() {
-
     }
 
     @Override
     public void save() {
-
-    }
-
-    @Override
-    public Object getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException();
     }
 }

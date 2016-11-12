@@ -33,10 +33,10 @@ class BlueprintsNotConflictsResolverPersistenceHandler extends BlueprintsConflic
     @Override
     protected Vertex getVertex(final Id id) throws Exception {
         return loadedVertices.get(id, () -> {
-            Vertex vertex = getPersistenceBackend().getVertex(id.toString());
+            Vertex vertex = getPersistenceBackend().getVertex(id);
 
             if (isNull(vertex)) {
-                vertex = getPersistenceBackend().addVertex(id.toString());
+                vertex = getPersistenceBackend().addVertex(id);
             }
 
             return vertex;

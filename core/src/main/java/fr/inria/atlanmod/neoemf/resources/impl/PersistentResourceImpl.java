@@ -432,7 +432,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
         @Override
         public void run() {
-            if (persistenceBackend.isStarted()) {
+            if (!persistenceBackend.isClosed()) {
                 NeoLogger.debug("Closing Backend of Resource : {0}", uri);
                 persistenceBackend.close();
                 NeoLogger.info("Backend of Resource Closed : {0} ", uri);

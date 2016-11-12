@@ -14,20 +14,13 @@ package fr.inria.atlanmod.neoemf.datastore;
 import org.eclipse.emf.ecore.EClass;
 
 import java.io.Closeable;
-import java.util.Map;
 
 public interface PersistenceBackend extends Closeable {
 
     /**
-     * Starts the underlying data store with the given {@code options}.
-     */
-    // TODO: All implementations are empty. Is this method really necessary ?
-    void start(Map<?, ?> options);
-
-    /**
      * Returns whether the underlying data store has been started or not.
      */
-    boolean isStarted();
+    boolean isClosed();
 
     /**
      * Cleanly stops the underlying data store.
@@ -36,8 +29,7 @@ public interface PersistenceBackend extends Closeable {
     void close();
 
     /**
-     * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence
-     * back-end.
+     * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence back-end.
      */
     void save();
 
@@ -50,8 +42,10 @@ public interface PersistenceBackend extends Closeable {
      * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
      *         EClass}
      *
-     * @throws UnsupportedOperationException if the back-end does not support allInstances lookup
+     * @throws UnsupportedOperationException if the back-end does not support all instances lookup
      */
-    Object getAllInstances(EClass eClass, boolean strict) throws UnsupportedOperationException;
+    default Object getAllInstances(EClass eClass, boolean strict) {
+        throw new UnsupportedOperationException("This backend does not support custom all instances computation");
+    }
 }
 

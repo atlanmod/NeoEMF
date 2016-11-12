@@ -22,7 +22,6 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.GraphHelper;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
-import com.tinkerpop.blueprints.util.wrappers.id.IdVertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
@@ -33,9 +32,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.logger.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
@@ -58,30 +55,29 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     public static final String ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
     public static final String EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+
     public static final String INSTANCE_OF = "kyanosInstanceOf";
     public static final String METACLASSES = "metaclasses";
     public static final String NAME = "name";
 
     /**
-     * This {@link Cache}&lt;objectID, {@link EObject}&gt; is necessary to maintain a
-     * registry of the already loaded {@link Vertex}es, to avoid duplicated
-     * {@link EObject}s in memory.
+     * This {@link Cache}&lt;objectID, {@link EObject}&gt; is necessary to maintain a registry of the already loaded
+     * {@link Vertex}es, to avoid duplicated {@link EObject}s in memory.
      * <p/>
-     * We use a weak key cache for saving memory. When the value
-     * {@link EObject} is no longer referenced and can be garbage collected it
-     * is removed from the {@link Cache}.
+     * We use a weak key cache for saving memory. When the value {@link EObject} is no longer referenced and can be
+     * garbage collected it is removed from the {@link Cache}.
      */
-    private final Cache<Object, PersistentEObject> loadedEObjectsCache;
-    private final Cache<Object, Vertex> loadedVerticesCache;
+    private final Cache<Id, PersistentEObject> loadedEObjectsCache;
+    private final Cache<Id, Vertex> loadedVerticesCache;
     private final List<EClass> indexedEClasses;
 
     private final IdGraph<KeyIndexableGraph> graph;
 
     private Index<Vertex> metaclassIndex;
-    private boolean isStarted;
+    private boolean isClosed = false;
 
-    public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
-        this.graph = new IdGraph<>(baseGraph);
+    BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
+        this.graph = new AutoCleanerIdGraph(baseGraph);
         this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
         this.loadedVerticesCache = CacheBuilder.newBuilder().softValues().build();
         this.indexedEClasses = new ArrayList<>();
@@ -89,23 +85,17 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         if (isNull(metaclassIndex)) {
             metaclassIndex = graph.createIndex(METACLASSES, Vertex.class);
         }
-        this.isStarted = true;
     }
 
     @Override
-    public void start(Map<?, ?> options) {
-    }
-
-    @Override
-    public boolean isStarted() {
-        return isStarted;
+    public boolean isClosed() {
+        return isClosed;
     }
 
     @Override
     public void close() {
         graph.shutdown();
-        isStarted = false;
-
+        isClosed = true;
     }
 
     @Override
@@ -121,28 +111,24 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
     @Override
     public Map<EClass, Iterable<Vertex>> getAllInstances(EClass eClass, boolean strict) {
         Map<EClass, Iterable<Vertex>> indexHits;
+
+        // There is no strict instance of an abstract class
         if (eClass.isAbstract() && strict) {
-            // There is no strict instance of an abstract class
             indexHits = Collections.emptyMap();
         }
         else {
             indexHits = new HashMap<>();
             Set<EClass> eClassToFind = new HashSet<>();
             eClassToFind.add(eClass);
+
+            // Find all the concrete subclasses of the given EClass (the metaclass index only stores concretes EClass)
             if (!strict) {
-                /*
-                 * Find all the concrete subclasses of the given EClass
-				 * (the metaclass index only stores the concrete EClasses)
-				 */
-                EPackage ePackage = eClass.getEPackage();
-                for (EClassifier eClassifier : ePackage.getEClassifiers()) {
-                    if (eClassifier instanceof EClass) {
-                        EClass packageEClass = (EClass) eClassifier;
-                        if (eClass.isSuperTypeOf(packageEClass) && !packageEClass.isAbstract()) {
-                            eClassToFind.add(packageEClass);
-                        }
-                    }
-                }
+                eClass.getEPackage().getEClassifiers()
+                        .stream()
+                        .filter(EClass.class::isInstance)
+                        .map(EClass.class::cast)
+                        .filter(c -> eClass.isSuperTypeOf(c) && !c.isAbstract())
+                        .forEach(eClassToFind::add);
             }
             // Get all the vertices that are indexed with one of the EClass
             for (EClass ec : eClassToFind) {
@@ -152,22 +138,15 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
                     indexHits.put(ec, instanceVertexIterable);
                 }
                 else {
-                    NeoLogger.warn("MetaClass {0} not found in index", ec.getName());
+                    NeoLogger.warn("Metaclass {0} not found in index", ec.getName());
                 }
             }
         }
         return indexHits;
     }
 
-    public void initMetaClassesIndex(List<EClass> eClassList) {
-        for (EClass eClass : eClassList) {
-            checkArgument(Iterables.isEmpty(metaclassIndex.get(NAME, eClass.getName())), "Index is not consistent");
-            metaclassIndex.put(NAME, eClass.getName(), getVertex(eClass));
-        }
-    }
-
-    public Vertex addVertex(Object id) {
-        return graph.addVertex(id);
+    public Vertex addVertex(Id id) {
+        return graph.addVertex(id.toString());
     }
 
     /**
@@ -178,9 +157,9 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      *
      * @return the newly created vertex
      */
-    protected Vertex addVertex(EObject eObject) {
+    private Vertex addVertex(EObject eObject) {
         PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
-        return graph.addVertex(persistentEObject.id().toString());
+        return addVertex(persistentEObject.id());
     }
 
     /**
@@ -191,15 +170,15 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      *
      * @return the newly created vertex
      */
-    protected Vertex addVertex(EClass eClass) {
-        Vertex vertex = graph.addVertex(buildEClassId(eClass));
+    private Vertex addVertex(EClass eClass) {
+        Vertex vertex = addVertex(buildId(eClass));
         vertex.setProperty(ECLASS_NAME, eClass.getName());
         vertex.setProperty(EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
         return vertex;
     }
 
-    public Vertex getVertex(Object id) {
-        return graph.getVertex(id);
+    public Vertex getVertex(Id id) {
+        return graph.getVertex(id.toString());
     }
 
     /**
@@ -214,9 +193,6 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         if (persistentEObject.isMapped()) {
             vertex = getMappedVertex(persistentEObject.id());
         }
-//		else {
-//		    NeoLogger.warn("Trying to access a non-mapped PersistentEObject");
-//		}
         return vertex;
     }
 
@@ -226,8 +202,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      *
      * @return the vertex referenced by the provided {@link EClass} or {@code null} when no such vertex exists
      */
-    protected Vertex getVertex(EClass eClass) {
-        return graph.getVertex(buildEClassId(eClass));
+    private Vertex getVertex(EClass eClass) {
+        return getVertex(buildId(eClass));
     }
 
     /**
@@ -260,9 +236,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             indexedEClasses.add(eClass);
         }
         vertex.addEdge(INSTANCE_OF, eClassVertex);
-        persistentEObject.setMapped(true);
-        loadedEObjectsCache.put(persistentEObject.id().toString(), persistentEObject);
-        loadedVerticesCache.put(persistentEObject.id(), vertex);
+        setMappedVertex(vertex, persistentEObject);
         return vertex;
     }
 
@@ -277,16 +251,13 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         return vertex;
     }
 
-    public Edge addEdge(Object id, Vertex outVertex, Vertex inVertex, String label) {
-        return new NeoEdge(graph.getBaseGraph().addEdge(id, ((IdVertex) outVertex).getBaseVertex(), ((IdVertex) inVertex).getBaseVertex(), label));
+    private void setMappedVertex(Vertex vertex, PersistentEObject object) {
+        object.setMapped(true);
+        loadedEObjectsCache.put(object.id(), object);
+        loadedVerticesCache.put(object.id(), vertex);
     }
 
-    public Edge getEdge(Object id) {
-        final Edge edge = graph.getBaseGraph().getEdge(id);
-        return isNull(edge) ? null : new NeoEdge(edge);
-    }
-
-    public EClass resolveInstanceOf(Vertex vertex) {
+    private EClass resolveInstanceOf(Vertex vertex) {
         EClass returnValue = null;
         Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, INSTANCE_OF), null);
         if (!isNull(eClassVertex)) {
@@ -297,9 +268,16 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         return returnValue;
     }
 
+    /**
+     * Reifies the given {@link Vertex} as an {@link EObject}.
+     * <p/>
+     * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
+     * unless the {@link EObject} returned in previous calls has been already garbage collected.
+     */
     public PersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
         PersistentEObject persistentEObject = null;
-        Object id = vertex.getId();
+
+        Id id = new StringId(vertex.getId().toString());
         if (isNull(eClass)) {
             eClass = resolveInstanceOf(vertex);
         }
@@ -312,13 +290,6 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         return persistentEObject;
     }
 
-    /**
-     * Reifies the given {@link Vertex} as an {@link EObject}.
-     * <p/>
-     * The method guarantees that the same {@link EObject} is returned for a given
-     * {@link Vertex} in subsequent calls, unless the {@link EObject} returned
-     * in previous calls has been already garbage collected.
-     */
     public PersistentEObject reifyVertex(Vertex vertex) {
         return reifyVertex(vertex, null);
     }
@@ -326,25 +297,31 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
     /**
      * Builds the {@code id} used to identify {@link EClass} {@link Vertex}es.
      */
-    protected String buildEClassId(EClass eClass) {
-        return isNull(eClass) ? null : eClass.getName() + '@' + eClass.getEPackage().getNsURI();
+    private Id buildId(EClass eClass) {
+        return isNull(eClass) ? null : new StringId(eClass.getName() + '@' + eClass.getEPackage().getNsURI());
     }
 
     /**
      * Copies all the contents of this backend to the target one.
      */
-    @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
         target.initMetaClassesIndex(indexedEClasses);
     }
 
+    private void initMetaClassesIndex(List<EClass> eClassList) {
+        for (EClass eClass : eClassList) {
+            checkArgument(Iterables.isEmpty(metaclassIndex.get(NAME, eClass.getName())), "Index is not consistent");
+            metaclassIndex.put(NAME, eClass.getName(), getVertex(eClass));
+        }
+    }
+
     private static class PersistantEObjectCacheLoader implements Callable<PersistentEObject> {
 
-        private final Object id;
+        private final Id id;
         private final EClass eClass;
 
-        public PersistantEObjectCacheLoader(Object id, EClass eClass) {
+        public PersistantEObjectCacheLoader(Id id, EClass eClass) {
             this.id = id;
             this.eClass = eClass;
         }
@@ -380,25 +357,46 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         }
     }
 
-    private class NeoEdge extends IdEdge {
+    private static class AutoCleanerIdGraph extends IdGraph<KeyIndexableGraph> {
 
-        public NeoEdge(Edge edge) {
-            super(edge, graph);
+        public AutoCleanerIdGraph(KeyIndexableGraph baseGraph) {
+            super(baseGraph);
         }
 
-        /**
-         * {@inheritDoc}
-         * <p/>
-         * If the {@link Edge} references a {@link Vertex} with no more incoming
-         * {@link Edge}, the referenced {@link Vertex} is removed as well.
-         */
         @Override
-        public void remove() {
-            Vertex referencedVertex = getVertex(Direction.IN);
-            super.remove();
-            if (Iterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
-                // If the Vertex has no more incoming edges remove it from the DB
-                referencedVertex.remove();
+        public Edge addEdge(Object id, Vertex outVertex, Vertex inVertex, String label) {
+            return createFrom(super.addEdge(id, outVertex, inVertex, label));
+        }
+
+        @Override
+        public Edge getEdge(Object id) {
+            return createFrom(super.getEdge(id));
+        }
+
+        private Edge createFrom(Edge edge) {
+            return isNull(edge) ? null : new AutoCleanerIdEdge(edge);
+        }
+
+        private class AutoCleanerIdEdge extends IdEdge {
+
+            public AutoCleanerIdEdge(Edge edge) {
+                super(edge, AutoCleanerIdGraph.this);
+            }
+
+            /**
+             * {@inheritDoc}
+             * <p/>
+             * If the {@link Edge} references a {@link Vertex} with no more incoming
+             * {@link Edge}, the referenced {@link Vertex} is removed as well.
+             */
+            @Override
+            public void remove() {
+                Vertex referencedVertex = getVertex(Direction.IN);
+                super.remove();
+                if (Iterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
+                    // If the Vertex has no more incoming edges remove it from the DB
+                    referencedVertex.remove();
+                }
             }
         }
     }
@@ -413,7 +411,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
         @Override
         public Vertex call() throws Exception {
-            return graph.getVertex(id.toString());
+            return getVertex(id);
         }
     }
 }

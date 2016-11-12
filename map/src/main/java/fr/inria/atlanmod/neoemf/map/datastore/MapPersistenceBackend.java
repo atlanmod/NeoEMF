@@ -28,11 +28,6 @@ import org.mapdb.Serializer;
 
 import java.util.Map;
 
-/**
- * Persistence Backend for MapDB databases
- *
- * @author sunye
- */
 public class MapPersistenceBackend implements PersistenceBackend {
 
     private static final String CONTAINER = "eContainer";
@@ -66,7 +61,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 
     @SuppressWarnings("unchecked") // Unchecked cast: 'HTreeMap' to 'HTreeMap<...>'
-    public MapPersistenceBackend(DB aDB) {
+    MapPersistenceBackend(DB aDB) {
         db = aDB;
 
         containersMap = db.hashMap(CONTAINER)
@@ -91,12 +86,8 @@ public class MapPersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public void start(Map<?, ?> options) {
-    }
-
-    @Override
-    public boolean isStarted() {
-        return !db.isClosed();
+    public boolean isClosed() {
+        return db.isClosed();
     }
 
     @Override
@@ -108,12 +99,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
     public void save() {
         db.commit();
     }
-
-    @Override
-    public Object getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException("MapDB backend does not support custom all instances computation");
-    }
-
 
     public DB.HashMapMaker<?, ?> hashMapMaker(String aString) {
         return db.hashMap(aString);
@@ -197,7 +182,6 @@ public class MapPersistenceBackend implements PersistenceBackend {
         return multivaluedFeatures.get(key);
     }
 
-
     /**
      * Copies all the contents of this backend to the target one.
      */
@@ -215,7 +199,5 @@ public class MapPersistenceBackend implements PersistenceBackend {
                 throw new UnsupportedOperationException("Cannot copy Map backend: store type " + collection.getClass().getSimpleName() + " is not supported");
             }
         }
-
-
     }
 }
