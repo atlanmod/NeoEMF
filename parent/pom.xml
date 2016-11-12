@@ -735,7 +735,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle-plugin.version}</version>
                 <configuration>
-                    <configLocation>${config-path}/config/checkstyle.xml</configLocation>
+                    <configLocation>${config-path}/src/config/checkstyle.xml</configLocation>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -759,7 +759,7 @@
                 <version>${pmd-plugin.version}</version>
                 <configuration>
                     <rulesets>
-                        <ruleset>${config-path}/config/pmd.xml</ruleset>
+                        <ruleset>${config-path}/src/config/pmd.xml</ruleset>
                     </rulesets>
                 </configuration>
                 <reportSets>
