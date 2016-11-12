@@ -35,7 +35,7 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 
 ## Installation
 
-## Update site
+### Update site
 The simplest way to install NeoEMF is to use the update-site that is available [here](http://atlanmod.github.io/NeoEMF/).
 Install the **Base** component, which provides NeoEMF core classes and utils.
 Select the backend specific implementation(s) you want to plug in NeoEMF (currently Blueprints and MapDB are available).
@@ -44,7 +44,7 @@ Select the backend specific implementation(s) you want to plug in NeoEMF (curren
 Backend specific implementations may need configuration files or require other plugins to work properly.
 These requirements are available in the root of the related subprojects.
 
-## Local build
+### Local build
 You can build locally NeoEMF by following the instructions in the Build section.
 It is then possible to install NeoEMF from the local built update-site, or by importing the generated plugins.
 
