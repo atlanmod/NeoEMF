@@ -175,8 +175,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         BlueprintsPersistenceBackend source = (BlueprintsPersistenceBackend) from;
         BlueprintsPersistenceBackend target = (BlueprintsPersistenceBackend) to;
 
-        GraphHelper.copyGraph(source, target);
-        target.initMetaClassesIndex(source.getIndexedEClasses());
+        source.copyTo(target);
     }
 
     private PropertiesConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {

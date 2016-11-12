@@ -30,8 +30,8 @@ import static java.util.Objects.isNull;
 
 public class CachedManyDirectWriteBlueprintsRespirceEStoreImpl extends DirectWriteBlueprintsResourceEStoreImpl {
 
-    // Cache Object[] instead of Vertex[]
-    // because TODO cache many properties in addition to vertices
+    // Cache Object[] instead of Vertex[] because
+    // TODO cache many properties in addition to vertices
     private final Cache<CacheKey, Object[]> cache;
 
     public CachedManyDirectWriteBlueprintsRespirceEStoreImpl(Internal resource, BlueprintsPersistenceBackend graph) {

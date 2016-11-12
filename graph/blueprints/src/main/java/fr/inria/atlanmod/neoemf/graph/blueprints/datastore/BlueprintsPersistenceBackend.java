@@ -19,6 +19,7 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Index;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.util.GraphHelper;
 import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdVertex;
@@ -53,7 +54,7 @@ import java.util.concurrent.ExecutionException;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
-public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> implements PersistenceBackend {
+public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     public static final String ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
     public static final String EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
@@ -74,17 +75,19 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
     private final Cache<Object, Vertex> loadedVerticesCache;
     private final List<EClass> indexedEClasses;
 
+    private final IdGraph<KeyIndexableGraph> graph;
+
     private Index<Vertex> metaclassIndex;
     private boolean isStarted;
 
     public BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
-        super(baseGraph);
+        this.graph = new IdGraph<>(baseGraph);
         this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
         this.loadedVerticesCache = CacheBuilder.newBuilder().softValues().build();
         this.indexedEClasses = new ArrayList<>();
-        this.metaclassIndex = getIndex(METACLASSES, Vertex.class);
+        this.metaclassIndex = graph.getIndex(METACLASSES, Vertex.class);
         if (isNull(metaclassIndex)) {
-            metaclassIndex = createIndex(METACLASSES, Vertex.class);
+            metaclassIndex = graph.createIndex(METACLASSES, Vertex.class);
         }
         this.isStarted = true;
     }
@@ -100,18 +103,18 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
     @Override
     public void stop() {
-        shutdown();
+        graph.shutdown();
         isStarted = false;
 
     }
 
     @Override
     public void save() {
-        if (getFeatures().supportsTransactions) {
-            commit();
+        if (graph.getFeatures().supportsTransactions) {
+            graph.commit();
         }
         else {
-            shutdown();
+            graph.shutdown();
         }
     }
 
@@ -163,6 +166,10 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
         }
     }
 
+    public Vertex addVertex(Object id) {
+        return graph.addVertex(id);
+    }
+
     /**
      * Create a new vertex, add it to the graph, and return the newly created
      * vertex. The issued {@link EObject} is used to calculate the {@link Vertex} {@code id}.
@@ -173,7 +180,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      */
     protected Vertex addVertex(EObject eObject) {
         PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
-        return addVertex(persistentEObject.id().toString());
+        return graph.addVertex(persistentEObject.id().toString());
     }
 
     /**
@@ -185,10 +192,14 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      * @return the newly created vertex
      */
     protected Vertex addVertex(EClass eClass) {
-        Vertex vertex = addVertex(buildEClassId(eClass));
+        Vertex vertex = graph.addVertex(buildEClassId(eClass));
         vertex.setProperty(ECLASS_NAME, eClass.getName());
         vertex.setProperty(EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
         return vertex;
+    }
+
+    public Vertex getVertex(Object id) {
+        return graph.getVertex(id);
     }
 
     /**
@@ -216,7 +227,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
      * @return the vertex referenced by the provided {@link EClass} or {@code null} when no such vertex exists
      */
     protected Vertex getVertex(EClass eClass) {
-        return getVertex(buildEClassId(eClass));
+        return graph.getVertex(buildEClassId(eClass));
     }
 
     /**
@@ -266,16 +277,12 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
         return vertex;
     }
 
-    @Override
-    // FIXME Return of instance of non-static inner class 'NeoEdge'
-    public Edge addEdge(final Object id, final Vertex outVertex, final Vertex inVertex, final String label) {
-        return new NeoEdge(getBaseGraph().addEdge(id, ((IdVertex) outVertex).getBaseVertex(), ((IdVertex) inVertex).getBaseVertex(), label));
+    public Edge addEdge(Object id, Vertex outVertex, Vertex inVertex, String label) {
+        return new NeoEdge(graph.getBaseGraph().addEdge(id, ((IdVertex) outVertex).getBaseVertex(), ((IdVertex) inVertex).getBaseVertex(), label));
     }
 
-    @Override
-    // FIXME Return of instance of non-static inner class 'NeoEdge'
-    public Edge getEdge(final Object id) {
-        final Edge edge = getBaseGraph().getEdge(id);
+    public Edge getEdge(Object id) {
+        final Edge edge = graph.getBaseGraph().getEdge(id);
         return isNull(edge) ? null : new NeoEdge(edge);
     }
 
@@ -324,13 +331,12 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
     }
 
     /**
-     * Returns the list of {@link EClass}es that have been indexed.
-     * <p/>
-     * This list is needed to support index copy in {@link BlueprintsPersistenceBackendFactory#copyBackend(PersistenceBackend,
-     * PersistenceBackend)}
+     * Copies all the contents of this backend to the target one.
      */
-    public List<EClass> getIndexedEClasses() {
-        return indexedEClasses;
+    @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
+    public void copyTo(BlueprintsPersistenceBackend target) {
+        GraphHelper.copyGraph(graph, target.graph);
+        target.initMetaClassesIndex(indexedEClasses);
     }
 
     private static class PersistantEObjectCacheLoader implements Callable<PersistentEObject> {
@@ -377,7 +383,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
     private class NeoEdge extends IdEdge {
 
         public NeoEdge(Edge edge) {
-            super(edge, BlueprintsPersistenceBackend.this);
+            super(edge, graph);
         }
 
         /**
@@ -407,7 +413,7 @@ public class BlueprintsPersistenceBackend extends IdGraph<KeyIndexableGraph> imp
 
         @Override
         public Vertex call() throws Exception {
-            return getVertex(id.toString());
+            return graph.getVertex(id.toString());
         }
     }
 }
