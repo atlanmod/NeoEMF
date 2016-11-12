@@ -37,7 +37,7 @@ public class HBasePersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public void stop() {
+    public void close() {
 
     }
 

@@ -102,7 +102,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public void stop() {
+    public void close() {
         graph.shutdown();
         isStarted = false;
 

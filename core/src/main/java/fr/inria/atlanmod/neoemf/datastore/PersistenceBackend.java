@@ -13,14 +13,15 @@ package fr.inria.atlanmod.neoemf.datastore;
 
 import org.eclipse.emf.ecore.EClass;
 
+import java.io.Closeable;
 import java.util.Map;
 
-public interface PersistenceBackend {
+public interface PersistenceBackend extends Closeable {
 
     /**
      * Starts the underlying data store with the given {@code options}.
      */
-    // TODO: All implementations are empty.
+    // TODO: All implementations are empty. Is this method really necessary ?
     void start(Map<?, ?> options);
 
     /**
@@ -31,7 +32,8 @@ public interface PersistenceBackend {
     /**
      * Cleanly stops the underlying data store.
      */
-    void stop();
+    @Override
+    void close();
 
     /**
      * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence

@@ -363,7 +363,7 @@ public class ImportTest extends AllInputTest {
 
         loadWithNeo(file, persistenceHandler);
 
-        persistenceBackend.stop();
+        persistenceBackend.close();
 
         PersistenceBackendFactoryRegistry.register(
                 NeoBlueprintsURI.NEO_GRAPH_SCHEME,

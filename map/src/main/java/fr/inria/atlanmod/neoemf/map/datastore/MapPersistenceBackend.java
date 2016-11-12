@@ -100,7 +100,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
     }
 
     @Override
-    public void stop() {
+    public void close() {
         db.close();
     }
 

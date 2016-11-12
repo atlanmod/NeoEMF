@@ -187,7 +187,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
     }
 
     private void shutdown() {
-        persistenceBackend.stop();
+        persistenceBackend.close();
         this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
         this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this, persistenceBackend);
         this.isPersistent = false;
@@ -434,7 +434,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         public void run() {
             if (persistenceBackend.isStarted()) {
                 NeoLogger.debug("Closing Backend of Resource : {0}", uri);
-                persistenceBackend.stop();
+                persistenceBackend.close();
                 NeoLogger.info("Backend of Resource Closed : {0} ", uri);
             }
         }
