@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.IOFactory;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.impl.CounterDelegatedPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.DummyPersistenceHandler;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.junit.Before;
 import org.junit.Ignore;

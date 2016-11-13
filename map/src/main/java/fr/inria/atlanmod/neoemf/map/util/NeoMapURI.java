@@ -21,19 +21,19 @@ import java.text.MessageFormat;
 
 public class NeoMapURI extends NeoURI {
 
-    public static final String NEO_MAP_SCHEME = "neo-map";
+    public static final String SCHEME = "neo-map";
 
     protected NeoMapURI(int hashCode, URI internalURI) {
         super(hashCode, internalURI);
     }
 
-    public static URI createNeoMapURI(URI uri) {
+    public static URI createURI(URI uri) {
         URI returnValue;
         if (NeoURI.FILE_SCHEME.equals(uri.scheme())) {
-            returnValue = createNeoMapURI(FileUtils.getFile(uri.toFileString()));
+            returnValue = createFileURI(FileUtils.getFile(uri.toFileString()));
         }
-        else if (NEO_MAP_SCHEME.equals(uri.scheme())) {
-            returnValue = NeoURI.createNeoURI(uri);
+        else if (SCHEME.equals(uri.scheme())) {
+            returnValue = NeoURI.createURI(uri);
         }
         else {
             throw new IllegalArgumentException(MessageFormat.format("Can not create NeoMapURI from the URI scheme {0}", uri.scheme()));
@@ -41,7 +41,7 @@ public class NeoMapURI extends NeoURI {
         return returnValue;
     }
 
-    public static URI createNeoMapURI(File file) {
-        return NeoURI.createNeoURI(file, NEO_MAP_SCHEME);
+    public static URI createFileURI(File file) {
+        return NeoURI.createFileURI(file, SCHEME);
     }
 }

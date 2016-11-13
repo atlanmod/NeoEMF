@@ -13,15 +13,14 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKey;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.IdSerializer;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKey;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.info.ClassInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.info.ContainerInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.key.FeatureKey;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.key.FeatureKeySerializer;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.key.IdSerializer;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.key.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.key.MultivaluedFeatureKeySerializer;
 
-import org.eclipse.emf.ecore.EClass;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
@@ -46,7 +45,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
      * A persistent map that stores the EClass for persistent EObjects.
      * The key is the persistent object Id.
      */
-    private final HTreeMap<Id, EClassInfo> instanceOfMap;
+    private final HTreeMap<Id, ClassInfo> instanceOfMap;
 
     /**
      * A persistent map that stores Structural feature values for persistent EObjects.
@@ -129,14 +128,14 @@ public class MapPersistenceBackend implements PersistenceBackend {
     /**
      * Retrieves metaclass (EClass) for a given object id
      */
-    public EClassInfo metaclassFor(Id id) {
+    public ClassInfo metaclassFor(Id id) {
         return instanceOfMap.get(id);
     }
 
     /**
      * Stores metaclass (EClass) information for an object id.
      */
-    public void storeMetaclass(Id id, EClassInfo metaclass) {
+    public void storeMetaclass(Id id, ClassInfo metaclass) {
         instanceOfMap.put(id, metaclass);
     }
 

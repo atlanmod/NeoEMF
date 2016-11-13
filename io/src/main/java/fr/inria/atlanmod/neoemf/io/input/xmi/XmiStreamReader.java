@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.DefaultInternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.EcoreDelegatedInternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.XPathDelegatedInternalHandler;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

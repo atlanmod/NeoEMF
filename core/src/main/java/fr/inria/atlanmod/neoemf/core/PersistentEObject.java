@@ -21,6 +21,18 @@ import org.eclipse.emf.ecore.resource.Resource;
 public interface PersistentEObject extends InternalEObject {
 
     /**
+     * Returns the given {@code object} as a {@link PersistentEObject}.
+     *
+     * @param object the object to adapt
+     *
+     * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
+     *         assigned as a {@link PersistentEObject}
+     */
+    static PersistentEObject from(Object object) {
+        return PersistentEObjectAdapter.getAdapter(object);
+    }
+
+    /**
      * Returns the unique identifier of this persistent object.
      *
      * @return the unique identifier

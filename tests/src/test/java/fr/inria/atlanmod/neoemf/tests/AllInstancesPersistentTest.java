@@ -11,8 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -95,7 +94,7 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
 
     private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
         persistentResource.save(Collections.emptyMap());
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
+        persistentResource.close();
         persistentResource.load(Collections.emptyMap());
 
         allInstancesPersistent(persistentResource);
@@ -103,7 +102,7 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
 
     private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
         persistentResource.save(Collections.emptyMap());
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
+        persistentResource.close();
         persistentResource.load(Collections.emptyMap());
 
         allInstancesStrictPersistent(persistentResource);

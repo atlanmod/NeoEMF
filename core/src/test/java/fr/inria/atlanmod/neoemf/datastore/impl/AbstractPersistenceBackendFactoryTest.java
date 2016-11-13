@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.datastore.impl;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AbstractDirectWriteResourceEStore;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteEStore;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.lang.reflect.Field;
 
@@ -30,7 +30,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AllTest {
         PersistenceBackend result = null;
 
         try {
-            Field field = AbstractDirectWriteResourceEStore.class.getDeclaredField("persistenceBackend");
+            Field field = AbstractDirectWriteEStore.class.getDeclaredField("persistenceBackend");
             field.setAccessible(true);
             result = (PersistenceBackend) field.get(context);
         }

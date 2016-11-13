@@ -21,8 +21,8 @@ import static java.util.Objects.isNull;
 
 public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
-    private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
-    private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";
+    private static final String DIRECTORY = "blueprints.tg.directory";
+    private static final String FILE_TYPE = "blueprints.tg.file-type";
 
     private static InternalBlueprintsConfiguration INSTANCE;
 
@@ -41,11 +41,11 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
 
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
-        if (isNull(currentConfiguration.getString(BLUEPRINTS_TG_DIRECTORY))) {
-            currentConfiguration.addProperty(BLUEPRINTS_TG_DIRECTORY, dbLocation.getAbsolutePath());
+        if (isNull(currentConfiguration.getString(DIRECTORY))) {
+            currentConfiguration.addProperty(DIRECTORY, dbLocation.getAbsolutePath());
         }
-        if (isNull(currentConfiguration.getString(BLUEPRINTS_TG_FILE_TYPE))) {
-            currentConfiguration.addProperty(BLUEPRINTS_TG_FILE_TYPE, "GRAPHML");
+        if (isNull(currentConfiguration.getString(FILE_TYPE))) {
+            currentConfiguration.addProperty(FILE_TYPE, "GRAPHML");
         }
     }
 

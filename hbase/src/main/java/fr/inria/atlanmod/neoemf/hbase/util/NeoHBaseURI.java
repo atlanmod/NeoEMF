@@ -21,27 +21,27 @@ import java.text.MessageFormat;
 
 public class NeoHBaseURI extends NeoURI {
 
-    public static final String NEO_HBASE_SCHEME = "neo-hbase";
+    public static final String SCHEME = "neo-hbase";
 
     protected NeoHBaseURI(int hashCode, URI internalURI) {
         super(hashCode, internalURI);
     }
 
-    public static URI createNeoHBaseURI(URI uri) {
+    public static URI createURI(URI uri) {
         if (NeoURI.FILE_SCHEME.equals(uri.scheme())) {
-            return createNeoHBaseURI(FileUtils.getFile(uri.toFileString()));
+            return createFileURI(FileUtils.getFile(uri.toFileString()));
         }
-        else if (NEO_HBASE_SCHEME.equals(uri.scheme())) {
-            return NeoURI.createNeoURI(uri);
+        else if (SCHEME.equals(uri.scheme())) {
+            return NeoURI.createURI(uri);
         }
         else {
             throw new IllegalArgumentException(MessageFormat.format("Can not create NeoHBaseURI from the URI scheme {0}", uri.scheme()));
         }
     }
 
-    public static URI createNeoHBaseURI(String host, String port, URI modelURI) {
+    public static URI createURI(String host, String port, URI modelURI) {
         return URI.createHierarchicalURI(
-                NEO_HBASE_SCHEME,
+                SCHEME,
                 host + ":" + port,
                 null,
                 modelURI.segments(),
@@ -49,7 +49,7 @@ public class NeoHBaseURI extends NeoURI {
                 null);
     }
 
-    public static URI createNeoHBaseURI(File file) {
-        return NeoURI.createNeoURI(file, NEO_HBASE_SCHEME);
+    public static URI createFileURI(File file) {
+        return NeoURI.createFileURI(file, SCHEME);
     }
 }

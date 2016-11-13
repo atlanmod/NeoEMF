@@ -13,15 +13,17 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
+
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE_DEFAULT;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J;
 
 public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
 
@@ -38,30 +40,30 @@ public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
 
     @Override
     public BlueprintsResourceBuilder uri(URI uri) {
-        this.uri = NeoBlueprintsURI.createNeoGraphURI(uri);
+        this.uri = NeoBlueprintsURI.createURI(uri);
         return this;
     }
 
     @Override
     public BlueprintsResourceBuilder file(File file) {
-        this.uri = NeoBlueprintsURI.createNeoGraphURI(file);
+        this.uri = NeoBlueprintsURI.createFileURI(file);
         return this;
     }
 
     private void initBlueprintsBuilder() {
-        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.NEO_GRAPH_SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.NEO_GRAPH_SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
         }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.NEO_GRAPH_SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     public BlueprintsResourceBuilder neo4j() {
-        resourceOptions.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
+        resourceOptions.put(GRAPH_TYPE, GRAPH_TYPE_NEO4J);
         return this;
     }
 
     public BlueprintsResourceBuilder tinkerGraph() {
-        resourceOptions.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
+        resourceOptions.put(GRAPH_TYPE, GRAPH_TYPE_DEFAULT);
         return this;
     }
 }

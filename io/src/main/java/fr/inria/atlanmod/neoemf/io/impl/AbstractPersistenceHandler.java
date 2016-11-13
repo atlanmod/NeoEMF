@@ -25,7 +25,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -80,7 +80,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         this.unlinkedElementsMap = HashMultimap.create();
         this.conflictElementIdCache = CacheBuilder.newBuilder().build();
 
-        NeoLogger.info("Autocommit Blueprints Handler created (chunk = {0})", OPS_BETWEEN_COMMITS_DEFAULT);
+        NeoLogger.info("{0} created", getClass().getSimpleName());
+        NeoLogger.info("{0} chunk = {1}", getClass().getSimpleName(), OPS_BETWEEN_COMMITS_DEFAULT);
     }
 
     /**

@@ -15,7 +15,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.protobuf.ServiceException;
 
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;

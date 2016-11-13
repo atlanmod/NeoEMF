@@ -16,14 +16,11 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceHandlerFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
 import fr.inria.atlanmod.neoemf.io.IOFactory;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -50,6 +47,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.CACHE_TYPE;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.CacheType;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.EStoreGraphOption;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.STORE_OPTIONS;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.StoreOption;
 import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -365,16 +369,12 @@ public class ImportTest extends AllInputTest {
 
         persistenceBackend.close();
 
-        PersistenceBackendFactoryRegistry.register(
-                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(
-                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                PersistentResourceFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        Resource resource = resourceSet.createResource(NeoBlueprintsURI.createNeoGraphURI(neo4jFile));
+        Resource resource = resourceSet.createResource(NeoBlueprintsURI.createFileURI(neo4jFile));
         resource.load(Collections.emptyMap());
 
         return resource.getContents().get(0);
@@ -383,20 +383,11 @@ public class ImportTest extends AllInputTest {
     private BlueprintsPersistenceBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
         Map<String, Object> options = new HashMap<>();
 
-        List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
-        storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
-
-        options.put(
-                BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE,
-                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
-
-        options.put(
-                PersistentResourceOptions.STORE_OPTIONS,
-                storeOptions);
-
-        options.put(
-                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE,
-                BlueprintsNeo4jResourceOptions.CacheType.NONE);
+        List<StoreOption> storeOptions = new ArrayList<>();
+        storeOptions.add(EStoreGraphOption.DIRECT_WRITE);
+        options.put(GRAPH_TYPE, GRAPH_TYPE_NEO4J);
+        options.put(STORE_OPTIONS, storeOptions);
+        options.put(CACHE_TYPE, CacheType.NONE);
 
         return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
     }

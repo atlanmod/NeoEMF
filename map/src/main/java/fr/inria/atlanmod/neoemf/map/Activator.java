@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.map;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 
@@ -31,8 +31,8 @@ public class Activator implements BundleActivator {
     public void start(BundleContext bundleContext) throws Exception {
         context = bundleContext;
         NeoLogger.info("NeoEMF Map plugin started");
-        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.NEO_MAP_SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME,
+        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(NeoMapURI.SCHEME,
                     MapPersistenceBackendFactory.getInstance());
             NeoLogger.info("Map persistence backend registered");
         }

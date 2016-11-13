@@ -21,19 +21,19 @@ import java.text.MessageFormat;
 
 public class NeoBlueprintsURI extends NeoURI {
 
-    public static final String NEO_GRAPH_SCHEME = "neo-blueprints";
+    public static final String SCHEME = "neo-blueprints";
 
     protected NeoBlueprintsURI(int hashCode, URI internalURI) {
         super(hashCode, internalURI);
     }
 
-    public static URI createNeoGraphURI(URI uri) {
+    public static URI createURI(URI uri) {
         URI returnValue;
         if (NeoURI.FILE_SCHEME.equals(uri.scheme())) {
-            returnValue = createNeoGraphURI(FileUtils.getFile(uri.toFileString()));
+            returnValue = createFileURI(FileUtils.getFile(uri.toFileString()));
         }
-        else if (NEO_GRAPH_SCHEME.equals(uri.scheme())) {
-            returnValue = NeoURI.createNeoURI(uri);
+        else if (SCHEME.equals(uri.scheme())) {
+            returnValue = NeoURI.createURI(uri);
         }
         else {
             throw new IllegalArgumentException(MessageFormat.format("Can not create NeoGraphURI from the URI scheme {0}", uri.scheme()));
@@ -41,7 +41,7 @@ public class NeoBlueprintsURI extends NeoURI {
         return returnValue;
     }
 
-    public static URI createNeoGraphURI(File file) {
-        return NeoURI.createNeoURI(file, NEO_GRAPH_SCHEME);
+    public static URI createFileURI(File file) {
+        return NeoURI.createFileURI(file, SCHEME);
     }
 }

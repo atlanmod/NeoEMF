@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.TransientEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.TransientEStore;
 import fr.inria.atlanmod.neoemf.issues.Issue7Test;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
@@ -29,7 +29,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test cases that check List method consistency for the {@link TransientEStoreImpl} class.
+ * Test cases that check List method consistency for the {@link TransientEStore} class.
  * Issue #7 reported the error for isEmpty method {@link Issue7Test}
  */
 public class TransientEStoreListTest extends AllTest {

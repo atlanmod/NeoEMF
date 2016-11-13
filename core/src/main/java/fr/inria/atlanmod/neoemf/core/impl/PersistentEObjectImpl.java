@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.core.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.OwnedTransientEStoreImpl;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.OwnedTransientEStore;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
 
 import org.eclipse.emf.common.util.BasicEMap;
@@ -100,7 +100,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
             eStore = ((PersistentResource) resource).eStore();
         }
         else {
-            eStore = new OwnedTransientEStoreImpl(this);
+            eStore = new OwnedTransientEStore(this);
         }
         // Move contents from oldStore to eStore
         if (!isNull(oldStore) && !isNull(eStore) && eStore != oldStore) {
@@ -200,7 +200,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
             if (feature instanceof EReference) {
                 EReference eRef = (EReference) feature;
                 if (eRef.isContainment()) {
-                    PersistentEObject internalElement = PersistentEObjectAdapter.getAdapter(value);
+                    PersistentEObject internalElement = PersistentEObject.from(value);
                     if (internalElement.resource() != resource()) {
                         internalElement.resource(resource());
                     }
@@ -213,7 +213,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
     @Override
     public EStore eStore() {
         if (isNull(eStore)) {
-            eStore = new OwnedTransientEStoreImpl(this);
+            eStore = new OwnedTransientEStore(this);
         }
         return eStore;
     }

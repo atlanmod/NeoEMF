@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.util;
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -70,54 +70,54 @@ public class NeoURITest extends AllTest {
     @Test
     public void testCreateNeoURIFromStandardURIValidScheme() {
         URI validURI = URI.createURI(MOCK + "://test");
-        URI neoURI = NeoURI.createNeoURI(validURI);
+        URI neoURI = NeoURI.createURI(validURI);
         assertThat(neoURI.scheme()).isEqualTo(MOCK);
     }
 
     @Test
     public void testCreateNeoURIFromFileValidScheme() {
-        URI neoURI = NeoURI.createNeoURI(testFile, MOCK);
+        URI neoURI = NeoURI.createFileURI(testFile, MOCK);
         assertThat(neoURI.scheme()).isEqualTo(MOCK);
     }
 
     @Test
     public void testCreateNeoURIFromFileURIValidScheme() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = NeoURI.createNeoURI(fileURI, MOCK);
+        URI neoURI = NeoURI.createFileURI(fileURI, MOCK);
         assertThat(neoURI.scheme()).isEqualTo(MOCK);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromStandardURIInvalidScheme() {
         URI invalidURI = URI.createURI(INVALID + "://test");
-        NeoURI.createNeoURI(invalidURI);
+        NeoURI.createURI(invalidURI);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromFileURINoScheme() {
         URI invalidFileURI = URI.createFileURI(testFile.getAbsolutePath());
-        NeoURI.createNeoURI(invalidFileURI);
+        NeoURI.createURI(invalidFileURI);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromFileInvalidScheme() {
-        NeoURI.createNeoURI(testFile, INVALID);
+        NeoURI.createFileURI(testFile, INVALID);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromFileNullScheme() {
-        NeoURI.createNeoURI(testFile, null);
+        NeoURI.createFileURI(testFile, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromFileURIInvalidScheme() {
         URI fileUri = URI.createFileURI(testFile.getAbsolutePath());
-        NeoURI.createNeoURI(fileUri, INVALID);
+        NeoURI.createFileURI(fileUri, INVALID);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromFileURINullScheme() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        NeoURI.createNeoURI(fileURI, null);
+        NeoURI.createFileURI(fileURI, null);
     }
 }

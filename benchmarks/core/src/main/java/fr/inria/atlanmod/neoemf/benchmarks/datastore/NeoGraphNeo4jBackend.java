@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE;
+import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J;
 
 public class NeoGraphNeo4jBackend extends NeoGraphBackend {
 
@@ -40,7 +40,7 @@ public class NeoGraphNeo4jBackend extends NeoGraphBackend {
     @Override
     public Map<Object, Object> getOptions() {
         Map<Object, Object> options = new HashMap<>();
-        options.put(BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE, BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
+        options.put(GRAPH_TYPE, GRAPH_TYPE_NEO4J);
         return options;
     }
 }

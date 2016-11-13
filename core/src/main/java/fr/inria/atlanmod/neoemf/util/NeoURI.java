@@ -32,7 +32,7 @@ public class NeoURI extends URI {
         this.internalUri = internalUri;
     }
 
-    public static URI createNeoURI(URI uri) {
+    public static URI createURI(URI uri) {
         checkArgument(!uri.scheme().equals(FILE_SCHEME),
                 "Can not create NeoURI from file URI without a valid scheme");
         checkArgument(PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()),
@@ -41,22 +41,22 @@ public class NeoURI extends URI {
         return new NeoURI(uri.hashCode(), uri);
     }
 
-    public static URI createNeoURI(File file, String scheme) {
+    public static URI createFileURI(File file, String scheme) {
         URI returnValue;
         URI fileUri = URI.createFileURI(file.getAbsolutePath());
         if (isNull(scheme)) {
-            returnValue = NeoURI.createNeoURI(fileUri);
+            returnValue = NeoURI.createURI(fileUri);
         }
         else {
-            returnValue = createNeoURI(fileUri, scheme);
+            returnValue = createFileURI(fileUri, scheme);
         }
         return returnValue;
     }
 
-    public static URI createNeoURI(URI fileUri, String scheme) {
+    public static URI createFileURI(URI fileUri, String scheme) {
         URI returnValue;
         if (isNull(scheme)) {
-            returnValue = createNeoURI(fileUri);
+            returnValue = createURI(fileUri);
         }
         else {
             URI uri = URI.createHierarchicalURI(
@@ -67,7 +67,7 @@ public class NeoURI extends URI {
                     fileUri.query(),
                     fileUri.fragment()
             );
-            returnValue = createNeoURI(uri);
+            returnValue = createURI(uri);
         }
         return returnValue;
     }

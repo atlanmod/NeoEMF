@@ -14,14 +14,14 @@ package fr.inria.atlanmod.neoemf.datastore.impl;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.CachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.FeatureCachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoadedObjectCounterEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.LoggingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.CachingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.FeatureCachingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -32,13 +32,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.ESTRUCUTRALFEATURE_CACHING;
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.IS_SET_CACHING;
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.LOADED_OBJECT_COUNTER_LOGGING;
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.LOGGING;
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.EStoreOption.SIZE_CACHING;
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.STORE_OPTIONS;
-import static fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions.StoreOption;
+import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.EStoreOption;
+import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.STORE_OPTIONS;
+import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.StoreOption;
 import static java.util.Objects.isNull;
 
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
@@ -61,19 +57,19 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         List<StoreOption> storeOptions = storeOptionsFrom(options);
 
         if (!isNull(storeOptions) && !storeOptions.isEmpty()) {
-            if (storeOptions.contains(IS_SET_CACHING)) {
+            if (storeOptions.contains(EStoreOption.CACHE_IS_SET)) {
                 eStore = new IsSetCachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(ESTRUCUTRALFEATURE_CACHING)) {
+            if (storeOptions.contains(EStoreOption.CACHE_STRUCTURAL_FEATURE)) {
                 eStore = new FeatureCachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(SIZE_CACHING)) {
+            if (storeOptions.contains(EStoreOption.CACHE_SIZE)) {
                 eStore = new CachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(LOGGING)) {
+            if (storeOptions.contains(EStoreOption.LOG)) {
                 eStore = new LoggingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(LOADED_OBJECT_COUNTER_LOGGING)) {
+            if (storeOptions.contains(EStoreOption.COUNT_LOADED_OBJECT)) {
                 eStore = new LoadedObjectCounterEStoreDecorator(eStore);
             }
         }
@@ -89,7 +85,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      */
     protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;
-        Path path = Paths.get(directory.getAbsolutePath()).resolve(NEO_CONFIG_FILE);
+        Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
 
         try {
             configuration = new PropertiesConfiguration(path.toFile());

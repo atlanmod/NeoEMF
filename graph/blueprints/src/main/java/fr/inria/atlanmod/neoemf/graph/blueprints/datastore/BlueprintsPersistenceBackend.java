@@ -26,10 +26,9 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -158,7 +157,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      * @return the newly created vertex
      */
     private Vertex addVertex(EObject eObject) {
-        PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
+        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
         return addVertex(persistentEObject.id());
     }
 
@@ -189,7 +188,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      */
     public Vertex getVertex(EObject eObject) {
         Vertex vertex = null;
-        PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
+        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
         if (persistentEObject.isMapped()) {
             vertex = getMappedVertex(persistentEObject.id());
         }
@@ -215,7 +214,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      */
     public Vertex getOrCreateVertex(EObject eObject) {
         Vertex vertex;
-        PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
+        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
         if (persistentEObject.isMapped()) {
             vertex = getMappedVertex(persistentEObject.id());
         }
@@ -343,7 +342,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
                     persistentEObject = (PersistentEObject) eObject;
                 }
                 else {
-                    persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
+                    persistentEObject = PersistentEObject.from(eObject);
                 }
                 persistentEObject.id(new StringId(id.toString()));
                 persistentEObject.setMapped(true);

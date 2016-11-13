@@ -5,11 +5,11 @@
     <extension
             point="org.eclipse.ui.editors">
         <editor
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor"
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEMFEditor"
                 contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
                 default="false"
                 icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.editors.NeoEMFEditor"
+                id="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEMFEditor"
                 name="NeoEMF Editor">
         </editor>
     </extension>
@@ -21,7 +21,7 @@
                 icon="icons/full/obj16/NeoEMFModelFile.gif"
                 id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
                 name="Ecore model (NeoEMF Native)"
-                wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizards.NeoEMFModelImporterWizard">
+                wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoEMFModelImporterWizard">
         </modelImporterDescriptor>
     </extension>
     <extension
@@ -95,17 +95,17 @@
     <extension
             point="org.eclipse.ui.commands">
         <command
-                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.commands.MigrateCommand"
+                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.MigrateCommand"
                 id="fr.inria.atlanmod.neoemf.eclipse.ui.migrate"
                 name="&amp;Migrate EMF Generator Model">
         </command>
         <command
-                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.commands.OpenNeoEMFDbCommand"
+                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.OpenNeoEMFDbCommand"
                 id="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
                 name="&amp;Open Model Database">
         </command>
         <command
-                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.commands.CreateDynamicInstanceCommand"
+                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.CreateDynamicInstanceCommand"
                 id="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
                 name="Create &amp;NeoEMF Dynamic Instance...">
         </command>
@@ -124,7 +124,7 @@
             point="org.eclipse.ui.decorators">
         <decorator
                 adaptable="true"
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorators.NeoDBDecorator"
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.NeoDBDecorator"
                 id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
                 label="NeoEMF Database Folder Decorator"
                 objectClass="org.eclipse.core.resources.IFolder"

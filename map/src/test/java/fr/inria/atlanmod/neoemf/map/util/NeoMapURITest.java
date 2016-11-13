@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.map.util;
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 
 import org.apache.commons.io.FileUtils;
@@ -44,7 +44,7 @@ public class NeoMapURITest extends AllTest {
     @Before
     public void setUp() {
         PersistenceBackendFactoryRegistry.unregisterAll();
-        PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(NeoMapURI.SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 
@@ -66,27 +66,27 @@ public class NeoMapURITest extends AllTest {
 
     @Test
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(NeoMapURI.NEO_MAP_SCHEME + ":/test");
-        URI neoURI = NeoMapURI.createNeoMapURI(validURI);
-        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.NEO_MAP_SCHEME);
+        URI validURI = URI.createURI(NeoMapURI.SCHEME + ":/test");
+        URI neoURI = NeoMapURI.createURI(validURI);
+        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = NeoMapURI.createNeoMapURI(fileURI);
-        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.NEO_MAP_SCHEME);
+        URI neoURI = NeoMapURI.createURI(fileURI);
+        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
-        URI neoURI = NeoMapURI.createNeoMapURI(testFile);
-        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.NEO_MAP_SCHEME);
+        URI neoURI = NeoMapURI.createFileURI(testFile);
+        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.SCHEME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
         URI invalidURI = URI.createURI("invalid:/test");
-        NeoMapURI.createNeoMapURI(invalidURI);
+        NeoMapURI.createURI(invalidURI);
     }
 }

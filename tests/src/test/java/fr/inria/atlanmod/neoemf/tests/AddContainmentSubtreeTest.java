@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.DirectWriteMapResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsEStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapEStore;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Test;
 
@@ -28,17 +28,17 @@ public class AddContainmentSubtreeTest extends AllContainmentTest {
 
     @Test
     public void testAddContainmentSubtreeToPersistentResourceMapDB() {
-        addContainmentSubtreeToPersistentResource(mapResource, DirectWriteMapResourceEStoreImpl.class);
+        addContainmentSubtreeToPersistentResource(mapResource, DirectWriteMapEStore.class);
     }
 
     @Test
     public void testAddContainmentSubtreeToPersistentResourceNeo4j() {
-        addContainmentSubtreeToPersistentResource(neo4jResource, DirectWriteBlueprintsResourceEStoreImpl.class);
+        addContainmentSubtreeToPersistentResource(neo4jResource, DirectWriteBlueprintsEStore.class);
     }
 
     @Test
     public void testAddContainmentSubtreeToPersistentResourceTinker() {
-        addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsResourceEStoreImpl.class);
+        addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsEStore.class);
     }
 
     public void createResourceContent(PersistentResource r) {
