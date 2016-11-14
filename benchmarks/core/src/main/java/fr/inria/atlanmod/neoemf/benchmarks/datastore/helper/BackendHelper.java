@@ -115,6 +115,7 @@ public class BackendHelper {
         sourceResource.load(loadOpts);
 
         log.info("Migrating");
+        targetResource.save(targetBackend.getOptions());
         targetResource.getContents().addAll(sourceResource.getContents());
 
         sourceResource.unload();
