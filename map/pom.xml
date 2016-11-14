@@ -6,9 +6,8 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>neoemf</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
     </parent>
 
     <artifactId>map</artifactId>
