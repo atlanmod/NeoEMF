@@ -46,7 +46,7 @@
     </licenses>
 
     <prerequisites>
-        <maven>3.0</maven>
+        <maven>3.3.9</maven>
     </prerequisites>
 
     <modules>
@@ -391,11 +391,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
@@ -405,11 +400,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
 
             <plugin>

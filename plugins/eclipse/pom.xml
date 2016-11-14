@@ -35,7 +35,6 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
-                <version>${tycho-maven-plugin.version}</version>
                 <configuration>
                     <pomDependencies>consider</pomDependencies>
                     <environments>
@@ -61,7 +60,6 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-maven-plugin</artifactId>
-                <version>${tycho-maven-plugin.version}</version>
                 <extensions>true</extensions>
             </plugin>
         </plugins>
@@ -70,11 +68,47 @@
             <plugins>
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-compiler-plugin</artifactId>
+                    <version>${tycho-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-maven-plugin</artifactId>
+                    <version>${tycho-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-packaging-plugin</artifactId>
                     <version>${tycho-maven-plugin.version}</version>
                     <configuration>
                         <strictBinIncludes>false</strictBinIncludes>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-plugin</artifactId>
+                    <version>${tycho-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-publisher-plugin</artifactId>
+                    <version>${tycho-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-repository-plugin</artifactId>
+                    <version>${tycho-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>target-platform-configuration</artifactId>
+                    <version>${tycho-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
