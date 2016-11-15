@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.map.datastore.store.impl.info;
+package fr.inria.atlanmod.neoemf.datastore.store.impl.info;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
@@ -25,20 +25,28 @@ public class ClassInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String nsURI;
+    private final String uri;
 
-    private final String className;
+    private final String name;
 
     public ClassInfo(PersistentEObject object) {
-        this.nsURI = object.eClass().getEPackage().getNsURI();
-        this.className = object.eClass().getName();
+        this.uri = object.eClass().getEPackage().getNsURI();
+        this.name = object.eClass().getName();
+    }
+
+    public String uri() {
+        return uri;
+    }
+
+    public String name() {
+        return name;
     }
 
     /**
      * Retrieves the EClass corresponding to this memento.
      */
     public EClass eClass() {
-        return (EClass) EPackage.Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
+        return (EClass) EPackage.Registry.INSTANCE.getEPackage(uri).getEClassifier(name);
     }
 }
 

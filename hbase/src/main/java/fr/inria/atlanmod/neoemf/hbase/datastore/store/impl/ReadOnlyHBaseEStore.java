@@ -14,11 +14,10 @@ package fr.inria.atlanmod.neoemf.hbase.datastore.store.impl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.cache.HBaseFeatureKey;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
@@ -36,18 +35,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Objects;
 import java.util.function.Function;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
 
     // TODO: Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
-    private final Cache<FeatureKey, Object> cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+    private final Cache<HBaseFeatureKey, Object> cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
 
     public ReadOnlyHBaseEStore(Resource.Internal resource) throws IOException {
         super(resource);
@@ -82,7 +77,7 @@ public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
     protected Object getFromTable(PersistentEObject object, EStructuralFeature feature) {
         PersistentEObject neoEObject = PersistentEObject.from(object);
 
-        FeatureKey entry = new FeatureKey(neoEObject.id(), feature);
+        HBaseFeatureKey entry = new HBaseFeatureKey(neoEObject.id(), feature);
         Object returnValue = null;
         try {
             returnValue = cache.get(entry, new FeatureCacheLoader());
@@ -131,52 +126,10 @@ public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
         return new UnsupportedOperationException(MessageFormat.format(message, tableName));
     }
 
-    private class FeatureKey {
-
-        private final Id id;
-        private final EStructuralFeature feature;
-
-        public FeatureKey(Id id, EStructuralFeature feature) {
-            this.id = checkNotNull(id);
-            this.feature = checkNotNull(feature);
-        }
-
-        public Id id() {
-            return id;
-        }
-
-        public EStructuralFeature feature() {
-            return feature;
-        }
+    private class FeatureCacheLoader implements Function<HBaseFeatureKey, Object> {
 
         @Override
-        public int hashCode() {
-            return Objects.hash(getOuterType(), id, feature);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (isNull(obj) || getClass() != obj.getClass()) {
-                return false;
-            }
-            FeatureKey other = (FeatureKey) obj;
-            return Objects.equals(id, other.id)
-                    && Objects.equals(feature, other.feature)
-                    && Objects.equals(getOuterType(), other.getOuterType());
-        }
-
-        private PersistentEStore getOuterType() {
-            return ReadOnlyHBaseEStore.this;
-        }
-    }
-
-    private class FeatureCacheLoader implements Function<FeatureKey, Object> {
-
-        @Override
-        public Object apply(FeatureKey featureKey) {
+        public Object apply(HBaseFeatureKey featureKey) {
             Result result;
             try {
                 result = table.get(new Get(Bytes.toBytes(featureKey.id().toString())));
@@ -185,7 +138,7 @@ public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
                 throw new RuntimeException(e);
             }
 
-            byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(featureKey.feature().getName()));
+            byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(featureKey.name()));
             if (!featureKey.feature().isMany()) {
                 return Bytes.toString(value);
             }

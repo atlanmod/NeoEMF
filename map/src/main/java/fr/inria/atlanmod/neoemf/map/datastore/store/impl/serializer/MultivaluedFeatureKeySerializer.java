@@ -9,9 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.map.datastore.store.impl.key;
+package fr.inria.atlanmod.neoemf.map.datastore.store.impl.serializer;
 
-import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.MultivaluedFeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
@@ -19,26 +20,22 @@ import org.mapdb.Serializer;
 
 import java.io.IOException;
 
-public class FeatureKeySerializer implements Serializer<FeatureKey> {
+public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
 
-    final Serializer<String> stringSerializer = Serializer.STRING;
-    final Serializer<Id> idSerializer = new IdSerializer();
+    final Serializer<Integer> intSerializer = INTEGER;
 
     @Override
     public void serialize(DataOutput2 out, FeatureKey fk) throws IOException {
-        idSerializer.serialize(out, fk.id());
-        stringSerializer.serialize(out, fk.name());
+        super.serialize(out, fk);
+        intSerializer.serialize(out, ((MultivaluedFeatureKey) fk).position());
     }
 
     @Override
     public FeatureKey deserialize(DataInput2 input, int i) throws IOException {
-        return new FeatureKey(
+        return new MultivaluedFeatureKey(
                 idSerializer.deserialize(input, -1),
-                stringSerializer.deserialize(input, -1)
-        );
+                stringSerializer.deserialize(input, -1),
+                intSerializer.deserialize(input, -1));
     }
 
-    public int compare(FeatureKey one, FeatureKey other) {
-        return one.compareTo(other);
-    }
 }

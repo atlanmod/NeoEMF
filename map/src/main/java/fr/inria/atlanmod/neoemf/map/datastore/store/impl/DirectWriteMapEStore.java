@@ -18,11 +18,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.info.ClassInfo;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.info.ContainerInfo;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.info.ClassInfo;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.info.ContainerInfo;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.key.FeatureKey;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EAttribute;
@@ -260,7 +260,7 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
         PersistentEObject persistentEObject = PersistentEObject.from(object);
         ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
         if (!isNull(info)) {
-            returnValue = (InternalEObject) eObject(info.containerId);
+            returnValue = (InternalEObject) eObject(info.id());
         }
         return returnValue;
     }
@@ -270,8 +270,8 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
         PersistentEObject persistentEObject = PersistentEObject.from(object);
         ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
         if (!isNull(info)) {
-            EObject container = eObject(info.containerId);
-            return container.eClass().getEStructuralFeature(info.containingFeatureName);
+            EObject container = eObject(info.id());
+            return container.eClass().getEStructuralFeature(info.name());
         }
         return null;
     }
@@ -305,7 +305,7 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
     protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
         if (eReference.isContainment()) {
             ContainerInfo info = persistenceBackend.containerFor(referencedObject.id());
-            if (isNull(info) || !info.containerId.equals(object.id())) {
+            if (isNull(info) || !info.id().equals(object.id())) {
                 persistenceBackend.storeContainer(referencedObject.id(), new ContainerInfo(object.id(), eReference.getName()));
             }
         }

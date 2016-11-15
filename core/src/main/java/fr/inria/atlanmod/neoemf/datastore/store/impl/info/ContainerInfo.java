@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.map.datastore.store.impl.info;
+package fr.inria.atlanmod.neoemf.datastore.store.impl.info;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -19,12 +19,20 @@ public class ContainerInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public final Id containerId;
+    private final Id id;
 
-    public final String containingFeatureName;
+    private final String name;
 
-    public ContainerInfo(Id containerId, String containingFeatureName) {
-        this.containerId = containerId;
-        this.containingFeatureName = containingFeatureName;
+    public ContainerInfo(Id id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Id id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
     }
 }

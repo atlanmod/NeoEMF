@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.map.datastore.store.impl.key;
+package fr.inria.atlanmod.neoemf.datastore.store.impl.cache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -22,15 +22,20 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    final private Id id;
-    final private String name;
+    private final Id id;
+    private final String name;
 
-    public FeatureKey(Id anId, String aString) {
-        checkNotNull(anId, "FeatureKey Id should not be null");
-        checkNotNull(aString, "FeatureKey feature name should not be null");
+    public FeatureKey(Id id, String name) {
+        this.id = checkNotNull(id);
+        this.name = checkNotNull(name);
+    }
 
-        id = anId;
-        name = aString;
+    public Id id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
     }
 
     /**
@@ -76,15 +81,8 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         return id.equals(that.id) && name.equals(that.name);
     }
 
+    @Override
     public String toString() {
         return "FK:{" + id + ", " + name + "}";
-    }
-
-    public Id id() {
-        return id;
-    }
-
-    public String name() {
-        return name;
     }
 }

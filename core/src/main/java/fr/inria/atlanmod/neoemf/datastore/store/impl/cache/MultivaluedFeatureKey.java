@@ -9,9 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.map.datastore.store.impl.key;
+package fr.inria.atlanmod.neoemf.datastore.store.impl.cache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+
+import java.util.Objects;
 
 public class MultivaluedFeatureKey extends FeatureKey {
 
@@ -19,9 +21,13 @@ public class MultivaluedFeatureKey extends FeatureKey {
 
     private final int position;
 
-    public MultivaluedFeatureKey(Id anId, String aString, int anInt) {
-        super(anId, aString);
-        position = anInt;
+    public MultivaluedFeatureKey(Id id, String name, int position) {
+        super(id, name);
+        this.position = position;
+    }
+
+    public int position() {
+        return position;
     }
 
     @Override
@@ -43,15 +49,16 @@ public class MultivaluedFeatureKey extends FeatureKey {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id(), name(), position);
+    }
+
     /**
      * Defines equality between multivalued feature keys.
      */
     @Override
     public boolean equals(Object other) {
         return super.equals(other) && position == ((MultivaluedFeatureKey) other).position;
-    }
-
-    public int position() {
-        return position;
     }
 }

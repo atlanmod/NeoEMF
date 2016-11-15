@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.map.datastore.store.impl.key;
+package fr.inria.atlanmod.neoemf.map.datastore.store.impl.serializer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
