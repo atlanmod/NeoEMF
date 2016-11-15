@@ -56,6 +56,7 @@ public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
     @Override
     protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         if (eReference.isMany()) {
+            FeatureKey featureKey = FeatureKey.from(object, eReference);
             if (index == EStore.NO_INDEX) {
                 /*
                  * Handle NO_INDEX index, which represent direct-append feature.
@@ -66,14 +67,14 @@ public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
             }
             updateContainment(object, eReference, value);
             updateInstanceOf(value);
-            Object[] array = (Object[]) getFromMap(object, eReference);
+            Object[] array = (Object[]) getFromMap(featureKey);
             if (isNull(array)) {
                 array = new Object[]{};
             }
             checkPositionIndex(index, array.length, "Invalid add index " + index);
             array = ArrayUtils.add(array, index, value.id());
-            cachedArray.put(new FeatureKey(object.id(), eReference.getName()), array);
-            persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), array);
+            cachedArray.put(featureKey, array);
+            persistenceBackend.storeValue(featureKey, array);
             loadedEObjectsCache.put(value.id(), value);
         }
         else {
@@ -83,10 +84,10 @@ public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
 
     @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        FeatureKey key = new FeatureKey(object.id(), feature.getName());
+        FeatureKey featureKey = FeatureKey.from(object, feature);
         Object returnValue = null;
         try {
-            returnValue = cachedArray.get(key, super::getFromMap);
+            returnValue = cachedArray.get(featureKey, super::getFromMap);
         }
         catch (Exception e) {
             NeoLogger.warn(e);

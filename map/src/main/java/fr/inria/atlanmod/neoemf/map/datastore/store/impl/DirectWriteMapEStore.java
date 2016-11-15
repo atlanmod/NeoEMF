@@ -60,14 +60,14 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
 
     @Override
     public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        return persistenceBackend.isFeatureSet(new FeatureKey(persistentEObject.id(), feature.getName()));
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        return persistenceBackend.isFeatureSet(featureKey);
     }
 
     @Override
     public void unset(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        persistenceBackend.removeFeature(new FeatureKey(persistentEObject.id(), feature.getName()));
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        persistenceBackend.removeFeature(featureKey);
     }
 
     @Override
@@ -113,8 +113,8 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
 
     @Override
     public void clear(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        persistenceBackend.storeValue(new FeatureKey(persistentEObject.id(), feature.getName()), new Object[]{});
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        persistenceBackend.storeValue(featureKey, new Object[]{});
     }
 
     @Override
@@ -150,16 +150,17 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
     @Override
     protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         Object returnValue;
+        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
         if (!eAttribute.isMany()) {
-            Object oldValue = persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
+            Object oldValue = persistenceBackend.storeValue(featureKey, serializeToProperty(eAttribute, value));
             returnValue = parseProperty(eAttribute, oldValue);
         }
         else {
-            Object[] array = (Object[]) getFromMap(object, eAttribute);
+            Object[] array = (Object[]) getFromMap(featureKey);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             Object oldValue = array[index];
             array[index] = serializeToProperty(eAttribute, value);
-            persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), array);
+            persistenceBackend.storeValue(featureKey, array);
             returnValue = parseProperty(eAttribute, oldValue);
         }
         return returnValue;
@@ -168,18 +169,19 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
     @Override
     protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         Object returnValue;
+        FeatureKey featureKey = FeatureKey.from(object, eReference);
         updateContainment(object, eReference, value);
         updateInstanceOf(value);
         if (!eReference.isMany()) {
-            Object oldId = persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), value.id());
+            Object oldId = persistenceBackend.storeValue(featureKey, value.id());
             returnValue = isNull(oldId) ? null : eObject((Id) oldId);
         }
         else {
-            Object[] array = (Object[]) getFromMap(object, eReference);
+            Object[] array = (Object[]) getFromMap(featureKey);
             checkPositionIndex(index, array.length, "Invalid set index " + index);
             Object oldId = array[index];
             array[index] = value.id();
-            persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), array);
+            persistenceBackend.storeValue(featureKey, array);
             returnValue = isNull(oldId) ? null : eObject((Id) oldId);
         }
         return returnValue;
@@ -187,6 +189,7 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
 
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
         if (index == EStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
@@ -195,17 +198,18 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
 			 */
             add(object, eAttribute, size(object, eAttribute), value);
         }
-        Object[] array = (Object[]) getFromMap(object, eAttribute);
+        Object[] array = (Object[]) getFromMap(featureKey);
         if (isNull(array)) {
             array = new Object[]{};
         }
         checkPositionIndex(index, array.length, "Invalid add index " + index);
         array = ArrayUtils.add(array, index, serializeToProperty(eAttribute, value));
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), array);
+        persistenceBackend.storeValue(featureKey, array);
     }
 
     @Override
     protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+        FeatureKey featureKey = FeatureKey.from(object, eReference);
         if (index == EStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
@@ -216,33 +220,35 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
         }
         updateContainment(object, eReference, value);
         updateInstanceOf(value);
-        Object[] array = (Object[]) getFromMap(object, eReference);
+        Object[] array = (Object[]) getFromMap(featureKey);
         if (isNull(array)) {
             array = new Object[]{};
         }
         checkPositionIndex(index, array.length, "Invalid add index " + index);
         array = ArrayUtils.add(array, index, value.id());
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), array);
+        persistenceBackend.storeValue(featureKey, array);
         loadedEObjectsCache.put(value.id(), value);
     }
 
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        Object[] array = (Object[]) getFromMap(object, eAttribute);
+        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
+        Object[] array = (Object[]) getFromMap(featureKey);
         checkPositionIndex(index, array.length, "Invalid remove index " + index);
         Object oldValue = array[index];
         array = ArrayUtils.remove(array, index);
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), array);
+        persistenceBackend.storeValue(featureKey, array);
         return parseProperty(eAttribute, oldValue);
     }
 
     @Override
     protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
-        Object[] array = (Object[]) getFromMap(object, eReference);
+        FeatureKey featureKey = FeatureKey.from(object, eReference);
+        Object[] array = (Object[]) getFromMap(featureKey);
         checkPositionIndex(index, array.length, "Invalid remove index " + index);
         Object oldId = array[index];
         array = ArrayUtils.remove(array, index);
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), array);
+        persistenceBackend.storeValue(featureKey, array);
         return eObject((Id) oldId);
     }
 
@@ -323,7 +329,7 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
     }
 
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        return getFromMap(new FeatureKey(object.id(), feature.getName()));
+        return getFromMap(FeatureKey.from(object, feature));
     }
 
     private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {

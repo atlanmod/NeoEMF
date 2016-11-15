@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.datastore.store.impl.cache;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-
 import java.util.function.Function;
 
 /**
@@ -38,35 +36,19 @@ public class FeatureCache<V> {
         this.cache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
-    public V get(Id id, String name, Function<FeatureKey, V> function) {
-        return cache.get(new FeatureKey(id, name), function);
+    public V get(FeatureKey featureKey, Function<? super FeatureKey, ? extends V> mappingFunction) {
+        return cache.get(featureKey, mappingFunction);
     }
 
-    public V get(Id id, String name, int index, Function<FeatureKey, V> function) {
-        return cache.get(new MultivaluedFeatureKey(id, name, index), function);
+    public V getIfPresent(FeatureKey featureKey) {
+        return cache.getIfPresent(featureKey);
     }
 
-    public V getIfPresent(Id id, String name) {
-        return cache.getIfPresent(new FeatureKey(id, name));
+    public void put(FeatureKey featureKey, V value) {
+        cache.put(featureKey, value);
     }
 
-    public V getIfPresent(Id id, String name, int index) {
-        return cache.getIfPresent(new MultivaluedFeatureKey(id, name, index));
-    }
-
-    public void put(Id object, String name, V value) {
-        cache.put(new FeatureKey(object, name), value);
-    }
-
-    public void put(Id object, String name, int index, V value) {
-        cache.put(new MultivaluedFeatureKey(object, name, index), value);
-    }
-
-    public void invalidate(Id object, String name) {
-        cache.invalidate(new FeatureKey(object, name));
-    }
-
-    public void invalidate(Id object, String name, int index) {
-        cache.invalidate(new MultivaluedFeatureKey(object, name, index));
+    public void invalidate(FeatureKey featureKey) {
+        cache.invalidate(featureKey);
     }
 }

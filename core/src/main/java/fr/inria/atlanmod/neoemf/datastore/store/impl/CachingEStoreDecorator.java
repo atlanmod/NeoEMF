@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureCache;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -39,47 +39,53 @@ public class CachingEStoreDecorator extends AbstractPersistentEStoreDecorator {
 
     @Override
     public void unset(InternalEObject object, EStructuralFeature feature) {
-        cache.put(PersistentEObject.from(object).id(), feature.getName(), 0);
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        cache.put(featureKey, 0);
         super.unset(object, feature);
     }
 
     @Override
     public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-        Integer size = cache.getIfPresent(PersistentEObject.from(object).id(), feature.getName());
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        Integer size = cache.getIfPresent(featureKey);
         return isNull(size) ? super.isEmpty(object, feature) : (size == 0);
     }
 
     @Override
     public int size(InternalEObject object, EStructuralFeature feature) {
-        Integer size = cache.getIfPresent(PersistentEObject.from(object).id(), feature.getName());
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        Integer size = cache.getIfPresent(featureKey);
         if (isNull(size)) {
             size = super.size(object, feature);
-            cache.put(PersistentEObject.from(object).id(), feature.getName(), size);
+            cache.put(featureKey, size);
         }
         return size;
     }
 
     @Override
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        Integer size = cache.getIfPresent(PersistentEObject.from(object).id(), feature.getName());
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        Integer size = cache.getIfPresent(featureKey);
         if (!isNull(size)) {
-            cache.put(PersistentEObject.from(object).id(), feature.getName(), size + 1);
+            cache.put(featureKey, size + 1);
         }
         super.add(object, feature, index, value);
     }
 
     @Override
     public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        Integer size = cache.getIfPresent(PersistentEObject.from(object).id(), feature.getName());
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        Integer size = cache.getIfPresent(featureKey);
         if (!isNull(size)) {
-            cache.put(PersistentEObject.from(object).id(), feature.getName(), size - 1);
+            cache.put(featureKey, size - 1);
         }
         return super.remove(object, feature, index);
     }
 
     @Override
     public void clear(InternalEObject object, EStructuralFeature feature) {
-        cache.put(PersistentEObject.from(object).id(), feature.getName(), 0);
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        cache.put(featureKey, 0);
         super.clear(object, feature);
     }
 }

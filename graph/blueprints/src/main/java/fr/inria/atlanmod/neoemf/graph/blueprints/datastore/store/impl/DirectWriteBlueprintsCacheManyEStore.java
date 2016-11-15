@@ -44,7 +44,7 @@ public class DirectWriteBlueprintsCacheManyEStore extends DirectWriteBlueprintsE
     @Override
     protected Object getReference(PersistentEObject object, EReference eReference, int index) {
         if (eReference.isMany()) {
-            FeatureKey key = new FeatureKey(object.id(), eReference.getName());
+            FeatureKey key = FeatureKey.from(object, eReference);
             Object[] list = cache.getIfPresent(key);
             if (!isNull(list)) {
                 Object o = list[index];

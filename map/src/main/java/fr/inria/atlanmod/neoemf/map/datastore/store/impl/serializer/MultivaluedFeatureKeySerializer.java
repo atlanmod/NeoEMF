@@ -32,7 +32,7 @@ public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
 
     @Override
     public FeatureKey deserialize(DataInput2 input, int i) throws IOException {
-        return new MultivaluedFeatureKey(
+        return MultivaluedFeatureKey.of(
                 idSerializer.deserialize(input, -1),
                 stringSerializer.deserialize(input, -1),
                 intSerializer.deserialize(input, -1));

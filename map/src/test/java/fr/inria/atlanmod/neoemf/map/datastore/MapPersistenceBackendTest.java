@@ -30,7 +30,7 @@ public class MapPersistenceBackendTest {
     public void testStoreFeature() {
         DB db = DBMaker.memoryDB().make();
         MapPersistenceBackend backend = new MapPersistenceBackend(db);
-        FeatureKey key = new FeatureKey(new StringId("object1"), "name");
+        FeatureKey key = FeatureKey.of(new StringId("object1"), "name");
         backend.storeValue(key, "value");
 
         assertThat("value").isEqualTo(backend.valueOf(key));
@@ -43,9 +43,10 @@ public class MapPersistenceBackendTest {
         MapPersistenceBackend backend = new MapPersistenceBackend(db);
 
         MultivaluedFeatureKey[] keys = new MultivaluedFeatureKey[TIMES];
+        FeatureKey featureKey = FeatureKey.of(new StringId("object"), "name");
 
         for (int i = 0; i < 10; i++) {
-            keys[i] = new MultivaluedFeatureKey(new StringId("object"), "name", i);
+            keys[i] = featureKey.withPosition(i);
             backend.storeValueAtIndex(keys[i], i);
         }
 
@@ -58,7 +59,7 @@ public class MapPersistenceBackendTest {
     @SuppressWarnings("unchecked") // Unchecked cast: 'GroupSerializer' to 'Serializer<...>'
     public void testSerialize() throws Exception {
         DataOutput2 out = new DataOutput2();
-        FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
+        FeatureKey key1 = FeatureKey.of(new StringId("object1"), "name");
 
         Serializer<FeatureKey> ser = Serializer.JAVA;
         FeatureKey key2 = ser.clone(key1);
@@ -74,8 +75,8 @@ public class MapPersistenceBackendTest {
 
     @Test
     public void testHashCode() {
-        FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
-        FeatureKey key2 = new FeatureKey(new StringId("object1"), "name");
+        FeatureKey key1 = FeatureKey.of(new StringId("object1"), "name");
+        FeatureKey key2 = FeatureKey.of(new StringId("object1"), "name");
 
         assertThat(key1.hashCode()).isEqualTo(key2.hashCode());
     }

@@ -84,8 +84,8 @@ public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
 
     @Override
     public void clear(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        persistenceBackend.storeValue(new FeatureKey(persistentEObject.id(), feature.getName()), new ArrayList<>());
+        FeatureKey featureKey = FeatureKey.from(object, feature);
+        persistenceBackend.storeValue(featureKey, new ArrayList<>());
     }
 
     @Override
@@ -109,14 +109,15 @@ public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
     @Override
     protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         Object oldValue;
+        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
         if (!eAttribute.isMany()) {
-            oldValue = persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), serializeToProperty(eAttribute, value));
+            oldValue = persistenceBackend.storeValue(featureKey, serializeToProperty(eAttribute, value));
         }
         else {
-            List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
+            List<Object> list = manyValueFrom(getFromMap(featureKey));
             oldValue = list.get(index);
             list.set(index, serializeToProperty(eAttribute, value));
-            persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), list.toArray());
+            persistenceBackend.storeValue(featureKey, list.toArray());
             oldValue = parseProperty(eAttribute, oldValue);
         }
         return parseProperty(eAttribute, oldValue);
@@ -125,51 +126,56 @@ public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
     @Override
     protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         Object oldId;
+        FeatureKey featureKey = FeatureKey.from(object, eReference);
         updateContainment(object, eReference, value);
         updateInstanceOf(value);
         if (!eReference.isMany()) {
-            oldId = persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), value.id());
+            oldId = persistenceBackend.storeValue(featureKey, value.id());
         }
         else {
-            List<Object> list = manyValueFrom(getFromMap(object, eReference));
+            List<Object> list = manyValueFrom(getFromMap(featureKey));
             oldId = list.get(index);
             list.set(index, value.id());
-            persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), list.toArray());
+            persistenceBackend.storeValue(featureKey, list.toArray());
         }
         return isNull(oldId) ? null : eObject((Id) oldId);
     }
 
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-        List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
+        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
+        List<Object> list = manyValueFrom(getFromMap(featureKey));
         list.add(index, serializeToProperty(eAttribute, value));
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), list.toArray());
+        persistenceBackend.storeValue(featureKey, list.toArray());
     }
 
     @Override
     protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+        FeatureKey featureKey = FeatureKey.from(object, eReference);
         updateContainment(object, eReference, referencedObject);
         updateInstanceOf(referencedObject);
-        List<Object> list = manyValueFrom(getFromMap(object, eReference));
+        List<Object> list = manyValueFrom(getFromMap(featureKey));
         list.add(index, referencedObject.id());
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), list.toArray());
+        persistenceBackend.storeValue(featureKey, list.toArray());
     }
 
     @Override
     protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        List<Object> list = manyValueFrom(getFromMap(object, eAttribute));
+        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
+        List<Object> list = manyValueFrom(getFromMap(featureKey));
         Object oldValue = list.get(index);
         list.remove(index);
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eAttribute.getName()), list.toArray());
+        persistenceBackend.storeValue(featureKey, list.toArray());
         return parseProperty(eAttribute, oldValue);
     }
 
     @Override
     protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
-        List<Object> list = manyValueFrom(getFromMap(object, eReference));
+        FeatureKey featureKey = FeatureKey.from(object, eReference);
+        List<Object> list = manyValueFrom(getFromMap(featureKey));
         Object oldId = list.get(index);
         list.remove(index);
-        persistenceBackend.storeValue(new FeatureKey(object.id(), eReference.getName()), list.toArray());
+        persistenceBackend.storeValue(featureKey, list.toArray());
         return eObject((Id) oldId);
     }
 
@@ -183,12 +189,13 @@ public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
     @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
         Object returnValue = null;
+        FeatureKey featureKey = FeatureKey.from(object, feature);
         if (!feature.isMany()) {
-            returnValue = persistenceBackend.valueOf(new FeatureKey(object.id(), feature.getName()));
+            returnValue = persistenceBackend.valueOf(featureKey);
         }
         else {
             try {
-                returnValue = mapCache.get(new FeatureKey(object.id(), feature.getName()));
+                returnValue = mapCache.get(featureKey);
             }
             catch (Exception e) {
                 NeoLogger.warn(e);

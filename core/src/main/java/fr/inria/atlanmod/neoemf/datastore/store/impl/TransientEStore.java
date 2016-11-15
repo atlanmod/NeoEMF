@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 
 import org.eclipse.emf.ecore.EClass;
@@ -43,12 +42,12 @@ public class TransientEStore implements InternalEObject.EStore {
     @Override
     public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
         Object returnValue;
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
         if (index == NO_INDEX) {
-            returnValue = singleMap.get(entry);
+            returnValue = singleMap.get(featureKey);
         }
         else {
-            List<Object> saved = manyMap.get(entry);
+            List<Object> saved = manyMap.get(featureKey);
             if (!isNull(saved)) {
                 returnValue = saved.get(index);
             }
@@ -62,62 +61,62 @@ public class TransientEStore implements InternalEObject.EStore {
 
     @Override
     public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        return index == NO_INDEX ? singleMap.put(entry, value) : manyMap.get(entry).set(index, value);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        return index == NO_INDEX ? singleMap.put(featureKey, value) : manyMap.get(featureKey).set(index, value);
     }
 
     @Override
     public boolean isSet(InternalEObject eObject, EStructuralFeature feature) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        return !feature.isMany() ? singleMap.containsKey(entry) : manyMap.containsKey(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        return !feature.isMany() ? singleMap.containsKey(featureKey) : manyMap.containsKey(featureKey);
     }
 
     @Override
     public void unset(InternalEObject eObject, EStructuralFeature feature) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
         Map<FeatureKey, ?> concernedMap = !feature.isMany() ? singleMap : manyMap;
-        concernedMap.remove(entry);
+        concernedMap.remove(featureKey);
     }
 
     @Override
     public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> res = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> res = manyMap.get(featureKey);
         return isNull(res) || res.isEmpty();
     }
 
     @Override
     public int size(InternalEObject eObject, EStructuralFeature feature) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         return isNull(list) ? 0 : list.size();
     }
 
     @Override
     public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         return !isNull(list) && list.contains(value);
     }
 
     @Override
     public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         return isNull(list) ? -1 : list.indexOf(value);
     }
 
     @Override
     public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         return isNull(list) ? -1 : list.lastIndexOf(value);
     }
 
     @Override
     public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> saved = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> saved = manyMap.get(featureKey);
         if (!isNull(saved)) {
             if (index == InternalEObject.EStore.NO_INDEX) {
                 /*
@@ -134,14 +133,14 @@ public class TransientEStore implements InternalEObject.EStore {
         else {
             List<Object> list = createValue();
             list.add(value);
-            manyMap.put(entry, list);
+            manyMap.put(featureKey, list);
         }
     }
 
     @Override
     public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> saved = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> saved = manyMap.get(featureKey);
         if (!isNull(saved)) {
             return saved.remove(index);
         }
@@ -153,8 +152,8 @@ public class TransientEStore implements InternalEObject.EStore {
 
     @Override
     public Object move(InternalEObject eObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         Object movedObject = list.remove(sourceIndex);
         list.add(targetIndex, movedObject);
         return movedObject;
@@ -162,8 +161,8 @@ public class TransientEStore implements InternalEObject.EStore {
 
     @Override
     public void clear(InternalEObject eObject, EStructuralFeature feature) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         if (!isNull(list)) {
             list.clear();
         }
@@ -171,23 +170,23 @@ public class TransientEStore implements InternalEObject.EStore {
 
     @Override
     public Object[] toArray(InternalEObject eObject, EStructuralFeature feature) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         return isNull(list) ? new Object[]{} : list.toArray();
     }
 
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast: List<Object> to List<T>
     public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<T> list = (List<T>) manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<T> list = (List<T>) manyMap.get(featureKey);
         return isNull(list) ? Arrays.copyOf(array, 0) : list.toArray(array);
     }
 
     @Override
     public int hashCode(InternalEObject eObject, EStructuralFeature feature) {
-        FeatureKey entry = new FeatureKey(PersistentEObject.from(eObject).id(), feature.getName());
-        List<Object> list = manyMap.get(entry);
+        FeatureKey featureKey = FeatureKey.from(eObject, feature);
+        List<Object> list = manyMap.get(featureKey);
         // Return the default hashCode value if the list is empty
         return isNull(list) ? 1 : list.hashCode();
     }

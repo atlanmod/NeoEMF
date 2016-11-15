@@ -12,6 +12,10 @@
 package fr.inria.atlanmod.neoemf.datastore.store.impl.cache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.Objects;
 
@@ -21,7 +25,19 @@ public class MultivaluedFeatureKey extends FeatureKey {
 
     private final int position;
 
-    public MultivaluedFeatureKey(Id id, String name, int position) {
+    public static MultivaluedFeatureKey from(InternalEObject object, EStructuralFeature feature, int position) {
+        return from(PersistentEObject.from(object), feature, position);
+    }
+
+    public static MultivaluedFeatureKey from(PersistentEObject object, EStructuralFeature feature, int position) {
+        return of(object.id(), feature.getName(), position);
+    }
+
+    public static MultivaluedFeatureKey of(Id id, String name, int position) {
+        return new MultivaluedFeatureKey(id, name, position);
+    }
+
+    protected MultivaluedFeatureKey(Id id, String name, int position) {
         super(id, name);
         this.position = position;
     }

@@ -33,7 +33,7 @@ public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
     @Override
     public FeatureKey deserialize(DataInput2 input, int i) throws IOException {
-        return new FeatureKey(
+        return FeatureKey.of(
                 idSerializer.deserialize(input, -1),
                 stringSerializer.deserialize(input, -1)
         );

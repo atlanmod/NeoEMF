@@ -30,7 +30,7 @@ public class FeatureKeySerializerTest {
         DataOutput2 out = new DataOutput2();
 
         FeatureKeySerializer serializer = new FeatureKeySerializer();
-        FeatureKey key1 = new FeatureKey(new StringId("anObject"), "anAttribute");
+        FeatureKey key1 = FeatureKey.of(new StringId("anObject"), "anAttribute");
 
         serializer.serialize(out, key1);
         FeatureKey key2 = serializer.deserialize(new DataInput2.ByteArray(out.copyBytes()), 0);

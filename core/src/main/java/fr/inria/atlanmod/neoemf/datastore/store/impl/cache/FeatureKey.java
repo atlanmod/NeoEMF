@@ -12,6 +12,10 @@
 package fr.inria.atlanmod.neoemf.datastore.store.impl.cache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -25,7 +29,19 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     private final Id id;
     private final String name;
 
-    public FeatureKey(Id id, String name) {
+    public static FeatureKey from(InternalEObject object, EStructuralFeature feature) {
+        return from(PersistentEObject.from(object), feature);
+    }
+
+    public static FeatureKey from(PersistentEObject object, EStructuralFeature feature) {
+        return of(object.id(), feature.getName());
+    }
+
+    public static FeatureKey of(Id id, String name) {
+        return new FeatureKey(id, name);
+    }
+
+    protected FeatureKey(Id id, String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
@@ -36,6 +52,13 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
     public String name() {
         return name;
+    }
+
+    /**
+     * Returns a new instance of this feature key, with a position.
+     */
+    public MultivaluedFeatureKey withPosition(int position) {
+        return MultivaluedFeatureKey.of(id, name, position);
     }
 
     /**
