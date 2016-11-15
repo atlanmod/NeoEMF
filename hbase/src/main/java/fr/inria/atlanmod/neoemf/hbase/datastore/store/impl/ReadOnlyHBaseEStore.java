@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore.store.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -37,14 +37,17 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
 
-    private final Cache<EStoreKey, Object> cache = CacheBuilder.newBuilder().softValues().build();
+    // TODO: Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
+
+    private final Cache<FeatureKey, Object> cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
 
     public ReadOnlyHBaseEStore(Resource.Internal resource) throws IOException {
         super(resource);
@@ -79,12 +82,12 @@ public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
     protected Object getFromTable(PersistentEObject object, EStructuralFeature feature) {
         PersistentEObject neoEObject = PersistentEObject.from(object);
 
-        EStoreKey entry = new EStoreKey(neoEObject.id().toString(), feature);
+        FeatureKey entry = new FeatureKey(neoEObject.id(), feature);
         Object returnValue = null;
         try {
-            returnValue = cache.get(entry, new FeatureCacheLoader(neoEObject.id(), feature));
+            returnValue = cache.get(entry, new FeatureCacheLoader());
         }
-        catch (ExecutionException e) {
+        catch (Exception e) {
             NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
         }
         return returnValue;
@@ -128,19 +131,27 @@ public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
         return new UnsupportedOperationException(MessageFormat.format(message, tableName));
     }
 
-    private class EStoreKey {
+    private class FeatureKey {
 
-        private final String eObject;
-        private final EStructuralFeature eStructuralFeature;
+        private final Id id;
+        private final EStructuralFeature feature;
 
-        public EStoreKey(String eObject, EStructuralFeature eStructuralFeature) {
-            this.eObject = eObject;
-            this.eStructuralFeature = eStructuralFeature;
+        public FeatureKey(Id id, EStructuralFeature feature) {
+            this.id = checkNotNull(id);
+            this.feature = checkNotNull(feature);
+        }
+
+        public Id id() {
+            return id;
+        }
+
+        public EStructuralFeature feature() {
+            return feature;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(getOuterType(), eObject, eStructuralFeature);
+            return Objects.hash(getOuterType(), id, feature);
         }
 
         @Override
@@ -151,9 +162,9 @@ public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
             if (isNull(obj) || getClass() != obj.getClass()) {
                 return false;
             }
-            EStoreKey other = (EStoreKey) obj;
-            return Objects.equals(eObject, other.eObject)
-                    && Objects.equals(eStructuralFeature, other.eStructuralFeature)
+            FeatureKey other = (FeatureKey) obj;
+            return Objects.equals(id, other.id)
+                    && Objects.equals(feature, other.feature)
                     && Objects.equals(getOuterType(), other.getOuterType());
         }
 
@@ -162,25 +173,24 @@ public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
         }
     }
 
-    private class FeatureCacheLoader implements Callable<Object> {
-
-        private final Id id;
-        private final EStructuralFeature feature;
-
-        public FeatureCacheLoader(Id id, EStructuralFeature feature) {
-            this.id = id;
-            this.feature = feature;
-        }
+    private class FeatureCacheLoader implements Function<FeatureKey, Object> {
 
         @Override
-        public Object call() throws Exception {
-            Result result = table.get(new Get(Bytes.toBytes(id.toString())));
-            byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
-            if (!feature.isMany()) {
+        public Object apply(FeatureKey featureKey) {
+            Result result;
+            try {
+                result = table.get(new Get(Bytes.toBytes(featureKey.id().toString())));
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(featureKey.feature().getName()));
+            if (!featureKey.feature().isMany()) {
                 return Bytes.toString(value);
             }
             else {
-                if (feature instanceof EAttribute) {
+                if (featureKey.feature() instanceof EAttribute) {
                     return NeoHBaseUtil.EncoderUtil.toStrings(value);
                 }
                 else {

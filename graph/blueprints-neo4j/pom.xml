@@ -55,14 +55,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Common dependencies -->
-
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-        </dependency>
-
-        <!-- Internal dependencies -->
+        <!-- Internal -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -78,7 +71,14 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- EMF dependencies -->
+        <!-- Common -->
+
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+        </dependency>
+
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -90,7 +90,7 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- Test -->
 
         <dependency>
             <groupId>junit</groupId>

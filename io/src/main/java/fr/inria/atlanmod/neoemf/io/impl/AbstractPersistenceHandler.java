@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.HashMultimap;
 
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -74,11 +74,11 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         this.opCount = 0;
         this.elementIdStack = new ArrayDeque<>();
 
-        this.elementIdCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
-        this.metaclassIdCache = CacheBuilder.newBuilder().build();
+        this.elementIdCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        this.metaclassIdCache = Caffeine.newBuilder().build();
 
         this.unlinkedElementsMap = HashMultimap.create();
-        this.conflictElementIdCache = CacheBuilder.newBuilder().build();
+        this.conflictElementIdCache = Caffeine.newBuilder().build();
 
         NeoLogger.info("{0} created", getClass().getSimpleName());
         NeoLogger.info("{0} chunk = {1}", getClass().getSimpleName(), OPS_BETWEEN_COMMITS_DEFAULT);
@@ -194,9 +194,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             unlinkedElementsMap.clear();
         }
 
-        long conflictedId = conflictElementIdCache.size();
+        long conflictedId = conflictElementIdCache.estimatedSize();
         if (conflictedId > 0) {
-            NeoLogger.info("{0} key conflicts", conflictElementIdCache.size());
+            NeoLogger.info("{0} key conflicts", conflictElementIdCache.estimatedSize());
             conflictElementIdCache.invalidateAll();
         }
 

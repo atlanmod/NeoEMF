@@ -41,7 +41,31 @@
             <artifactId>hadoop-common</artifactId>
         </dependency>
 
-        <!-- Common dependencies -->
+        <!-- Internal -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Common -->
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -53,16 +77,7 @@
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
 
-        <!-- Internal dependencies -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- EMF dependencies -->
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -74,7 +89,7 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- Test -->
 
         <dependency>
             <groupId>junit</groupId>

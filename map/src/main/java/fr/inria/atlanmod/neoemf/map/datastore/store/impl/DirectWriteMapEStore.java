@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
@@ -36,14 +36,16 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersistenceBackend> {
+
+    // TODO: Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
      * An in-memory cache for persistent EObjects.
@@ -53,7 +55,7 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
 
     public DirectWriteMapEStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
+        this.loadedEObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
@@ -279,13 +281,13 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
         PersistentEObject persistentEObject = null;
         if (!isNull(id)) {
             try {
-                persistentEObject = loadedEObjectsCache.get(id, new PersistentEObjectCacheLoader(id));
+                persistentEObject = loadedEObjectsCache.get(id, new PersistentEObjectCacheLoader());
                 if (persistentEObject.resource() != resource()) {
                     persistentEObject.resource(resource());
                 }
             }
-            catch (ExecutionException e) {
-                NeoLogger.error(e.getCause());
+            catch (Exception e) {
+                NeoLogger.error(e);
             }
         }
         return persistentEObject;
@@ -316,20 +318,18 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
         }
     }
 
-    protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        return persistenceBackend.valueOf(new FeatureKey(object.id(), feature.getName()));
+    protected Object getFromMap(FeatureKey featureKey) {
+        return persistenceBackend.valueOf(featureKey);
     }
 
-    private class PersistentEObjectCacheLoader implements Callable<PersistentEObject> {
+    protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
+        return getFromMap(new FeatureKey(object.id(), feature.getName()));
+    }
 
-        private final Id id;
-
-        public PersistentEObjectCacheLoader(Id id) {
-            this.id = id;
-        }
+    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
         @Override
-        public PersistentEObject call() throws Exception {
+        public PersistentEObject apply(Id id) {
             PersistentEObject persistentEObject;
             EClass eClass = resolveInstanceOf(id);
             if (!isNull(eClass)) {
@@ -350,8 +350,7 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
                 persistentEObject.id(id);
             }
             else {
-                // TODO Find a better exception to thrown
-                throw new Exception("Element " + id + " does not have an associated EClass");
+                throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
             return persistentEObject;
         }

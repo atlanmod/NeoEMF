@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
@@ -54,7 +54,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
 
     public BlueprintsConflictsResolverPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
-        loadedVertices = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        loadedVertices = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {
@@ -162,7 +162,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
 
     protected Vertex getVertex(final Id id) throws Exception {
         try {
-            return loadedVertices.get(id, () -> getPersistenceBackend().getVertex(id));
+            return loadedVertices.get(id, key -> getPersistenceBackend().getVertex(key));
         }
         catch (Exception e) {
             throw new NoSuchElementException("Unable to find an element with Id '" + id.toString() + "'");
@@ -171,7 +171,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
 
     protected Vertex createVertex(final Id id) throws Exception {
         try {
-            return loadedVertices.get(id, () -> getPersistenceBackend().addVertex(id));
+            return loadedVertices.get(id, key -> getPersistenceBackend().addVertex(key));
         }
         catch (Exception e) {
             throw new AlreadyExistingIdException("Already existing Id '" + id.toString() + "'");

@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -42,7 +42,7 @@ class PersistentEObjectAdapter {
      * been garbage collected.
      */
     private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
-            CacheBuilder.newBuilder().weakKeys().build();
+            Caffeine.newBuilder().weakKeys().build();
 
     private PersistentEObjectAdapter() {
     }

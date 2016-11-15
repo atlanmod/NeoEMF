@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.beans;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import static java.util.Objects.isNull;
 
@@ -58,8 +58,8 @@ public class Namespace {
         private final Cache<String, Namespace> namespacesByUri;
 
         private Registry() {
-            namespacesByPrefix = CacheBuilder.newBuilder().build();
-            namespacesByUri = CacheBuilder.newBuilder().build();
+            namespacesByPrefix = Caffeine.newBuilder().build();
+            namespacesByUri = Caffeine.newBuilder().build();
         }
 
         public static Registry getInstance() {

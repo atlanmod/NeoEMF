@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store.impl;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -30,20 +30,20 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static java.util.Objects.isNull;
 
 
 public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
 
-    private static final int DEFAULT_CACHE_SIZE = 100;
+    // TODO: Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 1000;
 
     private final LoadingCache<FeatureKey, Object> mapCache;
 
     public DirectWriteMapListsEStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        this.mapCache = CacheBuilder.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build(new Tuple2CacheLoader());
+        this.mapCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build(new Tuple2CacheLoader());
     }
 
     @Override
@@ -190,8 +190,8 @@ public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
             try {
                 returnValue = mapCache.get(new FeatureKey(object.id(), feature.getName()));
             }
-            catch (ExecutionException e) {
-                NeoLogger.warn(e.getCause());
+            catch (Exception e) {
+                NeoLogger.warn(e);
             }
         }
         return returnValue;
@@ -202,7 +202,7 @@ public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
         return (List<Object>) value;
     }
 
-    private class Tuple2CacheLoader extends CacheLoader<FeatureKey, Object> {
+    private class Tuple2CacheLoader implements CacheLoader<FeatureKey, Object> {
 
         private static final int ARRAY_SIZE_OFFSET = 10;
 

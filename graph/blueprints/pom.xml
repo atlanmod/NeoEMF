@@ -30,7 +30,7 @@
             <artifactId>blueprints-core</artifactId>
         </dependency>
 
-        <!-- Internal dependencies -->
+        <!-- Internal -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -46,7 +46,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Common dependencies -->
+        <!-- Common -->
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-configuration</groupId>
@@ -73,7 +78,7 @@
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
 
-        <!-- EMF dependencies -->
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -85,7 +90,7 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- Test -->
 
         <dependency>
             <groupId>junit</groupId>

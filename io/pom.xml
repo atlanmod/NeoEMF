@@ -22,7 +22,7 @@
 
     <dependencies>
 
-        <!-- Internal dependencies -->
+        <!-- Internal -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -31,7 +31,19 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- EMF dependencies -->
+        <!-- Common -->
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -43,7 +55,7 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- Test -->
 
         <dependency>
             <groupId>junit</groupId>

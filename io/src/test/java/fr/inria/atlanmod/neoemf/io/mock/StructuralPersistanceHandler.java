@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
@@ -39,7 +39,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     private final List<ClassifierMock> elements;
 
     public StructuralPersistanceHandler() {
-        this.classifierMockCache = CacheBuilder.newBuilder().build();
+        this.classifierMockCache = Caffeine.newBuilder().build();
         this.classifierStack = new ArrayDeque<>();
         this.elements = new ArrayList<>();
     }

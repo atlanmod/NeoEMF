@@ -160,6 +160,7 @@
         <hadoop.version>2.6.0</hadoop.version>                      <!-- Update available ! -->
 
         <!-- Commons -->
+        <caffeine.version>2.3.4</caffeine.version>
         <cglib-nodep.version>3.2.4</cglib-nodep.version>
         <commons-collections.version>4.1</commons-collections.version>
         <commons-configuration.version>1.10</commons-configuration.version>
@@ -239,6 +240,12 @@
             </dependency>
 
             <!-- Commons -->
+
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>cglib</groupId>

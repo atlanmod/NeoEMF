@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
@@ -30,19 +30,22 @@ import static java.util.Objects.isNull;
 
 public class DirectWriteBlueprintsCacheManyEStore extends DirectWriteBlueprintsEStore {
 
-    // Cache Object[] instead of Vertex[] because
+    // TODO: Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
+
+    // Cache Object[] instead of Vertex[] because ...
     // TODO cache many properties in addition to vertices
-    private final Cache<CacheKey, Object[]> cache;
+    private final Cache<FeatureKey, Object[]> cache;
 
     public DirectWriteBlueprintsCacheManyEStore(Internal resource, BlueprintsPersistenceBackend graph) {
         super(resource, graph);
-        cache = CacheBuilder.newBuilder().softValues().build();
+        cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
     protected Object getReference(PersistentEObject object, EReference eReference, int index) {
         if (eReference.isMany()) {
-            CacheKey key = new CacheKey(object.id(), eReference);
+            FeatureKey key = new FeatureKey(object.id(), eReference);
             Object[] list = cache.getIfPresent(key);
             if (!isNull(list)) {
                 Object o = list[index];
@@ -84,14 +87,22 @@ public class DirectWriteBlueprintsCacheManyEStore extends DirectWriteBlueprintsE
         }
     }
 
-    private static class CacheKey {
+    private static class FeatureKey {
 
         public final Id id;
         public final EStructuralFeature feature;
 
-        public CacheKey(Id id, EStructuralFeature feature) {
+        public FeatureKey(Id id, EStructuralFeature feature) {
             this.id = id;
             this.feature = feature;
+        }
+
+        public Id id() {
+            return id;
+        }
+
+        public EStructuralFeature feature() {
+            return feature;
         }
 
         @Override
@@ -101,8 +112,8 @@ public class DirectWriteBlueprintsCacheManyEStore extends DirectWriteBlueprintsE
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof CacheKey) {
-                return id.equals(((CacheKey) obj).id) && feature.equals(((CacheKey) obj).feature);
+            if (obj instanceof FeatureKey) {
+                return id.equals(((FeatureKey) obj).id) && feature.equals(((FeatureKey) obj).feature);
             }
             return super.equals(obj);
         }

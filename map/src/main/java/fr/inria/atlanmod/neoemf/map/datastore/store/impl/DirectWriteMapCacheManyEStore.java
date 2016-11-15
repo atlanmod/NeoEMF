@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
-import com.google.common.cache.CacheStats;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.stats.CacheStats;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
@@ -29,13 +28,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
+
+    // TODO: Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
 
     private static final long TIMER_PERIOD = 20000;
 
@@ -43,7 +43,7 @@ public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
 
     public DirectWriteMapCacheManyEStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        cachedArray = CacheBuilder.newBuilder().softValues().recordStats().build();
+        cachedArray = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).recordStats().build();
         new Timer(true).scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -86,30 +86,11 @@ public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
         FeatureKey key = new FeatureKey(object.id(), feature.getName());
         Object returnValue = null;
         try {
-            returnValue = cachedArray.get(key, new CacheLoader(object, feature));
+            returnValue = cachedArray.get(key, super::getFromMap);
         }
-        catch (ExecutionException e) {
-            NeoLogger.warn(e.getCause());
-        }
-        catch (InvalidCacheLoadException ignore) {
-//		    NeoLogger.warn(e.getCause());
+        catch (Exception e) {
+            NeoLogger.warn(e);
         }
         return returnValue;
-    }
-
-    private class CacheLoader implements Callable<Object> {
-
-        private final PersistentEObject persistentEObject;
-        private final EStructuralFeature feature;
-
-        public CacheLoader(PersistentEObject persistentEObject, EStructuralFeature feature) {
-            this.persistentEObject = persistentEObject;
-            this.feature = feature;
-        }
-
-        @Override
-        public Object call() throws Exception {
-            return DirectWriteMapCacheManyEStore.super.getFromMap(persistentEObject, feature);
-        }
     }
 }

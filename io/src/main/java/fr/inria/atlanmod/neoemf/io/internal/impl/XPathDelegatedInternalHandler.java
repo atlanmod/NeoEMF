@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.internal.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Identifier;
@@ -216,7 +216,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             public Node(String key) {
                 this.key = key;
                 this.value = 0;
-                this.children = CacheBuilder.newBuilder().build();
+                this.children = Caffeine.newBuilder().build();
             }
 
             public String getKey() {
@@ -253,7 +253,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             }
 
             public long size() {
-                long size = children.size();
+                long size = children.estimatedSize();
                 for (Node child : children.asMap().values()) {
                     size += child.size();
                 }

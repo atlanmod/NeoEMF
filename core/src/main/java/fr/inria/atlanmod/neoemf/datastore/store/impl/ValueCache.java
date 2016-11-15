@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -37,7 +37,7 @@ public class ValueCache<V> {
     }
 
     public ValueCache(int cacheSize) {
-        this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize).build();
+        this.cache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     protected V get(InternalEObject object, EStructuralFeature feature) {

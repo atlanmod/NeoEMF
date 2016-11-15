@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore.store.impl;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -56,6 +56,9 @@ import static java.util.Objects.isNull;
 // TODO Continue cleaning, there is still code duplication
 public class DirectWriteHBaseEStore extends AbstractDirectWriteEStore<HBasePersistenceBackend> {
 
+    // TODO: Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
+
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 
     private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
@@ -68,7 +71,7 @@ public class DirectWriteHBaseEStore extends AbstractDirectWriteEStore<HBasePersi
     private static final int ATTEMP_TIMES_DEFAULT = 10;
     private static final long SLEEP_DEFAULT = 1L;
 
-    private final Cache<Object, PersistentEObject> loadedEObjects = CacheBuilder.newBuilder().softValues().build();
+    private final Cache<Id, PersistentEObject> loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
 
     protected HTable table;
 
