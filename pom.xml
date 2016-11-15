@@ -177,11 +177,22 @@
         <ecore.version>2.11.1-v20150805-0538</ecore.version>
         <xcore.version>1.1.100</xcore.version>
 
+        <!-- Annotations -->
+        <javax-annotations.version>3.0.1</javax-annotations.version>
+
         <!-- Test -->
         <assertj.version>3.5.2</assertj.version>
         <junit.version>4.12</junit.version>
-        <mockito.version>1.10.19</mockito.version>                  <!-- Update available (BETA) ! -->
+        <mockito.version>1.10.19</mockito.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>${javax-annotations.version}</version>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -464,15 +475,6 @@
                     <argLine>-Xms256m -Xmx1g -XX:+UseConcMarkSweepGC</argLine>
                     <failIfNoTests>false</failIfNoTests>
                     <runOrder>random</runOrder>
-                    <includes>
-                        <!-- Include tests -->
-                        <include>**/Test*.java</include>
-                        <include>**/*Test.java</include>
-                        <include>**/*TestCase.java</include>
-
-                        <!-- Include benchmarks -->
-                        <!--<include>**/*Bench.java</include>-->
-                    </includes>
                 </configuration>
             </plugin>
 

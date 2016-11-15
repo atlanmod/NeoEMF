@@ -40,6 +40,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     /**
      * Returns a list of store options from the given {@code options}.
      */
+    @SuppressWarnings("unchecked")
     protected static List<PersistentResourceOptions.StoreOption> storeOptionsFrom(Map<?, ?> options) {
         return (List<PersistentResourceOptions.StoreOption>) options.get(PersistentResourceOptions.STORE_OPTIONS);
     }
