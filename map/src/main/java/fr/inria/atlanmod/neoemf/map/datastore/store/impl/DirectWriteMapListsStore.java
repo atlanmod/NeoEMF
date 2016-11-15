@@ -34,14 +34,14 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 
-public class DirectWriteMapListsEStore extends DirectWriteMapEStore {
+public class DirectWriteMapListsStore extends DirectWriteMapStore {
 
     // TODO: Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 1000;
 
     private final LoadingCache<FeatureKey, Object> mapCache;
 
-    public DirectWriteMapListsEStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
+    public DirectWriteMapListsStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
         this.mapCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build(new Tuple2CacheLoader());
     }

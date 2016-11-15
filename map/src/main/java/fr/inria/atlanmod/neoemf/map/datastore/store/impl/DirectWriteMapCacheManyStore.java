@@ -32,7 +32,7 @@ import java.util.TimerTask;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
-public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
+public class DirectWriteMapCacheManyStore extends DirectWriteMapStore {
 
     // TODO: Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
@@ -41,7 +41,7 @@ public class DirectWriteMapCacheManyEStore extends DirectWriteMapEStore {
 
     private final Cache<FeatureKey, Object> cachedArray;
 
-    public DirectWriteMapCacheManyEStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
+    public DirectWriteMapCacheManyStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
         cachedArray = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).recordStats().build();
         new Timer(true).scheduleAtFixedRate(new TimerTask() {

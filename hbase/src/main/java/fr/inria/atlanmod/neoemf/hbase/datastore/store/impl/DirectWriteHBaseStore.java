@@ -17,8 +17,8 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.hbase.datastore.HBasePersistenceBackend;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
@@ -54,7 +54,7 @@ import java.util.concurrent.TimeoutException;
 import static java.util.Objects.isNull;
 
 // TODO Continue cleaning, there is still code duplication
-public class DirectWriteHBaseEStore extends AbstractDirectWriteEStore<HBasePersistenceBackend> {
+public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersistenceBackend> {
 
     // TODO: Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
@@ -75,7 +75,7 @@ public class DirectWriteHBaseEStore extends AbstractDirectWriteEStore<HBasePersi
 
     protected HTable table;
 
-    public DirectWriteHBaseEStore(Resource.Internal resource) throws IOException {
+    public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
 
         Configuration conf = HBaseConfiguration.create();
@@ -276,7 +276,7 @@ public class DirectWriteHBaseEStore extends AbstractDirectWriteEStore<HBasePersi
     }
 
     @Override
-    public PersistentEStore getEStore() {
+    public PersistentStore getEStore() {
         return this;
     }
 

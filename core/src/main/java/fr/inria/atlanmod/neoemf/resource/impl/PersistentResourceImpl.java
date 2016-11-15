@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoURI;
@@ -62,7 +62,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
     private final DummyRootEObject dummyRootEObject;
 
-    protected PersistentEStore eStore;
+    protected PersistentStore eStore;
 
     /**
      * The underlying {@link PersistenceBackend} that stores the data.
@@ -77,7 +77,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         super(uri);
         this.dummyRootEObject = new DummyRootEObject(this);
         this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
-        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this, persistenceBackend);
+        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, persistenceBackend);
         this.isPersistent = false;
         // Stop the backend when the application is terminated
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -144,7 +144,12 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
             PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
             PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(persistenceBackend, newBackend);
             this.persistenceBackend = newBackend;
-            this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
+            try {
+                this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
+            }
+            catch (InvalidOptionsException e) {
+                throw new IOException(e);
+            }
             this.isLoaded = true;
             this.isPersistent = true;
         }
@@ -160,7 +165,12 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
                 if (getFile().exists() || !isNull(uri.authority())) {
                     // Check authority to enable remote resource loading
                     this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-                    this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentEStore(this, persistenceBackend, options);
+                    try {
+                        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
+                    }
+                    catch (InvalidOptionsException e) {
+                        throw new IOException(e);
+                    }
                     this.isPersistent = true;
                     dummyRootEObject.setMapped(true);
                 }
@@ -193,7 +203,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         this.persistenceBackend.close();
 
         this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
-        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientEStore(this, persistenceBackend);
+        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, persistenceBackend);
 
         this.isPersistent = false;
         this.isLoaded = false;

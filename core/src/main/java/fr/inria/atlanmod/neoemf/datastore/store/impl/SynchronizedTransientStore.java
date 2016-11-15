@@ -19,9 +19,9 @@ import java.util.List;
  * A simple {@link org.eclipse.emf.ecore.InternalEObject.EStore} implementation that uses synchronized collections to
  * store the data in memory, using {@link Collections#synchronizedMap(java.util.Map)}.
  */
-public class SynchronizedTransientEStore extends TransientEStore {
+public class SynchronizedTransientStore extends AbstractTransientStore {
 
-    public SynchronizedTransientEStore() {
+    public SynchronizedTransientStore() {
         super();
         singleMap = Collections.synchronizedMap(singleMap);
         manyMap = Collections.synchronizedMap(manyMap);

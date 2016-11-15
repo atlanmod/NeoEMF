@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.core.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.OwnedTransientEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.OwnedTransientStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
 
@@ -100,7 +100,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
             eStore = ((PersistentResource) resource).eStore();
         }
         else {
-            eStore = new OwnedTransientEStore(this);
+            eStore = new OwnedTransientStore(this);
         }
         // Move contents from oldStore to eStore
         if (!isNull(oldStore) && !isNull(eStore) && eStore != oldStore) {
@@ -213,7 +213,7 @@ public class PersistentEObjectImpl extends MinimalEStoreEObjectImpl implements P
     @Override
     public EStore eStore() {
         if (isNull(eStore)) {
-            eStore = new OwnedTransientEStore(this);
+            eStore = new OwnedTransientStore(this);
         }
         return eStore;
     }

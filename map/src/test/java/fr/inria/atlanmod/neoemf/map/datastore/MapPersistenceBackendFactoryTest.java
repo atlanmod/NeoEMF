@@ -12,17 +12,18 @@
 package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactoryTest;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapCacheManyEStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapEStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesEStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsEStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapCacheManyStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsStore;
 import fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 
@@ -96,8 +97,8 @@ public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackend
     public void testCreateTransientEStore() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
 
-        PersistentEStore eStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
-        assertThat(eStore).isInstanceOf(DirectWriteMapEStore.class); // "Invalid EStore created"
+        PersistentStore eStore = persistenceBackendFactory.createTransientStore(null, transientBackend);
+        assertThat(eStore).isInstanceOf(DirectWriteMapStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, transientBackend);
     }
@@ -110,81 +111,81 @@ public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackend
     }
 
     @Test
-    public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapResourceOptions.newBuilder().asMap());
 
-        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, MapResourceOptions.newBuilder().asMap());
-        assertThat(eStore).isInstanceOf(DirectWriteMapEStore.class); // "Invalid EStore created"
+        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, MapResourceOptions.newBuilder().asMap());
+        assertThat(eStore).isInstanceOf(DirectWriteMapStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
         Map<String, Object> options = MapResourceOptions.newBuilder()
                 .directWrite()
                 .asMap();
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapResourceOptions.newBuilder().asMap());
 
-        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteMapEStore.class); // "Invalid EStore created"
+        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
+        assertThat(eStore).isInstanceOf(DirectWriteMapStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteWithListsOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void testCreatePersistentEStoreDirectWriteWithListsOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
         Map<String, Object> options = MapResourceOptions.newBuilder()
                 .directWriteLists()
                 .asMap();
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapResourceOptions.newBuilder().asMap());
 
-        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteMapListsEStore.class); // "Invalid EStore created"
+        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
+        assertThat(eStore).isInstanceOf(DirectWriteMapListsStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteWithIndexesOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void testCreatePersistentEStoreDirectWriteWithIndexesOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
         Map<String, Object> options = MapResourceOptions.newBuilder()
                 .directWriteIndices()
                 .asMap();
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapResourceOptions.newBuilder().asMap());
 
-        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteMapIndicesEStore.class); // "Invalid EStore created"
+        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
+        assertThat(eStore).isInstanceOf(DirectWriteMapIndicesStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
-    public void testCreatePersistentEStoreAutocommitOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void testCreatePersistentEStoreAutocommitOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
         Map<String, Object> options = MapResourceOptions.newBuilder()
                 .autocommit()
                 .asMap();
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapResourceOptions.newBuilder().asMap());
 
-        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(AutocommitEStoreDecorator.class); // "Invalid EStore created"
+        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
+        assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
-    public void testCreatePersistentEStoreCachedManyOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public void testCreatePersistentEStoreCachedManyOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
         Map<String, Object> options = MapResourceOptions.newBuilder()
                 .directWriteCacheMany()
                 .asMap();
 
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapResourceOptions.newBuilder().asMap());
 
-        PersistentEStore eStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteMapCacheManyEStore.class); // "Invalid EStore created"
+        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
+        assertThat(eStore).isInstanceOf(DirectWriteMapCacheManyStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
@@ -199,12 +200,12 @@ public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackend
         assertThat(transientBackend).isInstanceOf(MapPersistenceBackend.class); // "Transient backend is not an instance of MapPersistenceBackend"
 
         MapPersistenceBackend transientMap = (MapPersistenceBackend) transientBackend;
-        //PersistentEStore transientEStore = persistenceBackendFactory.createTransientEStore(null, transientBackend);
+        //PersistentStore transientEStore = persistenceBackendFactory.createTransientStore(null, transientBackend);
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapResourceOptions.newBuilder().asMap());
         assertThat(persistentBackend).isInstanceOf(MapPersistenceBackend.class); // "Persistent backend is not an instance of MapPersistenceBackend"
 
         MapPersistenceBackend persistentMap = (MapPersistenceBackend) persistentBackend;
-        //PersistentEStore persistentEStore = persistenceBackendFactory.createPersistentEStore(null, persistentBackend, options);
+        //PersistentStore persistentEStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
         persistenceBackendFactory.copyBackend(transientMap, persistentMap);
         for (String tKey : transientMap.getAll().keySet()) {
             assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"
@@ -212,7 +213,7 @@ public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackend
         }
     }
 
-    private void assertHasInnerBackend(PersistentEStore store, PersistenceBackend expectedInnerBackend) {
+    private void assertHasInnerBackend(PersistentStore store, PersistenceBackend expectedInnerBackend) {
         PersistenceBackend innerBackend = getInnerBackend(store);
         assertThat(innerBackend).isSameAs(expectedInnerBackend); // "The backend in the EStore is not the created one"
     }

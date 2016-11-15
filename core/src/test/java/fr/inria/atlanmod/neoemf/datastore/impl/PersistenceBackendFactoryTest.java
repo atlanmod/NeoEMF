@@ -13,15 +13,16 @@ package fr.inria.atlanmod.neoemf.datastore.impl;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.CachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.FeatureCachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.CachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.FeatureCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
@@ -38,128 +39,128 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentEStore(PersistentResource,
+ * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentStore(PersistentResource,
  * PersistenceBackend, Map)}
  */
 public class PersistenceBackendFactoryTest extends AllTest {
 
-    private static final String SEARCHEABLE_RESOURCE_ESTORE_NAME = PersistentEStore.class.getSimpleName();
+    private static final String SEARCHEABLE_RESOURCE_ESTORE_NAME = PersistentStore.class.getSimpleName();
 
     private static final String MOCK = "mock";
 
     private final AbstractPersistenceBackendFactory persistenceBackendFactory = mock(AbstractPersistenceBackendFactory.class);
-    private final PersistentEStore mockPersistentEStore = mock(PersistentEStore.class);
+    private final PersistentStore mockPersistentStore = mock(PersistentStore.class);
     private final PersistenceBackend mockPersistentBackend = mock(PersistenceBackend.class);
 
     @Before
-    public void setUp() throws InvalidDataStoreException {
+    public void setUp() throws InvalidDataStoreException, InvalidOptionsException {
         when(persistenceBackendFactory.createPersistentBackend(any(File.class), any(Map.class))).thenReturn(mockPersistentBackend);
-        when(persistenceBackendFactory.createPersistentEStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenCallRealMethod();
-        when(persistenceBackendFactory.internalCreatePersistentEStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mockPersistentEStore);
+        when(persistenceBackendFactory.createPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenCallRealMethod();
+        when(persistenceBackendFactory.createSpecificPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mockPersistentStore);
 
         PersistenceBackendFactoryRegistry.unregisterAll();
         PersistenceBackendFactoryRegistry.register(MOCK, persistenceBackendFactory);
     }
 
-    private PersistentEStore getChildStore(EStore store) throws SecurityException, IllegalArgumentException {
-        assertThat(store).isInstanceOf(PersistentEStore.class); // "Invalid call, can not get the child store if the given one is not a DelegatedResourceEStoreImpl"
-        return ((PersistentEStore) store).getEStore();
+    private PersistentStore getChildStore(EStore store) throws SecurityException, IllegalArgumentException {
+        assertThat(store).isInstanceOf(PersistentStore.class); // "Invalid call, can not get the child store if the given one is not a DelegatedResourceEStoreImpl"
+        return ((PersistentStore) store).getEStore();
     }
 
     @Test
-    public void testNoOptions() throws InvalidDataStoreException {
-        PersistentEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, PersistentResourceOptions.newBuilder().asMap());
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+    public void testNoOptions() throws InvalidDataStoreException, InvalidOptionsException {
+        PersistentStore store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, PersistentResourceOptions.newBuilder().asMap());
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
     }
 
     @Test
-    public void testIsSetCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testIsSetCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .cacheIsSet()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
     }
 
     @Test
-    public void testLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .log()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoggingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
     }
 
     @Test
-    public void testSizeCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testSizeCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .cacheSizes()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
     }
 
     @Test
-    public void testEStructuralFeatureCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testEStructuralFeatureCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .cacheFeatures()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(FeatureCachingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
     }
 
     @Test
-    public void testLoadedObjectCounterLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testLoadedObjectCounterLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .countLoadedObjects()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoadedObjectCounterEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -167,25 +168,25 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingEStoreDecorator} and {@link LoggingEStoreDecorator}
+     * 2 stores : {@link IsSetCachingStoreDecorator} and {@link LoggingStoreDecorator}
      */
     @Test
-    public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .cacheIsSet()
                 .log()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoggingEStoreDecorator.class);
-
-        store = getChildStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
+
+        store = getChildStore(store);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -193,25 +194,25 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingEStoreDecorator} and {@link CachingEStoreDecorator}
+     * 2 stores : {@link IsSetCachingStoreDecorator} and {@link CachingStoreDecorator}
      */
     @Test
-    public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
-
-        store = getChildStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
+
+        store = getChildStore(store);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -219,25 +220,25 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link CachingEStoreDecorator} and {@link FeatureCachingEStoreDecorator}
+     * 2 stores : {@link CachingStoreDecorator} and {@link FeatureCachingStoreDecorator}
      */
     @Test
-    public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .cacheSizes()
                 .cacheFeatures()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
-
-        store = getChildStore(store);
-        assertThat(store).isInstanceOf(FeatureCachingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
+
+        store = getChildStore(store);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);
@@ -245,11 +246,11 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 4 stores : {@link FeatureCachingEStoreDecorator}, {@link IsSetCachingEStoreDecorator},
-     * {@link LoggingEStoreDecorator} and {@link CachingEStoreDecorator}
+     * 4 stores : {@link FeatureCachingStoreDecorator}, {@link IsSetCachingStoreDecorator},
+     * {@link LoggingStoreDecorator} and {@link CachingStoreDecorator}
      */
     @Test
-    public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
+    public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
         Map<String, Object> options = PersistentResourceOptions.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
@@ -257,22 +258,22 @@ public class PersistenceBackendFactoryTest extends AllTest {
                 .log()
                 .asMap();
 
-        PersistentEStore store;
+        PersistentStore store;
 
-        store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(LoggingEStoreDecorator.class);
-
-        store = getChildStore(store);
-        assertThat(store).isInstanceOf(CachingEStoreDecorator.class);
+        store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
+        assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(FeatureCachingEStoreDecorator.class);
+        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(IsSetCachingEStoreDecorator.class);
+        assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(PersistentEStore.class);
+        assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
+
+        store = getChildStore(store);
+        assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(SEARCHEABLE_RESOURCE_ESTORE_NAME);

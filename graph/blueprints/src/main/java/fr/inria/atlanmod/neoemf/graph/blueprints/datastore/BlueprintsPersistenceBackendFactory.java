@@ -17,14 +17,15 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.graph.blueprints.config.InternalBlueprintsConfiguration;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsCacheManyEStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsEStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsCacheManyStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -75,19 +76,19 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     }
 
     @Override
-    protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        PersistentEStore eStore;
-        List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
+        PersistentStore eStore;
+        List<PersistentResourceOptions.StoreOption> storeOptions = getStoreOptions(options);
 
         // Store
         if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT))) {
-            eStore = new DirectWriteBlueprintsEStore(resource, (BlueprintsPersistenceBackend) backend);
+            eStore = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.CACHE_MANY)) {
-            eStore = new DirectWriteBlueprintsCacheManyEStore(resource, (BlueprintsPersistenceBackend) backend);
+            eStore = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else {
             throw new InvalidDataStoreException("No valid base EStore found in the options");
@@ -96,10 +97,10 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         if (!isNull(storeOptions) && storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
             if (options.containsKey(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK)) {
                 int autoCommitChunk = Integer.parseInt((String) options.get(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK));
-                eStore = new AutocommitEStoreDecorator(eStore, autoCommitChunk);
+                eStore = new AutocommitStoreDecorator(eStore, autoCommitChunk);
             }
             else {
-                eStore = new AutocommitEStoreDecorator(eStore);
+                eStore = new AutocommitStoreDecorator(eStore);
             }
         }
         return eStore;
@@ -154,11 +155,11 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     }
 
     @Override
-    public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        return new DirectWriteBlueprintsEStore(resource, (BlueprintsPersistenceBackend) backend);
+        return new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
     }
 
     @Override

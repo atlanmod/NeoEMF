@@ -12,147 +12,149 @@
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
 
-/**
- * A {@link PersistentEStore} wrapper that delegates method calls to an
- * internal {@link PersistentEStore}.
- */
-public abstract class AbstractPersistentEStoreDecorator extends AbstractPersistentEStore implements PersistentEStore {
+import java.util.HashSet;
+import java.util.Set;
 
-    /**
-     * The decorated {@link PersistentEStore}.
-     */
-    final protected PersistentEStore eStore;
+public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDecorator {
 
-    public AbstractPersistentEStoreDecorator(PersistentEStore eStore) {
-        this.eStore = eStore;
+    private final Set<Id> loadedObjects = new HashSet<>();
+
+    public LoadedObjectCounterStoreDecorator(PersistentStore eStore) {
+        super(eStore);
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
     @Override
     public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-        return eStore.get(object, feature, index);
+        setAsLoaded(object);
+        Object result = super.get(object, feature, index);
+        setAsLoaded(result);
+        return result;
     }
 
     @Override
     public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        return eStore.set(object, feature, index, value);
+        setAsLoaded(object);
+        return super.set(object, feature, index, value);
     }
 
     @Override
     public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        return eStore.isSet(object, feature);
+        setAsLoaded(object);
+        return super.isSet(object, feature);
     }
 
     @Override
     public void unset(InternalEObject object, EStructuralFeature feature) {
-        eStore.unset(object, feature);
+        setAsLoaded(object);
+        super.unset(object, feature);
     }
 
     @Override
     public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-        return eStore.isEmpty(object, feature);
+        setAsLoaded(object);
+        return super.isEmpty(object, feature);
     }
 
     @Override
     public int size(InternalEObject object, EStructuralFeature feature) {
-        return eStore.size(object, feature);
+        setAsLoaded(object);
+        return super.size(object, feature);
     }
 
     @Override
     public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-        return eStore.contains(object, feature, value);
+        setAsLoaded(object);
+        return super.contains(object, feature, value);
     }
 
     @Override
     public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        return eStore.indexOf(object, feature, value);
+        setAsLoaded(object);
+        return super.indexOf(object, feature, value);
     }
 
     @Override
     public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        return eStore.lastIndexOf(object, feature, value);
+        setAsLoaded(object);
+        return super.lastIndexOf(object, feature, value);
     }
 
     @Override
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        eStore.add(object, feature, index, value);
+        setAsLoaded(object);
+        super.add(object, feature, index, value);
     }
 
     @Override
     public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        return eStore.remove(object, feature, index);
+        setAsLoaded(object);
+        return super.remove(object, feature, index);
     }
 
     @Override
     public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        return eStore.move(object, feature, targetIndex, sourceIndex);
+        setAsLoaded(object);
+        return super.move(object, feature, targetIndex, sourceIndex);
     }
 
     @Override
     public void clear(InternalEObject object, EStructuralFeature feature) {
-        eStore.clear(object, feature);
+        setAsLoaded(object);
+        super.clear(object, feature);
     }
 
     @Override
     public Object[] toArray(InternalEObject object, EStructuralFeature feature) {
-        return eStore.toArray(object, feature);
+        setAsLoaded(object);
+        return super.toArray(object, feature);
     }
 
     @Override
     public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
-        return eStore.toArray(object, feature, array);
+        setAsLoaded(object);
+        return super.toArray(object, feature, array);
     }
 
     @Override
     public int hashCode(InternalEObject object, EStructuralFeature feature) {
-        return eStore.hashCode(object, feature);
+        setAsLoaded(object);
+        return super.hashCode(object, feature);
     }
 
     @Override
     public InternalEObject getContainer(InternalEObject object) {
-        return eStore.getContainer(object);
+        setAsLoaded(object);
+        return super.getContainer(object);
     }
 
     @Override
     public EStructuralFeature getContainingFeature(InternalEObject object) {
-        return eStore.getContainingFeature(object);
+        setAsLoaded(object);
+        return super.getContainingFeature(object);
     }
 
-    @Override
-    public EObject create(EClass eClass) {
-        return eStore.create(eClass);
+    private void setAsLoaded(Object object) {
+        if (object instanceof PersistentEObject) {
+            loadedObjects.add(((PersistentEObject) object).id());
+        }
+        else {
+            NeoLogger.debug("Not an PersistentEObject : This object will be ignored in the final count.");
+        }
     }
 
-    @Override
-    public Resource resource() {
-        return eStore.resource();
-    }
+    private class ShutdownHook extends Thread {
 
-    @Override
-    public EObject eObject(Id id) {
-        return eStore.eObject(id);
-    }
-
-    @Override
-    public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        return eStore.getAllInstances(eClass, strict);
-    }
-
-    @Override
-    public PersistentEStore getEStore() {
-        return eStore;
-    }
-
-    @Override
-    public void save() {
-        eStore.save();
+        @Override
+        public void run() {
+            NeoLogger.info("{0} objects loaded during the execution", loadedObjects.size());
+        }
     }
 }

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
@@ -22,11 +22,11 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * A {@link PersistentEStore} decorator that logs every call to its methods in the {@link NeoLogger}.
+ * A {@link PersistentStore} decorator that logs every call to its methods in the {@link NeoLogger}.
  */
-public class LoggingEStoreDecorator extends AbstractPersistentEStoreDecorator {
+public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
 
-    public LoggingEStoreDecorator(PersistentEStore eStore) {
+    public LoggingStoreDecorator(PersistentStore eStore) {
         super(eStore);
     }
 

@@ -17,7 +17,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.info.ClassInfo;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.info.ContainerInfo;
@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
-public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersistenceBackend> {
+public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistenceBackend> {
 
     // TODO: Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
@@ -53,7 +53,7 @@ public class DirectWriteMapEStore extends AbstractDirectWriteEStore<MapPersisten
     protected final Cache<Id, PersistentEObject> loadedEObjectsCache;
 
 
-    public DirectWriteMapEStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
+    public DirectWriteMapStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
         this.loadedEObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }

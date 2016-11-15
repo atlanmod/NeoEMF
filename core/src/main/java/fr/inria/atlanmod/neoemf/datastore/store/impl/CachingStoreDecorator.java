@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureCache;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 
@@ -21,18 +21,18 @@ import org.eclipse.emf.ecore.InternalEObject;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link PersistentEStore} decorator that caches the size data.
+ * A {@link PersistentStore} decorator that caches the size data.
  */
-public class CachingEStoreDecorator extends AbstractPersistentEStoreDecorator {
+public class CachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
     private final FeatureCache<Integer> cache;
 
-    public CachingEStoreDecorator(PersistentEStore eStore) {
+    public CachingStoreDecorator(PersistentStore eStore) {
         super(eStore);
         cache = new FeatureCache<>();
     }
 
-    public CachingEStoreDecorator(PersistentEStore eStore, int cacheSize) {
+    public CachingStoreDecorator(PersistentStore eStore, int cacheSize) {
         super(eStore);
         cache = new FeatureCache<>(cacheSize);
     }

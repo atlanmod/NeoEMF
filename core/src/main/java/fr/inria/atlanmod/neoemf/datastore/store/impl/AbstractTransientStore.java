@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
+import fr.inria.atlanmod.neoemf.datastore.store.TransientStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 
 import org.eclipse.emf.ecore.EClass;
@@ -29,12 +30,12 @@ import static java.util.Objects.isNull;
 /**
  * A simple {@link InternalEObject.EStore} implementation that uses collections to store the data in memory.
  */
-public class TransientEStore implements InternalEObject.EStore {
+public abstract class AbstractTransientStore implements TransientStore {
 
     protected Map<FeatureKey, Object> singleMap;
     protected Map<FeatureKey, List<Object>> manyMap;
 
-    public TransientEStore() {
+    public AbstractTransientStore() {
         singleMap = new HashMap<>();
         manyMap = new HashMap<>();
     }

@@ -28,9 +28,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import static java.util.Objects.isNull;
 
 
-public class DirectWriteMapIndicesEStore extends DirectWriteMapEStore {
+public class DirectWriteMapIndicesStore extends DirectWriteMapStore {
 
-    public DirectWriteMapIndicesEStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
+    public DirectWriteMapIndicesStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
     }
 

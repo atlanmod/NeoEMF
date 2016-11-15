@@ -12,16 +12,17 @@
 package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapCacheManyEStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapEStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesEStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsEStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapCacheManyStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsStore;
 import fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -63,32 +64,32 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
     }
 
     @Override
-    protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
         checkArgument(backend instanceof MapPersistenceBackend,
                 "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
 
-        PersistentEStore eStore = null;
-        List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
+        PersistentStore eStore = null;
+        List<PersistentResourceOptions.StoreOption> storeOptions = getStoreOptions(options);
 
         // Store
         if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT))) {
-            eStore = new DirectWriteMapEStore(resource, (MapPersistenceBackend) backend);
+            eStore = new DirectWriteMapStore(resource, (MapPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.CACHE_MANY)) {
-            eStore = new DirectWriteMapCacheManyEStore(resource, (MapPersistenceBackend) backend);
+            eStore = new DirectWriteMapCacheManyStore(resource, (MapPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_LISTS)) {
-            eStore = new DirectWriteMapListsEStore(resource, (MapPersistenceBackend) backend);
+            eStore = new DirectWriteMapListsStore(resource, (MapPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_INDICES)) {
-            eStore = new DirectWriteMapIndicesEStore(resource, (MapPersistenceBackend) backend);
+            eStore = new DirectWriteMapIndicesStore(resource, (MapPersistenceBackend) backend);
         }
         // Autocommit
         if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
         else if (!isNull(storeOptions) && storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT)) {
-            eStore = new AutocommitEStoreDecorator(eStore);
+            eStore = new AutocommitStoreDecorator(eStore);
         }
         return eStore;
     }
@@ -122,11 +123,11 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
     }
 
     @Override
-    public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
         checkArgument(backend instanceof MapPersistenceBackend,
                 "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
 
-        return new DirectWriteMapEStore(resource, (MapPersistenceBackend) backend);
+        return new DirectWriteMapStore(resource, (MapPersistenceBackend) backend);
     }
 
     @Override

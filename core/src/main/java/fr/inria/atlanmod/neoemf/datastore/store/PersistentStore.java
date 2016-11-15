@@ -23,7 +23,7 @@ import org.eclipse.emf.ecore.resource.Resource;
  * This interface extends the {@link InternalEObject.EStore} interface and allows to establish a mapping between
  * {@link Resource}s and {@link InternalEObject.EStore}s.
  */
-public interface PersistentEStore extends InternalEObject.EStore {
+public interface PersistentStore extends InternalEObject.EStore {
 
     /**
      * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated.
@@ -53,7 +53,7 @@ public interface PersistentEStore extends InternalEObject.EStore {
     /**
      * Utility method used for tests. Returns the decorated eStore, if it exists.
      */
-    PersistentEStore getEStore();
+    PersistentStore getEStore();
 
     /**
      * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence back-end.

@@ -11,132 +11,152 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-
-import static com.google.common.base.Preconditions.checkArgument;
+import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * A {@link TransientEStore} that belongs to a single {@link EObject} owner.
+ * Utility class which can be used by backend-specific implementations that does not provide a transient layer.
  */
-public class OwnedTransientEStore extends TransientEStore {
+public class InvalidStore implements PersistentStore {
 
-    private final EObject owner;
+    private static final String UNSUPPORTED_MSG =
+            "The backend you are using does not provide a transient layer. " +
+                    "You must save/load your resource before using it";
 
-    public OwnedTransientEStore(EObject owner) {
-        this.owner = owner;
+    public InvalidStore() {
+        super();
+        NeoLogger.warn(UNSUPPORTED_MSG);
     }
 
     @Override
     public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
-        checkOwner(eObject);
-        return super.get(eObject, feature, index);
+        throw unsupportedOperation();
     }
 
     @Override
     public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        checkOwner(eObject);
-        return super.set(eObject, feature, index, value);
+        throw unsupportedOperation();
     }
 
     @Override
     public boolean isSet(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.isSet(eObject, feature);
+        throw unsupportedOperation();
     }
 
     @Override
     public void unset(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        super.unset(eObject, feature);
+        throw unsupportedOperation();
     }
 
     @Override
     public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.isEmpty(eObject, feature);
+        throw unsupportedOperation();
     }
 
     @Override
     public int size(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.size(eObject, feature);
+        throw unsupportedOperation();
     }
 
     @Override
     public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        checkOwner(eObject);
-        return super.contains(eObject, feature, value);
+        throw unsupportedOperation();
     }
 
     @Override
     public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        checkOwner(eObject);
-        return super.indexOf(eObject, feature, value);
+        throw unsupportedOperation();
     }
 
     @Override
     public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        checkOwner(eObject);
-        return super.lastIndexOf(eObject, feature, value);
+        throw unsupportedOperation();
     }
 
     @Override
     public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        checkOwner(eObject);
-        super.add(eObject, feature, index, value);
+        throw unsupportedOperation();
     }
 
     @Override
     public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
-        checkOwner(eObject);
-        return super.remove(eObject, feature, index);
+        throw unsupportedOperation();
     }
 
     @Override
     public Object move(InternalEObject eObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        checkOwner(eObject);
-        return super.move(eObject, feature, targetIndex, sourceIndex);
+        throw unsupportedOperation();
     }
 
     @Override
     public void clear(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        super.clear(eObject, feature);
+        throw unsupportedOperation();
     }
 
     @Override
     public Object[] toArray(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.toArray(eObject, feature);
+        throw unsupportedOperation();
     }
 
     @Override
     public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
-        checkOwner(eObject);
-        return super.toArray(eObject, feature, array);
+        throw unsupportedOperation();
     }
 
     @Override
-    public int hashCode(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.hashCode(eObject, feature);
+    public int hashCode(InternalEObject object, EStructuralFeature feature) {
+        throw unsupportedOperation();
     }
 
     @Override
     public InternalEObject getContainer(InternalEObject eObject) {
-        checkOwner(eObject);
-        return super.getContainer(eObject);
+        throw unsupportedOperation();
     }
 
     @Override
     public EStructuralFeature getContainingFeature(InternalEObject eObject) {
-        checkOwner(eObject);
-        return super.getContainingFeature(eObject);
+        throw unsupportedOperation();
     }
 
-    private void checkOwner(InternalEObject eObject) {
-        checkArgument(owner == eObject);
+    @Override
+    public EObject create(EClass eClass) {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public Resource resource() {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public EObject eObject(Id id) {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public PersistentStore getEStore() {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public void save() {
+        throw unsupportedOperation();
+    }
+
+    private UnsupportedOperationException unsupportedOperation() {
+        return new UnsupportedOperationException(UNSUPPORTED_MSG);
     }
 }

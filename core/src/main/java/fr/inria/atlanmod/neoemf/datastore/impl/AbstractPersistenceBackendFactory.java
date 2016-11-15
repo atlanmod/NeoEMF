@@ -12,14 +12,15 @@
 package fr.inria.atlanmod.neoemf.datastore.impl;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.CachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.FeatureCachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingEStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.CachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.FeatureCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
@@ -41,8 +42,14 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * Returns a list of store options from the given {@code options}.
      */
     @SuppressWarnings("unchecked")
-    protected static List<PersistentResourceOptions.StoreOption> storeOptionsFrom(Map<?, ?> options) {
-        return (List<PersistentResourceOptions.StoreOption>) options.get(PersistentResourceOptions.STORE_OPTIONS);
+    protected static List<PersistentResourceOptions.StoreOption> getStoreOptions(Map<?, ?> options) throws InvalidOptionsException {
+        Object storeOptions = options.get(PersistentResourceOptions.STORE_OPTIONS);
+        try {
+            return (List<PersistentResourceOptions.StoreOption>) storeOptions;
+        }
+        catch (ClassCastException e) {
+            throw new InvalidOptionsException("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>");
+        }
     }
 
     /**
@@ -51,31 +58,31 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     protected abstract String getName();
 
     @Override
-    public PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        PersistentEStore eStore = internalCreatePersistentEStore(resource, backend, options);
-        List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
+    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
+        PersistentStore eStore = createSpecificPersistentStore(resource, backend, options);
+        List<PersistentResourceOptions.StoreOption> storeOptions = getStoreOptions(options);
 
         if (!isNull(storeOptions) && !storeOptions.isEmpty()) {
             if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_IS_SET)) {
-                eStore = new IsSetCachingEStoreDecorator(eStore);
+                eStore = new IsSetCachingStoreDecorator(eStore);
             }
             if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_STRUCTURAL_FEATURE)) {
-                eStore = new FeatureCachingEStoreDecorator(eStore);
+                eStore = new FeatureCachingStoreDecorator(eStore);
             }
             if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_SIZE)) {
-                eStore = new CachingEStoreDecorator(eStore);
+                eStore = new CachingStoreDecorator(eStore);
             }
             if (storeOptions.contains(PersistentResourceOptions.EStoreOption.LOG)) {
-                eStore = new LoggingEStoreDecorator(eStore);
+                eStore = new LoggingStoreDecorator(eStore);
             }
             if (storeOptions.contains(PersistentResourceOptions.EStoreOption.COUNT_LOADED_OBJECT)) {
-                eStore = new LoadedObjectCounterEStoreDecorator(eStore);
+                eStore = new LoadedObjectCounterStoreDecorator(eStore);
             }
         }
         return eStore;
     }
 
-    protected abstract PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
+    protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException;
 
     /**
      * Creates and saves the NeoEMF configuration.

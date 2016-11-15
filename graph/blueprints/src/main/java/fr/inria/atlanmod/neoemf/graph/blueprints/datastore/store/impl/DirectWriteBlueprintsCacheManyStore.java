@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.resource.Resource.Internal;
 
 import static java.util.Objects.isNull;
 
-public class DirectWriteBlueprintsCacheManyEStore extends DirectWriteBlueprintsEStore {
+public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
     // TODO: Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
@@ -36,7 +36,7 @@ public class DirectWriteBlueprintsCacheManyEStore extends DirectWriteBlueprintsE
     // TODO cache many properties in addition to vertices
     private final Cache<FeatureKey, Object[]> cache;
 
-    public DirectWriteBlueprintsCacheManyEStore(Internal resource, BlueprintsPersistenceBackend graph) {
+    public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend graph) {
         super(resource, graph);
         cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }

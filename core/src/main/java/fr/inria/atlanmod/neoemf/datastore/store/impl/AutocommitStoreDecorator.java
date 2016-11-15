@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-public class AutocommitEStoreDecorator extends AbstractPersistentEStoreDecorator {
+public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
      * Default number of allowed modifications (100000) between commits on the
@@ -27,7 +27,7 @@ public class AutocommitEStoreDecorator extends AbstractPersistentEStoreDecorator
 
     /**
      * Number of allowed modifications between commits on the underlying {@link InternalEObject.EStore}
-     * for this {@link AutocommitEStoreDecorator}.
+     * for this {@link AutocommitStoreDecorator}.
      */
     private final int opsBetweenCommits;
 
@@ -40,7 +40,7 @@ public class AutocommitEStoreDecorator extends AbstractPersistentEStoreDecorator
      * Allows to specify the number of allowed modification on the underlying {@link InternalEObject.EStore} before
      * saving automatically.
      */
-    public AutocommitEStoreDecorator(PersistentEStore eStore, int opsBetweenCommits) {
+    public AutocommitStoreDecorator(PersistentStore eStore, int opsBetweenCommits) {
         super(eStore);
         this.opCount = 0;
         this.opsBetweenCommits = opsBetweenCommits;
@@ -51,7 +51,7 @@ public class AutocommitEStoreDecorator extends AbstractPersistentEStoreDecorator
      * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
      * {@link InternalEObject.EStore} before saving automatically.
      */
-    public AutocommitEStoreDecorator(PersistentEStore eStore) {
+    public AutocommitStoreDecorator(PersistentStore eStore) {
         this(eStore, OPS_BETWEEN_COMMITS_DEFAULT);
     }
 

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -28,13 +28,13 @@ import java.util.Arrays;
 
 import static java.util.Objects.isNull;
 
-public abstract class AbstractDirectWriteEStore<P extends PersistenceBackend> extends AbstractPersistentEStore implements PersistentEStore {
+public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore {
 
     protected final P persistenceBackend;
 
     private final Resource.Internal resource;
 
-    public AbstractDirectWriteEStore(Resource.Internal resource, P persistenceBackend) {
+    public AbstractDirectWriteStore(Resource.Internal resource, P persistenceBackend) {
         this.resource = resource;
         this.persistenceBackend = persistenceBackend;
     }
@@ -45,7 +45,7 @@ public abstract class AbstractDirectWriteEStore<P extends PersistenceBackend> ex
     }
 
     @Override
-    public PersistentEStore getEStore() {
+    public PersistentStore getEStore() {
         return this;
     }
 

@@ -18,7 +18,7 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
-public class DirectWriteBlueprintsEStore extends AbstractDirectWriteEStore<BlueprintsPersistenceBackend> {
+public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
 
     protected static final String SEPARATOR = ":";
     protected static final String POSITION = "position";
@@ -50,7 +50,7 @@ public class DirectWriteBlueprintsEStore extends AbstractDirectWriteEStore<Bluep
     protected static final String CONTAINING_FEATURE = "containingFeature";
     protected static final String SIZE_LITERAL = "size";
 
-    public DirectWriteBlueprintsEStore(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
+    public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
         super(resource, graph);
     }
 

@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.datastore.impl;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.lang.reflect.Field;
@@ -22,15 +22,15 @@ import java.lang.reflect.Field;
 public abstract class AbstractPersistenceBackendFactoryTest extends AllTest {
 
     /**
-     * Utility method to retrieve the PersistentEStore associated to a store.
+     * Utility method to retrieve the PersistentStore associated to a store.
      */
-    protected PersistenceBackend getInnerBackend(PersistentEStore store) {
+    protected PersistenceBackend getInnerBackend(PersistentStore store) {
         // context is the real EStore, which can de decorated.
-        PersistentEStore context = store.getEStore();
+        PersistentStore context = store.getEStore();
         PersistenceBackend result = null;
 
         try {
-            Field field = AbstractDirectWriteEStore.class.getDeclaredField("persistenceBackend");
+            Field field = AbstractDirectWriteStore.class.getDeclaredField("persistenceBackend");
             field.setAccessible(true);
             result = (PersistenceBackend) field.get(context);
         }

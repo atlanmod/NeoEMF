@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.File;
@@ -30,9 +30,9 @@ public interface PersistenceBackendFactory {
 
     PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException;
 
-    PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend);
+    PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend);
 
-    PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
+    PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException;
 
     void copyBackend(PersistenceBackend from, PersistenceBackend to);
 }

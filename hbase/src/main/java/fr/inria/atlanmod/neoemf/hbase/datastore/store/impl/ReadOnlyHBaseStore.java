@@ -37,14 +37,14 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.function.Function;
 
-public class ReadOnlyHBaseEStore extends DirectWriteHBaseEStore {
+public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
     // TODO: Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     private final Cache<HBaseFeatureKey, Object> cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
 
-    public ReadOnlyHBaseEStore(Resource.Internal resource) throws IOException {
+    public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
     }
 

@@ -1,11 +1,11 @@
 package fr.inria.atlanmod.neoemf.datastore.store.impl;
 
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentEStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-public abstract class AbstractPersistentEStore implements PersistentEStore {
+public abstract class AbstractPersistentStore implements PersistentStore {
 
-    public AbstractPersistentEStore() {
+    public AbstractPersistentStore() {
         NeoLogger.info("{0} created", getClass().getSimpleName());
     }
 }
