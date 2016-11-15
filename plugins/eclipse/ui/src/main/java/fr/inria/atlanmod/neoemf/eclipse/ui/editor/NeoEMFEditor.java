@@ -11,8 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
+import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -32,6 +34,7 @@ import org.eclipse.swt.widgets.Tree;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,15 +59,20 @@ public class NeoEMFEditor extends EcoreEditor {
         Resource resource = editingDomain.getResourceSet().createResource(resourceURI);
         editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
         // Create the store options depending of the backend
-        List<StoreOption> storeOptions = new ArrayList<>();
-//        storeOptions.add(PersistentResourceOptions.EStoreOption.LOG);
-        Map<Object, Object> options = new HashMap<>();
-        options.put(STORE_OPTIONS, storeOptions);
+        Map<String, Object> options;
         if (resource.getURI().scheme().equals(NeoMapURI.SCHEME)) {
-            storeOptions.add(EStoreMapOption.DIRECT_WRITE);
+            options = MapResourceOptions.newBuilder()
+//                    .log()
+                    .directWrite()
+                    .asMap();
         }
         else if (resource.getURI().scheme().equals(NeoBlueprintsURI.SCHEME)) {
-            storeOptions.add(EStoreGraphOption.CACHE_MANY);
+            options = BlueprintsResourceOptions.newBuilder()
+//                    .log()
+                    .directWriteCacheMany()
+                    .asMap();
+        } else {
+            options = Collections.emptyMap();
         }
         try {
             resource.load(options);

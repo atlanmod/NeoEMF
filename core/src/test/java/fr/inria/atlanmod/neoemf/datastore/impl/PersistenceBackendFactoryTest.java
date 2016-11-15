@@ -23,22 +23,15 @@ import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingEStoreDecorator
 import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterEStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingEStoreDecorator;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.EStoreOption;
-import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.STORE_OPTIONS;
-import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.StoreOption;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -57,8 +50,6 @@ public class PersistenceBackendFactoryTest extends AllTest {
     private final AbstractPersistenceBackendFactory persistenceBackendFactory = mock(AbstractPersistenceBackendFactory.class);
     private final PersistentEStore mockPersistentEStore = mock(PersistentEStore.class);
     private final PersistenceBackend mockPersistentBackend = mock(PersistenceBackend.class);
-    private final Map<Object, Object> options = new HashMap<>();
-    private final List<StoreOption> storeOptions = new ArrayList<>();
 
     @Before
     public void setUp() throws InvalidDataStoreException {
@@ -68,12 +59,6 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
         PersistenceBackendFactoryRegistry.unregisterAll();
         PersistenceBackendFactoryRegistry.register(MOCK, persistenceBackendFactory);
-        options.put(STORE_OPTIONS, storeOptions);
-    }
-
-    @After
-    public void tearDown() {
-        options.clear();
     }
 
     private PersistentEStore getChildStore(EStore store) throws SecurityException, IllegalArgumentException {
@@ -83,7 +68,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     @Test
     public void testNoOptions() throws InvalidDataStoreException {
-        PersistentEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, Collections.emptyMap());
+        PersistentEStore store = persistenceBackendFactory.createPersistentEStore(null, mockPersistentBackend, PersistentResourceOptions.newBuilder().asMap());
         assertThat(store).isInstanceOf(PersistentEStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -92,7 +77,9 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     @Test
     public void testIsSetCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.CACHE_IS_SET);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .cacheIsSet()
+                .asMap();
 
         PersistentEStore store;
 
@@ -108,7 +95,9 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     @Test
     public void testLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.LOG);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .log()
+                .asMap();
 
         PersistentEStore store;
 
@@ -124,7 +113,9 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     @Test
     public void testSizeCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.CACHE_SIZE);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .cacheSizes()
+                .asMap();
 
         PersistentEStore store;
 
@@ -140,7 +131,9 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     @Test
     public void testEStructuralFeatureCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.CACHE_STRUCTURAL_FEATURE);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .cacheFeatures()
+                .asMap();
 
         PersistentEStore store;
 
@@ -156,7 +149,9 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     @Test
     public void testLoadedObjectCounterLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.COUNT_LOADED_OBJECT);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .countLoadedObjects()
+                .asMap();
 
         PersistentEStore store;
 
@@ -176,8 +171,10 @@ public class PersistenceBackendFactoryTest extends AllTest {
      */
     @Test
     public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.CACHE_IS_SET);
-        storeOptions.add(EStoreOption.LOG);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .cacheIsSet()
+                .log()
+                .asMap();
 
         PersistentEStore store;
 
@@ -200,8 +197,10 @@ public class PersistenceBackendFactoryTest extends AllTest {
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.CACHE_IS_SET);
-        storeOptions.add(EStoreOption.CACHE_SIZE);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .cacheIsSet()
+                .cacheSizes()
+                .asMap();
 
         PersistentEStore store;
 
@@ -224,8 +223,10 @@ public class PersistenceBackendFactoryTest extends AllTest {
      */
     @Test
     public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.CACHE_SIZE);
-        storeOptions.add(EStoreOption.CACHE_STRUCTURAL_FEATURE);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .cacheSizes()
+                .cacheFeatures()
+                .asMap();
 
         PersistentEStore store;
 
@@ -249,10 +250,12 @@ public class PersistenceBackendFactoryTest extends AllTest {
      */
     @Test
     public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException {
-        storeOptions.add(EStoreOption.CACHE_STRUCTURAL_FEATURE);
-        storeOptions.add(EStoreOption.CACHE_IS_SET);
-        storeOptions.add(EStoreOption.LOG);
-        storeOptions.add(EStoreOption.CACHE_SIZE);
+        Map<String, Object> options = PersistentResourceOptions.newBuilder()
+                .cacheIsSet()
+                .cacheSizes()
+                .cacheFeatures()
+                .log()
+                .asMap();
 
         PersistentEStore store;
 

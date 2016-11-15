@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -20,10 +21,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
-
-import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE_DEFAULT;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J;
 
 public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
 
@@ -58,12 +55,12 @@ public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
     }
 
     public BlueprintsResourceBuilder neo4j() {
-        resourceOptions.put(GRAPH_TYPE, GRAPH_TYPE_NEO4J);
+        resourceOptions.put(BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
         return this;
     }
 
     public BlueprintsResourceBuilder tinkerGraph() {
-        resourceOptions.put(GRAPH_TYPE, GRAPH_TYPE_DEFAULT);
+        resourceOptions.put(BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_DEFAULT);
         return this;
     }
 }

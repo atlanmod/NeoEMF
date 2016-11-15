@@ -35,12 +35,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions.GRAPH_TYPE;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AllTest {
@@ -54,13 +50,11 @@ public class BlueprintsResourceSaveTest extends AllTest {
     protected File testFile;
 
     protected PersistenceBackendFactory persistenceBackendFactory;
-    protected Map<Object, Object> options;
     protected ResourceSet resSet;
     protected Resource resource;
 
     @Before
     public void setUp() {
-        options = new HashMap<>();
         persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
 
         PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, persistenceBackendFactory);
@@ -108,22 +102,21 @@ public class BlueprintsResourceSaveTest extends AllTest {
         assertThat(configFile).exists(); // "Config file does not exist"
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assertThat(configuration.containsKey(GRAPH_TYPE)).isTrue();
-        assertThat(configuration.getString(GRAPH_TYPE)).isEqualTo(GRAPH_TYPE_DEFAULT);
+        assertThat(configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)).isTrue();
+        assertThat(configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         assertThat(getKeyCount(configuration)).isEqualTo(3); // "Too much content in the .properties file"
     }
 
     @Test
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
-        options.put(GRAPH_TYPE, GRAPH_TYPE_DEFAULT);
-        resource.save(options);
+        resource.save(BlueprintsResourceOptions.newBuilder().asMap());
 
         File configFile = new File(testFile + configFileName);
         assertThat(configFile).exists(); // "Config file does not exist"
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
-        assertThat(configuration.containsKey(GRAPH_TYPE)).isTrue();
-        assertThat(configuration.getString(GRAPH_TYPE)).isEqualTo(GRAPH_TYPE_DEFAULT);
+        assertThat(configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)).isTrue();
+        assertThat(configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE)).isEqualTo(BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         assertThat(getKeyCount(configuration)).isEqualTo(3); // "Too much content in the .properties file"
     }
 }

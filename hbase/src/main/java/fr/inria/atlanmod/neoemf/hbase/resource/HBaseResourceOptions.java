@@ -16,4 +16,8 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 public interface HBaseResourceOptions extends PersistentResourceOptions {
 
     String READ_ONLY = "hbase.readOnly";
+
+    static HBaseResourceOptionsBuilder newBuilder() {
+        return new HBaseResourceOptionsBuilder();
+    }
 }

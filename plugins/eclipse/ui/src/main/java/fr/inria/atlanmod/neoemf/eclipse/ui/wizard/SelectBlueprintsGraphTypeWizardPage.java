@@ -204,7 +204,7 @@ class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
         return viewerColumn;
     }
 
-    public Map<?, ?> getProperties() {
+    public Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<>();
         Object graphType = ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
         properties.put("blueprints.graph", graphType);

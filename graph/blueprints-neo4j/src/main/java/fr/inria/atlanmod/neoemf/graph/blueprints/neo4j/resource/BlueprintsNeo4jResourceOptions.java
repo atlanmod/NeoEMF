@@ -31,6 +31,10 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
 
     String RELATIONSHIPS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.relationshipstore.db.mapped_memory";
 
+    static BlueprintsNeo4jResourceOptionsBuilder newBuilder() {
+        return new BlueprintsNeo4jResourceOptionsBuilder();
+    }
+
     /**
      * Possible values for {@link #CACHE_TYPE}.
      * <p/>
@@ -42,34 +46,15 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
         WEAK("weak"),
         STRONG("strong");
 
-        private final String stringValue;
+        private final String value;
 
-        CacheType(String stringValue) {
-            this.stringValue = stringValue;
+        CacheType(String value) {
+            this.value = value;
         }
 
         @Override
         public String toString() {
-            return stringValue;
-        }
-    }
-
-    /**
-     * Possible values for {@link #USE_MEMORY_MAPPED_BUFFERS}.
-     */
-    enum UseMemoryMappedBuffer {
-        TRUE("true"),
-        FALSE("false");
-
-        private final String stringValue;
-
-        UseMemoryMappedBuffer(String stringValue) {
-            this.stringValue = stringValue;
-        }
-
-        @Override
-        public String toString() {
-            return stringValue;
+            return value;
         }
     }
 }

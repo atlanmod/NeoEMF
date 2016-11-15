@@ -15,9 +15,12 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 public interface MapResourceOptions extends PersistentResourceOptions {
 
+    static MapResourceOptionsBuilder newBuilder() {
+        return new MapResourceOptionsBuilder();
+    }
+
     enum EStoreMapOption implements StoreOption {
         AUTOCOMMIT,
-
         DIRECT_WRITE,
         DIRECT_WRITE_LISTS,
         DIRECT_WRITE_INDICES,

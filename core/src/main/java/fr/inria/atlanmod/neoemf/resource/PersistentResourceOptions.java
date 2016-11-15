@@ -15,11 +15,14 @@ public interface PersistentResourceOptions {
 
     String STORE_OPTIONS = "stores";
 
+    static PersistentResourceOptionsBuilder newBuilder() {
+        return new PersistentResourceOptionsBuilder();
+    }
+
     enum EStoreOption implements StoreOption {
         CACHE_IS_SET,
         CACHE_SIZE,
         CACHE_STRUCTURAL_FEATURE,
-
         LOG,
         COUNT_LOADED_OBJECT
     }

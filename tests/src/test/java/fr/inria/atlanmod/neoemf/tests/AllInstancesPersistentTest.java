@@ -12,12 +12,12 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 
 public class AllInstancesPersistentTest extends AllInstancesTest {
 
@@ -93,17 +93,17 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     }
 
     private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.emptyMap());
+        persistentResource.save(PersistentResourceOptions.newBuilder().asMap());
         persistentResource.close();
-        persistentResource.load(Collections.emptyMap());
+        persistentResource.load(PersistentResourceOptions.newBuilder().asMap());
 
         allInstancesPersistent(persistentResource);
     }
 
     private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.emptyMap());
+        persistentResource.save(PersistentResourceOptions.newBuilder().asMap());
         persistentResource.close();
-        persistentResource.load(Collections.emptyMap());
+        persistentResource.load(PersistentResourceOptions.newBuilder().asMap());
 
         allInstancesStrictPersistent(persistentResource);
     }

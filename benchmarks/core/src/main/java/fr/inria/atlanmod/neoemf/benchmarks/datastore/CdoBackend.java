@@ -80,8 +80,8 @@ public class CdoBackend extends AbstractBackend {
     }
 
     @Override
-    public Map<Object, Object> getOptions() {
-        Map<Object, Object> saveOpts = new HashMap<>();
+    public Map<String, Object> getOptions() {
+        Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
         return saveOpts;
     }

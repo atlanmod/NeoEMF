@@ -22,9 +22,10 @@ import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapCacheMany
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapEStore;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesEStore;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsEStore;
+import fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.StoreOption;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -38,11 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions.EStoreMapOption.AUTOCOMMIT;
-import static fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions.EStoreMapOption.DIRECT_WRITE;
-import static fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions.EStoreMapOption.DIRECT_WRITE_INDICES;
-import static fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions.EStoreMapOption.DIRECT_WRITE_LISTS;
-import static fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions.EStoreMapOption.CACHE_MANY;
 import static java.util.Objects.isNull;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
@@ -72,26 +68,26 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
                 "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
 
         PersistentEStore eStore = null;
-        List<StoreOption> storeOptions = storeOptionsFrom(options);
+        List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
 
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(AUTOCOMMIT))) {
+        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT))) {
             eStore = new DirectWriteMapEStore(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(CACHE_MANY)) {
+        else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.CACHE_MANY)) {
             eStore = new DirectWriteMapCacheManyEStore(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(DIRECT_WRITE_LISTS)) {
+        else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_LISTS)) {
             eStore = new DirectWriteMapListsEStore(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(DIRECT_WRITE_INDICES)) {
+        else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_INDICES)) {
             eStore = new DirectWriteMapIndicesEStore(resource, (MapPersistenceBackend) backend);
         }
         // Autocommit
         if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-        else if (!isNull(storeOptions) && storeOptions.contains(AUTOCOMMIT)) {
+        else if (!isNull(storeOptions) && storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT)) {
             eStore = new AutocommitEStoreDecorator(eStore);
         }
         return eStore;

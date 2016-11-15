@@ -108,7 +108,7 @@ public class BackendHelper {
         targetBackend.initAndGetEPackage();
 
         log.info("Loading '{}'", sourceUri);
-        Map<Object, Object> loadOpts = new HashMap<>();
+        Map<String, Object> loadOpts = new HashMap<>();
         if (ZXMI.equals(sourceUri.fileExtension())) {
             loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         }
@@ -168,7 +168,7 @@ public class BackendHelper {
         sourceResource.unload();
 
         log.info("Saving to '{}'", targetResource.getURI());
-        Map<Object, Object> saveOpts = new HashMap<>();
+        Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         targetResource.save(saveOpts);
 

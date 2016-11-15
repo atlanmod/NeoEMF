@@ -135,7 +135,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
     public boolean performFinish() {
         try {
             // Get the properties
-            final Map<?, ?> options = selectGraphTypePage.getProperties();
+            final Map<String, Object> options = selectGraphTypePage.getProperties();
 
             // Remember the folder.
             final IFolder dbFolder = createNewFolder();

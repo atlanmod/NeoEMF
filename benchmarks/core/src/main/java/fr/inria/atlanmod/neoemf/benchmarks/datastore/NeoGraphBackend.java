@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -21,14 +22,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions.EStoreGraphOption;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions.STORE_OPTIONS;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions.StoreOption;
 
 public class NeoGraphBackend extends AbstractNeoBackend {
 
@@ -55,13 +49,10 @@ public class NeoGraphBackend extends AbstractNeoBackend {
     }
 
     @Override
-    public Map<Object, Object> getOptions() {
-        Map<Object, Object> options = new HashMap<>();
-
-        List<StoreOption> storeOptions = new ArrayList<>();
-        storeOptions.add(EStoreGraphOption.AUTOCOMMIT);
-        options.put(STORE_OPTIONS, storeOptions);
-
-        return options;
+    public Map<String, Object> getOptions() {
+        return BlueprintsResourceOptions.newBuilder()
+                .directWrite()
+                .autocommit()
+                .asMap();
     }
 }

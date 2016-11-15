@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
@@ -22,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,7 +63,7 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     @Test
     public void testCopyBackendMapDB() throws IOException {
-        mapResource.save(Collections.emptyMap());
+        mapResource.save(PersistentResourceOptions.newBuilder().asMap());
         assertThat(mapResource.getContents()).isNotEmpty(); // "Map resource content is empty"
         assertThat(mapResource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
 

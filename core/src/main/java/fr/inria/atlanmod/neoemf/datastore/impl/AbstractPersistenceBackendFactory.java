@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterEStoreDe
 import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingEStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -32,9 +33,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.EStoreOption;
-import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.STORE_OPTIONS;
-import static fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.StoreOption;
 import static java.util.Objects.isNull;
 
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
@@ -42,8 +40,8 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     /**
      * Returns a list of store options from the given {@code options}.
      */
-    protected static List<StoreOption> storeOptionsFrom(Map<?, ?> options) {
-        return (List<StoreOption>) options.get(STORE_OPTIONS);
+    protected static List<PersistentResourceOptions.StoreOption> storeOptionsFrom(Map<?, ?> options) {
+        return (List<PersistentResourceOptions.StoreOption>) options.get(PersistentResourceOptions.STORE_OPTIONS);
     }
 
     /**
@@ -54,22 +52,22 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     @Override
     public PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         PersistentEStore eStore = internalCreatePersistentEStore(resource, backend, options);
-        List<StoreOption> storeOptions = storeOptionsFrom(options);
+        List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
 
         if (!isNull(storeOptions) && !storeOptions.isEmpty()) {
-            if (storeOptions.contains(EStoreOption.CACHE_IS_SET)) {
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_IS_SET)) {
                 eStore = new IsSetCachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(EStoreOption.CACHE_STRUCTURAL_FEATURE)) {
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_STRUCTURAL_FEATURE)) {
                 eStore = new FeatureCachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(EStoreOption.CACHE_SIZE)) {
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_SIZE)) {
                 eStore = new CachingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(EStoreOption.LOG)) {
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.LOG)) {
                 eStore = new LoggingEStoreDecorator(eStore);
             }
-            if (storeOptions.contains(EStoreOption.COUNT_LOADED_OBJECT)) {
+            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.COUNT_LOADED_OBJECT)) {
                 eStore = new LoadedObjectCounterEStoreDecorator(eStore);
             }
         }

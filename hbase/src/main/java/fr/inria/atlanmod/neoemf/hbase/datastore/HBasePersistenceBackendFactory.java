@@ -21,13 +21,13 @@ import fr.inria.atlanmod.neoemf.datastore.store.impl.InvalidTransientEStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingEStoreDecorator;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.DirectWriteHBaseEStore;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.ReadOnlyHBaseEStore;
+import fr.inria.atlanmod.neoemf.hbase.resource.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.File;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.hbase.resource.HBaseResourceOptions.READ_ONLY;
 import static java.util.Objects.isNull;
 
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
@@ -54,8 +54,8 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
-            if (options.containsKey(READ_ONLY)) {
-                if (Boolean.TRUE.equals(options.get(READ_ONLY))) {
+            if (options.containsKey(HBaseResourceOptions.READ_ONLY)) {
+                if (Boolean.TRUE.equals(options.get(HBaseResourceOptions.READ_ONLY))) {
                     // Create a read-only EStore
                     return embedInDefaultWrapper(new ReadOnlyHBaseEStore(resource));
                 }

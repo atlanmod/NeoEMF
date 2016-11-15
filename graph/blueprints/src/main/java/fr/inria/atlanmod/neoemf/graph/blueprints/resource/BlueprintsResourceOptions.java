@@ -21,9 +21,12 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
 
     String GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
 
+    static BlueprintsResourceOptionsBuilder newBuilder() {
+        return new BlueprintsResourceOptionsBuilder();
+    }
+
     enum EStoreGraphOption implements StoreOption {
         AUTOCOMMIT,
-
         DIRECT_WRITE,
         CACHE_MANY
     }
