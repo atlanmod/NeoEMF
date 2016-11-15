@@ -19,6 +19,7 @@ import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -40,11 +41,15 @@ public class IdSerializer implements Serializer<Id> {
     @Override
     public Id deserialize(DataInput2 in, int i) throws IOException {
         return new StringId(serializer.deserialize(in, i));
-
     }
 
     public int compare(Id one, Id other) {
         return one.compareTo(other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serializer);
     }
 
     @Override

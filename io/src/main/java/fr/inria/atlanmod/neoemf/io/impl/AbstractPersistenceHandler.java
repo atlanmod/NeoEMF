@@ -39,9 +39,9 @@ import static java.util.Objects.isNull;
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
-    protected static final int DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
+    protected static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
 
-    private static final int OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
+    private static final long OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
     private final P persistenceBackend;
 
@@ -67,7 +67,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private final Cache<String, Id> conflictElementIdCache;
 
-    private int opCount;
+    private long opCount;
 
     protected AbstractPersistenceHandler(P persistenceBackend) {
         this.persistenceBackend = persistenceBackend;
@@ -89,15 +89,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * <p/>
      * The formulas can be improved, for sure.
      */
-    private static int adaptFromMemory(int value) {
-        double maxMemoryGB = Math.round(Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000);
+    private static long adaptFromMemory(int value) {
+        long maxMemoryGB = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
 
-        double factor = maxMemoryGB;
+        long factor = maxMemoryGB;
         if (maxMemoryGB > 1) {
             factor *= 2;
         }
 
-        return (int) (value * factor);
+        return value * factor;
     }
 
     protected P getPersistenceBackend() {

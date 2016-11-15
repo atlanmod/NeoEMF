@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.hbase.util;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.protobuf.ServiceException;
@@ -141,7 +142,7 @@ public class NeoHBaseUtil {
 
         public static byte[] toBytesReferences(String[] strings) {
             if (!isNull(strings)) {
-                return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes();
+                return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes(Charsets.UTF_8);
             }
             return null;
         }

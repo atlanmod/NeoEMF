@@ -23,24 +23,24 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
      * Default number of allowed modifications (100000) between commits on the
      * underlying {@link InternalEObject.EStore}.
      */
-    private static final int OPS_BETWEEN_COMMITS_DEFAULT = 100000;
+    private static final long OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
     /**
      * Number of allowed modifications between commits on the underlying {@link InternalEObject.EStore}
      * for this {@link AutocommitStoreDecorator}.
      */
-    private final int opsBetweenCommits;
+    private final long opsBetweenCommits;
 
     /**
      * Current number of modifications modulo {@link #opsBetweenCommits}.
      */
-    private int opCount;
+    private long opCount;
 
     /**
      * Allows to specify the number of allowed modification on the underlying {@link InternalEObject.EStore} before
      * saving automatically.
      */
-    public AutocommitStoreDecorator(PersistentStore eStore, int opsBetweenCommits) {
+    public AutocommitStoreDecorator(PersistentStore eStore, long opsBetweenCommits) {
         super(eStore);
         this.opCount = 0;
         this.opsBetweenCommits = opsBetweenCommits;
