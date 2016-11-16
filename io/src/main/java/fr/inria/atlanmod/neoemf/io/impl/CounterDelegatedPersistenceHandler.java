@@ -20,8 +20,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 /**
- * A delegated {@link PersistenceHandler persistence handler} that counts the number of different element, and gives the
- * time to process.
+ * A delegated {@link PersistenceHandler} that counts the number of different element, and gives the time to process.
  */
 public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersistenceHandler {
 

@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
+import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
@@ -33,8 +34,7 @@ import java.util.NoSuchElementException;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.io.PersistenceHandler persistence handler} for a
- * {@link BlueprintsPersistenceBackend Blueprints persistence backend}.
+ * A {@link PersistenceHandler} for a {@link BlueprintsPersistenceBackend}.
  * <p/>
  * <b>NOTE :</b> This handler has a key conflicts resolution feature, but it consumes much more memory than a backend
  * without conflicts resolution. Make sure you have enough memory to avoid heap space.

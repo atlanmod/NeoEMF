@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link PersistentStore} decorator that caches {@link EStructuralFeature structural features}.
+ * A {@link PersistentStore} decorator that caches {@link EStructuralFeature}.
  */
 public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 

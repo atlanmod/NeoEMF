@@ -30,13 +30,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * A factory able to adapt an {@link Object object} in a specific {@link Class type}.
+ * A factory able to adapt an {@link Object} in a specific {@link Class}.
  */
 class PersistentEObjectAdapter {
 
     /**
-     * {@link Cache} that stores the {@link InternalEObject objects} that have been already adapted to avoid
-     * duplication of {@link PersistentEObject persistent objects}s.
+     * {@link Cache} that stores the {@link InternalEObject} that have been already adapted to avoid
+     * duplication of {@link PersistentEObject}s.
      * <p/>
      * We use a soft value cache since the adaptor is no longer needed when the original {@link InternalEObject} has
      * been garbage collected.

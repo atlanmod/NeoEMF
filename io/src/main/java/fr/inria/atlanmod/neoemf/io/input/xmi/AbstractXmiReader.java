@@ -182,7 +182,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * Processes an attribute
      *
-     * @return a list of {@link StructuralFeature structural features} that can be empty.
+     * @return a list of {@link StructuralFeature} that can be empty.
      */
     private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
         List<StructuralFeature> features = null;

@@ -18,8 +18,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 /**
- * An abstract implementation of an {@link InternalHandler internal handler} that delegates all methods to its
- * embedded handler.
+ * An abstract implementation of an {@link InternalHandler} that delegates all methods to its embedded handler.
  */
 public class AbstractDelegatedInternalHandler implements InternalHandler {
 

@@ -54,7 +54,7 @@ public abstract class StructuralFeature extends NamedElement {
     }
 
     /**
-     * Defines if this structural element is a {@link Reference reference}.
+     * Defines if this structural element is a {@link Reference}.
      *
      * @return {@code true} if this structural element is a reference.
      */
@@ -63,7 +63,7 @@ public abstract class StructuralFeature extends NamedElement {
     }
 
     /**
-     * Defines if this structural element is a {@link Attribute attribute}.
+     * Defines if this structural element is a {@link Attribute}.
      *
      * @return {@code true} if this structural element is a attribute.
      */

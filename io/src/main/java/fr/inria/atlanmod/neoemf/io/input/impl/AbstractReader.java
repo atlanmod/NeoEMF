@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract implementation of a {@link Reader reader} that notifies {@link InternalHandler internal handlers}.
+ * An abstract implementation of a {@link Reader} that notifies {@link InternalHandler}.
  */
 public abstract class AbstractReader extends AbstractInternalNotifier implements Reader {
 

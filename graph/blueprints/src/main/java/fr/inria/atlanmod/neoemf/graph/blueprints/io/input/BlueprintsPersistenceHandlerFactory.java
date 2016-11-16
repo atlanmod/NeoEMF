@@ -14,21 +14,18 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 
-/**
- *
- */
 public class BlueprintsPersistenceHandlerFactory {
 
     private BlueprintsPersistenceHandlerFactory() {
     }
 
     /**
-     * Creates a {@link PersistenceHandler persistence handler} on the given {@code persistenceBackend}.
+     * Creates a {@link PersistenceHandler} on the given {@code persistenceBackend}.
      *
      * @param persistenceBackend the persistence backend where data must persist
      * @param conflictResolution {@code true} if you want a conflict resolution feature
      *
-     * @return a newly created {@link PersistenceHandler persistence handler}
+     * @return a newly created {@link PersistenceHandler}
      */
     public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend, boolean conflictResolution) {
         if (conflictResolution) {

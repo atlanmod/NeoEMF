@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link InternalHandler internal handler} that creates and links simple elements to an Ecore structure.
+ * An {@link InternalHandler} that creates and links simple elements to an Ecore structure.
  */
 public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHandler {
 

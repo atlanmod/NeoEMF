@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An handler able to persist newly created data in a {@link PersistenceBackend persistence backend}.
+ * An handler able to persist newly created data in a {@link PersistenceBackend}.
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
@@ -46,20 +46,24 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private final P persistenceBackend;
 
     private final Deque<Id> elementIdStack;
+
     /**
      * Cache of recently processed {@code Id}.
      */
     private final Cache<String, Id> elementIdCache;
+
     /**
      * Cache of registered metaclasses.
      */
     private final Cache<String, Id> metaclassIdCache;
+
     /**
      * Cache of unlinked elements, waiting until their reference is created.
      * <p/>
      * In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
+
     /**
      * Cache of conflited {@code Id}.
      * <p/>
@@ -289,7 +293,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Get the {@link Id id} of the given identifier.
+     * Get the {@link Id} of the given identifier.
      *
      * @param identifier the identifier
      *

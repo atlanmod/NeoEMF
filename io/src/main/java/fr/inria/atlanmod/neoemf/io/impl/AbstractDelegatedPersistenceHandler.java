@@ -17,8 +17,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
- * An abstract implementation of an {@link PersistenceHandler persistence handler} that delegates all methods to its
- * embedded handler.
+ * An abstract implementation of an {@link PersistenceHandler} that delegates all methods to its embedded handler.
  */
 public abstract class AbstractDelegatedPersistenceHandler implements PersistenceHandler {
 

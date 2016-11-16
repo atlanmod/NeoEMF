@@ -30,8 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link InternalHandler internal handler} that analyses XML elements in order to create and to process XPath
- * references.
+ * An {@link InternalHandler} that analyses XML elements in order to create and to process XPath references.
  */
 public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHandler {
 

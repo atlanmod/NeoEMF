@@ -43,17 +43,19 @@ public class Namespace {
     }
 
     /**
-     * Registry of all declared {@link Namespace namespaces}.
+     * Registry of all declared {@link Namespace}.
      */
     public static class Registry {
 
         private static Registry INSTANCE;
+
         /**
-         * Registered {@link Namespace namespaces} identified by their prefix.
+         * Registered {@link Namespace} identified by their prefix.
          */
         private final Cache<String, Namespace> namespacesByPrefix;
+
         /**
-         * Registered {@link Namespace namespaces} identified by their URI.
+         * Registered {@link Namespace} identified by their URI.
          */
         private final Cache<String, Namespace> namespacesByUri;
 
@@ -74,12 +76,12 @@ public class Namespace {
         }
 
         /**
-         * Returns a {@link Namespace namespace} identified by the given {@code prefix}, or {@code null} if no
+         * Returns a {@link Namespace} identified by the given {@code prefix}, or {@code null} if no
          * namespace is registered with this {@code prefix}.
          *
          * @param prefix the prefix of the desired namespace
          *
-         * @return a {@link Namespace namespace} identified by the given {@code prefix}, or {@code null} if no namespace
+         * @return a {@link Namespace} identified by the given {@code prefix}, or {@code null} if no namespace
          *         is registered with this {@code prefix}
          */
         public Namespace getFromPrefix(String prefix) {
@@ -90,12 +92,12 @@ public class Namespace {
         }
 
         /**
-         * Returns a {@link Namespace namespace} identified by the given {@code uri}, or {@code null} if no
+         * Returns a {@link Namespace} identified by the given {@code uri}, or {@code null} if no
          * namespace is registered with this {@code uri}.
          *
          * @param uri the URI of the desired namespace
          *
-         * @return a {@link Namespace namespace} identified by the given {@code uri}, or {@code null} if no namespace is
+         * @return a {@link Namespace} identified by the given {@code uri}, or {@code null} if no namespace is
          *         registered with this {@code uri}.
          */
         public Namespace getFromUri(String uri) {
@@ -106,7 +108,7 @@ public class Namespace {
         }
 
         /**
-         * Registers a new {@link Namespace namespace} with the given {@code prefix} and {@code uri}.
+         * Registers a new {@link Namespace} with the given {@code prefix} and {@code uri}.
          *
          * @param prefix the prefix of the new namespace
          * @param uri    the uri associated with the prefix

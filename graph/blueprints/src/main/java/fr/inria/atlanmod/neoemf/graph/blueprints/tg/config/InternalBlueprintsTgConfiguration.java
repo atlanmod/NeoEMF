@@ -30,7 +30,7 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
     }
 
     /**
-     * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
+     * Returns the instance of this {@link InternalBlueprintsConfiguration}.
      */
     public static InternalBlueprintsConfiguration getInstance() {
         if (isNull(INSTANCE)) {

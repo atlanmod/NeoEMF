@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.io.impl.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 /**
- * A simple {@link InternalHandler handler} that notifies registered {@link PersistenceHandler persistence handlers}.
+ * A simple {@link InternalHandler} that notifies registered {@link PersistenceHandler}.
  */
 public class DefaultInternalHandler extends AbstractNotifier<PersistenceHandler> implements InternalHandler {
 

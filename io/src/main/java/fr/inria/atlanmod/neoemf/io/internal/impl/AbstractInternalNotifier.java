@@ -16,8 +16,7 @@ import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.InternalNotifier;
 
 /**
- * An abstract implementation of an {@link InternalNotifier internal notifier} of
- * {@link InternalHandler internal handlers}.
+ * An abstract implementation of an {@link InternalNotifier} of {@link InternalHandler}.
  */
 public abstract class AbstractInternalNotifier extends AbstractNotifier<InternalHandler> implements InternalNotifier {
 

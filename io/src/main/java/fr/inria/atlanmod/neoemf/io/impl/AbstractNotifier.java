@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * An abstract implementation of a {@link IONotifier notifier}.
+ * An abstract implementation of a {@link IONotifier}.
  */
 public abstract class AbstractNotifier<T extends IOHandler> implements IONotifier<T> {
 

@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.internal;
 import fr.inria.atlanmod.neoemf.io.IONotifier;
 
 /**
- * An {@link IONotifier notifier} that notifies {@link InternalHandler internal handlers}.
+ * An {@link IONotifier} that notifies {@link InternalHandler}.
  */
 public interface InternalNotifier extends IONotifier<InternalHandler> {
 

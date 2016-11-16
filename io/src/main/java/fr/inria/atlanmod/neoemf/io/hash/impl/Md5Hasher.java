@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.io.hash.Hasher;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link Hasher hasher} using the {@code MD5} algorithm.
+ * A {@link Hasher} using the {@code MD5} algorithm.
  */
 public class Md5Hasher implements Hasher {
 

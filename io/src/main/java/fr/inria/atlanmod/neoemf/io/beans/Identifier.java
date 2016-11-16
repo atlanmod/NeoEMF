@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
- * The identifier of a {@link Classifier classifier}.
+ * The identifier of a {@link Classifier}.
  */
 public class Identifier {
 

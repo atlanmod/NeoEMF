@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.beans;
 
 /**
- * A simple element identified by a {@link Namespace namespace} and its name inside it.
+ * A simple element identified by a {@link Namespace} and its name inside it.
  */
 public class MetaClassifier extends NamedElement {
 

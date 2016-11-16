@@ -29,7 +29,7 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
     }
 
     /**
-     * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
+     * Returns the instance of this {@link InternalBlueprintsConfiguration}.
      */
     public static InternalBlueprintsConfiguration getInstance() {
         if (isNull(INSTANCE)) {
