@@ -214,9 +214,9 @@ public class EcoreProcessor extends AbstractProcessor {
         }
     }
 
-    private void handleFeatureAsAttribute(Classifier classifier, EAttribute eAttribute) {
+    private void handleFeatureAsAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute eAttribute) {
         if (!isNull(waitingAttribute)) {
-            NeoLogger.warn("An attribute still waiting for a value. It wiil be ignored");
+            NeoLogger.warn("An attribute still waiting for a value. It will be ignored");
         }
 
         // Waiting a plain text value

@@ -32,7 +32,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processStartElement(Classifier classifier) throws Exception {
-        NeoLogger.debug("{0}:{1} @ {2} -> {3} = {4}",
+        NeoLogger.debug("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 classifier.getNamespace().getPrefix(),
                 classifier.getLocalName(),
                 classifier.getClassName(),
@@ -44,7 +44,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processAttribute(Attribute attribute) throws Exception {
-        NeoLogger.debug("   {0} ({1}) = {2}",
+        NeoLogger.debug("[A]    {0} ({1}) = {2}",
                 attribute.getLocalName(),
                 attribute.getIndex(),
                 attribute.getValue());
@@ -54,10 +54,12 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processReference(Reference reference) throws Exception {
-        NeoLogger.debug("   {0} ({1}) = {2}",
+        NeoLogger.debug("[R]    {0} ({1}) = {2} -> {3} ({4})",
                 reference.getLocalName(),
                 reference.getIndex(),
-                reference.getIdReference().getValue());
+                reference.getId(),
+                reference.getIdReference(),
+                reference.isContainment());
 
         super.processReference(reference);
     }

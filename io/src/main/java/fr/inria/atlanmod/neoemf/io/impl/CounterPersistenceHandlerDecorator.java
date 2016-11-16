@@ -22,11 +22,17 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
  */
 public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
+    private static int id = 0;
+
     private final String name;
 
     private long elementCount;
     private long attributeCount;
     private long referenceCount;
+
+    public CounterPersistenceHandlerDecorator(PersistenceHandler handler) {
+        this(handler, "dummy-" + ++id);
+    }
 
     public CounterPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
         super(handler);

@@ -21,6 +21,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.impl.CounterPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.io.impl.LoggingPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.EList;
@@ -222,6 +225,9 @@ public class ImportTest extends AllInputTest {
     }
 
     private void assertEqualEObject(EObject actual, EObject expected) {
+        NeoLogger.debug("Actual object     : {0}", actual);
+        NeoLogger.debug("Expected object   : {0}", expected);
+
         if (!testedObjects.contains(expected)) {
             testedObjects.add(expected);
 
@@ -251,6 +257,9 @@ public class ImportTest extends AllInputTest {
 
             Object expectedValue = expected.eGet(eStructuralFeature);
             Object actualValue = actual.eGet(actual.eClass().getEStructuralFeature(featureId));
+
+            NeoLogger.debug("Actual feature    : {0}", actualValue);
+            NeoLogger.debug("Expected feature  : {0}", expectedValue);
 
             if (expectedValue instanceof EObject) {
                 assertEqualEObject((EObject) actualValue, (EObject) expectedValue);
@@ -353,6 +362,9 @@ public class ImportTest extends AllInputTest {
     private EObject loadWithNeoBlueprints(File file) throws Exception {
         BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
         PersistenceHandler persistenceHandler = BlueprintsPersistenceHandlerFactory.createPersistenceHandler(persistenceBackend, false);
+
+        persistenceHandler = new LoggingPersistenceHandlerDecorator(persistenceHandler);
+        persistenceHandler = new CounterPersistenceHandlerDecorator(persistenceHandler);
 
         loadWithNeo(file, persistenceHandler);
 

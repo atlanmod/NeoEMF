@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  *
  */
-public class XmiProcessorTest extends AllXmiInternalHandlerTest {
+public class XmiProcessorTest extends AllXmiProcessorTest {
 
     @Override
     @Before

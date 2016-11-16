@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  *
  */
-public class AllXmiInternalHandlerTest extends AllInputTest {
+public class AllXmiProcessorTest extends AllInputTest {
 
     @Before
     public void setUp() throws Exception {
