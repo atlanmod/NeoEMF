@@ -9,12 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.input.xmi;
+package fr.inria.atlanmod.neoemf.io.reader.xmi;
 
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.DefaultInternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.EcoreDelegatedInternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.XPathDelegatedInternalHandler;
+import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.xml.sax.Attributes;
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * A XMI {@link fr.inria.atlanmod.neoemf.io.input.Reader reader} that uses stream for reading.
+ * A XMI {@link Reader reader} that uses stream for reading.
  * <p/>
  * It uses a SAX implementation of XML parsing.
  */

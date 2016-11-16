@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.input.impl;
+package fr.inria.atlanmod.neoemf.io.reader.impl;
 
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
-import fr.inria.atlanmod.neoemf.io.input.Reader;
+import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.AbstractInternalNotifier;
 

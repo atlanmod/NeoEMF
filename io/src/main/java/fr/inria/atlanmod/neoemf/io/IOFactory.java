@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.input.Reader;
-import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.Reader;
+import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 
 import java.io.File;

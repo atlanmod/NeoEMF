@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.io.input.xmi.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
 import fr.inria.atlanmod.neoemf.io.internal.impl.DefaultInternalHandler;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
