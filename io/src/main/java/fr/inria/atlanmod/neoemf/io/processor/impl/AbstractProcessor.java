@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.io.processor.impl;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 /**
  * An abstract implementation of an {@link Processor} that delegates all methods to its embedded handler.

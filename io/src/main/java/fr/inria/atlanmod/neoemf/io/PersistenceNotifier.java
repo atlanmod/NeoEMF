@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.neoemf.io.impl.AbstractInputNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractInputNotifier;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 /**
  * A simple {@link Processor} that notifies registered {@link PersistenceHandler}.

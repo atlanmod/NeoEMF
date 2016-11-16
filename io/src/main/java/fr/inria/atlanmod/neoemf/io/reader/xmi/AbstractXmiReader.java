@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.io.reader.xmi;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
+import fr.inria.atlanmod.neoemf.io.reader.Reader;
+import fr.inria.atlanmod.neoemf.io.reader.impl.AbstractReader;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
@@ -21,8 +23,6 @@ import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.io.structure.StructuralFeature;
-import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.reader.impl.AbstractReader;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.xml.sax.Attributes;

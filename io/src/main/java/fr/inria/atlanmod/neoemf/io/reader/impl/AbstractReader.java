@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.io.reader.impl;
 
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.ProcessorNotifier;
-import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.processor.impl.AbstractProcessorNotifier;
+import fr.inria.atlanmod.neoemf.io.reader.Reader;
+import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;

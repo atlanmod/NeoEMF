@@ -11,13 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.io.processor.impl;
 
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -55,13 +55,13 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Defines if the previous element was an attribute, or not.
      */
-    private boolean ignoreCleaning;
+    private boolean previousWasAttribute;
 
     public EcoreProcessor(Processor handler) {
         super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
-        this.ignoreCleaning = false;
+        this.previousWasAttribute = false;
     }
 
     private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
@@ -140,15 +140,16 @@ public class EcoreProcessor extends AbstractProcessor {
 
     @Override
     public void processEndElement() throws Exception {
-        if (!ignoreCleaning) {
+        if (!previousWasAttribute) {
             classesStack.removeLast();
             idsStack.removeLast();
 
             super.processEndElement();
         }
         else {
+            NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
             waitingAttribute = null; // Clean the waiting attribute : no character has been found to fill its value
-            ignoreCleaning = false;
+            previousWasAttribute = false;
         }
     }
 
@@ -167,12 +168,11 @@ public class EcoreProcessor extends AbstractProcessor {
      * Creates the root element from the given {@code classifier}.
      */
     private void createRootObject(Classifier classifier) throws Exception {
-        Namespace ns = checkNotNull(classifier.getNamespace(),
-                "The root element must have a namespace");
+        Namespace ns = checkNotNull(classifier.getNamespace(), "The root element must have a namespace");
 
         // Retreives the EPackage from NS prefix
         EPackage ePackage = checkNotNull((EPackage) EPackage.Registry.INSTANCE.get(ns.getUri()),
-                "EPackage " + ns.getUri() + " is not registered.");
+                "EPackage %s is not registered.", ns.getUri());
 
         // Gets the current EClass
         EClass eClass = (EClass) ePackage.getEClassifier(classifier.getLocalName());
@@ -203,7 +203,7 @@ public class EcoreProcessor extends AbstractProcessor {
         EPackage ePackage = parentEClass.getEPackage();
         Namespace ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
 
-        // Gets the structural feature from the parent, according the its local name
+        // Gets the structural feature from the parent, according the its local name (the attr/ref name)
         EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
 
         if (eStructuralFeature instanceof EAttribute) {
@@ -216,12 +216,12 @@ public class EcoreProcessor extends AbstractProcessor {
 
     private void handleFeatureAsAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute eAttribute) {
         if (!isNull(waitingAttribute)) {
-            NeoLogger.warn("An attribute still waiting for a value. It will be ignored");
+            NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
         }
 
         // Waiting a plain text value
         waitingAttribute = new Attribute(eAttribute.getName());
-        ignoreCleaning = true;
+        previousWasAttribute = true;
     }
 
     private void handleFeatureAsReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {
@@ -236,6 +236,8 @@ public class EcoreProcessor extends AbstractProcessor {
 
         // Create a reference from the parent to this element, with the given local name
         if (eReference.isContainment()) {
+            NeoLogger.debug("{0}#{1} is a containment : creating the reverse reference.", classifier.getMetaClassifier(), eReference.getName());
+
             Reference ref = new Reference(eReference.getName());
             ref.setId(idsStack.getLast());
             ref.setIdReference(currentId);
