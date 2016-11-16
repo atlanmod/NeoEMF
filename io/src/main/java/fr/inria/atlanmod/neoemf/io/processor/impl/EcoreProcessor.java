@@ -57,8 +57,8 @@ public class EcoreProcessor extends AbstractProcessor {
      */
     private boolean previousWasAttribute;
 
-    public EcoreProcessor(Processor handler) {
-        super(handler);
+    public EcoreProcessor(Processor processor) {
+        super(processor);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
         this.previousWasAttribute = false;

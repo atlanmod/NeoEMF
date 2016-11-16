@@ -15,30 +15,24 @@ import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class Importer {
 
     private Importer() {
     }
 
-    public static void fromXmi(File file, PersistenceHandler... persistenceHandlers) throws Exception {
-        if (!file.getName().endsWith(".xmi")) {
-            throw new IllegalArgumentException("Only XMI files can be read.");
-        }
-
-        fromXmi(new FileInputStream(file), persistenceHandlers);
-    }
-
     public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws Exception {
-        Reader reader = new XmiStreamReader();
+        checkArgument(persistenceHandlers.length > 0);
 
+        Reader reader = new XmiStreamReader();
         Processor processor = reader.defaultProcessor();
-        for (PersistenceHandler p : persistenceHandlers) {
-            processor.addHandler(p);
-        }
+
+        Arrays.stream(persistenceHandlers).forEach(processor::addHandler);
+        reader.addHandler(processor);
 
         reader.read(stream);
     }

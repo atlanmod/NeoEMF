@@ -46,14 +46,13 @@ public class XmiStreamReader extends AbstractXmiReader {
 
     @Override
     public Processor defaultProcessor() {
-        Processor defaultHandler;
+        Processor defaultProcessor;
 
-        defaultHandler = new PersistenceNotifier();
-        defaultHandler = new XPathProcessor(defaultHandler);
-        defaultHandler = new EcoreProcessor(defaultHandler);
+        defaultProcessor = new PersistenceNotifier();
+        defaultProcessor = new XPathProcessor(defaultProcessor);
+        defaultProcessor = new EcoreProcessor(defaultProcessor);
 
-        addHandler(defaultHandler);
-        return defaultHandler;
+        return defaultProcessor;
     }
 
     public void read(InputStream stream) throws Exception {

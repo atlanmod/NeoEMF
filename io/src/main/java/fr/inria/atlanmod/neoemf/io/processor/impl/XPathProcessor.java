@@ -25,7 +25,6 @@ import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -52,14 +51,15 @@ public class XPathProcessor extends AbstractProcessor {
 
     /**
      * The start of an XPath expression in this {@link XPathProcessor}.
+     * <p/>
      * This variable is necessary to replace the malformed XPath reference in XMI files
      */
     private String expressionStart;
 
     private boolean hasIds;
 
-    public XPathProcessor(Processor handler) {
-        super(handler);
+    public XPathProcessor(Processor processor) {
+        super(processor);
         this.paths = new XPathTree();
         this.hasIds = false;
     }
