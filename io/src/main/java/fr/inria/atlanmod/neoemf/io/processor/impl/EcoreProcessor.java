@@ -97,7 +97,7 @@ public class EcoreProcessor extends AbstractProcessor {
         }
         // Is a feature of parent
         else {
-            handleFeature(classifier);
+            processFeature(classifier);
         }
     }
 
@@ -195,7 +195,7 @@ public class EcoreProcessor extends AbstractProcessor {
         idsStack.addLast(classifier.getId());
     }
 
-    private void handleFeature(Classifier classifier) throws Exception {
+    private void processFeature(Classifier classifier) throws Exception {
         // Retreive the parent EClass
         EClass parentEClass = classesStack.getLast();
 
@@ -207,14 +207,14 @@ public class EcoreProcessor extends AbstractProcessor {
         EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
 
         if (eStructuralFeature instanceof EAttribute) {
-            handleFeatureAsAttribute(classifier, (EAttribute) eStructuralFeature);
+            processAttribute(classifier, (EAttribute) eStructuralFeature);
         }
         else if (eStructuralFeature instanceof EReference) {
-            handleFeatureAsReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
+            processReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
         }
     }
 
-    private void handleFeatureAsAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute eAttribute) {
+    private void processAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute eAttribute) {
         if (!isNull(waitingAttribute)) {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
         }
@@ -224,7 +224,7 @@ public class EcoreProcessor extends AbstractProcessor {
         previousWasAttribute = true;
     }
 
-    private void handleFeatureAsReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {
+    private void processReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {
         // Gets the type the reference or gets the type from the registered metaclass
         EClass eClass = getEClass(classifier, ns, (EClass) eReference.getEType(), ePackage);
 

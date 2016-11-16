@@ -25,6 +25,7 @@ import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -252,11 +253,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
 
             public long size() {
-                long size = children.estimatedSize();
-                for (XPathNode child : children.asMap().values()) {
-                    size += child.size();
-                }
-                return size;
+                return children.estimatedSize() + children.asMap().values().stream().mapToLong(XPathNode::size).sum();
             }
         }
     }
