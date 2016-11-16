@@ -29,7 +29,7 @@ import static java.util.Objects.isNull;
 
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
-    // TODO: Find the more predictable maximum cache size
+    // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     // Cache Object[] instead of Vertex[] because ...

@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 public interface Processor extends InputHandler, InputNotifier<PersistenceHandler> {
 
     /**
-     * Handle characters.
+     * Process characters.
      */
     void processCharacters(String characters) throws Exception;
 }

@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
+package fr.inria.atlanmod.neoemf.graph.blueprints.io.writer;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -22,9 +22,9 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.Identifier;
-import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
+import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
 
 import org.eclipse.emf.ecore.InternalEObject;
@@ -39,7 +39,7 @@ import static java.util.Objects.isNull;
  * <b>NOTE :</b> This handler has a key conflicts resolution feature, but it consumes much more memory than a backend
  * without conflicts resolution. Make sure you have enough memory to avoid heap space.
  */
-class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
+class BlueprintsConflictPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
     private static final char SEPARATOR = ':';
     private static final String POSITION = "position";
@@ -52,7 +52,7 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
 
     protected final Cache<Id, Vertex> loadedVertices;
 
-    public BlueprintsConflictsResolverPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
+    public BlueprintsConflictPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
         loadedVertices = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }

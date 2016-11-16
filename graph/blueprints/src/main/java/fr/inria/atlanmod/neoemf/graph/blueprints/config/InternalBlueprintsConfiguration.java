@@ -19,6 +19,6 @@ public interface InternalBlueprintsConfiguration {
 
     void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation);
 
-    // TODO: All implementations are empty. Is this method really necessary ?
+    // TODO All implementations are empty. Is this method really necessary ?
     void setGlobalSettings();
 }

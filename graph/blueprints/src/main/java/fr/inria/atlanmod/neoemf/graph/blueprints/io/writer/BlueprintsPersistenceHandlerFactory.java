@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
+package fr.inria.atlanmod.neoemf.graph.blueprints.io.writer;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
@@ -29,10 +29,10 @@ public class BlueprintsPersistenceHandlerFactory {
      */
     public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend, boolean conflictResolution) {
         if (conflictResolution) {
-            return new BlueprintsConflictsResolverPersistenceHandler(persistenceBackend);
+            return new BlueprintsConflictPersistenceHandler(persistenceBackend);
         }
         else {
-            return new BlueprintsNotConflictsResolverPersistenceHandler(persistenceBackend);
+            return new BlueprintsPersistenceHandler(persistenceBackend);
         }
     }
 }

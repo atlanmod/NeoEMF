@@ -36,7 +36,7 @@ import static java.util.Objects.isNull;
 
 public class DirectWriteMapListsStore extends DirectWriteMapStore {
 
-    // TODO: Find the more predictable maximum cache size
+    // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 1000;
 
     private final LoadingCache<FeatureKey, Object> mapCache;

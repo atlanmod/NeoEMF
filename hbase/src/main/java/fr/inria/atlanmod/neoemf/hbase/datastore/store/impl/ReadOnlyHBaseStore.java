@@ -39,7 +39,7 @@ import java.util.function.Function;
 
 public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
-    // TODO: Find the more predictable maximum cache size
+    // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     private final Cache<HBaseFeatureKey, Object> cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();

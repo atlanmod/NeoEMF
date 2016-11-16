@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.io.processor.impl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.Identifier;
-import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -47,7 +47,7 @@ public class XPathProcessor extends AbstractProcessor {
     private static final Pattern PATTERN_NODE_WITHOUT_INDEX =
             Pattern.compile("((@\\w+)(?!\\.\\d+)(/|\\z))", Pattern.UNICODE_CASE);
 
-    private final TreePath paths;
+    private final XPathTree paths;
 
     /**
      * The start of an XPath expression in this {@link XPathProcessor}.
@@ -59,7 +59,7 @@ public class XPathProcessor extends AbstractProcessor {
 
     public XPathProcessor(Processor handler) {
         super(handler);
-        this.paths = new TreePath();
+        this.paths = new XPathTree();
         this.hasIds = false;
     }
 
@@ -143,16 +143,16 @@ public class XPathProcessor extends AbstractProcessor {
         return modifiedReference;
     }
 
-    private static class TreePath {
+    private static class XPathTree {
 
         /**
          * The root of this tree. This does not represent the root node path.
          */
-        private final Node dummyRoot;
-        private final Deque<Node> currentPath;
+        private final XPathNode dummyRoot;
+        private final Deque<XPathNode> currentPath;
 
-        public TreePath() {
-            this.dummyRoot = new Node("ROOT");
+        public XPathTree() {
+            this.dummyRoot = new XPathNode("ROOT");
             this.currentPath = new ArrayDeque<>();
         }
 
@@ -167,7 +167,7 @@ public class XPathProcessor extends AbstractProcessor {
             checkNotNull(name);
             StringBuilder str = new StringBuilder(XPATH_START_ELT);
             boolean first = true;
-            for (Node node : currentPath) {
+            for (XPathNode node : currentPath) {
                 if (!first) {
                     str.append(XPATH_START_ELT);
                 }
@@ -181,7 +181,7 @@ public class XPathProcessor extends AbstractProcessor {
 
         public Integer createOrIncrement(String name) {
             // Get the current Node or the root Node if no element exists
-            Node node = currentPath.isEmpty() ? dummyRoot : currentPath.getLast();
+            XPathNode node = currentPath.isEmpty() ? dummyRoot : currentPath.getLast();
 
             if (node.hasChild(name)) {
                 // Try to get and increment the node if it exists
@@ -190,7 +190,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
             else {
                 // The node doesn't exist : we create him
-                node = node.addChild(new Node(name));
+                node = node.addChild(new XPathNode(name));
             }
             // Define the node as the current node in path
             currentPath.addLast(node);
@@ -205,14 +205,14 @@ public class XPathProcessor extends AbstractProcessor {
             return dummyRoot.size();
         }
 
-        private static class Node {
+        private static class XPathNode {
 
             private final String key;
-            private final Cache<String, Node> children;
+            private final Cache<String, XPathNode> children;
 
             private Integer value;
 
-            public Node(String key) {
+            public XPathNode(String key) {
                 this.key = key;
                 this.value = 0;
                 this.children = Caffeine.newBuilder().build();
@@ -230,15 +230,15 @@ public class XPathProcessor extends AbstractProcessor {
                 value++;
             }
 
-            public Node getChild(String key) {
-                Node child = children.getIfPresent(key);
+            public XPathNode getChild(String key) {
+                XPathNode child = children.getIfPresent(key);
                 if (isNull(child)) {
                     throw new NoSuchElementException("No such element '" + key + "' in the element '" + this.key + "'");
                 }
                 return child;
             }
 
-            public Node addChild(Node child) {
+            public XPathNode addChild(XPathNode child) {
                 children.put(child.getKey(), child);
                 return child;
             }
@@ -253,7 +253,7 @@ public class XPathProcessor extends AbstractProcessor {
 
             public long size() {
                 long size = children.estimatedSize();
-                for (Node child : children.asMap().values()) {
+                for (XPathNode child : children.asMap().values()) {
                     size += child.size();
                 }
                 return size;

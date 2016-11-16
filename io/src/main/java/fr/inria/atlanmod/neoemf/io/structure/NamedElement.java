@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.beans;
+package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
  * An element which has a name.

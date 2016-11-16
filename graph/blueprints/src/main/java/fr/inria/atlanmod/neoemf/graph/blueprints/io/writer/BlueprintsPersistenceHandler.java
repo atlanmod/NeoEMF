@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.io.input;
+package fr.inria.atlanmod.neoemf.graph.blueprints.io.writer;
 
 import com.tinkerpop.blueprints.Vertex;
 
@@ -19,14 +19,14 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistence
 import static java.util.Objects.isNull;
 
 /**
- * A {@link BlueprintsConflictsResolverPersistenceHandler} with <b>no key conflict resolution</b>.
+ * A {@link BlueprintsConflictPersistenceHandler} with <b>no key conflict resolution</b>.
  * <p/>
- * <b>NOTE :</b> Unlike the {@link BlueprintsConflictsResolverPersistenceHandler}, this handler does not solve key
+ * <b>NOTE :</b> Unlike the {@link BlueprintsConflictPersistenceHandler}, this handler does not solve key
  * conflicts. However, they are detected and an exception is raised to avoid the creation of an unusable backend.
  */
-class BlueprintsNotConflictsResolverPersistenceHandler extends BlueprintsConflictsResolverPersistenceHandler {
+class BlueprintsPersistenceHandler extends BlueprintsConflictPersistenceHandler {
 
-    public BlueprintsNotConflictsResolverPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
+    public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
     }
 

@@ -44,7 +44,7 @@ import static java.util.Objects.isNull;
 
 public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistenceBackend> {
 
-    // TODO: Find the more predictable maximum cache size
+    // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**

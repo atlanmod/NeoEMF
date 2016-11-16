@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.processor.impl;
 
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 /**

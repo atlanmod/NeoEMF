@@ -34,7 +34,7 @@ import static java.util.Objects.isNull;
 
 public class DirectWriteMapCacheManyStore extends DirectWriteMapStore {
 
-    // TODO: Find the more predictable maximum cache size
+    // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     private static final long TIMER_PERIOD = 20000;

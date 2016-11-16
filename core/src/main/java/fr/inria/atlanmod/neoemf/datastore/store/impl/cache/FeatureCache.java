@@ -21,7 +21,7 @@ import java.util.function.Function;
  *
  * @param <V> the type of cached values
  */
-// TODO: Create an NeoCache to wrap the embed cache, and an IdCache
+// TODO Create an NeoCache to wrap the embed cache, and an IdCache
 public class FeatureCache<V> {
 
     private static final int DEFAULT_CACHE_SIZE = 10000;

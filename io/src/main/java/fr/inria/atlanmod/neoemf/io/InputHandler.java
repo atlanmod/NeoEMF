@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
  * A object able to handle notifications sent by a {@link InputNotifier}.
@@ -21,36 +21,36 @@ import fr.inria.atlanmod.neoemf.io.beans.Reference;
 public interface InputHandler {
 
     /**
-     * Handle the start of a document.
+     * Process the start of a document.
      */
     void processStartDocument() throws Exception;
 
     /**
-     * Handle the start of an element.
+     * Process the start of an element.
      */
     void processStartElement(Classifier classifier) throws Exception;
 
     /**
-     * Handle an attribute in the current element.
+     * Process an attribute in the current element.
      * <p/>
      * An attribute is a simple key/value.
      */
     void processAttribute(Attribute attribute) throws Exception;
 
     /**
-     * Handle a reference from the current element to another element.
+     * Process a reference from the current element to another element.
      * <p/>
      * A reference is an attribute which is link to another element.
      */
     void processReference(Reference reference) throws Exception;
 
     /**
-     * Handle the end of the current element.
+     * Process the end of the current element.
      */
     void processEndElement() throws Exception;
 
     /**
-     * Handle the end of a document.
+     * Process the end of a document.
      */
     void processEndDocument() throws Exception;
 }

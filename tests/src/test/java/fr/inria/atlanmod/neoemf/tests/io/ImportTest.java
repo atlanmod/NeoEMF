@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceHandlerFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.io.writer.BlueprintsPersistenceHandlerFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;

@@ -51,7 +51,7 @@ import static java.util.Objects.isNull;
 
 public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
-    // TODO: Find the more predictable maximum cache size
+    // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     public static final String ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();

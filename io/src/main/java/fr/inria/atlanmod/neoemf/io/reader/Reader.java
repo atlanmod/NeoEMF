@@ -24,14 +24,14 @@ import java.io.InputStream;
 public interface Reader extends InputNotifier<Processor> {
 
     /**
-     * Creates a series of internal handlers in order to build and analyze the read struture.
+     * Creates a series of processors in order to build and analyze the read struture.
      *
-     * @return an internal handler, or several embedded
+     * @return a processor, or several embedded
      */
     Processor defaultProcessor();
 
     /**
-     * Reads a stream and notifies {@link Processor}.
+     * Reads a stream and notifies registered {@link Processor}.
      *
      * @param stream the stream to read
      */

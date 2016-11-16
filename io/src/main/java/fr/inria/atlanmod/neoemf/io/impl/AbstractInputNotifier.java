@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.impl;
 
 import fr.inria.atlanmod.neoemf.io.InputHandler;
 import fr.inria.atlanmod.neoemf.io.InputNotifier;
-import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import java.util.Collections;
 import java.util.HashSet;

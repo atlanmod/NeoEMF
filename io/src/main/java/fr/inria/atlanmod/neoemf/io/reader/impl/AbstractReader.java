@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader.impl;
 
-import fr.inria.atlanmod.neoemf.io.beans.Namespace;
+import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.ProcessorNotifier;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
@@ -41,7 +41,7 @@ public abstract class AbstractReader extends AbstractProcessorNotifier implement
      * @param prefix the prefix
      * @param uri    the uri associated with the {@code prefix}
      *
-     * @see fr.inria.atlanmod.neoemf.io.beans.Namespace.Registry#register(String, String)
+     * @see fr.inria.atlanmod.neoemf.io.structure.Namespace.Registry#register(String, String)
      */
     protected void processNamespace(String prefix, String uri) {
         Namespace.Registry.getInstance().register(prefix, uri);
