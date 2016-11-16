@@ -14,10 +14,13 @@ package fr.inria.atlanmod.neoemf.io.impl;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
+
+    private Identifier currentId;
 
     public LoggingPersistenceHandlerDecorator(PersistenceHandler handler) {
         super(handler);
@@ -39,6 +42,8 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
                 classifier.getMetaClassifier().getLocalName(),
                 classifier.getId());
 
+        currentId = classifier.getId();
+
         super.processStartElement(classifier);
     }
 
@@ -54,12 +59,11 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processReference(Reference reference) throws Exception {
-        NeoLogger.debug("[R]    {0} ({1}) = {2} -> {3} ({4})",
+        NeoLogger.debug("[R]    {0} ({1}) = {2} -> {3}",
                 reference.getLocalName(),
                 reference.getIndex(),
-                reference.getId(),
-                reference.getIdReference(),
-                reference.isContainment());
+                reference.getId() == null ? "this" : reference.getId(),
+                reference.getIdReference().equals(currentId) ? "this" : reference.getIdReference());
 
         super.processReference(reference);
     }
