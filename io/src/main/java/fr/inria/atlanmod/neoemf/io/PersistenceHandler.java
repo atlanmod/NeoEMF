@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.io;
 
 /**
- * A {@link IOHandler} able to persist notications sent by a {@link IONotifier}.
+ * A {@link InputHandler} able to persist notications sent by a {@link InputNotifier}.
  * <p/>
  * It correspond to the tail of the parsing process in case of an import.
  */
-public interface PersistenceHandler extends IOHandler {
+public interface PersistenceHandler extends InputHandler {
 
 }

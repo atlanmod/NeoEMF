@@ -19,41 +19,41 @@ import fr.inria.atlanmod.neoemf.io.beans.Reference;
 /**
  * An abstract implementation of an {@link PersistenceHandler} that delegates all methods to its embedded handler.
  */
-public abstract class AbstractDelegatedPersistenceHandler implements PersistenceHandler {
+public abstract class AbstractPersistenceHandlerDecorator implements PersistenceHandler {
 
     private final PersistenceHandler handler;
 
-    public AbstractDelegatedPersistenceHandler(PersistenceHandler handler) {
+    public AbstractPersistenceHandlerDecorator(PersistenceHandler handler) {
         this.handler = handler;
     }
 
     @Override
-    public void handleStartDocument() throws Exception {
-        handler.handleStartDocument();
+    public void processStartDocument() throws Exception {
+        handler.processStartDocument();
     }
 
     @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
-        handler.handleStartElement(classifier);
+    public void processStartElement(Classifier classifier) throws Exception {
+        handler.processStartElement(classifier);
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) throws Exception {
-        handler.handleAttribute(attribute);
+    public void processAttribute(Attribute attribute) throws Exception {
+        handler.processAttribute(attribute);
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
-        handler.handleReference(reference);
+    public void processReference(Reference reference) throws Exception {
+        handler.processReference(reference);
     }
 
     @Override
-    public void handleEndElement() throws Exception {
-        handler.handleEndElement();
+    public void processEndElement() throws Exception {
+        handler.processEndElement();
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
-        handler.handleEndDocument();
+    public void processEndDocument() throws Exception {
+        handler.processEndDocument();
     }
 }

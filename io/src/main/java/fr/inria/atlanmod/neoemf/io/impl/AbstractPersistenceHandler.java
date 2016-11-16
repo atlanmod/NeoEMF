@@ -24,7 +24,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
+import fr.inria.atlanmod.neoemf.io.util.HasherFactory;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -119,12 +119,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     protected abstract void setMetaClass(Id id, Id metaClassId) throws Exception;
 
     @Override
-    public void handleStartDocument() throws Exception {
+    public void processStartDocument() throws Exception {
         // Do nothing
     }
 
     @Override
-    public void handleStartElement(final Classifier classifier) throws Exception {
+    public void processStartElement(final Classifier classifier) throws Exception {
         Id id = createElement(classifier);
         Id metaClassId = getOrCreateMetaClass(classifier.getMetaClassifier());
 
@@ -134,7 +134,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void handleAttribute(final Attribute attribute) throws Exception {
+    public void processAttribute(final Attribute attribute) throws Exception {
         Id id;
         if (isNull(attribute.getId())) {
             id = elementIdStack.getLast();
@@ -153,7 +153,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void handleReference(final Reference reference) throws Exception {
+    public void processReference(final Reference reference) throws Exception {
         Id id;
         if (isNull(reference.getId())) {
             id = elementIdStack.getLast();
@@ -183,12 +183,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void handleEndElement() throws Exception {
+    public void processEndElement() throws Exception {
         elementIdStack.removeLast();
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
+    public void processEndDocument() throws Exception {
         long unlinkedNumber = unlinkedElementsMap.size();
         if (unlinkedNumber > 0) {
             NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);

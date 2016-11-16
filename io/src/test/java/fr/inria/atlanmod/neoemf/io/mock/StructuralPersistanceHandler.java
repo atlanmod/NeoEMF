@@ -49,12 +49,12 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleStartDocument() throws Exception {
+    public void processStartDocument() throws Exception {
         // Do nothing
     }
 
     @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) throws Exception {
         ClassifierMock mock = new ClassifierMock(classifier);
 
         if (!classifierStack.isEmpty()) {
@@ -71,7 +71,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) throws Exception {
         if (isNull(attribute.getId()) || attribute.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getAttributes().add(attribute);
         }
@@ -87,7 +87,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) throws Exception {
         if (isNull(reference.getId()) || reference.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getReferences().add(reference);
         }
@@ -103,12 +103,12 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleEndElement() throws Exception {
+    public void processEndElement() throws Exception {
         classifierStack.removeLast();
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
+    public void processEndDocument() throws Exception {
         // Do nothing
     }
 }

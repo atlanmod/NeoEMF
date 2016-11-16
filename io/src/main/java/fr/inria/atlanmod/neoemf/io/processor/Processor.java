@@ -9,20 +9,20 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.internal;
+package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.IOHandler;
-import fr.inria.atlanmod.neoemf.io.IONotifier;
+import fr.inria.atlanmod.neoemf.io.InputHandler;
+import fr.inria.atlanmod.neoemf.io.InputNotifier;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 
 /**
- * A structural handler that receives and uses events sent from a {@link IONotifier} where it has to be registered by
- * the {@link IONotifier#addHandler(IOHandler)} method.
+ * A structural handler that receives and uses events sent from a {@link InputNotifier} where it has to be registered by
+ * the {@link InputNotifier#addHandler(InputHandler)} method.
  */
-public interface InternalHandler extends IOHandler, IONotifier<PersistenceHandler> {
+public interface Processor extends InputHandler, InputNotifier<PersistenceHandler> {
 
     /**
      * Handle characters.
      */
-    void handleCharacters(String characters) throws Exception;
+    void processCharacters(String characters) throws Exception;
 }

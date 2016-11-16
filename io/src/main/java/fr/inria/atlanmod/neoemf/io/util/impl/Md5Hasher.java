@@ -9,14 +9,14 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.hash.impl;
+package fr.inria.atlanmod.neoemf.io.util.impl;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
-import fr.inria.atlanmod.neoemf.io.hash.HashCode;
-import fr.inria.atlanmod.neoemf.io.hash.Hasher;
+import fr.inria.atlanmod.neoemf.io.util.HashCode;
+import fr.inria.atlanmod.neoemf.io.util.Hasher;
 
 import static java.util.Objects.isNull;
 

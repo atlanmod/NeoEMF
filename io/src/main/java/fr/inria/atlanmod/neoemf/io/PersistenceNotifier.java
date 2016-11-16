@@ -9,52 +9,51 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.internal.impl;
+package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractNotifier;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.io.impl.AbstractInputNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 /**
- * A simple {@link InternalHandler} that notifies registered {@link PersistenceHandler}.
+ * A simple {@link Processor} that notifies registered {@link PersistenceHandler}.
  */
-public class DefaultInternalHandler extends AbstractNotifier<PersistenceHandler> implements InternalHandler {
+public final class PersistenceNotifier extends AbstractInputNotifier<PersistenceHandler> implements Processor {
 
     @Override
-    public void handleStartDocument() throws Exception {
+    public void processStartDocument() throws Exception {
         notifyStartDocument();
     }
 
     @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) throws Exception {
         notifyStartElement(classifier);
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) throws Exception {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) throws Exception {
         notifyReference(reference);
     }
 
     @Override
-    public void handleEndElement() throws Exception {
+    public void processEndElement() throws Exception {
         notifyEndElement();
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
+    public void processEndDocument() throws Exception {
         notifyEndDocument();
     }
 
     @Override
-    public void handleCharacters(String characters) throws Exception {
+    public void processCharacters(String characters) throws Exception {
         // Do nothing : Persistence handlers do not have to deal with characters
     }
 }

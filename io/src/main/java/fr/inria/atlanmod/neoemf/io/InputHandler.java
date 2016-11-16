@@ -16,41 +16,41 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
- * A object able to handle notifications sent by a {@link IONotifier}.
+ * A object able to handle notifications sent by a {@link InputNotifier}.
  */
-public interface IOHandler {
+public interface InputHandler {
 
     /**
      * Handle the start of a document.
      */
-    void handleStartDocument() throws Exception;
+    void processStartDocument() throws Exception;
 
     /**
      * Handle the start of an element.
      */
-    void handleStartElement(Classifier classifier) throws Exception;
+    void processStartElement(Classifier classifier) throws Exception;
 
     /**
      * Handle an attribute in the current element.
      * <p/>
      * An attribute is a simple key/value.
      */
-    void handleAttribute(Attribute attribute) throws Exception;
+    void processAttribute(Attribute attribute) throws Exception;
 
     /**
      * Handle a reference from the current element to another element.
      * <p/>
      * A reference is an attribute which is link to another element.
      */
-    void handleReference(Reference reference) throws Exception;
+    void processReference(Reference reference) throws Exception;
 
     /**
      * Handle the end of the current element.
      */
-    void handleEndElement() throws Exception;
+    void processEndElement() throws Exception;
 
     /**
      * Handle the end of a document.
      */
-    void handleEndDocument() throws Exception;
+    void processEndDocument() throws Exception;
 }

@@ -9,21 +9,17 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.hash;
+package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.hash.impl.Md5Hasher;
+import fr.inria.atlanmod.neoemf.io.InputNotifier;
 
 /**
- * A factory of {@link Hasher}.
+ * An {@link InputNotifier} that notifies {@link Processor}.
  */
-public class HasherFactory {
+public interface ProcessorNotifier extends InputNotifier<Processor> {
 
     /**
-     * Returns an instance of a {@link Hasher} using {@code MD5}.
-     *
-     * @return an instance of a {@link Hasher} using {@code MD5}
+     * Notifies a new set of characters.
      */
-    public static Hasher md5() {
-        return Md5Hasher.getInstance();
-    }
+    void notifyCharacters(String characters) throws Exception;
 }

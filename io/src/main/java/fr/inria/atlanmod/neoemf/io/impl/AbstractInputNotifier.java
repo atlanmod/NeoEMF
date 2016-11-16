@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.impl;
 
-import fr.inria.atlanmod.neoemf.io.IOHandler;
-import fr.inria.atlanmod.neoemf.io.IONotifier;
+import fr.inria.atlanmod.neoemf.io.InputHandler;
+import fr.inria.atlanmod.neoemf.io.InputNotifier;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
@@ -22,13 +22,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * An abstract implementation of a {@link IONotifier}.
+ * An abstract implementation of a {@link InputNotifier}.
  */
-public abstract class AbstractNotifier<T extends IOHandler> implements IONotifier<T> {
+public abstract class AbstractInputNotifier<T extends InputHandler> implements InputNotifier<T> {
 
     private final Set<T> handlers;
 
-    public AbstractNotifier() {
+    public AbstractInputNotifier() {
         this.handlers = new HashSet<>();
     }
 
@@ -50,42 +50,42 @@ public abstract class AbstractNotifier<T extends IOHandler> implements IONotifie
     @Override
     public void notifyStartDocument() throws Exception {
         for (T h : getHandlers()) {
-            h.handleStartDocument();
+            h.processStartDocument();
         }
     }
 
     @Override
     public void notifyStartElement(Classifier classifier) throws Exception {
         for (T h : getHandlers()) {
-            h.handleStartElement(classifier);
+            h.processStartElement(classifier);
         }
     }
 
     @Override
     public void notifyAttribute(Attribute attribute) throws Exception {
         for (T h : getHandlers()) {
-            h.handleAttribute(attribute);
+            h.processAttribute(attribute);
         }
     }
 
     @Override
     public void notifyReference(Reference reference) throws Exception {
         for (T h : getHandlers()) {
-            h.handleReference(reference);
+            h.processReference(reference);
         }
     }
 
     @Override
     public void notifyEndElement() throws Exception {
         for (T h : getHandlers()) {
-            h.handleEndElement();
+            h.processEndElement();
         }
     }
 
     @Override
     public void notifyEndDocument() throws Exception {
         for (T h : getHandlers()) {
-            h.handleEndDocument();
+            h.processEndDocument();
         }
     }
 }

@@ -24,32 +24,32 @@ import fr.inria.atlanmod.neoemf.io.beans.Reference;
 public class DummyPersistenceHandler implements PersistenceHandler {
 
     @Override
-    public void handleStartDocument() throws Exception {
+    public void processStartDocument() throws Exception {
         // Do nothing
     }
 
     @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) throws Exception {
         // Do nothing
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) throws Exception {
         // Do nothing
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) throws Exception {
         // Do nothing
     }
 
     @Override
-    public void handleEndElement() throws Exception {
+    public void processEndElement() throws Exception {
         // Do nothing
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
+    public void processEndDocument() throws Exception {
         // Do nothing
     }
 }

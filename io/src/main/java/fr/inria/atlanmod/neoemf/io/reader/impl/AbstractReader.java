@@ -12,17 +12,18 @@
 package fr.inria.atlanmod.neoemf.io.reader.impl;
 
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.processor.ProcessorNotifier;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.AbstractInternalNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.impl.AbstractProcessorNotifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract implementation of a {@link Reader} that notifies {@link InternalHandler}.
+ * An abstract implementation of a {@link Reader} that notifies {@link Processor}.
  */
-public abstract class AbstractReader extends AbstractInternalNotifier implements Reader {
+public abstract class AbstractReader extends AbstractProcessorNotifier implements ProcessorNotifier, Reader {
 
     protected static String format(String prefix, String value) {
         checkNotNull(value);

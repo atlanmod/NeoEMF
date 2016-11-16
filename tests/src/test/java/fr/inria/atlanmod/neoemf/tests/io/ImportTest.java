@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceH
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
-import fr.inria.atlanmod.neoemf.io.IOFactory;
+import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -347,7 +347,7 @@ public class ImportTest extends AllInputTest {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
-        IOFactory.importXmi(new FileInputStream(file), persistenceHandler);
+        Importer.fromXmi(new FileInputStream(file), persistenceHandler);
     }
 
     private EObject loadWithNeoBlueprints(File file) throws Exception {

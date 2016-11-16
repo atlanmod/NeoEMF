@@ -9,17 +9,19 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.internal;
-
-import fr.inria.atlanmod.neoemf.io.IONotifier;
+package fr.inria.atlanmod.neoemf.io.util;
 
 /**
- * An {@link IONotifier} that notifies {@link InternalHandler}.
+ * An object able to calculate the {@link HashCode} of a value.
  */
-public interface InternalNotifier extends IONotifier<InternalHandler> {
+public interface Hasher {
 
     /**
-     * Notifies a new set of characters.
+     * Calculates the {@link HashCode} of the given {@code value}.
+     *
+     * @param value the value to has
+     *
+     * @return an hashcode
      */
-    void notifyCharacters(String characters) throws Exception;
+    HashCode hash(String value);
 }

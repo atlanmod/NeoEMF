@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.internal.impl;
+package fr.inria.atlanmod.neoemf.io.processor.impl;
 
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -33,9 +33,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link InternalHandler} that creates and links simple elements to an Ecore structure.
+ * An {@link Processor} that creates and links simple elements to an Ecore structure.
  */
-public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHandler {
+public class EcoreProcessor extends AbstractProcessor {
 
     /**
      * Stack containing previous {@link EClass}.
@@ -48,7 +48,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     private final Deque<Identifier> idsStack;
 
     /**
-     * Attribute waiting a value (via {@link #handleCharacters(String)}.
+     * Attribute waiting a value (via {@link #processCharacters(String)}.
      */
     private Attribute waitingAttribute;
 
@@ -57,7 +57,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
      */
     private boolean ignoreCleaning;
 
-    public EcoreDelegatedInternalHandler(InternalHandler handler) {
+    public EcoreProcessor(Processor handler) {
         super(handler);
         this.classesStack = new ArrayDeque<>();
         this.idsStack = new ArrayDeque<>();
@@ -90,7 +90,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     }
 
     @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) throws Exception {
         // Is root
         if (classesStack.isEmpty()) {
             createRootObject(classifier);
@@ -102,7 +102,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) throws Exception {
         EClass eClass = classesStack.getLast();
         EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(attribute.getLocalName());
 
@@ -110,17 +110,17 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         if (eStructuralFeature instanceof EAttribute) {
             EAttribute eAttribute = (EAttribute) eStructuralFeature;
             attribute.setMany(eAttribute.isMany());
-            super.handleAttribute(attribute);
+            super.processAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
         else if (eStructuralFeature instanceof EReference) {
-            handleReference(Reference.from(attribute));
+            processReference(Reference.from(attribute));
         }
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) throws Exception {
         EClass eClass = classesStack.getLast();
         EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(reference.getLocalName());
 
@@ -129,22 +129,22 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
             EReference eReference = (EReference) eStructuralFeature;
             reference.setContainment(eReference.isContainment());
             reference.setMany(eReference.isMany());
-            super.handleReference(reference);
+            super.processReference(reference);
         }
 
         // Otherwise redirect to the attribute handler
         else if (eStructuralFeature instanceof EAttribute) {
-            handleAttribute(Attribute.from(reference));
+            processAttribute(Attribute.from(reference));
         }
     }
 
     @Override
-    public void handleEndElement() throws Exception {
+    public void processEndElement() throws Exception {
         if (!ignoreCleaning) {
             classesStack.removeLast();
             idsStack.removeLast();
 
-            super.handleEndElement();
+            super.processEndElement();
         }
         else {
             waitingAttribute = null; // Clean the waiting attribute : no character has been found to fill its value
@@ -153,11 +153,11 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
     }
 
     @Override
-    public void handleCharacters(String characters) throws Exception {
+    public void processCharacters(String characters) throws Exception {
         // Defines the value of the waiting attribute, if exists
         if (!isNull(waitingAttribute)) {
             waitingAttribute.setValue(characters);
-            handleAttribute(waitingAttribute);
+            processAttribute(waitingAttribute);
 
             waitingAttribute = null;
         }
@@ -186,7 +186,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         classifier.setRoot(true);
 
         // Notifies next handlers
-        super.handleStartElement(classifier);
+        super.processStartElement(classifier);
 
         // Saves the current EClass
         classesStack.addLast(eClass);
@@ -231,7 +231,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
         classifier.setNamespace(ns);
 
         // Notify next handlers of new element, and retreive its identifier
-        super.handleStartElement(classifier);
+        super.processStartElement(classifier);
         Identifier currentId = classifier.getId();
 
         // Create a reference from the parent to this element, with the given local name
@@ -240,7 +240,7 @@ public class EcoreDelegatedInternalHandler extends AbstractDelegatedInternalHand
             ref.setId(idsStack.getLast());
             ref.setIdReference(currentId);
 
-            handleReference(ref);
+            processReference(ref);
         }
 
         // Save EClass and identifier

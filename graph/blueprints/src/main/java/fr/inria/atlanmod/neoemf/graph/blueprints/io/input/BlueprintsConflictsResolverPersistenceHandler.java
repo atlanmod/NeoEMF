@@ -154,10 +154,10 @@ class BlueprintsConflictsResolverPersistenceHandler extends AbstractPersistenceH
     }
 
     @Override
-    public void handleStartDocument() throws Exception {
+    public void processStartDocument() throws Exception {
         createRootVertex();
 
-        super.handleStartDocument();
+        super.processStartDocument();
     }
 
     protected Vertex getVertex(final Id id) throws Exception {

@@ -16,8 +16,7 @@ import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.DefaultInternalHandler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 
@@ -74,10 +73,10 @@ public abstract class AllXmiReaderTest extends AllInputTest {
         XmiStreamReader reader = new XmiStreamReader();
         reader.setShowProgress(false);
 
-        InternalHandler internalHandler = new DefaultInternalHandler();
-        internalHandler.addHandler(persistanceHandler);
+        Processor processor = new PersistenceNotifier();
+        processor.addHandler(persistanceHandler);
 
-        reader.addHandler(internalHandler);
+        reader.addHandler(processor);
         reader.read(new FileInputStream(filePath));
 
         return persistanceHandler;

@@ -15,11 +15,10 @@ import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.beans.Namespace;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.processor.impl.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.DefaultInternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.EcoreDelegatedInternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.XPathDelegatedInternalHandler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.processor.impl.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 
@@ -81,12 +80,12 @@ public class AllXmiInternalHandlerTest extends AllInputTest {
         XmiStreamReader reader = new XmiStreamReader();
         reader.setShowProgress(false);
 
-        InternalHandler internalHandler = new DefaultInternalHandler();
-        internalHandler = new XPathDelegatedInternalHandler(internalHandler);
-        internalHandler = new EcoreDelegatedInternalHandler(internalHandler);
-        internalHandler.addHandler(persistanceHandler);
+        Processor processor = new PersistenceNotifier();
+        processor = new XPathProcessor(processor);
+        processor = new EcoreProcessor(processor);
+        processor.addHandler(persistanceHandler);
 
-        reader.addHandler(internalHandler);
+        reader.addHandler(processor);
         reader.read(new FileInputStream(filePath));
 
         return persistanceHandler;

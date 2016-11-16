@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.internal.impl;
+package fr.inria.atlanmod.neoemf.io.processor.impl;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -17,7 +17,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Identifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -30,9 +30,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link InternalHandler} that analyses XML elements in order to create and to process XPath references.
+ * An {@link Processor} that analyses XML elements in order to create and to process XPath references.
  */
-public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHandler {
+public class XPathProcessor extends AbstractProcessor {
 
     private static final String XPATH_START_EXPR = "//@";
     private static final String XPATH_END_EXPR = "/";
@@ -50,21 +50,21 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
     private final TreePath paths;
 
     /**
-     * The start of an XPath expression in this {@code XPathDelegatedInternalHandler}.
+     * The start of an XPath expression in this {@link XPathProcessor}.
      * This variable is necessary to replace the malformed XPath reference in XMI files
      */
     private String expressionStart;
 
     private boolean hasIds;
 
-    public XPathDelegatedInternalHandler(InternalHandler handler) {
+    public XPathProcessor(Processor handler) {
         super(handler);
         this.paths = new TreePath();
         this.hasIds = false;
     }
 
     @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) throws Exception {
         if (!isNull(classifier.getId())) {
             hasIds = true;
         }
@@ -90,31 +90,31 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             }
         }
 
-        super.handleStartElement(classifier);
+        super.processStartElement(classifier);
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) throws Exception {
         if (!hasIds) {
             // Format the reference according internal XPath management
             reference.setIdReference(Identifier.generated(formatPath(reference.getIdReference().getValue())));
         }
 
-        super.handleReference(reference);
+        super.processReference(reference);
     }
 
     @Override
-    public void handleEndElement() throws Exception {
+    public void processEndElement() throws Exception {
         if (!hasIds) {
             // Removes children of the last element
             paths.clearLast();
         }
 
-        super.handleEndElement();
+        super.processEndElement();
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
+    public void processEndDocument() throws Exception {
         if (!hasIds) {
             long size = paths.size();
             if (size > 1) {
@@ -122,7 +122,7 @@ public class XPathDelegatedInternalHandler extends AbstractDelegatedInternalHand
             }
         }
 
-        super.handleEndDocument();
+        super.processEndDocument();
     }
 
     private String formatPath(String path) {

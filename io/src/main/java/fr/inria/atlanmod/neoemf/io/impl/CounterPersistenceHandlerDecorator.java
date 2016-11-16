@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.impl;
 
-import com.google.common.base.Stopwatch;
-
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.beans.Attribute;
 import fr.inria.atlanmod.neoemf.io.beans.Classifier;
@@ -20,19 +18,17 @@ import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 /**
- * A delegated {@link PersistenceHandler} that counts the number of different element, and gives the time to process.
+ * A delegated {@link PersistenceHandler} that counts the number of different element.
  */
-public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersistenceHandler {
+public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
     private final String name;
-
-    private Stopwatch stopWatch;
 
     private long elementCount;
     private long attributeCount;
     private long referenceCount;
 
-    public CounterDelegatedPersistenceHandler(PersistenceHandler handler, String name) {
+    public CounterPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
         super(handler);
         this.name = name;
         this.elementCount = 0;
@@ -41,41 +37,32 @@ public class CounterDelegatedPersistenceHandler extends AbstractDelegatedPersist
     }
 
     @Override
-    public void handleStartDocument() throws Exception {
-        NeoLogger.info("[" + name + "] Document analysis in progress...");
-        stopWatch = Stopwatch.createStarted();
-
-        super.handleStartDocument();
-    }
-
-    @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) throws Exception {
         elementCount++;
 
-        super.handleStartElement(classifier);
+        super.processStartElement(classifier);
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) throws Exception {
         attributeCount++;
 
-        super.handleAttribute(attribute);
+        super.processAttribute(attribute);
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) throws Exception {
         referenceCount++;
 
-        super.handleReference(reference);
+        super.processReference(reference);
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
-        NeoLogger.info("[{0}] Document analysis done in {1}", name, stopWatch.stop());
+    public void processEndDocument() throws Exception {
         NeoLogger.info("[{0}]  - Elements   : {1}", name, elementCount);
         NeoLogger.info("[{0}]  - Attributes : {1}", name, attributeCount);
         NeoLogger.info("[{0}]  - References : {1}", name, referenceCount);
 
-        super.handleEndDocument();
+        super.processEndDocument();
     }
 }

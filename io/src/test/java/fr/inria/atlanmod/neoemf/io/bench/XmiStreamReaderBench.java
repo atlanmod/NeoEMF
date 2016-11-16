@@ -11,9 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.bench;
 
-import fr.inria.atlanmod.neoemf.io.IOFactory;
+import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.impl.CounterDelegatedPersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.impl.CounterPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.io.impl.TimerPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.mock.DummyPersistenceHandler;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -30,7 +31,9 @@ public class XmiStreamReaderBench extends AllInputBench {
 
     @Before
     public void setUp() throws Exception {
-        dummyPersistenceHandler = new CounterDelegatedPersistenceHandler(new DummyPersistenceHandler(), "dummy1");
+        dummyPersistenceHandler = new DummyPersistenceHandler();
+        dummyPersistenceHandler = new TimerPersistenceHandlerDecorator(dummyPersistenceHandler, "dummy1-timer");
+        dummyPersistenceHandler = new CounterPersistenceHandlerDecorator(dummyPersistenceHandler, "dummy1-counter");
     }
 
     @Test
@@ -63,7 +66,7 @@ public class XmiStreamReaderBench extends AllInputBench {
     private void readXmi(File file, PersistenceHandler persistenceHandler) throws Exception {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         try {
-            IOFactory.importXmi(file, persistenceHandler);
+            Importer.fromXmi(file, persistenceHandler);
         }
         catch (Exception e) {
             NeoLogger.error(e);

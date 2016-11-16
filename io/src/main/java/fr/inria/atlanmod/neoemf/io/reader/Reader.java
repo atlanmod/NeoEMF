@@ -11,27 +11,27 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.IONotifier;
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
+import fr.inria.atlanmod.neoemf.io.InputNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import java.io.InputStream;
 
 /**
- * A {@link IONotifier} able to read a file.
+ * A {@link InputNotifier} able to read a file.
  * </p>
  * It correspond to the head of the parsing process in case of an import.
  */
-public interface Reader extends IONotifier<InternalHandler> {
+public interface Reader extends InputNotifier<Processor> {
 
     /**
      * Creates a series of internal handlers in order to build and analyze the read struture.
      *
      * @return an internal handler, or several embedded
      */
-    InternalHandler newDefaultHandler();
+    Processor defaultProcessor();
 
     /**
-     * Reads a stream and notifies {@link InternalHandler}.
+     * Reads a stream and notifies {@link Processor}.
      *
      * @param stream the stream to read
      */

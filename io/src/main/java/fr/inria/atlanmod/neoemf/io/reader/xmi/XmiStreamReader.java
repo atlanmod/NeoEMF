@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.reader.xmi;
 
-import fr.inria.atlanmod.neoemf.io.internal.InternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.DefaultInternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.EcoreDelegatedInternalHandler;
-import fr.inria.atlanmod.neoemf.io.internal.impl.XPathDelegatedInternalHandler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.PersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.impl.EcoreProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.impl.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -45,12 +45,12 @@ public class XmiStreamReader extends AbstractXmiReader {
     }
 
     @Override
-    public InternalHandler newDefaultHandler() {
-        InternalHandler defaultHandler;
+    public Processor defaultProcessor() {
+        Processor defaultHandler;
 
-        defaultHandler = new DefaultInternalHandler();
-        defaultHandler = new XPathDelegatedInternalHandler(defaultHandler);
-        defaultHandler = new EcoreDelegatedInternalHandler(defaultHandler);
+        defaultHandler = new PersistenceNotifier();
+        defaultHandler = new XPathProcessor(defaultHandler);
+        defaultHandler = new EcoreProcessor(defaultHandler);
 
         addHandler(defaultHandler);
         return defaultHandler;

@@ -16,21 +16,21 @@ import fr.inria.atlanmod.neoemf.io.beans.Classifier;
 import fr.inria.atlanmod.neoemf.io.beans.Reference;
 
 /**
- * A object able to notify {@link IOHandler}.
+ * A object able to notify {@link InputHandler}.
  *
  * @param <T> the type of handlers
  */
-public interface IONotifier<T extends IOHandler> {
+public interface InputNotifier<T extends InputHandler> {
 
     /**
-     * Add an {@link IOHandler} that will be notified.
+     * Add an {@link InputHandler} that will be notified.
      *
      * @param handler the handler to add
      */
     void addHandler(T handler);
 
     /**
-     * Defines if this notifier has at least one {@link IOHandler} to notify.
+     * Defines if this notifier has at least one {@link InputHandler} to notify.
      *
      * @return {@code true} if this notifier has at least one handler to notify.
      */

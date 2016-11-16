@@ -9,19 +9,21 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.hash;
+package fr.inria.atlanmod.neoemf.io.util;
+
+import fr.inria.atlanmod.neoemf.io.util.impl.Md5Hasher;
 
 /**
- * An object able to calculate the {@link HashCode} of a value.
+ * A factory of {@link Hasher}.
  */
-public interface Hasher {
+public class HasherFactory {
 
     /**
-     * Calculates the {@link HashCode} of the given {@code value}.
+     * Returns an instance of a {@link Hasher} using {@code MD5}.
      *
-     * @param value the value to has
-     *
-     * @return an hashcode
+     * @return an instance of a {@link Hasher} using {@code MD5}
      */
-    HashCode hash(String value);
+    public static Hasher md5() {
+        return Md5Hasher.getInstance();
+    }
 }
