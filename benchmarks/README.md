@@ -22,11 +22,11 @@ By default, all resources are executed on all backends. But you can choose to ex
 - `r=<resource>,...`    where `<resource>` is :
   - the filename, if it's included in `/resources.zip`.
   By default, this archive contains the following resource which can be declared by using their acronym:
-    - `fr.inria.atlanmod.kyanos.tests.xmi` as `xs` (130 KB)
-    - `fr.inria.atlanmod.neo4emf.neo4jresolver.xmi` as `s` (2 MB)
-    - `org.eclipse.gmt.modisco.java.kyanos.xmi` as `m` (20 MB)
-    - `org.eclipse.jdt.core.xmi` as `l` (420 MB)
-    - `org.eclipse.jdt.source.all.xmi` as `xl` (983 MB)
+    - `set1` = `fr.inria.atlanmod.kyanos.tests.xmi` (130 KB)
+    - `set2` = `fr.inria.atlanmod.neo4emf.neo4jresolver.xmi` (2 MB)
+    - `set3` = `org.eclipse.gmt.modisco.java.kyanos.xmi` (20 MB)
+    - `set4` = `org.eclipse.jdt.core.xmi` (420 MB)
+    - `set5` = `org.eclipse.jdt.source.all.xmi` (983 MB)
 
   - the absolute filepath, otherwise.
   For now, only `*.xmi` and `*.zxmi` that use the `http://www.eclipse.org/MoDisco/Java/0.2.incubation/java` package are allowed.
