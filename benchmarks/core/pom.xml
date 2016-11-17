@@ -40,6 +40,7 @@
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <!-- CDO -->
@@ -93,7 +94,6 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -104,7 +104,6 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jcl</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- Local -->
