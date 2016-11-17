@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.InternalBackend;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -52,24 +54,13 @@ public class BackendHelper {
 
     private static final Logger log = LogManager.getLogger();
 
-    /**
-     * A static Map containing all registered resources with their acronym.
-     */
-    private static final Map<String, String> REGISTERED_RESOURCES = new HashMap<>(5);
-    static {
-        REGISTERED_RESOURCES.put("xs", "fr.inria.atlanmod.kyanos.tests.xmi");
-        REGISTERED_RESOURCES.put("s", "fr.inria.atlanmod.neo4emf.neo4jresolver.xmi");
-        REGISTERED_RESOURCES.put("m", "org.eclipse.gmt.modisco.java.kyanos.xmi");
-        REGISTERED_RESOURCES.put("l", "org.eclipse.jdt.core.xmi");
-        REGISTERED_RESOURCES.put("xl", "org.eclipse.jdt.source.all.xmi");
-    }
-
     private static final String XMI = "xmi";
     private static final String ZXMI = "zxmi";
 
     private static final String ZIP_FILENAME = "resources.zip";
 
     private static List<String> AVAILABLE_RESOURCES;
+    private static Map<String, String> REGISTERED_RESOURCES;
 
     private BackendHelper() {
     }
@@ -141,8 +132,8 @@ public class BackendHelper {
     }
 
     public static File createResource(String sourceFilename, InternalBackend targetBackend) throws Exception {
-        if (REGISTERED_RESOURCES.containsKey(sourceFilename.toLowerCase())) {
-            sourceFilename = REGISTERED_RESOURCES.get(sourceFilename.toLowerCase());
+        if (getRegisteredResources().containsKey(sourceFilename.toLowerCase())) {
+            sourceFilename = getRegisteredResources().get(sourceFilename.toLowerCase());
         }
 
         File sourceFile;
@@ -263,7 +254,7 @@ public class BackendHelper {
      */
 
     private static List<String> getZipResources() throws IOException {
-        if (AVAILABLE_RESOURCES == null) {
+        if (isNull(AVAILABLE_RESOURCES)) {
             AVAILABLE_RESOURCES = new ArrayList<>();
 
             try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
@@ -278,6 +269,15 @@ public class BackendHelper {
             }
         }
         return AVAILABLE_RESOURCES;
+    }
+
+    private static Map<String, String> getRegisteredResources() throws IOException {
+        if (isNull(REGISTERED_RESOURCES)) {
+            Properties properties = new Properties();
+            properties.load(BackendHelper.class.getResourceAsStream("/resources.properties"));
+            REGISTERED_RESOURCES = Maps.fromProperties(properties);
+        }
+        return REGISTERED_RESOURCES;
     }
 
     private static File extractFromZip(String filename, Path outputDir) throws IOException {
