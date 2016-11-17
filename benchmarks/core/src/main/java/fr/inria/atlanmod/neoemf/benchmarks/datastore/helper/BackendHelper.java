@@ -127,13 +127,13 @@ public class BackendHelper {
         sourceResource.load(loadOpts);
 
         log.info("Migrating");
-        targetResource.save(targetBackend.getOptions());
+        targetBackend.save(targetResource);
         targetResource.getContents().addAll(sourceResource.getContents());
 
         sourceResource.unload();
 
         log.info("Saving to '{}'", targetResource.getURI());
-        targetResource.save(targetBackend.getOptions());
+        targetBackend.save(targetResource);
 
         targetBackend.unload(targetResource);
 
