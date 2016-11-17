@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>fr.inria.atlanmod.neoemf.map.feature</artifactId>
+
     <packaging>eclipse-feature</packaging>
 
     <name>NeoEMF :: Eclipse :: Features :: Map</name>

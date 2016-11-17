@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature</artifactId>
+
     <packaging>eclipse-feature</packaging>
 
     <name>NeoEMF :: Eclipse :: Features :: Blueprints :: Neo4j</name>

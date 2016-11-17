@@ -3,6 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>neoemf</artifactId>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -10,6 +11,7 @@
     </parent>
 
     <artifactId>eclipse</artifactId>
+
     <packaging>pom</packaging>
 
     <name>NeoEMF :: Eclipse :: Root</name>

@@ -15,6 +15,7 @@
 
     <url>www.neoemf.com</url>
     <inceptionYear>2013</inceptionYear>
+
     <organization>
         <name>Inria-AtlanMod Team</name>
         <url>http://www.emn.fr/z-info/atlanmod/index.php/Main_Page</url>
@@ -34,9 +35,14 @@
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>scp://www.mycompany.com/www/docs/project/</url>
+            <url>http://www.neoemf.com/releases/snapshot/</url>
         </site>
     </distributionManagement>
+
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/atlanmod/NeoEMF</url>
+    </ciManagement>
 
     <licenses>
         <license>
@@ -117,15 +123,22 @@
 
     <properties>
 
-        <!-- Global -->
+        <!--
+            Global
+        -->
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <build.tstamp>${maven.build.timestamp}</build.tstamp>
         <config-path>./</config-path>
 
-        <!-- Plugins -->
+        <!--
+            Plugins
+        -->
+
+        <antrun-plugin.version>1.8</antrun-plugin.version>
+        <assembly-plugin.version>2.6</assembly-plugin.version>
         <build-helper-plugin.version>1.12</build-helper-plugin.version>
         <bundle-plugin.version>3.2.0</bundle-plugin.version>
         <changes-plugin.version>2.12.1</changes-plugin.version>
@@ -143,6 +156,7 @@
         <license-plugin.version>1.10</license-plugin.version>
         <pmd-plugin.version>3.7</pmd-plugin.version>
         <project-info-reports-plugin.version>2.9</project-info-reports-plugin.version>
+        <release-plugin.version>2.5.3</release-plugin.version>
         <resources-plugin.version>3.0.1</resources-plugin.version>
         <site-plugin.version>3.5.1</site-plugin.version>
         <source-plugin.version>3.0.1</source-plugin.version>
@@ -151,7 +165,9 @@
         <versions-plugin.version>2.3</versions-plugin.version>
         <xtext-plugin.version>2.9.2</xtext-plugin.version>
 
-        <!-- Dependencies -->
+        <!--
+            Dependencies
+        -->
 
         <!-- DB -->
         <blueprints.version>2.6.0</blueprints.version>
@@ -191,11 +207,13 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>${javax-annotations.version}</version>
+            <optional>true</optional><!-- needed only for annotations -->
         </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+
             <!-- Graph/Neo4j -->
 
             <dependency>
@@ -208,6 +226,7 @@
                 <groupId>com.tinkerpop.blueprints</groupId>
                 <artifactId>blueprints-neo4j-graph</artifactId>
                 <version>${blueprints.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- MapDB -->
@@ -235,12 +254,6 @@
             <dependency>
                 <groupId>org.apache.hbase</groupId>
                 <artifactId>hbase-common</artifactId>
-                <version>${hbase.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-hadoop-compat</artifactId>
                 <version>${hbase.version}</version>
             </dependency>
 
@@ -342,6 +355,7 @@
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
                 <version>${ecore.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -496,39 +510,64 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${site-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>6.18</version>
-                        </dependency>
-                    </dependencies>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${antrun-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${assembly-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${bundle-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <Bundle-Version>
+                                <!-- Properties ${osgi.XXX} created by build-helper-maven-plugin:parse-version -->
+                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}.${maven.build.timestamp}
+                            </Bundle-Version>
+                            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+                            <Import-Package/>
+                            <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
+                                 internal class loading (in particular caches are not recognized anymore) -->
+                            <Embed-Dependency>
+                                <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
+                                     otherwise it creates conflicts with running osgi version (these dependencies are
+                                     only needed when running the plugins in an eclipse-based environment) -->
+                                *;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi
+                            </Embed-Dependency>
+                            <Embed-Transitive>true</Embed-Transitive>
+                        </instructions>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-changes-plugin</artifactId>
+                    <version>${changes-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${clean-plugin.version}</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${compiler-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${source-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>${resources-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>${install-plugin.version}</version>
                 </plugin>
 
                 <plugin>
@@ -545,14 +584,14 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>${jar-plugin.version}</version>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${install-plugin.version}</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${surefire-plugin.version}</version>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${jar-plugin.version}</version>
                 </plugin>
 
                 <plugin>
@@ -563,52 +602,32 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>${clean-plugin.version}</version>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${release-plugin.version}</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-changes-plugin</artifactId>
-                    <version>${changes-plugin.version}</version>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${resources-plugin.version}</version>
                 </plugin>
 
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>${build-helper-plugin.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${source-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire-plugin.version}</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.eclipse.xtext</groupId>
                     <artifactId>xtext-maven-plugin</artifactId>
                     <version>${xtext-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>${bundle-plugin.version}</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <instructions>
-                            <Bundle-Version>
-                                <!-- Properties ${osgi.XXX} created by build-helper-maven-plugin:parse-version -->
-                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}.${build.tstamp}
-                            </Bundle-Version>
-                            <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                            <Import-Package/>
-                            <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
-                                 internal class loading (in particular caches are not recognized anymore) -->
-                            <Embed-Dependency>
-                                <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
-                                     otherwise it creates conflicts with running osgi version (these dependencies are
-                                     only needed when running the plugins in an eclipse-based environment) -->
-                                *;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi
-                            </Embed-Dependency>
-                            <Embed-Transitive>true</Embed-Transitive>
-                        </instructions>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

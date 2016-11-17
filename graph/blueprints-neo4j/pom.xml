@@ -11,47 +11,50 @@
     </parent>
 
     <artifactId>graph.blueprints.neo4j</artifactId>
+
     <packaging>bundle</packaging>
 
     <name>NeoEMF :: Graph :: Blueprints :: Neo4j Wrapper</name>
+    <description/>
 
     <properties>
         <config-path>${project.parent.parent.basedir}</config-path>
+        <neo4j.version>1.9.6</neo4j.version>
+        <lucene.version>3.6.2</lucene.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-neo4j-graph</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- By default, imports a POM file instead of a JAR, which is not recognized by Eclipse -->
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
-            <version>1.9.6</version>
+            <version>${neo4j.version}</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
-            <version>1.9.6</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>3.6.2</version>
+            <version>${neo4j.version}</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-lucene-index</artifactId>
-            <version>1.9.6</version>
+            <version>${neo4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>${lucene.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -95,13 +98,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -139,6 +140,7 @@
                         <_exportcontents>
                             javax.transaction,
                             javax.transaction.xa,
+
                             org.apache.commons.configuration,
                             org.apache.commons.configuration.beanutils,
                             org.apache.commons.configuration.event,
@@ -146,8 +148,10 @@
                             org.apache.commons.configuration.reloading,
                             org.apache.commons.configuration.resolver,
                             org.apache.commons.configuration.tree,
+
                             org.apache.commons.lang.exception,
                             org.apache.commons.lang.text,
+
                             org.apache.commons.logging,
                         </_exportcontents>
                         <Embed-Dependency>

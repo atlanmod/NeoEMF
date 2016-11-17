@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>fr.inria.atlanmod.neoemf.update</artifactId>
+
     <packaging>eclipse-repository</packaging>
 
     <dependencies>

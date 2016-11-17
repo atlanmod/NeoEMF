@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.hbase.util;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.protobuf.ServiceException;
 
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -90,7 +89,7 @@ public class NeoHBaseUtil {
             catch (ZooKeeperConnectionException e) {
                 NeoLogger.error("zooKeeper connexion failed using the following configuration:\n hbase.zookeeper.quorum:{0}\nhbase.zookeeper.property.clientPort:{1}", e.getLocalizedMessage(), conf.get("hbase.zookeeper.property.clientPort"));
             }
-            catch (IOException | ServiceException e) {
+            catch (Exception e) {
                 NeoLogger.error(e);
             }
 

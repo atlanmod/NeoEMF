@@ -15,9 +15,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.cache.HBaseFeatureKey;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.cache.HBaseFeatureKey;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
@@ -25,7 +25,6 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.protobuf.generated.ZooKeeperProtos.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
@@ -67,8 +66,8 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
     }
 
     /**
-     * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
-     * fr.inria.atlanmod.neoemf.core.PersistentEObject} {@code object}
+     * Gets the {@link EStructuralFeature} {@code feature} from the {@link HTable} for the {@link
+     * PersistentEObject} {@code object}
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
      * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s

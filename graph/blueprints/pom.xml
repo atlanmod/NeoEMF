@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>graph.blueprints</artifactId>
+
     <packaging>bundle</packaging>
 
     <name>NeoEMF :: Graph :: Blueprints</name>
@@ -95,13 +96,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -129,6 +128,7 @@
                             com.tinkerpop.blueprints.util,
                             com.tinkerpop.blueprints.util.wrappers,
                             com.tinkerpop.blueprints.util.wrappers.id,
+
                             org.apache.commons.configuration,
                             org.apache.commons.configuration.beanutils,
                             org.apache.commons.configuration.event,
@@ -136,8 +136,10 @@
                             org.apache.commons.configuration.reloading,
                             org.apache.commons.configuration.resolver,
                             org.apache.commons.configuration.tree,
+
                             org.apache.commons.lang.exception,
                             org.apache.commons.lang.text,
+
                             org.apache.commons.logging,
                         </_exportcontents>
                         <Require-Bundle>

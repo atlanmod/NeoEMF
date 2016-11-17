@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>graph</artifactId>
+
     <packaging>pom</packaging>
 
     <name>NeoEMF :: Graph</name>

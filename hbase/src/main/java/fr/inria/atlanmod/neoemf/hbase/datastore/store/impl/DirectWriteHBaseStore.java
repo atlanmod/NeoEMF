@@ -23,7 +23,7 @@ import fr.inria.atlanmod.neoemf.hbase.datastore.HBasePersistenceBackend;
 import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -36,7 +36,6 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.protobuf.generated.ZooKeeperProtos;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -249,7 +248,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * Gets the {@link EStructuralFeature} {@code feature} from the {@link ZooKeeperProtos.Table} for the {@link
+     * Gets the {@link EStructuralFeature} {@code feature} from the {@link HTable} for the {@link
      * PersistentEObject object}
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link

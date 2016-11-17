@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>hbase</artifactId>
+
     <packaging>bundle</packaging>
 
     <name>NeoEMF :: HBase</name>
@@ -29,11 +30,6 @@
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-hadoop-compat</artifactId>
         </dependency>
 
         <dependency>
@@ -87,14 +83,6 @@
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
-        </dependency>
-
-        <!-- Test -->
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
