@@ -52,6 +52,18 @@ public class BackendHelper {
 
     private static final Logger log = LogManager.getLogger();
 
+    /**
+     * A static Map containing all registered resources with their acronym.
+     */
+    private static final Map<String, String> REGISTERED_RESOURCES = new HashMap<>(5);
+    static {
+        REGISTERED_RESOURCES.put("xs", "fr.inria.atlanmod.kyanos.tests.xmi");
+        REGISTERED_RESOURCES.put("s", "fr.inria.atlanmod.neo4emf.neo4jresolver.xmi");
+        REGISTERED_RESOURCES.put("m", "org.eclipse.gmt.modisco.java.kyanos.xmi");
+        REGISTERED_RESOURCES.put("l", "org.eclipse.jdt.core.xmi");
+        REGISTERED_RESOURCES.put("xl", "org.eclipse.jdt.source.all.xmi");
+    }
+
     private static final String XMI = "xmi";
     private static final String ZXMI = "zxmi";
 
@@ -129,6 +141,10 @@ public class BackendHelper {
     }
 
     public static File createResource(String sourceFilename, InternalBackend targetBackend) throws Exception {
+        if (REGISTERED_RESOURCES.containsKey(sourceFilename.toLowerCase())) {
+            sourceFilename = REGISTERED_RESOURCES.get(sourceFilename.toLowerCase());
+        }
+
         File sourceFile;
         if (getZipResources().contains(sourceFilename)) {
             // Get file from the resources/resource.zip

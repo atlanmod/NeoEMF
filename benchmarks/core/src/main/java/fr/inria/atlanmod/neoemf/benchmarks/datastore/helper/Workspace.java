@@ -26,8 +26,10 @@ public class Workspace {
     public static Path getBaseDirectory() {
         if (isNull(BASE_DIRECTORY)) {
             try {
-                String BASE_DIRECTORY_NAME = "neoemf-benchmarks";
-                BASE_DIRECTORY = Files.createDirectories(Paths.get(System.getProperty("java.io.tmpdir"), BASE_DIRECTORY_NAME));
+                BASE_DIRECTORY = Files.createDirectories(
+                        Paths.get(System.getProperty("user.home"))
+                        .resolve(".neoemf")
+                        .resolve("benchmarks"));
             }
             catch (IOException e) {
                 log.warn(e);
@@ -39,8 +41,7 @@ public class Workspace {
     public static Path getResourcesDirectory() {
         if (isNull(RESOURCES_DIRECTORY)) {
             try {
-                String RESOURCES_DIRECTORY_NAME = "resources";
-                RESOURCES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve(RESOURCES_DIRECTORY_NAME));
+                RESOURCES_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("resources"));
             }
             catch (IOException e) {
                 log.warn(e);
@@ -64,7 +65,7 @@ public class Workspace {
     private static Path getTempDirectory() {
         if (isNull(TEMP_DIRECTORY)) {
             try {
-                TEMP_DIRECTORY = Files.createDirectories(getBaseDirectory().resolve("tmp"));
+                TEMP_DIRECTORY = Files.createTempDirectory("neoemf-benchmark");
             }
             catch (IOException e) {
                 log.warn(e);
