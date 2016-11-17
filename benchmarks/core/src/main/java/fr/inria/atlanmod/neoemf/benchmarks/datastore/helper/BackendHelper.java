@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore.helper;
 
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.InternalBackend;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -58,6 +60,7 @@ public class BackendHelper {
     private static final String ZIP_FILENAME = "resources.zip";
 
     private static List<String> AVAILABLE_RESOURCES;
+    private static Map<String, String> REGISTERED_RESOURCES;
 
     private BackendHelper() {
     }
@@ -115,13 +118,13 @@ public class BackendHelper {
         sourceResource.load(loadOpts);
 
         log.info("Migrating");
-        targetResource.save(targetBackend.getOptions());
+        targetBackend.save(targetResource);
         targetResource.getContents().addAll(sourceResource.getContents());
 
         sourceResource.unload();
 
         log.info("Saving to '{}'", targetResource.getURI());
-        targetResource.save(targetBackend.getOptions());
+        targetBackend.save(targetResource);
 
         targetBackend.unload(targetResource);
 
@@ -129,6 +132,10 @@ public class BackendHelper {
     }
 
     public static File createResource(String sourceFilename, InternalBackend targetBackend) throws Exception {
+        if (getRegisteredResources().containsKey(sourceFilename.toLowerCase())) {
+            sourceFilename = getRegisteredResources().get(sourceFilename.toLowerCase());
+        }
+
         File sourceFile;
         if (getZipResources().contains(sourceFilename)) {
             // Get file from the resources/resource.zip
@@ -247,7 +254,7 @@ public class BackendHelper {
      */
 
     private static List<String> getZipResources() throws IOException {
-        if (AVAILABLE_RESOURCES == null) {
+        if (isNull(AVAILABLE_RESOURCES)) {
             AVAILABLE_RESOURCES = new ArrayList<>();
 
             try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
@@ -262,6 +269,15 @@ public class BackendHelper {
             }
         }
         return AVAILABLE_RESOURCES;
+    }
+
+    private static Map<String, String> getRegisteredResources() throws IOException {
+        if (isNull(REGISTERED_RESOURCES)) {
+            Properties properties = new Properties();
+            properties.load(BackendHelper.class.getResourceAsStream("/resources.properties"));
+            REGISTERED_RESOURCES = Maps.fromProperties(properties);
+        }
+        return REGISTERED_RESOURCES;
     }
 
     private static File extractFromZip(String filename, Path outputDir) throws IOException {

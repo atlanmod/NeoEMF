@@ -250,6 +250,22 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <!-- Initialize resources and stores : 'mvn exec:exec@init' -->
+                        <id>init</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Dfile.encoding=utf-8</argument>
+                                <argument>-jar</argument>
+                                <argument>${uberjar.directory}/${uberjar.name}.jar</argument>
+                                <argument>init</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

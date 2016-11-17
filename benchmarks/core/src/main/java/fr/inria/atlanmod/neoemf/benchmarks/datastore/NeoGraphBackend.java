@@ -52,7 +52,6 @@ public class NeoGraphBackend extends AbstractNeoBackend {
     public Map<String, Object> getOptions() {
         return BlueprintsResourceOptions.newBuilder()
                 .directWrite()
-                .autocommit()
                 .asMap();
     }
 }
