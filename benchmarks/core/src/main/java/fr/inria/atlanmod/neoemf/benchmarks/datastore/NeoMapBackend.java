@@ -13,14 +13,20 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NeoMapBackend extends AbstractNeoBackend {
 
@@ -40,5 +46,14 @@ public class NeoMapBackend extends AbstractNeoBackend {
         URI uri = NeoMapURI.createNeoMapURI(file);
 
         return resourceSet.createResource(uri);
+    }
+
+    @Override
+    public Map<Object, Object> getOptions() {
+        Map<Object, Object> options = new HashMap<>();
+        List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
+        storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
+        options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
+        return options;
     }
 }
