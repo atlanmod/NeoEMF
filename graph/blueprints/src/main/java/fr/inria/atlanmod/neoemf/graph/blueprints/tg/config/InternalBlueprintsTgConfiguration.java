@@ -24,8 +24,6 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
     private static final String DIRECTORY = "blueprints.tg.directory";
     private static final String FILE_TYPE = "blueprints.tg.file-type";
 
-    private static InternalBlueprintsConfiguration INSTANCE;
-
     private InternalBlueprintsTgConfiguration() {
     }
 
@@ -33,10 +31,7 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
      * Returns the instance of this {@link InternalBlueprintsConfiguration}.
      */
     public static InternalBlueprintsConfiguration getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new InternalBlueprintsTgConfiguration();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -52,5 +47,9 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
     @Override
     public void setGlobalSettings() {
 
+    }
+
+    private static class Holder {
+        private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsTgConfiguration();
     }
 }

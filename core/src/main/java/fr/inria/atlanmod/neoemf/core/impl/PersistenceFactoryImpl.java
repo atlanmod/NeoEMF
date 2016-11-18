@@ -17,20 +17,13 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
-import static java.util.Objects.isNull;
-
 public final class PersistenceFactoryImpl extends EFactoryImpl implements PersistenceFactory {
-
-    private static PersistenceFactory INSTANCE;
 
     private PersistenceFactoryImpl() {
     }
 
     public static PersistenceFactory getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new PersistenceFactoryImpl();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -38,5 +31,9 @@ public final class PersistenceFactoryImpl extends EFactoryImpl implements Persis
         PersistentEObjectImpl eObject = new PersistentEObjectImpl();
         eObject.eSetClass(eClass);
         return eObject;
+    }
+
+    private static class Holder {
+        private static final PersistenceFactory INSTANCE = new PersistenceFactoryImpl();
     }
 }

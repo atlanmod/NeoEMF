@@ -17,20 +17,13 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import static java.util.Objects.isNull;
-
 public class PersistentResourceFactoryImpl implements PersistentResourceFactory {
-
-    private static PersistentResourceFactory INSTANCE;
 
     protected PersistentResourceFactoryImpl() {
     }
 
     public static PersistentResourceFactory getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new PersistentResourceFactoryImpl();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -40,5 +33,9 @@ public class PersistentResourceFactoryImpl implements PersistentResourceFactory 
             resource = new PersistentResourceImpl(uri);
         }
         return resource;
+    }
+
+    private static class Holder {
+        private static final PersistentResourceFactory INSTANCE = new PersistentResourceFactoryImpl();
     }
 }

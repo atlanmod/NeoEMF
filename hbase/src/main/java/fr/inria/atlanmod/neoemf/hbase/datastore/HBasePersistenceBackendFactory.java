@@ -29,22 +29,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static java.util.Objects.isNull;
-
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     public static final String NAME = "hbase";
-
-    private static PersistenceBackendFactory INSTANCE;
 
     private HBasePersistenceBackendFactory() {
     }
 
     public static PersistenceBackendFactory getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new HBasePersistenceBackendFactory();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -92,5 +85,9 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     private PersistentStore embedInDefaultWrapper(PersistentStore eStore) {
         return new IsSetCachingStoreDecorator(new CachingStoreDecorator(eStore));
+    }
+
+    private static class Holder {
+        private static final PersistenceBackendFactory INSTANCE = new HBasePersistenceBackendFactory();
     }
 }

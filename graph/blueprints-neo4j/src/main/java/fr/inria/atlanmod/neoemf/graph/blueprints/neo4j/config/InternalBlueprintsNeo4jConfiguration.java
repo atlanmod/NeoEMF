@@ -23,8 +23,6 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
 
     private static final String DIRECTORY = "blueprints.neo4j.directory";
 
-    private static InternalBlueprintsConfiguration INSTANCE;
-
     private InternalBlueprintsNeo4jConfiguration() {
     }
 
@@ -32,10 +30,7 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
      * Returns the instance of this {@link InternalBlueprintsConfiguration}.
      */
     public static InternalBlueprintsConfiguration getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new InternalBlueprintsNeo4jConfiguration();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -48,5 +43,9 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
     @Override
     public void setGlobalSettings() {
 
+    }
+
+    private static class Holder {
+        private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsNeo4jConfiguration();
     }
 }

@@ -18,8 +18,6 @@ import com.google.common.hash.Hashing;
 import fr.inria.atlanmod.neoemf.io.util.HashCode;
 import fr.inria.atlanmod.neoemf.io.util.Hasher;
 
-import static java.util.Objects.isNull;
-
 /**
  * A {@link Hasher} using the {@code MD5} algorithm.
  */
@@ -27,16 +25,11 @@ public class Md5Hasher implements Hasher {
 
     private static final HashFunction hashFunction = Hashing.md5();
 
-    private static Hasher INSTANCE;
-
     private Md5Hasher() {
     }
 
     public static Hasher getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new Md5Hasher();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -44,5 +37,9 @@ public class Md5Hasher implements Hasher {
         String hash = hashFunction.newHasher().putString(value, Charsets.UTF_8).hash().toString();
 
         return new StringHashCode(hash);
+    }
+
+    private static class Holder {
+        private static final Hasher INSTANCE = new Md5Hasher();
     }
 }

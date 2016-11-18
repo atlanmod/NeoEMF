@@ -58,16 +58,11 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
      */
     private static final String BLUEPRINTS_CONFIG_FILE = "config.properties";
 
-    private static PersistenceBackendFactory INSTANCE;
-
     private BlueprintsPersistenceBackendFactory() {
     }
 
     public static PersistenceBackendFactory getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new BlueprintsPersistenceBackendFactory();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -241,5 +236,9 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         }
 
         return configuration;
+    }
+
+    private static class Holder {
+        private static final PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();
     }
 }

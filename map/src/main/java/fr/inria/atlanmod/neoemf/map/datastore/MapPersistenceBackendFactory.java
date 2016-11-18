@@ -46,16 +46,11 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 
     public static final String NAME = "mapdb";
 
-    private static PersistenceBackendFactory INSTANCE;
-
     private MapPersistenceBackendFactory() {
     }
 
     public static PersistenceBackendFactory getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new MapPersistenceBackendFactory();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
@@ -139,5 +134,9 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
         MapPersistenceBackend target = (MapPersistenceBackend) to;
 
         source.copyTo(target);
+    }
+
+    private static class Holder {
+        private static final PersistenceBackendFactory INSTANCE = new MapPersistenceBackendFactory();
     }
 }

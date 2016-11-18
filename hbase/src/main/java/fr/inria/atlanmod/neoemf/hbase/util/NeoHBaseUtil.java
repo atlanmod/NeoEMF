@@ -55,17 +55,13 @@ public class NeoHBaseUtil {
 
     public static class ResourceUtil {
 
-        private static ResourceUtil INSTANCE;
         private final Configuration conf = HBaseConfiguration.create();
 
         private ResourceUtil() {
         }
 
         public static ResourceUtil getInstance() {
-            if (isNull(INSTANCE)) {
-                INSTANCE = new ResourceUtil();
-            }
-            return INSTANCE;
+            return Holder.INSTANCE;
         }
 
         /**
@@ -113,6 +109,10 @@ public class NeoHBaseUtil {
                 throw e;
             }
             return false;
+        }
+
+        private static class Holder {
+            private static final ResourceUtil INSTANCE = new ResourceUtil();
         }
     }
 

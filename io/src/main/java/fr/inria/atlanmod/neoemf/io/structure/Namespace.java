@@ -47,8 +47,6 @@ public class Namespace {
      */
     public static class Registry {
 
-        private static Registry INSTANCE;
-
         /**
          * Registered {@link Namespace} identified by their prefix.
          */
@@ -65,10 +63,7 @@ public class Namespace {
         }
 
         public static Registry getInstance() {
-            if (isNull(INSTANCE)) {
-                INSTANCE = new Registry();
-            }
-            return INSTANCE;
+            return Holder.INSTANCE;
         }
 
         public Iterable<String> getPrefixes() {
@@ -125,6 +120,10 @@ public class Namespace {
         public void clean() {
             namespacesByPrefix.invalidateAll();
             namespacesByUri.invalidateAll();
+        }
+
+        private static class Holder {
+            private static final Registry INSTANCE = new Registry();
         }
     }
 }
