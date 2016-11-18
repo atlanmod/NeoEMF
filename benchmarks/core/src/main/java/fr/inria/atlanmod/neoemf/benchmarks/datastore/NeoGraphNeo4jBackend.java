@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class NeoGraphNeo4jBackend extends NeoGraphBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsNeo4jResourceOptions.newBuilder()
+        return BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .directWrite()
                 .autocommit()
                 .asMap();

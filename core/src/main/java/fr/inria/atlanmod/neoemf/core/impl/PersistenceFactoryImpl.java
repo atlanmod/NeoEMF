@@ -34,6 +34,7 @@ public final class PersistenceFactoryImpl extends EFactoryImpl implements Persis
     }
 
     private static class Holder {
+
         private static final PersistenceFactory INSTANCE = new PersistenceFactoryImpl();
     }
 }

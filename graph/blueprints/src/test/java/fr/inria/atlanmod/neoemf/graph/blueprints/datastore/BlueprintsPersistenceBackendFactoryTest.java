@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -95,7 +95,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentBackendNoOptionNoConfigFile() throws InvalidDataStoreException {
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsOptionsBuilder.newBuilder().asMap());
         assertThat(persistentBackend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid backend created"
 
 //        BlueprintsPersistenceBackend graph = (BlueprintsPersistenceBackend) persistentBackend;
@@ -104,9 +104,9 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, InvalidOptionsException {
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, BlueprintsOptionsBuilder.newBuilder().asMap());
         assertThat(eStore).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
@@ -114,11 +114,11 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, InvalidOptionsException {
-        Map<String, Object> options = BlueprintsResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWrite()
                 .asMap();
 
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
         assertThat(eStore).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
@@ -128,11 +128,11 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentEStoreManyCacheOption() throws InvalidDataStoreException, InvalidOptionsException {
-        Map<String, Object> options = BlueprintsResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWriteCacheMany()
                 .asMap();
 
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
         assertThat(eStore).isInstanceOf(DirectWriteBlueprintsCacheManyStore.class); // "Invalid EStore created"
@@ -142,11 +142,11 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentEStoreAutocommitOptionNoBase() throws InvalidDataStoreException, InvalidOptionsException {
-        Map<String, Object> options = BlueprintsResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .autocommit()
                 .asMap();
 
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
         assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
@@ -156,12 +156,12 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentEStoreAutocommitOptionDirectWriteBase() throws InvalidDataStoreException, InvalidOptionsException {
-        Map<String, Object> options = BlueprintsResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWrite()
                 .autocommit()
                 .asMap();
 
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
         assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
@@ -171,12 +171,12 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentEStoreAutocommitOptionCachedManyBase() throws InvalidDataStoreException, InvalidOptionsException {
-        Map<String, Object> options = BlueprintsResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWriteCacheMany()
                 .autocommit()
                 .asMap();
 
-        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsResourceOptions.newBuilder().asMap());
+        PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = persistenceBackendFactory.createPersistentStore(null, persistentBackend, options);
         assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"

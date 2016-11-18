@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.resource;
+package fr.inria.atlanmod.neoemf.option;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractPersistentResourceOptionsBuilder<B extends AbstractPersistentResourceOptionsBuilder<B>> {
+public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersistenceOptionsBuilder<B>> {
 
     private final Map<String, Object> options;
 
-    private final List<PersistentResourceOptions.StoreOption> storeOptions;
+    private final List<PersistentStoreOptions> storeOptions;
 
-    protected AbstractPersistentResourceOptionsBuilder() {
-        options = new HashMap<>();
-        storeOptions = new ArrayList<>();
+    protected AbstractPersistenceOptionsBuilder() {
+        this.options = new HashMap<>();
+        this.storeOptions = new ArrayList<>();
     }
 
     /**
@@ -48,7 +48,7 @@ public abstract class AbstractPersistentResourceOptionsBuilder<B extends Abstrac
         return (B) this;
     }
 
-    protected B storeOption(PersistentResourceOptions.StoreOption storeOption) {
+    protected B storeOption(PersistentStoreOptions storeOption) {
         this.storeOptions.add(storeOption);
         return me();
     }
@@ -59,22 +59,22 @@ public abstract class AbstractPersistentResourceOptionsBuilder<B extends Abstrac
     }
 
     public B cacheIsSet() {
-        return storeOption(PersistentResourceOptions.EStoreOption.CACHE_IS_SET);
+        return storeOption(CommonStoreOptions.CACHE_IS_SET);
     }
 
     public B cacheSizes() {
-        return storeOption(PersistentResourceOptions.EStoreOption.CACHE_SIZE);
+        return storeOption(CommonStoreOptions.CACHE_SIZE);
     }
 
     public B cacheFeatures() {
-        return storeOption(PersistentResourceOptions.EStoreOption.CACHE_STRUCTURAL_FEATURE);
+        return storeOption(CommonStoreOptions.CACHE_STRUCTURAL_FEATURE);
     }
 
     public B log() {
-        return storeOption(PersistentResourceOptions.EStoreOption.LOG);
+        return storeOption(CommonStoreOptions.LOG);
     }
 
     public B countLoadedObjects() {
-        return storeOption(PersistentResourceOptions.EStoreOption.COUNT_LOADED_OBJECT);
+        return storeOption(CommonStoreOptions.COUNT_LOADED_OBJECT);
     }
 }

@@ -9,9 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource;
+package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsResourceOptions;
 
 public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOptions {
 
@@ -30,10 +30,6 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
     String PROPERTIES_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.mapped_memory";
 
     String RELATIONSHIPS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.relationshipstore.db.mapped_memory";
-
-    static BlueprintsNeo4jResourceOptionsBuilder newBuilder() {
-        return new BlueprintsNeo4jResourceOptionsBuilder();
-    }
 
     /**
      * Possible values for {@link #CACHE_TYPE}.

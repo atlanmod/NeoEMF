@@ -46,6 +46,7 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
     }
 
     private static class Holder {
+
         private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsNeo4jConfiguration();
     }
 }

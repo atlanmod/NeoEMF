@@ -29,6 +29,11 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     private final Id id;
     private final String name;
 
+    protected FeatureKey(Id id, String name) {
+        this.id = checkNotNull(id);
+        this.name = checkNotNull(name);
+    }
+
     public static FeatureKey from(InternalEObject object, EStructuralFeature feature) {
         return from(PersistentEObject.from(object), feature);
     }
@@ -39,11 +44,6 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
     public static FeatureKey of(Id id, String name) {
         return new FeatureKey(id, name);
-    }
-
-    protected FeatureKey(Id id, String name) {
-        this.id = checkNotNull(id);
-        this.name = checkNotNull(name);
     }
 
     public Id id() {

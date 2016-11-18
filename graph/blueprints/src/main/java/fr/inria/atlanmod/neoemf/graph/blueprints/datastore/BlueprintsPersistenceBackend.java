@@ -51,15 +51,14 @@ import static java.util.Objects.isNull;
 
 public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
     public static final String ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
     public static final String EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
-
     public static final String INSTANCE_OF = "kyanosInstanceOf";
     public static final String METACLASSES = "metaclasses";
     public static final String NAME = "name";
+
+    // TODO Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
      * This {@link Cache}&lt;objectID, {@link EObject}&gt; is necessary to maintain a registry of the already loaded

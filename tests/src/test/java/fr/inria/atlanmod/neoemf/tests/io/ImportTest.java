@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.io.writer.BlueprintsPersistenceHandlerFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource.BlueprintsNeo4jResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
@@ -376,13 +376,13 @@ public class ImportTest extends AllInputTest {
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
         Resource resource = resourceSet.createResource(NeoBlueprintsURI.createFileURI(neo4jFile));
-        resource.load(BlueprintsNeo4jResourceOptions.newBuilder().asMap());
+        resource.load(BlueprintsNeo4jOptionsBuilder.newBuilder().asMap());
 
         return resource.getContents().get(0);
     }
 
     private BlueprintsPersistenceBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .directWrite()
                 .noCache()
                 .asMap();

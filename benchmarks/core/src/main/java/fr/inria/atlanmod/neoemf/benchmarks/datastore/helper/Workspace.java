@@ -28,8 +28,8 @@ public class Workspace {
             try {
                 BASE_DIRECTORY = Files.createDirectories(
                         Paths.get(System.getProperty("user.home"))
-                        .resolve(".neoemf")
-                        .resolve("benchmarks"));
+                                .resolve(".neoemf")
+                                .resolve("benchmarks"));
             }
             catch (IOException e) {
                 log.warn(e);

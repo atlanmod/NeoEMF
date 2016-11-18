@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -50,7 +50,7 @@ public class NeoGraphBackend extends AbstractNeoBackend {
 
     @Override
     public Map<String, Object> getOptions() {
-        return BlueprintsResourceOptions.newBuilder()
+        return BlueprintsOptionsBuilder.newBuilder()
                 .directWrite()
                 .asMap();
     }

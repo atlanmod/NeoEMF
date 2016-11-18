@@ -22,8 +22,10 @@ import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
+import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -42,10 +44,10 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * Returns a list of store options from the given {@code options}.
      */
     @SuppressWarnings("unchecked")
-    protected static List<PersistentResourceOptions.StoreOption> getStoreOptions(Map<?, ?> options) throws InvalidOptionsException {
+    protected static List<PersistentStoreOptions> getStoreOptions(Map<?, ?> options) throws InvalidOptionsException {
         Object storeOptions = options.get(PersistentResourceOptions.STORE_OPTIONS);
         try {
-            return (List<PersistentResourceOptions.StoreOption>) storeOptions;
+            return (List<PersistentStoreOptions>) storeOptions;
         }
         catch (ClassCastException e) {
             throw new InvalidOptionsException("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>");
@@ -60,22 +62,22 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     @Override
     public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
         PersistentStore eStore = createSpecificPersistentStore(resource, backend, options);
-        List<PersistentResourceOptions.StoreOption> storeOptions = getStoreOptions(options);
+        List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         if (!isNull(storeOptions) && !storeOptions.isEmpty()) {
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_IS_SET)) {
+            if (storeOptions.contains(CommonStoreOptions.CACHE_IS_SET)) {
                 eStore = new IsSetCachingStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_STRUCTURAL_FEATURE)) {
+            if (storeOptions.contains(CommonStoreOptions.CACHE_STRUCTURAL_FEATURE)) {
                 eStore = new FeatureCachingStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.CACHE_SIZE)) {
+            if (storeOptions.contains(CommonStoreOptions.CACHE_SIZE)) {
                 eStore = new CachingStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.LOG)) {
+            if (storeOptions.contains(CommonStoreOptions.LOG)) {
                 eStore = new LoggingStoreDecorator(eStore);
             }
-            if (storeOptions.contains(PersistentResourceOptions.EStoreOption.COUNT_LOADED_OBJECT)) {
+            if (storeOptions.contains(CommonStoreOptions.COUNT_LOADED_OBJECT)) {
                 eStore = new LoadedObjectCounterStoreDecorator(eStore);
             }
         }

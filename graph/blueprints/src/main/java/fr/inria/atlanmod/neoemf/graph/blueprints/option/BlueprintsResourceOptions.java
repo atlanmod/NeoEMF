@@ -9,9 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.resource;
+package fr.inria.atlanmod.neoemf.graph.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 public interface BlueprintsResourceOptions extends PersistentResourceOptions {
 
@@ -20,14 +20,4 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     String AUTOCOMMIT_CHUNK = "autocommit.chunk";
 
     String GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
-
-    static BlueprintsResourceOptionsBuilder newBuilder() {
-        return new BlueprintsResourceOptionsBuilder();
-    }
-
-    enum EStoreGraphOption implements StoreOption {
-        AUTOCOMMIT,
-        DIRECT_WRITE,
-        CACHE_MANY
-    }
 }

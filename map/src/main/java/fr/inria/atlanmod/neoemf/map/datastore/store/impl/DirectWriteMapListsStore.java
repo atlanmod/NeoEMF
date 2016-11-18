@@ -17,9 +17,9 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.emf.ecore.EAttribute;

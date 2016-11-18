@@ -55,10 +55,10 @@ import static java.util.Objects.isNull;
 // TODO Continue cleaning, there is still code duplication
 public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersistenceBackend> {
 
+    protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
+
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
-
-    protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 
     private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
     private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");

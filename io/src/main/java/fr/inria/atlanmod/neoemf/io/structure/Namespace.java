@@ -76,8 +76,8 @@ public class Namespace {
          *
          * @param prefix the prefix of the desired namespace
          *
-         * @return a {@link Namespace} identified by the given {@code prefix}, or {@code null} if no namespace
-         *         is registered with this {@code prefix}
+         * @return a {@link Namespace} identified by the given {@code prefix}, or {@code null} if no namespace is
+         *         registered with this {@code prefix}
          */
         public Namespace getFromPrefix(String prefix) {
             if (isNull(prefix)) {
@@ -123,6 +123,7 @@ public class Namespace {
         }
 
         private static class Holder {
+
             private static final Registry INSTANCE = new Registry();
         }
     }

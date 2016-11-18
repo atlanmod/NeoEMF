@@ -112,6 +112,7 @@ public class NeoHBaseUtil {
         }
 
         private static class Holder {
+
             private static final ResourceUtil INSTANCE = new ResourceUtil();
         }
     }

@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.datastore.store.impl.InvalidStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.ReadOnlyHBaseStore;
-import fr.inria.atlanmod.neoemf.hbase.resource.HBaseResourceOptions;
+import fr.inria.atlanmod.neoemf.hbase.option.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -88,6 +88,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     }
 
     private static class Holder {
+
         private static final PersistenceBackendFactory INSTANCE = new HBasePersistenceBackendFactory();
     }
 }

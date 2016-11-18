@@ -40,6 +40,7 @@ public class Md5Hasher implements Hasher {
     }
 
     private static class Holder {
+
         private static final Hasher INSTANCE = new Md5Hasher();
     }
 }

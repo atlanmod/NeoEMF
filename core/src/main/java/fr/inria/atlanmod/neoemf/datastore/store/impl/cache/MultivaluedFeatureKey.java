@@ -25,6 +25,11 @@ public class MultivaluedFeatureKey extends FeatureKey {
 
     private final int position;
 
+    protected MultivaluedFeatureKey(Id id, String name, int position) {
+        super(id, name);
+        this.position = position;
+    }
+
     public static MultivaluedFeatureKey from(InternalEObject object, EStructuralFeature feature, int position) {
         return from(PersistentEObject.from(object), feature, position);
     }
@@ -35,11 +40,6 @@ public class MultivaluedFeatureKey extends FeatureKey {
 
     public static MultivaluedFeatureKey of(Id id, String name, int position) {
         return new MultivaluedFeatureKey(id, name, position);
-    }
-
-    protected MultivaluedFeatureKey(Id id, String name, int position) {
-        super(id, name);
-        this.position = position;
     }
 
     public int position() {

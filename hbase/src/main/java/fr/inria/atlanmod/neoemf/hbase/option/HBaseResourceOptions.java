@@ -9,15 +9,11 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.hbase.resource;
+package fr.inria.atlanmod.neoemf.hbase.option;
 
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 public interface HBaseResourceOptions extends PersistentResourceOptions {
 
     String READ_ONLY = "hbase.readOnly";
-
-    static HBaseResourceOptionsBuilder newBuilder() {
-        return new HBaseResourceOptionsBuilder();
-    }
 }

@@ -11,14 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions;
+import fr.inria.atlanmod.neoemf.map.option.MapOptionsBuilder;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions.StoreOption;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;
@@ -33,15 +32,8 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Tree;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions.EStoreGraphOption;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions.STORE_OPTIONS;
-import static fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions.EStoreMapOption;
 
 public class NeoEMFEditor extends EcoreEditor {
 
@@ -61,17 +53,18 @@ public class NeoEMFEditor extends EcoreEditor {
         // Create the store options depending of the backend
         Map<String, Object> options;
         if (resource.getURI().scheme().equals(NeoMapURI.SCHEME)) {
-            options = MapResourceOptions.newBuilder()
+            options = MapOptionsBuilder.newBuilder()
 //                    .log()
                     .directWrite()
                     .asMap();
         }
         else if (resource.getURI().scheme().equals(NeoBlueprintsURI.SCHEME)) {
-            options = BlueprintsResourceOptions.newBuilder()
+            options = BlueprintsOptionsBuilder.newBuilder()
 //                    .log()
                     .directWriteCacheMany()
                     .asMap();
-        } else {
+        }
+        else {
             options = Collections.emptyMap();
         }
         try {

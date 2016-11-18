@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resource;
+package fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option;
 
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceSaveTest;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsResourceSaveTest;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -48,7 +48,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     @Test
     public void testSaveGraphNeo4jResourceNeo4jTypeOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder().asMap();
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
 
         resource.save(options);
 
@@ -69,7 +69,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
     @Test
     public void testSaveGraphNeo4jResourceNoneCacheTypeOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .noCache()
                 .asMap();
 
@@ -95,7 +95,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceWeakCacheTypeOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .weakCache()
                 .asMap();
 
@@ -121,7 +121,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceSoftCacheTypeOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .softCache()
                 .asMap();
 
@@ -147,7 +147,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceStrongCacheTypeOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .strongCache()
                 .asMap();
 
@@ -173,7 +173,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceTrueBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .memoryMappedBuffers()
                 .asMap();
 
@@ -199,7 +199,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceFalseBooleanUseMemoryMappedBuffersOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .memoryMappedBuffers(false)
                 .asMap();
 
@@ -226,7 +226,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourcePositiveStringsMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .stringsMappedBuffer("64M")
                 .asMap();
 
@@ -253,7 +253,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeStringsMappedMemoryOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .stringsMappedBuffer("-64M")
                 .asMap();
 
@@ -272,7 +272,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceNullStringsMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .stringsMappedBuffer("0M")
                 .asMap();
 
@@ -297,7 +297,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourcePositiveArraysMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .arraysMappedBuffer("64M")
                 .asMap();
 
@@ -324,7 +324,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeArraysMappedMemoryOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .arraysMappedBuffer("-64M")
                 .asMap();
 
@@ -343,7 +343,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceNullArraysMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .arraysMappedBuffer("0M")
                 .asMap();
 
@@ -370,7 +370,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourcePositiveNodesMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .nodesMappedBuffer("64M")
                 .asMap();
 
@@ -397,7 +397,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeNodesMappedMemoryOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .nodesMappedBuffer("-64M")
                 .asMap();
 
@@ -416,7 +416,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceNullNodesMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .nodesMappedBuffer("0M")
                 .asMap();
 
@@ -443,7 +443,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourcePositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .propertiesMappedBuffer("64M")
                 .asMap();
 
@@ -470,7 +470,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativePropertiesMappedMemoryOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .propertiesMappedBuffer("-64M")
                 .asMap();
 
@@ -489,7 +489,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceNullPropertiesMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .propertiesMappedBuffer("0M")
                 .asMap();
 
@@ -516,7 +516,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourcePositiveRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .relationshipsMappedBuffer("64M")
                 .asMap();
 
@@ -543,7 +543,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourceNegativeRelationshipsMappedMemoryOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .relationshipsMappedBuffer("-64M")
                 .asMap();
 
@@ -562,7 +562,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceNullRelationshipsMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .relationshipsMappedBuffer("0M")
                 .asMap();
 
@@ -589,7 +589,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryPositivePropertiesMappedMemoryOption() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .relationshipsMappedBuffer("64M")
                 .propertiesMappedBuffer("64M")
                 .asMap();
@@ -618,7 +618,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test(expected = InvalidDataStoreException.class)
     public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryNegativePropertiesMappedMemoryOption() throws IOException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .relationshipsMappedBuffer("64M")
                 .propertiesMappedBuffer("-64M")
                 .asMap();
@@ -648,7 +648,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      */
     @Test
     public void testSaveGraphNeo4jResourceAllOptionsValid() throws IOException, ConfigurationException {
-        Map<String, Object> options = BlueprintsNeo4jResourceOptions.newBuilder()
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .softCache()
                 .memoryMappedBuffers()
                 .stringsMappedBuffer("64M")

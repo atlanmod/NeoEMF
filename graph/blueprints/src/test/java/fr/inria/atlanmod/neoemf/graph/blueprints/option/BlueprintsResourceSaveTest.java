@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.resource;
+package fr.inria.atlanmod.neoemf.graph.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
@@ -109,7 +109,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
 
     @Test
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
-        resource.save(BlueprintsResourceOptions.newBuilder().asMap());
+        resource.save(BlueprintsOptionsBuilder.newBuilder().asMap());
 
         File configFile = new File(testFile + configFileName);
         assertThat(configFile).exists(); // "Config file does not exist"

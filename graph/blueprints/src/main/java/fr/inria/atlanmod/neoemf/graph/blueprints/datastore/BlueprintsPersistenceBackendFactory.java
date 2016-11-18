@@ -26,10 +26,11 @@ import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.graph.blueprints.config.InternalBlueprintsConfiguration;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resource.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsStoreOptions;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -76,20 +77,20 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
                 "Trying to create a Graph-based EStore with an invalid backend");
 
         PersistentStore eStore;
-        List<PersistentResourceOptions.StoreOption> storeOptions = getStoreOptions(options);
+        List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT))) {
+        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BlueprintsStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT))) {
             eStore = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.CACHE_MANY)) {
+        else if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
             eStore = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else {
             throw new InvalidDataStoreException("No valid base EStore found in the options");
         }
         // Autocommit
-        if (!isNull(storeOptions) && storeOptions.contains(BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT)) {
+        if (!isNull(storeOptions) && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
             if (options.containsKey(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK)) {
                 int autoCommitChunk = Integer.parseInt((String) options.get(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK));
                 eStore = new AutocommitStoreDecorator(eStore, autoCommitChunk);
@@ -239,6 +240,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     }
 
     private static class Holder {
+
         private static final PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();
     }
 }

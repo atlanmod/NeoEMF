@@ -20,13 +20,13 @@ import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapCacheManyStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesStore;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsStore;
-import fr.inria.atlanmod.neoemf.map.resource.MapResourceOptions;
+import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapStore;
+import fr.inria.atlanmod.neoemf.map.option.MapStoreOptions;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -64,26 +64,26 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
                 "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
 
         PersistentStore eStore = null;
-        List<PersistentResourceOptions.StoreOption> storeOptions = getStoreOptions(options);
+        List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT))) {
+        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(MapStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(MapStoreOptions.AUTOCOMMIT))) {
             eStore = new DirectWriteMapStore(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.CACHE_MANY)) {
+        else if (storeOptions.contains(MapStoreOptions.CACHE_MANY)) {
             eStore = new DirectWriteMapCacheManyStore(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_LISTS)) {
+        else if (storeOptions.contains(MapStoreOptions.DIRECT_WRITE_LISTS)) {
             eStore = new DirectWriteMapListsStore(resource, (MapPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(MapResourceOptions.EStoreMapOption.DIRECT_WRITE_INDICES)) {
+        else if (storeOptions.contains(MapStoreOptions.DIRECT_WRITE_INDICES)) {
             eStore = new DirectWriteMapIndicesStore(resource, (MapPersistenceBackend) backend);
         }
         // Autocommit
         if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-        else if (!isNull(storeOptions) && storeOptions.contains(MapResourceOptions.EStoreMapOption.AUTOCOMMIT)) {
+        else if (!isNull(storeOptions) && storeOptions.contains(MapStoreOptions.AUTOCOMMIT)) {
             eStore = new AutocommitStoreDecorator(eStore);
         }
         return eStore;
@@ -137,6 +137,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
     }
 
     private static class Holder {
+
         private static final PersistenceBackendFactory INSTANCE = new MapPersistenceBackendFactory();
     }
 }

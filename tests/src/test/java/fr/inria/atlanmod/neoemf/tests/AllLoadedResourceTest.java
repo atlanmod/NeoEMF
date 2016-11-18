@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
 import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
@@ -53,9 +53,9 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
         tinkerSampleModel.getContentObjects().add(tinkerSampleContentObject);
         tinkerResource.getContents().add(tinkerSampleModel);
 
-        mapResource.save(PersistentResourceOptions.newBuilder().asMap());
-        neo4jResource.save(PersistentResourceOptions.newBuilder().asMap());
-        tinkerResource.save(PersistentResourceOptions.newBuilder().asMap());
+        mapResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        neo4jResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        tinkerResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
 
         mapResource.close();
         neo4jResource.close();
@@ -72,8 +72,8 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
         neo4jResource = (PersistentResource) rSet.getResource(NeoBlueprintsURI.createFileURI(neo4jFile), true);
         tinkerResource = (PersistentResource) rSet.getResource(NeoBlueprintsURI.createFileURI(tinkerFile), true);
 
-        mapResource.load(PersistentResourceOptions.newBuilder().asMap());
-        neo4jResource.load(PersistentResourceOptions.newBuilder().asMap());
-        tinkerResource.load(PersistentResourceOptions.newBuilder().asMap());
+        mapResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
+        neo4jResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
+        tinkerResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
     }
 }

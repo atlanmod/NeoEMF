@@ -36,6 +36,7 @@ public class PersistentResourceFactoryImpl implements PersistentResourceFactory 
     }
 
     private static class Holder {
+
         private static final PersistentResourceFactory INSTANCE = new PersistentResourceFactoryImpl();
     }
 }

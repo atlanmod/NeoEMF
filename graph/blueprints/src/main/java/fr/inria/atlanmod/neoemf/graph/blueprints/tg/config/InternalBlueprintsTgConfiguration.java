@@ -50,6 +50,7 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
     }
 
     private static class Holder {
+
         private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsTgConfiguration();
     }
 }

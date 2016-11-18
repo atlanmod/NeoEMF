@@ -13,12 +13,12 @@ package fr.inria.atlanmod.neoemf.map.datastore;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.info.ClassInfo;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.info.ContainerInfo;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.serializer.IdSerializer;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.cache.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.serializer.MultivaluedFeatureKeySerializer;
 
 import org.mapdb.DB;
