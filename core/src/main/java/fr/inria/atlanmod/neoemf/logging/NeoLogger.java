@@ -14,16 +14,12 @@ package fr.inria.atlanmod.neoemf.logging;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.ReflectionUtil;
 
 import java.text.MessageFormat;
 
 public class NeoLogger {
 
-    private static final int CALLER_CLASS_DEPTH = 4;
-    private static final boolean CLASSNAME_NEEDED = false;
-
-    private static final Logger ROOT_LOGGER = LogManager.getLogger();
+    private static final Logger log = LogManager.getRootLogger();
 
     private NeoLogger() {
     }
@@ -77,15 +73,6 @@ public class NeoLogger {
     }
 
     private static void internalLog(Level level, String msg, Throwable e) {
-        getLogger().log(level, msg, e);
-    }
-
-    private static Logger getLogger() {
-        if (CLASSNAME_NEEDED) {
-            return LogManager.getLogger(ReflectionUtil.getCallerClass(CALLER_CLASS_DEPTH));
-        }
-        else {
-            return ROOT_LOGGER;
-        }
+        log.log(level, msg, e);
     }
 }
