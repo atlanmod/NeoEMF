@@ -52,4 +52,15 @@ public class NeoHBaseURI extends NeoURI {
     public static URI createFileURI(File file) {
         return NeoURI.createFileURI(file, SCHEME);
     }
+
+    public static String format(URI uri) {
+        StringBuilder strBld = new StringBuilder();
+        for (int i = 0; i < uri.segmentCount(); i++) {
+            strBld.append(uri.segment(i).replaceAll("-", "_"));
+            if (i != uri.segmentCount() - 1) {
+                strBld.append("_");
+            }
+        }
+        return strBld.toString();
+    }
 }

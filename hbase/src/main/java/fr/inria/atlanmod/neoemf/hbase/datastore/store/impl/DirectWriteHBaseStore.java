@@ -20,7 +20,8 @@ import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.datastore.store.impl.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.hbase.datastore.HBasePersistenceBackend;
-import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseUtil;
+import fr.inria.atlanmod.neoemf.hbase.util.EncoderUtil;
+import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -81,7 +82,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         conf.set("hbase.zookeeper.quorum", resource.getURI().host());
         conf.set("hbase.zookeeper.property.clientPort", isNull(resource.getURI().port()) ? "2181" : resource.getURI().port());
 
-        TableName tableName = TableName.valueOf(NeoHBaseUtil.formatURI(resource.getURI()));
+        TableName tableName = TableName.valueOf(NeoHBaseURI.format(resource.getURI()));
         HBaseAdmin admin = new HBaseAdmin(conf);
 
         table = initTable(conf, tableName, admin);
@@ -105,8 +106,8 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         Append append = new Append(Bytes.toBytes(object.id().toString()));
         append.add(PROPERTY_FAMILY,
                 Bytes.toBytes(eReference.getName()),
-                atEnd ? Bytes.toBytes(NeoHBaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT + referencedObject.id().toString()) :
-                        Bytes.toBytes(referencedObject.id().toString() + NeoHBaseUtil.EncoderUtil.VALUE_SEPERATOR_DEFAULT));
+                atEnd ? Bytes.toBytes(EncoderUtil.VALUE_SEPERATOR_DEFAULT + referencedObject.id().toString()) :
+                        Bytes.toBytes(referencedObject.id().toString() + EncoderUtil.VALUE_SEPERATOR_DEFAULT));
 
         table.append(append);
     }
@@ -263,9 +264,9 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             }
             else {
                 if (feature instanceof EAttribute) {
-                    return NeoHBaseUtil.EncoderUtil.toStrings(value);
+                    return EncoderUtil.toStrings(value);
                 }
-                return NeoHBaseUtil.EncoderUtil.toStringsReferences(value);
+                return EncoderUtil.toStringsReferences(value);
             }
         }
         catch (IOException e) {
@@ -355,7 +356,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         PersistentEObject neoEObject = PersistentEObject.from(object);
         try {
             Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
-            put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), NeoHBaseUtil.EncoderUtil.toBytes(new String[]{}));
+            put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), EncoderUtil.toBytes(new String[]{}));
             table.put(put);
         }
         catch (IOException e) {
@@ -416,11 +417,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                         Put put = new Put(Bytes.toBytes(object.id().toString())).add(
                                 PROPERTY_FAMILY,
                                 Bytes.toBytes(eAttribute.getName()),
-                                NeoHBaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeToProperty(eAttribute, value))));
+                                EncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeToProperty(eAttribute, value))));
                         passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                                 PROPERTY_FAMILY,
                                 Bytes.toBytes(eAttribute.getName()),
-                                isNull(array) ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
+                                isNull(array) ? null : EncoderUtil.toBytes(array),
                                 put);
                         if (!passed) {
                             if (attemp > ATTEMP_TIMES_DEFAULT) {
@@ -471,7 +472,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
                 put.add(PROPERTY_FAMILY,
                         Bytes.toBytes(eReference.getName()),
-                        NeoHBaseUtil.EncoderUtil.toBytesReferences(array));
+                        EncoderUtil.toBytesReferences(array));
                 table.put(put);
             }
         }
@@ -495,14 +496,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 Put put = new Put(Bytes.toBytes(object.id().toString())).add(
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eAttribute.getName()),
-                        NeoHBaseUtil.EncoderUtil.toBytes(index < 0 ?
+                        EncoderUtil.toBytes(index < 0 ?
                                 (String[]) ArrayUtils.add(array, serializeToProperty(eAttribute, value)) :
                                 (String[]) ArrayUtils.add(array, serializeToProperty(eAttribute, value))
                         ));
                 passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eAttribute.getName()),
-                        isNull(array) ? null : NeoHBaseUtil.EncoderUtil.toBytes(array),
+                        isNull(array) ? null : EncoderUtil.toBytes(array),
                         put);
                 if (!passed) {
                     if (attemp > ATTEMP_TIMES_DEFAULT) {
@@ -553,12 +554,12 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                     Put put = new Put(Bytes.toBytes(object.id().toString())).add(
                             PROPERTY_FAMILY,
                             Bytes.toBytes(eReference.getName()),
-                            NeoHBaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.add(array, index, referencedObject.id().toString())));
+                            EncoderUtil.toBytesReferences(ArrayUtils.add(array, index, referencedObject.id().toString())));
 
                     passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                             PROPERTY_FAMILY,
                             Bytes.toBytes(eReference.getName()),
-                            isNull(array) ? null : NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
+                            isNull(array) ? null : EncoderUtil.toBytesReferences(array),
                             put);
                     if (!passed) {
                         if (attemp > ATTEMP_TIMES_DEFAULT) {
@@ -599,11 +600,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 Put put = new Put(Bytes.toBytes(object.id().toString())).add(
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eAttribute.getName()),
-                        NeoHBaseUtil.EncoderUtil.toBytes((String[]) ArrayUtils.remove(array, index)));
+                        EncoderUtil.toBytes(ArrayUtils.remove(array, index)));
                 passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eAttribute.getName()),
-                        NeoHBaseUtil.EncoderUtil.toBytes(array),
+                        EncoderUtil.toBytes(array),
                         put);
                 if (!passed) {
                     if (attemp > ATTEMP_TIMES_DEFAULT) {
@@ -647,12 +648,12 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 Put put = new Put(Bytes.toBytes(object.id().toString())).add(
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eReference.getName()),
-                        NeoHBaseUtil.EncoderUtil.toBytesReferences((String[]) ArrayUtils.remove(array, index)));
+                        EncoderUtil.toBytesReferences(ArrayUtils.remove(array, index)));
 
                 passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eReference.getName()),
-                        NeoHBaseUtil.EncoderUtil.toBytesReferences(array),
+                        EncoderUtil.toBytesReferences(array),
                         put);
 
                 if (!passed) {
