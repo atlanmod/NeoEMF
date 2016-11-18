@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.io.writer;
+package fr.inria.atlanmod.neoemf.graph.blueprints.io;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
