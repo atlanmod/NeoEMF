@@ -19,17 +19,55 @@ import java.io.File;
 
 public interface Backend {
 
+    /**
+     * Cleans temporary files from backends.
+     */
     static void clean() {
         Workspace.cleanTempDirectory();
     }
 
-    File create(String name) throws Exception;
+    /**
+     * Creates a resource from the given {@code resourceName} and returns its path.
+     *
+     * @return the resource file
+     */
+    File getOrCreateResource(String resourceName) throws Exception;
 
+    /**
+     * Creates a datastore from the given {@code resourceFile} in the default location.
+     *
+     * @return the datastore location
+     */
+    File getOrCreateStore(File resourceFile) throws Exception;
+
+    /**
+     * Creates a datastore from the given {@code resourceFile} in a temporary location.
+     *
+     * @return the datastore location
+     */
+    File createTempStore(File resourceFile) throws Exception;
+
+    /**
+     * Loads a resource file from the given {@code file}.
+     *
+     * @return the loaded resource
+     */
     Resource load(File file) throws Exception;
 
+    /**
+     * Saves the given {@code resource}.
+     */
     void save(Resource resource) throws Exception;
 
+    /**
+     * Unloads the given {@code resource}.
+     */
     void unload(Resource resource) throws Exception;
 
-    File copy(File inputFile) throws Exception;
+    /**
+     * Copies a datastore from the {@code storeLocation} to a temporary location.
+     *
+     * @return the location of the new datastore
+     */
+    File copy(File storeLocation) throws Exception;
 }

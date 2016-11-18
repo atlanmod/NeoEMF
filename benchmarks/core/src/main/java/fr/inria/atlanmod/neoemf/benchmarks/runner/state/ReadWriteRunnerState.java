@@ -2,12 +2,19 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import java.io.File;
 
-public class ReadWriteRunnerState extends AbstractRunnerState {
+/**
+ * This state provided a ready-to-use datastore. It is preloaded and unloaded automatically from a temporary copy of the
+ * default datastore, to avoid overwriting the original datastore.
+ * <p/>
+ * It is used for read/write queries.
+ */
+// TODO: Dynamically save in a temporary datastore
+public class ReadWriteRunnerState extends ReadOnlyRunnerState {
 
     @Override
-    protected File getResourceFile() {
+    protected File getStoreLocation() {
         try {
-            return backend.copy(resourceFile);
+            return getBackend().copy(super.getStoreLocation());
         }
         catch (Exception e) {
             throw new RuntimeException(e);
