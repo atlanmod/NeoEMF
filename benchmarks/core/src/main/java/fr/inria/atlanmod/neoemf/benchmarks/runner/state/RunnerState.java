@@ -81,6 +81,6 @@ public class RunnerState {
     @Setup(Level.Trial)
     public void initResource() throws Exception {
         log.info("Initializing the resource");
-        resourceFile = getBackend().createResource(r);
+        resourceFile = getBackend().getOrCreateResource(r);
     }
 }

@@ -65,7 +65,7 @@ public class Runner {
     @Measurement(iterations = 1)
     @Fork(jvmArgs = "")
     public void create(RunnerState state) throws Exception {
-        state.getBackend().createStore(state.getResourceFile(), true);
+        state.getBackend().createTempStore(state.getResourceFile());
     }
 
     @Benchmark

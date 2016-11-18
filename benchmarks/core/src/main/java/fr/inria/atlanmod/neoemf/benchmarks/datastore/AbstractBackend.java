@@ -64,12 +64,31 @@ abstract class AbstractBackend implements Backend, InternalBackend {
     }
 
     @Override
-    public File createResource(String resourceName) throws Exception {
+    public File getOrCreateResource(String resourceName) throws Exception {
         return BackendHelper.createResource(resourceName, this);
     }
 
     @Override
-    public File createStore(File resourceFile, boolean temporary) throws Exception {
+    public File getOrCreateStore(File resourceFile) throws Exception {
+        return getOrCreateStore(resourceFile, false);
+    }
+
+    @Override
+    public File createTempStore(File resourceFile) throws Exception {
+        return getOrCreateStore(resourceFile, true);
+    }
+
+    @Override
+    public void save(Resource resource) throws Exception {
+        resource.save(getOptions());
+    }
+
+    @Override
+    public File copy(File storeLocation) throws Exception {
+        return BackendHelper.copyStore(storeLocation);
+    }
+
+    protected File getOrCreateStore(File resourceFile, boolean temporary) throws Exception {
         File storeFile;
 
         if (temporary) {
@@ -84,15 +103,5 @@ abstract class AbstractBackend implements Backend, InternalBackend {
         }
 
         return storeFile;
-    }
-
-    @Override
-    public void save(Resource resource) throws Exception {
-        resource.save(getOptions());
-    }
-
-    @Override
-    public File copy(File storeLocation) throws Exception {
-        return BackendHelper.copyStore(storeLocation);
     }
 }

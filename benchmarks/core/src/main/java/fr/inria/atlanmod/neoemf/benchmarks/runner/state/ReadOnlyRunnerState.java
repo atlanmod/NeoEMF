@@ -36,23 +36,15 @@ public class ReadOnlyRunnerState extends RunnerState {
     }
 
     /**
-     * Loads and creates the current datastore.
+     * Loads and creates the current datastore and its resource.
      * <p/>
-     * This method is automatically called when setup the trial level.
+     * This method is automatically called when setup the iteration level.
      */
-    @Setup(Level.Trial)
-    public void initStore() throws Exception {
-        log.info("Initializing the datastore");
-        storeFile = getBackend().createStore(getResourceFile());
-    }
-
-    /**
-     * Loads the current resource.
-     * <p/>
-     * This method is automatically called when setup the invocation level.
-     */
-    @Setup(Level.Invocation)
+    @Setup(Level.Iteration)
     public void loadResource() throws Exception {
+        log.info("Initializing the datastore");
+        storeFile = getBackend().getOrCreateStore(getResourceFile());
+
         log.info("Loading the resource");
         resource = getBackend().load(getStoreLocation());
     }
@@ -60,9 +52,9 @@ public class ReadOnlyRunnerState extends RunnerState {
     /**
      * Unloads the current resource.
      * <p/>
-     * This method is automatically called when tear down the invocation level.
+     * This method is automatically called when tear down the iteration level.
      */
-    @TearDown(Level.Invocation)
+    @TearDown(Level.Iteration)
     public void unloadResource() throws Exception {
         log.info("Unloading the resource");
         if (!Objects.isNull(resource)) {

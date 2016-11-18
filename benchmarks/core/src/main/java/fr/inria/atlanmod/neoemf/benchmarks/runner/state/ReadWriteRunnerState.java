@@ -8,6 +8,7 @@ import java.io.File;
  * <p/>
  * It is used for read/write queries.
  */
+// TODO: Dynamically save in a temporary datastore
 public class ReadWriteRunnerState extends ReadOnlyRunnerState {
 
     @Override
