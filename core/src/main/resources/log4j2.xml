@@ -2,19 +2,13 @@
 <Configuration status="WARN" shutdownHook="disable">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+            <PatternLayout pattern="[%level] %13d{ABSOLUTE} - %msg%n%ex{full}"/>
         </Console>
     </Appenders>
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>
-        <Logger name="ErrorLogger" level="ERROR">
-            <AppenderRef ref="Console"/>
-        </Logger>
-        <Logger name="WarnLogger" level="WARN">
-            <AppenderRef ref="Console"/>
-        </Logger>
         <Logger name="org.apache.commons.configuration" level="ERROR" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
