@@ -46,9 +46,7 @@ import java.util.concurrent.TimeUnit;
 )
 public class Runner {
 
-    /*
-     * Simple queries.
-     */
+    //region Initialization of data stores.
 
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
@@ -68,22 +66,26 @@ public class Runner {
         state.getBackend().createTempStore(state.getResourceFile());
     }
 
+    //endregion
+
+    //region Simple queries.
+
     @Benchmark
     public Integer traverse(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryCountAllElements(state.getResource()).callWithTime();
     }
 
-    /*
-     * Read-only queries.
-     */
+    //endregion
+
+    //region Read-only queries.
 
     @Benchmark
     public Integer classDeclarationAttributes(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithTime();
     }
 
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public Integer grabats(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryGrabats(state.getResource()).callWithTime();
     }
@@ -113,9 +115,9 @@ public class Runner {
         return QueryFactory.queryUnusedMethodsWithLoop(state.getResource()).callWithTime();
     }
 
-    /*
-     * Read/Write queries.
-     */
+    //endregion
+
+    //region Read/Write queries.
 
     @Benchmark
     public Void renameAllMethods(ReadWriteRunnerState state) throws Exception {
@@ -126,17 +128,17 @@ public class Runner {
         return result;
     }
 
-    /*
-     * ASE 2015 queries.
-     */
+    //endregion
+
+    //region ASE 2015 queries.
 
     @Benchmark
     public Integer commentsTagContentASE2015(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryCommentsTagContent(state.getResource()).callWithMemoryUsage();
     }
 
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public Integer grabatsASE2015(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithMemoryUsage();
     }
@@ -150,4 +152,6 @@ public class Runner {
     public Integer thrownExceptionsASE2015(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryThrownExceptions(state.getResource()).callWithMemoryUsage();
     }
+
+    //endregion
 }
