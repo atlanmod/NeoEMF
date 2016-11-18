@@ -41,6 +41,7 @@ public class RunnerState {
             "org.eclipse.jdt.source.all.xmi",
     })
     protected String r;
+
     @Param({
             XmiBackend.NAME,
             CdoBackend.NAME,
@@ -49,9 +50,14 @@ public class RunnerState {
             NeoGraphNeo4jBackend.NAME,
     })
     protected String b;
+
     private Backend backend;
+
     private File resourceFile;
 
+    /**
+     * Returns the current backend.
+     */
     public Backend getBackend() throws Exception {
         if (Objects.isNull(backend)) {
             String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, b) + CLASS_SUFFIX;
@@ -60,13 +66,21 @@ public class RunnerState {
         return backend;
     }
 
+    /**
+     * Returns the current resource file.
+     */
     public File getResourceFile() throws Exception {
         return resourceFile;
     }
 
+    /**
+     * Loads and creates the current resource file.
+     * <p/>
+     * This method is automatically called when setup the trial level.
+     */
     @Setup(Level.Trial)
     public void initResource() throws Exception {
         log.info("Initializing the resource");
-        resourceFile = getBackend().createResource(r);
+        resourceFile = getBackend().getOrCreateResource(r);
     }
 }

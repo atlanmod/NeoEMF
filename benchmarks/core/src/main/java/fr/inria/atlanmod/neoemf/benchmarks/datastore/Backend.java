@@ -31,26 +31,21 @@ public interface Backend {
      *
      * @return the resource file
      */
-    File createResource(String resourceName) throws Exception;
+    File getOrCreateResource(String resourceName) throws Exception;
 
     /**
      * Creates a datastore from the given {@code resourceFile} in the default location.
      *
      * @return the datastore location
-     *
-     * @see #createStore(File, boolean)
      */
-    default File createStore(File resourceFile) throws Exception {
-        return createStore(resourceFile, false);
-    }
+    File getOrCreateStore(File resourceFile) throws Exception;
 
     /**
-     * Creates a datastore from the given {@code resourceFile} in the default location, or in a temporary location if
-     * {@code temporary} is {@code true}.
+     * Creates a datastore from the given {@code resourceFile} in a temporary location.
      *
      * @return the datastore location
      */
-    File createStore(File resourceFile, boolean temporary) throws Exception;
+    File createTempStore(File resourceFile) throws Exception;
 
     /**
      * Loads a resource file from the given {@code file}.
