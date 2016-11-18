@@ -64,12 +64,23 @@ abstract class AbstractBackend implements Backend, InternalBackend {
     }
 
     @Override
-    public File create(String name) throws Exception {
-        File resourceFile = BackendHelper.createResource(name, this);
-        File storeFile = BackendHelper.createStore(resourceFile, this);
+    public File createResource(String resourceName) throws Exception {
+        return BackendHelper.createResource(resourceName, this);
+    }
+
+    @Override
+    public File createStore(File resourceFile, boolean temporary) throws Exception {
+        File storeFile;
+
+        if (temporary) {
+            storeFile = BackendHelper.createTempStore(resourceFile, this);
+        }
+        else {
+            storeFile = BackendHelper.createStore(resourceFile, this);
+        }
 
         if (isNull(storeFile) || !storeFile.exists()) {
-            throw new IllegalArgumentException("'" + name + ".xmi' does not exist in resource directory");
+            throw new IllegalArgumentException("'" + resourceFile.getName() + "' does not exist in resource directory");
         }
 
         return storeFile;
@@ -81,7 +92,7 @@ abstract class AbstractBackend implements Backend, InternalBackend {
     }
 
     @Override
-    public File copy(File inputFile) throws Exception {
-        return BackendHelper.copyStore(inputFile);
+    public File copy(File storeLocation) throws Exception {
+        return BackendHelper.copyStore(storeLocation);
     }
 }

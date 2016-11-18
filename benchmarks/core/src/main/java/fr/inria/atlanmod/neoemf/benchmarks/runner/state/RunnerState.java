@@ -10,27 +10,28 @@ import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
 
-import org.eclipse.emf.ecore.resource.Resource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.File;
 import java.util.Objects;
 
+/**
+ * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Backend} and the preloaded
+ * resource file. The datastore is not loaded.
+ */
 @State(Scope.Thread)
-public abstract class AbstractRunnerState {
+public class RunnerState {
+
+    protected static final Logger log = LogManager.getLogger();
 
     private static final String CLASS_PREFIX = Backend.class.getPackage().getName() + ".";
     private static final String CLASS_SUFFIX = Backend.class.getSimpleName();
-
-    protected Resource resource;
-    protected File resourceFile;
-
-    protected Backend backend;
 
     @Param({
             "fr.inria.atlanmod.kyanos.tests.xmi",
@@ -39,8 +40,7 @@ public abstract class AbstractRunnerState {
             "org.eclipse.jdt.core.xmi",
             "org.eclipse.jdt.source.all.xmi",
     })
-    private String r;
-
+    protected String r;
     @Param({
             XmiBackend.NAME,
             CdoBackend.NAME,
@@ -48,42 +48,25 @@ public abstract class AbstractRunnerState {
             NeoGraphBackend.NAME,
             NeoGraphNeo4jBackend.NAME,
     })
-    private String b;
+    protected String b;
+    private Backend backend;
+    private File resourceFile;
 
-    public Backend getBackend() {
+    public Backend getBackend() throws Exception {
         if (Objects.isNull(backend)) {
-            throw new NullPointerException();
+            String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, b) + CLASS_SUFFIX;
+            backend = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
         }
         return backend;
     }
 
-    public Resource getResource() {
-        if (Objects.isNull(resource)) {
-            throw new NullPointerException();
-        }
-        return resource;
+    public File getResourceFile() throws Exception {
+        return resourceFile;
     }
-
-    protected abstract File getResourceFile() throws Exception;
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
-        String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, b) + CLASS_SUFFIX;
-        backend = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
-        resourceFile = backend.create(r);
-    }
-
-    @Setup(Level.Invocation)
-    public void setupInvocation() throws Exception {
-        resource = backend.load(getResourceFile());
-    }
-
-    @TearDown(Level.Invocation)
-    public void tearDownInvocation() throws Exception {
-        if (!Objects.isNull(resource)) {
-            backend.unload(resource);
-            resource = null;
-        }
-        Backend.clean();
+    public void initResource() throws Exception {
+        log.info("Initializing the resource");
+        resourceFile = getBackend().createResource(r);
     }
 }

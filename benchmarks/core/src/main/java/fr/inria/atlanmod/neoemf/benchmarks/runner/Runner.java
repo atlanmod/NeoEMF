@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
 import fr.inria.atlanmod.neoemf.benchmarks.query.ase2015.QueryFactoryASE2015;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteRunnerState;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.RunnerState;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -56,6 +57,15 @@ public class Runner {
     @Fork(jvmArgs = "")
     public void init(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
         // Let setup and tear down methods create resource and stores
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
+    @Fork(jvmArgs = "")
+    public void create(RunnerState state) throws Exception {
+        state.getBackend().createStore(state.getResourceFile(), true);
     }
 
     @Benchmark

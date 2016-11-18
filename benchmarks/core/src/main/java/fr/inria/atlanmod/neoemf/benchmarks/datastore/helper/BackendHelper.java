@@ -89,12 +89,20 @@ public class BackendHelper {
         return outputFile;
     }
 
+    public static File createTempStore(File sourceFile, InternalBackend targetBackend) throws Exception {
+        return createStore(sourceFile, targetBackend, Workspace.newTempDirectory());
+    }
+
     public static File createStore(File sourceFile, InternalBackend targetBackend) throws Exception {
+        return createStore(sourceFile, targetBackend, Workspace.getStoreDirectory());
+    }
+
+    private static File createStore(File sourceFile, InternalBackend targetBackend, Path targetDir) throws Exception {
         checkValidResource(sourceFile.getName());
         checkArgument(sourceFile.exists(), "Resource '%s' does not exist", sourceFile);
 
         String targetFileName = Files.getNameWithoutExtension(sourceFile.getAbsolutePath()) + "." + targetBackend.getStoreExtension();
-        File targetFile = Workspace.getStoreDirectory().resolve(targetFileName).toFile();
+        File targetFile = targetDir.resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
             log.info("Already existing store {}", targetFile);
