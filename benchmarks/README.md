@@ -28,7 +28,7 @@ By default, all resources are executed on all backends. But you can choose to ex
     - `org.eclipse.jdt.core.xmi` (420 MB)
     - `org.eclipse.jdt.source.all.xmi` (983 MB)
 
-  - the absolute filepath, otherwise.
+  - the absolute file path, otherwise.
   For now, only `*.xmi` and `*.zxmi` that use the `http://www.eclipse.org/MoDisco/Java/0.2.incubation/java` package are allowed.
 
 __Example:__ To run the query `traverse` on XMI and Neo4j backends, with the resource "fr.inria.atlanmod.kyanos.tests.xmi", you need to execute:
@@ -38,7 +38,7 @@ __Example:__ To run the query `traverse` on XMI and Neo4j backends, with the res
 #### Initialization _(optional)_
 Backends have to be created before executing requests on it.
 
-The creation is automatically done at the beginning of each benchmark, if the backend don't already exists in the workspace.
+The creation is automatically done at the beginning of each benchmark, if the backend does not exist already in the workspace.
 But this process can take a long time, according to your system configuration and the size of the resource you want to use.
 
 To initialize them, you can execute:
@@ -47,7 +47,7 @@ To initialize them, you can execute:
     
 Backends are created in the workspace directory, which is by default `<tmp-dir>/neoemf-benchmarks`.
 
-__NOTE:__ The creation time is not taked in account in benchmark results, that's why this step is optional.
+__NOTE:__ The creation time is not taken in account in benchmark results, that's why this step is optional.
 
 ### Running with Maven
 You can also run a pre-configured execution from Maven:

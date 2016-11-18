@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.SECONDS)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Timeout(time = 2, timeUnit = TimeUnit.HOURS)
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
@@ -72,6 +72,7 @@ public class Runner {
         return QueryFactory.queryClassDeclarationAttributes(state.getResource()).callWithTime();
     }
 
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
     public Integer grabats(ReadOnlyRunnerState state) throws Exception {
         return QueryFactory.queryGrabats(state.getResource()).callWithTime();
@@ -124,6 +125,7 @@ public class Runner {
         return QueryFactoryASE2015.queryCommentsTagContent(state.getResource()).callWithMemoryUsage();
     }
 
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Benchmark
     public Integer grabatsASE2015(ReadOnlyRunnerState state) throws Exception {
         return QueryFactoryASE2015.queryGrabats(state.getResource()).callWithMemoryUsage();
