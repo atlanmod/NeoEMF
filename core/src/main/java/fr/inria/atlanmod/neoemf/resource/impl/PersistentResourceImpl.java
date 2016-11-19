@@ -81,7 +81,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         this.isPersistent = false;
         // Stop the backend when the application is terminated
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-        NeoLogger.info("PersistentResource created");
+        NeoLogger.info("{0} created", PersistentResource.class.getSimpleName());
     }
 
     /**
@@ -91,7 +91,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
     public static void shutdownWithoutUnload(PersistentResource resource) {
         if (!isNull(resource)) {
             resource.close();
-            NeoLogger.info("PersistentResource closed: {0}", resource.getURI());
+            NeoLogger.info("{0} closed: {1}", PersistentResource.class.getSimpleName(), resource.getURI());
         }
     }
 
@@ -154,7 +154,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
             this.isPersistent = true;
         }
         persistenceBackend.save();
-        NeoLogger.info("PersistentResource saved: {0}", uri);
+        NeoLogger.info("{0} saved: {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         }
         finally {
             isLoading = false;
-            NeoLogger.info("PersistentResource loaded: {0}", uri);
+            NeoLogger.info("{0} loaded: {1}", PersistentResource.class.getSimpleName(), uri);
         }
     }
 
@@ -208,7 +208,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         this.isPersistent = false;
         this.isLoaded = false;
 
-        NeoLogger.info("PersistentResource closed: {0}", getURI());
+        NeoLogger.info("{0} closed: {1}", PersistentResource.class.getSimpleName(), getURI());
     }
 
     @Override
@@ -451,9 +451,8 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         @Override
         public void run() {
             if (!persistenceBackend.isClosed()) {
-                //NeoLogger.debug("Closing backend: {0}", uri);
                 persistenceBackend.close();
-                NeoLogger.info("PersistenceBackend closed: {0} ", uri);
+                NeoLogger.info("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
             }
         }
     }

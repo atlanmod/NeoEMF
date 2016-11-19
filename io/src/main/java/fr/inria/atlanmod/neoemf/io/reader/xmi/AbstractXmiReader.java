@@ -235,7 +235,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
             }
         }
         else if (PROXY.equals(localName)) {
-            NeoLogger.warn("'" + classifier.getLocalName() + "' is an external reference to " + value + ". This feature is not supported yet.");
+            NeoLogger.warn("{0} is an external reference to {1}. This feature is not supported yet.",
+                    classifier.getLocalName(), value);
             ignoreElement = true;
         }
         else if (NAME.equals(localName)) {

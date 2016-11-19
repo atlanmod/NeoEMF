@@ -146,7 +146,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
             loadedObjects.add(((PersistentEObject) object).id());
         }
         else {
-            NeoLogger.debug("Not an PersistentEObject : This object will be ignored in the final count.");
+            NeoLogger.debug("Not a {0} : This object will be ignored in the final count.", PersistentEObject.class.getSimpleName());
         }
     }
 
