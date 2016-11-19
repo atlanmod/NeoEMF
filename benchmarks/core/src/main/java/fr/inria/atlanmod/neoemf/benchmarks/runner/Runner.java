@@ -50,8 +50,8 @@ public class Runner {
 
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
-    @Warmup(iterations = 1)
-    @Measurement(iterations = 0)
+    @Warmup(iterations = 0)
+    @Measurement(iterations = 1)
     @Fork(jvmArgs = "")
     public void init(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
         // Let setup and tear down methods create resource and stores
