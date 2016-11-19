@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import java.text.MessageFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 public class NeoLogger {
 
@@ -24,54 +25,71 @@ public class NeoLogger {
 
     private static final ExecutorService pool = Executors.newSingleThreadExecutor();
 
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                pool.shutdown();
+            }
+        });
+    }
+
     private NeoLogger() {
     }
 
-    public static void debug(final String msg) {
-        pool.submit(() -> log.debug(msg));
+    private static void async(Runnable runnable) {
+        try {
+            pool.submit(runnable);
+        }
+        catch (RejectedExecutionException e) {
+            runnable.run();
+        }
+    }
+
+    public static void debug(String msg) {
+        async(() -> log.debug(msg));
     }
 
     public static void debug(String pattern, Object... args) {
-        pool.submit(() -> log.debug(MessageFormat.format(pattern, args)));
+        async(() -> log.debug(MessageFormat.format(pattern, args)));
     }
 
     public static void info(String msg) {
-        pool.submit(() -> log.info(msg));
+        async(() -> log.info(msg));
     }
 
     public static void info(String pattern, Object... args) {
-        pool.submit(() -> log.info(MessageFormat.format(pattern, args)));
+        async(() -> log.info(MessageFormat.format(pattern, args)));
     }
 
     public static void warn(String msg) {
-        pool.submit(() -> log.warn(msg));
+        async(() -> log.warn(msg));
     }
 
     public static void warn(String pattern, Object... args) {
-        pool.submit(() -> log.warn(MessageFormat.format(pattern, args)));
+        async(() -> log.warn(MessageFormat.format(pattern, args)));
     }
 
     public static void warn(Throwable e) {
-        pool.submit(() -> log.warn(e));
+        async(() -> log.warn(e));
     }
 
     public static void warn(Throwable e, String pattern, Object... args) {
-        pool.submit(() -> log.warn(MessageFormat.format(pattern, args), e));
+        async(() -> log.warn(MessageFormat.format(pattern, args), e));
     }
 
     public static void error(String msg) {
-        pool.submit(() -> log.error(msg));
+        async(() -> log.error(msg));
     }
 
     public static void error(String pattern, Object... args) {
-        pool.submit(() -> log.error(MessageFormat.format(pattern, args)));
+        async(() -> log.error(MessageFormat.format(pattern, args)));
     }
 
     public static void error(Throwable e) {
-        pool.submit(() -> log.error(e));
+        async(() -> log.error(e));
     }
 
     public static void error(Throwable e, String pattern, Object... args) {
-        pool.submit(() -> log.error(MessageFormat.format(pattern, args), e));
+        async(() -> log.error(MessageFormat.format(pattern, args), e));
     }
 }
