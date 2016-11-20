@@ -77,7 +77,7 @@ public class Namespace {
          * @param prefix the prefix of the desired namespace
          *
          * @return a {@link Namespace} identified by the given {@code prefix}, or {@code null} if no namespace is
-         *         registered with this {@code prefix}
+         * registered with this {@code prefix}
          */
         public Namespace getFromPrefix(String prefix) {
             if (isNull(prefix)) {
@@ -93,7 +93,7 @@ public class Namespace {
          * @param uri the URI of the desired namespace
          *
          * @return a {@link Namespace} identified by the given {@code uri}, or {@code null} if no namespace is
-         *         registered with this {@code uri}.
+         * registered with this {@code uri}.
          */
         public Namespace getFromUri(String uri) {
             if (isNull(uri)) {

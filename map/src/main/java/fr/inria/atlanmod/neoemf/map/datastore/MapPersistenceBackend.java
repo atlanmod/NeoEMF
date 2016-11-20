@@ -59,7 +59,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
      */
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 
-    @SuppressWarnings("unchecked") // Unchecked cast: 'HTreeMap' to 'HTreeMap<...>'
+    @SuppressWarnings("unchecked")
     MapPersistenceBackend(DB aDB) {
         db = aDB;
 

@@ -42,7 +42,7 @@ public interface PersistenceBackend extends Closeable {
      * @param strict {@code true} if the lookup searches for strict instances
      *
      * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
-     *         EClass}
+     * EClass}
      *
      * @throws UnsupportedOperationException if the back-end does not support all instances lookup
      */

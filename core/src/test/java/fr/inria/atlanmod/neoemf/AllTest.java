@@ -23,12 +23,6 @@ public abstract class AllTest {
     @Rule
     public TestRule watcher = new TestWatcher() {
         @Override
-        protected void starting(Description description) {
-            System.out.println("\n[INFO] --- Running " + description.getMethodName() + "()");
-            super.starting(description);
-        }
-
-        @Override
         protected void succeeded(Description description) {
             System.out.println("[INFO] --- Succeeded");
             super.succeeded(description);
@@ -38,6 +32,12 @@ public abstract class AllTest {
         protected void failed(Throwable e, Description description) {
             System.out.println("[ERROR] --- Failed");
             super.failed(e, description);
+        }
+
+        @Override
+        protected void starting(Description description) {
+            System.out.println("\n[INFO] --- Running " + description.getMethodName() + "()");
+            super.starting(description);
         }
 
         @Override

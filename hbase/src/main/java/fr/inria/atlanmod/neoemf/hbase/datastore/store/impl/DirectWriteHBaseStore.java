@@ -253,7 +253,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * PersistentEObject object}
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
-     *         EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s
+     * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s
      */
     protected Object getFromTable(PersistentEObject object, EStructuralFeature feature) {
         try {

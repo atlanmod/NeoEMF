@@ -44,7 +44,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @param strict true if the lookup searches for strict instances
      *
      * @return if {@code true} then the method returns only the strict instances of the given {@link EClass}, otherwise
-     *         it also returns the instances of the sub-types of {@code eClass}.
+     * it also returns the instances of the sub-types of {@code eClass}.
      */
     EList<EObject> getAllInstances(EClass eClass, boolean strict);
 }

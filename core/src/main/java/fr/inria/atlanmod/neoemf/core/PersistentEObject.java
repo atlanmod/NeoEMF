@@ -26,7 +26,7 @@ public interface PersistentEObject extends InternalEObject {
      * @param object the object to adapt
      *
      * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
-     *         assigned as a {@link PersistentEObject}
+     * assigned as a {@link PersistentEObject}
      */
     static PersistentEObject from(Object object) {
         return PersistentEObjectAdapter.getAdapter(object);
