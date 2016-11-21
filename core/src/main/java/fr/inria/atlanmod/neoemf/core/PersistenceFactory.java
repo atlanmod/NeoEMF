@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
+import fr.inria.atlanmod.neoemf.core.impl.DefaultPersistentEObject;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
@@ -31,7 +31,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
     @Override
     public PersistentEObject create(EClass eClass) {
-        PersistentEObjectImpl eObject = new PersistentEObjectImpl();
+        DefaultPersistentEObject eObject = new DefaultPersistentEObject();
         eObject.eSetClass(eClass);
         return eObject;
     }

@@ -13,7 +13,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
+import fr.inria.atlanmod.neoemf.core.impl.DefaultPersistentEObject;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -29,7 +29,7 @@ import org.eclipse.emf.common.util.WrappedException;
 
 public abstract class NeoEMFImporterUtil {
 
-    private static final String ROOT_EXTENDS_CLASS = PersistentEObjectImpl.class.getName();
+    private static final String ROOT_EXTENDS_CLASS = DefaultPersistentEObject.class.getName();
     private static final String NEOEMF_MODEL_PLUGIN_NAME = "fr.inria.atlanmod.neoemf.core";
     private static final String ROOT_EXTENDS_INTERFACE = PersistentEObject.class.getName();
 

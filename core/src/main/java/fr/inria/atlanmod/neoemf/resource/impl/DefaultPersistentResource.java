@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.resource.impl;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
+import fr.inria.atlanmod.neoemf.core.impl.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.impl.StringId;
 import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
@@ -54,7 +54,7 @@ import java.util.Map.Entry;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
-public class PersistentResourceImpl extends ResourceImpl implements PersistentResource {
+public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
 
     private static final String URI_UNKNOWN = "/-1";
 
@@ -73,7 +73,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
     private boolean isPersistent;
 
-    public PersistentResourceImpl(URI uri) {
+    public DefaultPersistentResource(URI uri) {
         super(uri);
         this.dummyRootEObject = new DummyRootEObject(this);
         this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
@@ -276,7 +276,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
     /**
      * Dummy {@link EObject} that represents the root entry point for this {@link Resource}.
      */
-    private static final class DummyRootEObject extends PersistentEObjectImpl {
+    private static final class DummyRootEObject extends DefaultPersistentEObject {
 
         private static final String ROOT_EOBJECT_ID = "ROOT";
 
@@ -305,7 +305,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 
         @Override
         public Object getNotifier() {
-            return PersistentResourceImpl.this;
+            return DefaultPersistentResource.this;
         }
 
         @Override
@@ -321,7 +321,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
         @Override
         public NotificationChain inverseAdd(E object, NotificationChain notifications) {
             InternalEObject eObject = (InternalEObject) object;
-            notifications = eObject.eSetResource(PersistentResourceImpl.this, notifications);
+            notifications = eObject.eSetResource(DefaultPersistentResource.this, notifications);
             attached(eObject);
             return notifications;
         }
@@ -371,7 +371,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
 			 */
             for (Object element : hardLinksList) {
                 PersistentEObject internalElement = PersistentEObject.from(element);
-                internalElement.resource(PersistentResourceImpl.this);
+                internalElement.resource(DefaultPersistentResource.this);
             }
             super.delegateAdd(index, object);
         }
