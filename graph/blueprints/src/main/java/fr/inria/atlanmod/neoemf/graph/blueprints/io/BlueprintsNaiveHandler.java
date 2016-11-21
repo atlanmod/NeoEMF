@@ -15,16 +15,17 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 
 import static java.util.Objects.isNull;
 
 /**
- * A {@link BlueprintsAwareHandler} <b>without</b> key conflict resolution.
+ * A {@link PersistenceHandler} for a {@link BlueprintsPersistenceBackend}, <b>without</b> key conflict resolution.
  * <p/>
  * <b>NOTE :</b> Unlike the {@link BlueprintsAwareHandler}, this handler does not solve key conflicts. However, they are
  * detected and an exception is raised to avoid the creation of an unusable backend.
  */
-class BlueprintsNaiveHandler extends BlueprintsAwareHandler {
+public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {
 
     public BlueprintsNaiveHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
