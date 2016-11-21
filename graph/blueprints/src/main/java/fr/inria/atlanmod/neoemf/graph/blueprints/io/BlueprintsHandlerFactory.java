@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.graph.blueprints.io;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 
-public class BlueprintsPersistenceHandlerFactory {
+public class BlueprintsHandlerFactory {
 
-    private BlueprintsPersistenceHandlerFactory() {
+    private BlueprintsHandlerFactory() {
     }
 
     /**
@@ -29,10 +29,10 @@ public class BlueprintsPersistenceHandlerFactory {
      */
     public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend, boolean conflictResolution) {
         if (conflictResolution) {
-            return new BlueprintsConflictPersistenceHandler(persistenceBackend);
+            return new BlueprintsAwareHandler(persistenceBackend);
         }
         else {
-            return new BlueprintsPersistenceHandler(persistenceBackend);
+            return new BlueprintsNaiveHandler(persistenceBackend);
         }
     }
 }

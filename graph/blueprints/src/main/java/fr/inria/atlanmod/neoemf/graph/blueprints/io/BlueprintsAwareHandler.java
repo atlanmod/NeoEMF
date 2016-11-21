@@ -39,7 +39,7 @@ import static java.util.Objects.isNull;
  * <b>NOTE :</b> This handler has a key conflicts resolution feature, but it consumes much more memory than a backend
  * without conflicts resolution. Make sure you have enough memory to avoid heap space.
  */
-class BlueprintsConflictPersistenceHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
+class BlueprintsAwareHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
     private static final char SEPARATOR = ':';
     private static final String POSITION = "position";
@@ -52,7 +52,7 @@ class BlueprintsConflictPersistenceHandler extends AbstractPersistenceHandler<Bl
 
     protected final Cache<Id, Vertex> loadedVertices;
 
-    public BlueprintsConflictPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
+    public BlueprintsAwareHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
         loadedVertices = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }

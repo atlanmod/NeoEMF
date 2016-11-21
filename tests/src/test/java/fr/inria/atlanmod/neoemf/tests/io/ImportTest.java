@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.io.BlueprintsPersistenceHandlerFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.io.BlueprintsHandlerFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
@@ -361,7 +361,7 @@ public class ImportTest extends AllInputTest {
 
     private EObject loadWithNeoBlueprints(File file) throws Exception {
         BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
-        PersistenceHandler persistenceHandler = BlueprintsPersistenceHandlerFactory.createPersistenceHandler(persistenceBackend, false);
+        PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(persistenceBackend, false);
 
         persistenceHandler = new LoggingPersistenceHandlerDecorator(persistenceHandler);
         persistenceHandler = new CounterPersistenceHandlerDecorator(persistenceHandler);

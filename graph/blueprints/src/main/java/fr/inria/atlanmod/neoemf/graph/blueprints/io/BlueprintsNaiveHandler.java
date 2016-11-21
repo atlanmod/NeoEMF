@@ -19,14 +19,14 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistence
 import static java.util.Objects.isNull;
 
 /**
- * A {@link BlueprintsConflictPersistenceHandler} with <b>no key conflict resolution</b>.
+ * A {@link BlueprintsAwareHandler} <b>without</b> key conflict resolution.
  * <p/>
- * <b>NOTE :</b> Unlike the {@link BlueprintsConflictPersistenceHandler}, this handler does not solve key
- * conflicts. However, they are detected and an exception is raised to avoid the creation of an unusable backend.
+ * <b>NOTE :</b> Unlike the {@link BlueprintsAwareHandler}, this handler does not solve key conflicts. However, they are
+ * detected and an exception is raised to avoid the creation of an unusable backend.
  */
-class BlueprintsPersistenceHandler extends BlueprintsConflictPersistenceHandler {
+class BlueprintsNaiveHandler extends BlueprintsAwareHandler {
 
-    public BlueprintsPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend) {
+    public BlueprintsNaiveHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
     }
 
