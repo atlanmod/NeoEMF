@@ -26,7 +26,7 @@ public class HBasePersistenceBackend implements PersistenceBackend {
     /**
      * The literal description of this backend.
      */
-    public static final String DESC = "hbase";
+    public static final String NAME = "hbase";
 
     @Override
     public boolean isClosed() {

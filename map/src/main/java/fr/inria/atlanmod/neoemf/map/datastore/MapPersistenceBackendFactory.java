@@ -44,6 +44,8 @@ import static java.util.Objects.isNull;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
+    public static final String NAME = MapPersistenceBackend.NAME;
+
     private MapPersistenceBackendFactory() {
     }
 
@@ -53,7 +55,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 
     @Override
     public String getName() {
-        return MapPersistenceBackend.DESC;
+        return NAME;
     }
 
     @Override

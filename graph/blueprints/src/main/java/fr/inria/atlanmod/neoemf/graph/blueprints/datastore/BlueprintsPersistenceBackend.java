@@ -54,7 +54,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
     /**
      * The literal description of this backend.
      */
-    public static final String DESC = "blueprints";
+    public static final String NAME = "blueprints";
 
     public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
     public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();

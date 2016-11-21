@@ -32,7 +32,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
     /**
      * The literal description of this backend.
      */
-    public static final String DESC = "mapdb";
+    public static final String NAME = "mapdb";
 
     private static final String KEY_CONTAINER = "eContainer";
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
