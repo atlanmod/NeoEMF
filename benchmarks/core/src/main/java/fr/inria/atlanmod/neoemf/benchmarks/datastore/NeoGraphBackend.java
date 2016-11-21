@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -40,10 +40,10 @@ public class NeoGraphBackend extends AbstractNeoBackend {
 
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
-        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = NeoBlueprintsURI.createFileURI(file);
+        URI uri = BlueprintsURI.createFileURI(file);
 
         return resourceSet.createResource(uri);
     }

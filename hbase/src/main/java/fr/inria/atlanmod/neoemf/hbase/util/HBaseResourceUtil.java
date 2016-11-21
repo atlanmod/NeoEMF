@@ -14,14 +14,14 @@ import java.io.IOException;
 
 import static java.util.Objects.isNull;
 
-public class ResourceUtil {
+public class HBaseResourceUtil {
 
     private final Configuration conf = HBaseConfiguration.create();
 
-    private ResourceUtil() {
+    private HBaseResourceUtil() {
     }
 
-    public static ResourceUtil getInstance() {
+    public static HBaseResourceUtil getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -52,7 +52,7 @@ public class ResourceUtil {
 
         //Connection resourceConnection = ConnectionFactory.createConnection(conf);
         HBaseAdmin admin = new HBaseAdmin(conf);
-        String cloneURI = NeoHBaseURI.format(modelURI);
+        String cloneURI = HBaseURI.format(modelURI);
         TableName tableName = TableName.valueOf(cloneURI);
         NeoLogger.error("Delete table if exists");
         try {
@@ -74,6 +74,6 @@ public class ResourceUtil {
 
     private static class Holder {
 
-        private static final ResourceUtil INSTANCE = new ResourceUtil();
+        private static final HBaseResourceUtil INSTANCE = new HBaseResourceUtil();
     }
 }

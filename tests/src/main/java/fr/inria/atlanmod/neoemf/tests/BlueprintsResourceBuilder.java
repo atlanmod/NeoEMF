@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -37,21 +37,21 @@ public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
 
     @Override
     public BlueprintsResourceBuilder uri(URI uri) {
-        this.uri = NeoBlueprintsURI.createURI(uri);
+        this.uri = BlueprintsURI.createURI(uri);
         return this;
     }
 
     @Override
     public BlueprintsResourceBuilder file(File file) {
-        this.uri = NeoBlueprintsURI.createFileURI(file);
+        this.uri = BlueprintsURI.createFileURI(file);
         return this;
     }
 
     private void initBlueprintsBuilder() {
-        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
         }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     public BlueprintsResourceBuilder neo4j() {

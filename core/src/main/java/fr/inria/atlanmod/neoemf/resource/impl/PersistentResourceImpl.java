@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.NeoURI;
+import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
@@ -99,7 +99,7 @@ public class PersistentResourceImpl extends ResourceImpl implements PersistentRe
      * Returns the database file.
      */
     protected File getFile() {
-        return FileUtils.getFile(NeoURI.createURI(getURI()).toFileString());
+        return FileUtils.getFile(PersistenceURI.createURI(getURI()).toFileString());
     }
 
     @Override

@@ -25,7 +25,7 @@ import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesSt
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsStore;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.map.option.MapOptionsBuilder;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.map.util.MapURI;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -56,7 +56,7 @@ public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackend
     @Before
     public void setUp() {
         persistenceBackendFactory = MapPersistenceBackendFactory.getInstance();
-        PersistenceBackendFactoryRegistry.register(NeoMapURI.SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(MapURI.SCHEME, persistenceBackendFactory);
         testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
         try {
             Files.createDirectories(testFolder.toPath());

@@ -16,7 +16,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.cache.HBaseFeatureKey;
-import fr.inria.atlanmod.neoemf.hbase.util.EncoderUtil;
+import fr.inria.atlanmod.neoemf.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.hadoop.conf.Configuration;
@@ -143,10 +143,10 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
             }
             else {
                 if (featureKey.feature() instanceof EAttribute) {
-                    return EncoderUtil.toStrings(value);
+                    return HBaseEncoderUtil.toStrings(value);
                 }
                 else {
-                    return EncoderUtil.toStringsReferences(value);
+                    return HBaseEncoderUtil.toStringsReferences(value);
                 }
             }
         }

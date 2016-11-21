@@ -31,7 +31,7 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NeoMapURITest extends AllTest {
+public class MapURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoMapURITestFile";
 
@@ -44,7 +44,7 @@ public class NeoMapURITest extends AllTest {
     @Before
     public void setUp() {
         PersistenceBackendFactoryRegistry.unregisterAll();
-        PersistenceBackendFactoryRegistry.register(NeoMapURI.SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(MapURI.SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 
@@ -66,27 +66,27 @@ public class NeoMapURITest extends AllTest {
 
     @Test
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(NeoMapURI.SCHEME + ":/test");
-        URI neoURI = NeoMapURI.createURI(validURI);
-        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.SCHEME);
+        URI validURI = URI.createURI(MapURI.SCHEME + ":/test");
+        URI neoURI = MapURI.createURI(validURI);
+        assertThat(neoURI.scheme()).isEqualTo(MapURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = NeoMapURI.createURI(fileURI);
-        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.SCHEME);
+        URI neoURI = MapURI.createURI(fileURI);
+        assertThat(neoURI.scheme()).isEqualTo(MapURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
-        URI neoURI = NeoMapURI.createFileURI(testFile);
-        assertThat(neoURI.scheme()).isEqualTo(NeoMapURI.SCHEME);
+        URI neoURI = MapURI.createFileURI(testFile);
+        assertThat(neoURI.scheme()).isEqualTo(MapURI.SCHEME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
         URI invalidURI = URI.createURI("invalid:/test");
-        NeoMapURI.createURI(invalidURI);
+        MapURI.createURI(invalidURI);
     }
 }

@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistence
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.io.BlueprintsPersistenceHandlerFactory;
 import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
@@ -370,12 +370,12 @@ public class ImportTest extends AllInputTest {
 
         persistenceBackend.close();
 
-        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        Resource resource = resourceSet.createResource(NeoBlueprintsURI.createFileURI(neo4jFile));
+        Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(neo4jFile));
         resource.load(BlueprintsNeo4jOptionsBuilder.newBuilder().asMap());
 
         return resource.getContents().get(0);

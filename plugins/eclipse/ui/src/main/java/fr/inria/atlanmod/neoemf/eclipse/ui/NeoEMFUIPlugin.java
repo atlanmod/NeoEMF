@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.map.util.MapURI;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -73,11 +73,11 @@ public class NeoEMFUIPlugin extends AbstractUIPlugin {
 		 * This happens when an eclipse instance is loaded with an opened NeoEMF editor
 		 * (only NeoBlueprintsURI.NEO_GRAPH_SCHEME is accessed)
 		 */
-        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoBlueprintsURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
         }
-        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoMapURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoMapURI.SCHEME, MapPersistenceBackendFactory.getInstance());
+        if (!PersistenceBackendFactoryRegistry.isRegistered(MapURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(MapURI.SCHEME, MapPersistenceBackendFactory.getInstance());
         }
     }
 

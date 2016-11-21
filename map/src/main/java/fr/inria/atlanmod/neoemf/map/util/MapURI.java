@@ -9,9 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.graph.blueprints.util;
+package fr.inria.atlanmod.neoemf.map.util;
 
-import fr.inria.atlanmod.neoemf.util.NeoURI;
+import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -19,29 +19,29 @@ import org.eclipse.emf.common.util.URI;
 import java.io.File;
 import java.text.MessageFormat;
 
-public class NeoBlueprintsURI extends NeoURI {
+public class MapURI extends PersistenceURI {
 
-    public static final String SCHEME = "neo-blueprints";
+    public static final String SCHEME = "neo-map";
 
-    protected NeoBlueprintsURI(int hashCode, URI internalURI) {
+    protected MapURI(int hashCode, URI internalURI) {
         super(hashCode, internalURI);
     }
 
     public static URI createURI(URI uri) {
         URI returnValue;
-        if (NeoURI.FILE_SCHEME.equals(uri.scheme())) {
+        if (PersistenceURI.FILE_SCHEME.equals(uri.scheme())) {
             returnValue = createFileURI(FileUtils.getFile(uri.toFileString()));
         }
         else if (SCHEME.equals(uri.scheme())) {
-            returnValue = NeoURI.createURI(uri);
+            returnValue = PersistenceURI.createURI(uri);
         }
         else {
-            throw new IllegalArgumentException(MessageFormat.format("Can not create NeoGraphURI from the URI scheme {0}", uri.scheme()));
+            throw new IllegalArgumentException(MessageFormat.format("Can not create MapURI from the URI scheme {0}", uri.scheme()));
         }
         return returnValue;
     }
 
     public static URI createFileURI(File file) {
-        return NeoURI.createFileURI(file, SCHEME);
+        return PersistenceURI.createFileURI(file, SCHEME);
     }
 }

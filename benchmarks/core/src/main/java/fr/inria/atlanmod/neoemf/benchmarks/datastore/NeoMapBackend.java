@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.map.option.MapOptionsBuilder;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.map.util.MapURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -36,10 +36,10 @@ public class NeoMapBackend extends AbstractNeoBackend {
 
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
-        PersistenceBackendFactoryRegistry.register(NeoMapURI.SCHEME, MapPersistenceBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.SCHEME, PersistentResourceFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(MapURI.SCHEME, MapPersistenceBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = NeoMapURI.createFileURI(file);
+        URI uri = MapURI.createFileURI(file);
 
         return resourceSet.createResource(uri);
     }

@@ -12,10 +12,10 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.option.MapOptionsBuilder;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.map.util.MapURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -41,8 +41,8 @@ public class NeoEMFEditor extends EcoreEditor {
 
     public NeoEMFEditor() {
         super();
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.SCHEME, PersistentResourceFactory.getInstance());
+        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     @Override
@@ -52,13 +52,13 @@ public class NeoEMFEditor extends EcoreEditor {
         editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
         // Create the store options depending of the backend
         Map<String, Object> options;
-        if (resource.getURI().scheme().equals(NeoMapURI.SCHEME)) {
+        if (resource.getURI().scheme().equals(MapURI.SCHEME)) {
             options = MapOptionsBuilder.newBuilder()
 //                    .log()
                     .directWrite()
                     .asMap();
         }
-        else if (resource.getURI().scheme().equals(NeoBlueprintsURI.SCHEME)) {
+        else if (resource.getURI().scheme().equals(BlueprintsURI.SCHEME)) {
             options = BlueprintsOptionsBuilder.newBuilder()
 //                    .log()
                     .directWriteCacheMany()

@@ -20,7 +20,7 @@ import java.util.Iterator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
-public class EncoderUtil {
+public class HBaseEncoderUtil {
 
     public static final int UUID_LENGTH = 23;
 

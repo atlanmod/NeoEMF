@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.commons.io.FileUtils;
@@ -52,7 +52,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     @Before
     public void setUp() {
         persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
-        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 

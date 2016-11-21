@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.hbase.util;
 
-import fr.inria.atlanmod.neoemf.util.NeoURI;
+import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
@@ -19,23 +19,23 @@ import org.eclipse.emf.common.util.URI;
 import java.io.File;
 import java.text.MessageFormat;
 
-public class NeoHBaseURI extends NeoURI {
+public class HBaseURI extends PersistenceURI {
 
     public static final String SCHEME = "neo-hbase";
 
-    protected NeoHBaseURI(int hashCode, URI internalURI) {
+    protected HBaseURI(int hashCode, URI internalURI) {
         super(hashCode, internalURI);
     }
 
     public static URI createURI(URI uri) {
-        if (NeoURI.FILE_SCHEME.equals(uri.scheme())) {
+        if (PersistenceURI.FILE_SCHEME.equals(uri.scheme())) {
             return createFileURI(FileUtils.getFile(uri.toFileString()));
         }
         else if (SCHEME.equals(uri.scheme())) {
-            return NeoURI.createURI(uri);
+            return PersistenceURI.createURI(uri);
         }
         else {
-            throw new IllegalArgumentException(MessageFormat.format("Can not create NeoHBaseURI from the URI scheme {0}", uri.scheme()));
+            throw new IllegalArgumentException(MessageFormat.format("Can not create HBaseURI from the URI scheme {0}", uri.scheme()));
         }
     }
 
@@ -50,7 +50,7 @@ public class NeoHBaseURI extends NeoURI {
     }
 
     public static URI createFileURI(File file) {
-        return NeoURI.createFileURI(file, SCHEME);
+        return PersistenceURI.createFileURI(file, SCHEME);
     }
 
     public static String format(URI uri) {

@@ -31,7 +31,7 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NeoBlueprintsURITest extends AllTest {
+public class BlueprintsURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoGraphURITestFile";
 
@@ -47,7 +47,7 @@ public class NeoBlueprintsURITest extends AllTest {
     @Before
     public void setUp() {
         PersistenceBackendFactoryRegistry.unregisterAll();
-        PersistenceBackendFactoryRegistry.register(NeoBlueprintsURI.SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 
@@ -70,26 +70,26 @@ public class NeoBlueprintsURITest extends AllTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
         URI invalidURI = URI.createURI(INVALID + ":/test");
-        NeoBlueprintsURI.createURI(invalidURI);
+        BlueprintsURI.createURI(invalidURI);
     }
 
     @Test
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(NeoBlueprintsURI.SCHEME + ":/test");
-        URI neoURI = NeoBlueprintsURI.createURI(validURI);
-        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.SCHEME);
+        URI validURI = URI.createURI(BlueprintsURI.SCHEME + ":/test");
+        URI neoURI = BlueprintsURI.createURI(validURI);
+        assertThat(neoURI.scheme()).isEqualTo(BlueprintsURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = NeoBlueprintsURI.createURI(fileURI);
-        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.SCHEME);
+        URI neoURI = BlueprintsURI.createURI(fileURI);
+        assertThat(neoURI.scheme()).isEqualTo(BlueprintsURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
-        URI neoURI = NeoBlueprintsURI.createFileURI(testFile);
-        assertThat(neoURI.scheme()).isEqualTo(NeoBlueprintsURI.SCHEME);
+        URI neoURI = BlueprintsURI.createFileURI(testFile);
+        assertThat(neoURI.scheme()).isEqualTo(BlueprintsURI.SCHEME);
     }
 }

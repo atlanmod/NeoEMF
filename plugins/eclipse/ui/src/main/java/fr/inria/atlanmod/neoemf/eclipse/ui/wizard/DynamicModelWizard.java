@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.wizard;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEMFEditor;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.core.resources.IFolder;
@@ -144,7 +144,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
             dbFolder.delete(true, new NullProgressMonitor());
 
             // Get the URI of the model file.
-            final URI dbURI = NeoBlueprintsURI.createFileURI(new File(dbFolder.getRawLocation().toOSString()));
+            final URI dbURI = BlueprintsURI.createFileURI(new File(dbFolder.getRawLocation().toOSString()));
 
             // Do the work within an operation.
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
@@ -158,7 +158,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                     try {
                         // Create a resource set
                         ResourceSet resourceSet = new ResourceSetImpl();
-                        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoBlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+                        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
                         resourceSet.getURIConverter().getURIMap().putAll(EcorePlugin.computePlatformURIMap(true));
 
                         // Create a resource for this file.

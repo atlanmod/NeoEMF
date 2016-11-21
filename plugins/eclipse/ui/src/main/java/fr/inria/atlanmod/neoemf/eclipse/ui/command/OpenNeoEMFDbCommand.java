@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEMFEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.map.util.MapURI;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -101,10 +101,10 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
                 return new Status(IStatus.ERROR, NeoEMFUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
             else if (backendType.equals(MapPersistenceBackendFactory.NAME)) {
-                uri = NeoMapURI.createFileURI(new File(folder.getRawLocation().toOSString()));
+                uri = MapURI.createFileURI(new File(folder.getRawLocation().toOSString()));
             }
             else if (backendType.equals(BlueprintsPersistenceBackendFactory.NAME)) {
-                uri = NeoBlueprintsURI.createFileURI(new File(folder.getRawLocation().toOSString()));
+                uri = BlueprintsURI.createFileURI(new File(folder.getRawLocation().toOSString()));
             }
             URIEditorInput editorInput = new URIEditorInput(uri);
             IWorkbench workbench = PlatformUI.getWorkbench();

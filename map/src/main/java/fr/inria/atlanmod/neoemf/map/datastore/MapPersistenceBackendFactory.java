@@ -24,7 +24,7 @@ import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesSt
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsStore;
 import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.map.option.MapStoreOptions;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
+import fr.inria.atlanmod.neoemf.map.util.MapURI;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -100,7 +100,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
     public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
         MapPersistenceBackend backend;
 
-        File dbFile = FileUtils.getFile(NeoMapURI.createURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
+        File dbFile = FileUtils.getFile(MapURI.createURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
         if (!dbFile.getParentFile().exists()) {
             try {
                 Files.createDirectories(dbFile.getParentFile().toPath());
