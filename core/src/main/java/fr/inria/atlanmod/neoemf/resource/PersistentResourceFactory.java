@@ -11,16 +11,32 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.resource.impl.PersistentResourceFactoryImpl;
+import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.resource.impl.PersistentResourceImpl;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
-public interface PersistentResourceFactory extends Resource.Factory {
+public class PersistentResourceFactory implements Resource.Factory {
 
-    /**
-     * Returns the default instance of this {@code PersistentResourceFactory factory}.
-     */
-    static PersistentResourceFactory getInstance() {
-        return PersistentResourceFactoryImpl.getInstance();
+    protected PersistentResourceFactory() {
+    }
+
+    public static PersistentResourceFactory getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    @Override
+    public Resource createResource(URI uri) {
+        Resource resource = null;
+        if (PersistenceBackendFactoryRegistry.isRegistered(uri.scheme())) {
+            resource = new PersistentResourceImpl(uri);
+        }
+        return resource;
+    }
+
+    private static class Holder {
+
+        private static final PersistentResourceFactory INSTANCE = new PersistentResourceFactory();
     }
 }

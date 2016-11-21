@@ -11,23 +11,33 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.core.impl.PersistenceFactoryImpl;
+import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectImpl;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 /**
  * A factory able to create a {@link PersistentEObject} from an {@link EClass}.
  */
-public interface PersistenceFactory extends EFactory {
+public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
-    /**
-     * Returns the default instance of this {@code PersistenceFactory factory}.
-     */
-    static PersistenceFactory getInstance() {
-        return PersistenceFactoryImpl.getInstance();
+    private PersistenceFactory() {
+    }
+
+    public static PersistenceFactory getInstance() {
+        return Holder.INSTANCE;
     }
 
     @Override
-    PersistentEObject create(EClass eClass);
+    public PersistentEObject create(EClass eClass) {
+        PersistentEObjectImpl eObject = new PersistentEObjectImpl();
+        eObject.eSetClass(eClass);
+        return eObject;
+    }
+
+    private static class Holder {
+
+        private static final PersistenceFactory INSTANCE = new PersistenceFactory();
+    }
 }
