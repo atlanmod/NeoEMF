@@ -79,16 +79,16 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         Vertex vertex = createVertex(id);
 
         // Checks if the Vertex is not already defined
-        if (!isNull(vertex.getProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI))) {
+        if (!isNull(vertex.getProperty(BlueprintsPersistenceBackend.KEY_EPACKAGE_NSURI))) {
             throw new IllegalArgumentException(
                     "An element with the same Id (" + id.toString() + ") is already defined. " +
                             "Use a handler with a conflicts resolution feature instead.");
         }
 
         if (!isNull(name)) {
-            vertex.setProperty(BlueprintsPersistenceBackend.ECLASS_NAME, name);
+            vertex.setProperty(BlueprintsPersistenceBackend.KEY_ECLASS_NAME, name);
         }
-        vertex.setProperty(BlueprintsPersistenceBackend.EPACKAGE_NSURI, nsUri);
+        vertex.setProperty(BlueprintsPersistenceBackend.KEY_EPACKAGE_NSURI, nsUri);
 
         if (root) {
             // Add the current element as content of the 'ROOT' node
@@ -140,7 +140,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         Vertex vertex = getVertex(id);
         Vertex metaClassVertex = getVertex(metaClassId);
 
-        vertex.addEdge(BlueprintsPersistenceBackend.INSTANCE_OF, metaClassVertex);
+        vertex.addEdge(BlueprintsPersistenceBackend.KEY_INSTANCE_OF, metaClassVertex);
     }
 
     @Override

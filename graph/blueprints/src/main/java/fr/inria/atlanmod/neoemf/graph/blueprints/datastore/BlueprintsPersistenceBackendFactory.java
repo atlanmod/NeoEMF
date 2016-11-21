@@ -50,7 +50,6 @@ import static java.util.Objects.isNull;
 
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-    public static final String NAME = "blueprints";
     /**
      * The configuration file name.
      * <p/>
@@ -68,7 +67,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 
     @Override
     public String getName() {
-        return NAME;
+        return BlueprintsPersistenceBackend.DESC;
     }
 
     @Override

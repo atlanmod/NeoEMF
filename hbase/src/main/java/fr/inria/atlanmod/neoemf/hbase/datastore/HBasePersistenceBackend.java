@@ -23,6 +23,11 @@ import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.ReadOnlyHBaseStore;
  */
 public class HBasePersistenceBackend implements PersistenceBackend {
 
+    /**
+     * The literal description of this backend.
+     */
+    public static final String DESC = "hbase";
+
     @Override
     public boolean isClosed() {
         return true;

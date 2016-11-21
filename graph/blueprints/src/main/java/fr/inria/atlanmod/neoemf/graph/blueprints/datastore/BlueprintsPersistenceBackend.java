@@ -51,11 +51,16 @@ import static java.util.Objects.isNull;
 
 public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
-    public static final String ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-    public static final String EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
-    public static final String INSTANCE_OF = "kyanosInstanceOf";
-    public static final String METACLASSES = "metaclasses";
-    public static final String NAME = "name";
+    /**
+     * The literal description of this backend.
+     */
+    public static final String DESC = "blueprints";
+
+    public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+    public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+    public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
+    public static final String KEY_METACLASSES = "metaclasses";
+    public static final String KEY_NAME = "name";
 
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
@@ -81,9 +86,9 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         this.loadedEObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.loadedVerticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.indexedEClasses = new ArrayList<>();
-        this.metaclassIndex = graph.getIndex(METACLASSES, Vertex.class);
+        this.metaclassIndex = graph.getIndex(KEY_METACLASSES, Vertex.class);
         if (isNull(metaclassIndex)) {
-            metaclassIndex = graph.createIndex(METACLASSES, Vertex.class);
+            metaclassIndex = graph.createIndex(KEY_METACLASSES, Vertex.class);
         }
     }
 
@@ -132,9 +137,9 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             }
             // Get all the vertices that are indexed with one of the EClass
             for (EClass ec : eClassToFind) {
-                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, ec.getName()), null);
+                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, ec.getName()), null);
                 if (!isNull(metaClassVertex)) {
-                    Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
+                    Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
                     indexHits.put(ec, instanceVertexIterable);
                 }
                 else {
@@ -172,8 +177,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      */
     private Vertex addVertex(EClass eClass) {
         Vertex vertex = addVertex(buildId(eClass));
-        vertex.setProperty(ECLASS_NAME, eClass.getName());
-        vertex.setProperty(EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
+        vertex.setProperty(KEY_ECLASS_NAME, eClass.getName());
+        vertex.setProperty(KEY_EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
         return vertex;
     }
 
@@ -229,13 +234,13 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         Vertex vertex = addVertex(persistentEObject);
         EClass eClass = persistentEObject.eClass();
 
-        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, eClass.getName()), null);
+        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, eClass.getName()), null);
         if (isNull(eClassVertex)) {
             eClassVertex = addVertex(eClass);
-            metaclassIndex.put(NAME, eClass.getName(), eClassVertex);
+            metaclassIndex.put(KEY_NAME, eClass.getName(), eClassVertex);
             indexedEClasses.add(eClass);
         }
-        vertex.addEdge(INSTANCE_OF, eClassVertex);
+        vertex.addEdge(KEY_INSTANCE_OF, eClassVertex);
         setMappedVertex(vertex, persistentEObject);
         return vertex;
     }
@@ -259,10 +264,10 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     private EClass resolveInstanceOf(Vertex vertex) {
         EClass returnValue = null;
-        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, INSTANCE_OF), null);
+        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
         if (!isNull(eClassVertex)) {
-            String name = eClassVertex.getProperty(ECLASS_NAME);
-            String nsUri = eClassVertex.getProperty(EPACKAGE_NSURI);
+            String name = eClassVertex.getProperty(KEY_ECLASS_NAME);
+            String nsUri = eClassVertex.getProperty(KEY_EPACKAGE_NSURI);
             returnValue = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
         }
         return returnValue;
@@ -311,8 +316,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     private void initMetaClassesIndex(List<EClass> eClassList) {
         for (EClass eClass : eClassList) {
-            checkArgument(Iterables.isEmpty(metaclassIndex.get(NAME, eClass.getName())), "Index is not consistent");
-            metaclassIndex.put(NAME, eClass.getName(), getVertex(eClass));
+            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, eClass.getName())), "Index is not consistent");
+            metaclassIndex.put(KEY_NAME, eClass.getName(), getVertex(eClass));
         }
     }
 

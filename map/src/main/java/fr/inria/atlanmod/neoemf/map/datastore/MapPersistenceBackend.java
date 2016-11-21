@@ -29,10 +29,15 @@ import java.util.Map;
 
 public class MapPersistenceBackend implements PersistenceBackend {
 
-    private static final String CONTAINER = "eContainer";
-    private static final String INSTANCE_OF = "neoInstanceOf";
-    private static final String FEATURES = "features";
-    private static final String MULTIVALUED_FEATURES = "multivaluedFeatures";
+    /**
+     * The literal description of this backend.
+     */
+    public static final String DESC = "mapdb";
+
+    private static final String KEY_CONTAINER = "eContainer";
+    private static final String KEY_INSTANCE_OF = "neoInstanceOf";
+    private static final String KEY_FEATURES = "features";
+    private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
 
     private final DB db;
 
@@ -63,22 +68,22 @@ public class MapPersistenceBackend implements PersistenceBackend {
     MapPersistenceBackend(DB aDB) {
         db = aDB;
 
-        containersMap = db.hashMap(CONTAINER)
+        containersMap = db.hashMap(KEY_CONTAINER)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        instanceOfMap = db.hashMap(INSTANCE_OF)
+        instanceOfMap = db.hashMap(KEY_INSTANCE_OF)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        features = db.hashMap(FEATURES)
+        features = db.hashMap(KEY_FEATURES)
                 .keySerializer(new FeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        multivaluedFeatures = db.hashMap(MULTIVALUED_FEATURES)
+        multivaluedFeatures = db.hashMap(KEY_MULTIVALUED_FEATURES)
                 .keySerializer(new MultivaluedFeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();

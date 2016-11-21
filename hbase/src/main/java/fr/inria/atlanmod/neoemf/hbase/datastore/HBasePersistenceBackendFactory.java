@@ -31,8 +31,6 @@ import java.util.Map;
 
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-    public static final String NAME = "hbase";
-
     private HBasePersistenceBackendFactory() {
     }
 
@@ -42,7 +40,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public String getName() {
-        return NAME;
+        return HBasePersistenceBackend.DESC;
     }
 
     @Override
