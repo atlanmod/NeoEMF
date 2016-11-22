@@ -22,11 +22,15 @@ public interface InputHandler {
 
     /**
      * Process the start of a document.
+     *
+     * @see InputNotifier#notifyStartDocument()
      */
     void processStartDocument() throws Exception;
 
     /**
      * Process the start of an element.
+     *
+     * @see InputNotifier#notifyStartElement(Classifier)
      */
     void processStartElement(Classifier classifier) throws Exception;
 
@@ -34,6 +38,8 @@ public interface InputHandler {
      * Process an attribute in the current element.
      * <p/>
      * An attribute is a simple key/value.
+     *
+     * @see InputNotifier#notifyAttribute(Attribute)
      */
     void processAttribute(Attribute attribute) throws Exception;
 
@@ -41,16 +47,22 @@ public interface InputHandler {
      * Process a reference from the current element to another element.
      * <p/>
      * A reference is an attribute which is link to another element.
+     *
+     * @see InputNotifier#notifyReference(Reference)
      */
     void processReference(Reference reference) throws Exception;
 
     /**
      * Process the end of the current element.
+     *
+     * @see InputNotifier#notifyEndElement()
      */
     void processEndElement() throws Exception;
 
     /**
      * Process the end of a document.
+     *
+     * @see InputNotifier#notifyEndDocument()
      */
     void processEndDocument() throws Exception;
 }

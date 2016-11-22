@@ -47,6 +47,7 @@ public interface InputNotifier<T extends InputHandler> {
      * Notifies that start of an action.
      *
      * @see #notifyEndDocument()
+     * @see InputHandler#processStartDocument()
      */
     void notifyStartDocument() throws Exception;
 
@@ -54,16 +55,21 @@ public interface InputNotifier<T extends InputHandler> {
      * Notifies that start of a new element.
      *
      * @see #notifyEndElement()
+     * @see InputHandler#processStartElement(Classifier)
      */
     void notifyStartElement(Classifier classifier) throws Exception;
 
     /**
      * Notifies a new attribute.
+     *
+     * @see InputHandler#processAttribute(Attribute)
      */
     void notifyAttribute(Attribute attribute) throws Exception;
 
     /**
      * Notifies a new reference.
+     *
+     * @see InputHandler#processReference(Reference)
      */
     void notifyReference(Reference reference) throws Exception;
 
@@ -71,6 +77,7 @@ public interface InputNotifier<T extends InputHandler> {
      * Notifies the end of the current element.
      *
      * @see #notifyStartElement(Classifier)
+     * @see InputHandler#processEndElement()
      */
     void notifyEndElement() throws Exception;
 
@@ -78,6 +85,7 @@ public interface InputNotifier<T extends InputHandler> {
      * Notifies the end of the current action.
      *
      * @see #notifyStartDocument()
+     * @see InputHandler#processEndDocument()
      */
     void notifyEndDocument() throws Exception;
 }
