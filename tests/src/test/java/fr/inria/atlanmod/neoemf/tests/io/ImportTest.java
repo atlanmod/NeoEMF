@@ -20,9 +20,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOpt
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.impl.CounterPersistenceHandlerDecorator;
-import fr.inria.atlanmod.neoemf.io.impl.LoggingPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 

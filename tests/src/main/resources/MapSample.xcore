@@ -1,5 +1,5 @@
 @Ecore(nsURI="com.mapSample")
-@GenModel(modelDirectory="/tests/src/main/java/", complianceLevel="8.0", rootExtendsInterface="fr.inria.atlanmod.neoemf.core.PersistentEObject", rootExtendsClass="fr.inria.atlanmod.neoemf.core.impl.DefaultPersistentEObject", reflectiveDelegation="true", importerID="org.eclipse.emf.importer.ecore", bundleManifest="false", featureDelegation="Reflective")
+@GenModel(modelDirectory="/tests/src/main/java/", complianceLevel="8.0", rootExtendsInterface="fr.inria.atlanmod.neoemf.core.PersistentEObject", rootExtendsClass="fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject", reflectiveDelegation="true", importerID="org.eclipse.emf.importer.ecore", bundleManifest="false", featureDelegation="Reflective")
 package fr.inria.atlanmod.neoemf.tests.models.mapSample
 
 class SampleModel {

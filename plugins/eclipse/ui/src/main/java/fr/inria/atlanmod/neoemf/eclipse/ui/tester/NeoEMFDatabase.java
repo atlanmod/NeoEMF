@@ -15,6 +15,8 @@ import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.Path;
 
+import java.util.Objects;
+
 public class NeoEMFDatabase extends PropertyTester {
 
     private static final String IS_NEOEMF_DB = "isNeoEMFDB";
@@ -27,7 +29,7 @@ public class NeoEMFDatabase extends PropertyTester {
      */
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        if (IS_NEOEMF_DB.equals(property) && receiver instanceof IFolder) {
+        if (Objects.equals(IS_NEOEMF_DB, property) && receiver instanceof IFolder) {
             boolean expected = (Boolean) expectedValue;
             IFolder folder = (IFolder) receiver;
             if (folder.exists(new Path("neoconfig.properties")) == expected) {

@@ -43,6 +43,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
 
 import java.io.File;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -100,10 +101,10 @@ public class OpenNeoEMFDbCommand extends AbstractHandler {
                 NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoEMFUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
-            else if (backendType.equals(MapPersistenceBackendFactory.NAME)) {
+            else if (Objects.equals(backendType, MapPersistenceBackendFactory.NAME)) {
                 uri = MapURI.createFileURI(new File(folder.getRawLocation().toOSString()));
             }
-            else if (backendType.equals(BlueprintsPersistenceBackendFactory.NAME)) {
+            else if (Objects.equals(backendType, BlueprintsPersistenceBackendFactory.NAME)) {
                 uri = BlueprintsURI.createFileURI(new File(folder.getRawLocation().toOSString()));
             }
             URIEditorInput editorInput = new URIEditorInput(uri);

@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.resource.impl.DefaultPersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;

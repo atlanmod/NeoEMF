@@ -32,6 +32,7 @@ import org.eclipse.emf.importer.ModelImporter;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -115,7 +116,7 @@ public class NeoEMFImporter extends ModelImporter {
             URI ePackageURI = ePackage.eResource().getURI();
             URI genModelURI = getGenModel().eResource().getURI();
 
-            if (!ePackageURI.trimSegments(1).equals(genModelURI.trimSegments(1))) {
+            if (!Objects.equals(ePackageURI.trimSegments(1), genModelURI.trimSegments(1))) {
                 ePackage.eResource().getContents().remove(ePackage);
             }
         }

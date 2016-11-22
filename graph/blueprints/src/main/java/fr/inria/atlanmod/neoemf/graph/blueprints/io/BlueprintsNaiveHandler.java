@@ -15,7 +15,7 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
 import static java.util.Objects.isNull;
 

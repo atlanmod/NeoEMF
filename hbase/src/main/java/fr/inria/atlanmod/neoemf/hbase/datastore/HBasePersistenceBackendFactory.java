@@ -11,16 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.store.CachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.InvalidStore;
+import fr.inria.atlanmod.neoemf.datastore.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.CachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.InvalidStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.IsSetCachingStoreDecorator;
-import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.DirectWriteHBaseStore;
-import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.ReadOnlyHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.DirectWriteHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.ReadOnlyHBaseStore;
 import fr.inria.atlanmod.neoemf.hbase.option.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;

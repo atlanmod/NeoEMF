@@ -13,7 +13,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.DefaultPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -26,6 +26,8 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenDelegationKind;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.WrappedException;
+
+import java.util.Objects;
 
 public abstract class NeoEMFImporterUtil {
 
@@ -52,14 +54,14 @@ public abstract class NeoEMFImporterUtil {
             builder.append("\n");
         }
 
-        if (!ROOT_EXTENDS_CLASS.equals(genModel.getRootExtendsClass())) {
+        if (!Objects.equals(ROOT_EXTENDS_CLASS, genModel.getRootExtendsClass())) {
             genModel.setRootExtendsClass(ROOT_EXTENDS_CLASS);
             builder.append("Set Root Extends Class = ");
             builder.append(ROOT_EXTENDS_CLASS);
             builder.append("\n");
         }
 
-        if (!ROOT_EXTENDS_INTERFACE.equals(genModel.getRootExtendsInterface())) {
+        if (!Objects.equals(ROOT_EXTENDS_INTERFACE, genModel.getRootExtendsInterface())) {
             genModel.setRootExtendsInterface(ROOT_EXTENDS_INTERFACE);
             builder.append("Set Root Extends Interface = ");
             builder.append(ROOT_EXTENDS_INTERFACE);

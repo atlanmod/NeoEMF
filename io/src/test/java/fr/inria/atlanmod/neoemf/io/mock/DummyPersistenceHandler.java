@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.graph.blueprints.io;
 
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
 public class BlueprintsHandlerFactory {
 

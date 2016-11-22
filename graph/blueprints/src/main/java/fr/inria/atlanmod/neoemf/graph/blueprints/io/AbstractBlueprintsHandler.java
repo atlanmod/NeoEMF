@@ -18,9 +18,9 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.impl.StringId;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.io.impl.AbstractPersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;

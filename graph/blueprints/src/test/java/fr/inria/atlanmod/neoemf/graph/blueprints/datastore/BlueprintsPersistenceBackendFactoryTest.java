@@ -11,16 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactoryTest;
+import fr.inria.atlanmod.neoemf.datastore.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsCacheManyStore;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.impl.DirectWriteBlueprintsStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.DirectWriteBlueprintsCacheManyStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;

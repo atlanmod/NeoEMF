@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.reader.xmi;
 
-import fr.inria.atlanmod.neoemf.io.PersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.impl.EcoreProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.impl.XPathProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 

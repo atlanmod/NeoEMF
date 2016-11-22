@@ -156,7 +156,7 @@ class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
                 String graphPrefix = "blueprints." + graphId;
                 graphProperties.removeIf(p -> !isNull(p.getProperty()) && !p.getProperty().startsWith(graphPrefix));
 
-                if (GRAPH_TYPES[0].equals(selection.getFirstElement())) {
+                if (Objects.equals(GRAPH_TYPES[0], selection.getFirstElement())) {
                     GraphProperty property = new GraphProperty("blueprints.tg.file-type", "JAVA");
                     if (!graphProperties.contains(property)) {
                         graphProperties.add(property);

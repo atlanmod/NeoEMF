@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;

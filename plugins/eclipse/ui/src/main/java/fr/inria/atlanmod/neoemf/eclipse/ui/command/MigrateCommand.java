@@ -41,6 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -97,7 +98,7 @@ public class MigrateCommand extends AbstractHandler {
             Object element = ((IStructuredSelection) selection).getFirstElement();
             if (element instanceof IFile) {
                 IFile file = (IFile) element;
-                if ("genmodel".equals(file.getFileExtension())) {
+                if (Objects.equals("genmodel", file.getFileExtension())) {
                     return file;
                 }
             }

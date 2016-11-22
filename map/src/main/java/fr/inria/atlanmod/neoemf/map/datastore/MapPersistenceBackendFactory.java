@@ -11,18 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.datastore.store.impl.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapCacheManyStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapIndicesStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapListsStore;
-import fr.inria.atlanmod.neoemf.map.datastore.store.impl.DirectWriteMapStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.DirectWriteMapCacheManyStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.DirectWriteMapIndicesStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.DirectWriteMapListsStore;
+import fr.inria.atlanmod.neoemf.map.datastore.store.DirectWriteMapStore;
 import fr.inria.atlanmod.neoemf.map.option.MapStoreOptions;
 import fr.inria.atlanmod.neoemf.map.util.MapURI;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;

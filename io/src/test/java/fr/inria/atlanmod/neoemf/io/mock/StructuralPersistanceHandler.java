@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.io.mock;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;

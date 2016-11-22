@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Tree;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 public class NeoEMFEditor extends EcoreEditor {
 
@@ -52,13 +53,13 @@ public class NeoEMFEditor extends EcoreEditor {
         editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
         // Create the store options depending of the backend
         Map<String, Object> options;
-        if (resource.getURI().scheme().equals(MapURI.SCHEME)) {
+        if (Objects.equals(resource.getURI().scheme(), MapURI.SCHEME)) {
             options = MapOptionsBuilder.newBuilder()
 //                    .log()
                     .directWrite()
                     .asMap();
         }
-        else if (resource.getURI().scheme().equals(BlueprintsURI.SCHEME)) {
+        else if (Objects.equals(resource.getURI().scheme(), BlueprintsURI.SCHEME)) {
             options = BlueprintsOptionsBuilder.newBuilder()
 //                    .log()
                     .directWriteCacheMany()

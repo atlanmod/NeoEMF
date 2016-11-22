@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.DirectWriteHBaseStore;
-import fr.inria.atlanmod.neoemf.hbase.datastore.store.impl.ReadOnlyHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.DirectWriteHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.ReadOnlyHBaseStore;
 
 /**
  * Dummy backend implementation for HBase to fit core architecture.

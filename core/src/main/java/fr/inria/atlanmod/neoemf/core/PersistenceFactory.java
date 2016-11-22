@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.core.impl.DefaultPersistentEObject;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
