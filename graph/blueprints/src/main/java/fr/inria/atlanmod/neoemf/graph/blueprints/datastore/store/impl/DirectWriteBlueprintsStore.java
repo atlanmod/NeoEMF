@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
@@ -224,7 +225,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected boolean containsReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
         Vertex v = persistenceBackend.getOrCreateVertex(object);
         for (Vertex vOut : v.getVertices(Direction.OUT, eReference.getName())) {
-            if (vOut.getId().equals(value.id().toString())) {
+            if (Objects.equals(vOut.getId(), value.id().toString())) {
                 return true;
             }
         }
@@ -242,7 +243,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             Vertex inVertex = persistenceBackend.getVertex(object);
             Vertex outVertex = persistenceBackend.getVertex(value);
             for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
-                if (e.getVertex(Direction.OUT).equals(inVertex)) {
+                if (Objects.equals(e.getVertex(Direction.OUT), inVertex)) {
                     return e.getProperty(POSITION);
                 }
             }
@@ -266,7 +267,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             Vertex outVertex = persistenceBackend.getVertex(value);
             Edge lastPositionEdge = null;
             for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
-                if (e.getVertex(Direction.OUT).equals(inVertex)
+                if (Objects.equals(e.getVertex(Direction.OUT), inVertex)
                         && (isNull(lastPositionEdge)
                         || (int) e.getProperty(POSITION) > (int) lastPositionEdge.getProperty(POSITION)))
                 {

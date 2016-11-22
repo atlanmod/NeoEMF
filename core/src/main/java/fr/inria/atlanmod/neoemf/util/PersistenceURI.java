@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
@@ -33,7 +34,7 @@ public class PersistenceURI extends URI {
     }
 
     public static URI createURI(URI uri) {
-        checkArgument(!uri.scheme().equals(FILE_SCHEME),
+        checkArgument(!Objects.equals(uri.scheme(), FILE_SCHEME),
                 "Can not create PersistenceURI from file URI without a valid scheme");
         checkArgument(PersistenceBackendFactoryRegistry.isRegistered(uri.scheme()),
                 "Unregistered URI scheme %s", uri.toString());

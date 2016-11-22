@@ -63,6 +63,6 @@ public class IdSerializer implements Serializer<Id> {
 
         IdSerializer that = (IdSerializer) other;
 
-        return serializer.equals(that.serializer);
+        return Objects.equals(serializer, that.serializer);
     }
 }

@@ -28,6 +28,7 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
@@ -48,7 +49,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
-            if (options.containsKey(HBaseResourceOptions.READ_ONLY) && Boolean.TRUE.equals(options.get(HBaseResourceOptions.READ_ONLY))) {
+            if (options.containsKey(HBaseResourceOptions.READ_ONLY) && Objects.equals(Boolean.TRUE, options.get(HBaseResourceOptions.READ_ONLY))) {
                 // Create a read-only EStore
                 return embedInDefaultWrapper(new ReadOnlyHBaseStore(resource));
             }

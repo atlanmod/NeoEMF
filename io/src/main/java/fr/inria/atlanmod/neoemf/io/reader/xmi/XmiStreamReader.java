@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -123,7 +124,7 @@ public class XmiStreamReader extends AbstractXmiReader {
 
         @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException {
-            if (prefix.equals(XMI_NS)) {
+            if (Objects.equals(prefix, XMI_NS)) {
                 xmiUri = uri;
             }
 
@@ -134,7 +135,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         public void startElement(String uri, String name, String qName, Attributes attributes) throws SAXException
         {
             // Ignore XMI elements
-            if (uri.equals(xmiUri)) {
+            if (Objects.equals(uri, xmiUri)) {
                 return;
             }
 
@@ -149,7 +150,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         @Override
         public void endElement(String uri, String name, String qName) throws SAXException {
             // Ignore XMI elements
-            if (uri.equals(xmiUri)) {
+            if (Objects.equals(uri, xmiUri)) {
                 return;
             }
 

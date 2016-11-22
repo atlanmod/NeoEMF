@@ -101,7 +101,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         }
 
         FeatureKey that = (FeatureKey) other;
-        return id.equals(that.id) && name.equals(that.name);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override

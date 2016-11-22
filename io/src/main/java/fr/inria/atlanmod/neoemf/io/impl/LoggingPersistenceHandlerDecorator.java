@@ -18,6 +18,8 @@ import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
+import java.util.Objects;
+
 public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
     private Identifier currentId;
@@ -63,7 +65,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
                 reference.getLocalName(),
                 reference.getIndex(),
                 reference.getId() == null ? "this" : reference.getId(),
-                reference.getIdReference().equals(currentId) ? "this" : reference.getIdReference());
+                Objects.equals(reference.getIdReference(), currentId) ? "this" : reference.getIdReference());
 
         super.processReference(reference);
     }

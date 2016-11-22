@@ -44,6 +44,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
@@ -190,7 +191,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             // The file already existed, check that the issued options are not conflictive
             String savedGraphType = configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE);
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
-            if (!savedGraphType.equals(issuedGraphType)) {
+            if (!Objects.equals(savedGraphType, issuedGraphType)) {
                 NeoLogger.error("Unable to create graph as type {0}, expected graph type was {1})", issuedGraphType, savedGraphType);
                 throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
             }

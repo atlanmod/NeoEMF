@@ -29,6 +29,7 @@ import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -217,11 +218,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 processMetaClass(classifier, value);
                 isSpecialFeature = true;
             }
-            else if (XMI_ID.equals(prefixedValue)) { // xmi:id
+            else if (Objects.equals(XMI_ID, prefixedValue)) { // xmi:id
                 classifier.setId(Identifier.original(value));
                 isSpecialFeature = true;
             }
-            else if (XMI_IDREF.equals(prefixedValue)) { // xmi:idref
+            else if (Objects.equals(XMI_IDREF, prefixedValue)) { // xmi:idref
                 //It's not a feature of the current element, but a reference of the previous
                 Reference reference = new Reference(classifier.getLocalName());
                 reference.setIdReference(Identifier.original(value));
@@ -229,17 +230,17 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 ignoreElement = true;
                 isSpecialFeature = true;
             }
-            else if (XMI_VERSION_ATTR.equals(prefixedValue)) { // xmi:version
+            else if (Objects.equals(XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
                 //NeoLogger.info("XMI version : " + value);
                 isSpecialFeature = true;
             }
         }
-        else if (PROXY.equals(localName)) {
+        else if (Objects.equals(PROXY, localName)) {
             NeoLogger.warn("{0} is an external reference to {1}. This feature is not supported yet.",
                     classifier.getLocalName(), value);
             ignoreElement = true;
         }
-        else if (NAME.equals(localName)) {
+        else if (Objects.equals(NAME, localName)) {
             classifier.setClassName(value);
             isSpecialFeature = true;
         }

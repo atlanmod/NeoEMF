@@ -24,6 +24,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -77,7 +78,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
         }
         else {
             ClassifierMock mock = classifierMockCache.getIfPresent(attribute.getId().getValue());
-            if (!isNull(mock) && mock.getId().equals(attribute.getId())) {
+            if (!isNull(mock) && Objects.equals(mock.getId(), attribute.getId())) {
                 mock.getAttributes().add(attribute);
             }
             else {
@@ -93,7 +94,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
         }
         else {
             ClassifierMock mock = classifierMockCache.getIfPresent(reference.getId().getValue());
-            if (!isNull(mock) && mock.getId().equals(reference.getId())) {
+            if (!isNull(mock) && Objects.equals(mock.getId(), reference.getId())) {
                 mock.getReferences().add(reference);
             }
             else {

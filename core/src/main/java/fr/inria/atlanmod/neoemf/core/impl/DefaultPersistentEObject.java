@@ -229,7 +229,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         final EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
         final EClassifier eType = feature.getEType();
         if (feature.isMany()) {
-            if (!isNull(eType.getInstanceClassName()) && eType.getInstanceClassName().equals("java.util.Map$Entry")) {
+            if (Objects.equals(eType.getInstanceClassName(), "java.util.Map$Entry")) {
                 returnValue = new EStoreEcoreEMap(eType, feature);
             }
             else {

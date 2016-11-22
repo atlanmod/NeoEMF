@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -334,7 +335,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             PersistentEObject persistentEObject;
             if (!isNull(eClass)) {
                 EObject eObject;
-                if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
                     eObject = PersistenceFactory.getInstance().create(eClass);
                 }
                 else {

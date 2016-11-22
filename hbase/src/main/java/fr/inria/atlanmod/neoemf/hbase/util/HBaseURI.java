@@ -18,6 +18,7 @@ import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Objects;
 
 public class HBaseURI extends PersistenceURI {
 
@@ -28,10 +29,10 @@ public class HBaseURI extends PersistenceURI {
     }
 
     public static URI createURI(URI uri) {
-        if (PersistenceURI.FILE_SCHEME.equals(uri.scheme())) {
+        if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
             return createFileURI(FileUtils.getFile(uri.toFileString()));
         }
-        else if (SCHEME.equals(uri.scheme())) {
+        else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
         else {

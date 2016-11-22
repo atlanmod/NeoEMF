@@ -36,6 +36,7 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -311,7 +312,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
         if (eReference.isContainment()) {
             ContainerInfo info = persistenceBackend.containerFor(referencedObject.id());
-            if (isNull(info) || !info.id().equals(object.id())) {
+            if (isNull(info) || !Objects.equals(info.id(), object.id())) {
                 persistenceBackend.storeContainer(referencedObject.id(), new ContainerInfo(object.id(), eReference.getName()));
             }
         }
@@ -340,7 +341,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
             EClass eClass = resolveInstanceOf(id);
             if (!isNull(eClass)) {
                 EObject eObject;
-                if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
                     // Dynamic EMF
                     eObject = PersistenceFactory.getInstance().create(eClass);
                 }

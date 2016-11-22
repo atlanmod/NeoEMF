@@ -50,6 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
@@ -133,8 +134,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             // Check that the save options do not collide with previous load options
             for (Entry<?, ?> entry : options.entrySet()) {
                 if (this.options.containsKey(entry.getKey())
-                        && !isNull(entry.getValue())
-                        && !entry.getValue().equals(this.options.get(entry.getKey())))
+                        && !Objects.equals(entry.getValue(), this.options.get(entry.getKey())))
                 {
                     throw new IOException(new InvalidOptionsException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString())));
                 }
@@ -236,7 +236,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                 EObject eObject = it.next();
                 if (eClass.isInstance(eObject)) {
                     if (strict) {
-                        if (eObject.eClass().equals(eClass)) {
+                        if (Objects.equals(eObject.eClass(), eClass)) {
                             instanceList.add(eObject);
                         }
                     }

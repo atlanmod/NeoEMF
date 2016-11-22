@@ -25,6 +25,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -95,7 +96,7 @@ public class TransientStoreListTest extends AllTest {
         List<SampleModelContentObject> list = new ArrayList<>();
         list.add(mapFactory.createSampleModelContentObject());
         list.add(mapFactory.createSampleModelContentObject());
-        assertThat(model.getContentObjects().equals(list)).isFalse(); // "Accessed list is equal to the given collection"
+        assertThat(Objects.equals(model.getContentObjects(), list)).isFalse(); // "Accessed list is equal to the given collection"
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
