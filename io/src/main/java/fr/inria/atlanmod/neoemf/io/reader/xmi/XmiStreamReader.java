@@ -30,7 +30,7 @@ import java.util.TimerTask;
 import javax.xml.parsers.SAXParserFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A XMI {@link Reader reader} that uses stream for reading.
@@ -76,7 +76,7 @@ public class XmiStreamReader extends AbstractXmiReader {
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
         }
         catch (SAXException e) {
-            if (!isNull(e.getException())) {
+            if (nonNull(e.getException())) {
                 throw e.getException();
             }
             else {

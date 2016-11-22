@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An {@link Processor} that analyses XML elements in order to create and to process XPath references.
@@ -65,7 +66,7 @@ public class XPathProcessor extends AbstractProcessor {
 
     @Override
     public void processStartElement(Classifier classifier) throws Exception {
-        if (!isNull(classifier.getId())) {
+        if (nonNull(classifier.getId())) {
             hasIds = true;
         }
 
@@ -248,7 +249,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
 
             public boolean hasChild(String key) {
-                return !isNull(children.getIfPresent(key));
+                return nonNull(children.getIfPresent(key));
             }
 
             public long size() {

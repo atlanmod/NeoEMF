@@ -41,6 +41,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public final class MapPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
@@ -83,7 +84,7 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
         if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-        else if (!isNull(storeOptions) && storeOptions.contains(MapStoreOptions.AUTOCOMMIT)) {
+        else if (nonNull(storeOptions) && storeOptions.contains(MapStoreOptions.AUTOCOMMIT)) {
             eStore = new AutocommitStoreDecorator(eStore);
         }
         return eStore;

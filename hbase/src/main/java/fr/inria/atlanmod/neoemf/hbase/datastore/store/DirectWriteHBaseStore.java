@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 // TODO Continue cleaning, there is still code duplication
 public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersistenceBackend> {
@@ -128,7 +129,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
-            if (!isNull(containerId) && !isNull(containingFeatureName)) {
+            if (nonNull(containerId) && nonNull(containingFeatureName)) {
                 return (InternalEObject) eObject(new StringId(containerId));
             }
 
@@ -148,7 +149,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
-            if (!isNull(containerId) && !isNull(containingFeatureName)) {
+            if (nonNull(containerId) && nonNull(containingFeatureName)) {
                 EObject container = eObject(new StringId(containerId));
                 return container.eClass().getEStructuralFeature(containingFeatureName);
             }
@@ -168,7 +169,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         PersistentEObject persistentEObject = loadedEObjects.getIfPresent(id);
         if (isNull(persistentEObject)) {
             EClass eClass = resolveInstanceOf(id);
-            if (!isNull(eClass)) {
+            if (nonNull(eClass)) {
                 EObject eObject = EcoreUtil.create(eClass);
                 if (eObject instanceof PersistentEObject) {
                     persistentEObject = (PersistentEObject) eObject;
@@ -200,7 +201,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             Result result = table.get(new Get(Bytes.toBytes(id.toString())));
             String nsURI = Bytes.toString(result.getValue(TYPE_FAMILY, METAMODEL_QUALIFIER));
             String className = Bytes.toString(result.getValue(TYPE_FAMILY, ECLASS_QUALIFIER));
-            if (!isNull(nsURI) && !isNull(className)) {
+            if (nonNull(nsURI) && nonNull(className)) {
                 return (EClass) Registry.INSTANCE.getEPackage(nsURI).getEClassifier(className);
             }
         }
@@ -292,7 +293,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         try {
             Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
             byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
-            return !isNull(value);
+            return nonNull(value);
         }
         catch (IOException e) {
             NeoLogger.error("Unable to get information for element ''{0}''", neoEObject);

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A simple {@link InternalEObject.EStore} implementation that uses collections to store the data in memory.
@@ -48,7 +49,7 @@ public abstract class AbstractTransientStore implements TransientStore {
         }
         else {
             List<Object> saved = manyMap.get(featureKey);
-            if (!isNull(saved)) {
+            if (nonNull(saved)) {
                 returnValue = saved.get(index);
             }
             else {
@@ -96,7 +97,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
         List<Object> list = manyMap.get(featureKey);
-        return !isNull(list) && list.contains(value);
+        return nonNull(list) && list.contains(value);
     }
 
     @Override
@@ -117,7 +118,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
         List<Object> saved = manyMap.get(featureKey);
-        if (!isNull(saved)) {
+        if (nonNull(saved)) {
             if (index == InternalEObject.EStore.NO_INDEX) {
                 /*
                  * Handle NO_INDEX index, which represent direct-append feature.
@@ -141,7 +142,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
         List<Object> saved = manyMap.get(featureKey);
-        if (!isNull(saved)) {
+        if (nonNull(saved)) {
             return saved.remove(index);
         }
         else {
@@ -163,7 +164,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     public void clear(InternalEObject eObject, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
         List<Object> list = manyMap.get(featureKey);
-        if (!isNull(list)) {
+        if (nonNull(list)) {
             list.clear();
         }
     }

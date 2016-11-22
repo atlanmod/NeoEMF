@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource.Internal;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
@@ -46,7 +47,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
         if (eReference.isMany()) {
             FeatureKey key = FeatureKey.from(object, eReference);
             Object[] list = cache.getIfPresent(key);
-            if (!isNull(list)) {
+            if (nonNull(list)) {
                 Object o = list[index];
                 if (isNull(o)) {
                     NeoLogger.warn("Inconsistent content in CachedMany map, null value found for key " + key + " at index " + index);

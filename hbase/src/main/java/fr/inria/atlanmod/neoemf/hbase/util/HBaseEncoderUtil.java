@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class HBaseEncoderUtil {
 
@@ -27,7 +28,7 @@ public class HBaseEncoderUtil {
     public static final char VALUE_SEPERATOR_DEFAULT = ',';
 
     public static String[] toStringsReferences(byte[] value) {
-        if (!isNull(value)) {
+        if (nonNull(value)) {
             checkArgument(value.length % (UUID_LENGTH + 1) == UUID_LENGTH);
             int length = (value.length + 1) / (UUID_LENGTH + 1);
 
@@ -46,7 +47,7 @@ public class HBaseEncoderUtil {
     }
 
     public static byte[] toBytesReferences(String[] strings) {
-        if (!isNull(strings)) {
+        if (nonNull(strings)) {
             return Joiner.on(VALUE_SEPERATOR_DEFAULT).join(strings).getBytes(Charsets.UTF_8);
         }
         return null;

@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistentStore} wrapper that caches the presence of a value.
@@ -39,7 +40,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     @Override
     public Object get(InternalEObject object, EStructuralFeature feature, int index) {
         Object returnValue = super.get(object, feature, index);
-        if (!isNull(returnValue)) {
+        if (nonNull(returnValue)) {
             FeatureKey featureKey = FeatureKey.from(object, feature);
             cache.put(featureKey, true);
         }

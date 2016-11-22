@@ -63,7 +63,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
         NeoLogger.debug("[R]    {0} ({1}) = {2} -> {3}",
                 reference.getLocalName(),
                 reference.getIndex(),
-                reference.getId() == null ? "this" : reference.getId(),
+                Objects.isNull(reference.getId()) ? "this" : reference.getId(),
                 Objects.equals(reference.getIdReference(), currentId) ? "this" : reference.getIdReference());
 
         super.processReference(reference);

@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A {@link PersistentStore} decorator that caches the size data.
@@ -65,7 +66,7 @@ public class CachingStoreDecorator extends AbstractPersistentStoreDecorator {
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
         Integer size = cache.getIfPresent(featureKey);
-        if (!isNull(size)) {
+        if (nonNull(size)) {
             cache.put(featureKey, size + 1);
         }
         super.add(object, feature, index, value);
@@ -75,7 +76,7 @@ public class CachingStoreDecorator extends AbstractPersistentStoreDecorator {
     public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
         Integer size = cache.getIfPresent(featureKey);
-        if (!isNull(size)) {
+        if (nonNull(size)) {
             cache.put(featureKey, size - 1);
         }
         return super.remove(object, feature, index);

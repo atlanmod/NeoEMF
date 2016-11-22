@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 
 public class DirectWriteMapIndicesStore extends DirectWriteMapStore {
@@ -130,7 +131,7 @@ public class DirectWriteMapIndicesStore extends DirectWriteMapStore {
         updateContainment(object, eReference, value);
         updateInstanceOf(value);
         Object oldId = persistenceBackend.storeValueAtIndex(featureKey.withPosition(index), value.id());
-        if (!isNull(oldId)) {
+        if (nonNull(oldId)) {
             returnValue = eObject((Id) oldId);
         }
         return returnValue;

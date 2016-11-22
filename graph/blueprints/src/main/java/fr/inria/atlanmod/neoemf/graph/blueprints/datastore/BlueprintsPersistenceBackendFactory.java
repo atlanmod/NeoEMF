@@ -48,6 +48,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
@@ -92,7 +93,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             throw new InvalidDataStoreException("No valid base EStore found in the options");
         }
         // Autocommit
-        if (!isNull(storeOptions) && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
+        if (nonNull(storeOptions) && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
             if (options.containsKey(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK)) {
                 int autoCommitChunk = Integer.parseInt((String) options.get(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK));
                 eStore = new AutocommitStoreDecorator(eStore, autoCommitChunk);
@@ -133,7 +134,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             }
         }
         finally {
-            if (!isNull(configuration)) {
+            if (nonNull(configuration)) {
                 try {
                     configuration.save();
                 }

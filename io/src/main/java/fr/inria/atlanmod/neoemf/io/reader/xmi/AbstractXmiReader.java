@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract implementation of a {@link Reader reader} able to process {@code
@@ -129,7 +129,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static String getPrefix(String prefixedValue) {
         String prefix = null;
 
-        if (!isNull(prefixedValue)) {
+        if (nonNull(prefixedValue)) {
             List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
             if (splittedName.size() > 1) {
                 prefix = splittedName.get(0);
@@ -162,7 +162,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                     return;
                 }
 
-                if (!isNull(features) && !features.isEmpty()) {
+                if (nonNull(features) && !features.isEmpty()) {
                     structuralFeatures.addAll(features);
                 }
             }
@@ -191,7 +191,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
         if (!processSpecialFeatures(classifier, prefix, localName, value)) {
             List<String> references = getReferences(value);
-            if (!isNull(references)) {
+            if (nonNull(references)) {
                 features = processReferences(localName, references);
             }
             else {
@@ -211,7 +211,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
         boolean isSpecialFeature = false;
 
         // A special feature always has a prefix
-        if (!isNull(prefix)) {
+        if (nonNull(prefix)) {
             final String prefixedValue = prefix + ':' + localName;
 
             if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type

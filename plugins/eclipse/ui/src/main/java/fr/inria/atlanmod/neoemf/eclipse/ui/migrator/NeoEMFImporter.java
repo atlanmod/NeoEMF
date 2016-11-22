@@ -34,7 +34,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class NeoEMFImporter extends ModelImporter {
 
@@ -112,7 +112,7 @@ public class NeoEMFImporter extends ModelImporter {
 
     @Override
     public void addToResource(EPackage ePackage, ResourceSet resourceSet) {
-        if (!isNull(ePackage.eResource()) && !isNull(getGenModel().eResource())) {
+        if (nonNull(ePackage.eResource()) && nonNull(getGenModel().eResource())) {
             URI ePackageURI = ePackage.eResource().getURI();
             URI genModelURI = getGenModel().eResource().getURI();
 

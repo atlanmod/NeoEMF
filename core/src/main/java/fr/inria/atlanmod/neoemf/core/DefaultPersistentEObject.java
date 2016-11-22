@@ -33,6 +33,7 @@ import org.eclipse.emf.ecore.util.EcoreEMap;
 import java.util.Objects;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
@@ -101,14 +102,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             eStore = new OwnedTransientStore(this);
         }
         // Move contents from oldStore to eStore
-        if (!isNull(oldStore) && !isNull(eStore) && eStore != oldStore) {
+        if (nonNull(oldStore) && nonNull(eStore) && eStore != oldStore) {
             // If the new store is different, initialize the new store
             // with the data stored in the old store
             for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
                 if (oldStore.isSet(this, feature)) {
                     if (!feature.isMany()) {
                         Object value = getAdaptedValue(oldStore, feature, EStore.NO_INDEX);
-                        if (!isNull(value)) {
+                        if (nonNull(value)) {
                             eStore.set(this, feature, EStore.NO_INDEX, value);
                         }
                     }
@@ -116,7 +117,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                         eStore.clear(this, feature);
                         for (int i = 0; i < oldStore.size(this, feature); i++) {
                             Object value = getAdaptedValue(oldStore, feature, i);
-                            if (!isNull(value)) {
+                            if (nonNull(value)) {
                                 eStore.add(this, feature, i, value);
                             }
                         }
@@ -155,18 +156,18 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (eIsProxy()) {
             result.append(" (eProxyURI: ");
             result.append(eProxyURI());
-            if (!isNull(eDynamicClass())) {
+            if (nonNull(eDynamicClass())) {
                 result.append(" eClass: ");
                 result.append(eDynamicClass());
             }
             result.append(')');
         }
-        else if (!isNull(eDynamicClass())) {
+        else if (nonNull(eDynamicClass())) {
             result.append(" (eClass: ");
             result.append(eDynamicClass());
             result.append(')');
         }
-        else if (!isNull(eStaticClass())) {
+        else if (nonNull(eStaticClass())) {
             result.append(" (eClass: ");
             result.append(eStaticClass());
             result.append(')');
@@ -177,7 +178,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     protected void eBasicSetContainer(InternalEObject newContainer) {
         eContainer = newContainer;
-        if (!isNull(newContainer) && newContainer.eResource() != resource) {
+        if (nonNull(newContainer) && newContainer.eResource() != resource) {
             resource((Resource.Internal) eContainer.eResource());
         }
     }
@@ -194,7 +195,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     private Object getAdaptedValue(EStore store, EStructuralFeature feature, int index) {
         Object value = store.get(this, feature, index);
-        if (!isNull(value)) {
+        if (nonNull(value)) {
             if (feature instanceof EReference) {
                 EReference eRef = (EReference) feature;
                 if (eRef.isContainment()) {
@@ -284,9 +285,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public int eContainerFeatureID() {
         if (eContainerFeatureId == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
             EReference containingFeature = (EReference) eStore().getContainingFeature(this);
-            if (!isNull(containingFeature)) {
+            if (nonNull(containingFeature)) {
                 EReference oppositeFeature = containingFeature.getEOpposite();
-                if (!isNull(oppositeFeature)) {
+                if (nonNull(oppositeFeature)) {
                     eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
                 }
                 else {

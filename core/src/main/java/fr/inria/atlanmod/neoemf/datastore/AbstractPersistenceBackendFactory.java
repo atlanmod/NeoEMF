@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
@@ -60,7 +60,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         PersistentStore eStore = createSpecificPersistentStore(resource, backend, options);
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
-        if (!isNull(storeOptions) && !storeOptions.isEmpty()) {
+        if (nonNull(storeOptions) && !storeOptions.isEmpty()) {
             if (storeOptions.contains(CommonStoreOptions.CACHE_IS_SET)) {
                 eStore = new IsSetCachingStoreDecorator(eStore);
             }

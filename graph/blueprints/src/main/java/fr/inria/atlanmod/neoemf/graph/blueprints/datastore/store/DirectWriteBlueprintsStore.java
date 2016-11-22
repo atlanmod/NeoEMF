@@ -41,6 +41,7 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
 
@@ -85,7 +86,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                             .vertices(),
                     null);
         }
-        if (!isNull(referencedVertex)) {
+        if (nonNull(referencedVertex)) {
             returnValue = reifyVertex(referencedVertex);
         }
         return returnValue;
@@ -134,7 +135,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             if (!eReference.isMany()) {
                 Edge edge = Iterables.getOnlyElement(
                         vertex.getEdges(Direction.OUT, eReference.getName()), null);
-                if (!isNull(edge)) {
+                if (nonNull(edge)) {
                     Vertex referencedVertex = edge.getVertex(Direction.IN);
                     returnValue = reifyVertex(referencedVertex);
                     edge.remove();
@@ -165,12 +166,12 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected boolean isSetAttribute(PersistentEObject object, EAttribute eAttribute) {
         boolean returnValue = false;
         Vertex vertex = persistenceBackend.getVertex(object);
-        if (!isNull(vertex)) {
+        if (nonNull(vertex)) {
             String propertyName = eAttribute.getName();
             if (eAttribute.isMany()) {
                 propertyName += SEPARATOR + SIZE_LITERAL;
             }
-            returnValue = !isNull(vertex.getProperty(propertyName));
+            returnValue = nonNull(vertex.getProperty(propertyName));
         }
         return returnValue;
     }
@@ -179,7 +180,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected boolean isSetReference(PersistentEObject object, EReference eReference) {
         boolean returnValue = false;
         Vertex vertex = persistenceBackend.getVertex(object);
-        if (!isNull(vertex)) {
+        if (nonNull(vertex)) {
             returnValue = !Iterables.isEmpty(vertex.getVertices(Direction.OUT, eReference.getName()));
         }
         return returnValue;
@@ -204,7 +205,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         Vertex vertex = persistenceBackend.getVertex(object);
         if (!eReference.isMany()) {
             Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, eReference.getName()), null);
-            if (!isNull(edge)) {
+            if (nonNull(edge)) {
                 edge.remove();
             }
         }
@@ -239,7 +240,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected int indexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
-        if (!isNull(value)) {
+        if (nonNull(value)) {
             Vertex inVertex = persistenceBackend.getVertex(object);
             Vertex outVertex = persistenceBackend.getVertex(value);
             for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
@@ -433,7 +434,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         InternalEObject returnValue = null;
         Vertex vertex = persistenceBackend.getVertex(object);
         Vertex containerVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, CONTAINER), null);
-        if (!isNull(containerVertex)) {
+        if (nonNull(containerVertex)) {
             returnValue = reifyVertex(containerVertex);
         }
         return returnValue;
@@ -444,10 +445,10 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         EStructuralFeature resultValue = null;
         Vertex vertex = persistenceBackend.getVertex(object);
         Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, CONTAINER), null);
-        if (!isNull(edge)) {
+        if (nonNull(edge)) {
             String featureName = edge.getProperty(CONTAINING_FEATURE);
             Vertex containerVertex = edge.getVertex(Direction.IN);
-            if (!isNull(featureName)) {
+            if (nonNull(featureName)) {
                 EObject container = reifyVertex(containerVertex);
                 resultValue = container.eClass().getEStructuralFeature(featureName);
             }

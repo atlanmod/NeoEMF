@@ -42,6 +42,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistenceBackend> {
 
@@ -266,7 +267,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
         InternalEObject returnValue = null;
         PersistentEObject persistentEObject = PersistentEObject.from(object);
         ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
-        if (!isNull(info)) {
+        if (nonNull(info)) {
             returnValue = (InternalEObject) eObject(info.id());
         }
         return returnValue;
@@ -276,7 +277,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     public EStructuralFeature getContainingFeature(InternalEObject object) {
         PersistentEObject persistentEObject = PersistentEObject.from(object);
         ContainerInfo info = persistenceBackend.containerFor(persistentEObject.id());
-        if (!isNull(info)) {
+        if (nonNull(info)) {
             EObject container = eObject(info.id());
             return container.eClass().getEStructuralFeature(info.name());
         }
@@ -286,7 +287,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     @Override
     public EObject eObject(Id id) {
         PersistentEObject persistentEObject = null;
-        if (!isNull(id)) {
+        if (nonNull(id)) {
             try {
                 persistentEObject = loadedEObjectsCache.get(id, new PersistentEObjectCacheLoader());
                 if (persistentEObject.resource() != resource()) {
@@ -303,7 +304,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     private EClass resolveInstanceOf(Id id) {
         EClass eClass = null;
         ClassInfo classInfo = persistenceBackend.metaclassFor(id);
-        if (!isNull(classInfo)) {
+        if (nonNull(classInfo)) {
             eClass = classInfo.eClass();
         }
         return eClass;
@@ -339,7 +340,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
         public PersistentEObject apply(Id id) {
             PersistentEObject persistentEObject;
             EClass eClass = resolveInstanceOf(id);
-            if (!isNull(eClass)) {
+            if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
                     // Dynamic EMF

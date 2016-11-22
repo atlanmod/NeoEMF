@@ -19,7 +19,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * @param <V> the result type of method {@code call}
@@ -41,7 +41,7 @@ public interface Query<V> extends Callable<V> {
 
         log.info("End query");
 
-        if (!isNull(result) && !Void.class.isInstance(result)) {
+        if (nonNull(result) && !Void.class.isInstance(result)) {
             log.info("Query returns: {}", result);
         }
 

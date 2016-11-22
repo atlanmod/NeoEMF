@@ -28,6 +28,7 @@ import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
@@ -79,13 +80,13 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         Vertex vertex = createVertex(id);
 
         // Checks if the Vertex is not already defined
-        if (!isNull(vertex.getProperty(BlueprintsPersistenceBackend.KEY_EPACKAGE_NSURI))) {
+        if (nonNull(vertex.getProperty(BlueprintsPersistenceBackend.KEY_EPACKAGE_NSURI))) {
             throw new IllegalArgumentException(
                     "An element with the same Id (" + id.toString() + ") is already defined. " +
                             "Use a handler with a conflicts resolution feature instead.");
         }
 
-        if (!isNull(name)) {
+        if (nonNull(name)) {
             vertex.setProperty(BlueprintsPersistenceBackend.KEY_ECLASS_NAME, name);
         }
         vertex.setProperty(BlueprintsPersistenceBackend.KEY_EPACKAGE_NSURI, nsUri);

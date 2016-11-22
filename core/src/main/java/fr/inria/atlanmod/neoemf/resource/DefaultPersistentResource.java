@@ -53,6 +53,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
 
@@ -89,7 +90,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     @Deprecated
     public static void shutdownWithoutUnload(PersistentResource resource) {
-        if (!isNull(resource)) {
+        if (nonNull(resource)) {
             resource.close();
             NeoLogger.info("{0} closed: {1}", PersistentResource.class.getSimpleName(), resource.getURI());
         }
@@ -113,7 +114,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         if (eObject.eResource() == this) {
             // Try to adapt as a PersistentEObject and return the ID
             PersistentEObject persistentEObject = PersistentEObject.from(eObject);
-            if (!isNull(persistentEObject)) {
+            if (nonNull(persistentEObject)) {
                 returnValue = persistentEObject.id().toString();
             }
         }
@@ -129,7 +130,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     public void save(Map<?, ?> options) throws IOException {
 
-        if (!isNull(this.options)) {
+        if (nonNull(this.options)) {
             // Check that the save options do not collide with previous load options
             for (Entry<?, ?> entry : options.entrySet()) {
                 if (this.options.containsKey(entry.getKey())
@@ -161,7 +162,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         try {
             isLoading = true;
             if (!isLoaded) {
-                if (getFile().exists() || !isNull(uri.authority())) {
+                if (getFile().exists() || nonNull(uri.authority())) {
                     // Check authority to enable remote resource loading
                     this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
                     try {
@@ -298,7 +299,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         protected E validate(int index, E object) {
-            checkArgument(canContainNull() || !isNull(object), "The 'no null' constraint is violated");
+            checkArgument(canContainNull() || nonNull(object), "The 'no null' constraint is violated");
             return object;
         }
 
@@ -328,7 +329,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         @Override
         public NotificationChain inverseRemove(E object, NotificationChain notifications) {
             InternalEObject eObject = (InternalEObject) object;
-            if (isLoaded || !isNull(unloadingContents)) {
+            if (isLoaded || nonNull(unloadingContents)) {
                 detached(eObject);
             }
             return eObject.eSetResource(null, notifications);
@@ -432,7 +433,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         private void loaded() {
             if (!isLoaded()) {
                 Notification notification = setLoaded(true);
-                if (!isNull(notification)) {
+                if (nonNull(notification)) {
                     eNotify(notification);
                 }
             }

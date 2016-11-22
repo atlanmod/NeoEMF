@@ -64,9 +64,9 @@ public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processEndDocument() throws Exception {
-        NeoLogger.info("[{0}]  - Elements   : {1}", name, elementCount);
-        NeoLogger.info("[{0}]  - Attributes : {1}", name, attributeCount);
-        NeoLogger.info("[{0}]  - References : {1}", name, referenceCount);
+        NeoLogger.info("[{0}] Elements   : {1}", name, elementCount);
+        NeoLogger.info("[{0}] Attributes : {1}", name, attributeCount);
+        NeoLogger.info("[{0}] References : {1}", name, referenceCount);
 
         super.processEndDocument();
     }

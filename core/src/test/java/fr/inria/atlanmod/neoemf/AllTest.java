@@ -25,25 +25,21 @@ public abstract class AllTest {
         @Override
         protected void succeeded(Description description) {
             System.out.println("[INFO] --- Succeeded");
-            super.succeeded(description);
         }
 
         @Override
         protected void failed(Throwable e, Description description) {
-            System.out.println("[ERROR] --- Failed");
-            super.failed(e, description);
+            System.out.println("[WARN] --- Failed");
         }
 
         @Override
         protected void starting(Description description) {
             System.out.println("\n[INFO] --- Running " + description.getMethodName() + "()");
-            super.starting(description);
         }
 
         @Override
         protected void finished(Description description) {
             System.out.println();
-            super.finished(description);
         }
     };
 

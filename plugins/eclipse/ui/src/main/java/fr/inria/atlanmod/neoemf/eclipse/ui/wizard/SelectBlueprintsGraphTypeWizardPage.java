@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
 
@@ -154,7 +155,7 @@ class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
                 String[] splitName = graphName.split("\\.");
                 String graphId = splitName[splitName.length - 2];
                 String graphPrefix = "blueprints." + graphId;
-                graphProperties.removeIf(p -> !isNull(p.getProperty()) && !p.getProperty().startsWith(graphPrefix));
+                graphProperties.removeIf(p -> nonNull(p.getProperty()) && !p.getProperty().startsWith(graphPrefix));
 
                 if (Objects.equals(GRAPH_TYPES[0], selection.getFirstElement())) {
                     GraphProperty property = new GraphProperty("blueprints.tg.file-type", "JAVA");

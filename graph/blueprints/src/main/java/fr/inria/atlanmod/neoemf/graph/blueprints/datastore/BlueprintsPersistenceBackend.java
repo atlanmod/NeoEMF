@@ -49,6 +49,7 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
@@ -139,7 +140,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             // Get all the vertices that are indexed with one of the EClass
             for (EClass ec : eClassToFind) {
                 Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, ec.getName()), null);
-                if (!isNull(metaClassVertex)) {
+                if (nonNull(metaClassVertex)) {
                     Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
                     indexHits.put(ec, instanceVertexIterable);
                 }
@@ -266,7 +267,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
     private EClass resolveInstanceOf(Vertex vertex) {
         EClass returnValue = null;
         Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
-        if (!isNull(eClassVertex)) {
+        if (nonNull(eClassVertex)) {
             String name = eClassVertex.getProperty(KEY_ECLASS_NAME);
             String nsUri = eClassVertex.getProperty(KEY_EPACKAGE_NSURI);
             returnValue = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
@@ -333,7 +334,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         @Override
         public PersistentEObject apply(Id id) {
             PersistentEObject persistentEObject;
-            if (!isNull(eClass)) {
+            if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
                     eObject = PersistenceFactory.getInstance().create(eClass);

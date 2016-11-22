@@ -30,6 +30,7 @@ import java.util.Deque;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An {@link Processor} that creates and links simple elements to an Ecore structure.
@@ -66,7 +67,7 @@ public class EcoreProcessor extends AbstractProcessor {
     private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
         MetaClassifier metaClassifier = classifier.getMetaClassifier();
 
-        if (!isNull(metaClassifier)) {
+        if (nonNull(metaClassifier)) {
             EClass subEClass = (EClass) ePackage.getEClassifier(metaClassifier.getLocalName());
 
             // Checks that the metaclass is a subtype of the reference type.
@@ -155,7 +156,7 @@ public class EcoreProcessor extends AbstractProcessor {
     @Override
     public void processCharacters(String characters) throws Exception {
         // Defines the value of the waiting attribute, if exists
-        if (!isNull(waitingAttribute)) {
+        if (nonNull(waitingAttribute)) {
             waitingAttribute.setValue(characters);
             processAttribute(waitingAttribute);
 
@@ -214,7 +215,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     private void processAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute eAttribute) {
-        if (!isNull(waitingAttribute)) {
+        if (nonNull(waitingAttribute)) {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
         }
 

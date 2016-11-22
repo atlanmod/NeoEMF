@@ -52,6 +52,7 @@ import java.io.File;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * This is a simple wizard for creating a new dynamic model file.
@@ -166,7 +167,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 
                         // Add the initial model object to the contents.
                         EObject rootObject = createInitialModel();
-                        if (!isNull(rootObject)) {
+                        if (nonNull(rootObject)) {
                             resource.getContents().add(rootObject);
                         }
 
@@ -185,7 +186,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                     }
                     finally {
                         // Unload resource
-                        if (!isNull(resource)) {
+                        if (nonNull(resource)) {
                             resource.unload();
                         }
                         progressMonitor.done();

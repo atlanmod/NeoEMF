@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class Workspace {
 
@@ -86,7 +87,7 @@ public class Workspace {
     }
 
     public static void cleanTempDirectory() {
-        if (!isNull(TEMP_DIRECTORY)) {
+        if (nonNull(TEMP_DIRECTORY)) {
             try {
                 FileUtils.cleanDirectory(TEMP_DIRECTORY.toFile());
             }
