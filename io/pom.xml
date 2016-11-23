@@ -15,7 +15,7 @@
     <packaging>bundle</packaging>
 
     <name>NeoEMF :: IO</name>
-    <description/>
+    <description />
 
     <properties>
         <config-path>${project.parent.basedir}</config-path>
@@ -93,7 +93,7 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.io.*
                         </Export-Package>
-                        <_exportcontents/>
+                        <_exportcontents />
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.core
                         </Require-Bundle>

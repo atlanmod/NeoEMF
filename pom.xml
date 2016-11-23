@@ -25,6 +25,7 @@
         <connection>scm:git:git@github.com:atlanmod/NeoEMF.git</connection>
         <developerConnection>scm:git:git@github.com:atlanmod/NeoEMF.git</developerConnection>
         <url>http://github.com/atlanmod/NeoEMF.git</url>
+        <tag>neoemf-0.0.1</tag>
     </scm>
 
     <issueManagement>
@@ -545,7 +546,7 @@
                                 ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                            <Import-Package/>
+                            <Import-Package />
                             <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
                                  internal class loading (in particular caches are not recognized anymore) -->
                             <Embed-Dependency>
@@ -799,7 +800,7 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>${cobertura-plugin.version}</version>
                 <configuration>
-                    <check/>
+                    <check />
                     <aggregate>true</aggregate>
                     <quiet>true</quiet>
                 </configuration>

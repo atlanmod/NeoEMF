@@ -96,7 +96,7 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.hbase.*
                         </Export-Package>
-                        <_exportcontents/>
+                        <_exportcontents />
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.core,
                             org.eclipse.core.runtime

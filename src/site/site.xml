@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.7.0 http://maven.apache.org/xsd/decoration-1.7.0.xsd"
          xmlns="http://maven.apache.org/DECORATION/1.7.0">
 
-    <publishDate position="right"/>
+    <publishDate position="right" />
 
     <skin>
         <groupId>org.apache.maven.skins</groupId>
@@ -11,9 +11,9 @@
     </skin>
 
     <body>
-        <menu ref="parent" inherit="top"/>
-        <menu ref="modules" inherit="top"/>
-        <menu ref="reports" inherit="top"/>
+        <menu ref="parent" inherit="top" />
+        <menu ref="modules" inherit="top" />
+        <menu ref="reports" inherit="top" />
     </body>
 
     <custom>

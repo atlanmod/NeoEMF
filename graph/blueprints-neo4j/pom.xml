@@ -15,7 +15,7 @@
     <packaging>bundle</packaging>
 
     <name>NeoEMF :: Graph :: Blueprints :: Neo4j Wrapper</name>
-    <description/>
+    <description />
 
     <properties>
         <config-path>${project.parent.parent.basedir}</config-path>
@@ -136,7 +136,6 @@
                             org.neo4j.kernel.impl.cache;-split-package:=merge-last,
                             org.neo4j.*;-split-package:=first,
                         </Export-Package>
-                        <Private-Package/>
                         <_exportcontents>
                             javax.transaction,
                             javax.transaction.xa,

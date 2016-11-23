@@ -2,12 +2,13 @@
 <Configuration status="WARN" shutdownHook="disable">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%-7level{WARN=[WARN], DEBUG=[DEBUG], ERROR=[ERROR], TRACE=[TRACE], INFO=[INFO]} %d{ABSOLUTE} - %msg%n%ex{full}"/>
+            <PatternLayout
+                    pattern="%-7level{WARN=[WARN], DEBUG=[DEBUG], ERROR=[ERROR], TRACE=[TRACE], INFO=[INFO]} %d{ABSOLUTE} - %msg%n%ex{full}" />
         </Console>
     </Appenders>
     <Loggers>
         <Root level="WARN">
-            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Console" />
         </Root>
     </Loggers>
 </Configuration>

@@ -121,7 +121,7 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
-                        <_exportcontents/>
+                        <_exportcontents />
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport
                         </Require-Bundle>
