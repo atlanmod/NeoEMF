@@ -43,7 +43,7 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
     }
 
     @Test
-    public void testMulltipleAdd() {
+    public void testMultipleAdd() {
         PersistenceBackendFactoryRegistry.register(MOCK_1, persistenceBackendFactory1);
         PersistenceBackendFactoryRegistry.register(MOCK_2, persistenceBackendFactory2);
         assertThat(PersistenceBackendFactoryRegistry.getFactories()).hasSize(2);
