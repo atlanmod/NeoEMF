@@ -46,7 +46,10 @@ public class PersistenceBackendFactoryRegistry {
      * @throws NullPointerException if no backend factory is registered for the given {@code uriScheme}
      */
     public static PersistenceBackendFactory getFactoryProvider(String uriScheme) {
-        return checkNotNull(FACTORIES.get(uriScheme), "Can not find a factory for the given type %s", uriScheme);
+        return checkNotNull(FACTORIES.get(uriScheme),
+                "No factory is registered to process the URI scheme %s. Use the %s.register() method first",
+                uriScheme,
+                PersistenceBackendFactoryRegistry.class.getName());
     }
 
     /**
