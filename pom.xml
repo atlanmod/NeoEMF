@@ -139,7 +139,7 @@
         -->
 
         <antrun-plugin.version>1.8</antrun-plugin.version>
-        <assembly-plugin.version>2.6</assembly-plugin.version>
+        <assembly-plugin.version>3.0.0</assembly-plugin.version>
         <build-helper-plugin.version>1.12</build-helper-plugin.version>
         <bundle-plugin.version>3.2.0</bundle-plugin.version>
         <changes-plugin.version>2.12.1</changes-plugin.version>
@@ -177,13 +177,13 @@
         <hadoop.version>2.6.0</hadoop.version>                      <!-- Update available ! -->
 
         <!-- Commons -->
-        <caffeine.version>2.3.4</caffeine.version>
+        <caffeine.version>2.3.5</caffeine.version>
         <cglib-nodep.version>3.2.4</cglib-nodep.version>
         <commons-collections.version>4.1</commons-collections.version>
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
-        <guava.version>19.0</guava.version>                         <!-- Update available ! -->
+        <guava.version>20.0</guava.version>
         <osgi.version>3.11.0.v20160603-1336</osgi.version>
 
         <!-- Logging -->
@@ -198,7 +198,7 @@
         <javax-annotations.version>3.0.1</javax-annotations.version>
 
         <!-- Test -->
-        <assertj.version>3.5.2</assertj.version>
+        <assertj.version>3.6.0</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
     </properties>
@@ -618,6 +618,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${resources-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${site-plugin.version}</version>
                 </plugin>
 
                 <plugin>
