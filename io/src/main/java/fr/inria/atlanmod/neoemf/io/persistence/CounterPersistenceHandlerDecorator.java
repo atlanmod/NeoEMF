@@ -42,28 +42,28 @@ public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         elementCount++;
 
         super.processStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) {
         attributeCount++;
 
         super.processAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) {
         referenceCount++;
 
         super.processReference(reference);
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         NeoLogger.info("[{0}] Elements   : {1}", name, elementCount);
         NeoLogger.info("[{0}] Attributes : {1}", name, attributeCount);
         NeoLogger.info("[{0}] References : {1}", name, referenceCount);

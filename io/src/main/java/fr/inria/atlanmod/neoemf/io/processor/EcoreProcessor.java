@@ -64,7 +64,7 @@ public class EcoreProcessor extends AbstractProcessor {
         this.previousWasAttribute = false;
     }
 
-    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) throws Exception {
+    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) {
         MetaClassifier metaClassifier = classifier.getMetaClassifier();
 
         if (nonNull(metaClassifier)) {
@@ -76,7 +76,7 @@ public class EcoreProcessor extends AbstractProcessor {
                 eClass = subEClass;
             }
             else {
-                throw new Exception(subEClass.getName() + " is not a subclass of " + eClass.getName());
+                throw new IllegalArgumentException(subEClass.getName() + " is not a subclass of " + eClass.getName());
             }
         }
 
@@ -90,7 +90,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         // Is root
         if (classesStack.isEmpty()) {
             createRootObject(classifier);
@@ -102,7 +102,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) {
         EClass eClass = classesStack.getLast();
         EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(attribute.getLocalName());
 
@@ -120,7 +120,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) {
         EClass eClass = classesStack.getLast();
         EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(reference.getLocalName());
 
@@ -139,7 +139,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processEndElement() throws Exception {
+    public void processEndElement() {
         if (!previousWasAttribute) {
             classesStack.removeLast();
             idsStack.removeLast();
@@ -154,7 +154,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processCharacters(String characters) throws Exception {
+    public void processCharacters(String characters) {
         // Defines the value of the waiting attribute, if exists
         if (nonNull(waitingAttribute)) {
             waitingAttribute.setValue(characters);
@@ -167,7 +167,7 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Creates the root element from the given {@code classifier}.
      */
-    private void createRootObject(Classifier classifier) throws Exception {
+    private void createRootObject(Classifier classifier) {
         Namespace ns = checkNotNull(classifier.getNamespace(), "The root element must have a namespace");
 
         // Retreives the EPackage from NS prefix
@@ -195,7 +195,7 @@ public class EcoreProcessor extends AbstractProcessor {
         idsStack.addLast(classifier.getId());
     }
 
-    private void processFeature(Classifier classifier) throws Exception {
+    private void processFeature(Classifier classifier) {
         // Retreive the parent EClass
         EClass parentEClass = classesStack.getLast();
 
@@ -224,7 +224,7 @@ public class EcoreProcessor extends AbstractProcessor {
         previousWasAttribute = true;
     }
 
-    private void processReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) throws Exception {
+    private void processReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass
         EClass eClass = getEClass(classifier, ns, (EClass) eReference.getEType(), ePackage);
 

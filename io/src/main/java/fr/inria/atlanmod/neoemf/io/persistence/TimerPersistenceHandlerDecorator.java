@@ -19,7 +19,7 @@ public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandler
     }
 
     @Override
-    public void processStartDocument() throws Exception {
+    public void processStartDocument() {
         NeoLogger.info("[{0}] Document analysis in progress...", name);
         stopWatch = Stopwatch.createStarted();
 
@@ -27,7 +27,7 @@ public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandler
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         NeoLogger.info("[{0}] Document analysis done in {1}", name, stopWatch.stop());
 
         super.processEndDocument();

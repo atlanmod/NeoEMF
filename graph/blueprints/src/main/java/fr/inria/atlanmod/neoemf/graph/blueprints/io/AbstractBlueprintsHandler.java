@@ -76,7 +76,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     @Override
-    protected void addElement(final Id id, final String nsUri, final String name, final boolean root) throws Exception {
+    protected void addElement(final Id id, final String nsUri, final String name, final boolean root) {
         Vertex vertex = createVertex(id);
 
         // Checks if the Vertex is not already defined
@@ -98,7 +98,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     @Override
-    protected void addAttribute(final Id id, final String name, int index, final boolean many, final Object value) throws Exception {
+    protected void addAttribute(final Id id, final String name, int index, final boolean many, final Object value) {
         Vertex vertex = getVertex(id);
 
         int size = getSize(vertex, name);
@@ -114,7 +114,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     @Override
-    protected void addReference(final Id id, final String name, int index, final boolean many, final boolean containment, final Id idReference) throws Exception {
+    protected void addReference(final Id id, final String name, int index, final boolean many, final boolean containment, final Id idReference) {
         Vertex vertex = getVertex(id);
         Vertex referencedVertex = getVertex(idReference);
 
@@ -137,7 +137,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     @Override
-    protected void setMetaClass(final Id id, final Id metaClassId) throws Exception {
+    protected void setMetaClass(final Id id, final Id metaClassId) {
         Vertex vertex = getVertex(id);
         Vertex metaClassVertex = getVertex(metaClassId);
 
@@ -145,17 +145,17 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processStartDocument() throws Exception {
+    public void processStartDocument() {
         createRootVertex();
 
         super.processStartDocument();
     }
 
-    protected abstract Vertex getVertex(final Id id) throws Exception;
+    protected abstract Vertex getVertex(final Id id);
 
-    protected abstract Vertex createVertex(final Id id) throws Exception;
+    protected abstract Vertex createVertex(final Id id);
 
-    private void createRootVertex() throws Exception {
+    private void createRootVertex() {
         // Create the 'ROOT' node with the default metaclass
         MetaClassifier metaClassifier = MetaClassifier.getDefault();
 

@@ -142,7 +142,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * Processes a new element and send a notification to handlers.
      */
-    protected void processStartElement(String uri, String localName, Attributes attributes) throws Exception {
+    protected void processStartElement(String uri, String localName, Attributes attributes) {
         Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
 
         int attrLength = attributes.getLength();
@@ -186,7 +186,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return a list of {@link StructuralFeature} that can be empty.
      */
-    private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
+    private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) {
         List<StructuralFeature> features = null;
 
         if (!processSpecialFeatures(classifier, prefix, localName, value)) {
@@ -207,7 +207,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return {@code true} if the given feature is a special feature
      */
-    private boolean processSpecialFeatures(Classifier classifier, String prefix, String localName, String value) throws Exception {
+    private boolean processSpecialFeatures(Classifier classifier, String prefix, String localName, String value) {
         boolean isSpecialFeature = false;
 
         // A special feature always has a prefix
@@ -261,7 +261,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return a list of {@link Reference} from the given {@code references}
      */
-    private List<StructuralFeature> processReferences(String localName, List<String> references) throws Exception {
+    private List<StructuralFeature> processReferences(String localName, List<String> references) {
         List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
 
         int index = 0;
@@ -282,7 +282,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @see #PATTERN_PREFIXED_VALUE
      */
-    private void processMetaClass(Classifier element, String prefixedValue) throws Exception {
+    private void processMetaClass(Classifier element, String prefixedValue) {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
             MetaClassifier metaClassifier = new MetaClassifier(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
@@ -293,11 +293,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
     }
 
-    protected void processCharacters(String characters) throws Exception {
+    protected void processCharacters(String characters) {
         notifyCharacters(characters);
     }
 
-    protected void processEndElement(String uri, String localName) throws Exception {
+    protected void processEndElement(String uri, String localName) {
         if (!ignoreElement) {
             notifyEndElement();
         }

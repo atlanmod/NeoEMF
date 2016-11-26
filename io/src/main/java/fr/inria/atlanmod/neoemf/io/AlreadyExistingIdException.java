@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io;
 /**
  *
  */
-public class AlreadyExistingIdException extends Exception {
+public class AlreadyExistingIdException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

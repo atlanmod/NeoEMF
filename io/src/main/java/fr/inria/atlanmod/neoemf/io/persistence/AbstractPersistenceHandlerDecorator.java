@@ -27,32 +27,32 @@ public abstract class AbstractPersistenceHandlerDecorator implements Persistence
     }
 
     @Override
-    public void processStartDocument() throws Exception {
+    public void processStartDocument() {
         handler.processStartDocument();
     }
 
     @Override
-    public void processStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         handler.processStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) {
         handler.processAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) {
         handler.processReference(reference);
     }
 
     @Override
-    public void processEndElement() throws Exception {
+    public void processEndElement() {
         handler.processEndElement();
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         handler.processEndDocument();
     }
 }

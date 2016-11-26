@@ -109,21 +109,21 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     protected abstract Id getId(String reference);
 
-    protected abstract void addElement(Id id, String nsUri, String name, boolean root) throws Exception;
+    protected abstract void addElement(Id id, String nsUri, String name, boolean root);
 
-    protected abstract void addAttribute(Id id, String name, int index, boolean many, Object value) throws Exception;
+    protected abstract void addAttribute(Id id, String name, int index, boolean many, Object value);
 
-    protected abstract void addReference(Id id, String name, int index, boolean many, boolean containment, Id idReference) throws Exception;
+    protected abstract void addReference(Id id, String name, int index, boolean many, boolean containment, Id idReference);
 
-    protected abstract void setMetaClass(Id id, Id metaClassId) throws Exception;
+    protected abstract void setMetaClass(Id id, Id metaClassId);
 
     @Override
-    public void processStartDocument() throws Exception {
+    public void processStartDocument() {
         // Do nothing
     }
 
     @Override
-    public void processStartElement(final Classifier classifier) throws Exception {
+    public void processStartElement(final Classifier classifier) {
         Id id = createElement(classifier);
         Id metaClassId = getOrCreateMetaClass(classifier.getMetaClassifier());
 
@@ -133,7 +133,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processAttribute(final Attribute attribute) throws Exception {
+    public void processAttribute(final Attribute attribute) {
         Id id;
         if (isNull(attribute.getId())) {
             id = elementIdStack.getLast();
@@ -152,7 +152,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processReference(final Reference reference) throws Exception {
+    public void processReference(final Reference reference) {
         Id id;
         if (isNull(reference.getId())) {
             id = elementIdStack.getLast();
@@ -182,12 +182,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processEndElement() throws Exception {
+    public void processEndElement() {
         elementIdStack.removeLast();
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         long unlinkedNumber = unlinkedElementsMap.size();
         if (unlinkedNumber > 0) {
             NeoLogger.warn("Some elements have not been linked ({0})", unlinkedNumber);
@@ -213,7 +213,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @return the given {@code id}
      */
-    protected Id createElement(final Classifier classifier, final Id id) throws Exception {
+    protected Id createElement(final Classifier classifier, final Id id) {
         checkNotNull(id);
 
         addElement(id,
@@ -228,7 +228,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         return id;
     }
 
-    private Id createElement(final Classifier classifier) throws Exception {
+    private Id createElement(final Classifier classifier) {
         checkNotNull(classifier.getId());
 
         String idValue = classifier.getId().getValue();
@@ -258,7 +258,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @return the {@link Id} of the newly created metaclass
      */
-    protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) throws Exception {
+    protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) {
         String idValue = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
 
         // Gets from cache
@@ -327,7 +327,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @param reference the reference of the targetted element
      * @param id        the identifier of the targetted element
      */
-    private void tryLink(final String reference, final Id id) throws Exception {
+    private void tryLink(final String reference, final Id id) {
         for (UnlinkedElement e : unlinkedElementsMap.removeAll(reference)) {
             addReference(e.id, e.name, e.index, e.many, e.containment, id);
         }

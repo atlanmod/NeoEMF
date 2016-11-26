@@ -21,5 +21,7 @@ public interface ProcessorNotifier extends InputNotifier<Processor> {
     /**
      * Notifies a new set of characters.
      */
-    void notifyCharacters(String characters) throws Exception;
+    default void notifyCharacters(String characters) {
+        getHandlers().forEach(p -> p.processCharacters(characters));
+    }
 }

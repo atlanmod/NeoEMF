@@ -32,7 +32,7 @@ public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {
     }
 
     @Override
-    protected Vertex getVertex(final Id id) throws Exception {
+    protected Vertex getVertex(final Id id) {
         return loadedVertices.get(id, key -> {
             Vertex vertex = getPersistenceBackend().getVertex(key);
 
@@ -45,7 +45,7 @@ public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {
     }
 
     @Override
-    protected Vertex createVertex(final Id id) throws Exception {
+    protected Vertex createVertex(final Id id) {
         return getVertex(id);
     }
 }

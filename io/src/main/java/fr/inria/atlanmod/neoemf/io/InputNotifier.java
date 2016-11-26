@@ -49,7 +49,9 @@ public interface InputNotifier<T extends InputHandler> {
      * @see #notifyEndDocument()
      * @see InputHandler#processStartDocument()
      */
-    void notifyStartDocument() throws Exception;
+    default void notifyStartDocument() {
+        getHandlers().forEach(InputHandler::processStartDocument);
+    }
 
     /**
      * Notifies that start of a new element.
@@ -57,21 +59,27 @@ public interface InputNotifier<T extends InputHandler> {
      * @see #notifyEndElement()
      * @see InputHandler#processStartElement(Classifier)
      */
-    void notifyStartElement(Classifier classifier) throws Exception;
+    default void notifyStartElement(Classifier classifier) {
+        getHandlers().forEach(h -> h.processStartElement(classifier));
+    }
 
     /**
      * Notifies a new attribute.
      *
      * @see InputHandler#processAttribute(Attribute)
      */
-    void notifyAttribute(Attribute attribute) throws Exception;
+    default void notifyAttribute(Attribute attribute) {
+        getHandlers().forEach(h -> h.processAttribute(attribute));
+    }
 
     /**
      * Notifies a new reference.
      *
      * @see InputHandler#processReference(Reference)
      */
-    void notifyReference(Reference reference) throws Exception;
+    default void notifyReference(Reference reference) {
+        getHandlers().forEach(h -> h.processReference(reference));
+    }
 
     /**
      * Notifies the end of the current element.
@@ -79,7 +87,9 @@ public interface InputNotifier<T extends InputHandler> {
      * @see #notifyStartElement(Classifier)
      * @see InputHandler#processEndElement()
      */
-    void notifyEndElement() throws Exception;
+    default void notifyEndElement() {
+        getHandlers().forEach(InputHandler::processEndElement);
+    }
 
     /**
      * Notifies the end of the current action.
@@ -87,5 +97,7 @@ public interface InputNotifier<T extends InputHandler> {
      * @see #notifyStartDocument()
      * @see InputHandler#processEndDocument()
      */
-    void notifyEndDocument() throws Exception;
+    default void notifyEndDocument() {
+        getHandlers().forEach(InputHandler::processEndDocument);
+    }
 }

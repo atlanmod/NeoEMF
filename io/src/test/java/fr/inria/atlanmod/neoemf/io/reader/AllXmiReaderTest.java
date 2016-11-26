@@ -73,7 +73,6 @@ public abstract class AllXmiReaderTest extends AllInputTest {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
         XmiStreamReader reader = new XmiStreamReader();
-        reader.setShowProgress(false);
 
         Processor processor = new PersistenceNotifier();
         processor.addHandler(persistanceHandler);

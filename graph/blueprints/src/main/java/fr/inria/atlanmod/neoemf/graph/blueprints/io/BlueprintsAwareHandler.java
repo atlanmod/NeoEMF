@@ -22,7 +22,7 @@ public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
     }
 
     @Override
-    protected Vertex getVertex(final Id id) throws Exception {
+    protected Vertex getVertex(final Id id) {
         try {
             return loadedVertices.get(id, key -> getPersistenceBackend().getVertex(key));
         }
@@ -32,7 +32,7 @@ public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
     }
 
     @Override
-    protected Vertex createVertex(final Id id) throws Exception {
+    protected Vertex createVertex(final Id id) {
         try {
             return loadedVertices.get(id, key -> getPersistenceBackend().addVertex(key));
         }

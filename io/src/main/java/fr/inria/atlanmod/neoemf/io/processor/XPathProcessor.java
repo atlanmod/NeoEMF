@@ -65,7 +65,7 @@ public class XPathProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         if (nonNull(classifier.getId())) {
             hasIds = true;
         }
@@ -95,7 +95,7 @@ public class XPathProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) {
         if (!hasIds) {
             // Format the reference according internal XPath management
             reference.setIdReference(Identifier.generated(formatPath(reference.getIdReference().getValue())));
@@ -105,7 +105,7 @@ public class XPathProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processEndElement() throws Exception {
+    public void processEndElement() {
         if (!hasIds) {
             // Removes children of the last element
             paths.clearLast();
@@ -115,7 +115,7 @@ public class XPathProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         if (!hasIds) {
             long size = paths.size();
             if (size > 1) {

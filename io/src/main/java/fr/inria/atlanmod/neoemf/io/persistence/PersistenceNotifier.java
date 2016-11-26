@@ -23,37 +23,37 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 public final class PersistenceNotifier extends AbstractInputNotifier<PersistenceHandler> implements Processor {
 
     @Override
-    public void processStartDocument() throws Exception {
+    public void processStartDocument() {
         notifyStartDocument();
     }
 
     @Override
-    public void processStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         notifyStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) {
         notifyReference(reference);
     }
 
     @Override
-    public void processEndElement() throws Exception {
+    public void processEndElement() {
         notifyEndElement();
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         notifyEndDocument();
     }
 
     @Override
-    public void processCharacters(String characters) throws Exception {
+    public void processCharacters(String characters) {
         // Do nothing : Persistence handlers do not have to deal with characters
     }
 }

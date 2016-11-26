@@ -30,37 +30,37 @@ public class AbstractProcessor implements Processor {
     // Handler methods
 
     @Override
-    public void processStartDocument() throws Exception {
+    public void processStartDocument() {
         processor.processStartDocument();
     }
 
     @Override
-    public void processStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         processor.processStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) {
         processor.processAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) {
         processor.processReference(reference);
     }
 
     @Override
-    public void processEndElement() throws Exception {
+    public void processEndElement() {
         processor.processEndElement();
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         processor.processEndDocument();
     }
 
     @Override
-    public void processCharacters(String characters) throws Exception {
+    public void processCharacters(String characters) {
         processor.processCharacters(characters);
     }
 
@@ -82,32 +82,32 @@ public class AbstractProcessor implements Processor {
     }
 
     @Override
-    public void notifyStartDocument() throws Exception {
+    public void notifyStartDocument() {
         processor.notifyStartDocument();
     }
 
     @Override
-    public void notifyStartElement(Classifier classifier) throws Exception {
+    public void notifyStartElement(Classifier classifier) {
         processor.notifyStartElement(classifier);
     }
 
     @Override
-    public void notifyAttribute(Attribute attribute) throws Exception {
+    public void notifyAttribute(Attribute attribute) {
         processor.notifyAttribute(attribute);
     }
 
     @Override
-    public void notifyReference(Reference reference) throws Exception {
+    public void notifyReference(Reference reference) {
         processor.notifyReference(reference);
     }
 
     @Override
-    public void notifyEndElement() throws Exception {
+    public void notifyEndElement() {
         processor.notifyEndElement();
     }
 
     @Override
-    public void notifyEndDocument() throws Exception {
+    public void notifyEndDocument() {
         processor.notifyEndDocument();
     }
 }

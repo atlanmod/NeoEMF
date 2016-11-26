@@ -30,7 +30,7 @@ public abstract class AbstractReader extends AbstractProcessorNotifier implement
         return (isNull(prefix) ? "" : prefix + ':') + value;
     }
 
-    protected void processStartDocument() throws Exception {
+    protected void processStartDocument() {
         notifyStartDocument();
     }
 
@@ -46,7 +46,7 @@ public abstract class AbstractReader extends AbstractProcessorNotifier implement
         Namespace.Registry.getInstance().register(prefix, uri);
     }
 
-    protected void processEndDocument() throws Exception {
+    protected void processEndDocument() {
         notifyEndDocument();
     }
 }

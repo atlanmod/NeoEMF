@@ -17,11 +17,4 @@ import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
  * An abstract implementation of an {@link ProcessorNotifier} of {@link Processor}.
  */
 public abstract class AbstractProcessorNotifier extends AbstractInputNotifier<Processor> implements ProcessorNotifier {
-
-    @Override
-    public void notifyCharacters(String characters) throws Exception {
-        for (Processor h : getHandlers()) {
-            h.processCharacters(characters);
-        }
-    }
 }

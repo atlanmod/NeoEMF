@@ -28,14 +28,14 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processStartDocument() throws Exception {
+    public void processStartDocument() {
         NeoLogger.debug("Starting document");
 
         super.processStartDocument();
     }
 
     @Override
-    public void processStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         NeoLogger.debug("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 classifier.getNamespace().getPrefix(),
                 classifier.getLocalName(),
@@ -49,7 +49,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processAttribute(Attribute attribute) throws Exception {
+    public void processAttribute(Attribute attribute) {
         NeoLogger.debug("[A]    {0} ({1}) = {2}",
                 attribute.getLocalName(),
                 attribute.getIndex(),
@@ -59,7 +59,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processReference(Reference reference) throws Exception {
+    public void processReference(Reference reference) {
         NeoLogger.debug("[R]    {0} ({1}) = {2} -> {3}",
                 reference.getLocalName(),
                 reference.getIndex(),
@@ -70,7 +70,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processEndDocument() throws Exception {
+    public void processEndDocument() {
         NeoLogger.debug("Ending document");
 
         super.processEndDocument();

@@ -11,10 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,47 +39,5 @@ public abstract class AbstractInputNotifier<T extends InputHandler> implements I
     @Override
     public Iterable<T> getHandlers() {
         return Collections.unmodifiableSet(handlers);
-    }
-
-    @Override
-    public void notifyStartDocument() throws Exception {
-        for (T h : getHandlers()) {
-            h.processStartDocument();
-        }
-    }
-
-    @Override
-    public void notifyStartElement(Classifier classifier) throws Exception {
-        for (T h : getHandlers()) {
-            h.processStartElement(classifier);
-        }
-    }
-
-    @Override
-    public void notifyAttribute(Attribute attribute) throws Exception {
-        for (T h : getHandlers()) {
-            h.processAttribute(attribute);
-        }
-    }
-
-    @Override
-    public void notifyReference(Reference reference) throws Exception {
-        for (T h : getHandlers()) {
-            h.processReference(reference);
-        }
-    }
-
-    @Override
-    public void notifyEndElement() throws Exception {
-        for (T h : getHandlers()) {
-            h.processEndElement();
-        }
-    }
-
-    @Override
-    public void notifyEndDocument() throws Exception {
-        for (T h : getHandlers()) {
-            h.processEndDocument();
-        }
     }
 }

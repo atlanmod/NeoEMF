@@ -39,12 +39,6 @@ import static java.util.Objects.nonNull;
  */
 public class XmiStreamReader extends AbstractXmiReader {
 
-    private boolean showProgress = true;
-
-    public void setShowProgress(boolean showProgress) {
-        this.showProgress = showProgress;
-    }
-
     @Override
     public Processor defaultProcessor() {
         Processor defaultProcessor;
@@ -89,9 +83,7 @@ public class XmiStreamReader extends AbstractXmiReader {
     }
 
     private void logProgress(double percent) {
-        if (showProgress) {
-            NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
-        }
+        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
     }
 
     private class XmiSaxHandler extends DefaultHandler {

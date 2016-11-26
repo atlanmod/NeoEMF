@@ -24,5 +24,5 @@ public interface Processor extends InputHandler, InputNotifier<PersistenceHandle
     /**
      * Process characters.
      */
-    void processCharacters(String characters) throws Exception;
+    void processCharacters(String characters);
 }

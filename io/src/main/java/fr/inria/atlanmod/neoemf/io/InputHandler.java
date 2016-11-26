@@ -25,14 +25,14 @@ public interface InputHandler {
      *
      * @see InputNotifier#notifyStartDocument()
      */
-    void processStartDocument() throws Exception;
+    void processStartDocument();
 
     /**
      * Process the start of an element.
      *
      * @see InputNotifier#notifyStartElement(Classifier)
      */
-    void processStartElement(Classifier classifier) throws Exception;
+    void processStartElement(Classifier classifier);
 
     /**
      * Process an attribute in the current element.
@@ -41,7 +41,7 @@ public interface InputHandler {
      *
      * @see InputNotifier#notifyAttribute(Attribute)
      */
-    void processAttribute(Attribute attribute) throws Exception;
+    void processAttribute(Attribute attribute);
 
     /**
      * Process a reference from the current element to another element.
@@ -50,19 +50,19 @@ public interface InputHandler {
      *
      * @see InputNotifier#notifyReference(Reference)
      */
-    void processReference(Reference reference) throws Exception;
+    void processReference(Reference reference);
 
     /**
      * Process the end of the current element.
      *
      * @see InputNotifier#notifyEndElement()
      */
-    void processEndElement() throws Exception;
+    void processEndElement();
 
     /**
      * Process the end of a document.
      *
      * @see InputNotifier#notifyEndDocument()
      */
-    void processEndDocument() throws Exception;
+    void processEndDocument();
 }
