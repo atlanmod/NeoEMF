@@ -79,6 +79,7 @@ class PersistentEObjectAdapter {
         if (isNull(adapter)) {
             NeoLogger.warn("Unable to create a {0} adapter for this object of type {1}", adapterType.getSimpleName(), adaptableObject.getClass().getSimpleName());
         }
+
         return adapterType.cast(adapter);
     }
 
@@ -123,14 +124,19 @@ class PersistentEObjectAdapter {
         proxy.setSuperclass(adaptableObject.getClass());
         proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
         proxy.setCallback(new PersistentEObjectProxyHandler());
+
         return proxy.create();
     }
 
     private static class PersistentEObjectProxyHandler implements MethodInterceptor {
 
         @Override
-        public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) {
-            throw new UnsupportedOperationException();
+        public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+            /*
+             * TODO: Dynamically transform 'obj' as a PersistentEObject or its implementation.
+             * For now, it only works if the given 'obj' is natively a PersistentEObject.
+             */
+            return methodProxy.invokeSuper(obj, args);
         }
     }
 }
