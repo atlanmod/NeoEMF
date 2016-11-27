@@ -40,7 +40,7 @@ import java.nio.file.Files;
 import java.util.Date;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class MapPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 

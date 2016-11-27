@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
  * Test case to reproduce the issue #7 @link{https://github.com/atlanmod/NeoEMF/issues/7}

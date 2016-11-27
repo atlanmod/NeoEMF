@@ -20,9 +20,9 @@ import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOpt
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -49,9 +49,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
 import static java.util.Objects.isNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 public class ImportTest extends AllInputTest {
 
@@ -286,7 +286,7 @@ public class ImportTest extends AllInputTest {
         if (isNull(name)) {
             try {
                 eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
-                fail();
+                fail("Supposed to throw a NullPointerException");
             }
             catch (NullPointerException ignore) {
                 // It's good !

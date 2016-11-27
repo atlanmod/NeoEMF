@@ -22,7 +22,7 @@ import org.eclipse.emf.common.util.EMap;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class EMapSupportTest extends AllBackendTest {
 

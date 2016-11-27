@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
 

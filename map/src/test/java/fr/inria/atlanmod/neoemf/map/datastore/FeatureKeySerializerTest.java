@@ -21,7 +21,7 @@ import org.mapdb.DataOutput2;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class FeatureKeySerializerTest {
 

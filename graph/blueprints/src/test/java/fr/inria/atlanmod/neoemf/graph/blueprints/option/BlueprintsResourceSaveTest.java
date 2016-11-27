@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AllTest {
 

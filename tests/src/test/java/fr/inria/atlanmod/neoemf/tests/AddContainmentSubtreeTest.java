@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
  * Checks that adding a transient containment sub-tree to an

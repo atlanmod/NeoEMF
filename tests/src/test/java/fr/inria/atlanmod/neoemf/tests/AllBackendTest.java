@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public abstract class AllBackendTest extends AllTest {
 

@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import java.util.Iterator;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public abstract class AllSavedLoadedResourceTest extends AllBackendTest {
 

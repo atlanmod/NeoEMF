@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
  * Tests that verify that the {@link XmiStreamReader} properly interprets the read data.
