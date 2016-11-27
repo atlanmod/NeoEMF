@@ -108,7 +108,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${pom.groupId}.map</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.groupId}.map</Bundle-SymbolicName>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>

@@ -119,7 +119,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${pom.groupId}.blueprints</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.groupId}.blueprints</Bundle-SymbolicName>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.graph.blueprints.*

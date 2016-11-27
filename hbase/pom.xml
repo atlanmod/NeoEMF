@@ -93,7 +93,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${pom.groupId}.hbase</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.groupId}.hbase</Bundle-SymbolicName>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.hbase.*
                         </Export-Package>
