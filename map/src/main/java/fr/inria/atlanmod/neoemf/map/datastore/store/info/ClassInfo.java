@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.datastore.store.info;
+package fr.inria.atlanmod.neoemf.map.datastore.store.info;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.ReadOnlyHBaseStore;
 
@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.hbase.datastore.store.ReadOnlyHBaseStore;
  * The real access to the HBase Table is done in {@link DirectWriteHBaseStore} and
  * {@link ReadOnlyHBaseStore}.
  */
-public class HBasePersistenceBackend implements PersistenceBackend {
+public class HBasePersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * The literal description of this backend.

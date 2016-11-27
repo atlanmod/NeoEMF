@@ -19,8 +19,8 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
-import fr.inria.atlanmod.neoemf.datastore.store.info.ClassInfo;
-import fr.inria.atlanmod.neoemf.datastore.store.info.ContainerInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.store.info.ClassInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.store.info.ContainerInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;

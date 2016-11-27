@@ -92,7 +92,6 @@ public final class MapPersistenceBackendFactory extends AbstractPersistenceBacke
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        //Engine mapEngine = DBMaker.newMemoryDB().makeEngine();
         DB db = DBMaker.memoryDB().make();
         return new MapPersistenceBackend(db);
     }
