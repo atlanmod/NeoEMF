@@ -824,18 +824,13 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${cobertura-plugin.version}</version>
-                <configuration>
-                    <check />
-                    <aggregate>true</aggregate>
-                    <quiet>true</quiet>
-                </configuration>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-plugin.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
-                            <report>cobertura</report>
+                            <report>report</report>
                         </reports>
                     </reportSet>
                     <reportSet>
@@ -845,7 +840,7 @@
                             <aggregate>true</aggregate>
                         </configuration>
                         <reports>
-                            <report>cobertura</report>
+                            <report>report-aggregate</report>
                         </reports>
                     </reportSet>
                 </reportSets>
