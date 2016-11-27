@@ -58,13 +58,13 @@ public class NeoEditor extends EcoreEditor {
         Map<String, Object> options;
         if (Objects.equals(resource.getURI().scheme(), MapURI.SCHEME)) {
             options = MapOptionsBuilder.newBuilder()
-//                    .log()
-                    .directWrite()
+//                  .log()
+                    .directWriteCacheMany()
                     .asMap();
         }
         else if (Objects.equals(resource.getURI().scheme(), BlueprintsURI.SCHEME)) {
             options = BlueprintsOptionsBuilder.newBuilder()
-//                    .log()
+//                  .log()
                     .directWriteCacheMany()
                     .asMap();
         }
