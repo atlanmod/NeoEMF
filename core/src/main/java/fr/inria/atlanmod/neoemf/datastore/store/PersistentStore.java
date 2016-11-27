@@ -25,6 +25,8 @@ import org.eclipse.emf.ecore.resource.Resource;
  */
 public interface PersistentStore extends InternalEObject.EStore {
 
+    int NO_INDEX = InternalEObject.EStore.NO_INDEX;
+
     /**
      * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated.
      */

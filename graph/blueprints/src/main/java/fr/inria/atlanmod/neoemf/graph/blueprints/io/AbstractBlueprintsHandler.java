@@ -19,13 +19,12 @@ import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
-
-import org.eclipse.emf.ecore.InternalEObject;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -93,7 +92,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
         if (root) {
             // Add the current element as content of the 'ROOT' node
-            addReference(ROOT_ID, ROOT_FEATURE_NAME, InternalEObject.EStore.NO_INDEX, false, false, id);
+            addReference(ROOT_ID, ROOT_FEATURE_NAME, PersistentStore.NO_INDEX, false, false, id);
         }
     }
 
@@ -103,7 +102,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
         int size = getSize(vertex, name);
 
-        if (index == InternalEObject.EStore.NO_INDEX) {
+        if (index == PersistentStore.NO_INDEX) {
             index = size;
         }
 
@@ -125,7 +124,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
         int size = getSize(vertex, name);
 
-        if (index == InternalEObject.EStore.NO_INDEX) {
+        if (index == PersistentStore.NO_INDEX) {
             index = size;
         }
 

@@ -303,7 +303,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         PersistentEObject eObject = PersistentEObject.from(object);
         String[] array = (String[]) getFromTable(eObject, feature);
         if (isNull(array)) {
-            return -1;
+            return PersistentStore.NO_INDEX;
         }
         if (feature instanceof EAttribute) {
             return ArrayUtils.indexOf(array, serializeToProperty((EAttribute) feature, value));
@@ -319,7 +319,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         PersistentEObject eObject = PersistentEObject.from(object);
         String[] array = (String[]) getFromTable(eObject, feature);
         if (isNull(array)) {
-            return -1;
+            return PersistentStore.NO_INDEX;
         }
         if (feature instanceof EAttribute) {
             return ArrayUtils.lastIndexOf(array, serializeToProperty((EAttribute) feature, value));

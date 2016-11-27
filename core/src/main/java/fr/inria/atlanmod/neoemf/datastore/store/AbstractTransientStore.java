@@ -44,7 +44,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
         Object returnValue;
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
-        if (index == NO_INDEX) {
+        if (index == PersistentStore.NO_INDEX) {
             returnValue = singleMap.get(featureKey);
         }
         else {
@@ -63,7 +63,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     @Override
     public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
-        return index == NO_INDEX ? singleMap.put(featureKey, value) : manyMap.get(featureKey).set(index, value);
+        return index == PersistentStore.NO_INDEX ? singleMap.put(featureKey, value) : manyMap.get(featureKey).set(index, value);
     }
 
     @Override
@@ -104,14 +104,14 @@ public abstract class AbstractTransientStore implements TransientStore {
     public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
         List<Object> list = manyMap.get(featureKey);
-        return isNull(list) ? -1 : list.indexOf(value);
+        return isNull(list) ? PersistentStore.NO_INDEX : list.indexOf(value);
     }
 
     @Override
     public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
         List<Object> list = manyMap.get(featureKey);
-        return isNull(list) ? -1 : list.lastIndexOf(value);
+        return isNull(list) ? PersistentStore.NO_INDEX : list.lastIndexOf(value);
     }
 
     @Override
@@ -119,17 +119,15 @@ public abstract class AbstractTransientStore implements TransientStore {
         FeatureKey featureKey = FeatureKey.from(eObject, feature);
         List<Object> saved = manyMap.get(featureKey);
         if (nonNull(saved)) {
-            if (index == InternalEObject.EStore.NO_INDEX) {
+            if (index == PersistentStore.NO_INDEX) {
                 /*
                  * Handle NO_INDEX index, which represent direct-append feature.
 		         * The call to size should not cause an overhead because it would have been done in regular
 		         * addUnique() otherwise.
 		         */
-                saved.add(size(eObject, feature), value);
+                index = size(eObject, feature);
             }
-            else {
-                saved.add(index, value);
-            }
+            saved.add(index, value);
         }
         else {
             List<Object> list = createValue();

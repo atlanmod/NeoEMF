@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.map.datastore.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.datastore.store.cache.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
@@ -22,7 +23,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import static java.util.Objects.isNull;
@@ -115,7 +115,7 @@ public class DirectWriteMapIndicesStore extends DirectWriteMapStore {
     protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(object, eAttribute);
         if (!eAttribute.isMany()) {
-            persistenceBackend.storeValue(featureKey, EStore.NO_INDEX);
+            persistenceBackend.storeValue(featureKey, PersistentStore.NO_INDEX);
         }
         Object oldValue = persistenceBackend.storeValueAtIndex(featureKey.withPosition(index), serializeToProperty(eAttribute, value));
         return parseProperty(eAttribute, oldValue);
@@ -125,7 +125,7 @@ public class DirectWriteMapIndicesStore extends DirectWriteMapStore {
     protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         FeatureKey featureKey = FeatureKey.from(object, eReference);
         if (!eReference.isMany()) {
-            persistenceBackend.storeValue(featureKey, EStore.NO_INDEX);
+            persistenceBackend.storeValue(featureKey, PersistentStore.NO_INDEX);
         }
         Object returnValue = null;
         updateContainment(object, eReference, value);

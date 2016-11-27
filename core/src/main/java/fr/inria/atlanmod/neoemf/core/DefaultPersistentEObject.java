@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.neoemf.datastore.store.OwnedTransientStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
 
@@ -107,9 +108,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
                 if (oldStore.isSet(this, feature)) {
                     if (!feature.isMany()) {
-                        Object value = getAdaptedValue(oldStore, feature, EStore.NO_INDEX);
+                        Object value = getAdaptedValue(oldStore, feature, PersistentStore.NO_INDEX);
                         if (nonNull(value)) {
-                            eStore.set(this, feature, EStore.NO_INDEX, value);
+                            eStore.set(this, feature, PersistentStore.NO_INDEX, value);
                         }
                     }
                     else {
@@ -235,7 +236,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            returnValue = eStore().get(this, feature, EStore.NO_INDEX);
+            returnValue = eStore().get(this, feature, PersistentStore.NO_INDEX);
         }
         return returnValue;
     }
@@ -256,7 +257,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
             }
         }
         else {
-            eStore().set(this, feature, InternalEObject.EStore.NO_INDEX, value);
+            eStore().set(this, feature, PersistentStore.NO_INDEX, value);
         }
     }
 
@@ -393,7 +394,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                     addUnique(object);
                 }
                 else {
-                    int index = size() == 0 ? 0 : EStore.NO_INDEX;
+                    int index = size() == 0 ? 0 : PersistentStore.NO_INDEX;
                     addUnique(index, object);
                 }
                 return true;

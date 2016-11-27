@@ -19,6 +19,7 @@ import com.tinkerpop.blueprints.Vertex;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,7 +31,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.Map;
@@ -287,19 +287,19 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-        if (index == EStore.NO_INDEX) {
+        if (index == PersistentStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
 			 * The call to size should not cause an overhead because it would have been done in regular
 			 * addUnique() otherwise.
 			 */
-            add(object, eAttribute, index, size(object, eAttribute));
+            index = size(object, eAttribute);
         }
         Vertex vertex = persistenceBackend.getOrCreateVertex(object);
         Integer size = getSize(vertex, eAttribute);
         size++;
         setSize(vertex, eAttribute, size);
-        checkPositionIndex(index, size, "Invalid add index " + index);
+        checkPositionIndex(index, size, "Invalid add index");
         for (int i = size - 1; i > index; i--) {
             Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + (i - 1));
             vertex.setProperty(eAttribute.getName() + SEPARATOR + i, movingProperty);
@@ -309,13 +309,13 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
-        if (index == EStore.NO_INDEX) {
+        if (index == PersistentStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
 			 * The call to size should not cause an overhead because it would have been done in regular
 			 * addUnique() otherwise.
 			 */
-            add(object, eReference, index, size(object, eReference));
+            index = size(object, eReference);
         }
         Vertex vertex = persistenceBackend.getOrCreateVertex(object);
 
@@ -327,7 +327,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
         Integer size = getSize(vertex, eReference);
         int newSize = size + 1;
-        checkPositionIndex(index, newSize, "Invalid add index " + index);
+        checkPositionIndex(index, newSize, "Invalid add index");
         if (index != size) {
             Iterable<Edge> edges = vertex.query()
                     .labels(eReference.getName())
@@ -352,7 +352,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         Vertex vertex = persistenceBackend.getVertex(object);
         Integer size = getSize(vertex, eAttribute);
         Object returnValue;
-        checkPositionIndex(index, size, "Invalid remove index " + index);
+        checkPositionIndex(index, size, "Invalid remove index");
 
         returnValue = parseProperty(eAttribute, vertex.getProperty(eAttribute.getName() + SEPARATOR + index));
         int newSize = size - 1;
@@ -370,7 +370,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         String referenceName = eReference.getName();
         Integer size = getSize(vertex, eReference);
         InternalEObject returnValue = null;
-        checkPositionIndex(index, size, "Invalid remove index " + index);
+        checkPositionIndex(index, size, "Invalid remove index");
 
         Iterable<Edge> edges = vertex.query()
                 .labels(referenceName)

@@ -17,6 +17,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
@@ -52,7 +53,7 @@ public class DirectWriteMapListsStore extends DirectWriteMapStore {
         PersistentEObject persistentEObject = PersistentEObject.from(object);
         List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
         if (isNull(list)) {
-            returnValue = -1;
+            returnValue = PersistentStore.NO_INDEX;
         }
         else if (feature instanceof EAttribute) {
             returnValue = list.indexOf(serializeToProperty((EAttribute) feature, value));
@@ -70,7 +71,7 @@ public class DirectWriteMapListsStore extends DirectWriteMapStore {
         PersistentEObject persistentEObject = PersistentEObject.from(object);
         List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
         if (isNull(list)) {
-            returnValue = -1;
+            returnValue = PersistentStore.NO_INDEX;
         }
         else if (feature instanceof EAttribute) {
             returnValue = list.lastIndexOf(serializeToProperty((EAttribute) feature, value));

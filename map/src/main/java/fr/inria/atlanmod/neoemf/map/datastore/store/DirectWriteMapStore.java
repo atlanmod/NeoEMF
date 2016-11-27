@@ -18,10 +18,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ClassInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ContainerInfo;
-import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EAttribute;
@@ -30,7 +31,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -73,7 +73,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
 
     @Override
     public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-        return indexOf(object, feature, value) != -1;
+        return indexOf(object, feature, value) != PersistentStore.NO_INDEX;
     }
 
     @Override
@@ -191,19 +191,19 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     @Override
     protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(object, eAttribute);
-        if (index == EStore.NO_INDEX) {
+        if (index == PersistentStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
 			 * The call to size should not cause an overhead because it would have been done in regular
 			 * addUnique() otherwise.
 			 */
-            add(object, eAttribute, size(object, eAttribute), value);
+            index = size(object, eAttribute);
         }
         Object[] array = (Object[]) getFromMap(featureKey);
         if (isNull(array)) {
             array = new Object[]{};
         }
-        checkPositionIndex(index, array.length, "Invalid add index " + index);
+        checkPositionIndex(index, array.length, "Invalid add index");
         array = ArrayUtils.add(array, index, serializeToProperty(eAttribute, value));
         persistenceBackend.storeValue(featureKey, array);
     }
@@ -211,13 +211,13 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     @Override
     protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
         FeatureKey featureKey = FeatureKey.from(object, eReference);
-        if (index == EStore.NO_INDEX) {
+        if (index == PersistentStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
 			 * The call to size should not cause an overhead because it would have been done in regular
 			 * addUnique() otherwise.
 			 */
-            add(object, eReference, size(object, eReference), value);
+            index = size(object, eReference);
         }
         updateContainment(object, eReference, value);
         updateInstanceOf(value);
@@ -225,7 +225,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
         if (isNull(array)) {
             array = new Object[]{};
         }
-        checkPositionIndex(index, array.length, "Invalid add index " + index);
+        checkPositionIndex(index, array.length, "Invalid add index");
         array = ArrayUtils.add(array, index, value.id());
         persistenceBackend.storeValue(featureKey, array);
         loadedEObjects.put(value.id(), value);
@@ -235,7 +235,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
         FeatureKey featureKey = FeatureKey.from(object, eAttribute);
         Object[] array = (Object[]) getFromMap(featureKey);
-        checkPositionIndex(index, array.length, "Invalid remove index " + index);
+        checkPositionIndex(index, array.length, "Invalid remove index");
         Object oldValue = array[index];
         array = ArrayUtils.remove(array, index);
         persistenceBackend.storeValue(featureKey, array);
@@ -246,7 +246,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
         FeatureKey featureKey = FeatureKey.from(object, eReference);
         Object[] array = (Object[]) getFromMap(featureKey);
-        checkPositionIndex(index, array.length, "Invalid remove index " + index);
+        checkPositionIndex(index, array.length, "Invalid remove index");
         Object oldId = array[index];
         array = ArrayUtils.remove(array, index);
         persistenceBackend.storeValue(featureKey, array);

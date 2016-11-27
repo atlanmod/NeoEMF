@@ -136,10 +136,11 @@
                             org.neo4j.kernel.impl.cache;-split-package:=merge-last,
                             org.neo4j.*;-split-package:=first,
                         </Export-Package>
-                        <_exportcontents>
+                        <Private-Package>
                             javax.transaction,
-                            javax.transaction.xa,
-
+                            javax.transaction.xa
+                        </Private-Package>
+                        <_exportcontents>
                             org.apache.commons.configuration,
                             org.apache.commons.configuration.beanutils,
                             org.apache.commons.configuration.event,

@@ -11,14 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
-import org.eclipse.emf.ecore.InternalEObject;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 
 /**
  * A simple structural feature which can be either a reference or an attribute.
  */
 public abstract class StructuralFeature extends NamedElement {
-
-    private static final int DEFAULT_INDEX = InternalEObject.EStore.NO_INDEX;
 
     private Identifier id;
     private int index;
@@ -26,7 +24,7 @@ public abstract class StructuralFeature extends NamedElement {
 
     public StructuralFeature(String localName) {
         super(localName);
-        this.index = DEFAULT_INDEX;
+        this.index = PersistentStore.NO_INDEX;
     }
 
     public Identifier getId() {
