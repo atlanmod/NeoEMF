@@ -14,5 +14,5 @@ branches:
 script:
   - mvn install
 
-#after_success:
-#  - mvn -f plugins/eclipse verify
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
