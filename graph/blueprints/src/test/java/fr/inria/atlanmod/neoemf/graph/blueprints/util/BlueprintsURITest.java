@@ -35,7 +35,7 @@ public class BlueprintsURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoGraphURITestFile";
 
-    private static final String INVALID = "invalid";
+    private static final String SCHEME_INVALID = "invalid";
 
     private final PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
 
@@ -69,7 +69,7 @@ public class BlueprintsURITest extends AllTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI(INVALID + ":/test");
+        URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
         BlueprintsURI.createURI(invalidURI);
     }
 
@@ -77,19 +77,19 @@ public class BlueprintsURITest extends AllTest {
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
         URI validURI = URI.createURI(BlueprintsURI.SCHEME + ":/test");
         URI neoURI = BlueprintsURI.createURI(validURI);
-        assertThat(neoURI.scheme()).isEqualTo(BlueprintsURI.SCHEME);
+        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
         URI neoURI = BlueprintsURI.createURI(fileURI);
-        assertThat(neoURI.scheme()).isEqualTo(BlueprintsURI.SCHEME);
+        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
         URI neoURI = BlueprintsURI.createFileURI(testFile);
-        assertThat(neoURI.scheme()).isEqualTo(BlueprintsURI.SCHEME);
+        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
     }
 }

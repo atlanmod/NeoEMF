@@ -35,6 +35,8 @@ public class MapURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoMapURITestFile";
 
+    private static final String SCHEME_INVALID = "invalid";
+
     private final PersistenceBackendFactory persistenceBackendFactory = MapPersistenceBackendFactory.getInstance();
 
     @Rule
@@ -68,25 +70,25 @@ public class MapURITest extends AllTest {
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
         URI validURI = URI.createURI(MapURI.SCHEME + ":/test");
         URI neoURI = MapURI.createURI(validURI);
-        assertThat(neoURI.scheme()).isEqualTo(MapURI.SCHEME);
+        assertThat(neoURI).hasScheme(MapURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
         URI neoURI = MapURI.createURI(fileURI);
-        assertThat(neoURI.scheme()).isEqualTo(MapURI.SCHEME);
+        assertThat(neoURI).hasScheme(MapURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
         URI neoURI = MapURI.createFileURI(testFile);
-        assertThat(neoURI.scheme()).isEqualTo(MapURI.SCHEME);
+        assertThat(neoURI).hasScheme(MapURI.SCHEME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI("invalid:/test");
+        URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
         MapURI.createURI(invalidURI);
     }
 }

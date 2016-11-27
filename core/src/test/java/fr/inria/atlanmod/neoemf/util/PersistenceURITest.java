@@ -35,8 +35,8 @@ public class PersistenceURITest extends AllTest {
 
     private static final String TEST_FILENAME = "neoURITestFile";
 
-    private static final String MOCK = "mock";
-    private static final String INVALID = "invalid";
+    private static final String SCHEME = "mock";
+    private static final String SCHEME_INVALID = "invalid";
 
     private final PersistenceBackendFactory persistenceBackendFactory = Mockito.mock(PersistenceBackendFactory.class);
 
@@ -47,7 +47,7 @@ public class PersistenceURITest extends AllTest {
     @Before
     public void setUp() {
         PersistenceBackendFactoryRegistry.unregisterAll();
-        PersistenceBackendFactoryRegistry.register(MOCK, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(SCHEME, persistenceBackendFactory);
         testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
     }
 
@@ -69,27 +69,27 @@ public class PersistenceURITest extends AllTest {
 
     @Test
     public void testCreateNeoURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(MOCK + "://test");
+        URI validURI = URI.createURI(SCHEME + "://test");
         URI neoURI = PersistenceURI.createURI(validURI);
-        assertThat(neoURI.scheme()).isEqualTo(MOCK);
+        assertThat(neoURI).hasScheme(SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFileValidScheme() {
-        URI neoURI = PersistenceURI.createFileURI(testFile, MOCK);
-        assertThat(neoURI.scheme()).isEqualTo(MOCK);
+        URI neoURI = PersistenceURI.createFileURI(testFile, SCHEME);
+        assertThat(neoURI).hasScheme(SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFileURIValidScheme() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = PersistenceURI.createFileURI(fileURI, MOCK);
-        assertThat(neoURI.scheme()).isEqualTo(MOCK);
+        URI neoURI = PersistenceURI.createFileURI(fileURI, SCHEME);
+        assertThat(neoURI).hasScheme(SCHEME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI(INVALID + "://test");
+        URI invalidURI = URI.createURI(SCHEME_INVALID + "://test");
         PersistenceURI.createURI(invalidURI);
     }
 
@@ -101,7 +101,7 @@ public class PersistenceURITest extends AllTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromFileInvalidScheme() {
-        PersistenceURI.createFileURI(testFile, INVALID);
+        PersistenceURI.createFileURI(testFile, SCHEME_INVALID);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -112,7 +112,7 @@ public class PersistenceURITest extends AllTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoURIFromFileURIInvalidScheme() {
         URI fileUri = URI.createFileURI(testFile.getAbsolutePath());
-        PersistenceURI.createFileURI(fileUri, INVALID);
+        PersistenceURI.createFileURI(fileUri, SCHEME_INVALID);
     }
 
     @Test(expected = IllegalArgumentException.class)
