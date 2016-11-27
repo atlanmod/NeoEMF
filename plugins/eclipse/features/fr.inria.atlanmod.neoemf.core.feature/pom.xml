@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>features</artifactId>
+        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+        <artifactId>fr.inria.atlanmod.neoemf.eclipse.features</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -14,13 +14,13 @@
 
     <packaging>eclipse-feature</packaging>
 
-    <name>NeoEMF :: Eclipse :: Features :: Base</name>
+    <name>NeoEMF :: Eclipse :: Features :: Core</name>
     <description>Base feature project (referencing core and ui components).</description>
 
     <dependencies>
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -32,13 +32,13 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
+            <artifactId>neoemf-blueprints</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>map</artifactId>
+            <artifactId>neoemf-map</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

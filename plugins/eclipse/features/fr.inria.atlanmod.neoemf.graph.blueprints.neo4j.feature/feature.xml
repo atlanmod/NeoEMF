@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-        id="fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature"
-        label="NeoEMF Blueprints Implementations"
+        id="fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature"
+        label="NeoEMF Blueprints : Neo4j implementation"
         version="0.0.1.qualifier">
 
     <description url="http://www.example.com/description">
@@ -31,7 +31,7 @@
     </requires>
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.graph.blueprints.neo4j"
+            id="fr.inria.atlanmod.neoemf.blueprints.neo4j"
             download-size="0"
             install-size="0"
             version="0.0.1.qualifier"

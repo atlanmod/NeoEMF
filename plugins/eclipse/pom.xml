@@ -5,16 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>neoemf</artifactId>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>neoemf-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>eclipse</artifactId>
+    <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+    <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
 
     <packaging>pom</packaging>
 
-    <name>NeoEMF :: Eclipse :: Root</name>
+    <name>NeoEMF :: Eclipse</name>
     <description>
         Parent project for the Eclipse plugin generation.
         Is responsible of ui and feature plugin generation and update site creation.
