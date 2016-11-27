@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter;
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporterUtil;
+import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoImporter;
+import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoImporterUtil;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -58,38 +58,8 @@ public class MigrateCommand extends AbstractHandler {
         ISelectionService service = window.getSelectionService();
         selection = service.getSelection();
 
-        new Job("Migrating EMF model") {
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-                try {
-                    IFile file = getFile();
-                    if (isNull(file)) {
-                        showMessage("The selected element is not a *.genmodel file.", true);
-                    }
-                    else {
-                        GenModel genModel = getGenModel(file);
-                        if (isNull(genModel)) {
-                            showMessage("The selected file does not contain a generator model.", true);
-                        }
-                        else {
-                            String msg = NeoEMFImporterUtil.adjustGenModel(genModel);
-                            if (isNull(msg)) {
-                                showMessage("The selected generator model was already migrated.", false);
-                            }
-                            else {
-                                genModel.eResource().save(null);
-                                showMessage("The selected generator model has been migrated:" + "\n\n" + msg, false);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex) {
-                    return new Status(IStatus.ERROR, NeoEMFImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
-                }
+        new MigrateJob().schedule();
 
-                return Status.OK_STATUS;
-            }
-        }.schedule();
         return null;
     }
 
@@ -122,28 +92,65 @@ public class MigrateCommand extends AbstractHandler {
                 return (GenModel) object;
             }
         }
-
         return null;
     }
 
-    private void showMessage(final String msg, final boolean error) {
-        try {
-            final Display display = PlatformUI.getWorkbench().getDisplay();
-            display.syncExec(() -> {
-                try {
-                    final Shell shell = new Shell(display);
-                    if (error) {
-                        MessageDialog.openError(shell, "NeoEMF Migrator", msg);
+    private class MigrateJob extends Job {
+
+        public MigrateJob() {
+            super("Migrating EMF model");
+        }
+
+        @Override
+        protected IStatus run(IProgressMonitor monitor) {
+            try {
+                IFile file = getFile();
+                if (isNull(file)) {
+                    showMessage("The selected element is not a *.genmodel file.", true);
+                }
+                else {
+                    GenModel genModel = getGenModel(file);
+                    if (isNull(genModel)) {
+                        showMessage("The selected file does not contain a generator model.", true);
                     }
                     else {
-                        MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
+                        String msg = NeoImporterUtil.adjustGenModel(genModel);
+                        if (isNull(msg)) {
+                            showMessage("The selected generator model was already migrated.", false);
+                        }
+                        else {
+                            genModel.eResource().save(null);
+                            showMessage("The selected generator model has been migrated:" + "\n\n" + msg, false);
+                        }
                     }
                 }
-                catch (RuntimeException ignore) {
-                }
-            });
+            }
+            catch (Exception ex) {
+                return new Status(IStatus.ERROR, NeoImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
+            }
+
+            return Status.OK_STATUS;
         }
-        catch (RuntimeException ignore) {
+
+        private void showMessage(final String msg, final boolean error) {
+            try {
+                final Display display = PlatformUI.getWorkbench().getDisplay();
+                display.syncExec(() -> {
+                    try {
+                        final Shell shell = new Shell(display);
+                        if (error) {
+                            MessageDialog.openError(shell, "NeoEMF Migrator", msg);
+                        }
+                        else {
+                            MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
+                        }
+                    }
+                    catch (RuntimeException ignore) {
+                    }
+                });
+            }
+            catch (RuntimeException ignore) {
+            }
         }
     }
 }

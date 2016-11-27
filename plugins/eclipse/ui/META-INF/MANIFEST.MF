@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF UI Plugin
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.ui;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUIPlugin
+Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin
 Bundle-Vendor: Atlanmod - Inria
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

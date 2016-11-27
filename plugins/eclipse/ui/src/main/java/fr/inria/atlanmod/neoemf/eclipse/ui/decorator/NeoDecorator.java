@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.decorator;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUIPlugin;
+import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -20,7 +20,9 @@ import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public class NeoDBDecorator extends LabelProvider implements ILabelDecorator {
+public class NeoDecorator extends LabelProvider implements ILabelDecorator {
+
+    private static final String ICON_PATH = "icons/full/obj16/neoemf.png";
 
     @Override
     public Image decorateImage(Image image, Object element) {
@@ -29,7 +31,7 @@ public class NeoDBDecorator extends LabelProvider implements ILabelDecorator {
             IFile configFile = folder.getFile(PersistenceBackendFactory.CONFIG_FILE);
             if (configFile.exists()) {
                 // In a NeoEMF Database Folder
-                return NeoEMFUIPlugin.getImageDescriptor("icons/full/obj16/neoemf.png").createImage();
+                return NeoUIPlugin.getImageDescriptor(ICON_PATH).createImage();
             }
         }
         return null;
@@ -37,7 +39,6 @@ public class NeoDBDecorator extends LabelProvider implements ILabelDecorator {
 
     @Override
     public String decorateText(String text, Object element) {
-        // TODO Auto-generated method stub
         return null;
     }
 }

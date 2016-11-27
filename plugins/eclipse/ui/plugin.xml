@@ -5,11 +5,11 @@
     <extension
             point="org.eclipse.ui.editors">
         <editor
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEMFEditor"
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
                 contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
                 default="false"
                 icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEMFEditor"
+                id="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
                 name="NeoEMF Editor">
         </editor>
     </extension>
@@ -21,7 +21,7 @@
                 icon="icons/full/obj16/NeoEMFModelFile.gif"
                 id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
                 name="Ecore model (NeoEMF Native)"
-                wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoEMFModelImporterWizard">
+                wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoModelImporterWizard">
         </modelImporterDescriptor>
     </extension>
     <extension
@@ -100,7 +100,7 @@
                 name="&amp;Migrate EMF Generator Model">
         </command>
         <command
-                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.OpenNeoEMFDbCommand"
+                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.OpenBackendCommand"
                 id="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
                 name="&amp;Open Model Database">
         </command>
@@ -113,7 +113,7 @@
     <extension
             point="org.eclipse.core.expressions.propertyTesters">
         <propertyTester
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.NeoEMFDatabase"
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.IsNeoBackendTester"
                 id="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
                 namespace="fr.inria.atlanmod.neoemf.eclipse.ui"
                 properties="isNeoEMFDB"
@@ -124,7 +124,7 @@
             point="org.eclipse.ui.decorators">
         <decorator
                 adaptable="true"
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.NeoDBDecorator"
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.NeoDecorator"
                 id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
                 label="NeoEMF Database Folder Decorator"
                 objectClass="org.eclipse.core.resources.IFolder"

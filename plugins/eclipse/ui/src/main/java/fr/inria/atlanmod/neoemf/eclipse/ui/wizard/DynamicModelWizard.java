@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizard;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
-import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEMFEditor;
+import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
 import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -207,7 +207,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 
             // Open an editor on the new file.
             try {
-                page.openEditor(new URIEditorInput(dbURI), NeoEMFEditor.EDITOR_ID);
+                page.openEditor(new URIEditorInput(dbURI), NeoEditor.EDITOR_ID);
             }
             catch (PartInitException exception) {
                 MessageDialog.openError(workbenchWindow.getShell(), "Open Editor", exception.getMessage());

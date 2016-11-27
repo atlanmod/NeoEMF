@@ -32,15 +32,17 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Tree;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public class NeoEMFEditor extends EcoreEditor {
+public class NeoEditor extends EcoreEditor {
 
-    public static final String EDITOR_ID = NeoEMFEditor.class.getName();
+    public static final String EDITOR_ID = NeoEditor.class.getName();
 
-    public NeoEMFEditor() {
+    public NeoEditor() {
         super();
         this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapURI.SCHEME, PersistentResourceFactory.getInstance());
@@ -51,6 +53,7 @@ public class NeoEMFEditor extends EcoreEditor {
         URI resourceURI = EditUIUtil.getURI(getEditorInput());
         Resource resource = editingDomain.getResourceSet().createResource(resourceURI);
         editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
+
         // Create the store options depending of the backend
         Map<String, Object> options;
         if (Objects.equals(resource.getURI().scheme(), MapURI.SCHEME)) {
@@ -68,12 +71,12 @@ public class NeoEMFEditor extends EcoreEditor {
         else {
             options = Collections.emptyMap();
         }
+
         try {
             resource.load(options);
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to create model for the editor");
-            NeoLogger.error(e);
+            NeoLogger.error(e, "Unable to create model for the editor");
             for (Resource r : editingDomain.getResourceSet().getResources()) {
                 NeoLogger.info(resource.getURI().toString());
                 if (r instanceof PersistentResource) {
@@ -90,8 +93,9 @@ public class NeoEMFEditor extends EcoreEditor {
     @Override
     public void createPages()
     {
-        long begin = System.currentTimeMillis();
+        Instant begin = Instant.now();
         createModel();
+
         // Only creates the other pages if there is something that can be edited
         if (!getEditingDomain().getResourceSet().getResources().isEmpty()) {
             // Create a page for the selection tree view.
@@ -133,17 +137,19 @@ public class NeoEMFEditor extends EcoreEditor {
         });
 
         getSite().getShell().getDisplay().asyncExec(this::updateProblemIndication);
-        long end = System.currentTimeMillis();
-        NeoLogger.info("NeoEMF Editor Opened in {0} ms", (end - begin));
+
+        Instant end = Instant.now();
+
+        NeoLogger.info("NeoEMF Editor Opened in {0}", Duration.between(begin, end));
     }
 
     @Override
     public void dispose() {
         NeoLogger.info("Disposing NeoEditor");
+
         for (Resource resource : editingDomain.getResourceSet().getResources()) {
             if (resource instanceof PersistentResource) {
-                PersistentResource persistentResource = (PersistentResource) resource;
-                persistentResource.close();
+                ((PersistentResource) resource).close();
             }
             else {
                 resource.unload();

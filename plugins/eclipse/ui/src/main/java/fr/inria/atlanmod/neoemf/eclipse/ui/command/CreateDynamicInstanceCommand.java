@@ -69,9 +69,10 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
 
         DynamicModelWizard dynamicModelWizard = new DynamicModelWizard(eClass);
         dynamicModelWizard.init(PlatformUI.getWorkbench(), selection);
-        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), dynamicModelWizard);
 
+        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), dynamicModelWizard);
         wizardDialog.open();
+
         return null;
     }
 
