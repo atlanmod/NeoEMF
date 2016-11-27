@@ -14,10 +14,12 @@
 
     <packaging>jar</packaging>
 
+    <name>Modisco :: Java :: NeoEMF</name>
+
     <dependencies>
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
         </dependency>
     </dependencies>
 

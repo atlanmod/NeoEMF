@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
-        <artifactId>benchmarks</artifactId>
+        <artifactId>benchmarks-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -14,6 +14,8 @@
     <artifactId>org.eclipse.gmt.modisco</artifactId>
 
     <packaging>pom</packaging>
+
+    <name>Modisco</name>
 
     <modules>
         <module>java</module>

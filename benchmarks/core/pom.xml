@@ -6,11 +6,11 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
-        <artifactId>benchmarks</artifactId>
+        <artifactId>benchmarks-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core</artifactId>
+    <artifactId>benchmarks-core</artifactId>
 
     <packaging>jar</packaging>
 
@@ -61,22 +61,22 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
+            <artifactId>neoemf-blueprints</artifactId>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints.neo4j</artifactId>
+            <artifactId>neoemf-blueprints-neo4j</artifactId>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>map</artifactId>
+            <artifactId>neoemf-map</artifactId>
         </dependency>
 
         <!-- Commons -->

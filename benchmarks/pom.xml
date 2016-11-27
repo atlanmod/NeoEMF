@@ -6,12 +6,12 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>neoemf</artifactId>
+        <artifactId>neoemf-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
-    <artifactId>benchmarks</artifactId>
+    <artifactId>benchmarks-parent</artifactId>
 
     <packaging>pom</packaging>
 
@@ -53,25 +53,25 @@
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>core</artifactId>
+                <artifactId>neoemf-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>graph.blueprints</artifactId>
+                <artifactId>neoemf-blueprints</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>graph.blueprints.neo4j</artifactId>
+                <artifactId>neoemf-blueprints-neo4j</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>map</artifactId>
+                <artifactId>neoemf-map</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
