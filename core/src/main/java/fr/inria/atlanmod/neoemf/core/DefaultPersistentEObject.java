@@ -103,8 +103,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
         // Move contents from oldStore to eStore
         if (nonNull(oldStore) && nonNull(eStore) && eStore != oldStore) {
-            // If the new store is different, initialize the new store
-            // with the data stored in the old store
+            // If the new store is different, initialize the new store with the data stored in the old store
             for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
                 if (oldStore.isSet(this, feature)) {
                     if (!feature.isMany()) {

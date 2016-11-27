@@ -15,6 +15,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
@@ -45,11 +46,14 @@ import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -163,33 +167,8 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
     @Override
     public EObject eObject(Id id) {
-        if (isNull(id)) {
-            return null;
-        }
-        PersistentEObject persistentEObject = loadedEObjects.getIfPresent(id);
-        if (isNull(persistentEObject)) {
-            EClass eClass = resolveInstanceOf(id);
-            if (nonNull(eClass)) {
-                EObject eObject = EcoreUtil.create(eClass);
-                if (eObject instanceof PersistentEObject) {
-                    persistentEObject = (PersistentEObject) eObject;
-                }
-                else {
-                    persistentEObject = PersistentEObject.from(eObject);
-                }
-                persistentEObject.id(id);
-            }
-            else {
-                NeoLogger.error("Element {0} does not have an associated EClass", id);
-            }
-            if (isNull(persistentEObject)) {
-                NeoLogger.error("Element {0} does not exist", id);
-                return null;
-            }
-            else {
-                loadedEObjects.put(id, persistentEObject);
-            }
-        }
+        EClass eClass = resolveInstanceOf(id);
+        PersistentEObject persistentEObject = loadedEObjects.get(id, new PersistentEObjectCacheLoader(eClass));
         if (persistentEObject.resource() != resource()) {
             persistentEObject.resource(resource());
         }
@@ -236,7 +215,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     protected void updateInstanceOf(PersistentEObject object) {
-
         try {
             Put put = new Put(Bytes.toBytes(object.id().toString()));
             put.add(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(object.eClass().getEPackage().getNsURI()));
@@ -676,5 +654,36 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         }
 
         return oldValue;
+    }
+
+    private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
+
+        private final EClass eClass;
+
+        private PersistentEObjectCacheLoader(EClass eClass) {
+            this.eClass = eClass;
+        }
+
+        @Override
+        public PersistentEObject apply(Id id) {
+            PersistentEObject persistentEObject;
+            if (nonNull(eClass)) {
+                EObject eObject;
+                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
+                    // Dynamic EMF
+                    eObject = PersistenceFactory.getInstance().create(eClass);
+                }
+                else {
+                    eObject = EcoreUtil.create(eClass);
+                }
+                persistentEObject = PersistentEObject.from(eObject);
+                persistentEObject.id(id);
+                persistentEObject.setMapped(true);
+            }
+            else {
+                throw new RuntimeException("Element " + id + " does not have an associated EClass");
+            }
+            return persistentEObject;
+        }
     }
 }

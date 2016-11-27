@@ -34,7 +34,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     // Cache Object[] instead of Vertex[] because ...
-    // TODO cache many properties in addition to vertices
+    // TODO Cache many properties in addition to vertices
     private final Cache<FeatureKey, Object[]> cache;
 
     public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend graph) {

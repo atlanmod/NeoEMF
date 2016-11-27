@@ -133,7 +133,7 @@ class PersistentEObjectAdapter {
         @Override
         public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
             /*
-             * TODO: Dynamically transform 'obj' as a PersistentEObject or its implementation.
+             * TODO Dynamically transform 'obj' as a PersistentEObject or its implementation.
              * For now, it only works if the given 'obj' is natively a PersistentEObject.
              */
             return methodProxy.invokeSuper(obj, args);

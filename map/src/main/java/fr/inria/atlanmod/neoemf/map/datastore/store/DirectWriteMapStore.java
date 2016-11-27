@@ -21,7 +21,6 @@ import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.datastore.store.info.ClassInfo;
 import fr.inria.atlanmod.neoemf.datastore.store.info.ContainerInfo;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -52,12 +51,12 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     /**
      * An in-memory cache for persistent EObjects.
      */
-    protected final Cache<Id, PersistentEObject> loadedEObjectsCache;
+    protected final Cache<Id, PersistentEObject> loadedEObjects;
 
 
     public DirectWriteMapStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        this.loadedEObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        this.loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
@@ -229,7 +228,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
         checkPositionIndex(index, array.length, "Invalid add index " + index);
         array = ArrayUtils.add(array, index, value.id());
         persistenceBackend.storeValue(featureKey, array);
-        loadedEObjectsCache.put(value.id(), value);
+        loadedEObjects.put(value.id(), value);
     }
 
     @Override
@@ -286,17 +285,10 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
 
     @Override
     public EObject eObject(Id id) {
-        PersistentEObject persistentEObject = null;
-        if (nonNull(id)) {
-            try {
-                persistentEObject = loadedEObjectsCache.get(id, new PersistentEObjectCacheLoader());
-                if (persistentEObject.resource() != resource()) {
-                    persistentEObject.resource(resource());
-                }
-            }
-            catch (Exception e) {
-                NeoLogger.error(e);
-            }
+        EClass eClass = resolveInstanceOf(id);
+        PersistentEObject persistentEObject = loadedEObjects.get(id, new PersistentEObjectCacheLoader(eClass));
+        if (persistentEObject.resource() != resource()) {
+            persistentEObject.resource(resource());
         }
         return persistentEObject;
     }
@@ -334,12 +326,17 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
         return getFromMap(FeatureKey.from(object, feature));
     }
 
-    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
+    private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
+
+        private final EClass eClass;
+
+        private PersistentEObjectCacheLoader(EClass eClass) {
+            this.eClass = eClass;
+        }
 
         @Override
         public PersistentEObject apply(Id id) {
             PersistentEObject persistentEObject;
-            EClass eClass = resolveInstanceOf(id);
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
@@ -349,13 +346,9 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
                 else {
                     eObject = EcoreUtil.create(eClass);
                 }
-                if (eObject instanceof PersistentEObject) {
-                    persistentEObject = (PersistentEObject) eObject;
-                }
-                else {
-                    persistentEObject = PersistentEObject.from(eObject);
-                }
+                persistentEObject = PersistentEObject.from(eObject);
                 persistentEObject.id(id);
+                persistentEObject.setMapped(true);
             }
             else {
                 throw new RuntimeException("Element " + id + " does not have an associated EClass");

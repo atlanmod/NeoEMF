@@ -74,7 +74,7 @@ public class DirectWriteMapCacheManyStore extends DirectWriteMapStore {
             array = ArrayUtils.add(array, index, value.id());
             cachedArray.put(featureKey, array);
             persistenceBackend.storeValue(featureKey, array);
-            loadedEObjectsCache.put(value.id(), value);
+            loadedEObjects.put(value.id(), value);
         }
         else {
             super.addReference(object, eReference, index, value);

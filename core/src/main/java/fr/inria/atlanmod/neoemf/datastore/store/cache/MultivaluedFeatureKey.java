@@ -47,17 +47,17 @@ public class MultivaluedFeatureKey extends FeatureKey {
     }
 
     @Override
-    public int compareTo(FeatureKey other) {
+    public int compareTo(FeatureKey o) {
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;
 
-        if (!(other instanceof MultivaluedFeatureKey)) {
+        if (!(o instanceof MultivaluedFeatureKey)) {
             return AFTER;
         }
-        int result = super.compareTo(other);
+        int result = super.compareTo(o);
         if (result == EQUAL) {
-            MultivaluedFeatureKey that = (MultivaluedFeatureKey) other;
+            MultivaluedFeatureKey that = (MultivaluedFeatureKey) o;
             return (position > that.position) ? AFTER : (position < that.position) ? BEFORE : EQUAL;
         }
         else {

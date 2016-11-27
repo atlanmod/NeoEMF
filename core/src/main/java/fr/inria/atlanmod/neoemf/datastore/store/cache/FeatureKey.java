@@ -54,9 +54,6 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
         return name;
     }
 
-    /**
-     * Returns a new instance of this feature key, with a position.
-     */
     public MultivaluedFeatureKey withPosition(int position) {
         return MultivaluedFeatureKey.of(id, name, position);
     }
@@ -67,16 +64,16 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      * @return 0 if equal, -1 if before, 1 if after.
      */
     @Override
-    public int compareTo(FeatureKey other) {
+    public int compareTo(FeatureKey o) {
         final int EQUAL = 0;
 
-        if (this == other) {
+        if (this == o) {
             return EQUAL;
         }
-        int result = id.compareTo(other.id);
+        int result = id.compareTo(o.id);
 
         if (result == EQUAL) {
-            return name.compareTo(other.name);
+            return name.compareTo(o.name);
         }
         else {
             return result;

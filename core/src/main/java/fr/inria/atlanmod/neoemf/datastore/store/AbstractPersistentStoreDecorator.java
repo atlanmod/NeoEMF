@@ -29,7 +29,7 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     /**
      * The decorated {@link PersistentStore}.
      */
-    final protected PersistentStore eStore;
+    protected final PersistentStore eStore;
 
     public AbstractPersistentStoreDecorator(PersistentStore eStore) {
         this.eStore = eStore;

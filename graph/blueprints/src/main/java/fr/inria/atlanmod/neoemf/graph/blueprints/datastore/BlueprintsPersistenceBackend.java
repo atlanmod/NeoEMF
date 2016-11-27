@@ -74,8 +74,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      * We use a weak key cache for saving memory. When the value {@link EObject} is no longer referenced and can be
      * garbage collected it is removed from the {@link Cache}.
      */
-    private final Cache<Id, PersistentEObject> loadedEObjectsCache;
-    private final Cache<Id, Vertex> loadedVerticesCache;
+    private final Cache<Id, PersistentEObject> loadedEObjects;
+    private final Cache<Id, Vertex> loadedVertices;
     private final List<EClass> indexedEClasses;
 
     private final IdGraph<KeyIndexableGraph> graph;
@@ -85,8 +85,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.loadedEObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
-        this.loadedVerticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.loadedVertices = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.indexedEClasses = new ArrayList<>();
         this.metaclassIndex = graph.getIndex(KEY_METACLASSES, Vertex.class);
         if (isNull(metaclassIndex)) {
@@ -250,7 +250,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
     private Vertex getMappedVertex(Id id) {
         Vertex vertex = null;
         try {
-            vertex = loadedVerticesCache.get(id, this::getVertex);
+            vertex = loadedVertices.get(id, this::getVertex);
         }
         catch (Exception e) {
             NeoLogger.error(e);
@@ -260,8 +260,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     private void setMappedVertex(Vertex vertex, PersistentEObject object) {
         object.setMapped(true);
-        loadedEObjectsCache.put(object.id(), object);
-        loadedVerticesCache.put(object.id(), vertex);
+        loadedEObjects.put(object.id(), object);
+        loadedVertices.put(object.id(), vertex);
     }
 
     private EClass resolveInstanceOf(Vertex vertex) {
@@ -289,7 +289,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             eClass = resolveInstanceOf(vertex);
         }
         try {
-            persistentEObject = loadedEObjectsCache.get(id, new PersistantEObjectCacheLoader(eClass));
+            persistentEObject = loadedEObjects.get(id, new PersistentEObjectCacheLoader(eClass));
         }
         catch (Exception e) {
             NeoLogger.error(e);
@@ -323,11 +323,11 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         }
     }
 
-    private static class PersistantEObjectCacheLoader implements Function<Id, PersistentEObject> {
+    private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
         private final EClass eClass;
 
-        public PersistantEObjectCacheLoader(EClass eClass) {
+        private PersistentEObjectCacheLoader(EClass eClass) {
             this.eClass = eClass;
         }
 
@@ -337,24 +337,19 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
+                    // Dynamic EMF
                     eObject = PersistenceFactory.getInstance().create(eClass);
                 }
                 else {
                     eObject = EcoreUtil.create(eClass);
                 }
-                if (eObject instanceof PersistentEObject) {
-                    persistentEObject = (PersistentEObject) eObject;
-                }
-                else {
-                    persistentEObject = PersistentEObject.from(eObject);
-                }
-                persistentEObject.id(new StringId(id.toString()));
+                persistentEObject = PersistentEObject.from(eObject);
+                persistentEObject.id(id);
                 persistentEObject.setMapped(true);
             }
             else {
-                throw new RuntimeException("Vertex " + id + " does not have an associated EClass Vertex");
+                throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
-
             return persistentEObject;
         }
     }
