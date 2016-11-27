@@ -6,11 +6,11 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>neoemf</artifactId>
+        <artifactId>neoemf-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>map</artifactId>
+    <artifactId>neoemf-map</artifactId>
 
     <packaging>bundle</packaging>
 
@@ -31,7 +31,7 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -94,7 +94,7 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -108,6 +108,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Bundle-SymbolicName>${pom.groupId}.map</Bundle-SymbolicName>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>

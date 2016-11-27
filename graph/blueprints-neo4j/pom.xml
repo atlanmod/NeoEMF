@@ -6,15 +6,15 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>graph</artifactId>
+        <artifactId>neoemf-graph</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>graph.blueprints.neo4j</artifactId>
+    <artifactId>neoemf-blueprints-neo4j</artifactId>
 
     <packaging>bundle</packaging>
 
-    <name>NeoEMF :: Graph :: Blueprints :: Neo4j Wrapper</name>
+    <name>NeoEMF :: Graph :: Blueprints :: Neo4j</name>
     <description />
 
     <properties>
@@ -62,14 +62,14 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
+            <artifactId>neoemf-blueprints</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -107,7 +107,7 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -115,7 +115,7 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
+            <artifactId>neoemf-blueprints</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -129,6 +129,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Bundle-SymbolicName>${pom.groupId}.blueprints.neo4j</Bundle-SymbolicName>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.*,
                             org.apache.lucene.*;-split-package:=first,
@@ -161,7 +162,7 @@
                             blueprints-neo4j-graph
                         </Embed-Dependency>
                         <Require-Bundle>
-                            fr.inria.atlanmod.neoemf.graph.blueprints
+                            fr.inria.atlanmod.neoemf.blueprints
                         </Require-Bundle>
                     </instructions>
                 </configuration>
