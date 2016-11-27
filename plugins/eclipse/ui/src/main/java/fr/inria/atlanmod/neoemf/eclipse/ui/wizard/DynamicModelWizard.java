@@ -62,7 +62,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
     /**
      * This caches the class instance.
      */
-    private EClass eClass;
+    private final EClass eClass;
 
     /**
      * This is the folder creation page.

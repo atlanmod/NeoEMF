@@ -12,8 +12,8 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.migrator;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;

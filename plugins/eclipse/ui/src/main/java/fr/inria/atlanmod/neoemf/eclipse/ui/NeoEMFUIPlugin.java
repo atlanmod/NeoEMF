@@ -29,14 +29,14 @@ public class NeoEMFUIPlugin extends AbstractUIPlugin {
     // The plug-in ID
     public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui"; //$NON-NLS-1$
 
-    // The shared instance
-    private static NeoEMFUIPlugin plugin;
-
-    private static ILogListener logListener = (status, plugin1) -> {
+    private static final ILogListener logListener = (status, plugin1) -> {
         if (status.matches(IStatus.ERROR)) {
             StatusManager.getManager().handle(status, StatusManager.BLOCK);
         }
     };
+
+    // The shared instance
+    private static NeoEMFUIPlugin plugin;
 
     /**
      * Returns the shared instance

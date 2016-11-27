@@ -55,13 +55,14 @@ class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
             "com.tinkerpop.blueprints.impls.tg.TinkerGraph",
             "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph"
     };
+
+    private final List<GraphProperty> graphProperties = new ArrayList<>();
+
     private ComboViewer comboViewer;
     private TableViewer tableViewer;
 
     private Button addButton;
     private Button removeButton;
-
-    private List<GraphProperty> graphProperties = new ArrayList<>();
 
     protected SelectBlueprintsGraphTypeWizardPage(String pageName, String title, ImageDescriptor titleImage) {
         super(pageName, title, titleImage);
