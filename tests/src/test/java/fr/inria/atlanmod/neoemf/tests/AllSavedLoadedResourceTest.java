@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public abstract class AllSavedLoadedResourceITest extends AllITest {
+public abstract class AllSavedLoadedResourceTest extends AllBackendTest {
 
     protected void getAllContentsContainer(PersistentResource persistentResource) {
         Iterator<EObject> it = persistentResource.getAllContents();

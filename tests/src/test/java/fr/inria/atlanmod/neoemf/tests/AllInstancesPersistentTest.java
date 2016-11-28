@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class AllInstancesPersistentITest extends AllInstancesITest {
+public class AllInstancesPersistentTest extends AllInstancesTest {
 
     @Override
     @Before

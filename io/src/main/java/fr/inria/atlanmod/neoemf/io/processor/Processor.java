@@ -20,9 +20,4 @@ import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
  * the {@link InputNotifier#addHandler(InputHandler)} method.
  */
 public interface Processor extends InputHandler, InputNotifier<PersistenceHandler> {
-
-    /**
-     * Process characters.
-     */
-    void processCharacters(String characters);
 }

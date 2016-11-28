@@ -31,83 +31,88 @@ public class AbstractProcessor implements Processor {
 
     @Override
     public void processStartDocument() {
-        processor.processStartDocument();
+        notifyStartDocument();
     }
 
     @Override
     public void processStartElement(Classifier classifier) {
-        processor.processStartElement(classifier);
+        notifyStartElement(classifier);
     }
 
     @Override
     public void processAttribute(Attribute attribute) {
-        processor.processAttribute(attribute);
+        notifyAttribute(attribute);
     }
 
     @Override
     public void processReference(Reference reference) {
-        processor.processReference(reference);
-    }
-
-    @Override
-    public void processEndElement() {
-        processor.processEndElement();
-    }
-
-    @Override
-    public void processEndDocument() {
-        processor.processEndDocument();
+        notifyReference(reference);
     }
 
     @Override
     public void processCharacters(String characters) {
-        processor.processCharacters(characters);
+        notifyCharacters(characters);
+    }
+
+    @Override
+    public void processEndElement() {
+        notifyEndElement();
+    }
+
+    @Override
+    public void processEndDocument() {
+        notifyEndDocument();
     }
 
     // Notifier methods
 
     @Override
-    public void addHandler(PersistenceHandler persistenceHandler) {
+    public final void addHandler(PersistenceHandler persistenceHandler) {
         processor.addHandler(persistenceHandler);
     }
 
     @Override
-    public boolean hasHandler() {
+    public final boolean hasHandler() {
         return processor.hasHandler();
     }
 
     @Override
-    public Iterable<PersistenceHandler> getHandlers() {
+    public final Iterable<PersistenceHandler> getHandlers() {
         return processor.getHandlers();
     }
 
     @Override
-    public void notifyStartDocument() {
-        processor.notifyStartDocument();
+    public final void notifyStartDocument() {
+        processor.processStartDocument();
     }
 
     @Override
-    public void notifyStartElement(Classifier classifier) {
-        processor.notifyStartElement(classifier);
+    public final void notifyStartElement(Classifier classifier) {
+        processor.processStartElement(classifier);
     }
 
     @Override
-    public void notifyAttribute(Attribute attribute) {
-        processor.notifyAttribute(attribute);
+    public final void notifyAttribute(Attribute attribute) {
+        processor.processAttribute(attribute);
     }
 
     @Override
-    public void notifyReference(Reference reference) {
-        processor.notifyReference(reference);
+    public final void notifyReference(Reference reference) {
+        processor.processReference(reference);
     }
 
     @Override
-    public void notifyEndElement() {
-        processor.notifyEndElement();
+    public final void notifyCharacters(String characters) {
+        processor.processCharacters(characters);
     }
 
     @Override
-    public void notifyEndDocument() {
-        processor.notifyEndDocument();
+    public final void notifyEndElement() {
+        processor.processEndElement();
+    }
+
+    @Override
+    public final void notifyEndDocument() {
+        processor.processEndDocument();
     }
 }

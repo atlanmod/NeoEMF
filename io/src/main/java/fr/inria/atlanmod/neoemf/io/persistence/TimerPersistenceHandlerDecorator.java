@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
+
 package fr.inria.atlanmod.neoemf.io.persistence;
 
 import com.google.common.base.Stopwatch;
@@ -9,6 +20,8 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
  */
 public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
+    private static int id = 0;
+
     private final String name;
 
     private Stopwatch stopWatch;
@@ -16,6 +29,10 @@ public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandler
     public TimerPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
         super(handler);
         this.name = name;
+    }
+
+    public TimerPersistenceHandlerDecorator(PersistenceHandler handler) {
+        this(handler, "dummy-" + ++id);
     }
 
     @Override

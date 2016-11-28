@@ -65,4 +65,9 @@ public interface InputHandler {
      * @see InputNotifier#notifyEndDocument()
      */
     void processEndDocument();
+
+    /**
+     * Process characters.
+     */
+    void processCharacters(String characters);
 }

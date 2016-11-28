@@ -11,9 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.processor.AbstractProcessorNotifier;
+import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.ProcessorNotifier;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -22,7 +21,7 @@ import static java.util.Objects.isNull;
 /**
  * An abstract implementation of a {@link Reader} that notifies {@link Processor}.
  */
-public abstract class AbstractReader extends AbstractProcessorNotifier implements ProcessorNotifier, Reader {
+public abstract class AbstractReader extends AbstractInputNotifier<Processor> implements Reader {
 
     protected static String format(String prefix, String value) {
         checkNotNull(value);

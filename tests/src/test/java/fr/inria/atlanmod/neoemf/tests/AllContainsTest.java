@@ -28,7 +28,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
  * Test class for the contains method, related to performance issue descibed in #30
  * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
-public class AllContainsITest extends AllITest {
+public class AllContainsTest extends AllBackendTest {
 
     protected MapSampleFactory factory;
 

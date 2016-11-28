@@ -82,6 +82,13 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
+     * Notifies a new set of characters.
+     */
+    default void notifyCharacters(String characters) {
+        getHandlers().forEach(p -> p.processCharacters(characters));
+    }
+
+    /**
      * Notifies the end of the current element.
      *
      * @see #notifyStartElement(Classifier)

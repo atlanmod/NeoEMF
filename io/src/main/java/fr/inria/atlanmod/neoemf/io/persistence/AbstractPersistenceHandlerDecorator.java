@@ -47,6 +47,11 @@ public abstract class AbstractPersistenceHandlerDecorator implements Persistence
     }
 
     @Override
+    public void processCharacters(String characters) {
+        handler.processCharacters(characters);
+    }
+
+    @Override
     public void processEndElement() {
         handler.processEndElement();
     }

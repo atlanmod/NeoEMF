@@ -91,7 +91,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
         }
 
-        super.processStartElement(classifier);
+        notifyStartElement(classifier);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class XPathProcessor extends AbstractProcessor {
             reference.setIdReference(Identifier.generated(formatPath(reference.getIdReference().getValue())));
         }
 
-        super.processReference(reference);
+        notifyReference(reference);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class XPathProcessor extends AbstractProcessor {
             paths.clearLast();
         }
 
-        super.processEndElement();
+        notifyEndElement();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
         }
 
-        super.processEndDocument();
+        notifyEndDocument();
     }
 
     private String formatPath(String path) {

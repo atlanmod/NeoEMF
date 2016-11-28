@@ -20,5 +20,4 @@ import fr.inria.atlanmod.neoemf.io.InputNotifier;
  * It correspond to the tail of the parsing process in case of an import.
  */
 public interface PersistenceHandler extends InputHandler {
-
 }

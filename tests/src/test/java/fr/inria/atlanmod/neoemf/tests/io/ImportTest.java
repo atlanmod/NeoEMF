@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.TimerPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -53,9 +54,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
 import static java.util.Objects.isNull;
 
-@Ignore
-// FIXME Resources are not found
-public class ImportITest extends AllInputTest {
+public class ImportTest extends AllInputTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -367,6 +366,7 @@ public class ImportITest extends AllInputTest {
 
         persistenceHandler = new LoggingPersistenceHandlerDecorator(persistenceHandler);
         persistenceHandler = new CounterPersistenceHandlerDecorator(persistenceHandler);
+        persistenceHandler = new TimerPersistenceHandlerDecorator(persistenceHandler);
 
         loadWithNeo(file, persistenceHandler);
 

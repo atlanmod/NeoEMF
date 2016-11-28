@@ -110,7 +110,7 @@ public class EcoreProcessor extends AbstractProcessor {
         if (eStructuralFeature instanceof EAttribute) {
             EAttribute eAttribute = (EAttribute) eStructuralFeature;
             attribute.setMany(eAttribute.isMany());
-            super.processAttribute(attribute);
+            notifyAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
@@ -129,7 +129,7 @@ public class EcoreProcessor extends AbstractProcessor {
             EReference eReference = (EReference) eStructuralFeature;
             reference.setContainment(eReference.isContainment());
             reference.setMany(eReference.isMany());
-            super.processReference(reference);
+            notifyReference(reference);
         }
 
         // Otherwise redirect to the attribute handler
@@ -144,7 +144,7 @@ public class EcoreProcessor extends AbstractProcessor {
             classesStack.removeLast();
             idsStack.removeLast();
 
-            super.processEndElement();
+            notifyEndElement();
         }
         else {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
@@ -186,7 +186,7 @@ public class EcoreProcessor extends AbstractProcessor {
         classifier.setRoot(true);
 
         // Notifies next handlers
-        super.processStartElement(classifier);
+        notifyStartElement(classifier);
 
         // Saves the current EClass
         classesStack.addLast(eClass);
@@ -231,7 +231,7 @@ public class EcoreProcessor extends AbstractProcessor {
         classifier.setNamespace(ns);
 
         // Notify next handlers of new element, and retreive its identifier
-        super.processStartElement(classifier);
+        notifyStartElement(classifier);
         Identifier currentId = classifier.getId();
 
         // Create a reference from the parent to this element, with the given local name

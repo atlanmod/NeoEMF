@@ -105,6 +105,11 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
+    public void processCharacters(String characters) {
+        // Do nothing
+    }
+
+    @Override
     public void processEndElement() {
         classifierStack.removeLast();
     }

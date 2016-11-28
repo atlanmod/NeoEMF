@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class LoadedResourceResourceITest extends AllLoadedResourceITest {
+public class LoadedResourceResourceTest extends AllLoadedResourceTest {
 
     @Test
     public void testGetElementsEResourceMapDB() {

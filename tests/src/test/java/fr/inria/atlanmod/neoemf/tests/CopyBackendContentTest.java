@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class CopyBackendContentITest extends AllITest {
+public class CopyBackendContentTest extends AllBackendTest {
 
     private static final String MODEL_NAME = "Model", CONTENT1_NAME = "Content1", CONTENT2_NAME = "Content2";
 

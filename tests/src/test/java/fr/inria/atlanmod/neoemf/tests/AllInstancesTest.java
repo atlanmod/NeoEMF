@@ -25,7 +25,7 @@ import org.junit.Before;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public abstract class AllInstancesITest extends AllITest {
+public abstract class AllInstancesTest extends AllBackendTest {
 
     // These variables should be updated if createResourceContent is changed
     protected static final int PACK_COUNT = 6;

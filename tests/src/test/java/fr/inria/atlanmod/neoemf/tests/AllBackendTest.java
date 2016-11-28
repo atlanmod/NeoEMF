@@ -28,7 +28,7 @@ import java.util.Date;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public abstract class AllITest extends AllTest {
+public abstract class AllBackendTest extends AllTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
