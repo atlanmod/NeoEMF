@@ -11,15 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureCache;
 import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -31,20 +27,17 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import static java.util.Objects.isNull;
 
-
 public class DirectWriteMapListsStore extends DirectWriteMapStore {
 
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 1000;
-
-    private final LoadingCache<FeatureKey, Object> mapCache;
+    private final FeatureCache<Object> featureCache;
 
     public DirectWriteMapListsStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        this.mapCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build(new Tuple2CacheLoader());
+        this.featureCache = new FeatureCache<>();
     }
 
     @Override
@@ -189,18 +182,13 @@ public class DirectWriteMapListsStore extends DirectWriteMapStore {
 
     @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        Object returnValue = null;
+        Object returnValue;
         FeatureKey featureKey = FeatureKey.from(object, feature);
         if (!feature.isMany()) {
             returnValue = persistenceBackend.valueOf(featureKey);
         }
         else {
-            try {
-                returnValue = mapCache.get(featureKey);
-            }
-            catch (Exception e) {
-                NeoLogger.warn(e);
-            }
+            returnValue = featureCache.get(featureKey, new FeatureKeyCacheLoader());
         }
         return returnValue;
     }
@@ -210,12 +198,12 @@ public class DirectWriteMapListsStore extends DirectWriteMapStore {
         return (List<Object>) value;
     }
 
-    private class Tuple2CacheLoader implements CacheLoader<FeatureKey, Object> {
+    private class FeatureKeyCacheLoader implements Function<FeatureKey, Object> {
 
         private static final int ARRAY_SIZE_OFFSET = 10;
 
         @Override
-        public Object load(FeatureKey key) throws Exception {
+        public Object apply(FeatureKey key) {
             Object returnValue;
             Object value = persistenceBackend.valueOf(key);
             if (isNull(value)) {

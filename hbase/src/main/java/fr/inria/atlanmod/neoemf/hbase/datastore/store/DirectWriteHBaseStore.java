@@ -76,12 +76,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     private static final int ATTEMP_TIMES_DEFAULT = 10;
     private static final long SLEEP_DEFAULT = 1L;
 
-    private final Cache<Id, PersistentEObject> loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+    private final Cache<Id, PersistentEObject> loadedEObjects;
 
     protected HTable table;
 
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
+
+        loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
 
         Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.zookeeper.quorum", resource.getURI().host());

@@ -41,10 +41,11 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
-    private final Cache<HBaseFeatureKey, Object> cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+    private final Cache<HBaseFeatureKey, Object> loadedObjects;
 
     public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
+        loadedObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
@@ -79,7 +80,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
         HBaseFeatureKey entry = new HBaseFeatureKey(neoEObject.id(), feature);
         Object returnValue = null;
         try {
-            returnValue = cache.get(entry, new FeatureCacheLoader());
+            returnValue = loadedObjects.get(entry, new FeatureCacheLoader());
         }
         catch (Exception e) {
             NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
