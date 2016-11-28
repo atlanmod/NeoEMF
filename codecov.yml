@@ -9,5 +9,3 @@ coverage:
     changes: false
     patch: true
     project: true
-  ignore:
-    - "tests/*"
