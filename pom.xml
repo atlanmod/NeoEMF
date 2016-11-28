@@ -129,7 +129,6 @@
         -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -497,41 +496,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!-- The property ${jacocoUnit} created by JaCoCO:prepare-agent -->
-                    <argLine>${jacocoUnit} ${globalArgLine}</argLine>
+                    <!-- The property ${argLine} created by JaCoCO:prepare-agent -->
+                    <argLine>${argLine} ${globalArgLine}</argLine>
                     <failIfNoTests>false</failIfNoTests>
-                    <!-- Exclude integration tests -->
-                    <excludes>
-                        <exclude>**/*ITest.java</exclude>
-                    </excludes>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <!-- The property ${jacocoIntegration} created by JaCoCO:prepare-agent-integration -->
-                    <argLine>${jacocoIntegration} ${globalArgLine}</argLine>
-                    <failIfNoTests>false</failIfNoTests>
-                    <!-- Include integration tests -->
-                    <includes>
-                        <include>**/*ITest.java</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <!--
-                        Ensures that both integration-test and verify goals of the Failsafe Maven
-                        plugin are executed.
-                    -->
-                    <execution>
-                        <id>integration-tests</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -557,32 +525,12 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <configuration>
-                            <propertyName>jacocoUnit</propertyName>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>post-unit-test</id>
                         <phase>test</phase>
                         <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                        <configuration>
-                            <propertyName>jacocoIntegration</propertyName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>report-integration</goal>
+                            <goal>report-aggregate</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -663,12 +611,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${dependency-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${surefire-plugin.version}</version>
                 </plugin>
 
                 <plugin>
@@ -888,6 +830,7 @@
                 </reportSets>
             </plugin>
 
+<!--        Doesn't support JDK8
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -915,6 +858,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -924,7 +868,6 @@
                     <reportSet>
                         <reports>
                             <report>report-only</report>
-                            <report>failsafe-report-only</report>
                         </reports>
                     </reportSet>
                 </reportSets>
