@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.hbase.datastore.store.cache;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 

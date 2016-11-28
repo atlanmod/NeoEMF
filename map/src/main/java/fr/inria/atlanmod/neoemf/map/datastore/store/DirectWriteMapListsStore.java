@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.map.datastore.store;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureCache;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.collections4.CollectionUtils;

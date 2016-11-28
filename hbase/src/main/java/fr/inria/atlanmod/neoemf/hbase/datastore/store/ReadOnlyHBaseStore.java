@@ -11,10 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.cache.HBaseFeatureKey;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
@@ -38,14 +37,11 @@ import java.util.function.Function;
 
 public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
-    private final Cache<HBaseFeatureKey, Object> loadedObjects;
+    private final FeatureCache<Object> loadedObjects;
 
     public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
-        loadedObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        loadedObjects = new FeatureCache<>();
     }
 
     @Override
@@ -126,10 +122,18 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
         return new UnsupportedOperationException(MessageFormat.format(message, tableName));
     }
 
-    private class FeatureCacheLoader implements Function<HBaseFeatureKey, Object> {
+    private class FeatureCacheLoader implements Function<FeatureKey, Object> {
 
         @Override
-        public Object apply(HBaseFeatureKey featureKey) {
+        public Object apply(FeatureKey featureKey) {
+            HBaseFeatureKey hBaseFeatureKey;
+            if (featureKey instanceof HBaseFeatureKey) {
+                hBaseFeatureKey = (HBaseFeatureKey) featureKey;
+            }
+            else {
+                throw new IllegalArgumentException("FeatureKey is not an instance of " + HBaseFeatureKey.class.getSimpleName());
+            }
+
             Result result;
             try {
                 result = table.get(new Get(Bytes.toBytes(featureKey.id().toString())));
@@ -139,11 +143,11 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
             }
 
             byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(featureKey.name()));
-            if (!featureKey.feature().isMany()) {
+            if (!hBaseFeatureKey.feature().isMany()) {
                 return Bytes.toString(value);
             }
             else {
-                if (featureKey.feature() instanceof EAttribute) {
+                if (hBaseFeatureKey.feature() instanceof EAttribute) {
                     return HBaseEncoderUtil.toStrings(value);
                 }
                 else {

@@ -11,15 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.cache.IdCache;
 import fr.inria.atlanmod.neoemf.hbase.datastore.HBasePersistenceBackend;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseURI;
@@ -63,9 +61,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
     private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
     private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
     private static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
@@ -76,14 +71,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     private static final int ATTEMP_TIMES_DEFAULT = 10;
     private static final long SLEEP_DEFAULT = 1L;
 
-    private final Cache<Id, PersistentEObject> loadedEObjects;
+    private final IdCache<PersistentEObject> loadedEObjects;
 
     protected HTable table;
 
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
 
-        loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        loadedEObjects = new IdCache<>();
 
         Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.zookeeper.quorum", resource.getURI().host());

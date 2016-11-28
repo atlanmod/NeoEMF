@@ -11,15 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.IdCache;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ClassInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ContainerInfo;
@@ -45,18 +43,14 @@ import static java.util.Objects.nonNull;
 
 public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistenceBackend> {
 
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
     /**
      * An in-memory cache for persistent EObjects.
      */
-    protected final Cache<Id, PersistentEObject> loadedEObjects;
-
+    protected final IdCache<PersistentEObject> loadedEObjects;
 
     public DirectWriteMapStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        this.loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        this.loadedEObjects = new IdCache<>();
     }
 
     @Override

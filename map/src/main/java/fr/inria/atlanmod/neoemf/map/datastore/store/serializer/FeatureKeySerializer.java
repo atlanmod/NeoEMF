@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.map.datastore.store.serializer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;

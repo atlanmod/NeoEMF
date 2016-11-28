@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store.serializer;
 
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.MultivaluedFeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;

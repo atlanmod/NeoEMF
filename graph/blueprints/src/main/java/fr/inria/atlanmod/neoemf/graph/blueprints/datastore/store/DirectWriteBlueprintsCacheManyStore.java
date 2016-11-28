@@ -11,14 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
+import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -30,16 +29,12 @@ import static java.util.Objects.nonNull;
 
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
-    // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
-
-    // Cache Object[] instead of Vertex[] because ...
     // TODO Cache many properties in addition to vertices
-    private final Cache<FeatureKey, Object[]> cache;
+    private final FeatureCache<Object[]> cache;
 
     public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend graph) {
         super(resource, graph);
-        cache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
+        cache = new FeatureCache<>();
     }
 
     @Override

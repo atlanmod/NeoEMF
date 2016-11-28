@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store;
 
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureCache;
-import fr.inria.atlanmod.neoemf.datastore.store.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
