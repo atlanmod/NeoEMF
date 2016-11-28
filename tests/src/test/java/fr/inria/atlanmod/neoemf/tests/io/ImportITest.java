@@ -54,6 +54,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
 import static java.util.Objects.isNull;
 
 @Ignore
+// FIXME Resources are not found
 public class ImportITest extends AllInputTest {
 
     @Rule

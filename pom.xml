@@ -511,7 +511,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
-                    <argLine>${jacocoIntegration}</argLine>
+                    <!-- The property ${jacocoIntegration} created by JaCoCO:prepare-agent-integration -->
+                    <argLine>${jacocoIntegration} ${globalArgLine}</argLine>
                     <failIfNoTests>false</failIfNoTests>
                     <!-- Include integration tests -->
                     <includes>
@@ -552,6 +553,7 @@
                 <executions>
                     <execution>
                         <id>pre-unit-test</id>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
@@ -575,7 +577,7 @@
                         <id>pre-integration-test</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>prepare-agent</goal>
+                            <goal>prepare-agent-integration</goal>
                         </goals>
                         <configuration>
                             <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
@@ -586,7 +588,7 @@
                         <id>post-integration-test</id>
                         <phase>post-integration-test</phase>
                         <goals>
-                            <goal>report</goal>
+                            <goal>report-integration</goal>
                         </goals>
                         <configuration>
                             <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
