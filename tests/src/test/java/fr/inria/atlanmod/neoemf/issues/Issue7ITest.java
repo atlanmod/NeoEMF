@@ -22,7 +22,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 /**
  * Test case to reproduce the issue #7 @link{https://github.com/atlanmod/NeoEMF/issues/7}
  */
-public class Issue7Test extends AllTest {
+public class Issue7ITest extends AllTest {
 
     @Test
     public void testIssue7() {

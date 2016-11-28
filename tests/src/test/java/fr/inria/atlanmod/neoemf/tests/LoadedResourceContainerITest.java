@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class LoadedResourceContainerTest extends AllLoadedResourceTest {
+public class LoadedResourceContainerITest extends AllLoadedResourceITest {
 
     @Test
     public void testGetElementsContainerMapDB() {

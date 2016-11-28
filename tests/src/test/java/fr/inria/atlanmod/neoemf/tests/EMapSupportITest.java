@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class EMapSupportTest extends AllBackendTest {
+public class EMapSupportITest extends AllITest {
 
     private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
 

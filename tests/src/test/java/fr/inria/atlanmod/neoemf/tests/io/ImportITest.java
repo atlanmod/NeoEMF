@@ -53,7 +53,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
 import static java.util.Objects.isNull;
 
-public class ImportTest extends AllInputTest {
+public class ImportITest extends AllInputTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

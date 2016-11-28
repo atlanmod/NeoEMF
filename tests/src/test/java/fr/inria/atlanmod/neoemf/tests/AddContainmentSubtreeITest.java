@@ -24,7 +24,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
  * existing PersistentResource add all its elements to the
  * resource.
  */
-public class AddContainmentSubtreeTest extends AllContainmentTest {
+public class AddContainmentSubtreeITest extends AllContainmentITest {
 
     @Test
     public void testAddContainmentSubtreeToPersistentResourceMapDB() {

@@ -31,7 +31,7 @@ import java.util.Date;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class PersistenceURITest extends AllTest {
+public class PersistenceUriTest extends AllTest {
 
     private static final String TEST_FILENAME = "neoURITestFile";
 

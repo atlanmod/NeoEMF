@@ -30,7 +30,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
  * Test class for the contains method, related to performance issue descibed in #30
  * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
-public class EObjectEContentsTest extends AllBackendTest {
+public class EObjectEContentsITest extends AllITest {
 
     private static final int SUB_PACK_COUNT = 5;
     private static final int PACK_CONTENT_COUNT = 3;

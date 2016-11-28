@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.Before;
 
-public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
+public abstract class AllLoadedResourceITest extends AllSavedLoadedResourceITest {
 
     MapSampleFactory factory;
 

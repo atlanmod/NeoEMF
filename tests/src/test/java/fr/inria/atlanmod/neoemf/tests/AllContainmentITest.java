@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
 import org.junit.After;
 import org.junit.Before;
 
-public abstract class AllContainmentTest extends AllBackendTest {
+public abstract class AllContainmentITest extends AllITest {
 
     protected MapSampleFactory factory;
 

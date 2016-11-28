@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AllInstancesTransientTest extends AllInstancesTest {
+public class AllInstancesTransientITest extends AllInstancesITest {
 
     @Override
     @Before
