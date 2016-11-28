@@ -77,7 +77,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
     protected Object getFromTable(PersistentEObject object, EStructuralFeature feature) {
         PersistentEObject neoEObject = PersistentEObject.from(object);
 
-        HBaseFeatureKey entry = new HBaseFeatureKey(neoEObject.id(), feature);
+        HBaseFeatureKey entry = HBaseFeatureKey.from(neoEObject, feature);
         Object returnValue = null;
         try {
             returnValue = loadedObjects.get(entry, new FeatureCacheLoader());
