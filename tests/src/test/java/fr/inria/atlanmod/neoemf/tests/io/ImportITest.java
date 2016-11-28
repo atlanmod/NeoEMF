@@ -53,6 +53,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
 import static java.util.Objects.isNull;
 
+@Ignore
 public class ImportITest extends AllInputTest {
 
     @Rule
