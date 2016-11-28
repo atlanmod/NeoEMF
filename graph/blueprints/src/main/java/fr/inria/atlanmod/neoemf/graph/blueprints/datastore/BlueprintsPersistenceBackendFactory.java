@@ -223,7 +223,6 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
                 Method configClassInstanceMethod = configClass.getMethod("getInstance");
                 InternalBlueprintsConfiguration blueprintsConfig = (InternalBlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
                 blueprintsConfig.putDefaultConfiguration(configuration, directory);
-                blueprintsConfig.setGlobalSettings();
             }
             catch (ClassNotFoundException e) {
                 NeoLogger.warn(e, "Unable to find the configuration class {0}", configClassQualifiedName);

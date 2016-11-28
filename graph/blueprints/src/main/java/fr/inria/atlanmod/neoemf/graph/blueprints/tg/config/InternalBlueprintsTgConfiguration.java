@@ -44,11 +44,6 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
         }
     }
 
-    @Override
-    public void setGlobalSettings() {
-
-    }
-
     private static class Holder {
 
         private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsTgConfiguration();

@@ -40,11 +40,6 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
         }
     }
 
-    @Override
-    public void setGlobalSettings() {
-
-    }
-
     private static class Holder {
 
         private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsNeo4jConfiguration();
