@@ -44,17 +44,17 @@ public class DummyPersistenceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void processCharacters(String characters) {
-        // Do nothing
-    }
-
-    @Override
     public void processEndElement() {
         // Do nothing
     }
 
     @Override
     public void processEndDocument() {
+        // Do nothing
+    }
+
+    @Override
+    public void processCharacters(String characters) {
         // Do nothing
     }
 }

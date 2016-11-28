@@ -182,11 +182,6 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     @Override
-    public void processCharacters(String characters) {
-        // Do nothing
-    }
-
-    @Override
     public void processEndElement() {
         elementIdStack.removeLast();
     }
@@ -209,6 +204,11 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         }
 
         persistenceBackend.save();
+    }
+
+    @Override
+    public void processCharacters(String characters) {
+        // Do nothing
     }
 
     /**

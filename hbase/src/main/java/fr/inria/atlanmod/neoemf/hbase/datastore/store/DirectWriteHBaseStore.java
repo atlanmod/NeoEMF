@@ -11,13 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore.store;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.cache.IdCache;
 import fr.inria.atlanmod.neoemf.hbase.datastore.HBasePersistenceBackend;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseURI;
@@ -71,14 +73,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     private static final int ATTEMP_TIMES_DEFAULT = 10;
     private static final long SLEEP_DEFAULT = 1L;
 
-    private final IdCache<PersistentEObject> loadedEObjects;
+    private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     protected HTable table;
 
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
 
-        loadedEObjects = new IdCache<>();
+        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();
 
         Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.zookeeper.quorum", resource.getURI().host());
@@ -87,7 +89,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         TableName tableName = TableName.valueOf(HBaseURI.format(resource.getURI()));
         HBaseAdmin admin = new HBaseAdmin(conf);
 
-        table = initTable(conf, tableName, admin);
+        this.table = initTable(conf, tableName, admin);
     }
 
     protected HTable initTable(Configuration conf, TableName tableName, HBaseAdmin admin) throws IOException {
@@ -165,7 +167,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     @Override
     public EObject eObject(Id id) {
         EClass eClass = resolveInstanceOf(id);
-        PersistentEObject persistentEObject = loadedEObjects.get(id, new PersistentEObjectCacheLoader(eClass));
+        PersistentEObject persistentEObject = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
         if (persistentEObject.resource() != resource()) {
             persistentEObject.resource(resource());
         }
@@ -188,7 +190,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     private void updateLoadedEObjects(PersistentEObject eObject) {
-        loadedEObjects.put(eObject.id(), eObject);
+        persistentObjectsCache.put(eObject.id(), eObject);
     }
 
     protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {

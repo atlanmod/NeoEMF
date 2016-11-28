@@ -50,16 +50,16 @@ public class Namespace {
         /**
          * Registered {@link Namespace} identified by their prefix.
          */
-        private final Cache<String, Namespace> namespacesByPrefix;
+        private final Cache<String, Namespace> nsByPrefixCache;
 
         /**
          * Registered {@link Namespace} identified by their URI.
          */
-        private final Cache<String, Namespace> namespacesByUri;
+        private final Cache<String, Namespace> nsByUriCache;
 
         private Registry() {
-            namespacesByPrefix = Caffeine.newBuilder().build();
-            namespacesByUri = Caffeine.newBuilder().build();
+            nsByPrefixCache = Caffeine.newBuilder().build();
+            nsByUriCache = Caffeine.newBuilder().build();
         }
 
         public static Registry getInstance() {
@@ -67,7 +67,7 @@ public class Namespace {
         }
 
         public Iterable<String> getPrefixes() {
-            return namespacesByPrefix.asMap().keySet();
+            return nsByPrefixCache.asMap().keySet();
         }
 
         /**
@@ -83,7 +83,7 @@ public class Namespace {
             if (isNull(prefix)) {
                 return null;
             }
-            return namespacesByPrefix.getIfPresent(prefix);
+            return nsByPrefixCache.getIfPresent(prefix);
         }
 
         /**
@@ -99,7 +99,7 @@ public class Namespace {
             if (isNull(uri)) {
                 return null;
             }
-            return namespacesByUri.getIfPresent(uri);
+            return nsByUriCache.getIfPresent(uri);
         }
 
         /**
@@ -110,16 +110,16 @@ public class Namespace {
          */
         public void register(String prefix, String uri) {
             Namespace ns = new Namespace(prefix, uri);
-            namespacesByPrefix.put(prefix, ns);
-            namespacesByUri.put(uri, ns);
+            nsByPrefixCache.put(prefix, ns);
+            nsByUriCache.put(uri, ns);
         }
 
         /**
          * Cleans the registry.
          */
         public void clean() {
-            namespacesByPrefix.invalidateAll();
-            namespacesByUri.invalidateAll();
+            nsByPrefixCache.invalidateAll();
+            nsByUriCache.invalidateAll();
         }
 
         private static class Holder {

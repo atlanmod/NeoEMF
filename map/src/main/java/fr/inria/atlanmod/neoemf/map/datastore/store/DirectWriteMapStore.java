@@ -11,13 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.cache.FeatureKey;
-import fr.inria.atlanmod.neoemf.cache.IdCache;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ClassInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ContainerInfo;
@@ -46,11 +48,11 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     /**
      * An in-memory cache for persistent EObjects.
      */
-    protected final IdCache<PersistentEObject> loadedEObjects;
+    protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     public DirectWriteMapStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        this.loadedEObjects = new IdCache<>();
+        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
@@ -222,7 +224,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
         checkPositionIndex(index, array.length, "Invalid add index");
         array = ArrayUtils.add(array, index, value.id());
         persistenceBackend.storeValue(featureKey, array);
-        loadedEObjects.put(value.id(), value);
+        persistentObjectsCache.put(value.id(), value);
     }
 
     @Override
@@ -280,7 +282,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     @Override
     public EObject eObject(Id id) {
         EClass eClass = resolveInstanceOf(id);
-        PersistentEObject persistentEObject = loadedEObjects.get(id, new PersistentEObjectCacheLoader(eClass));
+        PersistentEObject persistentEObject = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
         if (persistentEObject.resource() != resource()) {
             persistentEObject.resource(resource());
         }

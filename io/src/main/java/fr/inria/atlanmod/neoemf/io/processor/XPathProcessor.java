@@ -209,14 +209,14 @@ public class XPathProcessor extends AbstractProcessor {
         private static class XPathNode {
 
             private final String key;
-            private final Cache<String, XPathNode> children;
+            private final Cache<String, XPathNode> childrenCache;
 
             private Integer value;
 
             public XPathNode(String key) {
                 this.key = key;
                 this.value = 0;
-                this.children = Caffeine.newBuilder().build();
+                this.childrenCache = Caffeine.newBuilder().build();
             }
 
             public String getKey() {
@@ -232,7 +232,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
 
             public XPathNode getChild(String key) {
-                XPathNode child = children.getIfPresent(key);
+                XPathNode child = childrenCache.getIfPresent(key);
                 if (isNull(child)) {
                     throw new NoSuchElementException("No such element '" + key + "' in the element '" + this.key + "'");
                 }
@@ -240,20 +240,20 @@ public class XPathProcessor extends AbstractProcessor {
             }
 
             public XPathNode addChild(XPathNode child) {
-                children.put(child.getKey(), child);
+                childrenCache.put(child.getKey(), child);
                 return child;
             }
 
             public void removeChildren() {
-                children.invalidateAll();
+                childrenCache.invalidateAll();
             }
 
             public boolean hasChild(String key) {
-                return nonNull(children.getIfPresent(key));
+                return nonNull(childrenCache.getIfPresent(key));
             }
 
             public long size() {
-                return children.estimatedSize() + children.asMap().values().stream().mapToLong(XPathNode::size).sum();
+                return childrenCache.estimatedSize() + childrenCache.asMap().values().stream().mapToLong(XPathNode::size).sum();
             }
         }
     }

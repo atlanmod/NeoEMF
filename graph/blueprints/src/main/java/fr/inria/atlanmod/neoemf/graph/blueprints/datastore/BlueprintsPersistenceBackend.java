@@ -74,8 +74,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * We use a weak key cache for saving memory. When the value {@link EObject} is no longer referenced and can be
      * garbage collected it is removed from the {@link Cache}.
      */
-    private final Cache<Id, PersistentEObject> loadedEObjects;
-    private final Cache<Id, Vertex> loadedVertices;
+    private final Cache<Id, PersistentEObject> persistentObjectsCache;
+    private final Cache<Id, Vertex> verticesCache;
     private final List<EClass> indexedEClasses;
 
     private final IdGraph<KeyIndexableGraph> graph;
@@ -85,8 +85,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.loadedEObjects = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
-        this.loadedVertices = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.indexedEClasses = new ArrayList<>();
         this.metaclassIndex = graph.getIndex(KEY_METACLASSES, Vertex.class);
         if (isNull(metaclassIndex)) {
@@ -250,7 +250,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private Vertex getMappedVertex(Id id) {
         Vertex vertex = null;
         try {
-            vertex = loadedVertices.get(id, this::getVertex);
+            vertex = verticesCache.get(id, this::getVertex);
         }
         catch (Exception e) {
             NeoLogger.error(e);
@@ -260,8 +260,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     private void setMappedVertex(Vertex vertex, PersistentEObject object) {
         object.setMapped(true);
-        loadedEObjects.put(object.id(), object);
-        loadedVertices.put(object.id(), vertex);
+        persistentObjectsCache.put(object.id(), object);
+        verticesCache.put(object.id(), vertex);
     }
 
     private EClass resolveInstanceOf(Vertex vertex) {
@@ -289,7 +289,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             eClass = resolveInstanceOf(vertex);
         }
         try {
-            persistentEObject = loadedEObjects.get(id, new PersistentEObjectCacheLoader(eClass));
+            persistentEObject = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
         }
         catch (Exception e) {
             NeoLogger.error(e);

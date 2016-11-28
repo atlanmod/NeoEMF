@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore.store.cache;
 
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -25,17 +25,17 @@ public class HBaseFeatureKey extends FeatureKey {
 
     public final EStructuralFeature feature;
 
+    protected HBaseFeatureKey(Id id, EStructuralFeature feature) {
+        super(id, feature.getName());
+        this.feature = checkNotNull(feature);
+    }
+
     public static HBaseFeatureKey from(PersistentEObject object, EStructuralFeature feature) {
         return of(object.id(), feature);
     }
 
     public static HBaseFeatureKey of(Id id, EStructuralFeature feature) {
         return new HBaseFeatureKey(id, feature);
-    }
-
-    protected HBaseFeatureKey(Id id, EStructuralFeature feature) {
-        super(id, feature.getName());
-        this.feature = checkNotNull(feature);
     }
 
     public EStructuralFeature feature() {

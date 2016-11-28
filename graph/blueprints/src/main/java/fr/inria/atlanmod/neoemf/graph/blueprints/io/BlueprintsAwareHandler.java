@@ -35,7 +35,7 @@ public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
     @Override
     protected Vertex getVertex(final Id id) {
         try {
-            return loadedVertices.get(id, key -> getPersistenceBackend().getVertex(key));
+            return verticesCache.get(id, key -> getPersistenceBackend().getVertex(key));
         }
         catch (Exception e) {
             throw new NoSuchElementException("Unable to find an element with Id '" + id.toString() + "'");
@@ -45,7 +45,7 @@ public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
     @Override
     protected Vertex createVertex(final Id id) {
         try {
-            return loadedVertices.get(id, key -> getPersistenceBackend().addVertex(key));
+            return verticesCache.get(id, key -> getPersistenceBackend().addVertex(key));
         }
         catch (Exception e) {
             throw new AlreadyExistingIdException("Already existing Id '" + id.toString() + "'");

@@ -43,11 +43,6 @@ public final class PersistenceNotifier extends AbstractInputNotifier<Persistence
     }
 
     @Override
-    public void processCharacters(String characters) {
-        notifyCharacters(characters);
-    }
-
-    @Override
     public void processEndElement() {
         notifyEndElement();
     }
@@ -55,5 +50,10 @@ public final class PersistenceNotifier extends AbstractInputNotifier<Persistence
     @Override
     public void processEndDocument() {
         notifyEndDocument();
+    }
+
+    @Override
+    public void processCharacters(String characters) {
+        notifyCharacters(characters);
     }
 }

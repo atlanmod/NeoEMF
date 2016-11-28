@@ -11,7 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store;
 
-import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
 import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -23,41 +25,40 @@ import static java.util.Objects.nonNull;
 /**
  * A {@link PersistentStore} decorator that caches the size data.
  */
-public class CachingStoreDecorator extends AbstractPersistentStoreDecorator {
+public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
-    private final FeatureCache<Integer> cache;
+    private final Cache<FeatureKey, Integer> sizesCache;
 
-    public CachingStoreDecorator(PersistentStore eStore) {
-        super(eStore);
-        cache = new FeatureCache<>();
+    public SizeCachingStoreDecorator(PersistentStore eStore) {
+        this(eStore, 10000);
     }
 
-    public CachingStoreDecorator(PersistentStore eStore, int cacheSize) {
+    public SizeCachingStoreDecorator(PersistentStore eStore, int cacheSize) {
         super(eStore);
-        cache = new FeatureCache<>(cacheSize);
+        this.sizesCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Override
     public void unset(InternalEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        cache.put(featureKey, 0);
+        sizesCache.put(featureKey, 0);
         super.unset(object, feature);
     }
 
     @Override
     public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        Integer size = cache.getIfPresent(featureKey);
+        Integer size = sizesCache.getIfPresent(featureKey);
         return isNull(size) ? super.isEmpty(object, feature) : (size == 0);
     }
 
     @Override
     public int size(InternalEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        Integer size = cache.getIfPresent(featureKey);
+        Integer size = sizesCache.getIfPresent(featureKey);
         if (isNull(size)) {
             size = super.size(object, feature);
-            cache.put(featureKey, size);
+            sizesCache.put(featureKey, size);
         }
         return size;
     }
@@ -65,9 +66,9 @@ public class CachingStoreDecorator extends AbstractPersistentStoreDecorator {
     @Override
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        Integer size = cache.getIfPresent(featureKey);
+        Integer size = sizesCache.getIfPresent(featureKey);
         if (nonNull(size)) {
-            cache.put(featureKey, size + 1);
+            sizesCache.put(featureKey, size + 1);
         }
         super.add(object, feature, index, value);
     }
@@ -75,9 +76,9 @@ public class CachingStoreDecorator extends AbstractPersistentStoreDecorator {
     @Override
     public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        Integer size = cache.getIfPresent(featureKey);
+        Integer size = sizesCache.getIfPresent(featureKey);
         if (nonNull(size)) {
-            cache.put(featureKey, size - 1);
+            sizesCache.put(featureKey, size - 1);
         }
         return super.remove(object, feature, index);
     }
@@ -85,7 +86,7 @@ public class CachingStoreDecorator extends AbstractPersistentStoreDecorator {
     @Override
     public void clear(InternalEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        cache.put(featureKey, 0);
+        sizesCache.put(featureKey, 0);
         super.clear(object, feature);
     }
 }

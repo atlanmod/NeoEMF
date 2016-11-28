@@ -50,11 +50,6 @@ public class AbstractProcessor implements Processor {
     }
 
     @Override
-    public void processCharacters(String characters) {
-        notifyCharacters(characters);
-    }
-
-    @Override
     public void processEndElement() {
         notifyEndElement();
     }
@@ -62,6 +57,11 @@ public class AbstractProcessor implements Processor {
     @Override
     public void processEndDocument() {
         notifyEndDocument();
+    }
+
+    @Override
+    public void processCharacters(String characters) {
+        notifyCharacters(characters);
     }
 
     // Notifier methods

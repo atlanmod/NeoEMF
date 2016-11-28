@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
-import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.junit.Test;
 

@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store;
 
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.cache.FeatureKey;
-import fr.inria.atlanmod.neoemf.cache.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;

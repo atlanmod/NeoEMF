@@ -11,11 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.cache.FeatureCache;
-import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -33,11 +35,11 @@ import static java.util.Objects.isNull;
 
 public class DirectWriteMapListsStore extends DirectWriteMapStore {
 
-    private final FeatureCache<Object> featureCache;
+    private final Cache<FeatureKey, Object> objectsCache;
 
     public DirectWriteMapListsStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        this.featureCache = new FeatureCache<>();
+        this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
@@ -188,7 +190,7 @@ public class DirectWriteMapListsStore extends DirectWriteMapStore {
             returnValue = persistenceBackend.valueOf(featureKey);
         }
         else {
-            returnValue = featureCache.get(featureKey, new FeatureKeyCacheLoader());
+            returnValue = objectsCache.get(featureKey, new FeatureKeyCacheLoader());
         }
         return returnValue;
     }

@@ -11,11 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.io;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
-import fr.inria.atlanmod.neoemf.cache.IdCache;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
@@ -39,11 +40,11 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     private static final Id ROOT_ID = new StringId("ROOT");
     private static final String ROOT_FEATURE_NAME = "eContents";
 
-    protected final IdCache<Vertex> loadedVertices;
+    protected final Cache<Id, Vertex> verticesCache;
 
     public AbstractBlueprintsHandler(BlueprintsPersistenceBackend persistenceBackend) {
         super(persistenceBackend);
-        loadedVertices = new IdCache<>(DEFAULT_CACHE_SIZE);
+        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {

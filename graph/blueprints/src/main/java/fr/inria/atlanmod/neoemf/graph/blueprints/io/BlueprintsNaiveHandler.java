@@ -33,7 +33,7 @@ public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {
 
     @Override
     protected Vertex getVertex(final Id id) {
-        return loadedVertices.get(id, key -> {
+        return verticesCache.get(id, key -> {
             Vertex vertex = getPersistenceBackend().getVertex(key);
 
             if (isNull(vertex)) {

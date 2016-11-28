@@ -11,7 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store;
 
-import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
 import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.cache.MultivaluedFeatureKey;
 
@@ -25,25 +27,24 @@ import static java.util.Objects.isNull;
  */
 public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
-    private final FeatureCache<Object> cache;
+    private final Cache<FeatureKey, Object> objectsCache;
 
     public FeatureCachingStoreDecorator(PersistentStore eStore) {
-        super(eStore);
-        cache = new FeatureCache<>();
+        this(eStore, 10000);
     }
 
     public FeatureCachingStoreDecorator(PersistentStore eStore, int cacheSize) {
         super(eStore);
-        cache = new FeatureCache<>(cacheSize);
+        this.objectsCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Override
     public Object get(InternalEObject object, EStructuralFeature feature, int index) {
         FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, index);
-        Object returnValue = cache.getIfPresent(featureKey);
+        Object returnValue = objectsCache.getIfPresent(featureKey);
         if (isNull(returnValue)) {
             returnValue = super.get(object, feature, index);
-            cache.put(featureKey, returnValue);
+            objectsCache.put(featureKey, returnValue);
         }
         return returnValue;
     }
@@ -52,7 +53,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, index);
         Object returnValue = super.set(object, feature, index, value);
-        cache.put(featureKey, value);
+        objectsCache.put(featureKey, value);
         return returnValue;
     }
 
@@ -60,7 +61,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     public void unset(InternalEObject object, EStructuralFeature feature) {
         if (!feature.isMany()) {
             FeatureKey featureKey = FeatureKey.from(object, feature);
-            cache.invalidate(featureKey);
+            objectsCache.invalidate(featureKey);
         }
         else {
             invalidateValues(object, feature, 0);
@@ -72,7 +73,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
         FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, index);
         super.add(object, feature, index, value);
-        cache.put(featureKey, value);
+        objectsCache.put(featureKey, value);
         invalidateValues(object, feature, index + 1);
     }
 
@@ -88,7 +89,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
         FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, targetIndex);
         Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
         invalidateValues(object, feature, Math.min(sourceIndex, targetIndex));
-        cache.put(featureKey, returnValue);
+        objectsCache.put(featureKey, returnValue);
         return returnValue;
     }
 
@@ -104,7 +105,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     private void invalidateValues(InternalEObject object, EStructuralFeature feature, int startIndex) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
         for (int i = startIndex; i < size(object, feature); i++) {
-            cache.invalidate(featureKey.withPosition(i));
+            objectsCache.invalidate(featureKey.withPosition(i));
         }
     }
 }

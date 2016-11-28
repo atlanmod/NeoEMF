@@ -11,9 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore.store;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
 import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,11 +28,11 @@ import static java.util.Objects.isNull;
 
 public class DirectWriteMapCacheManyStore extends DirectWriteMapStore {
 
-    private final FeatureCache<Object> featureCache;
+    private final Cache<FeatureKey, Object> objectsCache;
 
     public DirectWriteMapCacheManyStore(Resource.Internal resource, MapPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
-        featureCache = new FeatureCache<>();
+        this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
@@ -53,9 +55,9 @@ public class DirectWriteMapCacheManyStore extends DirectWriteMapStore {
             }
             checkPositionIndex(index, array.length, "Invalid add index " + index);
             array = ArrayUtils.add(array, index, value.id());
-            featureCache.put(featureKey, array);
+            objectsCache.put(featureKey, array);
             persistenceBackend.storeValue(featureKey, array);
-            loadedEObjects.put(value.id(), value);
+            persistentObjectsCache.put(value.id(), value);
         }
         else {
             super.addReference(object, eReference, index, value);
@@ -65,6 +67,6 @@ public class DirectWriteMapCacheManyStore extends DirectWriteMapStore {
     @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(object, feature);
-        return featureCache.get(featureKey, super::getFromMap);
+        return objectsCache.get(featureKey, super::getFromMap);
     }
 }

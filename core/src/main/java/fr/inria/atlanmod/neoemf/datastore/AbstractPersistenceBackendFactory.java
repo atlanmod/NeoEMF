@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-import fr.inria.atlanmod.neoemf.datastore.store.CachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
@@ -68,7 +68,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
                 eStore = new FeatureCachingStoreDecorator(eStore);
             }
             if (storeOptions.contains(CommonStoreOptions.CACHE_SIZE)) {
-                eStore = new CachingStoreDecorator(eStore);
+                eStore = new SizeCachingStoreDecorator(eStore);
             }
             if (storeOptions.contains(CommonStoreOptions.LOG)) {
                 eStore = new LoggingStoreDecorator(eStore);

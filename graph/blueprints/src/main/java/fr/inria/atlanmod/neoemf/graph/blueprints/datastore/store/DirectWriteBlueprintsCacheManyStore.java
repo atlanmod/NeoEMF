@@ -11,11 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
-import fr.inria.atlanmod.neoemf.cache.FeatureCache;
 import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
@@ -30,18 +31,18 @@ import static java.util.Objects.nonNull;
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
     // TODO Cache many properties in addition to vertices
-    private final FeatureCache<Object[]> cache;
+    private final Cache<FeatureKey, Object[]> verticesCache;
 
     public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend graph) {
         super(resource, graph);
-        cache = new FeatureCache<>();
+        this.verticesCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
     protected Object getReference(PersistentEObject object, EReference eReference, int index) {
         if (eReference.isMany()) {
             FeatureKey key = FeatureKey.from(object, eReference);
-            Object[] list = cache.getIfPresent(key);
+            Object[] list = verticesCache.getIfPresent(key);
             if (nonNull(list)) {
                 Object o = list[index];
                 if (isNull(o)) {
@@ -57,7 +58,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                 Vertex vertex = persistenceBackend.getVertex(object);
                 Integer size = getSize(vertex, eReference);
                 Object[] vertices = new Object[size];
-                cache.put(key, vertices);
+                verticesCache.put(key, vertices);
                 if (index < 0 || index >= size) {
                     NeoLogger.error("Invalid get index {0}", index);
                     throw new IndexOutOfBoundsException("Invalid get index " + index);

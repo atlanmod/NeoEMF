@@ -12,12 +12,12 @@
 package fr.inria.atlanmod.neoemf.datastore;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.datastore.store.CachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -116,7 +116,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
         PersistentStore store;
 
         store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getChildStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
@@ -189,7 +189,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link IsSetCachingStoreDecorator} and {@link CachingStoreDecorator}
+     * 2 stores : {@link IsSetCachingStoreDecorator} and {@link SizeCachingStoreDecorator}
      */
     @Test
     public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
@@ -201,7 +201,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
         PersistentStore store;
 
         store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getChildStore(store);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
@@ -215,7 +215,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
-     * 2 stores : {@link CachingStoreDecorator} and {@link FeatureCachingStoreDecorator}
+     * 2 stores : {@link SizeCachingStoreDecorator} and {@link FeatureCachingStoreDecorator}
      */
     @Test
     public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
@@ -227,7 +227,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
         PersistentStore store;
 
         store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, options);
-        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getChildStore(store);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
@@ -242,7 +242,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
     /**
      * Test store containment order (depend on the instantiation policy defined in {@link PersistenceBackendFactory}
      * 4 stores : {@link FeatureCachingStoreDecorator}, {@link IsSetCachingStoreDecorator},
-     * {@link LoggingStoreDecorator} and {@link CachingStoreDecorator}
+     * {@link LoggingStoreDecorator} and {@link SizeCachingStoreDecorator}
      */
     @Test
     public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
@@ -259,7 +259,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getChildStore(store);
-        assertThat(store).isInstanceOf(CachingStoreDecorator.class);
+        assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getChildStore(store);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);

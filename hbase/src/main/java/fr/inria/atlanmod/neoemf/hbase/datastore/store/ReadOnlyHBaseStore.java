@@ -11,9 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore.store;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.cache.FeatureCache;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
 import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.cache.HBaseFeatureKey;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
@@ -37,11 +39,11 @@ import java.util.function.Function;
 
 public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
-    private final FeatureCache<Object> loadedObjects;
+    private final Cache<FeatureKey, Object> objectsCache;
 
     public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
-        loadedObjects = new FeatureCache<>();
+        this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
@@ -76,7 +78,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
         HBaseFeatureKey entry = HBaseFeatureKey.from(neoEObject, feature);
         Object returnValue = null;
         try {
-            returnValue = loadedObjects.get(entry, new FeatureCacheLoader());
+            returnValue = objectsCache.get(entry, new FeatureCacheLoader());
         }
         catch (Exception e) {
             NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
