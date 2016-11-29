@@ -16,5 +16,5 @@ script:
   - mvn jacoco:prepare-agent install jacoco:report-aggregate javadoc:aggregate
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - sh .script/publish_javadoc.sh
+  - bash <(curl -s https://codecov.io/bash)   # Publish code coverage on CodeCov
+  - bash .script/publish_javadoc.sh           # Publish javadoc on Github (gh-pages)
