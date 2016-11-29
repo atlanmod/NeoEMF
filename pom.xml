@@ -510,7 +510,6 @@
                     <detectLinks>false</detectLinks>
                     <failOnError>false</failOnError>
                     <quiet>true</quiet>
-                    <aggregate>true</aggregate>
                     <excludePackageNames>
                         fr.inria.atlanmod.neoemf.tests.models.*
                     </excludePackageNames>

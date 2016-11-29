@@ -13,7 +13,7 @@ branches:
     - master
 
 script:
-  - mvn jacoco:prepare-agent install jacoco:report-aggregate javadoc:aggregate
+  - mvn jacoco:prepare-agent install javadoc:aggregate jacoco:report-aggregate
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)   # Publish code coverage on CodeCov
