@@ -24,7 +24,7 @@ if [ "$TRAVIS_REPO_SLUG" = "$repo_name" ] && [ "$TRAVIS_JDK_VERSION" = "$jdk" ] 
     cp -Rf ${temp_path} ${path}
 
     # Commit modifications
-    git add --quiet -f .
+    git add -f .
     git commit --quiet -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
     git push --quiet -fq origin gh-pages
 
