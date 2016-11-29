@@ -16,17 +16,17 @@ if [ "$TRAVIS_REPO_SLUG" = "$repo_name" ] && [ "$TRAVIS_JDK_VERSION" = "$jdk" ] 
     # Clone the 'gh-pages' branch
     git config --global user.email "travis@travis-ci.org"
     git config --global user.name "travis-ci"
-    git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages > /dev/null
+    git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages
 
     # Update the javadoc in 'gh-pages' branch
     cd gh-pages
-    git rm -rf ${path}
+    git rm --quiet -rf ${path}
     cp -Rf ${temp_path} ${path}
 
     # Commit modifications
-    git add -f .
-    git commit -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
-    git push -fq origin gh-pages > /dev/null
+    git add --quiet -f .
+    git commit --quiet -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
+    git push --quiet -fq origin gh-pages
 
     echo -e "Published Javadoc.\n"
 else

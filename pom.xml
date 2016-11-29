@@ -132,8 +132,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <globalArgLine>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</globalArgLine>
-        <argLine />
+        <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
         <config-path>./</config-path>
 
         <!--
@@ -497,8 +496,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!-- The property ${argLine} created by JaCoCO:prepare-agent -->
-                    <argLine>${argLine} ${globalArgLine}</argLine>
+                    <!-- Property @{argLine} : created by JaCoCO:prepare-agent -->
+                    <argLine>@{argLine} ${argLine.global}</argLine>
                     <failIfNoTests>false</failIfNoTests>
                 </configuration>
             </plugin>
@@ -524,22 +523,6 @@
                         <exclude>**/java-gen/**</exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
 
@@ -571,7 +554,7 @@
                     <configuration>
                         <instructions>
                             <Bundle-Version>
-                                <!-- Properties ${osgi.XXX} created by build-helper-maven-plugin:parse-version -->
+                                <!-- Properties ${osgi.XXX} : Created by build-helper-maven-plugin:parse-version -->
                                 ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>

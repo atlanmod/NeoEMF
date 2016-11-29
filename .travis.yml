@@ -17,7 +17,7 @@ branches:
 script:
 
 # Build with code coverage
-  - mvn -B install
+  - mvn -B jacoco:prepare-agent install jacoco:report-aggregate
 
 after_success:
 
