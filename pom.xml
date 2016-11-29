@@ -704,7 +704,6 @@
                     <detectLinks>false</detectLinks>
                     <failOnError>false</failOnError>
                     <quiet>true</quiet>
-                    <reportOutputDirectory>${java.home}/.neoemf/apidocs</reportOutputDirectory>
                     <excludePackageNames>
                         fr.inria.atlanmod.neoemf.tests.models.*
                     </excludePackageNames>
