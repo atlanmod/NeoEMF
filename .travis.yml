@@ -17,4 +17,4 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - .script/publish_javadoc.sh
+  - sh .script/publish_javadoc.sh
