@@ -1,25 +1,34 @@
 #!/bin/bash
 
-if [ "$TRAVIS_REPO_SLUG" = "atlanmod/NeoEMF" ] && [ "$TRAVIS_JDK_VERSION" = "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
-    echo -e "Publishing javadoc...\n"
+repo_name="atlanmod/NeoEMF"
+jdk="oraclejdk8"
 
-    cp -R target/site/apidocs $HOME/apidocs
+path="apidocs"
+temp_path="$HOME/$path"
+
+if [ "$TRAVIS_REPO_SLUG" = "$repo_name" ] && [ "$TRAVIS_JDK_VERSION" = "$jdk" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
+    echo -e "Publishing Javadoc...\n"
+
+    # Copy the built javadoc
+    cp -R target/site/apidocs ${temp_path}
     cd $HOME
 
+    # Clone the 'gh-pages' branch
     git config --global user.email "travis@travis-ci.org"
     git config --global user.name "travis-ci"
     git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages > /dev/null
 
+    # Update the javadoc in 'gh-pages' branch
     cd gh-pages
+    git rm -rf ${path}
+    cp -Rf ${temp_path} ${path}
 
-    git rm -rf apidocs
-    cp -Rf $HOME/apidocs apidocs
-
+    # Commit modifications
     git add -f .
-    git commit -m "Latest javadoc on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
+    git commit -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
     git push -fq origin gh-pages > /dev/null
 
-    echo -e "Published Javadoc to gh-pages.\n"
+    echo -e "Published Javadoc.\n"
 else
-    echo -e "No need to publish Javadoc.\n";
+    echo -e "No need to publish the Javadoc.\n";
 fi
