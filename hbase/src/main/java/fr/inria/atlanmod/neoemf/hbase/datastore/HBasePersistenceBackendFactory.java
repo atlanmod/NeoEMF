@@ -11,65 +11,54 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.CachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.InvalidTransientResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.IsSetCachingEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.datastore.store.InvalidStore;
+import fr.inria.atlanmod.neoemf.datastore.store.IsSetCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.store.SizeCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.DirectWriteHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.ReadOnlyHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.option.HBaseResourceOptions;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
-
-import static fr.inria.atlanmod.neoemf.hbase.resources.HBaseResourceOptions.OPTIONS_HBASE_READ_ONLY;
-import static java.util.Objects.isNull;
+import java.util.Objects;
 
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-    public static final String HBASE_BACKEND = "hbase";
-
-    private static PersistenceBackendFactory INSTANCE;
+    public static final String NAME = HBasePersistenceBackend.NAME;
 
     private HBasePersistenceBackendFactory() {
     }
 
     public static PersistenceBackendFactory getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new HBasePersistenceBackendFactory();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
     public String getName() {
-        return HBASE_BACKEND;
+        return NAME;
     }
 
     @Override
-    protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         try {
-            if (options.containsKey(OPTIONS_HBASE_READ_ONLY)) {
-                if (Boolean.TRUE.equals(options.get(OPTIONS_HBASE_READ_ONLY))) {
-                    // Create a read-only EStore
-                    return embedInDefaultWrapper(new ReadOnlyHBaseResourceEStoreImpl(resource));
-                }
-                else {
-                    // Create a default EStore
-                    return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImpl(resource));
-                }
+            if (options.containsKey(HBaseResourceOptions.READ_ONLY) && Objects.equals(Boolean.TRUE, options.get(HBaseResourceOptions.READ_ONLY))) {
+                // Create a read-only EStore
+                return embedInDefaultWrapper(new ReadOnlyHBaseStore(resource));
             }
             else {
                 // Create a default EStore
-                return embedInDefaultWrapper(new DirectWriteHBaseResourceEStoreImpl(resource));
+                return embedInDefaultWrapper(new DirectWriteHBaseStore(resource));
             }
         }
-        catch (Exception e) {
+        catch (IOException e) {
             throw new InvalidDataStoreException(e);
         }
     }
@@ -80,14 +69,14 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     }
 
     @Override
-    public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
+    public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) {
         // TODO Externalise the backend implementation from the HBase EStores.
         return new HBasePersistenceBackend();
     }
 
     @Override
-    public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
-        return new InvalidTransientResourceEStoreImpl();
+    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
+        return new InvalidStore();
     }
 
     @Override
@@ -95,7 +84,12 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
 
-    private PersistentEStore embedInDefaultWrapper(PersistentEStore eStore) {
-        return new IsSetCachingEStoreDecorator(new CachingEStoreDecorator(eStore));
+    private PersistentStore embedInDefaultWrapper(PersistentStore eStore) {
+        return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(eStore));
+    }
+
+    private static class Holder {
+
+        private static final PersistenceBackendFactory INSTANCE = new HBasePersistenceBackendFactory();
     }
 }

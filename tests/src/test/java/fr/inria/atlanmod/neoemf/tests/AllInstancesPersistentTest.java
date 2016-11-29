@@ -11,14 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 
 public class AllInstancesPersistentTest extends AllInstancesTest {
 
@@ -94,17 +93,17 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     }
 
     private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.emptyMap());
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
-        persistentResource.load(Collections.emptyMap());
+        persistentResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.close();
+        persistentResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
 
         allInstancesPersistent(persistentResource);
     }
 
     private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.emptyMap());
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
-        persistentResource.load(Collections.emptyMap());
+        persistentResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.close();
+        persistentResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
 
         allInstancesStrictPersistent(persistentResource);
     }

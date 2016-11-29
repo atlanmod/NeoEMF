@@ -5,15 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>eclipse</artifactId>
+        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+        <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>features</artifactId>
+    <artifactId>fr.inria.atlanmod.neoemf.eclipse.features</artifactId>
+
     <packaging>pom</packaging>
 
-    <name>NeoEMF :: Features</name>
+    <name>NeoEMF :: Eclipse :: Features</name>
     <description>
         Parent project for the feature plugin generation. Is responsible of Base, Graph (and Blueprints
         connectors), and Map feature generation.
@@ -22,9 +23,9 @@
     <modules>
         <module>fr.inria.atlanmod.neoemf.core.feature</module>
         <module>fr.inria.atlanmod.neoemf.graph.blueprints.feature</module>
+        <module>fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature</module>
         <module>fr.inria.atlanmod.neoemf.map.feature</module>
         <module>fr.inria.atlanmod.neoemf.hbase.feature</module>
-        <module>fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature</module>
         <module>fr.inria.atlanmod.neoemf.io.feature</module>
     </modules>
 

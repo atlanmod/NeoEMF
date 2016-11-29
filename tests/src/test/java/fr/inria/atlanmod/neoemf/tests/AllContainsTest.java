@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30

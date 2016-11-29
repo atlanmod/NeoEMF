@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class LoadedResourceContainerTest extends AllLoadedResourceTest {
 

@@ -11,29 +11,33 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKey;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.IdSerializer;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKey;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKeySerializer;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.ContainerInfo;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.pojo.EClassInfo;
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.map.datastore.store.info.ClassInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.store.info.ContainerInfo;
+import fr.inria.atlanmod.neoemf.map.datastore.store.serializer.FeatureKeySerializer;
+import fr.inria.atlanmod.neoemf.map.datastore.store.serializer.IdSerializer;
+import fr.inria.atlanmod.neoemf.map.datastore.store.serializer.MultivaluedFeatureKeySerializer;
 
-import org.eclipse.emf.ecore.EClass;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
 import java.util.Map;
 
-public class MapPersistenceBackend implements PersistenceBackend {
+public class MapPersistenceBackend extends AbstractPersistenceBackend {
 
-    private static final String CONTAINER = "eContainer";
-    private static final String INSTANCE_OF = "neoInstanceOf";
-    private static final String FEATURES = "features";
-    private static final String MULTIVALUED_FEATURES = "multivaluedFeatures";
+    /**
+     * The literal description of this backend.
+     */
+    public static final String NAME = "mapdb";
+
+    private static final String KEY_CONTAINER = "eContainer";
+    private static final String KEY_INSTANCE_OF = "neoInstanceOf";
+    private static final String KEY_FEATURES = "features";
+    private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
 
     private final DB db;
 
@@ -46,7 +50,7 @@ public class MapPersistenceBackend implements PersistenceBackend {
      * A persistent map that stores the EClass for persistent EObjects.
      * The key is the persistent object Id.
      */
-    private final HTreeMap<Id, EClassInfo> instanceOfMap;
+    private final HTreeMap<Id, ClassInfo> instanceOfMap;
 
     /**
      * A persistent map that stores Structural feature values for persistent EObjects.
@@ -60,26 +64,26 @@ public class MapPersistenceBackend implements PersistenceBackend {
      */
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 
-    @SuppressWarnings("unchecked") // Unchecked cast: 'HTreeMap' to 'HTreeMap<...>'
+    @SuppressWarnings("unchecked")
     MapPersistenceBackend(DB aDB) {
         db = aDB;
 
-        containersMap = db.hashMap(CONTAINER)
+        containersMap = db.hashMap(KEY_CONTAINER)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        instanceOfMap = db.hashMap(INSTANCE_OF)
+        instanceOfMap = db.hashMap(KEY_INSTANCE_OF)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        features = db.hashMap(FEATURES)
+        features = db.hashMap(KEY_FEATURES)
                 .keySerializer(new FeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        multivaluedFeatures = db.hashMap(MULTIVALUED_FEATURES)
+        multivaluedFeatures = db.hashMap(KEY_MULTIVALUED_FEATURES)
                 .keySerializer(new MultivaluedFeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
@@ -129,14 +133,14 @@ public class MapPersistenceBackend implements PersistenceBackend {
     /**
      * Retrieves metaclass (EClass) for a given object id
      */
-    public EClassInfo metaclassFor(Id id) {
+    public ClassInfo metaclassFor(Id id) {
         return instanceOfMap.get(id);
     }
 
     /**
      * Stores metaclass (EClass) information for an object id.
      */
-    public void storeMetaclass(Id id, EClassInfo metaclass) {
+    public void storeMetaclass(Id id, ClassInfo metaclass) {
         instanceOfMap.put(id, metaclass);
     }
 

@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
@@ -43,7 +43,7 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
     }
 
     @Test
-    public void testMulltipleAdd() {
+    public void testMultipleAdd() {
         PersistenceBackendFactoryRegistry.register(MOCK_1, persistenceBackendFactory1);
         PersistenceBackendFactoryRegistry.register(MOCK_2, persistenceBackendFactory2);
         assertThat(PersistenceBackendFactoryRegistry.getFactories()).hasSize(2);

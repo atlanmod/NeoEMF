@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -32,14 +31,14 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
 
     private final PersistentEObject owner;
 
-    public NeoEContentsEList(EObject owner) {
+    protected NeoEContentsEList(EObject owner) {
         super(owner);
-        this.owner = PersistentEObjectAdapter.getAdapter(owner);
+        this.owner = PersistentEObject.from(owner);
     }
 
-    public NeoEContentsEList(EObject owner, EStructuralFeature[] eStructuralFeatures) {
+    protected NeoEContentsEList(EObject owner, EStructuralFeature[] eStructuralFeatures) {
         super(owner, eStructuralFeatures);
-        this.owner = PersistentEObjectAdapter.getAdapter(owner);
+        this.owner = PersistentEObject.from(owner);
     }
 
     @SuppressWarnings("unchecked") // Unchecked cast: 'NeoEContentsEList<?>' to 'NeoEContentsEList<...>'
@@ -47,15 +46,15 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         return (NeoEContentsEList<E>) EMPTY_NEO_CONTENTS_ELIST;
     }
 
-    public static <E> NeoEContentsEList<E> createNeoEContentsEList(EObject eObject) {
+    public static <E> NeoEContentsEList<E> createNeoEContentsEList(EObject owner) {
         NeoEContentsEList<E> contentEList;
         EStructuralFeature[] eStructuralFeatures =
-                ((EClassImpl.FeatureSubsetSupplier) eObject.eClass().getEAllStructuralFeatures()).containments();
+                ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
         if (isNull(eStructuralFeatures)) {
             contentEList = NeoEContentsEList.emptyNeoContentsEList();
         }
         else {
-            contentEList = new NeoEContentsEList<>(eObject, eStructuralFeatures);
+            contentEList = new NeoEContentsEList<>(owner, eStructuralFeatures);
         }
         return contentEList;
     }

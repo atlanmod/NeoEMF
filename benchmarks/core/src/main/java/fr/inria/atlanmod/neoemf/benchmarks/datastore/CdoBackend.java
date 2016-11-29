@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class CdoBackend extends AbstractBackend {
 
@@ -80,8 +81,8 @@ public class CdoBackend extends AbstractBackend {
     }
 
     @Override
-    public Map<Object, Object> getOptions() {
-        Map<Object, Object> saveOpts = new HashMap<>();
+    public Map<String, Object> getOptions() {
+        Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, transaction);
         return saveOpts;
     }
@@ -97,19 +98,19 @@ public class CdoBackend extends AbstractBackend {
 
     @Override
     public void unload(Resource resource) {
-        if (!isNull(transaction) && !transaction.isClosed()) {
+        if (nonNull(transaction) && !transaction.isClosed()) {
             transaction.close();
         }
 
-        if (!isNull(session) && !session.isClosed()) {
+        if (nonNull(session) && !session.isClosed()) {
             session.close();
         }
 
-        if (!isNull(server) && !server.isClosed()) {
+        if (nonNull(server) && !server.isClosed()) {
             server.close();
         }
 
-        if (!isNull(resource) && resource.isLoaded()) {
+        if (nonNull(resource) && resource.isLoaded()) {
             resource.unload();
         }
     }
@@ -162,24 +163,19 @@ public class CdoBackend extends AbstractBackend {
                 });
             }
             finally {
-                Runtime.getRuntime().addShutdownHook(new Thread() {
-                    @Override
-                    public void run() {
-                        EmbeddedCdoServer.this.close();
-                    }
-                });
+                Runtime.getRuntime().addShutdownHook(new Thread(EmbeddedCdoServer.this::close));
             }
         }
 
         @Override
         public void close() {
-            if (!isNull(connector) && !connector.isClosed()) {
+            if (nonNull(connector) && !connector.isClosed()) {
                 connector.close();
             }
-            if (!isNull(container) && container.isActive()) {
+            if (nonNull(container) && container.isActive()) {
                 Exception e = container.deactivate();
 
-                if (!isNull(e)) {
+                if (nonNull(e)) {
                     log.error(e);
                 }
             }

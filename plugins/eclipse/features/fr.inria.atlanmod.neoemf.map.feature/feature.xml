@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
         id="fr.inria.atlanmod.neoemf.map.feature"
-        label="NeoEMF MapDB Adapter"
+        label="NeoEMF MapDB : Adapter"
         version="0.0.1.qualifier">
 
     <description url="http://www.example.com/description">
@@ -10,24 +10,24 @@
 
     <includes
             id="fr.inria.atlanmod.neoemf.core.feature"
-            version="0.0.1.qualifier"/>
+            version="0.0.1.qualifier" />
 
     <requires>
-        <import plugin="org.eclipse.core.runtime"/>
-        <import plugin="org.eclipse.emf.ecore"/>
-        <import plugin="org.eclipse.core.resources"/>
-        <import plugin="org.eclipse.core.commands"/>
-        <import plugin="org.eclipse.core.expressions"/>
-        <import plugin="org.eclipse.ui"/>
-        <import plugin="org.eclipse.ui.ide"/>
-        <import plugin="org.eclipse.jface"/>
-        <import plugin="org.eclipse.emf"/>
-        <import plugin="org.eclipse.emf.ecore.xmi"/>
-        <import plugin="org.eclipse.emf.edit"/>
-        <import plugin="org.eclipse.emf.edit.ui"/>
-        <import plugin="org.eclipse.emf.converter"/>
-        <import plugin="org.eclipse.emf.importer"/>
-        <import plugin="org.eclipse.emf.ecore.editor"/>
+        <import plugin="org.eclipse.core.runtime" />
+        <import plugin="org.eclipse.emf.ecore" />
+        <import plugin="org.eclipse.core.resources" />
+        <import plugin="org.eclipse.core.commands" />
+        <import plugin="org.eclipse.core.expressions" />
+        <import plugin="org.eclipse.ui" />
+        <import plugin="org.eclipse.ui.ide" />
+        <import plugin="org.eclipse.jface" />
+        <import plugin="org.eclipse.emf" />
+        <import plugin="org.eclipse.emf.ecore.xmi" />
+        <import plugin="org.eclipse.emf.edit" />
+        <import plugin="org.eclipse.emf.edit.ui" />
+        <import plugin="org.eclipse.emf.converter" />
+        <import plugin="org.eclipse.emf.importer" />
+        <import plugin="org.eclipse.emf.ecore.editor" />
     </requires>
 
     <plugin
@@ -35,7 +35,7 @@
             download-size="0"
             install-size="0"
             version="0.0.1.qualifier"
-            unpack="false"/>
+            unpack="false" />
 
     <copyright url="http://www.example.com/copyright">
 Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.

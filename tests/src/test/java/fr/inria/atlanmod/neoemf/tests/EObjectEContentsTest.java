@@ -24,7 +24,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30

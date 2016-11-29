@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.datastore;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
@@ -29,18 +31,18 @@ public interface PersistenceBackend extends Closeable {
     void close();
 
     /**
-     * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence back-end.
+     * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
      */
     void save();
 
     /**
-     * Back-end specific computation of {@link org.eclipse.emf.ecore.resource.Resource#getAllContents()}.
+     * Back-end specific computation of {@link Resource#getAllContents()}.
      *
      * @param eClass the class to compute the instances of
      * @param strict {@code true} if the lookup searches for strict instances
      *
      * @return an {@link Object} containing the back-end specific objects corresponding to the instances of the {@link
-     *         EClass}
+     * EClass}
      *
      * @throws UnsupportedOperationException if the back-end does not support all instances lookup
      */

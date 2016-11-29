@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 abstract class AbstractNeoBackend extends AbstractBackend {
 
@@ -42,9 +42,10 @@ abstract class AbstractNeoBackend extends AbstractBackend {
 
     @Override
     public void unload(Resource resource) {
-        if (!isNull(resource) && resource.isLoaded()) {
-            if (resource instanceof PersistentResourceImpl) {
-                PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) resource);
+        if (nonNull(resource) && resource.isLoaded()) {
+            if (resource instanceof PersistentResource) {
+                PersistentResource persistentResource = (PersistentResource) resource;
+                persistentResource.close();
             }
             else {
                 resource.unload();

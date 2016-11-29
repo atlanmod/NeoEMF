@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class XmiBackend extends AbstractBackend {
 
@@ -57,7 +57,7 @@ public class XmiBackend extends AbstractBackend {
 
     @Override
     public void unload(Resource resource) {
-        if (!isNull(resource) && resource.isLoaded()) {
+        if (nonNull(resource) && resource.isLoaded()) {
             resource.unload();
         }
     }

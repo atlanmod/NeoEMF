@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.datastore;
 
-import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.File;
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public interface PersistenceBackendFactory {
 
-    String NEO_CONFIG_FILE = "neoconfig.properties";
+    String CONFIG_FILE = "neoconfig.properties";
 
     String BACKEND_PROPERTY = "backend";
 
@@ -30,9 +30,9 @@ public interface PersistenceBackendFactory {
 
     PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException;
 
-    PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend);
+    PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend);
 
-    PersistentEStore createPersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
+    PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException;
 
     void copyBackend(PersistenceBackend from, PersistenceBackend to);
 }

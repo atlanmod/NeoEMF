@@ -13,8 +13,8 @@ package fr.inria.atlanmod.neoemf.hbase;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.hbase.datastore.HBasePersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.hbase.util.NeoHBaseURI;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.hbase.util.HBaseURI;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -31,8 +31,8 @@ public class Activator implements BundleActivator {
     public void start(BundleContext bundleContext) throws Exception {
         context = bundleContext;
         NeoLogger.info("NeoEMF HBase plugin started");
-        if (!PersistenceBackendFactoryRegistry.isRegistered(NeoHBaseURI.NEO_HBASE_SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(NeoHBaseURI.NEO_HBASE_SCHEME,
+        if (!PersistenceBackendFactoryRegistry.isRegistered(HBaseURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME,
                     HBasePersistenceBackendFactory.getInstance());
             NeoLogger.info("HBase persistence backend registered");
         }

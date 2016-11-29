@@ -23,13 +23,23 @@ public abstract class AllTest {
     @Rule
     public TestRule watcher = new TestWatcher() {
         @Override
+        protected void succeeded(Description description) {
+            System.out.println("[INFO] --- Succeeded");
+        }
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            System.out.println("[WARN] --- Failed");
+        }
+
+        @Override
         protected void starting(Description description) {
-            System.out.println("\n## Running test method : " + description.getMethodName());
+            System.out.println("\n[INFO] --- Running " + description.getMethodName() + "()");
         }
 
         @Override
         protected void finished(Description description) {
-            System.out.println("##");
+            System.out.println();
         }
     };
 

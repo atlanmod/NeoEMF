@@ -6,11 +6,12 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>graph</artifactId>
+        <artifactId>neoemf-graph</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>graph.blueprints</artifactId>
+    <artifactId>neoemf-blueprints</artifactId>
+
     <packaging>bundle</packaging>
 
     <name>NeoEMF :: Graph :: Blueprints</name>
@@ -30,23 +31,28 @@
             <artifactId>blueprints-core</artifactId>
         </dependency>
 
-        <!-- Internal dependencies -->
+        <!-- Internal -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>io</artifactId>
+            <artifactId>neoemf-io</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Common dependencies -->
+        <!-- Common -->
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-configuration</groupId>
@@ -73,7 +79,7 @@
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
 
-        <!-- EMF dependencies -->
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -85,23 +91,21 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- Test -->
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -115,6 +119,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.blueprints</Bundle-SymbolicName>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.graph.blueprints.*
@@ -124,6 +129,7 @@
                             com.tinkerpop.blueprints.util,
                             com.tinkerpop.blueprints.util.wrappers,
                             com.tinkerpop.blueprints.util.wrappers.id,
+
                             org.apache.commons.configuration,
                             org.apache.commons.configuration.beanutils,
                             org.apache.commons.configuration.event,
@@ -131,8 +137,10 @@
                             org.apache.commons.configuration.reloading,
                             org.apache.commons.configuration.resolver,
                             org.apache.commons.configuration.tree,
+
                             org.apache.commons.lang.exception,
                             org.apache.commons.lang.text,
+
                             org.apache.commons.logging,
                         </_exportcontents>
                         <Require-Bundle>

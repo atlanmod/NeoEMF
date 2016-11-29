@@ -15,20 +15,22 @@ import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
-import com.tinkerpop.blueprints.util.GraphHelper;
 
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.datastore.estores.PersistentEStore;
-import fr.inria.atlanmod.neoemf.datastore.estores.impl.AutocommitEStoreDecorator;
-import fr.inria.atlanmod.neoemf.datastore.impl.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.datastore.store.AutocommitStoreDecorator;
+import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.graph.blueprints.config.InternalBlueprintsConfiguration;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.CachedManyDirectWriteBlueprintsRespirceEStoreImpl;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.estores.impl.DirectWriteBlueprintsResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.DirectWriteBlueprintsCacheManyStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.store.DirectWriteBlueprintsStore;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsStoreOptions;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -42,19 +44,16 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.EStoreGraphOption.AUTOCOMMIT;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.EStoreGraphOption.MANY_CACHE;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE;
-import static fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-    public static final String BLUEPRINTS_BACKEND = "blueprints";
+    public static final String NAME = BlueprintsPersistenceBackend.NAME;
+
     /**
      * The configuration file name.
      * <p/>
@@ -63,49 +62,44 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
      */
     private static final String BLUEPRINTS_CONFIG_FILE = "config.properties";
 
-    private static PersistenceBackendFactory INSTANCE;
-
     private BlueprintsPersistenceBackendFactory() {
     }
 
     public static PersistenceBackendFactory getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new BlueprintsPersistenceBackendFactory();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
     public String getName() {
-        return BLUEPRINTS_BACKEND;
+        return NAME;
     }
 
     @Override
-    protected PersistentEStore internalCreatePersistentEStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
+    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        PersistentEStore eStore;
-        List<PersistentResourceOptions.StoreOption> storeOptions = storeOptionsFrom(options);
+        PersistentStore eStore;
+        List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(AUTOCOMMIT))) {
-            eStore = new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend) backend);
+        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BlueprintsStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT))) {
+            eStore = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(MANY_CACHE)) {
-            eStore = new CachedManyDirectWriteBlueprintsRespirceEStoreImpl(resource, (BlueprintsPersistenceBackend) backend);
+        else if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
+            eStore = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else {
             throw new InvalidDataStoreException("No valid base EStore found in the options");
         }
         // Autocommit
-        if (!isNull(storeOptions) && storeOptions.contains(AUTOCOMMIT)) {
-            if (options.containsKey(OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK)) {
-                int autoCommitChunk = Integer.parseInt((String) options.get(OPTIONS_BLUEPRINTS_AUTOCOMMIT_CHUNK));
-                eStore = new AutocommitEStoreDecorator(eStore, autoCommitChunk);
+        if (nonNull(storeOptions) && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
+            if (options.containsKey(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK)) {
+                int autoCommitChunk = Integer.parseInt((String) options.get(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK));
+                eStore = new AutocommitStoreDecorator(eStore, autoCommitChunk);
             }
             else {
-                eStore = new AutocommitEStoreDecorator(eStore);
+                eStore = new AutocommitStoreDecorator(eStore);
             }
         }
         return eStore;
@@ -140,7 +134,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             }
         }
         finally {
-            if (!isNull(configuration)) {
+            if (nonNull(configuration)) {
                 try {
                     configuration.save();
                 }
@@ -160,11 +154,11 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     }
 
     @Override
-    public PersistentEStore createTransientEStore(PersistentResource resource, PersistenceBackend backend) {
+    public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        return new DirectWriteBlueprintsResourceEStoreImpl(resource, (BlueprintsPersistenceBackend) backend);
+        return new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
     }
 
     @Override
@@ -191,14 +185,14 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         }
 
         // Initialize value if the config file has just been created
-        if (!configuration.containsKey(OPTIONS_BLUEPRINTS_GRAPH_TYPE)) {
-            configuration.setProperty(OPTIONS_BLUEPRINTS_GRAPH_TYPE, OPTIONS_BLUEPRINTS_GRAPH_TYPE_DEFAULT);
+        if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
+            configuration.setProperty(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         }
-        else if (options.containsKey(OPTIONS_BLUEPRINTS_GRAPH_TYPE)) {
+        else if (options.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
             // The file already existed, check that the issued options are not conflictive
-            String savedGraphType = configuration.getString(OPTIONS_BLUEPRINTS_GRAPH_TYPE);
-            String issuedGraphType = options.get(OPTIONS_BLUEPRINTS_GRAPH_TYPE).toString();
-            if (!savedGraphType.equals(issuedGraphType)) {
+            String savedGraphType = configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE);
+            String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
+            if (!Objects.equals(savedGraphType, issuedGraphType)) {
                 NeoLogger.error("Unable to create graph as type {0}, expected graph type was {1})", issuedGraphType, savedGraphType);
                 throw new InvalidDataStoreException("Unable to create graph as type " + issuedGraphType + ", expected graph type was " + savedGraphType + ')');
             }
@@ -210,7 +204,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         }
 
         // Check we have a valid graph type, it is needed to get the graph name
-        String graphType = configuration.getString(OPTIONS_BLUEPRINTS_GRAPH_TYPE);
+        String graphType = configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE);
         if (isNull(graphType)) {
             throw new InvalidDataStoreException("Graph type is undefined for " + directory.getAbsolutePath());
         }
@@ -229,7 +223,6 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
                 Method configClassInstanceMethod = configClass.getMethod("getInstance");
                 InternalBlueprintsConfiguration blueprintsConfig = (InternalBlueprintsConfiguration) configClassInstanceMethod.invoke(configClass);
                 blueprintsConfig.putDefaultConfiguration(configuration, directory);
-                blueprintsConfig.setGlobalSettings();
             }
             catch (ClassNotFoundException e) {
                 NeoLogger.warn(e, "Unable to find the configuration class {0}", configClassQualifiedName);
@@ -246,5 +239,10 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         }
 
         return configuration;
+    }
+
+    private static class Holder {
+
+        private static final PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();
     }
 }

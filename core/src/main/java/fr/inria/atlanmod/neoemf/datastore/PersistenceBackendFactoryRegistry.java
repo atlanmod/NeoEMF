@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class PersistenceBackendFactoryRegistry {
 
     /**
-     * A map containing all registered {@link PersistenceBackendFactory backend factory} identified by a uri scheme.
+     * A map containing all registered {@link PersistenceBackendFactory} identified by a uri scheme.
      */
     private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
 
@@ -30,14 +30,14 @@ public class PersistenceBackendFactoryRegistry {
     /**
      * Returns all registered factories.
      *
-     * @return an immutable {@link Map map} of {@link PersistenceBackendFactory backend factory}
+     * @return an immutable {@link Map} of {@link PersistenceBackendFactory}
      */
     public static Map<String, PersistenceBackendFactory> getFactories() {
         return Collections.unmodifiableMap(FACTORIES);
     }
 
     /**
-     * Returns a specific {@link PersistenceBackendFactory backend factory} identified by {@code uriScheme}.
+     * Returns a specific {@link PersistenceBackendFactory} identified by {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
      *
@@ -46,11 +46,14 @@ public class PersistenceBackendFactoryRegistry {
      * @throws NullPointerException if no backend factory is registered for the given {@code uriScheme}
      */
     public static PersistenceBackendFactory getFactoryProvider(String uriScheme) {
-        return checkNotNull(FACTORIES.get(uriScheme), "Can not find a factory for the given type %s", uriScheme);
+        return checkNotNull(FACTORIES.get(uriScheme),
+                "No factory is registered to process the URI scheme %s. Use the %s.register() method first",
+                uriScheme,
+                PersistenceBackendFactoryRegistry.class.getName());
     }
 
     /**
-     * Defines if a {@link PersistenceBackendFactory backend factory} is registered for the given {@code uriScheme}.
+     * Defines if a {@link PersistenceBackendFactory} is registered for the given {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
      *
@@ -61,7 +64,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Register a {@link PersistenceBackendFactory backend factory} identified by the given {@code uriScheme}.
+     * Register a {@link PersistenceBackendFactory} identified by the given {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
      */
@@ -70,7 +73,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Unregister a {@link PersistenceBackendFactory backend factory} identified by the given {@code uriScheme}.
+     * Unregister a {@link PersistenceBackendFactory} identified by the given {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
      */

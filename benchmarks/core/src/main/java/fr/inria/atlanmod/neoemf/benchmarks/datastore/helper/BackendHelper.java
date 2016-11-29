@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -49,6 +50,7 @@ import java.util.zip.ZipInputStream;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class BackendHelper {
 
@@ -119,8 +121,8 @@ public class BackendHelper {
         targetBackend.initAndGetEPackage();
 
         log.info("Loading '{}'", sourceUri);
-        Map<Object, Object> loadOpts = new HashMap<>();
-        if (ZXMI.equals(sourceUri.fileExtension())) {
+        Map<String, Object> loadOpts = new HashMap<>();
+        if (Objects.equals(ZXMI, sourceUri.fileExtension())) {
             loadOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         }
         sourceResource.load(loadOpts);
@@ -183,7 +185,7 @@ public class BackendHelper {
         sourceResource.unload();
 
         log.info("Saving to '{}'", targetResource.getURI());
-        Map<Object, Object> saveOpts = new HashMap<>();
+        Map<String, Object> saveOpts = new HashMap<>();
         saveOpts.put(XMIResource.OPTION_ZIP, Boolean.TRUE);
         targetResource.save(saveOpts);
 
@@ -267,7 +269,7 @@ public class BackendHelper {
 
             try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
                 ZipEntry entry = inputStream.getNextEntry();
-                while (!isNull(entry)) {
+                while (nonNull(entry)) {
                     if (!entry.isDirectory() && checkValidResource(entry.getName())) {
                         AVAILABLE_RESOURCES.add(new File(entry.getName()).getName());
                     }
@@ -293,8 +295,8 @@ public class BackendHelper {
         boolean fileFound = false;
         try (ZipInputStream inputStream = new ZipInputStream(BackendHelper.class.getResourceAsStream("/" + ZIP_FILENAME))) {
             ZipEntry entry = inputStream.getNextEntry();
-            while (!isNull(entry) || !fileFound) {
-                if (!entry.isDirectory() && new File(entry.getName()).getName().equals(filename)) {
+            while (nonNull(entry) || !fileFound) {
+                if (!entry.isDirectory() && Objects.equals(new File(entry.getName()).getName(), filename)) {
                     outputFile = extractEntryFromZip(inputStream, entry, outputDir);
                     fileFound = true;
                 }

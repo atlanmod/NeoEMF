@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
-import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKey;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKeySerializer;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.map.datastore.store.serializer.FeatureKeySerializer;
 
 import org.junit.Test;
 import org.mapdb.DataInput2;
@@ -21,7 +21,7 @@ import org.mapdb.DataOutput2;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class FeatureKeySerializerTest {
 
@@ -30,7 +30,7 @@ public class FeatureKeySerializerTest {
         DataOutput2 out = new DataOutput2();
 
         FeatureKeySerializer serializer = new FeatureKeySerializer();
-        FeatureKey key1 = new FeatureKey(new StringId("anObject"), "anAttribute");
+        FeatureKey key1 = FeatureKey.of(new StringId("anObject"), "anAttribute");
 
         serializer.serialize(out, key1);
         FeatureKey key2 = serializer.deserialize(new DataInput2.ByteArray(out.copyBytes()), 0);

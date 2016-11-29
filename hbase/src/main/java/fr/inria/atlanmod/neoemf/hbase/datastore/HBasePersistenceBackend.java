@@ -11,17 +11,22 @@
 
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.DirectWriteHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.ReadOnlyHBaseStore;
 
 /**
  * Dummy backend implementation for HBase to fit core architecture.
  * <p/>
- * The real access to the HBase Table is done in {@link DirectWriteHBaseResourceEStoreImpl} and
- * {@link ReadOnlyHBaseResourceEStoreImpl}.
+ * The real access to the HBase Table is done in {@link DirectWriteHBaseStore} and
+ * {@link ReadOnlyHBaseStore}.
  */
-public class HBasePersistenceBackend implements PersistenceBackend {
+public class HBasePersistenceBackend extends AbstractPersistenceBackend {
+
+    /**
+     * The literal description of this backend.
+     */
+    public static final String NAME = "hbase";
 
     @Override
     public boolean isClosed() {

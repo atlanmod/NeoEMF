@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
@@ -23,7 +23,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Before;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public abstract class AllInstancesTest extends AllBackendTest {
 

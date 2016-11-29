@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.graph.blueprints.datastore;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Iterables;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
@@ -26,10 +26,9 @@ import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.core.impl.PersistentEObjectAdapter;
-import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
+import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -44,21 +43,29 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
-public class BlueprintsPersistenceBackend implements PersistenceBackend {
+public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
-    public static final String ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
-    public static final String EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+    /**
+     * The literal description of this backend.
+     */
+    public static final String NAME = "blueprints";
 
-    public static final String INSTANCE_OF = "kyanosInstanceOf";
-    public static final String METACLASSES = "metaclasses";
-    public static final String NAME = "name";
+    public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+    public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+    public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
+    public static final String KEY_METACLASSES = "metaclasses";
+    public static final String KEY_NAME = "name";
+
+    // TODO Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
      * This {@link Cache}&lt;objectID, {@link EObject}&gt; is necessary to maintain a registry of the already loaded
@@ -67,8 +74,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      * We use a weak key cache for saving memory. When the value {@link EObject} is no longer referenced and can be
      * garbage collected it is removed from the {@link Cache}.
      */
-    private final Cache<Id, PersistentEObject> loadedEObjectsCache;
-    private final Cache<Id, Vertex> loadedVerticesCache;
+    private final Cache<Id, PersistentEObject> persistentObjectsCache;
+    private final Cache<Id, Vertex> verticesCache;
     private final List<EClass> indexedEClasses;
 
     private final IdGraph<KeyIndexableGraph> graph;
@@ -78,12 +85,12 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
-        this.loadedEObjectsCache = CacheBuilder.newBuilder().softValues().build();
-        this.loadedVerticesCache = CacheBuilder.newBuilder().softValues().build();
+        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
+        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.indexedEClasses = new ArrayList<>();
-        this.metaclassIndex = graph.getIndex(METACLASSES, Vertex.class);
+        this.metaclassIndex = graph.getIndex(KEY_METACLASSES, Vertex.class);
         if (isNull(metaclassIndex)) {
-            metaclassIndex = graph.createIndex(METACLASSES, Vertex.class);
+            metaclassIndex = graph.createIndex(KEY_METACLASSES, Vertex.class);
         }
     }
 
@@ -132,9 +139,9 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             }
             // Get all the vertices that are indexed with one of the EClass
             for (EClass ec : eClassToFind) {
-                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, ec.getName()), null);
-                if (!isNull(metaClassVertex)) {
-                    Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, INSTANCE_OF);
+                Vertex metaClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, ec.getName()), null);
+                if (nonNull(metaClassVertex)) {
+                    Iterable<Vertex> instanceVertexIterable = metaClassVertex.getVertices(Direction.IN, KEY_INSTANCE_OF);
                     indexHits.put(ec, instanceVertexIterable);
                 }
                 else {
@@ -158,7 +165,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      * @return the newly created vertex
      */
     private Vertex addVertex(EObject eObject) {
-        PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
+        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
         return addVertex(persistentEObject.id());
     }
 
@@ -172,8 +179,8 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      */
     private Vertex addVertex(EClass eClass) {
         Vertex vertex = addVertex(buildId(eClass));
-        vertex.setProperty(ECLASS_NAME, eClass.getName());
-        vertex.setProperty(EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
+        vertex.setProperty(KEY_ECLASS_NAME, eClass.getName());
+        vertex.setProperty(KEY_EPACKAGE_NSURI, eClass.getEPackage().getNsURI());
         return vertex;
     }
 
@@ -189,7 +196,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      */
     public Vertex getVertex(EObject eObject) {
         Vertex vertex = null;
-        PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
+        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
         if (persistentEObject.isMapped()) {
             vertex = getMappedVertex(persistentEObject.id());
         }
@@ -215,7 +222,7 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
      */
     public Vertex getOrCreateVertex(EObject eObject) {
         Vertex vertex;
-        PersistentEObject persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
+        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
         if (persistentEObject.isMapped()) {
             vertex = getMappedVertex(persistentEObject.id());
         }
@@ -229,13 +236,13 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
         Vertex vertex = addVertex(persistentEObject);
         EClass eClass = persistentEObject.eClass();
 
-        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(NAME, eClass.getName()), null);
+        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, eClass.getName()), null);
         if (isNull(eClassVertex)) {
             eClassVertex = addVertex(eClass);
-            metaclassIndex.put(NAME, eClass.getName(), eClassVertex);
+            metaclassIndex.put(KEY_NAME, eClass.getName(), eClassVertex);
             indexedEClasses.add(eClass);
         }
-        vertex.addEdge(INSTANCE_OF, eClassVertex);
+        vertex.addEdge(KEY_INSTANCE_OF, eClassVertex);
         setMappedVertex(vertex, persistentEObject);
         return vertex;
     }
@@ -243,26 +250,26 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
     private Vertex getMappedVertex(Id id) {
         Vertex vertex = null;
         try {
-            vertex = loadedVerticesCache.get(id, new VertexCacheLoader(id));
+            vertex = verticesCache.get(id, this::getVertex);
         }
-        catch (ExecutionException e) {
-            NeoLogger.error(e.getCause());
+        catch (Exception e) {
+            NeoLogger.error(e);
         }
         return vertex;
     }
 
     private void setMappedVertex(Vertex vertex, PersistentEObject object) {
         object.setMapped(true);
-        loadedEObjectsCache.put(object.id(), object);
-        loadedVerticesCache.put(object.id(), vertex);
+        persistentObjectsCache.put(object.id(), object);
+        verticesCache.put(object.id(), vertex);
     }
 
     private EClass resolveInstanceOf(Vertex vertex) {
         EClass returnValue = null;
-        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, INSTANCE_OF), null);
-        if (!isNull(eClassVertex)) {
-            String name = eClassVertex.getProperty(ECLASS_NAME);
-            String nsUri = eClassVertex.getProperty(EPACKAGE_NSURI);
+        Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
+        if (nonNull(eClassVertex)) {
+            String name = eClassVertex.getProperty(KEY_ECLASS_NAME);
+            String nsUri = eClassVertex.getProperty(KEY_EPACKAGE_NSURI);
             returnValue = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
         }
         return returnValue;
@@ -282,10 +289,10 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
             eClass = resolveInstanceOf(vertex);
         }
         try {
-            persistentEObject = loadedEObjectsCache.get(id, new PersistantEObjectCacheLoader(id, eClass));
+            persistentEObject = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
         }
-        catch (ExecutionException e) {
-            NeoLogger.error(e.getCause());
+        catch (Exception e) {
+            NeoLogger.error(e);
         }
         return persistentEObject;
     }
@@ -311,48 +318,38 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
 
     private void initMetaClassesIndex(List<EClass> eClassList) {
         for (EClass eClass : eClassList) {
-            checkArgument(Iterables.isEmpty(metaclassIndex.get(NAME, eClass.getName())), "Index is not consistent");
-            metaclassIndex.put(NAME, eClass.getName(), getVertex(eClass));
+            checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, eClass.getName())), "Index is not consistent");
+            metaclassIndex.put(KEY_NAME, eClass.getName(), getVertex(eClass));
         }
     }
 
-    private static class PersistantEObjectCacheLoader implements Callable<PersistentEObject> {
+    private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
-        private final Id id;
         private final EClass eClass;
 
-        public PersistantEObjectCacheLoader(Id id, EClass eClass) {
-            this.id = id;
+        private PersistentEObjectCacheLoader(EClass eClass) {
             this.eClass = eClass;
         }
 
         @Override
-        public PersistentEObject call() throws Exception {
+        public PersistentEObject apply(Id id) {
             PersistentEObject persistentEObject;
-            if (!isNull(eClass)) {
+            if (nonNull(eClass)) {
                 EObject eObject;
-                if (eClass.getEPackage().getClass().equals(EPackageImpl.class)) {
+                if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
                     // Dynamic EMF
                     eObject = PersistenceFactory.getInstance().create(eClass);
                 }
                 else {
-                    // EObject eObject = EcoreUtil.create(eClass);
                     eObject = EcoreUtil.create(eClass);
                 }
-                if (eObject instanceof PersistentEObject) {
-                    persistentEObject = (PersistentEObject) eObject;
-                }
-                else {
-                    persistentEObject = PersistentEObjectAdapter.getAdapter(eObject);
-                }
-                persistentEObject.id(new StringId(id.toString()));
+                persistentEObject = PersistentEObject.from(eObject);
+                persistentEObject.id(id);
                 persistentEObject.setMapped(true);
             }
             else {
-                // TODO Find a better exception to thrown
-                throw new Exception("Vertex " + id + " does not have an associated EClass Vertex");
+                throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
-
             return persistentEObject;
         }
     }
@@ -398,20 +395,6 @@ public class BlueprintsPersistenceBackend implements PersistenceBackend {
                     referencedVertex.remove();
                 }
             }
-        }
-    }
-
-    private class VertexCacheLoader implements Callable<Vertex> {
-
-        private final Id id;
-
-        public VertexCacheLoader(Id id) {
-            this.id = id;
-        }
-
-        @Override
-        public Vertex call() throws Exception {
-            return getVertex(id);
         }
     }
 }

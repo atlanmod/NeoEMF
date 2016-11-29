@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class QueryFactoryASE2015 extends QueryFactory {
 
@@ -51,7 +51,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
                 for (BodyDeclaration body : type.getBodyDeclarations()) {
                     if ((body instanceof MethodDeclaration)) {
                         MethodDeclaration method = (MethodDeclaration) body;
-                        if (!isNull(method.getModifier()) && method.getModifier().isStatic() && !isNull(method.getReturnType()) && method.getReturnType().getType() == type) {
+                        if (nonNull(method.getModifier()) && method.getModifier().isStatic() && nonNull(method.getReturnType()) && method.getReturnType().getType() == type) {
                             listResult.add((ClassDeclaration) type);
                         }
                     }
@@ -160,7 +160,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
             if ((method instanceof MethodDeclaration)) {
                 MethodDeclaration meth = (MethodDeclaration) method;
-                if (!isNull(meth.getBody())) {
+                if (nonNull(meth.getBody())) {
                     appendAccessedTypesFromBody(meth.getBody().getStatements(), result);
                 }
             }
@@ -193,7 +193,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
 
     private static void appendInvisibleMethodsInClassDeclaration(ClassDeclaration cd, List<MethodDeclaration> result) {
         for (BodyDeclaration method : cd.getBodyDeclarations()) {
-            if ((method instanceof MethodDeclaration) && !isNull(method.getModifier())) {
+            if ((method instanceof MethodDeclaration) && nonNull(method.getModifier())) {
                 if (method.getModifier().getVisibility() == VisibilityKind.PRIVATE) {
                     result.add((MethodDeclaration) method);
                 }

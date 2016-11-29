@@ -12,9 +12,8 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.logger.NeoLogger;
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
@@ -27,7 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public abstract class AllBackendTest extends AllTest {
 
@@ -75,9 +74,9 @@ public abstract class AllBackendTest extends AllTest {
     public void tearDown() throws Exception {
         //printMemoryUsage();
 
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) mapResource);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) neo4jResource);
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) tinkerResource);
+        mapResource.close();
+        neo4jResource.close();
+        tinkerResource.close();
 
         //temporaryFolder.delete();
 

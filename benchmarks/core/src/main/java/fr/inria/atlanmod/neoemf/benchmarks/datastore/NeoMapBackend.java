@@ -13,19 +13,15 @@ package fr.inria.atlanmod.neoemf.benchmarks.datastore;
 
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.map.resources.MapResourceOptions;
-import fr.inria.atlanmod.neoemf.map.util.NeoMapURI;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.map.option.MapOptionsBuilder;
+import fr.inria.atlanmod.neoemf.map.util.MapURI;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NeoMapBackend extends AbstractNeoBackend {
@@ -40,20 +36,19 @@ public class NeoMapBackend extends AbstractNeoBackend {
 
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) throws Exception {
-        PersistenceBackendFactoryRegistry.register(NeoMapURI.NEO_MAP_SCHEME, MapPersistenceBackendFactory.getInstance());
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(NeoMapURI.NEO_MAP_SCHEME, PersistentResourceFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(MapURI.SCHEME, MapPersistenceBackendFactory.getInstance());
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        URI uri = NeoMapURI.createNeoMapURI(file);
+        URI uri = MapURI.createFileURI(file);
 
         return resourceSet.createResource(uri);
     }
 
     @Override
-    public Map<Object, Object> getOptions() {
-        Map<Object, Object> options = new HashMap<>();
-        List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
-        storeOptions.add(MapResourceOptions.EStoreMapOption.AUTOCOMMIT);
-        options.put(PersistentResourceOptions.STORE_OPTIONS, storeOptions);
-        return options;
+    public Map<String, Object> getOptions() {
+        return MapOptionsBuilder.newBuilder()
+                .directWrite()
+                .autocommit()
+                .asMap();
     }
 }

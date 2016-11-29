@@ -21,36 +21,31 @@ import static java.util.Objects.isNull;
 
 public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
-    private static final String BLUEPRINTS_TG_DIRECTORY = "blueprints.tg.directory";
-    private static final String BLUEPRINTS_TG_FILE_TYPE = "blueprints.tg.file-type";
-
-    private static InternalBlueprintsConfiguration INSTANCE;
+    private static final String DIRECTORY = "blueprints.tg.directory";
+    private static final String FILE_TYPE = "blueprints.tg.file-type";
 
     private InternalBlueprintsTgConfiguration() {
     }
 
     /**
-     * Returns the instance of this {@link InternalBlueprintsConfiguration configuration}.
+     * Returns the instance of this {@link InternalBlueprintsConfiguration}.
      */
     public static InternalBlueprintsConfiguration getInstance() {
-        if (isNull(INSTANCE)) {
-            INSTANCE = new InternalBlueprintsTgConfiguration();
-        }
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
-        if (isNull(currentConfiguration.getString(BLUEPRINTS_TG_DIRECTORY))) {
-            currentConfiguration.addProperty(BLUEPRINTS_TG_DIRECTORY, dbLocation.getAbsolutePath());
+        if (isNull(currentConfiguration.getString(DIRECTORY))) {
+            currentConfiguration.addProperty(DIRECTORY, dbLocation.getAbsolutePath());
         }
-        if (isNull(currentConfiguration.getString(BLUEPRINTS_TG_FILE_TYPE))) {
-            currentConfiguration.addProperty(BLUEPRINTS_TG_FILE_TYPE, "GRAPHML");
+        if (isNull(currentConfiguration.getString(FILE_TYPE))) {
+            currentConfiguration.addProperty(FILE_TYPE, "GRAPHML");
         }
     }
 
-    @Override
-    public void setGlobalSettings() {
+    private static class Holder {
 
+        private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsTgConfiguration();
     }
 }
