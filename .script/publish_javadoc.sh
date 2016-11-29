@@ -5,7 +5,7 @@ set -e
 if [ "$TRAVIS_REPO_SLUG" = "atlanmod/NeoEMF" ] && [ "$TRAVIS_JDK_VERSION" = "oraclejdk8" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
     echo -e "Publishing javadoc...\n"
 
-    cp -R target/site/apidocs $HOME/.neoemf/apidocs
+    cp -R target/site/apidocs $HOME/apidocs
     cd $HOME
 
     git config --global user.email "travis@travis-ci.org"
@@ -15,7 +15,7 @@ if [ "$TRAVIS_REPO_SLUG" = "atlanmod/NeoEMF" ] && [ "$TRAVIS_JDK_VERSION" = "ora
     cd gh-pages
 
     git rm -rf ./apidocs
-    cp -Rf $HOME/.neoemf/apidocs ./apidocs
+    cp -Rf $HOME/apidocs ./apidocs
 
     git add -f .
     git commit -m "Latest javadoc on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
