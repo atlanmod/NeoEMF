@@ -133,6 +133,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <globalArgLine>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</globalArgLine>
+        <argLine />
         <config-path>./</config-path>
 
         <!--
@@ -509,6 +510,7 @@
                     <detectLinks>false</detectLinks>
                     <failOnError>false</failOnError>
                     <quiet>true</quiet>
+                    <aggregate>true</aggregate>
                     <excludePackageNames>
                         fr.inria.atlanmod.neoemf.tests.models.*
                     </excludePackageNames>
@@ -518,22 +520,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report-aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
 
@@ -718,6 +704,7 @@
                     <detectLinks>false</detectLinks>
                     <failOnError>false</failOnError>
                     <quiet>true</quiet>
+                    <reportOutputDirectory>${java.home}/.neoemf/apidocs</reportOutputDirectory>
                     <excludePackageNames>
                         fr.inria.atlanmod.neoemf.tests.models.*
                     </excludePackageNames>
