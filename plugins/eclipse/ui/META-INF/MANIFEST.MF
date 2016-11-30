@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF UI Plugin
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.ui;singleton:=true
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin
 Bundle-Vendor: Atlanmod - Inria
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -21,9 +21,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.converter,
  org.eclipse.emf.importer,
  org.eclipse.emf.ecore.editor,
- fr.inria.atlanmod.neoemf.core;bundle-version="0.0.1",
- fr.inria.atlanmod.neoemf.blueprints;bundle-version="0.0.1",
- fr.inria.atlanmod.neoemf.map;bundle-version="0.0.1"
+ fr.inria.atlanmod.neoemf.core;bundle-version="1.0.0",
+ fr.inria.atlanmod.neoemf.blueprints;bundle-version="1.0.0",
+ fr.inria.atlanmod.neoemf.map;bundle-version="1.0.0"
 Bundle-ClassPath: .,
  commons-configuration.jar,
  commons-lang.jar,

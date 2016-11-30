@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
     <artifactId>neoemf-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <packaging>pom</packaging>
 
@@ -25,6 +23,7 @@
         <connection>scm:git:https://github.com/atlanmod/NeoEMF.git</connection>
         <developerConnection>scm:git:https://github.com/atlanmod/NeoEMF.git</developerConnection>
         <url>https://github.com/atlanmod/NeoEMF</url>
+        <tag>neoemf-1.0.0</tag>
     </scm>
 
     <issueManagement>
@@ -309,21 +308,18 @@
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.common</artifactId>
                 <version>${emf.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore</artifactId>
                 <version>${ecore.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
                 <version>${ecore.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -437,7 +433,7 @@
                         <instructions>
                             <Bundle-Version>
                                 <!-- Properties ${osgi.XXX} : Created by build-helper-maven-plugin:parse-version -->
-                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}.${maven.build.timestamp}
+                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package />
@@ -447,7 +443,7 @@
                                 <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
                                      otherwise it creates conflicts with running osgi version (these dependencies are
                                      only needed when running the plugins in an eclipse-based environment) -->
-                                *;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi
+                                *;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi;groupId=!${project.groupId}|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>
