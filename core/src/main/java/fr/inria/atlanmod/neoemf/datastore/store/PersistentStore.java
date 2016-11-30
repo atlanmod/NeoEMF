@@ -16,19 +16,19 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * This interface extends the {@link InternalEObject.EStore} interface and allows to establish a mapping between
- * {@link Resource}s and {@link InternalEObject.EStore}s.
+ * This interface extends the {@link EStore} interface and allows to establish a mapping between {@link Resource}s and
+ * {@link EStore}s.
  */
-public interface PersistentStore extends InternalEObject.EStore {
+public interface PersistentStore extends EStore {
 
-    int NO_INDEX = InternalEObject.EStore.NO_INDEX;
+    int NO_INDEX = EStore.NO_INDEX;
 
     /**
-     * Returns the {@link Resource} to which this {@link InternalEObject.EStore} is associated.
+     * Returns the {@link Resource} to which this {@link EStore} is associated.
      */
     Resource resource();
 

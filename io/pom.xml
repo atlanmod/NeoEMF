@@ -17,27 +17,16 @@
     <name>NeoEMF :: IO</name>
     <description />
 
-    <properties>
-        <config-path>${project.parent.basedir}</config-path>
-    </properties>
-
     <dependencies>
 
-        <!-- Internal -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Common -->
+        <!-- Cache -->
 
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
+
+        <!-- Common -->
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -72,6 +61,15 @@
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Internal -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

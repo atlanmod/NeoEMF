@@ -8,7 +8,7 @@
         This ruleset checks NeoEMF code for bad stuff.
     </description>
 
-    <!-- Exclude generated source -->
+    <!-- Exclude generated sources -->
 
     <exclude-pattern>.*/neoemf/tests/models/.*</exclude-pattern>
 

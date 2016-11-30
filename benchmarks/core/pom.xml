@@ -23,7 +23,7 @@
 
     <dependencies>
 
-        <!-- EMF dependencies -->
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -79,7 +79,7 @@
             <artifactId>neoemf-map</artifactId>
         </dependency>
 
-        <!-- Commons -->
+        <!-- Common -->
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -106,7 +106,20 @@
             <artifactId>log4j-jcl</artifactId>
         </dependency>
 
-        <!-- Local -->
+        <!-- Benchmark -->
+
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Internal -->
 
         <dependency>
             <groupId>org.eclipse.gmt</groupId>
@@ -121,19 +134,6 @@
         <dependency>
             <groupId>org.eclipse.gmt</groupId>
             <artifactId>org.eclipse.gmt.modisco.java.neoemf</artifactId>
-        </dependency>
-
-        <!-- Benchmark -->
-
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-generator-annprocess</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

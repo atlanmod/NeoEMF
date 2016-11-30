@@ -23,12 +23,13 @@
     </modules>
 
     <properties>
-        <!-- EMF & Co -->
+
+        <!-- EMF -->
         <cdo.version>4.3.0</cdo.version>
         <neo4j.version>1.9.6</neo4j.version>
 
         <!-- Benchmark -->
-        <jmh.version>1.16</jmh.version>
+        <jmh.version>1.17.1</jmh.version>
     </properties>
 
     <dependencyManagement>

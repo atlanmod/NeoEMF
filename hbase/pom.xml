@@ -17,10 +17,6 @@
     <name>NeoEMF :: HBase</name>
     <description>HBase implementation of the core component.</description>
 
-    <properties>
-        <config-path>${project.parent.basedir}</config-path>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.hbase</groupId>
@@ -37,21 +33,14 @@
             <artifactId>hadoop-common</artifactId>
         </dependency>
 
-        <!-- Internal -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Common -->
+        <!-- Cache -->
 
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
+
+        <!-- Common -->
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -83,6 +72,15 @@
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
+        </dependency>
+
+        <!-- Internal -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -15,18 +15,18 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 
 public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
-     * Default number of allowed modifications (100000) between commits on the
-     * underlying {@link InternalEObject.EStore}.
+     * Default number of allowed modifications (100000) between commits on the underlying {@link EStore}.
      */
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
     /**
-     * Number of allowed modifications between commits on the underlying {@link InternalEObject.EStore}
-     * for this {@link AutocommitStoreDecorator}.
+     * Number of allowed modifications between commits on the underlying {@link EStore} for this
+     * {@link AutocommitStoreDecorator}.
      */
     private final long opsBetweenCommits;
 
@@ -36,8 +36,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     private long opCount;
 
     /**
-     * Allows to specify the number of allowed modification on the underlying {@link InternalEObject.EStore} before
-     * saving automatically.
+     * Allows to specify the number of allowed modification on the underlying {@link EStore} before saving automatically.
      */
     public AutocommitStoreDecorator(PersistentStore eStore, long opsBetweenCommits) {
         super(eStore);
@@ -47,8 +46,8 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     }
 
     /**
-     * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying
-     * {@link InternalEObject.EStore} before saving automatically.
+     * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying {@link EStore} before saving
+     * automatically.
      */
     public AutocommitStoreDecorator(PersistentStore eStore) {
         this(eStore, OPS_BETWEEN_COMMITS_DEFAULT);

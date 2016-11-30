@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.datastore.store;
 
-import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 
-public interface TransientStore extends InternalEObject.EStore {
+public interface TransientStore extends EStore {
 }

@@ -28,9 +28,9 @@ import java.io.OutputStream;
 import java.util.Map;
 
 /**
- * An empty {@see PersistentResource} decorator that delegates all method calls to the decorated resource.
+ * An empty {@link PersistentResource} decorator that delegates all method calls to the decorated resource.
  * <p>
- * This class can be extended by external tools to add behavior to an existing {@see PersistentResource}.
+ * This class can be extended by external tools to add behavior to an existing {@link PersistentResource}.
  */
 public class PersistentResourceDecorator implements PersistentResource {
 
