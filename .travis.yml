@@ -23,7 +23,7 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 
 # Build & publish javadoc on Github (gh-pages)
-  - mvn -B javadoc:javadoc javadoc:aggregate
+  - mvn -B -q javadoc:javadoc javadoc:aggregate
   - bash .script/publish_javadoc.sh
 
 notifications:
