@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,12 @@
 package fr.inria.atlanmod.neoemf.io.hash;
 
 /**
- * An object able to calculate the {@link HashCode hashcode} of a value.
+ * An object able to calculate the {@link HashCode} of a value.
  */
 public interface Hasher {
 
     /**
-     * Calculates the {@link HashCode hashcode} of the given {@code value}.
+     * Calculates the {@link HashCode} of the given {@code value}.
      *
      * @param value the value to has
      *

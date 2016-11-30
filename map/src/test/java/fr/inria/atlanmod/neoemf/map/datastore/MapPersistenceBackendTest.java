@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,28 +8,32 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.map.datastore;
 
-import fr.inria.atlanmod.neoemf.core.impl.StringId;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.FeatureKey;
-import fr.inria.atlanmod.neoemf.map.datastore.estores.impl.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.cache.MultivaluedFeatureKey;
+import fr.inria.atlanmod.neoemf.core.StringId;
+
 import org.junit.Test;
-import org.mapdb.*;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
+import org.mapdb.Serializer;
 
-/**
- * Created by sunye on 13/10/2016.
- */
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+
 public class MapPersistenceBackendTest {
-
 
     @Test
     public void testStoreFeature() {
         DB db = DBMaker.memoryDB().make();
         MapPersistenceBackend backend = new MapPersistenceBackend(db);
-        FeatureKey key = new FeatureKey(new StringId("object1"), "name");
+        FeatureKey key = FeatureKey.of(new StringId("object1"), "name");
         backend.storeValue(key, "value");
 
-       assert "value".equals(backend.valueOf(key));
+        assertThat("value").isEqualTo(backend.valueOf(key));
     }
 
     @Test
@@ -39,40 +43,41 @@ public class MapPersistenceBackendTest {
         MapPersistenceBackend backend = new MapPersistenceBackend(db);
 
         MultivaluedFeatureKey[] keys = new MultivaluedFeatureKey[TIMES];
+        FeatureKey featureKey = FeatureKey.of(new StringId("object"), "name");
 
-        for (int i = 0; i < 10 ; i++) {
-            keys[i] = new MultivaluedFeatureKey(new StringId("object"), "name", i);
-            backend.storeValueAtIndex(keys[i], new Integer(i));
+        for (int i = 0; i < 10; i++) {
+            keys[i] = featureKey.withPosition(i);
+            backend.storeValueAtIndex(keys[i], i);
         }
 
         for (int i = 0; i < TIMES; i++) {
-            assert new Integer(i).equals(backend.valueAtIndex(keys[i]));
+            assertThat(i).isEqualTo(backend.valueAtIndex(keys[i]));
         }
     }
 
     @Test
-    public void testSerialize() throws Exception{
+    @SuppressWarnings("unchecked") // Unchecked cast: 'GroupSerializer' to 'Serializer<...>'
+    public void testSerialize() throws Exception {
         DataOutput2 out = new DataOutput2();
-        FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
+        FeatureKey key1 = FeatureKey.of(new StringId("object1"), "name");
 
         Serializer<FeatureKey> ser = Serializer.JAVA;
         FeatureKey key2 = ser.clone(key1);
 
-        assert key1.equals(key2);
+        assertThat(key1).isEqualTo(key2);
 
         ser.serialize(out, key1);
 
         FeatureKey key3 = ser.deserialize(new DataInput2.ByteArray(out.copyBytes()), out.pos);
 
-        assert key1.equals(key3);
-
+        assertThat(key1).isEqualTo(key3);
     }
 
     @Test
     public void testHashCode() {
-        FeatureKey key1 = new FeatureKey(new StringId("object1"), "name");
-        FeatureKey key2 = new FeatureKey(new StringId("object1"), "name");
+        FeatureKey key1 = FeatureKey.of(new StringId("object1"), "name");
+        FeatureKey key2 = FeatureKey.of(new StringId("object1"), "name");
 
-        assert key1.hashCode() == key2.hashCode();
+        assertThat(key1.hashCode()).isEqualTo(key2.hashCode());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,15 +15,17 @@ import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.io.input.BlueprintsPersistenceHandlerFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.resources.BlueprintsNeo4jResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.resources.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.NeoBlueprintsURI;
+import fr.inria.atlanmod.neoemf.graph.blueprints.io.BlueprintsHandlerFactory;
+import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
+import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AllInputTest;
-import fr.inria.atlanmod.neoemf.io.IOFactory;
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.resources.PersistentResourceOptions;
+import fr.inria.atlanmod.neoemf.io.Importer;
+import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.TimerPersistenceHandlerDecorator;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -42,20 +44,16 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
+import static java.util.Objects.isNull;
 
-/**
- *
- */
 public class ImportTest extends AllInputTest {
 
     @Rule
@@ -65,6 +63,20 @@ public class ImportTest extends AllInputTest {
 
     private HashSet<Object> testedObjects;
     private HashSet<EStructuralFeature> testedFeatures;
+
+    private static EObject getChildFrom(EObject root, int... indexes) {
+        if (indexes.length == 0) {
+            throw new IllegalArgumentException("You must define at least one index");
+        }
+
+        EObject child = root;
+
+        for (int index : indexes) {
+            child = child.eContents().get(index);
+        }
+
+        return child;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -214,6 +226,9 @@ public class ImportTest extends AllInputTest {
     }
 
     private void assertEqualEObject(EObject actual, EObject expected) {
+        NeoLogger.debug("Actual object     : {0}", actual);
+        NeoLogger.debug("Expected object   : {0}", expected);
+
         if (!testedObjects.contains(expected)) {
             testedObjects.add(expected);
 
@@ -234,6 +249,7 @@ public class ImportTest extends AllInputTest {
         }
     }
 
+    @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
     private void assertEqualFeature(EObject actual, EObject expected, int featureId) {
         EStructuralFeature eStructuralFeature = expected.eClass().getEStructuralFeature(featureId);
 
@@ -242,6 +258,9 @@ public class ImportTest extends AllInputTest {
 
             Object expectedValue = expected.eGet(eStructuralFeature);
             Object actualValue = actual.eGet(actual.eClass().getEStructuralFeature(featureId));
+
+            NeoLogger.debug("Actual feature    : {0}", actualValue);
+            NeoLogger.debug("Expected feature  : {0}", expectedValue);
 
             if (expectedValue instanceof EObject) {
                 assertEqualEObject((EObject) actualValue, (EObject) expectedValue);
@@ -265,18 +284,21 @@ public class ImportTest extends AllInputTest {
     private void assertValidElement(final EObject eObject, final String className, final int size, final Object name) {
         assertThat(eObject.eClass().getName()).isEqualTo(className);
         assertThat(eObject.eContents()).hasSize(size);
-        if (name != null) {
-            assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name"))).isEqualTo(name);
-        } else {
+        if (isNull(name)) {
             try {
                 eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
-                fail();
-            } catch (NullPointerException e) {
+                fail("Supposed to throw a NullPointerException");
+            }
+            catch (NullPointerException ignore) {
                 // It's good !
             }
         }
+        else {
+            assertThat(eObject.eGet(eObject.eClass().getEStructuralFeature("name"))).isEqualTo(name);
+        }
     }
 
+    @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
     private void assertValidReference(final EObject eObject, final String name, final int index, final String referenceClassName, final String referenceName, final boolean many, final boolean containment) {
         EReference eReference = (EReference) eObject.eClass().getEStructuralFeature(name);
 
@@ -284,25 +306,27 @@ public class ImportTest extends AllInputTest {
         EObject eObjectReference;
 
         if (many) {
-            @SuppressWarnings("unchecked")
             EList<EObject> eObjectList = (EList<EObject>) objectReference;
             eObjectReference = eObjectList.get(index);
-        } else {
+        }
+        else {
             eObjectReference = (EObject) objectReference;
         }
 
         assertThat(eObjectReference.eClass().getName()).isEqualTo(referenceClassName);
 
-        if (referenceName != null) {
-            EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
-            assertThat(eObjectReference.eGet(eAttribute).toString()).isEqualTo(referenceName);
-        } else {
+        if (isNull(referenceName)) {
             try {
                 EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
                 assertThat(eObjectReference.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
-            } catch (NullPointerException e) {
+            }
+            catch (NullPointerException ignore) {
                 // It's good
             }
+        }
+        else {
+            EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
+            assertThat(eObjectReference.eGet(eAttribute).toString()).isEqualTo(referenceName);
         }
 
         assertThat(eReference.isContainment()).isEqualTo(containment);
@@ -312,25 +336,12 @@ public class ImportTest extends AllInputTest {
     private void assertValidAttribute(final EObject eObject, final String name, final Object value) {
         EAttribute eAttribute = (EAttribute) eObject.eClass().getEStructuralFeature(name);
 
-        if (value == null) {
+        if (isNull(value)) {
             assertThat(eObject.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
-        } else {
+        }
+        else {
             assertThat(eObject.eGet(eAttribute).toString()).isEqualTo(value);
         }
-    }
-
-    private static EObject getChildFrom(EObject root, int ... indexes) {
-        if (indexes.length == 0) {
-            throw new IllegalArgumentException("You must define at least one index");
-        }
-
-        EObject child = root;
-
-        for (int index : indexes) {
-            child = child.eContents().get(index);
-        }
-
-        return child;
     }
 
     private EObject loadWithEMF(File file) throws Exception {
@@ -346,49 +357,37 @@ public class ImportTest extends AllInputTest {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
-        IOFactory.importXmi(new FileInputStream(file), persistenceHandler);
+        Importer.fromXmi(new FileInputStream(file), persistenceHandler);
     }
 
     private EObject loadWithNeoBlueprints(File file) throws Exception {
         BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
-        PersistenceHandler persistenceHandler = BlueprintsPersistenceHandlerFactory.createPersistenceHandler(persistenceBackend, false);
+        PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(persistenceBackend, false);
+
+        persistenceHandler = new LoggingPersistenceHandlerDecorator(persistenceHandler);
+        persistenceHandler = new CounterPersistenceHandlerDecorator(persistenceHandler);
+        persistenceHandler = new TimerPersistenceHandlerDecorator(persistenceHandler);
 
         loadWithNeo(file, persistenceHandler);
 
-        persistenceBackend.stop();
+        persistenceBackend.close();
 
-        PersistenceBackendFactoryRegistry.register(
-                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                BlueprintsPersistenceBackendFactory.getInstance());
+        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(
-                NeoBlueprintsURI.NEO_GRAPH_SCHEME,
-                PersistentResourceFactory.eINSTANCE);
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        Resource resource = resourceSet.createResource(NeoBlueprintsURI.createNeoGraphURI(neo4jFile));
-        resource.load(Collections.emptyMap());
+        Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(neo4jFile));
+        resource.load(BlueprintsNeo4jOptionsBuilder.newBuilder().asMap());
 
         return resource.getContents().get(0);
     }
 
     private BlueprintsPersistenceBackend createNeo4jPersistenceBackend() throws InvalidDataStoreException {
-        Map<String, Object> options = new HashMap<>();
-
-        List<PersistentResourceOptions.StoreOption> storeOptions = new ArrayList<>();
-        storeOptions.add(BlueprintsResourceOptions.EStoreGraphOption.DIRECT_WRITE);
-
-        options.put(
-                BlueprintsResourceOptions.OPTIONS_BLUEPRINTS_GRAPH_TYPE,
-                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_TYPE_NEO4J);
-
-        options.put(
-                PersistentResourceOptions.STORE_OPTIONS,
-                storeOptions);
-
-        options.put(
-                BlueprintsNeo4jResourceOptions.OPTIONS_BLUEPRINTS_NEO4J_CACHE_TYPE,
-                BlueprintsNeo4jResourceOptions.CacheType.NONE);
+        Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
+                .directWrite()
+                .noCache()
+                .asMap();
 
         return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
     }

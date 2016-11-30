@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ecore:EPackage xmlns:xmi="http://www.omg.org/XMI"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
                 xmi:version="2.0" name="java"
                 nsURI="http://www.eclipse.org/MoDisco/Java/0.2.incubation/java" nsPrefix="java">
     <eClassifiers xsi:type="ecore:EClass" name="AbstractMethodDeclaration" abstract="true"

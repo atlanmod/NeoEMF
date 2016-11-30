@@ -1,8 +1,0 @@
-If ecore definition from "org.eclipse.gtm.modisco.java" is modified, please follow the steps to regenerate this alternate implementation :
-
-- paste the new .ecore definition from "org.eclipse.gtm.modisco.java"
-- specialize the EPackage nsURI in .Ecore
-- launch "generate model" on .genmodel
-- delete interfaces package (reuse those from "org.eclipse.gtm.modisco.java")
-- modify extends of JavaFactory to extend org.eclipse.gmt.modisco.java.emf.JavaFactory
-- modify extends of JavaPackage to extend org.eclipse.gmt.modisco.java.emf.JavaPackage

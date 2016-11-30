@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,20 +27,20 @@ import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
 import java.io.File;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
  *
  */
 public abstract class AllInputTest extends AllTest {
 
+    protected static final int UNKNOWN_INDEX = -1;
+
     private static final String XMI_STANDARD = "/xmi/sampleStandard.xmi";
     private static final String XMI_WITH_ID = "/xmi/sampleWithId.xmi";
 
     private static final String ECORE = "ecore";
     private static final String ECORE_PATH = "/ecore/{name}." + ECORE;
-
-    protected static final int UNKNOWN_INDEX = -1;
 
     protected StructuralPersistanceHandler persistanceHandler;
 
@@ -79,7 +79,7 @@ public abstract class AllInputTest extends AllTest {
         Resource r = rs.getResource(URI.createFileURI(file.toString()), true);
         EObject eObject = r.getContents().get(0);
         if (eObject instanceof EPackage) {
-            ePackage = (EPackage)eObject;
+            ePackage = (EPackage) eObject;
             rs.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
         }
 

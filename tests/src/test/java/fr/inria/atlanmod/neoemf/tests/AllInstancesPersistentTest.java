@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
-import fr.inria.atlanmod.neoemf.resources.impl.PersistentResourceImpl;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 
 public class AllInstancesPersistentTest extends AllInstancesTest {
 
@@ -32,12 +30,6 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
         createResourceContent(mapResource);
         createResourceContent(neo4jResource);
         createResourceContent(tinkerResource);
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 
     @Test
@@ -101,17 +93,17 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     }
 
     private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.emptyMap());
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
-        persistentResource.load(Collections.emptyMap());
+        persistentResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.close();
+        persistentResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
 
         allInstancesPersistent(persistentResource);
     }
 
     private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(Collections.emptyMap());
-        PersistentResourceImpl.shutdownWithoutUnload((PersistentResourceImpl) persistentResource);
-        persistentResource.load(Collections.emptyMap());
+        persistentResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.close();
+        persistentResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
 
         allInstancesStrictPersistent(persistentResource);
     }

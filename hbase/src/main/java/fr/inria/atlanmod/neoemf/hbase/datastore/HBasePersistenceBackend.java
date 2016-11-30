@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,47 +7,37 @@
  *
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
- *******************************************************************************/
+ */
+
 package fr.inria.atlanmod.neoemf.hbase.datastore;
 
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.DirectWriteHBaseResourceEStoreImpl;
-import fr.inria.atlanmod.neoemf.hbase.datastore.estores.impl.ReadOnlyHBaseResourceEStoreImpl;
-
-import org.eclipse.emf.ecore.EClass;
-
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.DirectWriteHBaseStore;
+import fr.inria.atlanmod.neoemf.hbase.datastore.store.ReadOnlyHBaseStore;
 
 /**
- * Dummy backend implementation for HBase to fit core architecture
- * The real access to the HBase Table is done in {@link DirectWriteHBaseResourceEStoreImpl}
- * and {@link ReadOnlyHBaseResourceEStoreImpl}
+ * Dummy backend implementation for HBase to fit core architecture.
+ * <p/>
+ * The real access to the HBase Table is done in {@link DirectWriteHBaseStore} and
+ * {@link ReadOnlyHBaseStore}.
  */
-public class HBasePersistenceBackend implements PersistenceBackend {
+public class HBasePersistenceBackend extends AbstractPersistenceBackend {
+
+    /**
+     * The literal description of this backend.
+     */
+    public static final String NAME = "hbase";
 
     @Override
-    public void start(Map<?, ?> options) throws InvalidDataStoreException {
-        
+    public boolean isClosed() {
+        return true;
     }
 
     @Override
-    public boolean isStarted() {
-        return false;
-    }
-
-    @Override
-    public void stop() {
-        
+    public void close() {
     }
 
     @Override
     public void save() {
-        
-    }
-
-    @Override
-    public Object getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException();
     }
 }

@@ -1,19 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <prerequisites>
-        <maven>3.0</maven>
-    </prerequisites>
-
     <parent>
-        <artifactId>eclipse</artifactId>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+        <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fr.inria.atlanmod.neoemf.eclipse.ui</artifactId>
+
     <packaging>eclipse-plugin</packaging>
 
     <name>NeoEMF :: Eclipse :: UI</name>
@@ -22,19 +20,19 @@
     <dependencies>
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
+            <artifactId>neoemf-blueprints</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>map</artifactId>
+            <artifactId>neoemf-map</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -43,21 +41,11 @@
             <artifactId>commons-configuration</artifactId>
         </dependency>
 
-        <dependency>
+        <dependency><!-- TODO: Check if this dependency is used -->
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
         </dependency>
     </dependencies>
 

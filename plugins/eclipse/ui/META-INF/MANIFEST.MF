@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF UI Plugin
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.ui;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoEMFUiPlugin
+Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin
 Bundle-Vendor: Atlanmod - Inria
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -21,11 +21,26 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.converter,
  org.eclipse.emf.importer,
  org.eclipse.emf.ecore.editor,
- fr.inria.atlanmod.neoemf.map;bundle-version="0.0.1",
- fr.inria.atlanmod.neoemf.graph.blueprints;bundle-version="0.0.1",
- fr.inria.atlanmod.neoemf.core;bundle-version="0.0.1"
+ fr.inria.atlanmod.neoemf.core;bundle-version="0.0.1",
+ fr.inria.atlanmod.neoemf.blueprints;bundle-version="0.0.1",
+ fr.inria.atlanmod.neoemf.map;bundle-version="0.0.1"
 Bundle-ClassPath: .,
  commons-configuration.jar,
  commons-lang.jar,
  log4j-api.jar,
  log4j-core.jar
+Import-Package: org.eclipse.emf.common,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.codegen.ecore,
+ org.eclipse.emf.converter,
+ org.eclipse.emf.edit,
+ org.eclipse.emf.edit.ui,
+ org.eclipse.emf.importer,
+ org.eclipse.core.expressions,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.swt,
+ org.apache.commons.configuration,
+ org.eclipse.osgi.util,
+ org.osgi.framework

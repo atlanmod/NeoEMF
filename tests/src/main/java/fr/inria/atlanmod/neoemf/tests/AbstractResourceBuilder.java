@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -25,42 +25,41 @@ import java.util.Map;
 
 public abstract class AbstractResourceBuilder {
 
-    private EPackage ePackage;
+    private final EPackage ePackage;
 
     protected ResourceSet rSet;
     protected URI uri;
-    protected Map<Object,Object> resourceOptions;
+    protected Map<Object, Object> resourceOptions;
 
     private boolean isPersistent;
-    
+
     public AbstractResourceBuilder(EPackage ePackage) {
         this.ePackage = ePackage;
         initBuilder();
     }
-    
+
     protected void initBuilder() {
         isPersistent = false;
         EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
         rSet = new ResourceSetImpl();
         resourceOptions = new HashMap<>();
     }
-    
+
     public abstract AbstractResourceBuilder uri(URI uri);
-    
+
     public abstract AbstractResourceBuilder file(File file);
-    
+
     public AbstractResourceBuilder persistent() {
         isPersistent = true;
         return this;
     }
-    
+
     public PersistentResource build() throws IOException {
-        PersistentResource resource = (PersistentResource)rSet.createResource(uri);
-        if(isPersistent) {
+        PersistentResource resource = (PersistentResource) rSet.createResource(uri);
+        if (isPersistent) {
             resource.save(resourceOptions);
         }
         initBuilder();
         return resource;
     }
-    
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,19 +11,23 @@
 
 package fr.inria.atlanmod.neoemf.io.mock;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.io.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.Reference;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  *
@@ -37,7 +41,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     private final List<ClassifierMock> elements;
 
     public StructuralPersistanceHandler() {
-        this.classifierMockCache = CacheBuilder.newBuilder().build();
+        this.classifierMockCache = Caffeine.newBuilder().build();
         this.classifierStack = new ArrayDeque<>();
         this.elements = new ArrayList<>();
     }
@@ -47,61 +51,71 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void handleStartDocument() throws Exception {
+    public void processStartDocument() {
         // Do nothing
     }
 
     @Override
-    public void handleStartElement(Classifier classifier) throws Exception {
+    public void processStartElement(Classifier classifier) {
         ClassifierMock mock = new ClassifierMock(classifier);
 
         if (!classifierStack.isEmpty()) {
             classifierStack.getLast().getElements().add(mock);
-        } else {
+        }
+        else {
             elements.add(mock);
         }
 
-        if (classifier.getId() != null) {
+        if (nonNull(classifier.getId())) {
             classifierMockCache.put(classifier.getId().getValue(), mock);
         }
         classifierStack.addLast(mock);
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) throws Exception {
-        if (attribute.getId() == null || attribute.getId().equals(classifierStack.getLast().getId())) {
+    public void processAttribute(Attribute attribute) {
+        if (isNull(attribute.getId()) || attribute.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getAttributes().add(attribute);
-        } else {
+        }
+        else {
             ClassifierMock mock = classifierMockCache.getIfPresent(attribute.getId().getValue());
-            if (mock != null && mock.getId().equals(attribute.getId())) {
+            if (nonNull(mock) && Objects.equals(mock.getId(), attribute.getId())) {
                 mock.getAttributes().add(attribute);
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException();
             }
         }
     }
 
     @Override
-    public void handleReference(Reference reference) throws Exception {
-        if (reference.getId() == null || reference.getId().equals(classifierStack.getLast().getId())) {
+    public void processReference(Reference reference) {
+        if (isNull(reference.getId()) || reference.getId().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getReferences().add(reference);
-        } else {
+        }
+        else {
             ClassifierMock mock = classifierMockCache.getIfPresent(reference.getId().getValue());
-            if (mock != null && mock.getId().equals(reference.getId())) {
+            if (nonNull(mock) && Objects.equals(mock.getId(), reference.getId())) {
                 mock.getReferences().add(reference);
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException();
             }
         }
     }
 
     @Override
-    public void handleEndElement() throws Exception {
+    public void processEndElement() {
         classifierStack.removeLast();
     }
 
     @Override
-    public void handleEndDocument() throws Exception {
+    public void processEndDocument() {
+        // Do nothing
+    }
+
+    @Override
+    public void processCharacters(String characters) {
         // Do nothing
     }
 }

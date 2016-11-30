@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,21 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * An {@code EObject object} able to persist in a database.
+ * An {@link org.eclipse.emf.ecore.EObject object} able to persist in a database.
  */
 public interface PersistentEObject extends InternalEObject {
+
+    /**
+     * Returns the given {@code object} as a {@link PersistentEObject}.
+     *
+     * @param object the object to adapt
+     *
+     * @return an adapted object as a {@link PersistentEObject}, or {@code null} if the {@code object} cannot be
+     * assigned as a {@link PersistentEObject}
+     */
+    static PersistentEObject from(Object object) {
+        return PersistentEObjectAdapter.getAdapter(object);
+    }
 
     /**
      * Returns the unique identifier of this persistent object.
@@ -35,16 +47,12 @@ public interface PersistentEObject extends InternalEObject {
     void id(Id id);
 
     /**
-     * Returns true if this object is mapped to an entity (table, node, column, etc.) stored in a database.
-     *
-     * @return
+     * Returns {@code true} if this object is mapped to an entity (table, node, column, etc.) stored in a database.
      */
     boolean isMapped();
 
     /**
      * Sets the mapped attribute.
-     *
-     * @param mapped
      */
     void setMapped(boolean mapped);
 
@@ -57,7 +65,6 @@ public interface PersistentEObject extends InternalEObject {
 
     /**
      * Sets the resource containing this persistent object.
-     * @param resource
      */
     void resource(Resource.Internal resource);
 }

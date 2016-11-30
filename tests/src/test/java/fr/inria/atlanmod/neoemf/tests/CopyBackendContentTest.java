@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,21 +11,20 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resources.PersistentResource;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.common.util.EList;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class CopyBackendContentTest extends AllBackendTest {
 
@@ -47,12 +46,6 @@ public class CopyBackendContentTest extends AllBackendTest {
         createResourceContent(tinkerResource);
     }
 
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     private void createResourceContent(PersistentResource r) {
         SampleModel model = factory.createSampleModel();
         model.setName(MODEL_NAME);
@@ -70,7 +63,7 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     @Test
     public void testCopyBackendMapDB() throws IOException {
-        mapResource.save(Collections.emptyMap());
+        mapResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
         assertThat(mapResource.getContents()).isNotEmpty(); // "Map resource content is empty"
         assertThat(mapResource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
 

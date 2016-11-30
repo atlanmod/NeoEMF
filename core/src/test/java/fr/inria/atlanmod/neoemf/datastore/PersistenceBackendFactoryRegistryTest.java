@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,15 +17,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
     private static final String MOCK_1 = "mock1";
     private static final String MOCK_2 = "mock2";
 
-    private PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
-    private PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
 
     @Before
     public void setUp() {
@@ -43,7 +43,7 @@ public class PersistenceBackendFactoryRegistryTest extends AllTest {
     }
 
     @Test
-    public void testMulltipleAdd() {
+    public void testMultipleAdd() {
         PersistenceBackendFactoryRegistry.register(MOCK_1, persistenceBackendFactory1);
         PersistenceBackendFactoryRegistry.register(MOCK_2, persistenceBackendFactory2);
         assertThat(PersistenceBackendFactoryRegistry.getFactories()).hasSize(2);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.io.hash;
 
-import fr.inria.atlanmod.neoemf.io.hash.impl.Md5Hasher;
-
 /**
- * A factory of {@link Hasher hashers}.
+ * A factory of {@link Hasher}.
  */
 public class HasherFactory {
 
     /**
-     * Returns an instance of a {@link Hasher hasher} using {@code MD5}.
+     * Returns an instance of a {@link Hasher} using {@code MD5}.
      *
-     * @return an instance of a {@link Hasher hasher} using {@code MD5}
+     * @return an instance of a {@link Hasher} using {@code MD5}
      */
     public static Hasher md5() {
         return Md5Hasher.getInstance();

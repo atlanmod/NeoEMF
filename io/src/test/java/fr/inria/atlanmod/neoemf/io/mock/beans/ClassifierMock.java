@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.mock.beans;
 
-import fr.inria.atlanmod.neoemf.io.beans.Attribute;
-import fr.inria.atlanmod.neoemf.io.beans.Classifier;
-import fr.inria.atlanmod.neoemf.io.beans.Identifier;
-import fr.inria.atlanmod.neoemf.io.beans.MetaClassifier;
-import fr.inria.atlanmod.neoemf.io.beans.Namespace;
-import fr.inria.atlanmod.neoemf.io.beans.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.Attribute;
+import fr.inria.atlanmod.neoemf.io.structure.Classifier;
+import fr.inria.atlanmod.neoemf.io.structure.Identifier;
+import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.Namespace;
+import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +26,12 @@ import java.util.List;
  */
 public class ClassifierMock {
 
-    private Classifier classifier;
+    private final Classifier classifier;
 
-    private List<Attribute> attributes;
-    private List<Reference> references;
+    private final List<Attribute> attributes;
+    private final List<Reference> references;
 
-    private List<ClassifierMock> elements;
+    private final List<ClassifierMock> elements;
 
     public ClassifierMock(Classifier classifier) {
         this.classifier = classifier;
@@ -39,6 +39,20 @@ public class ClassifierMock {
         this.attributes = new ArrayList<>();
         this.references = new ArrayList<>();
         this.elements = new ArrayList<>();
+    }
+
+    public static ClassifierMock getChildFrom(ClassifierMock root, int... indexes) {
+        if (indexes.length == 0) {
+            throw new IllegalArgumentException("You must define at least one index");
+        }
+
+        ClassifierMock child = root;
+
+        for (int index : indexes) {
+            child = child.getElements().get(index);
+        }
+
+        return child;
     }
 
     public String getLocalName() {
@@ -75,19 +89,5 @@ public class ClassifierMock {
 
     public List<ClassifierMock> getElements() {
         return elements;
-    }
-
-    public static ClassifierMock getChildFrom(ClassifierMock root, int ... indexes) {
-        if (indexes.length == 0) {
-            throw new IllegalArgumentException("You must define at least one index");
-        }
-
-        ClassifierMock child = root;
-
-        for (int index : indexes) {
-            child = child.getElements().get(index);
-        }
-
-        return child;
     }
 }

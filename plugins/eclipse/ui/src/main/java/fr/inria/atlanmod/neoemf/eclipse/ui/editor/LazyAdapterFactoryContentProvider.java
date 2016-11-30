@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
-
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider implements

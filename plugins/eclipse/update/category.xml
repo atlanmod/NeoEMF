@@ -1,36 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/fr.inria.atlanmod.neoemf.core.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.core.feature" version="0.0.1.qualifier">
-      <category name="Base"/>
-   </feature>
-   <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.graph.blueprints.feature" version="0.0.1.qualifier">
-      <category name="Backends"/>
-   </feature>
-   <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.graph.blueprints.implementations.feature" version="0.0.1.qualifier">
-      <category name="Backends"/>
-   </feature>
-   <feature url="features/fr.inria.atlanmod.neoemf.map.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.map.feature" version="0.0.1.qualifier">
-      <category name="Backends"/>
-   </feature>
-   <feature url="features/fr.inria.atlanmod.neoemf.io.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.io.feature" version="0.0.1.qualifier">
-      <category name="Utils"/>
-   </feature>
-   <feature url="features/fr.inria.atlanmod.neoemf.hbase.feature_0.0.1.qualifier.jar" id="fr.inria.atlanmod.neoemf.hbase.feature" version="0.0.1.qualifier">
-      <category name="Backends"/>
-   </feature>
-   <category-def name="Base" label="Base">
-      <description>
-         NeoEMF Core components and utils (no implementation provided, see Backends components to plug a specific datastore)
-      </description>
-   </category-def>
-   <category-def name="Backends" label="Backends">
-      <description>
-         Backend-specific implementations of NeoEMF Base component. Provided components can be plugged separatly to store models in a specific manner. See plugins descriptions for usages.
-      </description>
-   </category-def>
-   <category-def name="Utils" label="Utils">
-      <description>
-         Optional modules providing additional features (scalable importer, efficient exporter ...)
-      </description>
-   </category-def>
+    <feature url="features/fr.inria.atlanmod.neoemf.core.feature_0.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.core.feature" version="0.0.1.qualifier">
+        <category name="Base" />
+    </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.feature_0.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.graph.blueprints.feature" version="0.0.1.qualifier">
+        <category name="Backends" />
+    </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature_0.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature" version="0.0.1.qualifier">
+        <category name="Backends" />
+    </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.map.feature_0.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.map.feature" version="0.0.1.qualifier">
+        <category name="Backends" />
+    </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.io.feature_0.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.io.feature" version="0.0.1.qualifier">
+        <category name="Utilities" />
+    </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.hbase.feature_0.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.hbase.feature" version="0.0.1.qualifier">
+        <category name="Backends" />
+    </feature>
+    <category-def name="Base" label="Base">
+        <description>
+            NeoEMF core components and utils (no implementation provided, see Backends components to plug a specific
+            datastore)
+        </description>
+    </category-def>
+    <category-def name="Backends" label="Backends">
+        <description>
+            Backend-specific implementations of NeoEMF Base component. Provided components can be plugged separately to
+            store models in a specific manner. See plugins descriptions for usages.
+        </description>
+    </category-def>
+    <category-def name="Utilities" label="Utilities">
+        <description>
+            Optional modules providing additional features (scalable importer, efficient exporter,...)
+        </description>
+    </category-def>
 </site>

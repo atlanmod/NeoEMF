@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>features</artifactId>
+        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+        <artifactId>fr.inria.atlanmod.neoemf.eclipse.features</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.feature</artifactId>
+
     <packaging>eclipse-feature</packaging>
 
     <name>NeoEMF :: Eclipse :: Features :: Blueprints</name>
@@ -19,12 +20,12 @@
     <dependencies>
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>graph.blueprints</artifactId>
+            <artifactId>neoemf-blueprints</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>

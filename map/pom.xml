@@ -6,12 +6,12 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>neoemf-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
     </parent>
 
-    <artifactId>map</artifactId>
+    <artifactId>neoemf-map</artifactId>
+
     <packaging>bundle</packaging>
 
     <name>NeoEMF :: Map</name>
@@ -27,16 +27,21 @@
             <artifactId>mapdb</artifactId>
         </dependency>
 
-        <!-- Internal dependencies -->
+        <!-- Internal -->
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Common dependencies -->
+        <!-- Common -->
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -54,21 +59,16 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        
-        <dependency>
-		    <groupId>org.eclipse.tycho</groupId>
-		    <artifactId>org.eclipse.osgi</artifactId>
-		</dependency>
 
-        <!-- EMF dependencies -->
+        <dependency>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+        </dependency>
+
+        <!-- EMF -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -80,12 +80,11 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- Test -->
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -95,7 +94,7 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -109,11 +108,12 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.map</Bundle-SymbolicName>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.map.*
                         </Export-Package>
                         <_exportcontents>
-                            org.mapdb
+                            org.mapdb,
                         </_exportcontents>
                         <Require-Bundle>
                             fr.inria.atlanmod.neoemf.core,

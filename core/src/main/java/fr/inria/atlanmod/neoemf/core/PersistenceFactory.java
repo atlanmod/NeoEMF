@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,21 +11,31 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.core.impl.PersistenceFactoryImpl;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 /**
- * A factory able to create a {@link PersistentEObject persistent object} from a {@link EClass class}.
+ * A factory able to create a {@link PersistentEObject} from an {@link EClass}.
  */
-public interface PersistenceFactory extends EFactory {
+public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
-	/**
-	 * The default instance of this {@code PersistenceFactory factory}.
-	 */
-	PersistenceFactory eINSTANCE = PersistenceFactoryImpl.getInstance();
-	
-	@Override
-	PersistentEObject create(EClass eClass);
+    private PersistenceFactory() {
+    }
+
+    public static PersistenceFactory getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    @Override
+    public PersistentEObject create(EClass eClass) {
+        DefaultPersistentEObject eObject = new DefaultPersistentEObject();
+        eObject.eSetClass(eClass);
+        return eObject;
+    }
+
+    private static class Holder {
+
+        private static final PersistenceFactory INSTANCE = new PersistenceFactory();
+    }
 }

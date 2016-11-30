@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,13 +23,23 @@ public abstract class AllTest {
     @Rule
     public TestRule watcher = new TestWatcher() {
         @Override
+        protected void succeeded(Description description) {
+            System.out.println("[INFO] --- Succeeded");
+        }
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            System.out.println("[WARN] --- Failed");
+        }
+
+        @Override
         protected void starting(Description description) {
-            System.out.println("\n## Running test method : " + description.getMethodName());
+            System.out.println("\n[INFO] --- Running " + description.getMethodName() + "()");
         }
 
         @Override
         protected void finished(Description description) {
-            System.out.println("##");
+            System.out.println();
         }
     };
 
