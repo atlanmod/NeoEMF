@@ -1,11 +1,15 @@
 #!/bin/bash
 
-repo_name="atlanmod/NeoEMF"
-jdk="oraclejdk8"
 path=apidocs
-temp_path=$HOME/${path}
+temp_path=$HOME/apidocs
 
-if [ "$TRAVIS_REPO_SLUG" = "$repo_name" ] && [ "$TRAVIS_JDK_VERSION" = "$jdk" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
+if [ "$TRAVIS_REPO_SLUG" = "atlanmod/NeoEMF" ] && \
+   [ "$TRAVIS_JDK_VERSION" = "oraclejdk8" ] && \
+   [ "$TRAVIS_PULL_REQUEST" = "false" ] && \
+   [ "$TRAVIS_BRANCH" = "master" ] && \
+   [ "$TRAVIS_OS_NAME" = "linux" ]; then
+
+    mvn -B -q javadoc:javadoc javadoc:aggregate
 
     if ! [ -d target/site/apidocs ]; then
         echo -e "No new Javadoc."
@@ -37,7 +41,7 @@ if [ "$TRAVIS_REPO_SLUG" = "$repo_name" ] && [ "$TRAVIS_JDK_VERSION" = "$jdk" ] 
     git commit --quiet -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
     git push --quiet -fq origin gh-pages
 
-    echo -e "Published Javadoc."
+    echo -e "Javadoc published."
 else
     echo -e "No need to publish the Javadoc.";
 fi

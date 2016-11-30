@@ -6,25 +6,30 @@ jdk:
 env:
   global:
     - JAVA_OPTS="-Xms256m -Xmx2g"
+    # GH_TOKEN
     - secure: Mc7Pm9YGZiw3jr2NKBtIVozgC+iyrJ6F7V3UvpGPWQgn/IbJ6AM5YBSwvOk2P+jZI9k1vIgsrWIIKfu/1NYoJ5MC1mk94942ZNC+DJW1n+thgJ84xyLc4wXD8sYCdofWGcSrLYNZQpXkpbSuL8gVYk4iMQ8tI+jIoxRye1fgfYiBle2W3Pt/e4g0OGD339+ghSoKgBduM91elZmqFvf25CXYPcPtqZaXapmor9wBZyf8j7HLZsXLg2paA0Owpbn+WSdzFxKTvT3vn7ZY/iB6O80KYZTM/CcpzONdEEQUkMGc2bKfOVQ1lgqCbZyjbSyp8eTA43m949o+WOujhYQxqfZkg/1FPB5urIf+VF4o+hFFF/zZ8bJ6zPvD8MA7E4i3/LpNP7uNVndv6p8ijfm6fbuNe2MaK19yUQqMbriFlY6KfVy+o0yrc9InNoEFP+cbRMIoTVY/wIL5OIf06AE1RG7hNW7/jd8Nh4yuGLCgL87QybTxu37Jeho/K1XHZ2y7xi+6B3vbajvRpUgvyks/C0nnrpip5cnwS89XhEb/dj7rPvanfRiUUmoWxJKKEYut257SkP8AMxgUwc4TJb+GAsT7EyruToFsft4zzAXvejd6HM1QjAcq/96BbY8f6n+LnAHyKmwJbbLis0SxlmFMeyCeCJwcXmqzN7Axd/76gR4=
+    # CI_DEPLOY_USERNAME
+    - secure: t2qvW19WNmmlgoLhfPOXalX4XPolNe3g2+/VitGbfj5X1hUWJY9o83NYEVEkX0bZ8cihZvwXfq9rWfk8M+ANI1zhCtiJg/MgvONc2cnXJuMv6dxne8cLxZTtrpsZaKFIq1EuK5iLTFCwo9f2PPBXlUJDgYk4R84zC6S0gLzl2yxenrOSlPn8OPr6ZU9y0KPJm9QThz+awzNBhC3cdlVp5rL1MoSyCPJSqbCxky1Pyr61pzr2oSl4FvbNTM/O8ky732nm8SgWFYTMFSjFhQPBYt7iTFEwSx0Fjk1qndAih88Zrg0/XOTJWb5E3l69DtBgLjsKTLZ+pJT+1K75jct4sHJiva/6UyRwl2U0eQOSFEcN2gOGJ42Ifhq8id/AZhqoMCYp61E5DTxSrE6ekvWMvX0U/jq0+5DELIjbcFcneWR0wdf7JeBXZREJ04wtWfc8PRXWVCQWyo9sfTvu+++Oz6VW+J/RBHmMNHVqFoFX59jgstHQXlrQrLYbTyNm/dSTUNFEteAiiojvaptj5YV6mrUoz7hb+ReMrc8hn9yy+T3wg3TRS6DJ29RhX9WOUZ6SirSI2EdhODxXK44oxOiG8558K7uf9YAHhH5Vy5bDQmNiFUqJ5COzOmuwrHun3Lsu0p46lT4Bvew+KN/HcwjAimpTo2NycaBWh3qugDAHg+Y=
+    # CI_DEPLOY_PASSWORD
+    - secure: nAqbw8QCXopHM+h0f5WdsOjGYKZkR3UacDoqzz6NMsWw4BzAMx+qwbOpJpdlOWpwNdZCkAG7KQ0I9aG791kZSqKGePuc++ae3GWFZiq0cCc4Wd2InzTjr/Z+gzcC2pN8XXfLO8DUmf9zwvG8a2z6Hq0iLS99tWPBLcitAnIQ5CjTXU7i39comhgHYql7hAt2sSNLozJ9kbL+wWlgGO+k0WkwK0ueUAwlZ+bBZkZMBLBZR/tElk0KS0nYPqXZ24AuXz0uz/mPIJD5PUFBlp8QiuwmGZviU6qc/nsY5B2Oi/D0/K8s0QbYRhT+MUF4vOv0qMr/yykjb/101p2DFtFKs3CGwi+TNUYn3IYHI5XXhKwnwrCjbNkermqkqr3+G1jfEX2pAitRxyK4+bfeMcTyRuhuakiQrtbDUbfioUr/SAT94Rw1oqspDPPfvd4k87zoKQpDwPALl5QRSuouof2wCUZhRDk+288xfiJL2vLGVFNhRPCIy+Rr4ZQVLF7APu+nZBau1aCfEMIYmvlfoptrSf25nclBpT+ishnWVku+88i7De/oRDCcyfv9o5lsPN/Vep3ABoEKWVzEccXaYbYEkMY+cfGv3euzfiXlAny5D1EH50Sw4poKtg0CMOMLm3c6vwYm+yZWgiE5FZaAcOxjvaN+itIoOSiCrkI6CNM1e00=
 
 branches:
   only:
     - master
 
 script:
-
 # Build with code coverage
   - mvn -B jacoco:prepare-agent install jacoco:report-aggregate
 
 after_success:
-
 # Publish code coverage on CodeCov
   - bash <(curl -s https://codecov.io/bash)
 
-# Build & publish javadoc on Github (gh-pages)
-  - mvn -B -q javadoc:javadoc javadoc:aggregate
-  - bash .script/publish_javadoc.sh
+# Publish javadoc on Github (gh-pages)
+  - bash .util/publish_javadoc.sh
+
+# Publish snapshot on Maven repository
+#  - bash .util/publish_snapshot.sh
 
 notifications:
   slack:
