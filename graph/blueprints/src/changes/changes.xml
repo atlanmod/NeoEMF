@@ -8,32 +8,5 @@
         <title>NeoEMF :: Blueprints</title>
     </properties>
 
-    <body>
-        <release version="0.0.2" date="2016-06-27" description="Subsequent release">
-            <action dev="gdaniel" type="update">
-                Update generated MANIFEST to include DynamicImport-Package tag (since it has been removed of the parent)
-            </action>
-            <action dev="gdaniel" type="update">
-                Autocommit store cannot be created alone (previous behaviour was to implicitly create
-                a DirectWrite store. Resource options must contain both Autocommit and base store option
-                (DirectWrite / ManyCache).
-            </action>
-            <action dev="jruiz" type="add">
-                Added additional documentation on how to configure the plugin.
-            </action>
-            <action dev="aramirez" type="fix" issue="MPJIRA-11">
-                Enable retrieving component-specific issues.
-            </action>
-            <action dev="jruiz" type="remove" due-to="Allan Ramirez" due-to-email="aramirez@exist.com">
-                The element type " link " must be terminated by the matching end-tag.
-                Deleted the erroneous code.
-            </action>
-        </release>
-
-        <release version="0.0.1" date="2013-01-01" description="First release">
-            <action dev="jruiz" type="update">
-                A lot of stuff
-            </action>
-        </release>
-    </body>
+    <body />
 </document>
