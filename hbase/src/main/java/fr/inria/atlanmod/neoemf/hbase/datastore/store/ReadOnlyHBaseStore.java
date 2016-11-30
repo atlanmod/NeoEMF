@@ -20,12 +20,12 @@ import fr.inria.atlanmod.neoemf.hbase.datastore.store.cache.HBaseFeatureKey;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
@@ -47,11 +47,11 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
     }
 
     @Override
-    protected HTable initTable(Configuration conf, TableName tableName, HBaseAdmin admin) throws IOException {
+    protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
         if (!admin.tableExists(tableName)) {
             throw new IOException(MessageFormat.format("Resource with URI {0} does not exist", tableName.getNameAsString()));
         }
-        return new HTable(conf, tableName);
+        return connection.getTable(tableName);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
     }
 
     /**
-     * Gets the {@link EStructuralFeature} {@code feature} from the {@link HTable} for the {@link
+     * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
      * PersistentEObject} {@code object}
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link

@@ -31,13 +31,15 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Append;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -75,7 +77,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
-    protected HTable table;
+    protected Table table;
 
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
@@ -87,12 +89,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         conf.set("hbase.zookeeper.property.clientPort", isNull(resource.getURI().port()) ? "2181" : resource.getURI().port());
 
         TableName tableName = TableName.valueOf(HBaseURI.format(resource.getURI()));
-        HBaseAdmin admin = new HBaseAdmin(conf);
 
-        this.table = initTable(conf, tableName, admin);
+        Connection connection = ConnectionFactory.createConnection(conf);
+        Admin admin = connection.getAdmin();
+
+        this.table = initTable(connection, tableName, admin);
     }
 
-    protected HTable initTable(Configuration conf, TableName tableName, HBaseAdmin admin) throws IOException {
+    protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
         if (!admin.tableExists(tableName)) {
             HTableDescriptor desc = new HTableDescriptor(tableName);
             HColumnDescriptor propertyFamily = new HColumnDescriptor(PROPERTY_FAMILY);
@@ -103,7 +107,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             desc.addFamily(containmentFamily);
             admin.createTable(desc);
         }
-        return new HTable(conf, tableName);
+        return connection.getTable(tableName);
     }
 
     private void addAsAppend(PersistentEObject object, EReference eReference, boolean atEnd, PersistentEObject referencedObject) throws IOException {
@@ -198,8 +202,8 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             // Remove from root
             try {
                 Put put = new Put(Bytes.toBytes(referencedObject.id().toString()));
-                put.add(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.id().toString()));
-                put.add(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(eReference.getName()));
+                put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.id().toString()));
+                put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(eReference.getName()));
                 // No need to use the CAS mech
 //				table.checkAndPut(
 //						Bytes.toBytes(referencedObject.id().toString()), CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, CompareOp.NOT_EQUAL,
@@ -216,8 +220,8 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     protected void updateInstanceOf(PersistentEObject object) {
         try {
             Put put = new Put(Bytes.toBytes(object.id().toString()));
-            put.add(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(object.eClass().getEPackage().getNsURI()));
-            put.add(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(object.eClass().getName()));
+            put.addColumn(TYPE_FAMILY, METAMODEL_QUALIFIER, Bytes.toBytes(object.eClass().getEPackage().getNsURI()));
+            put.addColumn(TYPE_FAMILY, ECLASS_QUALIFIER, Bytes.toBytes(object.eClass().getName()));
             table.checkAndPut(Bytes.toBytes(object.id().toString()), TYPE_FAMILY, ECLASS_QUALIFIER, null, put);
 
         }
@@ -227,7 +231,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * Gets the {@link EStructuralFeature} {@code feature} from the {@link HTable} for the {@link
+     * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
      * PersistentEObject object}
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
@@ -283,7 +287,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         PersistentEObject neoEObject = PersistentEObject.from(object);
         try {
             Delete delete = new Delete(Bytes.toBytes(neoEObject.id().toString()));
-            delete.deleteColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()));
+            delete.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()));
             table.delete(delete);
         }
         catch (IOException e) {
@@ -334,7 +338,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         PersistentEObject neoEObject = PersistentEObject.from(object);
         try {
             Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
-            put.add(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), HBaseEncoderUtil.toBytes(new String[]{}));
+            put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), HBaseEncoderUtil.toBytes(new String[]{}));
             table.put(put);
         }
         catch (IOException e) {
@@ -379,7 +383,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         try {
             if (!eAttribute.isMany()) {
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
-                put.add(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), Bytes.toBytes(serializeToProperty(eAttribute, value).toString()));
+                put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), Bytes.toBytes(serializeToProperty(eAttribute, value).toString()));
                 table.put(put);
             }
             else {
@@ -392,7 +396,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                         array = (String[]) getFromTable(object, eAttribute);
                         //array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
 
-                        Put put = new Put(Bytes.toBytes(object.id().toString())).add(
+                        Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                                 PROPERTY_FAMILY,
                                 Bytes.toBytes(eAttribute.getName()),
                                 HBaseEncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeToProperty(eAttribute, value))));
@@ -439,7 +443,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         try {
             if (!eReference.isMany()) {
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
-                put.add(PROPERTY_FAMILY,
+                put.addColumn(PROPERTY_FAMILY,
                         Bytes.toBytes(eReference.getName()),
                         Bytes.toBytes(referencedObject.id().toString()));
                 table.put(put);
@@ -448,7 +452,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 String[] array = (String[]) getFromTable(object, eReference);
                 array[index] = referencedObject.id().toString();
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
-                put.add(PROPERTY_FAMILY,
+                put.addColumn(PROPERTY_FAMILY,
                         Bytes.toBytes(eReference.getName()),
                         HBaseEncoderUtil.toBytesReferences(array));
                 table.put(put);
@@ -471,7 +475,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 array = (String[]) getFromTable(object, eAttribute);
                 //array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
 
-                Put put = new Put(Bytes.toBytes(object.id().toString())).add(
+                Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eAttribute.getName()),
                         HBaseEncoderUtil.toBytes(index < 0 ?
@@ -529,7 +533,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                     array = (String[]) getFromTable(object, eReference);
                     //array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
 
-                    Put put = new Put(Bytes.toBytes(object.id().toString())).add(
+                    Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                             PROPERTY_FAMILY,
                             Bytes.toBytes(eReference.getName()),
                             HBaseEncoderUtil.toBytesReferences(ArrayUtils.add(array, index, referencedObject.id().toString())));
@@ -575,7 +579,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 array = (String[]) getFromTable(object, eAttribute);
                 //array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
 
-                Put put = new Put(Bytes.toBytes(object.id().toString())).add(
+                Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eAttribute.getName()),
                         HBaseEncoderUtil.toBytes(ArrayUtils.remove(array, index)));
@@ -623,7 +627,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 array = (String[]) getFromTable(object, eReference);
                 //array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
 
-                Put put = new Put(Bytes.toBytes(object.id().toString())).add(
+                Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
                         Bytes.toBytes(eReference.getName()),
                         HBaseEncoderUtil.toBytesReferences(ArrayUtils.remove(array, index)));
