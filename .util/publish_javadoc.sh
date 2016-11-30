@@ -5,8 +5,8 @@ JDK="oraclejdk8"
 BRANCH="master"
 OS="linux"
 
-API_DIR=apidocs
-TEMP_DIR=$HOME/apidocs
+API_DIR="apidocs"
+TEMP_DIR="$HOME/apidocs"
 
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
   echo "Skipping Javadoc publication: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
