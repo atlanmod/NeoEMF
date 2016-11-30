@@ -22,8 +22,8 @@
     </organization>
 
     <scm>
-        <connection>scm:git:git@github.com:atlanmod/NeoEMF.git</connection>
-        <developerConnection>scm:git:git@github.com:atlanmod/NeoEMF.git</developerConnection>
+        <connection>scm:git:git://github.com/atlanmod/NeoEMF.git</connection>
+        <developerConnection>scm:git:git://github.com/atlanmod/NeoEMF.git</developerConnection>
         <url>https://github.com/atlanmod/NeoEMF</url>
     </scm>
 
