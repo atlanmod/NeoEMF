@@ -9,6 +9,6 @@
     </properties>
 
     <body>
-        <release version="1.0.0" description="First release" />
+        <release version="1.0.0" date="" description="First release" />
     </body>
 </document>
