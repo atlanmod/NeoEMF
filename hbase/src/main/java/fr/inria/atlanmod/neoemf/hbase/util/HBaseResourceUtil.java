@@ -18,6 +18,9 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.eclipse.emf.common.util.URI;
 
@@ -61,8 +64,8 @@ public class HBaseResourceUtil {
             NeoLogger.error(e);
         }
 
-        //Connection resourceConnection = ConnectionFactory.createConnection(conf);
-        HBaseAdmin admin = new HBaseAdmin(conf);
+        Connection connection = ConnectionFactory.createConnection(conf);
+        Admin admin = connection.getAdmin();
         String cloneURI = HBaseURI.format(modelURI);
         TableName tableName = TableName.valueOf(cloneURI);
         NeoLogger.error("Delete table if exists");
