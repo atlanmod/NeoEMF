@@ -8,11 +8,11 @@ temp_path=$HOME/${path}
 if [ "$TRAVIS_REPO_SLUG" = "$repo_name" ] && [ "$TRAVIS_JDK_VERSION" = "$jdk" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
 
     if ! [ -d target/site/apidocs ]; then
-        echo -e "No new Javadoc.\n"
+        echo -e "No new Javadoc."
         exit
     fi
 
-    echo -e "Publishing Javadoc...\n"
+    echo -e "Publishing Javadoc..."
 
     # Copy the built javadoc
     cp -R target/site/apidocs ${temp_path}
@@ -37,7 +37,7 @@ if [ "$TRAVIS_REPO_SLUG" = "$repo_name" ] && [ "$TRAVIS_JDK_VERSION" = "$jdk" ] 
     git commit --quiet -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
     git push --quiet -fq origin gh-pages
 
-    echo -e "Published Javadoc.\n"
+    echo -e "Published Javadoc."
 else
-    echo -e "No need to publish the Javadoc.\n";
+    echo -e "No need to publish the Javadoc.";
 fi
