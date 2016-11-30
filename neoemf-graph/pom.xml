@@ -20,8 +20,8 @@
     </description>
 
     <modules>
-        <module>blueprints</module>
-        <module>blueprints-neo4j</module>
+        <module>neoemf-blueprints</module>
+        <module>neoemf-blueprints-neo4j</module>
     </modules>
 
 </project>

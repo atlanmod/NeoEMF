@@ -59,12 +59,12 @@
     </prerequisites>
 
     <modules>
-        <module>core</module>
-        <module>graph</module>
-        <module>map</module>
-        <module>hbase</module>
-        <module>io</module>
-        <module>tests</module>
+        <module>neoemf-core</module>
+        <module>neoemf-graph</module>
+        <module>neoemf-map</module>
+        <module>neoemf-hbase</module>
+        <module>neoemf-io</module>
+        <module>neoemf-tests</module>
     </modules>
 
     <developers>
