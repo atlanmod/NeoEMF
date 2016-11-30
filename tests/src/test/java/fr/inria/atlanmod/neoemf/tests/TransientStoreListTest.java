@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractTransientStore;
-import fr.inria.atlanmod.neoemf.issues.Issue7Test;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
@@ -31,7 +30,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
  * Test cases that check List method consistency for the {@link AbstractTransientStore} class.
- * Issue #7 reported the error for isEmpty method {@link Issue7Test}
+ * Issue #7 reported the error for isEmpty method {@link fr.inria.atlanmod.neoemf.tests.issues.Issue7Test}
  */
 public class TransientStoreListTest extends AllTest {
 

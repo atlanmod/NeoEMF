@@ -27,7 +27,7 @@ import org.junit.Before;
 
 public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
 
-    MapSampleFactory factory;
+    protected MapSampleFactory factory;
 
     @Override
     @Before

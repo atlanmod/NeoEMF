@@ -78,8 +78,6 @@ public abstract class AllBackendTest extends AllTest {
         neo4jResource.close();
         tinkerResource.close();
 
-        //temporaryFolder.delete();
-
         if (temporaryFolder.getRoot().exists()) {
             try {
                 FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());

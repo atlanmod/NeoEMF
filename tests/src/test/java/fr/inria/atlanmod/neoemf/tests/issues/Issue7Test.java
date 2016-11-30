@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.issues;
+package fr.inria.atlanmod.neoemf.tests.issues;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
@@ -26,7 +26,6 @@ public class Issue7Test extends AllTest {
 
     @Test
     public void testIssue7() {
-        //MapSamplePackage samplePackage = MapSamplePackage.eINSTANCE;
         MapSampleFactory factory = MapSampleFactory.eINSTANCE;
 
         SampleModel model = factory.createSampleModel();

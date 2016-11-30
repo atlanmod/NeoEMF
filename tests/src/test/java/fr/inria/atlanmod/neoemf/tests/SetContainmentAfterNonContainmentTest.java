@@ -61,6 +61,7 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
 
         // Add using the non-containment reference
         p2.getNonContainmentRefComments().add(com1);
+
         // Then add the element to the resource tree using the containment reference
         pc1.getContainmentNoOppositeRefComment().add(com1);
     }

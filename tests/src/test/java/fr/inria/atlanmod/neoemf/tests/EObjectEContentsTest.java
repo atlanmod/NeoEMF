@@ -113,12 +113,6 @@ public class EObjectEContentsTest extends AllBackendTest {
         checkEmptyEContentsGet();
     }
 
-    @Test
-    public void test() {
-        createResourceContent(neo4jResource);
-        p.eContents().iterator().next();
-    }
-
     protected void createResourceContent(Resource r) {
         Pack parentPack = factory.createPack();
         parentPack.setName("ParentPack");
