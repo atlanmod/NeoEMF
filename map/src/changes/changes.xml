@@ -8,5 +8,7 @@
         <title>NeoEMF :: Map</title>
     </properties>
 
-    <body />
+    <body>
+        <release version="1.0.0" description="First release" />
+    </body>
 </document>
