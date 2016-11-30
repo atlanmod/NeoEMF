@@ -36,6 +36,17 @@
         <url>https://travis-ci.org/atlanmod/NeoEMF</url>
     </ciManagement>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <licenses>
         <license>
             <name>Eclipse Public License - v 1.0</name>
@@ -380,6 +391,7 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>attach-sources</id>
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
@@ -394,6 +406,19 @@
                     <execution>
                         <goals>
                             <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -524,7 +549,7 @@
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
                         <excludePackageNames>
-                            fr.inria.atlanmod.neoemf.tests.models.*
+                            fr.inria.atlanmod.neoemf.tests.*
                         </excludePackageNames>
                         <notimestamp>true</notimestamp>
                     </configuration>
