@@ -1,14 +1,22 @@
 #!/bin/bash
 
-if [ "$TRAVIS_REPO_SLUG" = "atlanmod/NeoEMF" ] && \
-   [ "$TRAVIS_JDK_VERSION" = "oraclejdk8" ] && \
-   [ "$TRAVIS_PULL_REQUEST" = "false" ] && \
-   [ "$TRAVIS_BRANCH" = "master" ] && \
-   [ "$TRAVIS_OS_NAME" = "linux" ]; then
+SLUG="atlanmod/NeoEMF"
+JDK="oraclejdk8"
+BRANCH="master"
+OS="linux"
 
+if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
+  echo "Skipping snapshot deployment: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
+elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
+  echo "Skipping snapshot deployment: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
+elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  echo "Skipping snapshot deployment: was pull request."
+elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
+  echo "Skipping snapshot deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
+elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
+  echo "Skipping snapshot deployment: wrong OS. Expected '$OS' but was '$TRAVIS_OS_NAME'."
+else
   echo "Publishing Maven snapshot..."
-
   mvn clean source:jar javadoc:jar deploy --settings="util/settings.xml" -DskipTests=true
-
   echo "Maven snapshot published."
 fi
