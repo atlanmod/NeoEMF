@@ -418,20 +418,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-changes-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>check-changes</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>changes-check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
 
         <pluginManagement>
