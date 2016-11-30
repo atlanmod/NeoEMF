@@ -25,7 +25,6 @@
         <connection>scm:git:git@github.com:atlanmod/NeoEMF.git</connection>
         <developerConnection>scm:git:git@github.com:atlanmod/NeoEMF.git</developerConnection>
         <url>http://github.com/atlanmod/NeoEMF.git</url>
-        <tag>neoemf-0.0.1</tag>
     </scm>
 
     <issueManagement>
