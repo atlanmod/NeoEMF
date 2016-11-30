@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.gmt.modisco.java.neoemf/src" modelPluginID="org.eclipse.gmt.modisco.java.neoemf"
+    modelName="Java" rootExtendsInterface="fr.inria.atlanmod.neoemf.core.PersistentEObject"
+    rootExtendsClass="fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject" importerID="fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoEMFImporter"
+    complianceLevel="8.0" copyrightFields="false" reflectiveDelegation="true" featureDelegation="Reflective" operationReflection="true" importOrganizing="true">
+  <foreignModel>Java-NeoEMF.ecore</foreignModel>
+  <modelPluginVariables>NEOEMF=fr.inria.atlanmod.neoemf.core</modelPluginVariables>
+  <genPackages prefix="Java" basePackage="org.eclipse.gmt.modisco" disposableProviderFactory="true"
+      metaDataPackageSuffix="neoemf.meta" classPackageSuffix="neoemf.impl" utilityPackageSuffix="neoemf.util"
+      providerPackageSuffix="neoemf.provider" presentationPackageSuffix="neoemf.presentation"
+      testsPackageSuffix="neoemf.tests" literalsInterface="false" loadInitialization="false" ecorePackage="Java-NeoEMF.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Java-NeoEMF.ecore#//AssignmentKind">
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/PLUS_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/MINUS_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/TIMES_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/DIVIDE_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/BIT_AND_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/BIT_OR_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/BIT_XOR_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/REMAINDER_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/LEFT_SHIFT_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/RIGHT_SHIFT_SIGNED_ASSIGN"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//AssignmentKind/RIGHT_SHIFT_UNSIGNED_ASSIGN"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Java-NeoEMF.ecore#//InfixExpressionKind">
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/TIMES"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/DIVIDE"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/REMAINDER"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/PLUS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/MINUS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/LEFT_SHIFT"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/RIGHT_SHIFT_SIGNED"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/RIGHT_SHIFT_UNSIGNED"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/LESS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/GREATER"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/LESS_EQUALS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/GREATER_EQUALS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/EQUALS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/NOT_EQUALS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/XOR"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/AND"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/OR"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/CONDITIONAL_AND"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InfixExpressionKind/CONDITIONAL_OR"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Java-NeoEMF.ecore#//InheritanceKind">
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InheritanceKind/none"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InheritanceKind/abstract"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//InheritanceKind/final"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Java-NeoEMF.ecore#//PostfixExpressionKind">
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PostfixExpressionKind/INCREMENT"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PostfixExpressionKind/DECREMENT"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Java-NeoEMF.ecore#//PrefixExpressionKind">
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PrefixExpressionKind/INCREMENT"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PrefixExpressionKind/DECREMENT"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PrefixExpressionKind/PLUS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PrefixExpressionKind/MINUS"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PrefixExpressionKind/COMPLEMENT"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//PrefixExpressionKind/NOT"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Java-NeoEMF.ecore#//VisibilityKind">
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//VisibilityKind/none"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//VisibilityKind/public"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//VisibilityKind/private"/>
+      <genEnumLiterals ecoreEnumLiteral="Java-NeoEMF.ecore#//VisibilityKind/protected"/>
+    </genEnums>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//AbstractMethodDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodDeclaration/body"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodDeclaration/parameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodDeclaration/thrownExceptions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodDeclaration/typeParameters"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodDeclaration/usagesInDocComments"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodDeclaration/usages"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//AbstractMethodInvocation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodInvocation/method"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodInvocation/arguments"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractMethodInvocation/typeArguments"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//AbstractTypeDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractTypeDeclaration/bodyDeclarations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractTypeDeclaration/commentsBeforeBody"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractTypeDeclaration/commentsAfterBody"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractTypeDeclaration/package"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractTypeDeclaration/superInterfaces"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//AbstractTypeQualifiedExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractTypeQualifiedExpression/qualifier"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//AbstractVariablesContainer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractVariablesContainer/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AbstractVariablesContainer/fragments"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Annotation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Annotation/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Annotation/values"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Archive">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Archive/originalFilePath"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Archive/classFiles"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Archive/manifest"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//AssertStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AssertStatement/message"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AssertStatement/expression"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//ASTNode">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ASTNode/comments"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ASTNode/originalCompilationUnit"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ASTNode/originalClassFile"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//AnnotationMemberValuePair">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AnnotationMemberValuePair/member"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AnnotationMemberValuePair/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//AnnotationTypeDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//AnnotationTypeMemberDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AnnotationTypeMemberDeclaration/default"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AnnotationTypeMemberDeclaration/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AnnotationTypeMemberDeclaration/usages"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//AnonymousClassDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AnonymousClassDeclaration/bodyDeclarations"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//AnonymousClassDeclaration/classInstanceCreation"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ArrayAccess">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayAccess/array"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayAccess/index"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ArrayCreation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayCreation/dimensions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayCreation/initializer"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayCreation/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ArrayInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayInitializer/expressions"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ArrayLengthAccess">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayLengthAccess/array"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ArrayType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//ArrayType/dimensions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ArrayType/elementType"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Assignment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Assignment/leftHandSide"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Assignment/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Assignment/rightHandSide"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//BodyDeclaration">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//BodyDeclaration/abstractTypeDeclaration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//BodyDeclaration/annotations"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//BodyDeclaration/anonymousClassDeclarationOwner"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//BodyDeclaration/modifier"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//BooleanLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//BooleanLiteral/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//BlockComment"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Block">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Block/statements"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//BreakStatement">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//BreakStatement/label"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//CastExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CastExpression/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CastExpression/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//CatchClause">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CatchClause/exception"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CatchClause/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//CharacterLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//CharacterLiteral/escapedValue"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ClassFile">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//ClassFile/originalFilePath"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ClassFile/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ClassFile/attachedSource"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ClassFile/package"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ClassInstanceCreation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ClassInstanceCreation/anonymousClassDeclaration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ClassInstanceCreation/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ClassInstanceCreation/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ConstructorDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ConditionalExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ConditionalExpression/elseExpression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ConditionalExpression/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ConditionalExpression/thenExpression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ConstructorInvocation"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ClassDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ClassDeclaration/superClass"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//Comment">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Comment/content"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Comment/enclosedByParent"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Comment/prefixOfParent"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//CompilationUnit">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//CompilationUnit/originalFilePath"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CompilationUnit/commentList"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CompilationUnit/imports"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CompilationUnit/package"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//CompilationUnit/types"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ContinueStatement">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ContinueStatement/label"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//DoStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//DoStatement/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//DoStatement/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//EmptyStatement"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//EnhancedForStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//EnhancedForStatement/body"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//EnhancedForStatement/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//EnhancedForStatement/parameter"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//EnumConstantDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//EnumConstantDeclaration/anonymousClassDeclaration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//EnumConstantDeclaration/arguments"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//EnumDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//EnumDeclaration/enumConstants"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//Expression"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ExpressionStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ExpressionStatement/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//FieldAccess">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//FieldAccess/field"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//FieldAccess/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//FieldDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ForStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ForStatement/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ForStatement/updaters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ForStatement/initializers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ForStatement/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//IfStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//IfStatement/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//IfStatement/thenStatement"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//IfStatement/elseStatement"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ImportDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//ImportDeclaration/static"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ImportDeclaration/importedElement"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//InfixExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//InfixExpression/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//InfixExpression/rightOperand"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//InfixExpression/leftOperand"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//InfixExpression/extendedOperands"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Initializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Initializer/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//InstanceofExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//InstanceofExpression/rightOperand"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//InstanceofExpression/leftOperand"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//InterfaceDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Javadoc">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Javadoc/tags"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//LabeledStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//LabeledStatement/body"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//LabeledStatement/usagesInBreakStatements"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//LabeledStatement/usagesInContinueStatements"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//LineComment"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Manifest">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Manifest/mainAttributes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Manifest/entryAttributes"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ManifestAttribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//ManifestAttribute/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//ManifestAttribute/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ManifestEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//ManifestEntry/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ManifestEntry/attributes"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//MemberRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MemberRef/member"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MemberRef/qualifier"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//MethodDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//MethodDeclaration/extraArrayDimensions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodDeclaration/returnType"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodDeclaration/redefinedMethodDeclaration"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodDeclaration/redefinitions"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//MethodInvocation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodInvocation/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//MethodRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodRef/method"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodRef/qualifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodRef/parameters"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//MethodRefParameter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//MethodRefParameter/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//MethodRefParameter/varargs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//MethodRefParameter/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Model">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Model/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Model/ownedElements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Model/orphanTypes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Model/unresolvedItems"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Model/compilationUnits"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Model/classFiles"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Model/archives"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Modifier">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/visibility"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/inheritance"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/static"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/transient"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/volatile"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/native"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/strictfp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//Modifier/synchronized"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Modifier/bodyDeclaration"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Modifier/singleVariableDeclaration"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Modifier/variableDeclarationStatement"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Modifier/variableDeclarationExpression"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//NamedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//NamedElement/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//NamedElement/proxy"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//NamedElement/usagesInImports"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//NamespaceAccess"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//NumberLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//NumberLiteral/tokenValue"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//NullLiteral"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//Package">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Package/ownedElements"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Package/model"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Package/ownedPackages"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Package/package"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Package/usagesInPackageAccess"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PackageAccess">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//PackageAccess/package"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//PackageAccess/qualifier"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ParameterizedType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ParameterizedType/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ParameterizedType/typeArguments"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ParenthesizedExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ParenthesizedExpression/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PostfixExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//PostfixExpression/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//PostfixExpression/operand"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrefixExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//PrefixExpression/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//PrefixExpression/operand"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveType"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeBoolean"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeByte"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeChar"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeDouble"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeShort"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeFloat"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeInt"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeLong"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//PrimitiveTypeVoid"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ReturnStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ReturnStatement/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SingleVariableAccess">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableAccess/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableAccess/qualifier"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SingleVariableDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableDeclaration/modifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//SingleVariableDeclaration/varargs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableDeclaration/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableDeclaration/annotations"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableDeclaration/methodDeclaration"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableDeclaration/catchClause"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SingleVariableDeclaration/enhancedForStatement"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//Statement"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//StringLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//StringLiteral/escapedValue"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SuperConstructorInvocation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SuperConstructorInvocation/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SuperFieldAccess">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SuperFieldAccess/field"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SuperMethodInvocation"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SwitchCase">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//SwitchCase/default"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SwitchCase/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SwitchStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SwitchStatement/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SwitchStatement/statements"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//SynchronizedStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SynchronizedStatement/body"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//SynchronizedStatement/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//TagElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//TagElement/tagName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TagElement/fragments"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//TextElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//TextElement/text"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ThisExpression"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//ThrowStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//ThrowStatement/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//TryStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TryStatement/body"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TryStatement/finally"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TryStatement/catchClauses"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//Type">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//Type/usagesInTypeAccess"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//TypeAccess">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TypeAccess/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TypeAccess/qualifier"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//TypeDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TypeDeclaration/typeParameters"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//TypeDeclarationStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TypeDeclarationStatement/declaration"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//TypeLiteral">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TypeLiteral/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//TypeParameter">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//TypeParameter/bounds"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedItem"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedItemAccess">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//UnresolvedItemAccess/element"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//UnresolvedItemAccess/qualifier"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedAnnotationDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedAnnotationTypeMemberDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedClassDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedEnumDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedInterfaceDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedLabeledStatement"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedMethodDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedSingleVariableDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedType"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedTypeDeclaration"/>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//UnresolvedVariableDeclarationFragment"/>
+    <genClasses image="false" ecoreClass="Java-NeoEMF.ecore#//VariableDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//VariableDeclaration/extraArrayDimensions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//VariableDeclaration/initializer"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//VariableDeclaration/usageInVariableAccess"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//VariableDeclarationExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//VariableDeclarationExpression/modifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//VariableDeclarationExpression/annotations"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//VariableDeclarationFragment">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//VariableDeclarationFragment/variablesContainer"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//VariableDeclarationStatement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//VariableDeclarationStatement/extraArrayDimensions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//VariableDeclarationStatement/modifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//VariableDeclarationStatement/annotations"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//WildCardType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Java-NeoEMF.ecore#//WildCardType/upperBound"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//WildCardType/bound"/>
+    </genClasses>
+    <genClasses ecoreClass="Java-NeoEMF.ecore#//WhileStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//WhileStatement/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Java-NeoEMF.ecore#//WhileStatement/body"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

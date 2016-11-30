@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>neoemf-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
+    <artifactId>benchmarks-parent</artifactId>
+
+    <packaging>pom</packaging>
+
+    <name>NeoEMF :: Benchmarks</name>
+
+    <modules>
+        <module>core</module>
+        <module>org.eclipse.gmt.modisco</module>
+    </modules>
+
+    <properties>
+        <!-- EMF & Co -->
+        <cdo.version>4.3.0</cdo.version>
+        <neo4j.version>1.9.6</neo4j.version>
+
+        <!-- Benchmark -->
+        <jmh.version>1.16</jmh.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- CDO -->
+
+            <dependency>
+                <groupId>org.eclipselabs</groupId>
+                <artifactId>cdo</artifactId>
+                <version>${cdo.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipselabs</groupId>
+                <artifactId>net4j.h2</artifactId>
+                <version>${cdo.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <!-- NeoEMF -->
+
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-blueprints</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-blueprints-neo4j</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-map</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Local -->
+
+            <dependency>
+                <groupId>org.eclipse.gmt</groupId>
+                <artifactId>org.eclipse.gmt.modisco.java</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.gmt</groupId>
+                <artifactId>org.eclipse.gmt.modisco.java.cdo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.gmt</groupId>
+                <artifactId>org.eclipse.gmt.modisco.java.neoemf</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Benchmark -->
+
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>${jmh.version}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.4.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.5.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

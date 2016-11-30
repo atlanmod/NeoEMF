@@ -1,0 +1,658 @@
+@Ecore(nsURI="http://www.eclipse.org/MoDisco/Java/0.2.incubation/java-CDO")
+@GenModel(copyrightText="Copyright (c) 2009 Mia-Software.\r\nAll rights reserved. This program and the accompanying materials\r\nare made available under the terms of the Eclipse Public License v1.0\r\nwhich accompanies this distribution, and is available at\r\nhttp://www.eclipse.org/legal/epl-v10.html\r\n\r\nContributors:\r\n    Fabien Giquel (Mia-Software) - initial API and implementation\r\n    Gregoire DUPE (Mia-Software) - initial API and implementation", metaDataPackageSuffix="cdo.meta", classPackageSuffix="cdo.impl", utilityPackageSuffix="cdo.util", providerPackageSuffix="cdo.provider", presentationPackageSuffix="cdo.presentation", testsPackageSuffix="cdo.tests", modelDirectory="/org.eclipse.gmt.modisco.java.cdo/src", rootExtendsInterface="org.eclipse.emf.cdo.CDOObject", rootExtendsClass="org.eclipse.emf.internal.cdo.CDOObjectImpl", importerID="org.eclipse.emf.importer.cdo", literalsInterface="false", loadInitialization="false", complianceLevel="8.0", reflectiveDelegation="true", featureDelegation="Reflective", operationReflection="true", importOrganizing="true")
+package org.eclipse.gmt.modisco.java
+
+abstract class AbstractMethodDeclaration extends BodyDeclaration {
+    contains unordered Block body
+    contains SingleVariableDeclaration[] parameters opposite methodDeclaration
+    contains TypeAccess[] thrownExceptions
+    contains TypeParameter[] typeParameters
+    refers unordered MethodRef[] usagesInDocComments opposite method
+    refers unordered AbstractMethodInvocation[] usages opposite method
+}
+
+abstract class AbstractMethodInvocation extends ASTNode {
+    refers unordered AbstractMethodDeclaration[1] method opposite usages
+    contains Expression[] arguments
+    contains TypeAccess[] typeArguments
+}
+
+abstract class AbstractTypeDeclaration extends BodyDeclaration , Type {
+    contains BodyDeclaration[] bodyDeclarations opposite abstractTypeDeclaration
+    contains Comment[] commentsBeforeBody
+    contains Comment[] commentsAfterBody
+    container unordered Package ^package opposite ownedElements
+    contains TypeAccess[] superInterfaces
+}
+
+abstract class AbstractTypeQualifiedExpression extends Expression {
+    contains unordered TypeAccess qualifier
+}
+
+abstract class AbstractVariablesContainer extends ASTNode {
+    contains unordered TypeAccess ^type
+    contains VariableDeclarationFragment[] fragments opposite variablesContainer
+}
+
+class Annotation extends Expression {
+    contains unordered TypeAccess[1] ^type
+    contains AnnotationMemberValuePair[] values
+}
+
+class Archive extends NamedElement {
+    unordered String[1] originalFilePath
+    contains unordered ClassFile[] classFiles
+    contains unordered Manifest manifest
+}
+
+class AssertStatement extends Statement {
+    contains unordered Expression message
+    contains unordered Expression[1] expression
+}
+
+abstract class ASTNode {
+    contains Comment[] comments
+    refers unordered CompilationUnit originalCompilationUnit
+    refers unordered ClassFile originalClassFile
+}
+
+class AnnotationMemberValuePair extends NamedElement {
+    refers unordered AnnotationTypeMemberDeclaration member opposite usages
+    contains unordered Expression[1] value
+}
+
+class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
+}
+
+class AnnotationTypeMemberDeclaration extends BodyDeclaration {
+    contains unordered Expression ^default
+    contains unordered TypeAccess[1] ^type
+    refers unordered AnnotationMemberValuePair[] usages opposite member
+}
+
+class AnonymousClassDeclaration extends ASTNode {
+    contains BodyDeclaration[] bodyDeclarations opposite anonymousClassDeclarationOwner
+    container unordered ClassInstanceCreation classInstanceCreation opposite anonymousClassDeclaration
+}
+
+class ArrayAccess extends Expression {
+    contains unordered Expression[1] array
+    contains unordered Expression[1] index
+}
+
+class ArrayCreation extends Expression {
+    contains Expression[] dimensions
+    contains unordered ArrayInitializer initializer
+    contains unordered TypeAccess[1] ^type
+}
+
+class ArrayInitializer extends Expression {
+    contains Expression[] expressions
+}
+
+class ArrayLengthAccess extends Expression {
+    contains unordered Expression[1] array
+}
+
+class ArrayType extends Type {
+    unordered int[1] dimensions
+    contains unordered TypeAccess[1] elementType
+}
+
+class Assignment extends Expression {
+    contains unordered Expression[1] leftHandSide
+    unordered AssignmentKind[1] operator
+    contains unordered Expression[1] rightHandSide
+}
+
+enum AssignmentKind {
+    ASSIGN as "=" = 1
+    PLUS_ASSIGN as "+=" = 2
+    MINUS_ASSIGN as "-=" = 3
+    TIMES_ASSIGN as "*=" = 4
+    DIVIDE_ASSIGN as "/=" = 5
+    BIT_AND_ASSIGN as "&=" = 6
+    BIT_OR_ASSIGN as "|=" = 7
+    BIT_XOR_ASSIGN as "^=" = 8
+    REMAINDER_ASSIGN as "%=" = 9
+    LEFT_SHIFT_ASSIGN as "<<=" = 10
+    RIGHT_SHIFT_SIGNED_ASSIGN as ">>=" = 11
+    RIGHT_SHIFT_UNSIGNED_ASSIGN as ">>>=" = 12
+}
+
+abstract class BodyDeclaration extends NamedElement {
+    container unordered AbstractTypeDeclaration abstractTypeDeclaration opposite bodyDeclarations
+    contains Annotation[] annotations
+    container unordered AnonymousClassDeclaration anonymousClassDeclarationOwner opposite bodyDeclarations
+    contains unordered Modifier modifier opposite bodyDeclaration
+}
+
+class BooleanLiteral extends Expression {
+    unordered boolean[1] value
+}
+
+class BlockComment extends Comment {
+}
+
+class Block extends Statement {
+    contains Statement[] statements
+}
+
+class BreakStatement extends Statement {
+    refers unordered LabeledStatement label opposite usagesInBreakStatements
+}
+
+class CastExpression extends Expression {
+    contains unordered Expression[1] expression
+    contains unordered TypeAccess[1] ^type
+}
+
+class CatchClause extends Statement {
+    contains unordered SingleVariableDeclaration[1] exception opposite catchClause
+    contains unordered Block[1] body
+}
+
+class CharacterLiteral extends Expression {
+    unordered String[1] escapedValue
+}
+
+class ClassFile extends NamedElement {
+    unordered String[1] originalFilePath
+    refers unordered AbstractTypeDeclaration ^type
+    refers unordered CompilationUnit attachedSource
+    refers unordered Package ^package
+}
+
+class ClassInstanceCreation extends Expression , AbstractMethodInvocation {
+    contains unordered AnonymousClassDeclaration anonymousClassDeclaration opposite classInstanceCreation
+    contains unordered Expression expression
+    contains unordered TypeAccess[1] ^type
+}
+
+class ConstructorDeclaration extends AbstractMethodDeclaration {
+}
+
+class ConditionalExpression extends Expression {
+    contains unordered Expression[1] elseExpression
+    contains unordered Expression[1] expression
+    contains unordered Expression[1] thenExpression
+}
+
+class ConstructorInvocation extends Statement , AbstractMethodInvocation {
+}
+
+class ClassDeclaration extends TypeDeclaration {
+    contains unordered TypeAccess superClass
+}
+
+abstract class Comment extends ASTNode {
+    unordered String[1] content
+    unordered boolean[1] enclosedByParent
+    unordered boolean[1] prefixOfParent
+}
+
+class CompilationUnit extends NamedElement {
+    unordered String[1] originalFilePath
+    refers Comment[] commentList
+    contains ImportDeclaration[] imports
+    refers unordered Package ^package
+    refers AbstractTypeDeclaration[] types
+}
+
+class ContinueStatement extends Statement {
+    refers unordered LabeledStatement label opposite usagesInContinueStatements
+}
+
+class DoStatement extends Statement {
+    contains unordered Expression[1] expression
+    contains unordered Statement[1] body
+}
+
+class EmptyStatement extends Statement {
+}
+
+class EnhancedForStatement extends Statement {
+    contains unordered Statement[1] body
+    contains unordered Expression[1] expression
+    contains unordered SingleVariableDeclaration[1] parameter opposite enhancedForStatement
+}
+
+class EnumConstantDeclaration extends BodyDeclaration , VariableDeclaration {
+    contains unordered AnonymousClassDeclaration anonymousClassDeclaration
+    contains Expression[] arguments
+}
+
+class EnumDeclaration extends AbstractTypeDeclaration {
+    contains EnumConstantDeclaration[] enumConstants
+}
+
+abstract class Expression extends ASTNode {
+}
+
+class ExpressionStatement extends Statement {
+    contains unordered Expression[1] expression
+}
+
+class FieldAccess extends Expression {
+    contains unordered SingleVariableAccess[1] field
+    contains unordered Expression[1] expression
+}
+
+class FieldDeclaration extends BodyDeclaration , AbstractVariablesContainer {
+}
+
+class ForStatement extends Statement {
+    contains unordered Expression expression
+    contains Expression[] updaters
+    contains Expression[] initializers
+    contains unordered Statement[1] body
+}
+
+class IfStatement extends Statement {
+    contains unordered Expression[1] expression
+    contains unordered Statement[1] thenStatement
+    contains unordered Statement elseStatement
+}
+
+class ImportDeclaration extends ASTNode {
+    unordered boolean ^static
+    refers unordered NamedElement[1] importedElement opposite usagesInImports
+}
+
+class InfixExpression extends Expression {
+    unordered InfixExpressionKind[1] operator
+    contains unordered Expression[1] rightOperand
+    contains unordered Expression[1] leftOperand
+    contains Expression[] extendedOperands
+}
+
+enum InfixExpressionKind {
+    TIMES as "*" = 1
+    DIVIDE as "/" = 2
+    REMAINDER as "%" = 3
+    PLUS as "+" = 4
+    MINUS as "-" = 5
+    LEFT_SHIFT as "<<" = 6
+    RIGHT_SHIFT_SIGNED as ">>" = 7
+    RIGHT_SHIFT_UNSIGNED as ">>>" = 8
+    LESS as "<" = 9
+    GREATER as ">" = 10
+    LESS_EQUALS as "<=" = 11
+    GREATER_EQUALS as ">=" = 12
+    EQUALS as "==" = 13
+    NOT_EQUALS as "!=" = 14
+    XOR as "^" = 15
+    AND as "&" = 16
+    OR as "|" = 17
+    CONDITIONAL_AND as "&&" = 18
+    CONDITIONAL_OR as "||" = 19
+}
+
+enum InheritanceKind {
+    none = 1
+    ^abstract = 2
+    final = 3
+}
+
+class Initializer extends BodyDeclaration {
+    contains unordered Block[1] body
+}
+
+class InstanceofExpression extends Expression {
+    contains unordered TypeAccess[1] rightOperand
+    contains unordered Expression[1] leftOperand
+}
+
+class InterfaceDeclaration extends TypeDeclaration {
+}
+
+class Javadoc extends Comment {
+    contains TagElement[] tags
+}
+
+class LabeledStatement extends NamedElement , Statement {
+    contains unordered Statement[1] body
+    refers unordered BreakStatement[] usagesInBreakStatements opposite label
+    refers unordered ContinueStatement[] usagesInContinueStatements opposite label
+}
+
+class LineComment extends Comment {
+}
+
+class Manifest {
+    contains unordered ManifestAttribute[] mainAttributes
+    contains unordered ManifestEntry[] entryAttributes
+}
+
+class ManifestAttribute {
+    unordered String[1] key
+    unordered String[1] value
+}
+
+class ManifestEntry {
+    unordered String name
+    contains unordered ManifestAttribute[] attributes
+}
+
+class MemberRef extends ASTNode {
+    refers unordered NamedElement[1] member
+    contains unordered TypeAccess qualifier
+}
+
+class MethodDeclaration extends AbstractMethodDeclaration {
+    unordered int[1] extraArrayDimensions
+    contains unordered TypeAccess returnType
+    refers unordered MethodDeclaration redefinedMethodDeclaration opposite redefinitions
+    refers unordered MethodDeclaration[] redefinitions opposite redefinedMethodDeclaration
+}
+
+class MethodInvocation extends Expression , AbstractMethodInvocation {
+    contains unordered Expression expression
+}
+
+class MethodRef extends ASTNode {
+    refers unordered AbstractMethodDeclaration[1] method opposite usagesInDocComments
+    contains unordered TypeAccess qualifier
+    contains MethodRefParameter[] parameters
+}
+
+class MethodRefParameter extends ASTNode {
+    unordered String name
+    unordered boolean[1] varargs
+    contains unordered TypeAccess[1] ^type
+}
+
+class Model {
+    unordered String name
+    contains unordered Package[] ownedElements opposite model
+    contains unordered Type[] orphanTypes
+    contains unordered UnresolvedItem[] unresolvedItems
+    contains unordered CompilationUnit[] compilationUnits
+    contains unordered ClassFile[] classFiles
+    contains unordered Archive[] archives
+}
+
+class Modifier extends ASTNode {
+    unordered VisibilityKind[1] visibility
+    unordered InheritanceKind[1] inheritance
+    unordered boolean[1] ^static
+    unordered boolean[1] ^transient
+    unordered boolean[1] ^volatile
+    unordered boolean[1] native
+    unordered boolean[1] strictfp
+    unordered boolean[1] ^synchronized
+    container unordered BodyDeclaration bodyDeclaration opposite modifier
+    container unordered SingleVariableDeclaration singleVariableDeclaration opposite modifier
+    container unordered VariableDeclarationStatement variableDeclarationStatement opposite modifier
+    container unordered VariableDeclarationExpression variableDeclarationExpression opposite modifier
+}
+
+abstract class NamedElement extends ASTNode {
+    unordered String name
+    unordered boolean[1] proxy
+    refers unordered ImportDeclaration[] usagesInImports opposite importedElement
+}
+
+abstract class NamespaceAccess extends ASTNode {
+}
+
+class NumberLiteral extends Expression {
+    unordered String[1] tokenValue
+}
+
+class NullLiteral extends Expression {
+}
+
+class Package extends NamedElement {
+    contains unordered AbstractTypeDeclaration[] ownedElements opposite ^package
+    container unordered Model model opposite ownedElements
+    contains unordered Package[] ownedPackages opposite ^package
+    container unordered Package ^package opposite ownedPackages
+    refers unordered PackageAccess[] usagesInPackageAccess opposite ^package
+}
+
+class PackageAccess extends NamespaceAccess {
+    refers unordered Package[1] ^package opposite usagesInPackageAccess
+    contains unordered PackageAccess qualifier
+}
+
+class ParameterizedType extends Type {
+    contains unordered TypeAccess[1] ^type
+    contains TypeAccess[] typeArguments
+}
+
+class ParenthesizedExpression extends Expression {
+    contains unordered Expression[1] expression
+}
+
+class PostfixExpression extends Expression {
+    unordered PostfixExpressionKind[1] operator
+    contains unordered Expression[1] operand
+}
+
+enum PostfixExpressionKind {
+    INCREMENT as "++" = 1
+    DECREMENT as "--" = 2
+}
+
+class PrefixExpression extends Expression {
+    unordered PrefixExpressionKind[1] operator
+    contains unordered Expression[1] operand
+}
+
+enum PrefixExpressionKind {
+    INCREMENT as "++" = 1
+    DECREMENT as "--" = 2
+    PLUS as "+" = 3
+    MINUS as "-" = 4
+    COMPLEMENT as "~" = 5
+    NOT as "!" = 6
+}
+
+class PrimitiveType extends Type {
+}
+
+class PrimitiveTypeBoolean extends PrimitiveType {
+}
+
+class PrimitiveTypeByte extends PrimitiveType {
+}
+
+class PrimitiveTypeChar extends PrimitiveType {
+}
+
+class PrimitiveTypeDouble extends PrimitiveType {
+}
+
+class PrimitiveTypeShort extends PrimitiveType {
+}
+
+class PrimitiveTypeFloat extends PrimitiveType {
+}
+
+class PrimitiveTypeInt extends PrimitiveType {
+}
+
+class PrimitiveTypeLong extends PrimitiveType {
+}
+
+class PrimitiveTypeVoid extends PrimitiveType {
+}
+
+class ReturnStatement extends Statement {
+    contains unordered Expression expression
+}
+
+class SingleVariableAccess extends Expression {
+    refers unordered VariableDeclaration[1] variable opposite usageInVariableAccess
+    contains unordered Expression qualifier
+}
+
+class SingleVariableDeclaration extends VariableDeclaration {
+    contains unordered Modifier modifier opposite singleVariableDeclaration
+    unordered boolean[1] varargs
+    contains unordered TypeAccess[1] ^type
+    contains Annotation[] annotations
+    container unordered AbstractMethodDeclaration methodDeclaration opposite parameters
+    container unordered CatchClause catchClause opposite exception
+    container unordered EnhancedForStatement enhancedForStatement opposite parameter
+}
+
+abstract class Statement extends ASTNode {
+}
+
+class StringLiteral extends Expression {
+    unordered String[1] escapedValue
+}
+
+class SuperConstructorInvocation extends Statement , AbstractMethodInvocation {
+    contains unordered Expression expression
+}
+
+class SuperFieldAccess extends AbstractTypeQualifiedExpression {
+    contains unordered SingleVariableAccess[1] field
+}
+
+class SuperMethodInvocation extends AbstractTypeQualifiedExpression , AbstractMethodInvocation {
+}
+
+class SwitchCase extends Statement {
+    unordered boolean[1] ^default
+    contains unordered Expression expression
+}
+
+class SwitchStatement extends Statement {
+    contains unordered Expression[1] expression
+    contains Statement[] statements
+}
+
+class SynchronizedStatement extends Statement {
+    contains unordered Block[1] body
+    contains unordered Expression[1] expression
+}
+
+class TagElement extends ASTNode {
+    unordered String tagName
+    contains ASTNode[] fragments
+}
+
+class TextElement extends ASTNode {
+    unordered String[1] text
+}
+
+class ThisExpression extends AbstractTypeQualifiedExpression {
+}
+
+class ThrowStatement extends Statement {
+    contains unordered Expression[1] expression
+}
+
+class TryStatement extends Statement {
+    contains unordered Block[1] body
+    contains unordered Block ^finally
+    contains CatchClause[] catchClauses
+}
+
+abstract class Type extends NamedElement {
+    refers unordered TypeAccess[] usagesInTypeAccess opposite ^type
+}
+
+class TypeAccess extends Expression , NamespaceAccess {
+    refers unordered Type[1] ^type opposite usagesInTypeAccess
+    contains unordered NamespaceAccess qualifier
+}
+
+abstract class TypeDeclaration extends AbstractTypeDeclaration {
+    contains TypeParameter[] typeParameters
+}
+
+class TypeDeclarationStatement extends Statement {
+    contains unordered AbstractTypeDeclaration[1] declaration
+}
+
+class TypeLiteral extends Expression {
+    contains unordered TypeAccess[1] ^type
+}
+
+class TypeParameter extends Type {
+    contains TypeAccess[] bounds
+}
+
+class UnresolvedItem extends NamedElement {
+}
+
+class UnresolvedItemAccess extends Expression , NamespaceAccess {
+    refers unordered UnresolvedItem element
+    contains unordered ASTNode qualifier
+}
+
+class UnresolvedAnnotationDeclaration extends AnnotationTypeDeclaration , UnresolvedItem {
+}
+
+class UnresolvedAnnotationTypeMemberDeclaration extends AnnotationTypeMemberDeclaration , UnresolvedItem {
+}
+
+class UnresolvedClassDeclaration extends ClassDeclaration , UnresolvedItem {
+}
+
+class UnresolvedEnumDeclaration extends EnumDeclaration , UnresolvedItem {
+}
+
+class UnresolvedInterfaceDeclaration extends InterfaceDeclaration , UnresolvedItem {
+}
+
+class UnresolvedLabeledStatement extends LabeledStatement , UnresolvedItem {
+}
+
+class UnresolvedMethodDeclaration extends MethodDeclaration , UnresolvedItem {
+}
+
+class UnresolvedSingleVariableDeclaration extends SingleVariableDeclaration , UnresolvedItem {
+}
+
+class UnresolvedType extends Type , UnresolvedItem {
+}
+
+class UnresolvedTypeDeclaration extends AbstractTypeDeclaration , UnresolvedItem {
+}
+
+class UnresolvedVariableDeclarationFragment extends VariableDeclarationFragment , UnresolvedItem {
+}
+
+abstract class VariableDeclaration extends NamedElement {
+    unordered int[1] extraArrayDimensions
+    contains unordered Expression initializer
+    refers unordered SingleVariableAccess[] usageInVariableAccess opposite variable
+}
+
+class VariableDeclarationExpression extends Expression , AbstractVariablesContainer {
+    contains unordered Modifier modifier opposite variableDeclarationExpression
+    contains Annotation[] annotations
+}
+
+class VariableDeclarationFragment extends VariableDeclaration {
+    container unordered AbstractVariablesContainer variablesContainer opposite fragments
+}
+
+class VariableDeclarationStatement extends Statement , AbstractVariablesContainer {
+    unordered int[1] extraArrayDimensions
+    contains unordered Modifier modifier opposite variableDeclarationStatement
+    contains Annotation[] annotations
+}
+
+enum VisibilityKind {
+    none = 1
+    public = 2
+    private = 3
+    protected = 4
+}
+
+class WildCardType extends Type {
+    unordered boolean[1] upperBound
+    contains unordered TypeAccess bound
+}
+
+class WhileStatement extends Statement {
+    contains unordered Expression[1] expression
+    contains unordered Statement[1] body
+}
