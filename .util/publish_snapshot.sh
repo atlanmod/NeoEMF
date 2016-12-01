@@ -28,7 +28,7 @@ else
 
     echo "Publishing Maven snapshot..."
 
-    mvn clean source:jar javadoc:jar deploy --settings=".util/settings.xml" -DskipTests=true
+    mvn clean source:jar javadoc:jar deploy --settings=".util/settings.xml" -DskipTests
 
     echo "Maven snapshot published."
 fi

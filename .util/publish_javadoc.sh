@@ -55,7 +55,8 @@ else
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
     # Check changes
-    if [ -z "$(git status -uno --porcelain | tr -dc '[:alnum:]')" ]; then
+    STATUS=$(git status -uno --porcelain | tr -dc '[:alnum:]')
+    if [ -z "$STATUS" ]; then
         echo -e "Skipping Javadoc publication: no change."
         exit
     fi
