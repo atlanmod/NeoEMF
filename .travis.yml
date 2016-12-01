@@ -34,6 +34,9 @@ after_success:
 # Publish snapshot on Maven repository
 #  - bash .util/publish_snapshot.sh
 
+# Publish update-site
+  - bash .util/publish_eclipse.sh
+
 notifications:
   slack:
     rooms:

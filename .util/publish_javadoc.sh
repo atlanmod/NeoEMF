@@ -54,6 +54,8 @@ else
 
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
+    git add -f .
+
     # Check changes
     if [ "$(git status --porcelain)" ]; then
         echo -e "Skipping Javadoc publication: no change."
@@ -61,7 +63,6 @@ else
     fi
 
     # Commit changes
-    git add -f .
     git commit --quiet -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
     git push --quiet -fq origin gh-pages
 
