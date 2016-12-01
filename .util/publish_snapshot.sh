@@ -5,6 +5,8 @@ JDK="oraclejdk8"
 BRANCH="master"
 OS="linux"
 
+CURRENT="$(pwd)"
+
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
   echo "Skipping snapshot deployment: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
 elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
@@ -20,3 +22,5 @@ else
   mvn clean source:jar javadoc:jar deploy --settings="util/settings.xml" -DskipTests=true
   echo "Maven snapshot published."
 fi
+
+cd CURRENT

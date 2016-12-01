@@ -5,8 +5,11 @@ JDK="oraclejdk8"
 BRANCH="master"
 OS="linux"
 
-API_DIR="apidocs"
-TEMP_DIR="$HOME/apidocs"
+API_DIR="doc"
+ROOT_API_DIR="releases/snapshot"
+TEMP_DIR="$HOME/$API_DIR"
+
+CURRENT="$(pwd)"
 
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
   echo "Skipping Javadoc publication: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
@@ -42,6 +45,9 @@ else
     # Update the Javadoc in 'gh-pages' directory
     cd gh-pages
 
+    mkdir -p ${ROOT_API_DIR}
+    cd ${ROOT_API_DIR}
+
     if [ -d "$API_DIR" ]; then
         git rm --quiet -rf ${API_DIR}
     fi
@@ -60,4 +66,9 @@ else
     git push --quiet -fq origin gh-pages
 
     echo -e "Javadoc published."
+
+    cd $HOME
+    rm -rf gh-pages
 fi
+
+cd CURRENT
