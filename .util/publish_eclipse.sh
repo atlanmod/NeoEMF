@@ -9,8 +9,6 @@ API_DIR="plugin"
 ROOT_API_DIR="releases/snapshot"
 TEMP_DIR="$HOME/$API_DIR"
 
-CURRENT="$(pwd)"
-
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
   echo "Skipping update-site publication: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
 elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
@@ -24,10 +22,9 @@ elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
 else
     echo -e "Generating update-site..."
 
-    cd plugins/eclipse
-    mvn -B -q install
+    mvn -B -q -f plugins/eclipse install
 
-    if ! [ -d update/target/repository ]; then
+    if ! [ -d plugins/eclipse/update/target/repository ]; then
         echo -e "Skipping update-site publication: Update-site has not been built."
         exit
     fi
@@ -35,7 +32,7 @@ else
     echo -e "Publishing update-site..."
 
     # Copy the build update-site Javadoc
-    cp -R update/target/repository ${TEMP_DIR}
+    cp -R plugins/eclipse/update/target/repository ${TEMP_DIR}
     cd $HOME
 
     # Clone the 'gh-pages' branch
@@ -70,5 +67,3 @@ else
 
     echo -e "Update-site published."
 fi
-
-cd ${CURRENT}
