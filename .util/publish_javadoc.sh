@@ -26,7 +26,7 @@ else
 
     mvn -B -q javadoc:javadoc javadoc:aggregate
 
-    if ! [ -d target/site/apidocs ]; then
+    if [ ! -d target/site/apidocs ]; then
         echo -e "Skipping Javadoc publication: no Javadoc has been generated."
         exit
     fi
