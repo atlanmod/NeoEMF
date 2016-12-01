@@ -29,20 +29,21 @@ else
         exit
     fi
 
-    echo -e "Publishing update-site..."
+    echo -e "Copying update-site..."
 
-    # Copy the build update-site Javadoc
     cp -R plugins/eclipse/update/target/repository ${TEMP_DIR}
     cd $HOME
 
-    # Clone the 'gh-pages' branch
     if ! [ -d "gh-pages" ]; then
+        echo -e "Cloning 'gh-pages' branch..."
+
         git config --global user.email "travis@travis-ci.org"
         git config --global user.name "travis-ci"
         git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages
     fi
 
-    # Update the update-site in 'gh-pages' directory
+    echo -e "Merging update-site..."
+
     cd gh-pages
 
     mkdir -p ${ROOT_API_DIR}
@@ -54,13 +55,13 @@ else
 
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
-    # Check changes
-    if [ $(git diff --exit-code --quiet) ]; then
+    if ! [ $(git diff --exit-code --quiet) ]; then
         echo -e "Skipping update-site publication: no change."
         exit
     fi
 
-    # Commit changes
+    echo -e "Publishing update-site..."
+
     git add -f .
     git commit --quiet -m "[auto] update the update-site from Travis build $TRAVIS_BUILD_NUMBER"
     git push --quiet -f origin gh-pages
