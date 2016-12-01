@@ -55,14 +55,15 @@ else
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
     # Check changes
-    if [ -n "$(git status --porcelain)" ]; then
-        # Commit changes
-        git add -f .
-        git commit --quiet -m "Update the update-site from Travis build #$TRAVIS_BUILD_NUMBER"
-        git push --quiet -f origin gh-pages
-
-        echo -e "Update-site published."
+    if ! [ $(git diff --exit-code --quiet) ]; then
+        echo -e "Skipping update-site publication: no change."
+        exit
     fi
 
-    echo -e "Skipping update-site publication: no change."
+    # Commit changes
+    git add -f .
+    git commit --quiet -m "[auto] update the update-site from Travis build $TRAVIS_BUILD_NUMBER"
+    git push --quiet -f origin gh-pages
+
+    echo -e "Update-site published."
 fi
