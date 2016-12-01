@@ -55,7 +55,7 @@ else
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
     # Check changes
-    if ! [ $(git diff --exit-code --quiet) ]; then
+    if [ $(git diff --exit-code --quiet) ]; then
         echo -e "Skipping Javadoc publication: no change."
         exit
     fi
