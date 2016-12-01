@@ -63,7 +63,7 @@ else
     # Commit changes
     git add -f .
     git commit --quiet -m "Update the update-site from Travis build #$TRAVIS_BUILD_NUMBER"
-    git push --quiet -fq origin gh-pages
+    git push --quiet -f origin gh-pages
 
     echo -e "Update-site published."
 fi
