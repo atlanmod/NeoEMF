@@ -38,9 +38,11 @@ else
     cd $HOME
 
     # Clone the 'gh-pages' branch
-    git config --global user.email "travis@travis-ci.org"
-    git config --global user.name "travis-ci"
-    git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages
+    if [ -d "gh-pages" ]; then
+        git config --global user.email "travis@travis-ci.org"
+        git config --global user.name "travis-ci"
+        git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages
+    fi
 
     # Update the Javadoc in 'gh-pages' directory
     cd gh-pages
@@ -54,22 +56,18 @@ else
 
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
-    git add -f .
-
     # Check changes
-    if [ "$(git status --porcelain)" ]; then
+    if [ -z "$(git status --porcelain)" ]; then
         echo -e "Skipping Javadoc publication: no change."
         exit
     fi
 
     # Commit changes
+    git add -f .
     git commit --quiet -m "Update the Javadoc from Travis build #$TRAVIS_BUILD_NUMBER"
     git push --quiet -fq origin gh-pages
 
     echo -e "Javadoc published."
-
-    cd $HOME
-    rm -rf gh-pages
 fi
 
 cd CURRENT
