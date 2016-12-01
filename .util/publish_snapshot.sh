@@ -18,7 +18,7 @@ elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
 else
 
     # Get the existing version of the build
-    VERSION=$(mvn -b -q help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
+    VERSION=$(mvn -B -q help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
 
     # Check for SNAPSHOT
     if [[ "$VERSION" != *"-SNAPSHOT" ]]; then
