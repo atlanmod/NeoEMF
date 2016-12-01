@@ -56,7 +56,7 @@ else
 
     # Check changes
     STATUS=$(git status -uno --porcelain | tr -dc '[:alnum:]')
-    if [ -z "$STATUS" ]; then
+    if [[ "$STATUS" = "" ]]; then
         echo -e "Skipping update-site publication: no change."
         exit
     fi
