@@ -5,7 +5,7 @@ JDK="oraclejdk8"
 BRANCH="master"
 OS="linux"
 
-API_DIR="e"
+API_DIR="plugin"
 ROOT_API_DIR="releases/snapshot"
 TEMP_DIR="$HOME/$API_DIR"
 
