@@ -32,7 +32,7 @@ after_success:
   - bash .util/publish_javadoc.sh
 
 # Publish snapshot on Maven repository
-#  - bash .util/publish_snapshot.sh
+  - bash .util/publish_snapshot.sh
 
 # Publish update-site
   - bash .util/publish_eclipse.sh

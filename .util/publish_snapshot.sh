@@ -16,9 +16,19 @@ elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
 elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
   echo "Skipping snapshot deployment: wrong OS. Expected '$OS' but was '$TRAVIS_OS_NAME'."
 else
-  echo "Publishing Maven snapshot..."
 
-  mvn clean source:jar javadoc:jar deploy --settings="util/settings.xml" -DskipTests=true
+    # Get the existing version of the build
+    VERSION=$(mvn -b -q help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
 
-  echo "Maven snapshot published."
+    # Check for SNAPSHOT
+    if [[ "$VERSION" != *"-SNAPSHOT" ]]; then
+        echo "Skipping snapshot deployment: was not snapshot ($VERSION)."
+        exit
+    fi
+
+    echo "Publishing Maven snapshot..."
+
+#    mvn clean source:jar javadoc:jar deploy --settings="util/settings.xml" -DskipTests=true
+
+    echo "Maven snapshot published."
 fi
