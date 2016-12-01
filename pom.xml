@@ -521,10 +521,8 @@
                         <detectLinks>false</detectLinks>
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
-                        <excludePackageNames>
-                            fr.inria.atlanmod.neoemf.tests.*
-                        </excludePackageNames>
                         <notimestamp>true</notimestamp>
+                        <excludePackageNames>fr.inria.atlanmod.neoemf.tests</excludePackageNames>
                     </configuration>
                 </plugin>
 
