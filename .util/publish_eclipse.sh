@@ -39,7 +39,7 @@ else
     cd $HOME
 
     # Clone the 'gh-pages' branch
-    if [ ! -d "gh-pages" ]; then
+    if ! [ -d "gh-pages" ]; then
         git config --global user.email "travis@travis-ci.org"
         git config --global user.name "travis-ci"
         git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages
@@ -71,4 +71,4 @@ else
     echo -e "Update-site published."
 fi
 
-cd CURRENT
+cd ${CURRENT}
