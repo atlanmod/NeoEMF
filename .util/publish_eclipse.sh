@@ -55,16 +55,14 @@ else
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
     # Check changes
-    STATUS=$(git status -uno --porcelain | tr -dc '[:alnum:]')
-    if [[ "$STATUS" = "" ]]; then
-        echo -e "Skipping update-site publication: no change."
-        exit
+    if [ -n "$(git status --porcelain)" ]; then
+        # Commit changes
+        git add -f .
+        git commit --quiet -m "Update the update-site from Travis build #$TRAVIS_BUILD_NUMBER"
+        git push --quiet -f origin gh-pages
+
+        echo -e "Update-site published."
     fi
 
-    # Commit changes
-    git add -f .
-    git commit --quiet -m "Update the update-site from Travis build #$TRAVIS_BUILD_NUMBER"
-    git push --quiet -f origin gh-pages
-
-    echo -e "Update-site published."
+    echo -e "Skipping update-site publication: no change."
 fi
