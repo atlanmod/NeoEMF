@@ -60,6 +60,8 @@ else
         exit
     fi
 
+    cp ../../updatesite/index.html ${API_DIR}
+
     echo -e "Publishing update-site..."
 
     git add -f .
