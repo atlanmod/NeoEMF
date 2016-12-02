@@ -30,7 +30,7 @@
             id="fr.inria.atlanmod.neoemf.core"
             download-size="0"
             install-size="0"
-            version="1.0.0.qualifier"
+            version="1.0.0"
             unpack="false" />
 
     <plugin

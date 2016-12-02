@@ -34,7 +34,7 @@
             id="fr.inria.atlanmod.neoemf.map"
             download-size="0"
             install-size="0"
-            version="1.0.0.qualifier"
+            version="1.0.0"
             unpack="false" />
 
     <copyright url="http://www.example.com/copyright">
