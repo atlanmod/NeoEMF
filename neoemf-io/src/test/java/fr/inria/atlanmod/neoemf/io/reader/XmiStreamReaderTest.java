@@ -253,7 +253,7 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testMalformedMetaClass() throws Exception {
-        read(getResourceFile("/xmi/sampleMalformedMetaClass.xmi"));
+        read(getResourceFile("/io/xmi/sampleMalformedMetaClass.xmi"));
     }
 
     /**

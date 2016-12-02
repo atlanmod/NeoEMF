@@ -16,8 +16,8 @@
     <description />
 
     <properties>
-        <generated-sources.location>${project.basedir}/src/main/java-gen/</generated-sources.location>
-        <models.location>${project.basedir}/src/main/resources</models.location>
+        <generated-sources.location>${project.basedir}/src/test/java-gen/</generated-sources.location>
+        <models.location>${project.basedir}/src/test/resources/gen</models.location>
     </properties>
 
     <dependencies>
@@ -135,7 +135,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>add-test-source</goal>
                         </goals>
                         <configuration>
                             <sources>
@@ -151,6 +151,7 @@
                 <artifactId>xtext-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>

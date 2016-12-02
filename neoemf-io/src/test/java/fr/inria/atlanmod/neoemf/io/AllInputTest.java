@@ -36,11 +36,11 @@ public abstract class AllInputTest extends AllTest {
 
     protected static final int UNKNOWN_INDEX = -1;
 
-    private static final String XMI_STANDARD = "/xmi/sampleStandard.xmi";
-    private static final String XMI_WITH_ID = "/xmi/sampleWithId.xmi";
+    private static final String XMI_STANDARD = "/io/xmi/sampleStandard.xmi";
+    private static final String XMI_WITH_ID = "/io/xmi/sampleWithId.xmi";
 
     private static final String ECORE = "ecore";
-    private static final String ECORE_PATH = "/ecore/{name}." + ECORE;
+    private static final String ECORE_PATH = "/io/ecore/{name}." + ECORE;
 
     protected StructuralPersistanceHandler persistanceHandler;
 

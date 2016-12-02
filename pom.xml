@@ -496,11 +496,6 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.7.7.201606060606</version>
-                    <configuration>
-                        <excludes>
-                            <exclude>**/java-gen/**</exclude>
-                        </excludes>
-                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -522,7 +517,6 @@
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
                         <notimestamp>true</notimestamp>
-                        <excludePackageNames>fr.inria.atlanmod.neoemf.tests</excludePackageNames>
                     </configuration>
                 </plugin>
 
