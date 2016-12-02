@@ -7,7 +7,7 @@ OS="linux"
 
 API_DIR="plugin"
 ROOT_API_DIR="releases/snapshot"
-TEMP_DIR="$HOME/plugin"
+TEMP_DIR="$HOME/$API_DIR"
 
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
   echo "Skipping update-site publication: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
@@ -53,15 +53,14 @@ else
         git rm --quiet -rf ${API_DIR}
     fi
 
-    mkdir -p ${API_DIR}
-    cp -Rf ${TEMP_DIR} ${API_DIR}
+    cp -Rf ${TEMP_DIR} ${ROOT_API_DIR}
 
     if ! git diff --quiet; then
         echo -e "Skipping update-site publication: no change."
         exit
     fi
 
-    cp ${TEMP_DIR}/gh-pages/updatesite/index.html ${API_DIR}/index.html
+    cp ${HOME}/gh-pages/updatesite/index.html ${API_DIR}/index.html
 
     echo -e "Publishing update-site..."
 
