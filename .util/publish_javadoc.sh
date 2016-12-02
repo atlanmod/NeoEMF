@@ -55,6 +55,8 @@ else
 
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
+    git add -f .
+
     if ! [ $(git diff --exit-code --quiet) ]; then
         echo -e "Skipping Javadoc publication: no change."
         exit
@@ -62,7 +64,6 @@ else
 
     echo -e "Publishing Javadoc..."
 
-    git add -f .
     git commit --quiet -m "[auto] update the Javadoc from Travis build $TRAVIS_BUILD_NUMBER"
     git push --quiet -f origin gh-pages
 
