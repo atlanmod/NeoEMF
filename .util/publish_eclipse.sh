@@ -55,7 +55,7 @@ else
 
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
-    if ! [ $(git diff --cached --exit-code --quiet) ]; then
+    if ! $(git diff --cached --exit-code --quiet); then
         echo -e "Skipping update-site publication: no change."
         exit
     fi
