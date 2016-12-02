@@ -31,7 +31,7 @@ else
 
     echo -e "Copying Javadoc..."
 
-    cp -Rf target/site/apidocs ${TEMP_DIR}
+    cp -rf target/site/apidocs ${TEMP_DIR}
     cd $HOME
 
     if ! [ -d "gh-pages" ]; then
@@ -53,7 +53,7 @@ else
         git rm --quiet -rf ${API_DIR}
     fi
 
-    cp -Rf ${TEMP_DIR} ${ROOT_API_DIR}
+    cp -rf ${TEMP_DIR} ${API_DIR}
 
     if ! git diff --quiet; then
         echo -e "Skipping Javadoc publication: no change."
