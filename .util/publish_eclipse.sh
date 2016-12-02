@@ -5,8 +5,8 @@ JDK="oraclejdk8"
 BRANCH="master"
 OS="linux"
 
-API_DIR="plugin"
-ROOT_API_DIR="releases/snapshot"
+API_DIR="plugin/"
+ROOT_API_DIR="releases/snapshot/"
 TEMP_DIR="$HOME/$API_DIR"
 
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
@@ -55,7 +55,7 @@ else
 
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
-    if ! $(git diff --cached --exit-code --quiet); then
+    if git diff --quiet; then
         echo -e "Skipping update-site publication: no change."
         exit
     fi

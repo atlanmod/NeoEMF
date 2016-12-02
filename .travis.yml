@@ -7,25 +7,33 @@ jdk: oraclejdk8
 env:
   global:
     - JAVA_OPTS="-Xms256m -Xmx2g"
+    # GH_TOKEN
     - secure: Mc7Pm9YGZiw3jr2NKBtIVozgC+iyrJ6F7V3UvpGPWQgn/IbJ6AM5YBSwvOk2P+jZI9k1vIgsrWIIKfu/1NYoJ5MC1mk94942ZNC+DJW1n+thgJ84xyLc4wXD8sYCdofWGcSrLYNZQpXkpbSuL8gVYk4iMQ8tI+jIoxRye1fgfYiBle2W3Pt/e4g0OGD339+ghSoKgBduM91elZmqFvf25CXYPcPtqZaXapmor9wBZyf8j7HLZsXLg2paA0Owpbn+WSdzFxKTvT3vn7ZY/iB6O80KYZTM/CcpzONdEEQUkMGc2bKfOVQ1lgqCbZyjbSyp8eTA43m949o+WOujhYQxqfZkg/1FPB5urIf+VF4o+hFFF/zZ8bJ6zPvD8MA7E4i3/LpNP7uNVndv6p8ijfm6fbuNe2MaK19yUQqMbriFlY6KfVy+o0yrc9InNoEFP+cbRMIoTVY/wIL5OIf06AE1RG7hNW7/jd8Nh4yuGLCgL87QybTxu37Jeho/K1XHZ2y7xi+6B3vbajvRpUgvyks/C0nnrpip5cnwS89XhEb/dj7rPvanfRiUUmoWxJKKEYut257SkP8AMxgUwc4TJb+GAsT7EyruToFsft4zzAXvejd6HM1QjAcq/96BbY8f6n+LnAHyKmwJbbLis0SxlmFMeyCeCJwcXmqzN7Axd/76gR4=
+    # CI_DEPLOY_USERNAME
     - secure: XqrcRD3UdVubycFT8yDN7Lv8tSpmpGOCPb5WlKBkSM+dO5xr02MG7lX9lEFwdBM6od3/vqLggNMgRGDZYQBX5LV+qimhpOltuvO8umzIf8ff/ztKUsz8gBgCxZaSuxOf66iTPp///o2WwENoxn3qT7vF8ePmksx9FYArhl8Pa32yj6GY9Meu139XomMg5qbkgN9s0h8d+XV4DFaUAd3a+ovuENGphFyJzWY3h/7CaHRdi5WyVSmsPwSvUoEwa9Y7ujlpImZBrkm7slo8lYMZDSWD/bCaNcP4G/bWetWjwz+sU5lGFxljlcNo79Q87yn0Vc6zMjFzh8CmUu1lfdUEH5RL3HQkimoO0oxenj/tuHcn+FSbUQ1LpP/za3CNJOSRG7pQJPZUsENKnRokRKuyh3/WW/cTANevZcbu/o7jtlR5CmH4zpuZMBnxpZgVmZOBWIakJ9IU15Fgmb/g/GAnTtYl+WPI4qS4WnFLZmOTEWVUjwSIPUykAePUvF0zxO2nyh6kd5yyfRqY14kJloA7/ZkVIsmAOecwlxdEU1izVb/CTpY45SeWe5g3FE3ltL45ZPdCA+h0yKRy4eaVeuTNO6zKX3D5uQu193X9Rq2oYckdkDfd/TJ1wf2DiBZ7WFIOCp0MmevFJ82w7M++jkiLYII72DSzJg7ePfyo+IhVs3E=
+    # CI_DEPLOY_PASSWORD
     - secure: FbSKxzPkjTrkom1EAjqbOKfSLmeWDfUj6FZks5pmTvdO6bFX641HRPOkWQ7o3p0QnXTWIl3KaT6PLCdRlVmIdepHbHjJt1x1HTuD/j82aOxUl1JUhiG3WFWE2V4tOuvABE8eRyvE1uGJ5Ik0F5BXy1QYwlWpbO9VORA3Kz4Xm6yu/kroH2EQlRxJN4LtM6ufDeimfU3LmbSSPs54Et3e45GNzbAw0KmupOvphfr5sJd3xpS3vQMtdHbVlCoDu0/F9ntEgBzwrOphX7rpo90MOU2j8dakAGGMku1DddPEuOckCkn0KjYfcvBwETJWd09my6L3BFCyto3doaYpjv361/GYc5508eYLmGom+AQVybhXTVOzIDn8gdr7UkvgJgeown8STMiiTKfq7HmJ3vTXpNrAXzS6Oa9la2OFa+wW54hs+nABfsPLNkIuaC9X5FXt8X356OgAOv0GUn3EiofMXH928dIXb3kftnF9Y+oS7OE+mwnbp5SfrOOp3TF8v0E3fOuWs/Wfe1QWuDu3+xa7wXfMLLxBb6HqsUV5A4/DaCqwcH4/tMge3PVWJ56jWIpzL33On7wMuzaRnxjbuO6brL3ywLWgXJnuGv2FVfe3CYpLLgT4zstspM/oftREBQlAQffpYQMiaSRuqm+rMbQuXpH2Fi+AO7jA2ENiQBkOk98=
 
 branches:
   only:
     - master
 
-# Remove 'nexus.codehaus.org' from '.m2/settings.xml' in Travis
 before_install:
+  # Replace 'nexus.codehaus.org' from '.m2/settings.xml' in Travis (see https://github.com/travis-ci/travis-ci/issues/4629#issuecomment-131214465)
   - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
 
 script:
+  # Build and test with code coverage
   - mvn -B jacoco:prepare-agent install jacoco:report-aggregate
 
 after_success:
+  # Publish code coverage in CodeCov
   - bash <(curl -s https://codecov.io/bash)
+  # Publish Javadoc in Github # gh-pages
   - bash .util/publish_javadoc.sh
+  # Publish snapshot in Maven central
   - bash .util/publish_snapshot.sh
+  # Publish update-site in Github # gh-pages
   - bash .util/publish_eclipse.sh
 
 notifications:
