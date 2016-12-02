@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-        <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
+        <artifactId>neoemf-eclipse</artifactId>
         <version>1.0.0</version>
     </parent>
 
