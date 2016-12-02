@@ -15,6 +15,10 @@ branches:
   only:
     - master
 
+# Remove 'nexus.codehaus.org' from '.m2/settings.xml' in Travis
+before_install:
+  - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
+
 script:
   - mvn -B jacoco:prepare-agent install jacoco:report-aggregate
 
