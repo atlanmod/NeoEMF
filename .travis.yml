@@ -29,11 +29,11 @@ script:
 after_success:
   # Publish code coverage in CodeCov
   - bash <(curl -s https://codecov.io/bash)
-  # Publish Javadoc in Github # gh-pages
+  # Publish Javadoc in Github
   - bash .util/publish_javadoc.sh
   # Publish snapshot in Maven central
   - bash .util/publish_snapshot.sh
-  # Publish update-site in Github # gh-pages
+  # Publish update-site in Github
   - bash .util/publish_eclipse.sh
 
 notifications:
