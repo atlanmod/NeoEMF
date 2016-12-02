@@ -6,10 +6,12 @@
         <groupId>fr.inria.atlanmod.neoemf</groupId>
         <artifactId>neoemf-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
     <artifactId>benchmarks-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 

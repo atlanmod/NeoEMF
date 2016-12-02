@@ -8,11 +8,12 @@
         <groupId>fr.inria.atlanmod.neoemf</groupId>
         <artifactId>neoemf-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../..</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
     <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
