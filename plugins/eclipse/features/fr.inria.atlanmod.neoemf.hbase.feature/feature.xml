@@ -2,7 +2,7 @@
 <feature
         id="fr.inria.atlanmod.neoemf.hbase.feature"
         label="NeoEMF HBase : Adapter"
-        version="1.0.0.qualifier">
+        version="1.0.0">
 
     <description url="http://www.example.com/description">
         The NeoEMF Core component (store logic and utils, no implementation provided)
@@ -10,7 +10,7 @@
 
     <includes
             id="fr.inria.atlanmod.neoemf.core.feature"
-            version="1.0.0.qualifier" />
+            version="1.0.0" />
 
     <plugin
             id="fr.inria.atlanmod.neoemf.hbase"

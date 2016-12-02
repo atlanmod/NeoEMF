@@ -2,7 +2,7 @@
 <feature
         id="fr.inria.atlanmod.neoemf.io.feature"
         label="NeoEMF IO Module"
-        version="1.0.0.qualifier">
+        version="1.0.0">
 
     <description url="http://www.example.com/description">
         NeoEMF IO Module: Efficient model importer/exporter
@@ -10,7 +10,7 @@
 
     <includes
             id="fr.inria.atlanmod.neoemf.core.feature"
-            version="1.0.0.qualifier" />
+            version="1.0.0" />
 
     <plugin
             id="fr.inria.atlanmod.neoemf.io"
