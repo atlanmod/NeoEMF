@@ -55,9 +55,7 @@ else
 
     cp -Rf ${TEMP_DIR} ${API_DIR}
 
-    git add -f .
-
-    if ! [ $(git diff --exit-code --quiet) ]; then
+    if ! [ $(git diff --cached --exit-code --quiet) ]; then
         echo -e "Skipping update-site publication: no change."
         exit
     fi
@@ -66,6 +64,7 @@ else
 
     echo -e "Publishing update-site..."
 
+    git add -f .
     git commit --quiet -m "[auto] update the update-site from Travis build $TRAVIS_BUILD_NUMBER"
     git push --quiet -f origin gh-pages
 
