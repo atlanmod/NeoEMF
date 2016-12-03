@@ -55,6 +55,8 @@ else
 
     cp -rf ${TEMP_DIR} ${API_DIR}
 
+    git add -Af .
+
     echo -e "Checking for differences..."
 
     echo -e "$(git status)"
@@ -66,7 +68,6 @@ else
 
     echo -e "Publishing Javadoc..."
 
-    git add -f .
     git commit --quiet -m "[auto] update the Javadoc from Travis build $TRAVIS_BUILD_NUMBER"
     git push --quiet -f origin gh-pages
 
