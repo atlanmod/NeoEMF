@@ -55,7 +55,11 @@ else
 
     cp -rf ${TEMP_DIR} ${API_DIR}
 
-    if ! git diff --quiet; then
+    echo -e "Checking for differences..."
+
+    echo -e "$(git status)"
+
+    if [ -z "$(git status --porcelain)" ]; then
         echo -e "Skipping update-site publication: no change."
         exit
     fi
