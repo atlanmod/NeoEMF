@@ -101,7 +101,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public void close() {
-        graph.shutdown();
+        try {
+            graph.shutdown();
+        }
+        catch (Exception e) {
+            NeoLogger.warn(e);
+        }
         isClosed = true;
     }
 

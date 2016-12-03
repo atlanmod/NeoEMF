@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.cache.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ClassInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.store.info.ContainerInfo;
 import fr.inria.atlanmod.neoemf.map.datastore.store.serializer.FeatureKeySerializer;
@@ -96,7 +97,12 @@ public class MapPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public void close() {
-        db.close();
+        try {
+            db.close();
+        }
+        catch (Exception e) {
+            NeoLogger.warn(e);
+        }
     }
 
     @Override
