@@ -54,19 +54,16 @@ else
     fi
 
     cp -rf ${TEMP_DIR} ${API_DIR}
+    cp ${HOME}/gh-pages/updatesite/index.html ${API_DIR}/index.html
 
-    git add -Af .
+    git add -Af
 
     echo -e "Checking for differences..."
-
-    echo -e "$(git status)"
 
     if [ -z "$(git status --porcelain)" ]; then
         echo -e "Skipping update-site publication: no change."
         exit
     fi
-
-    cp ${HOME}/gh-pages/updatesite/index.html ${API_DIR}/index.html
 
     echo -e "Publishing update-site..."
 

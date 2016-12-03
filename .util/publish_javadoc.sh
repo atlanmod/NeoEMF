@@ -55,11 +55,9 @@ else
 
     cp -rf ${TEMP_DIR} ${API_DIR}
 
-    git add -Af .
+    git add -Af
 
     echo -e "Checking for differences..."
-
-    echo -e "$(git status)"
 
     if [ -z "$(git status --porcelain)" ]; then
         echo -e "Skipping Javadoc publication: no change."
