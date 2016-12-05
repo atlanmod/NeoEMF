@@ -26,7 +26,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
@@ -52,7 +52,7 @@ public abstract class AllBackendTest extends AllTest {
     public void setUp() throws Exception {
         assertThat(ePackage).isNotNull(); // "EPackage not set"
         String className = getClass().getSimpleName();
-        String timestamp = String.valueOf(new Date().getTime());
+        String timestamp = String.valueOf(Instant.now().toEpochMilli());
         mapFile = temporaryFolder.getRoot().toPath().resolve(className + "MapDB" + timestamp).toFile();
         neo4jFile = temporaryFolder.getRoot().toPath().resolve(className + "Neo4j" + timestamp).toFile();
         tinkerFile = temporaryFolder.getRoot().toPath().resolve(className + "Tinker" + timestamp).toFile();

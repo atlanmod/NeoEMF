@@ -33,8 +33,8 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
@@ -58,7 +58,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
         persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
 
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + new Date().getTime()).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + Instant.now().toEpochMilli()).toFile();
         resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         resource = resSet.createResource(BlueprintsURI.createFileURI(testFile));

@@ -44,8 +44,8 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +80,7 @@ public class ImportTest extends AllInputTest {
 
     @Before
     public void setUp() throws Exception {
-        String timestamp = String.valueOf(new Date().getTime());
+        String timestamp = String.valueOf(Instant.now().toEpochMilli());
         neo4jFile = temporaryFolder.getRoot().toPath().resolve("import-Neo4j" + timestamp).toFile();
 
         testedObjects = new HashSet<>();

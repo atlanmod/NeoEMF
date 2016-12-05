@@ -34,7 +34,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
@@ -53,7 +53,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     public void setUp() {
         persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + Instant.now().toEpochMilli()).toFile();
     }
 
     @After

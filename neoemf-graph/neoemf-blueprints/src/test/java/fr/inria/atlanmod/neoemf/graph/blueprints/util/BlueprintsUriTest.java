@@ -27,7 +27,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
@@ -48,7 +48,7 @@ public class BlueprintsUriTest extends AllTest {
     public void setUp() {
         PersistenceBackendFactoryRegistry.unregisterAll();
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + new Date().getTime()).toFile();
+        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + Instant.now().toEpochMilli()).toFile();
     }
 
     @After
