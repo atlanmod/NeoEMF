@@ -1,6 +1,6 @@
 NeoEMF
 ======
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf) [![Build Status](https://travis-ci.org/atlanmod/NeoEMF.svg?branch=master)](https://travis-ci.org/atlanmod/NeoEMF) [![codecov](https://codecov.io/gh/atlanmod/NeoEMF/branch/master/graph/badge.svg)](https://codecov.io/gh/atlanmod/NeoEMF) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/09db963ce9104e7f9bbf87c11057d75b)](https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.org/atlanmod/NeoEMF.svg?branch=master)](https://travis-ci.org/atlanmod/NeoEMF) [![codecov](https://codecov.io/gh/atlanmod/NeoEMF/branch/master/graph/badge.svg)](https://codecov.io/gh/atlanmod/NeoEMF) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/09db963ce9104e7f9bbf87c11057d75b)](https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf)
 
 ## What is NeoEMF?
 
@@ -34,6 +34,29 @@ Additionally NeoEMF can be plugged with several persistence solutions (for the m
 
 In addition, NeoEMF provides a query API to perform optimized OCL queries over models and reify the results as navigable models.
 
+## Use
+
+### Latest release
+
+The most recent release is NeoEMF 1.0.0, released December 06, 2016.
+- Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
+- Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
+
+To add a dependency on NeoEMF using Maven, use the following:
+```xml
+<dependency>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+### Snapshots
+
+Snapshots are automatically build from the `master` and are available throught Maven using `1.0.1-SNAPSHOT`.
+- Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/)
+- Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/)
+
 ## Installation
 
 ### Update site
@@ -52,22 +75,22 @@ It is then possible to install NeoEMF from the local built update-site, or by im
 ## Build
 
 ### NeoEMF
-Download the latest release [here](https://github.com/atlanmod/NeoEMF/archive/master.zip) and unzip it.
+Download the latest release [here](https://github.com/atlanmod/NeoEMF/releases/latest) and unzip it.
 Go to the root of the extracted directory and run the following command:
-    
-    mvn clean install
-
+```bash
+mvn clean install
+```
 This will build NeoEMF core components and database specific implementations.
 
 _(optional)_ You can also run the tests by using :
-
-    mvn test (-pl <core|map|graph>)
-
+```bash
+mvn test (-pl <core|map|graph>)
+```
 ### NeoEMF : Eclipse plugin
 To build NeoEMF Eclipse plugin, you need to run the following command:
-
-    mvn clean install -f plugins/eclipse
-
+```bash
+mvn clean install -f plugins/eclipse
+```
 NeoEMF plugins and update-site are built and stored in your local m2 repository at (`.m2/fr/inria/atlanmod/neoemf`).
 
 ## Opening in your IDE
