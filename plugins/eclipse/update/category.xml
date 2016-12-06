@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-    <feature url="features/fr.inria.atlanmod.neoemf.core.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.core.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.core.feature_1.0.0.jar"
+             id="fr.inria.atlanmod.neoemf.core.feature" version="1.0.0">
         <category name="Base" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.graph.blueprints.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.feature_1.0.0.jar"
+             id="fr.inria.atlanmod.neoemf.graph.blueprints.feature" version="1.0.0">
         <category name="Backends" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature_1.0.0.jar"
+             id="fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature" version="1.0.0">
         <category name="Backends" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.map.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.map.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.map.feature_1.0.0.jar"
+             id="fr.inria.atlanmod.neoemf.map.feature" version="1.0.0">
         <category name="Backends" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.io.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.io.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.io.feature_1.0.0.jar"
+             id="fr.inria.atlanmod.neoemf.io.feature" version="1.0.0">
         <category name="Utilities" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.hbase.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.hbase.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.hbase.feature_1.0.0.jar"
+             id="fr.inria.atlanmod.neoemf.hbase.feature" version="1.0.0">
         <category name="Backends" />
     </feature>
     <category-def name="Base" label="Base">
