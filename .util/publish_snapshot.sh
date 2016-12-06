@@ -29,7 +29,7 @@ else
 
     echo "Publishing Maven snapshot..."
 
-    mvn -B -q clean source:jar-no-fork javadoc:jar install deploy --settings=".util/settings.xml" -DcreateChecksum -DskipTests
+    mvn -B -q clean source:jar-no-fork javadoc:jar install deploy --settings=".util/settings.xml" -DskipTests
 
     echo "Maven snapshot published."
 fi
