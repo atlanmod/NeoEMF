@@ -14,15 +14,15 @@ package fr.inria.atlanmod.neoemf.map.datastore.store;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.datastore.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.datastore.structure.ClassInfo;
+import fr.inria.atlanmod.neoemf.datastore.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.datastore.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackend;
-import fr.inria.atlanmod.neoemf.map.datastore.store.info.ClassInfo;
-import fr.inria.atlanmod.neoemf.map.datastore.store.info.ContainerInfo;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EAttribute;

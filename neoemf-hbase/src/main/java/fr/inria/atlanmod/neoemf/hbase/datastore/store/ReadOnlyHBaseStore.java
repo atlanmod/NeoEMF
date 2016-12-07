@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.hbase.datastore.store;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.cache.FeatureKey;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.datastore.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.hbase.datastore.store.cache.HBaseFeatureKey;
 import fr.inria.atlanmod.neoemf.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
