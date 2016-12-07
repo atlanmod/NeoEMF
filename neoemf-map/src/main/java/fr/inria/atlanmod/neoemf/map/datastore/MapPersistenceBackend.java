@@ -110,10 +110,6 @@ public class MapPersistenceBackend extends AbstractPersistenceBackend {
         db.commit();
     }
 
-    public DB.HashMapMaker<?, ?> hashMapMaker(String aString) {
-        return db.hashMap(aString);
-    }
-
     public Map<String, Object> getAll() {
         return db.getAll();
     }

@@ -55,7 +55,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                 }
             }
             else {
-                Vertex vertex = persistenceBackend.getVertex(object);
+                Vertex vertex = persistenceBackend.getVertex(object.id());
                 Integer size = getSize(vertex, eReference);
                 Object[] vertices = new Object[size];
                 verticesCache.put(key, vertices);
