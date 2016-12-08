@@ -20,17 +20,17 @@ import java.text.MessageFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public final class NeoLogger {
 
     private static final Logger log = LogManager.getRootLogger();
 
-    private static final ExecutorService pool = Executors.newSingleThreadExecutor();
-
-    static {
-        MoreExecutors.addDelayedShutdownHook(pool, 1, TimeUnit.MILLISECONDS);
-    }
+    // Need to use Executors.newFixedThreadPool(1) because newSingleThreadExecutor cannot
+    // be casted to ThreadPoolExecutor
+    private static final ExecutorService pool = MoreExecutors.getExitingExecutorService(
+            (ThreadPoolExecutor) Executors.newFixedThreadPool(1), 1, TimeUnit.MILLISECONDS);
 
     public static void debug(String msg) {
         exec(() -> log.debug(msg));
