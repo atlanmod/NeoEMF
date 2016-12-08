@@ -12,9 +12,17 @@
 package fr.inria.atlanmod.neoemf.datastore.structure;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+
+import org.eclipse.emf.ecore.EReference;
 
 import java.io.Serializable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ *
+ */
 public class ContainerInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,9 +31,13 @@ public class ContainerInfo implements Serializable {
 
     private final String name;
 
-    public ContainerInfo(Id id, String name) {
-        this.id = id;
-        this.name = name;
+    protected ContainerInfo(Id id, String name) {
+        this.id = checkNotNull(id);
+        this.name = checkNotNull(name);
+    }
+
+    public static ContainerInfo from(PersistentEObject eObject, EReference eReference) {
+        return new ContainerInfo(eObject.id(), eReference.getName());
     }
 
     public Id id() {

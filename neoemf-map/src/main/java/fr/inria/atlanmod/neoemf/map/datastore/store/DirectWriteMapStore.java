@@ -302,7 +302,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
         if (eReference.isContainment()) {
             ContainerInfo info = persistenceBackend.containerFor(referencedObject.id());
             if (isNull(info) || !Objects.equals(info.id(), object.id())) {
-                persistenceBackend.storeContainer(referencedObject.id(), new ContainerInfo(object.id(), eReference.getName()));
+                persistenceBackend.storeContainer(referencedObject.id(), ContainerInfo.from(object, eReference));
             }
         }
     }
@@ -310,7 +310,7 @@ public class DirectWriteMapStore extends AbstractDirectWriteStore<MapPersistence
     protected void updateInstanceOf(PersistentEObject object) {
         ClassInfo info = persistenceBackend.metaclassFor(object.id());
         if (isNull(info)) {
-            persistenceBackend.storeMetaclass(object.id(), new ClassInfo(object));
+            persistenceBackend.storeMetaclass(object.id(), ClassInfo.from(object));
         }
     }
 

@@ -18,28 +18,35 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Memento class for storing metaclass/EClass information.
+ * Memento class for storing metaclass/{@link EClass} information.
  */
 public class ClassInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String uri;
-
     private final String name;
 
-    public ClassInfo(PersistentEObject object) {
-        this.uri = object.eClass().getEPackage().getNsURI();
-        this.name = object.eClass().getName();
+    private final String uri;
+
+    protected ClassInfo(String name, String uri) {
+        this.name = checkNotNull(name);
+        this.uri = checkNotNull(uri);
     }
 
-    public String uri() {
-        return uri;
+    public static ClassInfo from(PersistentEObject object) {
+        final EClass eClass = object.eClass();
+        return new ClassInfo(eClass.getName(), eClass.getEPackage().getNsURI());
     }
 
     public String name() {
         return name;
+    }
+
+    public String uri() {
+        return uri;
     }
 
     /**
