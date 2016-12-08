@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.datastore.store;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.cache.FeatureKey;
+import fr.inria.atlanmod.neoemf.datastore.structure.FeatureKey;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;

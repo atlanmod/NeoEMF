@@ -157,26 +157,27 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return indexHits;
     }
 
+    /**
+     * Builds the {@link Id} used to identify {@link EClass} {@link Vertex}es.
+     */
+    private static Id buildId(EClass eClass) {
+        return isNull(eClass) ? null : new StringId(eClass.getName() + '@' + eClass.getEPackage().getNsURI());
+    }
+
+    /**
+     * Create a new vertex, add it to the graph, and return the newly created vertex.
+     *
+     * @param id the identifier of the {@link Vertex}
+     *
+     * @return the newly created vertex
+     */
     public Vertex addVertex(Id id) {
         return graph.addVertex(id.toString());
     }
 
     /**
-     * Create a new vertex, add it to the graph, and return the newly created
-     * vertex. The issued {@link EObject} is used to calculate the {@link Vertex} {@code id}.
-     *
-     * @param eObject The corresponding {@link EObject}
-     *
-     * @return the newly created vertex
-     */
-    private Vertex addVertex(EObject eObject) {
-        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
-        return addVertex(persistentEObject.id());
-    }
-
-    /**
-     * Create a new vertex, add it to the graph, and return the newly created
-     * vertex. The issued {@link EClass} is used to calculate the {@link Vertex} {@code id}.
+     * Create a new vertex, add it to the graph, and return the newly created vertex. The issued {@link EClass} is used
+     * to calculate the {@link Vertex} {@code id}.
      *
      * @param eClass The corresponding {@link EClass}
      *
@@ -189,28 +190,19 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return vertex;
     }
 
-    public Vertex getVertex(Id id) {
-        return graph.getVertex(id.toString());
-    }
-
     /**
-     * Return the vertex corresponding to the provided {@link EObject}. If no
-     * vertex corresponds to that {@link EObject}, then return {@code null}.
+     * Returns the vertex corresponding to the provided {@code id}. If no vertex corresponds to that {@code id}, then
+     * return {@code null}.
      *
      * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
-    public Vertex getVertex(EObject eObject) {
-        Vertex vertex = null;
-        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
-        if (persistentEObject.isMapped()) {
-            vertex = getMappedVertex(persistentEObject.id());
-        }
-        return vertex;
+    public Vertex getVertex(Id id) {
+        return verticesCache.get(id, key -> graph.getVertex(key.toString()));
     }
 
     /**
-     * Returns the vertex corresponding to the provided {@link EClass}. If no
-     * vertex corresponds to that {@link EClass}, then return {@code null}.
+     * Returns the vertex corresponding to the provided {@link EClass}. If no vertex corresponds to that {@link EClass},
+     * then return {@code null}.
      *
      * @return the vertex referenced by the provided {@link EClass} or {@code null} when no such vertex exists
      */
@@ -219,46 +211,18 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Return the vertex corresponding to the provided {@link EObject}. If no
-     * vertex corresponds to that {@link EObject}, then the corresponding
-     * {@link Vertex} together with its {@code INSTANCE_OF} relationship is created.
+     * Return the vertex corresponding to the provided {@link EObject}. If no vertex corresponds to that {@link EObject},
+     * then the corresponding {@link Vertex} together with its {@link #KEY_INSTANCE_OF} relationship is created.
      *
      * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
-    public Vertex getOrCreateVertex(EObject eObject) {
+    public Vertex getOrCreateVertex(PersistentEObject eObject) {
         Vertex vertex;
-        PersistentEObject persistentEObject = PersistentEObject.from(eObject);
-        if (persistentEObject.isMapped()) {
-            vertex = getMappedVertex(persistentEObject.id());
+        if (eObject.isMapped()) {
+            vertex = getVertex(eObject.id());
         }
         else {
-            vertex = createVertex(persistentEObject);
-        }
-        return vertex;
-    }
-
-    private Vertex createVertex(final PersistentEObject persistentEObject) {
-        Vertex vertex = addVertex(persistentEObject);
-        EClass eClass = persistentEObject.eClass();
-
-        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, eClass.getName()), null);
-        if (isNull(eClassVertex)) {
-            eClassVertex = addVertex(eClass);
-            metaclassIndex.put(KEY_NAME, eClass.getName(), eClassVertex);
-            indexedEClasses.add(eClass);
-        }
-        vertex.addEdge(KEY_INSTANCE_OF, eClassVertex);
-        setMappedVertex(vertex, persistentEObject);
-        return vertex;
-    }
-
-    private Vertex getMappedVertex(Id id) {
-        Vertex vertex = null;
-        try {
-            vertex = verticesCache.get(id, this::getVertex);
-        }
-        catch (Exception e) {
-            NeoLogger.error(e);
+            vertex = createVertex(eObject);
         }
         return vertex;
     }
@@ -302,15 +266,19 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return persistentEObject;
     }
 
-    public PersistentEObject reifyVertex(Vertex vertex) {
-        return reifyVertex(vertex, null);
-    }
+    private Vertex createVertex(PersistentEObject persistentEObject) {
+        Vertex vertex = addVertex(persistentEObject.id());
+        EClass eClass = persistentEObject.eClass();
 
-    /**
-     * Builds the {@code id} used to identify {@link EClass} {@link Vertex}es.
-     */
-    private Id buildId(EClass eClass) {
-        return isNull(eClass) ? null : new StringId(eClass.getName() + '@' + eClass.getEPackage().getNsURI());
+        Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, eClass.getName()), null);
+        if (isNull(eClassVertex)) {
+            eClassVertex = addVertex(eClass);
+            metaclassIndex.put(KEY_NAME, eClass.getName(), eClassVertex);
+            indexedEClasses.add(eClass);
+        }
+        vertex.addEdge(KEY_INSTANCE_OF, eClassVertex);
+        setMappedVertex(vertex, persistentEObject);
+        return vertex;
     }
 
     /**
