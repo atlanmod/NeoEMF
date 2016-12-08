@@ -67,13 +67,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
-    /**
-     * This {@link Cache}&lt;objectID, {@link EObject}&gt; is necessary to maintain a registry of the already loaded
-     * {@link Vertex}es, to avoid duplicated {@link EObject}s in memory.
-     * <p/>
-     * We use a weak key cache for saving memory. When the value {@link EObject} is no longer referenced and can be
-     * garbage collected it is removed from the {@link Cache}.
-     */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
     private final Cache<Id, Vertex> verticesCache;
     private final List<EClass> indexedEClasses;
