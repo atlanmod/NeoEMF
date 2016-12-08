@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.logging;
 
 import com.google.common.util.concurrent.MoreExecutors;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,65 +28,75 @@ public final class NeoLogger {
 
     private static final Logger log = LogManager.getRootLogger();
 
-    // Need to use Executors.newFixedThreadPool(1) because newSingleThreadExecutor cannot
-    // be casted to ThreadPoolExecutor
     private static final ExecutorService pool = MoreExecutors.getExitingExecutorService(
-            (ThreadPoolExecutor) Executors.newFixedThreadPool(1), 1, TimeUnit.MILLISECONDS);
+            (ThreadPoolExecutor) Executors.newFixedThreadPool(1),
+            1, TimeUnit.MILLISECONDS);
 
     public static void debug(String msg) {
-        exec(() -> log.debug(msg));
+        logMessage(Level.DEBUG, null, msg);
     }
 
     public static void debug(String pattern, Object... args) {
-        exec(() -> log.debug(MessageFormat.format(pattern, args)));
+        logMessage(Level.DEBUG, null, pattern, args);
     }
 
     public static void info(String msg) {
-        exec(() -> log.info(msg));
+        logMessage(Level.INFO, null, msg);
     }
 
     public static void info(String pattern, Object... args) {
-        exec(() -> log.info(MessageFormat.format(pattern, args)));
+        logMessage(Level.INFO, null, pattern, args);
     }
 
     public static void warn(String msg) {
-        exec(() -> log.warn(msg));
+        logMessage(Level.WARN, null, msg);
     }
 
     public static void warn(String pattern, Object... args) {
-        exec(() -> log.warn(MessageFormat.format(pattern, args)));
+        logMessage(Level.WARN, null, pattern, args);
     }
 
     public static void warn(Throwable e) {
-        exec(() -> log.warn(e));
+        logMessage(Level.WARN, e, null);
+    }
+
+    public static void warn(Throwable e, String msg) {
+        logMessage(Level.WARN, e, msg);
     }
 
     public static void warn(Throwable e, String pattern, Object... args) {
-        exec(() -> log.warn(MessageFormat.format(pattern, args), e));
+        logMessage(Level.WARN, e, pattern, args);
     }
 
     public static void error(String msg) {
-        exec(() -> log.error(msg));
+        logMessage(Level.ERROR, null, msg);
     }
 
     public static void error(String pattern, Object... args) {
-        exec(() -> log.error(MessageFormat.format(pattern, args)));
+        logMessage(Level.ERROR, null, pattern, args);
     }
 
     public static void error(Throwable e) {
-        exec(() -> log.error(e));
+        logMessage(Level.ERROR, e, null);
+    }
+
+    public static void error(Throwable e, String msg) {
+        logMessage(Level.ERROR, e, msg);
     }
 
     public static void error(Throwable e, String pattern, Object... args) {
-        exec(() -> log.error(MessageFormat.format(pattern, args), e));
+        logMessage(Level.ERROR, e, pattern, args);
     }
 
-    private static void exec(Runnable runnable) {
+    private static void logMessage(Level level, Throwable throwable, String pattern, Object... args) {
+        Runnable loggerCall = () -> log.log(level, () -> MessageFormat.format(pattern, args), throwable);
         try {
-            pool.submit(runnable);
+            // Asynchronous call
+            pool.submit(loggerCall);
         }
         catch (RejectedExecutionException e) {
-            runnable.run();
+            // Synchronous call
+            loggerCall.run();
         }
     }
 }
