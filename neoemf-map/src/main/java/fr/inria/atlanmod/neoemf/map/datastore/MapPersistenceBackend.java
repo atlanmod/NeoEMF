@@ -11,6 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.map.datastore;
 
+import java.util.Map;
+
+import org.mapdb.DB;
+import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
+
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.datastore.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.datastore.structure.ClassInfo;
@@ -21,12 +27,6 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.map.datastore.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.map.datastore.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.map.datastore.serializer.MultivaluedFeatureKeySerializer;
-
-import org.mapdb.DB;
-import org.mapdb.HTreeMap;
-import org.mapdb.Serializer;
-
-import java.util.Map;
 
 public class MapPersistenceBackend extends AbstractPersistenceBackend {
 
