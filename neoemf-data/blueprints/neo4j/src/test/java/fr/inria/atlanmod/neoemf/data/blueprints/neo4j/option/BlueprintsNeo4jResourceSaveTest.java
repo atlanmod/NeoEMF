@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceSaveTes
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -27,8 +26,6 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
 
-    private static final String TEST_FILENAME = "graphNeo4jResourceSaveOptionTestFile";
-
     /**
      * Used to verify a property added by Blueprints during the graph creation
      */
@@ -38,13 +35,6 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * Number of properties for an empty Neo4j instance (with no option provided)
      */
     private static final int DEFAULT_PROPERTY_COUNT = 3;
-
-    @Override
-    @Before
-    public void setUp() {
-        this.testFilePath = TEST_FILENAME;
-        super.setUp();
-    }
 
     @Test
     public void testSaveGraphNeo4jResourceNeo4jTypeOption() throws IOException, ConfigurationException {

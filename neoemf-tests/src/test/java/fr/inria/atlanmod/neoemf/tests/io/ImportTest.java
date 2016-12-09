@@ -38,13 +38,10 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -56,10 +53,7 @@ import static java.util.Objects.isNull;
 
 public class ImportTest extends AllInputTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    private File neo4jFile;
+    private File testFile;
 
     private HashSet<Object> testedObjects;
     private HashSet<EStructuralFeature> testedFeatures;
@@ -80,8 +74,7 @@ public class ImportTest extends AllInputTest {
 
     @Before
     public void setUp() throws Exception {
-        String timestamp = String.valueOf(Instant.now().toEpochMilli());
-        neo4jFile = temporaryFolder.getRoot().toPath().resolve("import-Neo4j" + timestamp).toFile();
+        testFile = tempFile("Neo4j");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();
@@ -377,7 +370,7 @@ public class ImportTest extends AllInputTest {
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(neo4jFile));
+        Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(testFile));
         resource.load(BlueprintsNeo4jOptionsBuilder.newBuilder().asMap());
 
         return resource.getContents().get(0);
@@ -389,6 +382,6 @@ public class ImportTest extends AllInputTest {
                 .noCache()
                 .asMap();
 
-        return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
+        return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(testFile, options);
     }
 }

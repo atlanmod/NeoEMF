@@ -11,14 +11,25 @@
 
 package fr.inria.atlanmod.neoemf;
 
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+
 public abstract class AllTest {
 
     private static final int MB = 1024 * 1024;
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -65,5 +76,18 @@ public abstract class AllTest {
 
     private String formatMemoryUsage(String msg, long value) {
         return String.format("   %-12s  :  %4d", msg, value);
+    }
+
+    protected File tempFile(String name) {
+        File file =  temporaryFolder.getRoot().toPath().resolve(getClass().getSimpleName() + name + String.valueOf(Instant.now().toEpochMilli())).toFile();
+
+        try {
+            FileUtils.forceDeleteOnExit(file);
+        }
+        catch (IOException e) {
+            NeoLogger.warn(e);
+        }
+
+        return file;
     }
 }

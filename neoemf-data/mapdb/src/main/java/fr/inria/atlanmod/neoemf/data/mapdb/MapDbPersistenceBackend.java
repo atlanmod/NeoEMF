@@ -202,7 +202,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
                 toMap.putAll(fromMap);
             }
             else {
-                throw new UnsupportedOperationException("Cannot copy Map backend: store type " + collection.getClass().getSimpleName() + " is not supported");
+                throw new UnsupportedOperationException("Cannot copy MapDB backend: store type " + collection.getClass().getSimpleName() + " is not supported");
             }
         }
     }

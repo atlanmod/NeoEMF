@@ -25,71 +25,38 @@ import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Instant;
 import java.util.Map;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
-    private static final String TEST_FILENAME = "mapPersistenceBackendFactoryTest";
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-    private File testFolder;
     private File testFile;
 
-    private PersistenceBackendFactory persistenceBackendFactory;
+    private PersistenceBackendFactory persistenceBackendFactory = MapDbPersistenceBackendFactory.getInstance();
 
     @Before
     public void setUp() {
-        persistenceBackendFactory = MapDbPersistenceBackendFactory.getInstance();
         PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, persistenceBackendFactory);
-        testFolder = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + Instant.now().toEpochMilli()).toFile();
-        try {
-            Files.createDirectories(testFolder.toPath());
-        }
-        catch (IOException e) {
-            NeoLogger.error(e);
-        }
-        testFile = new File(testFolder + "/db");
+        testFile = tempFile("MapDb");
     }
 
     @After
     public void tearDown() {
         PersistenceBackendFactoryRegistry.unregisterAll();
-
-        temporaryFolder.delete();
-
-        if (temporaryFolder.getRoot().exists()) {
-            try {
-                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            }
-            catch (IOException e) {
-                NeoLogger.warn(e);
-            }
-        }
-
-        testFolder = null;
-        testFile = null;
     }
 
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend transientBackend = persistenceBackendFactory.createTransientBackend();
         assertThat(transientBackend).isInstanceOf(MapDbPersistenceBackend.class); // "Invalid backend created"
+
         // TODO Need to test further the nature of the MapDB engine
     }
 
@@ -107,6 +74,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     public void testCreatePersistentBackendNoOption() throws InvalidDataStoreException {
         PersistenceBackend persistentBackend = persistenceBackendFactory.createPersistentBackend(testFile, MapDbOptionsBuilder.newBuilder().asMap());
         assertThat(persistentBackend).isInstanceOf(MapDbPersistenceBackend.class); // "Invalid backend created"
+
         // TODO Need to test further the nature of the MapDB engine
     }
 

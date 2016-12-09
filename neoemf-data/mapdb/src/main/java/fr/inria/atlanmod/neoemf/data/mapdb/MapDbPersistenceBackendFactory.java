@@ -62,7 +62,7 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
         checkArgument(backend instanceof MapDbPersistenceBackend,
-                "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
+                "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
         PersistentStore eStore = null;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
@@ -120,7 +120,7 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
         checkArgument(backend instanceof MapDbPersistenceBackend,
-                "Trying to create a Map-based EStore with an invalid backend: " + backend.getClass().getName());
+                "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
         return new DirectWriteMapDbStore(resource, (MapDbPersistenceBackend) backend);
     }

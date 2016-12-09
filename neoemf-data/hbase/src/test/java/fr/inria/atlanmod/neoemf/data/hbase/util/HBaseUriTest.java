@@ -9,12 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.util;
+package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.After;
@@ -25,18 +25,18 @@ import java.io.File;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class BlueprintsUriTest extends AllTest {
+public class HBaseUriTest extends AllTest {
 
     private static final String SCHEME_INVALID = "invalid";
 
-    private final PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
+    private final PersistenceBackendFactory persistenceBackendFactory = HBasePersistenceBackendFactory.getInstance();
 
     private File testFile;
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = tempFile("Blueprints");
+        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, persistenceBackendFactory);
+        testFile = tempFile("HBase");
     }
 
     @After
@@ -46,27 +46,27 @@ public class BlueprintsUriTest extends AllTest {
 
     @Test
     public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(BlueprintsURI.SCHEME + ":/test");
-        URI neoURI = BlueprintsURI.createURI(validURI);
-        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
+        URI validURI = URI.createURI(HBaseURI.SCHEME + ":/test");
+        URI neoURI = HBaseURI.createURI(validURI);
+        assertThat(neoURI).hasScheme(HBaseURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoGraphURIFromFileURI() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = BlueprintsURI.createURI(fileURI);
-        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
+        URI neoURI = HBaseURI.createURI(fileURI);
+        assertThat(neoURI).hasScheme(HBaseURI.SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFile() {
-        URI neoURI = BlueprintsURI.createFileURI(testFile);
-        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
+        URI neoURI = HBaseURI.createFileURI(testFile);
+        assertThat(neoURI).hasScheme(HBaseURI.SCHEME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
         URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
-        BlueprintsURI.createURI(invalidURI);
+        HBaseURI.createURI(invalidURI);
     }
 }

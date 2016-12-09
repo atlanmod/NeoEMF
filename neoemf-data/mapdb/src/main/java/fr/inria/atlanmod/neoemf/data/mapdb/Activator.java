@@ -29,11 +29,11 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext bundleContext) throws Exception {
         context = bundleContext;
-        NeoLogger.info("NeoEMF Map plugin started");
+        NeoLogger.info("NeoEMF MapDB plugin started");
         if (!PersistenceBackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
             PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME,
                     MapDbPersistenceBackendFactory.getInstance());
-            NeoLogger.info("Map persistence backend registered");
+            NeoLogger.info("MapDB persistence backend registered");
         }
     }
 

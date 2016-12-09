@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
+import org.junit.After;
 import org.junit.Before;
 
 import java.io.File;
@@ -36,8 +37,12 @@ public class AllXmiProcessorTest extends AllInputTest {
 
     @Before
     public void setUp() throws Exception {
-        Namespace.Registry.getInstance().clean();
         persistanceHandler = read(sample);
+    }
+
+    @After
+    public void tearDown() {
+        Namespace.Registry.getInstance().clean();
     }
 
     protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id, final String className, final boolean root) {

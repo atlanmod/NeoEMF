@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,8 +54,12 @@ public class PersistenceBackendFactoryTest extends AllTest {
         when(persistenceBackendFactory.createPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenCallRealMethod();
         when(persistenceBackendFactory.createSpecificPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mockPersistentStore);
 
-        PersistenceBackendFactoryRegistry.unregisterAll();
         PersistenceBackendFactoryRegistry.register(MOCK, persistenceBackendFactory);
+    }
+
+    @After
+    public void tearDown() {
+        PersistenceBackendFactoryRegistry.unregisterAll();
     }
 
     private PersistentStore getChildStore(EStore store) throws SecurityException, IllegalArgumentException {

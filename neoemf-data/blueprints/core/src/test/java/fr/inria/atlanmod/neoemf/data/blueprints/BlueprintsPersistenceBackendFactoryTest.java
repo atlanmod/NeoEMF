@@ -23,55 +23,31 @@ import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
 import java.util.Map;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
-    private static final String TEST_FILENAME = "graphPersistenceBackendFactoryTestFile";
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private File testFile;
 
-    private PersistenceBackendFactory persistenceBackendFactory;
+    private PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
 
     @Before
     public void setUp() {
-        persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(TEST_FILENAME + Instant.now().toEpochMilli()).toFile();
+        testFile = tempFile("Blueprints");
     }
 
     @After
     public void tearDown() {
         PersistenceBackendFactoryRegistry.unregisterAll();
-
-        temporaryFolder.delete();
-
-        if (temporaryFolder.getRoot().exists()) {
-            try {
-                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            }
-            catch (IOException e) {
-                NeoLogger.warn(e);
-            }
-        }
-
-        testFile = null;
     }
 
     @Test

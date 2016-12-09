@@ -12,28 +12,20 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.util.BlueprintsResourceBuilder;
 import fr.inria.atlanmod.neoemf.tests.util.MapResourceBuilder;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public abstract class AllBackendTest extends AllTest {
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     protected PersistentResource mapResource;
     protected PersistentResource neo4jResource;
@@ -51,11 +43,11 @@ public abstract class AllBackendTest extends AllTest {
     @Before
     public void setUp() throws Exception {
         assertThat(ePackage).isNotNull(); // "EPackage not set"
-        String className = getClass().getSimpleName();
-        String timestamp = String.valueOf(Instant.now().toEpochMilli());
-        mapFile = temporaryFolder.getRoot().toPath().resolve(className + "MapDB" + timestamp).toFile();
-        neo4jFile = temporaryFolder.getRoot().toPath().resolve(className + "Neo4j" + timestamp).toFile();
-        tinkerFile = temporaryFolder.getRoot().toPath().resolve(className + "Tinker" + timestamp).toFile();
+
+        mapFile = tempFile("MapDb");
+        neo4jFile = tempFile( "Neo4j");
+        tinkerFile = tempFile("Tinker");
+
         mapBuilder = new MapResourceBuilder(ePackage);
         blueprintsBuilder = new BlueprintsResourceBuilder(ePackage);
     }
@@ -79,14 +71,5 @@ public abstract class AllBackendTest extends AllTest {
         mapResource.close();
         neo4jResource.close();
         tinkerResource.close();
-
-        if (temporaryFolder.getRoot().exists()) {
-            try {
-                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            }
-            catch (IOException e) {
-                NeoLogger.warn(e);
-            }
-        }
     }
 }

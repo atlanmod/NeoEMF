@@ -16,24 +16,19 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -41,24 +36,20 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AllTest {
 
-    private static final String TEST_FILENAME = "graphResourceSaveOptionTestFile";
     protected final String configFileName = "/config.properties";
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-    protected String testFilePath = TEST_FILENAME;
     protected File testFile;
 
-    protected PersistenceBackendFactory persistenceBackendFactory;
+    protected PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
+
     protected ResourceSet resSet;
     protected Resource resource;
 
     @Before
     public void setUp() {
-        persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
-
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = temporaryFolder.getRoot().toPath().resolve(testFilePath + Instant.now().toEpochMilli()).toFile();
+        testFile = tempFile("Blueprints");
+
         resSet = new ResourceSetImpl();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         resource = resSet.createResource(BlueprintsURI.createFileURI(testFile));
@@ -69,19 +60,6 @@ public class BlueprintsResourceSaveTest extends AllTest {
         resource.unload();
         resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
         PersistenceBackendFactoryRegistry.unregisterAll();
-
-        temporaryFolder.delete();
-
-        if (temporaryFolder.getRoot().exists()) {
-            try {
-                FileUtils.forceDeleteOnExit(temporaryFolder.getRoot());
-            }
-            catch (IOException e) {
-                NeoLogger.warn(e);
-            }
-        }
-
-        testFile = null;
     }
 
     protected int getKeyCount(PropertiesConfiguration configuration) {
