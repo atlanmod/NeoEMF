@@ -12,8 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
@@ -30,17 +28,8 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
  */
 public class AllContainsTest extends AllBackendTest {
 
-    protected MapSampleFactory factory;
-
     protected SampleModel m;
     protected List<SampleModelContentObject> addedContent;
-
-    @Override
-    public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        ePackage = MapSamplePackage.eINSTANCE;
-        super.setUp();
-    }
 
     @Override
     public void tearDown() throws Exception {

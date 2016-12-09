@@ -93,17 +93,17 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     }
 
     private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.save(PersistenceOptionsBuilder.noOption());
         persistentResource.close();
-        persistentResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.load(PersistenceOptionsBuilder.noOption());
 
         allInstancesPersistent(persistentResource);
     }
 
     private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.save(PersistenceOptionsBuilder.noOption());
         persistentResource.close();
-        persistentResource.load(PersistenceOptionsBuilder.newBuilder().asMap());
+        persistentResource.load(PersistenceOptionsBuilder.noOption());
 
         allInstancesStrictPersistent(persistentResource);
     }

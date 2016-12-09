@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
 
@@ -28,13 +26,9 @@ public class EMapSupportTest extends AllBackendTest {
 
     private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
 
-    protected MapSampleFactory factory;
-
     @Override
     @Before
     public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
 
         createPersistentStores();

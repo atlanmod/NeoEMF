@@ -69,7 +69,7 @@ public class PersistenceBackendFactoryTest extends AllTest {
 
     @Test
     public void testNoOptions() throws InvalidDataStoreException, InvalidOptionsException {
-        PersistentStore store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, PersistenceOptionsBuilder.newBuilder().asMap());
+        PersistentStore store = persistenceBackendFactory.createPersistentStore(null, mockPersistentBackend, PersistenceOptionsBuilder.noOption());
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name

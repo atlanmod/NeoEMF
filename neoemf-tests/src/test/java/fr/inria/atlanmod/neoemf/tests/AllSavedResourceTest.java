@@ -11,16 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.junit.Before;
 
 public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
-
-    protected MapSampleFactory factory;
 
     protected SampleModel mapSampleModel;
     protected SampleModelContentObject mapSampleContentObject;
@@ -34,8 +30,6 @@ public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
     @Override
     @Before
     public void setUp() throws Exception {
-        this.factory = MapSampleFactory.eINSTANCE;
-        this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
         createPersistentStores();
 

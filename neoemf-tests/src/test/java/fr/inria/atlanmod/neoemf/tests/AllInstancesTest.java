@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
@@ -21,7 +20,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SpecializedPackContent;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Before;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
@@ -35,17 +33,6 @@ public abstract class AllInstancesTest extends AllBackendTest {
     protected static final int PACK_CONTENT_2_COUNT = 50;
     protected static final int ABSTRACT_PACK_CONTENT_STRICT_COUNT = 0;
     protected static final int PACK_CONTENT_STRICT_COUNT = 50;
-
-    protected MapSampleFactory factory;
-
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        this.ePackage = MapSamplePackage.eINSTANCE;
-        super.setUp();
-    }
 
     /**
      * Creates a Pack hierarchy containing 1 root, 5 sub-pack elements, 10

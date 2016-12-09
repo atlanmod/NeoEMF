@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
@@ -30,13 +28,9 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     private static final String MODEL_NAME = "Model", CONTENT1_NAME = "Content1", CONTENT2_NAME = "Content2";
 
-    protected MapSampleFactory factory;
-
     @Override
     @Before
     public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        this.ePackage = MapSamplePackage.eINSTANCE;
         super.setUp();
 
         createTransientStores();
@@ -63,7 +57,7 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     @Test
     public void testCopyBackendMapDB() throws IOException {
-        mapResource.save(PersistenceOptionsBuilder.newBuilder().asMap());
+        mapResource.save(PersistenceOptionsBuilder.noOption());
         assertThat(mapResource.getContents()).isNotEmpty(); // "Map resource content is empty"
         assertThat(mapResource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
 

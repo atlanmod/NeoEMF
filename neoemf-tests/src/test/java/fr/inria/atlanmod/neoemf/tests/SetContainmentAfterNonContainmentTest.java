@@ -11,43 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.junit.Test;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
- * Checks that adding a transient containment sub-tree to an
- * existing PersistentResource add all its elements to the
- * resource.
+ * Checks that adding a transient containment sub-tree to an existing {@link PersistentResource} add all its elements to
+ * the resource.
  */
 public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
 
-    @Test
-    public void testAddContainmentSubtreeToPersistentResourceMapDB() {
-        addContainmentSubtreeToPersistentResource(mapResource, DirectWriteMapDbStore.class);
-    }
-
-    @Test
-    public void testAddContainmentSubtreeToPersistentResourceNeo4j() {
-        addContainmentSubtreeToPersistentResource(neo4jResource, DirectWriteBlueprintsStore.class);
-    }
-
-    @Test
-    public void testAddContainmentSubtreeToPersistentResourceTinker() {
-        addContainmentSubtreeToPersistentResource(tinkerResource, DirectWriteBlueprintsStore.class);
-    }
-
-    protected void createResourceContent(PersistentResource r) {
+    @Override
+    protected void createResourceContent(PersistentResource resource) {
         p1 = factory.createPack();
         p1.setName("p1");
 
-        r.getContents().add(p1);
+        resource.getContents().add(p1);
 
         p2 = factory.createPack();
         p2.setName("p2");
@@ -66,11 +49,10 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
         pc1.getContainmentNoOppositeRefComment().add(com1);
     }
 
-    private void addContainmentSubtreeToPersistentResource(PersistentResource persistentResource, Class<?> eStoreClass) {
-        createResourceContent(persistentResource);
-
-        assertThat(com1.eStore()).isInstanceOf(eStoreClass);
-        assertThat(com1.resource()).isSameAs((Resource.Internal) persistentResource);
+    @Override
+    protected void addContainmentSubTree(PersistentResource resource, Class<? extends InternalEObject.EStore> clazz) {
+        assertThat(com1.eStore()).isInstanceOf(clazz);
+        assertThat(com1.resource()).isSameAs((Resource.Internal) resource);
 
         // Check that the element has a container (it cannot be in the resource if it does not)
         assertThat(com1.eContainer()).isSameAs((EObject) pc1);
@@ -80,6 +62,6 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
         assertThat(pc1.getContainmentNoOppositeRefComment()).contains(com1);
 
         // Check everything is accessible from the resource
-        assertThat(persistentResource.getAllContents()).hasSize(4);
+        assertThat(resource.getAllContents()).hasSize(4);
     }
 }

@@ -12,8 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 
 import org.eclipse.emf.common.util.EList;
@@ -37,15 +35,12 @@ public class EObjectEContentsTest extends AllBackendTest {
     private static final int PACK_CONTENT_COUNT = 3;
     private static final int ECONTENTS_COUNT = SUB_PACK_COUNT + PACK_CONTENT_COUNT;
 
-    protected MapSampleFactory factory;
     protected Pack p;
     protected List<EObject> subPacks;
     protected List<EObject> packContents;
 
     @Override
     public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        ePackage = MapSamplePackage.eINSTANCE;
         subPacks = new ArrayList<>();
         packContents = new ArrayList<>();
         super.setUp();

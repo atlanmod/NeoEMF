@@ -13,17 +13,16 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
+import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.util.BlueprintsResourceBuilder;
 import fr.inria.atlanmod.neoemf.tests.util.MapResourceBuilder;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.junit.After;
 import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
-
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public abstract class AllBackendTest extends AllTest {
 
@@ -38,11 +37,13 @@ public abstract class AllBackendTest extends AllTest {
     protected File neo4jFile;
     protected File tinkerFile;
 
-    protected EPackage ePackage;
+    protected MapSampleFactory factory;
+    protected MapSamplePackage ePackage;
 
     @Before
     public void setUp() throws Exception {
-        assertThat(ePackage).isNotNull(); // "EPackage not set"
+        factory = MapSampleFactory.eINSTANCE;
+        ePackage = MapSamplePackage.eINSTANCE;
 
         mapFile = tempFile("MapDb");
         neo4jFile = tempFile( "Neo4j");
