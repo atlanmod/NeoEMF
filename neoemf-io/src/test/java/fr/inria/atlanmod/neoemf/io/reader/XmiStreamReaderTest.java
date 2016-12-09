@@ -23,6 +23,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
 
 /**
  * Tests that verify that the {@link XmiStreamReader} properly interprets the read data.
@@ -251,16 +252,18 @@ public class XmiStreamReaderTest extends AllXmiReaderTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testMalformedMetaClass() throws Exception {
-        read(getResourceFile("/io/xmi/sampleMalformedMetaClass.xmi"));
+        Throwable thrown = catchThrowable(() -> read(getResourceFile("/io/xmi/sampleMalformedMetaClass.xmi")));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
     /**
      * Check if the reader stop its execution if it hasn't any handler.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testReaderWithoutHandler() throws Exception {
-        new XmiStreamReader().read(null);
+        Throwable thrown = catchThrowable(() -> new XmiStreamReader().read(null));
+        assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }
 }

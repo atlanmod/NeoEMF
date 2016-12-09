@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.io.File;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
 
 public class BlueprintsUriTest extends AllTest {
 
@@ -64,9 +65,11 @@ public class BlueprintsUriTest extends AllTest {
         assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
         URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
-        BlueprintsURI.createURI(invalidURI);
+
+        Throwable thrown = catchThrowable(() -> BlueprintsURI.createURI(invalidURI));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 }

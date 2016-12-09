@@ -24,6 +24,7 @@ import org.mockito.Mockito;
 import java.io.File;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
 
 public class PersistenceUriTest extends AllTest {
 
@@ -65,37 +66,47 @@ public class PersistenceUriTest extends AllTest {
         assertThat(neoURI).hasScheme(SCHEME);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNeoURIFromStandardURIInvalidScheme() {
         URI invalidURI = URI.createURI(SCHEME_INVALID + "://test");
-        PersistenceURI.createURI(invalidURI);
+
+        Throwable thrown = catchThrowable(() -> PersistenceURI.createURI(invalidURI));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNeoURIFromFileURINoScheme() {
         URI invalidFileURI = URI.createFileURI(testFile.getAbsolutePath());
-        PersistenceURI.createURI(invalidFileURI);
+
+        Throwable thrown = catchThrowable(() -> PersistenceURI.createURI(invalidFileURI));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNeoURIFromFileInvalidScheme() {
-        PersistenceURI.createFileURI(testFile, SCHEME_INVALID);
+        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(testFile, SCHEME_INVALID));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNeoURIFromFileNullScheme() {
-        PersistenceURI.createFileURI(testFile, null);
+        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(testFile, null));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNeoURIFromFileURIInvalidScheme() {
         URI fileUri = URI.createFileURI(testFile.getAbsolutePath());
-        PersistenceURI.createFileURI(fileUri, SCHEME_INVALID);
+
+        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(fileUri, SCHEME_INVALID));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNeoURIFromFileURINullScheme() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        PersistenceURI.createFileURI(fileURI, null);
+
+        Throwable thrown = catchThrowable(() -> PersistenceURI.createFileURI(fileURI, null));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 }

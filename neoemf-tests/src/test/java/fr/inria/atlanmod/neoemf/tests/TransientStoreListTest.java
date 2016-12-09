@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
 
 /**
  * Test cases that check List method consistency for the {@link AbstractTransientStore} class.
@@ -98,9 +99,10 @@ public class TransientStoreListTest extends AllTest {
         assertThat(Objects.equals(model.getContentObjects(), list)).isFalse(); // "Accessed list is equal to the given collection"
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testGet() {
-        model.getContentObjects().get(0);
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().get(0));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -139,24 +141,28 @@ public class TransientStoreListTest extends AllTest {
         model.getContentObjects().listIterator(0);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testListIteratorInvalidIndex() {
-        model.getContentObjects().listIterator(1);
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().listIterator(1));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testMoveIndex() {
-        model.getContentObjects().move(0, 0);
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().move(0, 0));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testMoveObject() {
-        model.getContentObjects().move(0, mapFactory.createSampleModelContentObject());
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().move(0, mapFactory.createSampleModelContentObject()));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testRemoveInvalidIndex() {
-        model.getContentObjects().remove(0);
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().remove(0));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -190,9 +196,10 @@ public class TransientStoreListTest extends AllTest {
         model.getContentObjects().retainAll(new ArrayList<>());
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSetInvalidIndex() {
-        model.getContentObjects().set(0, mapFactory.createSampleModelContentObject());
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, mapFactory.createSampleModelContentObject()));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
@@ -204,13 +211,15 @@ public class TransientStoreListTest extends AllTest {
         model.getContentObjects().set(0, mapFactory.createSampleModelContentObject());
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void testSetInvalidObject() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
         collection.add(mapFactory.createSampleModelContentObject());
         collection.add(mapFactory.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        model.getContentObjects().set(0, (SampleModelContentObject) mapFactory.createSampleModel());
+
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, (SampleModelContentObject) mapFactory.createSampleModel()));
+        assertThat(thrown).isInstanceOf(ClassCastException.class);
     }
 
     @Test
@@ -227,9 +236,10 @@ public class TransientStoreListTest extends AllTest {
         assertThat(model.getContentObjects().size()).isEqualTo(2);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSubListInvalidIndexes() {
-        model.getContentObjects().subList(0, 1);
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().subList(0, 1));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test

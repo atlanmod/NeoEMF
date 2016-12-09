@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
 
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
 
@@ -241,13 +242,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @Test(expected = InvalidDataStoreException.class)
+    @Test
     public void testSaveGraphNeo4jResourceNegativeStringsMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .stringsMappedBuffer("-64M")
                 .asMap();
 
-        resource.save(options);
+        Throwable thrown = catchThrowable(() -> resource.save(options));
+        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -312,13 +314,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @Test(expected = InvalidDataStoreException.class)
+    @Test
     public void testSaveGraphNeo4jResourceNegativeArraysMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .arraysMappedBuffer("-64M")
                 .asMap();
 
-        resource.save(options);
+        Throwable thrown = catchThrowable(() -> resource.save(options));
+        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -385,13 +388,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @Test(expected = InvalidDataStoreException.class)
+    @Test
     public void testSaveGraphNeo4jResourceNegativeNodesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .nodesMappedBuffer("-64M")
                 .asMap();
 
-        resource.save(options);
+        Throwable thrown = catchThrowable(() -> resource.save(options));
+        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -458,13 +462,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in
      * {@link #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @Test(expected = InvalidDataStoreException.class)
+    @Test
     public void testSaveGraphNeo4jResourceNegativePropertiesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .propertiesMappedBuffer("-64M")
                 .asMap();
 
-        resource.save(options);
+        Throwable thrown = catchThrowable(() -> resource.save(options));
+        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -531,13 +536,14 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
      * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @Test(expected = InvalidDataStoreException.class)
+    @Test
     public void testSaveGraphNeo4jResourceNegativeRelationshipsMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .relationshipsMappedBuffer("-64M")
                 .asMap();
 
-        resource.save(options);
+        Throwable thrown = catchThrowable(() -> resource.save(options));
+        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**
@@ -606,14 +612,15 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
      * In addition, there is no verification on the OPTIONS_GRAPH_NEO4J_STORE_DIR (it is done in {@link
      * #testSaveGraphNeo4jResourceNeo4jTypeOption()}
      */
-    @Test(expected = InvalidDataStoreException.class)
+    @Test
     public void testSaveGraphNeo4jResourcePositiveRelationshipMappedMemoryNegativePropertiesMappedMemoryOption() throws IOException {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder()
                 .relationshipsMappedBuffer("64M")
                 .propertiesMappedBuffer("-64M")
                 .asMap();
 
-        resource.save(options);
+        Throwable thrown = catchThrowable(() -> resource.save(options));
+        assertThat(thrown).isInstanceOf(InvalidDataStoreException.class);
     }
 
     /**

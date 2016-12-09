@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
@@ -95,22 +96,28 @@ public class EObjectEContentsTest extends AllBackendTest {
         checkEmptyEContentsSize();
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testEObjectEmptyEContentsGetMapDB() {
         createEmptyPackResourceContent(mapResource);
-        checkEmptyEContentsGet();
+
+        Throwable thrown = catchThrowable(this::checkEmptyEContentsGet);
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testEObjectEmptyEContentsGetNeo4j() {
         createEmptyPackResourceContent(neo4jResource);
-        checkEmptyEContentsGet();
+
+        Throwable thrown = catchThrowable(this::checkEmptyEContentsGet);
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testEObjectEmptyEContentsGetTinker() {
         createEmptyPackResourceContent(tinkerResource);
-        checkEmptyEContentsGet();
+
+        Throwable thrown = catchThrowable(this::checkEmptyEContentsGet);
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     protected void createResourceContent(Resource r) {
