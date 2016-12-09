@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
         id="fr.inria.atlanmod.neoemf.io.feature"
-        label="NeoEMF IO Module"
+        label="NeoEMF IO"
         version="1.0.1.qualifier">
 
     <description url="http://www.example.com/description">

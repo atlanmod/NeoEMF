@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.tests.util;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.map.util.MapURI;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
@@ -36,20 +36,20 @@ public class MapResourceBuilder extends AbstractResourceBuilder {
 
     @Override
     public MapResourceBuilder uri(URI uri) {
-        this.uri = MapURI.createURI(uri);
+        this.uri = MapDbURI.createURI(uri);
         return this;
     }
 
     @Override
     public MapResourceBuilder file(File file) {
-        this.uri = MapURI.createFileURI(file);
+        this.uri = MapDbURI.createFileURI(file);
         return this;
     }
 
     private void initMapBuilder() {
-        if (!PersistenceBackendFactoryRegistry.isRegistered(MapURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(MapURI.SCHEME, MapPersistenceBackendFactory.getInstance());
+        if (!PersistenceBackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
         }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 }

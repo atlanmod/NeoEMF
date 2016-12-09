@@ -59,9 +59,7 @@
 
     <modules>
         <module>neoemf-core</module>
-        <module>neoemf-graph</module>
-        <module>neoemf-map</module>
-        <module>neoemf-hbase</module>
+        <module>neoemf-data</module>
         <module>neoemf-io</module>
         <module>neoemf-tests</module>
     </modules>
@@ -131,38 +129,20 @@
         <argLine /> <!-- Keep it empty -->
         <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
 
-        <!-- DB -->
-        <blueprints.version>2.6.0</blueprints.version>
-        <mapdb.version>3.0.2</mapdb.version>
-        <hbase.version>1.2.4</hbase.version>
-        <hadoop.version>2.7.3</hadoop.version>
-
-        <!-- Cache -->
         <caffeine.version>2.3.5</caffeine.version>
 
-        <!-- Proxy -->
-        <cglib-nodep.version>3.2.4</cglib-nodep.version>
-
-        <!-- Common -->
         <commons-collections.version>4.1</commons-collections.version>
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
         <guava.version>20.0</guava.version>
-        <osgi.version>3.11.0.v20160603-1336</osgi.version>
 
-        <!-- Logging -->
-        <log4j.version>2.7</log4j.version>
-
-        <!-- EMF -->
         <emf.version>2.11.0-v20150805-0538</emf.version>
         <ecore.version>2.11.1-v20150805-0538</ecore.version>
         <xcore.version>1.1.100</xcore.version>
 
-        <!-- Annotations -->
         <javax-annotations.version>3.0.1</javax-annotations.version>
 
-        <!-- Test -->
         <assertj.version>3.6.1</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
@@ -180,69 +160,12 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- Graph/Neo4j -->
-
-            <dependency>
-                <groupId>com.tinkerpop.blueprints</groupId>
-                <artifactId>blueprints-core</artifactId>
-                <version>${blueprints.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tinkerpop.blueprints</groupId>
-                <artifactId>blueprints-neo4j-graph</artifactId>
-                <version>${blueprints.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <!-- MapDB -->
-
-            <dependency>
-                <groupId>org.mapdb</groupId>
-                <artifactId>mapdb</artifactId>
-                <version>${mapdb.version}</version>
-            </dependency>
-
-            <!-- Hadoop -->
-
-            <dependency>
-                <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-client</artifactId>
-                <version>${hbase.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-common</artifactId>
-                <version>${hbase.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hadoop</groupId>
-                <artifactId>hadoop-common</artifactId>
-                <version>${hadoop.version}</version>
-            </dependency>
-
             <!-- Cache -->
 
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
-            </dependency>
-
-            <!-- Proxy -->
-
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>${cglib-nodep.version}</version>
             </dependency>
 
             <!-- Common -->
@@ -275,41 +198,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>org.eclipse.osgi</artifactId>
-                <version>${osgi.version}</version>
-            </dependency>
-
-            <!-- Logging -->
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${log4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-jcl</artifactId>
-                <version>${log4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-jul</artifactId>
-                <version>${log4j.version}</version>
-                <scope>runtime</scope>
             </dependency>
 
             <!-- EMF -->

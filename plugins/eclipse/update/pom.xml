@@ -14,7 +14,7 @@
 
     <packaging>eclipse-repository</packaging>
 
-    <name>NeoEMF :: Eclipse :: Update-Site</name>
+    <name>NeoEMF Eclipse Update-Site</name>
 
     <dependencies>
         <dependency>
@@ -25,25 +25,25 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.feature</artifactId>
+            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.map.feature</artifactId>
+            <artifactId>fr.inria.atlanmod.neoemf.data.mapdb.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.hbase.feature</artifactId>
+            <artifactId>fr.inria.atlanmod.neoemf.data.hbase.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature</artifactId>
+            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 

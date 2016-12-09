@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.datastore.MapPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.map.util.MapURI;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -102,8 +102,8 @@ public class OpenBackendCommand extends AbstractHandler {
                 NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
-            else if (Objects.equals(backendType, MapPersistenceBackendFactory.NAME)) {
-                uri = MapURI.createFileURI(new File(folder.getRawLocation().toOSString()));
+            else if (Objects.equals(backendType, MapDbPersistenceBackendFactory.NAME)) {
+                uri = MapDbURI.createFileURI(new File(folder.getRawLocation().toOSString()));
             }
             else if (Objects.equals(backendType, BlueprintsPersistenceBackendFactory.NAME)) {
                 uri = BlueprintsURI.createFileURI(new File(folder.getRawLocation().toOSString()));

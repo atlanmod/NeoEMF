@@ -12,7 +12,7 @@
 
     <packaging>jar</packaging>
 
-    <name>Modisco :: Java :: CDO</name>
+    <name>Modisco : Java for CDO</name>
 
     <dependencies>
         <dependency>

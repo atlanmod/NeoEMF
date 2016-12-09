@@ -12,7 +12,7 @@
 
     <packaging>jar</packaging>
 
-    <name>Modisco :: Java :: NeoEMF</name>
+    <name>Modisco : Java for NeoEMF</name>
 
     <dependencies>
         <dependency>

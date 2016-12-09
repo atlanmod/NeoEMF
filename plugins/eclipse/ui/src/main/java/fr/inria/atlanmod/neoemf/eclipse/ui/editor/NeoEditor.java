@@ -11,11 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.option.BlueprintsOptionsBuilder;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.map.option.MapOptionsBuilder;
-import fr.inria.atlanmod.neoemf.map.util.MapURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -45,7 +45,7 @@ public class NeoEditor extends EcoreEditor {
     public NeoEditor() {
         super();
         this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapURI.SCHEME, PersistentResourceFactory.getInstance());
+        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     @Override
@@ -56,8 +56,8 @@ public class NeoEditor extends EcoreEditor {
 
         // Create the store options depending of the backend
         Map<String, Object> options;
-        if (Objects.equals(resource.getURI().scheme(), MapURI.SCHEME)) {
-            options = MapOptionsBuilder.newBuilder()
+        if (Objects.equals(resource.getURI().scheme(), MapDbURI.SCHEME)) {
+            options = MapDbOptionsBuilder.newBuilder()
 //                  .log()
                     .directWriteCacheMany()
                     .asMap();

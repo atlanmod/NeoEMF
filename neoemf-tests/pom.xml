@@ -12,7 +12,7 @@
 
     <packaging>jar</packaging>
 
-    <name>NeoEMF :: Tests</name>
+    <name>NeoEMF Tests</name>
     <description />
 
     <properties>
@@ -76,19 +76,19 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-blueprints</artifactId>
+            <artifactId>neoemf-data-blueprints-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-blueprints-neo4j</artifactId>
+            <artifactId>neoemf-data-blueprints-neo4j</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-map</artifactId>
+            <artifactId>neoemf-data-mapdb</artifactId>
             <version>${project.version}</version>
         </dependency>
 

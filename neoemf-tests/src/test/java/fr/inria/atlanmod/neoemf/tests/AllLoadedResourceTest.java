@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.map.util.MapURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -66,9 +66,9 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
         tinkerResource = null;
 
         ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        mapResource = (PersistentResource) rSet.getResource(MapURI.createFileURI(mapFile), true);
+        mapResource = (PersistentResource) rSet.getResource(MapDbURI.createFileURI(mapFile), true);
         neo4jResource = (PersistentResource) rSet.getResource(BlueprintsURI.createFileURI(neo4jFile), true);
         tinkerResource = (PersistentResource) rSet.getResource(BlueprintsURI.createFileURI(tinkerFile), true);
 

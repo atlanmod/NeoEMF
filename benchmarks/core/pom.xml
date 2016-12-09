@@ -12,7 +12,7 @@
 
     <packaging>jar</packaging>
 
-    <name>NeoEMF :: Benchmarks :: Core</name>
+    <name>NeoEMF Benchmarks Core</name>
 
     <properties>
         <uberjar.name>benchmarks</uberjar.name>
@@ -61,17 +61,17 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-blueprints</artifactId>
+            <artifactId>neoemf-data-blueprints-core</artifactId>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-blueprints-neo4j</artifactId>
+            <artifactId>neoemf-data-blueprints-neo4j</artifactId>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-map</artifactId>
+            <artifactId>neoemf-data-mapdb</artifactId>
         </dependency>
 
         <!-- Common -->
@@ -99,6 +99,11 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jcl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
         </dependency>
 
         <!-- Benchmark -->

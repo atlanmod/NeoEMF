@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>neoemf</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>neoemf-data</artifactId>
+
+    <packaging>pom</packaging>
+
+    <name>NeoEMF Data</name>
+    <description>
+        Parent project for database implementations of the core component.
+    </description>
+
+    <modules>
+        <module>blueprints</module>
+        <module>mapdb</module>
+        <module>hbase</module>
+    </modules>
+
+    <properties>
+        <osgi.version>3.11.0.v20160603-1336</osgi.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>org.eclipse.osgi</artifactId>
+                <version>${osgi.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

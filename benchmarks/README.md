@@ -18,7 +18,7 @@ Possible values for `<args>` can be found by using the `-help` argument, or [her
 
 #### Parameters
 By default, all resources are executed on all backends. But you can choose to execute one (or more) specific resource on one (or more) specific backend by using the `-p` argument with the following parameters:
-- `b=<backend>,...`     where `<backend>`  is `[xmi|cdo|neo-map|neo-graph|neo-graph-neo4j]`
+- `b=<backend>,...`     where `<backend>`  is `[xmi|cdo|neo-mapdb|neo-tinker|neo-neo4j]`
 - `r=<resource>,...`    where `<resource>` is :
   - the filename, if it's included in `/resources.zip`.
   By default, this archive contains the following resource which can be declared by using their acronym:

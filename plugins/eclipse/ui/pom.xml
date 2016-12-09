@@ -14,7 +14,7 @@
 
     <packaging>eclipse-plugin</packaging>
 
-    <name>NeoEMF :: Eclipse :: UI</name>
+    <name>NeoEMF Eclipse UI</name>
     <description>Eclipse UI integration plugin.</description>
 
     <dependencies>
@@ -26,13 +26,13 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-blueprints</artifactId>
+            <artifactId>neoemf-data-blueprints-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-map</artifactId>
+            <artifactId>neoemf-data-mapdb</artifactId>
             <version>${project.version}</version>
         </dependency>
 
