@@ -101,14 +101,4 @@ public abstract class AllBackendTest extends AllTest {
 
         loadedResources.clear();
     }
-
-    /**
-     * Category marker for tests using a persistent store.
-     */
-    interface PersistentTests {}
-
-    /**
-     * Category marker for tests using a transient store.
-     */
-    interface TransientTests {}
 }

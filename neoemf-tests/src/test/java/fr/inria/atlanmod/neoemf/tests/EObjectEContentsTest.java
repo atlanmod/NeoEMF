@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
@@ -42,7 +43,7 @@ public class EObjectEContentsTest extends AllBackendTest {
     private List<EObject> packContents;
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testEObjectEContents() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -60,7 +61,7 @@ public class EObjectEContentsTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testEObjectEmptyEContentsSize() {
         PersistentResource resource = createPersistentStore();
         createEmptyPackResourceContent(resource);
@@ -70,7 +71,7 @@ public class EObjectEContentsTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testEObjectEmptyEContentsGet() {
         PersistentResource resource = createPersistentStore();
         createEmptyPackResourceContent(resource);

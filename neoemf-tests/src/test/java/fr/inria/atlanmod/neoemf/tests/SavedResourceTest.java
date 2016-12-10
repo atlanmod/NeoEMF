@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
@@ -30,7 +31,7 @@ public class SavedResourceTest extends AllBackendTest {
     private SampleModelContentObject modelContentObject;
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testEContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -40,7 +41,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -55,7 +56,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testEInternalContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -65,7 +66,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEInternalContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -80,7 +81,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testEResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -90,7 +91,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -105,7 +106,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testEDirectResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -115,7 +116,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testGetAllContentsEDirectResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);

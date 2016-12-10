@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
@@ -27,7 +28,7 @@ public class EMapSupportTest extends AllBackendTest {
     private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testGetMapStringStringEmpty() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
@@ -40,7 +41,7 @@ public class EMapSupportTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testPutMapStringString() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
@@ -58,7 +59,7 @@ public class EMapSupportTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testGetMapKVEmpty() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
@@ -71,7 +72,7 @@ public class EMapSupportTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testPutMapKV() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());

@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
@@ -29,7 +30,7 @@ public class CopyBackendContentTest extends AllBackendTest {
     private static final String MODEL_NAME = "Model", CONTENT1_NAME = "Content1", CONTENT2_NAME = "Content2";
 
     @Test
-    @Category(TransientTests.class)
+    @Category(Tags.TransientTests.class)
     public void testCopyBackend() throws IOException {
         PersistentResource resource = createTransientStore();
         createResourceContent(resource);

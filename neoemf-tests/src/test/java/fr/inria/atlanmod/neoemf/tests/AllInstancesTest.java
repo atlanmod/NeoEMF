@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
@@ -41,7 +42,7 @@ public class AllInstancesTest extends AllBackendTest {
     private static final int PACK_CONTENT_STRICT_COUNT = 50;
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testAllInstancesPersistent() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -50,7 +51,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testAllInstancesStricPersistent() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -59,7 +60,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testAllInstancesPersistentLoaded() throws IOException {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -72,7 +73,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testAllInstancesStrictPersistentLoaded() throws IOException {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -85,7 +86,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
-    @Category(TransientTests.class)
+    @Category(Tags.TransientTests.class)
     public void testAllInstancesTransient() {
         PersistentResource resource = createTransientStore();
         createResourceContent(resource);
@@ -94,7 +95,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
-    @Category(TransientTests.class)
+    @Category(Tags.TransientTests.class)
     public void testAllInstancesStrictTransient() {
         PersistentResource resource = createTransientStore();
         createResourceContent(resource);

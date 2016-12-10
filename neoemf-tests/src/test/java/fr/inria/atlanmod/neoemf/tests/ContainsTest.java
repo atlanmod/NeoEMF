@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
@@ -31,7 +32,7 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 public class ContainsTest extends AllBackendTest {
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testContainsPersistent3Elements() {
         PersistentResource resource = createPersistentStore();
         List<SampleModelContentObject> content = createResourceContent(resource, 3);
@@ -40,7 +41,7 @@ public class ContainsTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testContainsPersistent4Elements() {
         PersistentResource resource = createPersistentStore();
         List<SampleModelContentObject> content = createResourceContent(resource, 4);
@@ -49,7 +50,7 @@ public class ContainsTest extends AllBackendTest {
     }
 
     @Test
-    @Category(PersistentTests.class)
+    @Category(Tags.PersistentTests.class)
     public void testContainsPersistent5Elements() {
         PersistentResource resource = createPersistentStore();
         List<SampleModelContentObject> content = createResourceContent(resource, 5);
@@ -58,7 +59,7 @@ public class ContainsTest extends AllBackendTest {
     }
 
     @Test
-    @Category(TransientTests.class)
+    @Category(Tags.TransientTests.class)
     public void testContainsTransient3Elements() {
         PersistentResource resource = createTransientStore();
         List<SampleModelContentObject> content = createResourceContent(resource, 3);
@@ -67,7 +68,7 @@ public class ContainsTest extends AllBackendTest {
     }
 
     @Test
-    @Category(TransientTests.class)
+    @Category(Tags.TransientTests.class)
     public void testContainsTransient4Elements() {
         PersistentResource resource = createTransientStore();
         List<SampleModelContentObject> content = createResourceContent(resource, 4);
@@ -76,7 +77,7 @@ public class ContainsTest extends AllBackendTest {
     }
 
     @Test
-    @Category(TransientTests.class)
+    @Category(Tags.TransientTests.class)
     public void testContainsTransient5Elements() {
         PersistentResource resource = createTransientStore();
         List<SampleModelContentObject> content = createResourceContent(resource, 5);
