@@ -19,25 +19,26 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.io.File;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+import static org.mockito.Mockito.mock;
 
 public class PersistenceUriTest extends AllTest {
 
-    private static final String SCHEME = "mock";
+    private static final String URI_SCHEME = "mock";
+
     private static final String SCHEME_INVALID = "invalid";
 
-    private final PersistenceBackendFactory persistenceBackendFactory = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory = mock(PersistenceBackendFactory.class);
 
     private File testFile;
 
     @Before
     public void setUp() {
-        PersistenceBackendFactoryRegistry.register(SCHEME, persistenceBackendFactory);
+        PersistenceBackendFactoryRegistry.register(URI_SCHEME, persistenceBackendFactory);
         testFile = tempFile("Core");
     }
 
@@ -48,22 +49,22 @@ public class PersistenceUriTest extends AllTest {
 
     @Test
     public void testCreateNeoURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(SCHEME + "://test");
+        URI validURI = URI.createURI(URI_SCHEME + "://test");
         URI neoURI = PersistenceURI.createURI(validURI);
-        assertThat(neoURI).hasScheme(SCHEME);
+        assertThat(neoURI).hasScheme(URI_SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFileValidScheme() {
-        URI neoURI = PersistenceURI.createFileURI(testFile, SCHEME);
-        assertThat(neoURI).hasScheme(SCHEME);
+        URI neoURI = PersistenceURI.createFileURI(testFile, URI_SCHEME);
+        assertThat(neoURI).hasScheme(URI_SCHEME);
     }
 
     @Test
     public void testCreateNeoURIFromFileURIValidScheme() {
         URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = PersistenceURI.createFileURI(fileURI, SCHEME);
-        assertThat(neoURI).hasScheme(SCHEME);
+        URI neoURI = PersistenceURI.createFileURI(fileURI, URI_SCHEME);
+        assertThat(neoURI).hasScheme(URI_SCHEME);
     }
 
     @Test

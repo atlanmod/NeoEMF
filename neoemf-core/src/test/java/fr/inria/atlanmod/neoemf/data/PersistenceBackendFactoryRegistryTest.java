@@ -15,17 +15,17 @@ import fr.inria.atlanmod.neoemf.AllTest;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class PersistenceBackendFactoryRegistryTest extends AllTest {
 
     private static final String MOCK_1 = "mock1";
     private static final String MOCK_2 = "mock2";
 
-    private final PersistenceBackendFactory persistenceBackendFactory1 = Mockito.mock(PersistenceBackendFactory.class);
-    private final PersistenceBackendFactory persistenceBackendFactory2 = Mockito.mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory1 = mock(PersistenceBackendFactory.class);
+    private final PersistenceBackendFactory persistenceBackendFactory2 = mock(PersistenceBackendFactory.class);
 
     @Before
     public void setUp() {
