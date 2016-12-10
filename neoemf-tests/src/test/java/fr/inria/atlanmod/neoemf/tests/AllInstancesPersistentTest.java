@@ -25,94 +25,51 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-
-        createPersistentStores();
-        createResourceContent(mapResource);
-        createResourceContent(neo4jResource);
-        createResourceContent(tinkerResource);
+        createPersistentStore();
+        createResourceContent(resource);
     }
 
     @Test
-    public void testAllInstancesPersistentMapDB() {
-        allInstancesPersistent(mapResource);
+    public void testAllInstancesPersistent() {
+        allInstancesPersistent(resource);
     }
 
     @Test
-    public void testAllInstancesPersistentNeo4j() {
-        allInstancesPersistent(neo4jResource);
+    public void testAllInstancesStricPersistent() {
+        allInstancesStrictPersistent(resource);
     }
 
     @Test
-    public void testAllInstancesPersistentTinker() {
-        allInstancesPersistent(tinkerResource);
+    public void testAllInstancesPersistentLoaded() throws IOException {
+        allInstancesPersistentLoaded(resource);
     }
 
     @Test
-    public void testAllInstancesStricPersistentMapDB() {
-        allInstancesStrictPersistent(mapResource);
+    public void testAllInstancesStrictPersistentLoaded() throws IOException {
+        allInstancesStrictPersistentLoaded(resource);
     }
 
-    @Test
-    public void testAllInstancesStrictPersistentNeo4j() {
-        allInstancesStrictPersistent(neo4jResource);
+    private void allInstancesPersistentLoaded(PersistentResource resource) throws IOException {
+        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.close();
+        resource.load(PersistenceOptionsBuilder.noOption());
+
+        allInstancesPersistent(resource);
     }
 
-    @Test
-    public void testAllInstancesStrictPersistentTinker() {
-        allInstancesStrictPersistent(tinkerResource);
+    private void allInstancesStrictPersistentLoaded(PersistentResource resource) throws IOException {
+        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.close();
+        resource.load(PersistenceOptionsBuilder.noOption());
+
+        allInstancesStrictPersistent(resource);
     }
 
-    @Test
-    public void testAllInstancesPersistentLoadedMapDB() throws IOException {
-        allInstancesPersistentLoaded(mapResource);
+    private void allInstancesPersistent(PersistentResource resource) {
+        allInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
-    @Test
-    public void testAllInstancesPersistentLoadedNeo4j() throws IOException {
-        allInstancesPersistentLoaded(neo4jResource);
-    }
-
-    @Test
-    public void testAllInstancesPersistentLoadedTinker() throws IOException {
-        allInstancesPersistentLoaded(tinkerResource);
-    }
-
-    @Test
-    public void testAllInstancesStrictPersistentLoadedMapDB() throws IOException {
-        allInstancesStrictPersistentLoaded(mapResource);
-    }
-
-    @Test
-    public void testAllInstancesStrictPersistentLoadedNeo4j() throws IOException {
-        allInstancesStrictPersistentLoaded(neo4jResource);
-    }
-
-    @Test
-    public void testAllInstancesStrictPersistentLoadedTinker() throws IOException {
-        allInstancesStrictPersistentLoaded(tinkerResource);
-    }
-
-    private void allInstancesPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(PersistenceOptionsBuilder.noOption());
-        persistentResource.close();
-        persistentResource.load(PersistenceOptionsBuilder.noOption());
-
-        allInstancesPersistent(persistentResource);
-    }
-
-    private void allInstancesStrictPersistentLoaded(PersistentResource persistentResource) throws IOException {
-        persistentResource.save(PersistenceOptionsBuilder.noOption());
-        persistentResource.close();
-        persistentResource.load(PersistenceOptionsBuilder.noOption());
-
-        allInstancesStrictPersistent(persistentResource);
-    }
-
-    private void allInstancesPersistent(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
-    }
-
-    private void allInstancesStrictPersistent(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+    private void allInstancesStrictPersistent(PersistentResource resource) {
+        allInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
 }

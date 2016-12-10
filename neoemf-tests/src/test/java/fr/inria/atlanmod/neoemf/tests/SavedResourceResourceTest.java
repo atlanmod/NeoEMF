@@ -26,80 +26,40 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 public class SavedResourceResourceTest extends AllSavedResourceTest {
 
     @Test
-    public void testEResourceMapDB() {
-        checkEResource(mapResource, mapSampleModel, mapSampleContentObject);
+    public void testEResource() {
+        checkEResource(resource, model, modelContentObject);
     }
 
     @Test
-    public void testEResourceNeo4j() {
-        checkEResource(neo4jResource, neo4jSampleModel, neo4jSampleContentObject);
+    public void testGetAllContentsEResource() {
+        getAllContentsEResource(resource);
     }
 
     @Test
-    public void testEResourceTinker() {
-        checkEResource(tinkerResource, tinkerSampleModel, tinkerSampleContentObject);
+    public void testEDirectResource() {
+        checkEDirectResource(resource, model, modelContentObject);
     }
 
     @Test
-    public void testGetAllContentsEResourceMapDB() {
-        getAllContentsEResource(mapResource);
+    public void testGetAllContentsEDirectResource() {
+        getAllContentsEDirectResource(resource);
     }
 
-    @Test
-    public void testGetAllContentsEResourceNeo4j() {
-        getAllContentsEResource(neo4jResource);
+    private void checkEResource(PersistentResource resource, SampleModel model, SampleModelContentObject modelContentObject) {
+        assertThat(model.eResource()).isSameAs(resource); // "Wrong eResource value"
+        assertThat(modelContentObject.eResource()).isSameAs(resource); // "Wrong eResource value"
     }
 
-    @Test
-    public void testGetAllContentsEResourceTinker() {
-        getAllContentsEResource(tinkerResource);
+    private void checkEDirectResource(PersistentResource resource, SampleModel model, SampleModelContentObject modelContentObject) {
+        assertThat(model.eDirectResource()).isSameAs(resource); // "Wrong eDirectResource value"
+        assertThat(modelContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
     }
 
-    @Test
-    public void testEDirectResourceMapDB() {
-        checkEDirectResource(mapResource, mapSampleModel, mapSampleContentObject);
-    }
-
-    @Test
-    public void testEDirectResourceNeo4j() {
-        checkEDirectResource(neo4jResource, neo4jSampleModel, neo4jSampleContentObject);
-    }
-
-    @Test
-    public void testEDirectResourceTinker() {
-        checkEDirectResource(tinkerResource, tinkerSampleModel, tinkerSampleContentObject);
-    }
-
-    @Test
-    public void testGetAllContentsEDirectResourceMapDB() {
-        getAllContentsEDirectResource(mapResource);
-    }
-
-    @Test
-    public void testGetAllContentsEDirectResourceNeo4j() {
-        getAllContentsEDirectResource(neo4jResource);
-    }
-
-    @Test
-    public void testGetAllContentsEDirectResourceTinker() {
-        getAllContentsEDirectResource(tinkerResource);
-    }
-
-    private void checkEResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        assertThat(sampleModel.eResource()).isSameAs(persistentResource); // "Wrong eResource value"
-        assertThat(sampleModelContentObject.eResource()).isSameAs(persistentResource); // "Wrong eResource value"
-    }
-
-    private void checkEDirectResource(PersistentResource persistentResource, SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        assertThat(sampleModel.eDirectResource()).isSameAs(persistentResource); // "Wrong eDirectResource value"
-        assertThat(sampleModelContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"
-    }
-
-    private void getAllContentsEDirectResource(PersistentResource persistentResource) {
-        Iterator<EObject> it = persistentResource.getAllContents();
+    private void getAllContentsEDirectResource(PersistentResource resource) {
+        Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
-        assertThat(sampleModel.eDirectResource()).isSameAs(persistentResource); // "Wrong eDirectResource value"
+        assertThat(sampleModel.eDirectResource()).isSameAs(resource); // "Wrong eDirectResource value"
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
         assertThat(sampleContentObject.eDirectResource()).isNull(); // "Non top level element eDirectResource is not null"

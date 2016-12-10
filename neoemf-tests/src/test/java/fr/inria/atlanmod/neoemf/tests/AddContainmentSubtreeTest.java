@@ -13,8 +13,6 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.ecore.InternalEObject;
-
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
@@ -43,7 +41,7 @@ public class AddContainmentSubtreeTest extends AllContainmentTest {
     }
 
     @Override
-    protected void addContainmentSubTree(PersistentResource resource, Class<? extends InternalEObject.EStore> clazz) {
+    protected void addContainmentSubTree(PersistentResource resource, Class<?> clazz) {
         assertThat(p1.eStore()).isInstanceOf(clazz);
         assertThat(p2.eStore()).isInstanceOf(clazz);
         assertThat(p3.eStore()).isInstanceOf(clazz);

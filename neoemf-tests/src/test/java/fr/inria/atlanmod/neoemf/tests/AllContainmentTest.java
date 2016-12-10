@@ -11,14 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContentComment;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +33,7 @@ public abstract class AllContainmentTest extends AllBackendTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        createPersistentStores();
+        createPersistentStore();
     }
 
     @Override
@@ -52,23 +49,11 @@ public abstract class AllContainmentTest extends AllBackendTest {
 
     protected abstract void createResourceContent(PersistentResource resource);
 
-    protected abstract void addContainmentSubTree(PersistentResource resource, Class<? extends InternalEObject.EStore> clazz);
+    protected abstract void addContainmentSubTree(PersistentResource resource, Class<?> clazz);
 
     @Test
-    public void testAddContainmentSubtreeToPersistentResourceMapDB() {
-        createResourceContent(mapResource);
-        addContainmentSubTree(mapResource, DirectWriteMapDbStore.class);
-    }
-
-    @Test
-    public void testAddContainmentSubtreeToPersistentResourceNeo4j() {
-        createResourceContent(neo4jResource);
-        addContainmentSubTree(neo4jResource, DirectWriteBlueprintsStore.class);
-    }
-
-    @Test
-    public void testAddContainmentSubtreeToPersistentResourceTinker() {
-        createResourceContent(tinkerResource);
-        addContainmentSubTree(tinkerResource, DirectWriteBlueprintsStore.class);
+    public void testAddContainmentSubtreeToPersistentResource() {
+        createResourceContent(resource);
+        addContainmentSubTree(resource, helper.directWriteClass());
     }
 }

@@ -15,62 +15,77 @@ import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.tests.util.BlueprintsResourceBuilder;
-import fr.inria.atlanmod.neoemf.tests.util.MapResourceBuilder;
+import fr.inria.atlanmod.neoemf.tests.util.BackendHelper;
+import fr.inria.atlanmod.neoemf.tests.util.BlueprintsBackendHelper;
+import fr.inria.atlanmod.neoemf.tests.util.BlueprintsNeo4jBackendHelper;
+import fr.inria.atlanmod.neoemf.tests.util.MapDbBackendHelper;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
+import static java.util.Objects.nonNull;
+
+@RunWith(Parameterized.class)
 public abstract class AllBackendTest extends AllTest {
 
-    protected PersistentResource mapResource;
-    protected PersistentResource neo4jResource;
-    protected PersistentResource tinkerResource;
+    @Parameterized.Parameter
+    public BackendHelper helper;
 
-    protected MapResourceBuilder mapBuilder;
-    protected BlueprintsResourceBuilder blueprintsBuilder;
+    @Parameterized.Parameter(1)
+    public String name;
 
-    protected File mapFile;
-    protected File neo4jFile;
-    protected File tinkerFile;
+    protected PersistentResource resource;
 
-    protected MapSampleFactory factory;
-    protected MapSamplePackage ePackage;
+    protected File resourceFile;
+
+    protected MapSampleFactory factory = MapSampleFactory.eINSTANCE;
+    protected MapSamplePackage ePackage = MapSamplePackage.eINSTANCE;
+
+    @Parameterized.Parameters(name = "{1}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(
+                new Object[]{new MapDbBackendHelper(), MapDbBackendHelper.NAME},
+                new Object[]{new BlueprintsBackendHelper(), BlueprintsBackendHelper.NAME},
+                new Object[]{new BlueprintsNeo4jBackendHelper(), BlueprintsNeo4jBackendHelper.NAME}
+        );
+    }
 
     @Before
     public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        ePackage = MapSamplePackage.eINSTANCE;
-
-        mapFile = tempFile("MapDb");
-        neo4jFile = tempFile( "Neo4j");
-        tinkerFile = tempFile("Tinker");
-
-        mapBuilder = new MapResourceBuilder(ePackage);
-        blueprintsBuilder = new BlueprintsResourceBuilder(ePackage);
+        resourceFile = tempFile(helper.name());
     }
 
-    public void createPersistentStores() throws IOException {
-        mapResource = mapBuilder.persistent().file(mapFile).build();
-        neo4jResource = blueprintsBuilder.neo4j().persistent().file(neo4jFile).build();
-        tinkerResource = blueprintsBuilder.tinkerGraph().persistent().file(tinkerFile).build();
+    public void createPersistentStore() {
+        try {
+            resource = helper.createPersistentResource(ePackage, resourceFile);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void createTransientStores() throws IOException {
-        mapResource = mapBuilder.file(mapFile).build();
-        neo4jResource = blueprintsBuilder.neo4j().file(neo4jFile).build();
-        tinkerResource = blueprintsBuilder.file(tinkerFile).build();
+    public void createTransientStore() {
+        try {
+            resource = helper.createTransientResource(ePackage, resourceFile);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @After
     public void tearDown() throws Exception {
         //printMemoryUsage();
 
-        mapResource.close();
-        neo4jResource.close();
-        tinkerResource.close();
+        if (nonNull(resource)) {
+            resource.close();
+        }
     }
 }

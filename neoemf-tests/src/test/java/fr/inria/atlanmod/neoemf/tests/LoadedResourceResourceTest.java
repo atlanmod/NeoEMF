@@ -26,83 +26,43 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 public class LoadedResourceResourceTest extends AllLoadedResourceTest {
 
     @Test
-    public void testGetElementsEResourceMapDB() {
-        getElementsEResource(mapResource);
+    public void testGetElementsEResource() {
+        getElementsEResource(resource);
     }
 
     @Test
-    public void testGetElementsEResourceNeo4j() {
-        getElementsEResource(neo4jResource);
+    public void testGetAllContentsEResource() {
+        getAllContentsEResource(resource);
     }
 
     @Test
-    public void testGetElementsEResourceTinker() {
-        getElementsEResource(tinkerResource);
+    public void testGetElementsEDirectResource() {
+        getElementsEDirectResource(resource);
     }
 
     @Test
-    public void testGetAllContentsEResourceMapDB() {
-        getAllContentsEResource(mapResource);
+    public void testGetAllContentsEDirectResource() {
+        getAllContentsEDirectResource(resource);
     }
 
-    @Test
-    public void testGetAllContentsEResourceNeo4j() {
-        getAllContentsEResource(neo4jResource);
-    }
-
-    @Test
-    public void testGetAllContentsEResourceTinker() {
-        getAllContentsEResource(tinkerResource);
-    }
-
-    @Test
-    public void testGetElementsEDirectResourceMapDB() {
-        getElementsEDirectResource(mapResource);
-    }
-
-    @Test
-    public void testGetElementsEDirectResourceNeo4j() {
-        getElementsEDirectResource(neo4jResource);
-    }
-
-    @Test
-    public void testGetElementsEDirectResourceTinker() {
-        getElementsEDirectResource(tinkerResource);
-    }
-
-    @Test
-    public void testGetAllContentsEDirectResourceMapDB() {
-        getAllContentsEDirectResource(mapResource);
-    }
-
-    @Test
-    public void testGetAllContentsEDirectResourceNeo4j() {
-        getAllContentsEDirectResource(neo4jResource);
-    }
-
-    @Test
-    public void testGetAllContentsEDirectResourceTinker() {
-        getAllContentsEDirectResource(tinkerResource);
-    }
-
-    private void getElementsEResource(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
-        assertThat(model.eResource()).isSameAs(persistentResource); // "Wrong eResource value"
+    private void getElementsEResource(PersistentResource resource) {
+        SampleModel model = (SampleModel) resource.getContents().get(0);
+        assertThat(model.eResource()).isSameAs(resource); // "Wrong eResource value"
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
-        assertThat(modelContent.eResource()).isSameAs(persistentResource); // "Wrong eResource value"
+        assertThat(modelContent.eResource()).isSameAs(resource); // "Wrong eResource value"
     }
 
-    private void getElementsEDirectResource(PersistentResource persistentResource) {
-        InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
+    private void getElementsEDirectResource(PersistentResource resource) {
+        InternalEObject model = (InternalEObject) resource.getContents().get(0);
         assertThat(model.eDirectResource()).isNull(); // "eDirectResource must return null"
 
         InternalEObject modelContent = ((SampleModel) model).getContentObjects().get(0);
         assertThat(modelContent.eDirectResource()).isNull(); // "eDirectResource must return null"
     }
 
-    private void getAllContentsEDirectResource(PersistentResource persistentResource) {
-        Iterator<EObject> it = persistentResource.getAllContents();
+    private void getAllContentsEDirectResource(PersistentResource resource) {
+        Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
         assertThat(sampleModel.eDirectResource()).isNull(); // "eDirectResource must return null"

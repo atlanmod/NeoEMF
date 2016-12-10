@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 
-public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
+class BlueprintsResourceBuilder extends AbstractResourceBuilder {
 
     public BlueprintsResourceBuilder(EPackage ePackage) {
         super(ePackage);

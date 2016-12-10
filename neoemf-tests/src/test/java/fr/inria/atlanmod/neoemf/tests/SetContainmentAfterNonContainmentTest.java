@@ -13,10 +13,6 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
-
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
@@ -50,13 +46,13 @@ public class SetContainmentAfterNonContainmentTest extends AllContainmentTest {
     }
 
     @Override
-    protected void addContainmentSubTree(PersistentResource resource, Class<? extends InternalEObject.EStore> clazz) {
+    protected void addContainmentSubTree(PersistentResource resource, Class<?> clazz) {
         assertThat(com1.eStore()).isInstanceOf(clazz);
-        assertThat(com1.resource()).isSameAs((Resource.Internal) resource);
+        assertThat(com1.resource()).isSameAs(resource);
 
         // Check that the element has a container (it cannot be in the resource if it does not)
-        assertThat(com1.eContainer()).isSameAs((EObject) pc1);
-        assertThat(com1.eInternalContainer()).isSameAs((EObject) pc1);
+        assertThat(com1.eContainer()).isSameAs(pc1);
+        assertThat(com1.eInternalContainer()).isSameAs(pc1);
 
         // Check that the element is in the containment reference list of its parent
         assertThat(pc1.getContainmentNoOppositeRefComment()).contains(com1);

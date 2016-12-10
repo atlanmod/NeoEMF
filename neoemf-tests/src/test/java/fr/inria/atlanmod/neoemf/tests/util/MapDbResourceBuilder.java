@@ -21,9 +21,9 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 
-public class MapResourceBuilder extends AbstractResourceBuilder {
+class MapDbResourceBuilder extends AbstractResourceBuilder {
 
-    public MapResourceBuilder(EPackage ePackage) {
+    public MapDbResourceBuilder(EPackage ePackage) {
         super(ePackage);
         initMapBuilder();
     }
@@ -35,13 +35,13 @@ public class MapResourceBuilder extends AbstractResourceBuilder {
     }
 
     @Override
-    public MapResourceBuilder uri(URI uri) {
+    public MapDbResourceBuilder uri(URI uri) {
         this.uri = MapDbURI.createURI(uri);
         return this;
     }
 
     @Override
-    public MapResourceBuilder file(File file) {
+    public MapDbResourceBuilder file(File file) {
         this.uri = MapDbURI.createFileURI(file);
         return this;
     }

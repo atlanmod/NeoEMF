@@ -45,7 +45,7 @@ public abstract class AllTest {
 
         @Override
         protected void starting(Description description) {
-            System.out.println("\n[INFO] --- Running " + description.getMethodName() + "()");
+            System.out.println("\n[INFO] --- Running " + description.getMethodName());
         }
 
         @Override

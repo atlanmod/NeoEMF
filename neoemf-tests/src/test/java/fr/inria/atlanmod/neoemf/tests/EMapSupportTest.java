@@ -30,84 +30,40 @@ public class EMapSupportTest extends AllBackendTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-
-        createPersistentStores();
-
-        mapResource.getContents().add(factory.createSampleModel());
-        neo4jResource.getContents().add(factory.createSampleModel());
-        tinkerResource.getContents().add(factory.createSampleModel());
+        createPersistentStore();
+        resource.getContents().add(factory.createSampleModel());
     }
 
     @Test
-    public void testGetMapStringStringEmptyMapDB() {
-        getMapStringStringEmpty(mapResource);
+    public void testGetMapStringStringEmpty() {
+        getMapStringStringEmpty(resource);
     }
 
     @Test
-    public void testGetMapStringStringEmptyNeo4j() {
-        getMapStringStringEmpty(neo4jResource);
+    public void testPutMapStringString() {
+        putMapStringString(resource);
     }
 
     @Test
-    public void testGetMapStringStringEmptyTinker() {
-        getMapStringStringEmpty(tinkerResource);
+    public void testGetMapKVEmpty() {
+        getMapKVEmpty(resource);
     }
 
     @Test
-    public void testPutMapStringStringMapDB() {
-        putMapStringString(mapResource);
+    public void testPutMapKV() {
+        putMapKV(resource);
     }
 
-    @Test
-    public void testPutMapStringStringNeo4j() {
-        putMapStringString(neo4jResource);
-    }
-
-    @Test
-    public void testPutMapStringStringTinker() {
-        putMapStringString(tinkerResource);
-    }
-
-    @Test
-    public void testGetMapKVEmptyMapDB() {
-        getMapKVEmpty(mapResource);
-    }
-
-    @Test
-    public void testGetMapKVEmptyNeo4j() {
-        getMapKVEmpty(neo4jResource);
-    }
-
-    @Test
-    public void testGetMapKVEmptyTinker() {
-        getMapKVEmpty(tinkerResource);
-    }
-
-    @Test
-    public void testPutMapKVMapDB() {
-        putMapKV(mapResource);
-    }
-
-    @Test
-    public void testPutMapKVNeo4j() {
-        putMapKV(neo4jResource);
-    }
-
-    @Test
-    public void testPutMapKVTinker() {
-        putMapKV(tinkerResource);
-    }
-
-    private void getMapStringStringEmpty(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    private void getMapStringStringEmpty(PersistentResource resource) {
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getMap()).isInstanceOf(EMap.class); // "Map field is not an instance of EMap"
 
         EMap<String, String> map = model.getMap();
         assertThat(map).isEmpty(); // "EMap is not empty"
     }
 
-    private void putMapStringString(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    private void putMapStringString(PersistentResource resource) {
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<String, String> map = model.getMap();
         map.put(KEY1, VALUE1);
         map.put(KEY2, VALUE2);
@@ -119,16 +75,16 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat(map.get(KEY2)).isEqualTo(VALUE2); // "Wrong value for KEY2"
     }
 
-    private void getMapKVEmpty(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    private void getMapKVEmpty(PersistentResource resource) {
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getKvMap()).isInstanceOf(EMap.class); // "KvMap field is not an instance of EMap"
 
         EMap<K, V> map = model.getKvMap();
         assertThat(map).isEmpty(); // "KvMap is not empty"
     }
 
-    private void putMapKV(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    private void putMapKV(PersistentResource resource) {
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<K, V> map = model.getKvMap();
 
         K k1 = factory.createK();

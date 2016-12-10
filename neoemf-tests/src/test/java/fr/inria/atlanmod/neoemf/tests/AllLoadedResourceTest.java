@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -29,44 +27,21 @@ public abstract class AllLoadedResourceTest extends AllSavedLoadedResourceTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        createPersistentStores();
+        createPersistentStore();
 
         SampleModel mapSampleModel = factory.createSampleModel();
         SampleModelContentObject mapSampleContentObject = factory.createSampleModelContentObject();
         mapSampleModel.getContentObjects().add(mapSampleContentObject);
-        mapResource.getContents().add(mapSampleModel);
+        resource.getContents().add(mapSampleModel);
 
-        SampleModel neo4jSampleModel = factory.createSampleModel();
-        SampleModelContentObject neo4jSampleContentObject = factory.createSampleModelContentObject();
-        neo4jSampleModel.getContentObjects().add(neo4jSampleContentObject);
-        neo4jResource.getContents().add(neo4jSampleModel);
+        resource.save(PersistenceOptionsBuilder.noOption());
 
-        SampleModel tinkerSampleModel = factory.createSampleModel();
-        SampleModelContentObject tinkerSampleContentObject = factory.createSampleModelContentObject();
-        tinkerSampleModel.getContentObjects().add(tinkerSampleContentObject);
-        tinkerResource.getContents().add(tinkerSampleModel);
-
-        mapResource.save(PersistenceOptionsBuilder.noOption());
-        neo4jResource.save(PersistenceOptionsBuilder.noOption());
-        tinkerResource.save(PersistenceOptionsBuilder.noOption());
-
-        mapResource.close();
-        neo4jResource.close();
-        tinkerResource.close();
-
-        mapResource = null;
-        neo4jResource = null;
-        tinkerResource = null;
+        resource.close();
 
         ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        mapResource = (PersistentResource) rSet.getResource(MapDbURI.createFileURI(mapFile), true);
-        neo4jResource = (PersistentResource) rSet.getResource(BlueprintsURI.createFileURI(neo4jFile), true);
-        tinkerResource = (PersistentResource) rSet.getResource(BlueprintsURI.createFileURI(tinkerFile), true);
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(helper.uriScheme(), PersistentResourceFactory.getInstance());
+        resource = (PersistentResource) rSet.getResource(helper.createFileUri(resourceFile), true);
 
-        mapResource.load(PersistenceOptionsBuilder.noOption());
-        neo4jResource.load(PersistenceOptionsBuilder.noOption());
-        tinkerResource.load(PersistenceOptionsBuilder.noOption());
+        resource.load(PersistenceOptionsBuilder.noOption());
     }
 }

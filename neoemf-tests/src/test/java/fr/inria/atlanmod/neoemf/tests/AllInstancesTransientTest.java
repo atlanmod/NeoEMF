@@ -22,48 +22,25 @@ public class AllInstancesTransientTest extends AllInstancesTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-
-        createTransientStores();
-        createResourceContent(mapResource);
-        createResourceContent(neo4jResource);
-        createResourceContent(tinkerResource);
+        createTransientStore();
+        createResourceContent(resource);
     }
 
     @Test
-    public void testAllInstancesTransientMapDB() {
-        allInstancesTransient(mapResource);
+    public void testAllInstancesTransient() {
+        allInstancesTransient(resource);
     }
 
     @Test
-    public void testAllInstancesTransientNeo4j() {
-        allInstancesTransient(neo4jResource);
+    public void testAllInstancesStrictTransient() {
+        allInstancesStrictTransient(resource);
     }
 
-    @Test
-    public void testAllInstancesTransientTinker() {
-        allInstancesTransient(tinkerResource);
+    private void allInstancesTransient(PersistentResource resource) {
+        allInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
-    @Test
-    public void testAllInstancesStrictTransientMapDB() {
-        allInstancesStrictTransient(mapResource);
-    }
-
-    @Test
-    public void testAllInstancesStrictTransientNeo4j() {
-        allInstancesStrictTransient(neo4jResource);
-    }
-
-    @Test
-    public void testAllInstancesStrictTransientTinker() {
-        allInstancesStrictTransient(tinkerResource);
-    }
-
-    private void allInstancesTransient(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
-    }
-
-    private void allInstancesStrictTransient(PersistentResource persistentResource) {
-        allInstancesPersistentTranscient(persistentResource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+    private void allInstancesStrictTransient(PersistentResource resource) {
+        allInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
 }

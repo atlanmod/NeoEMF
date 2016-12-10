@@ -18,34 +18,18 @@ import org.junit.Before;
 
 public abstract class AllSavedResourceTest extends AllSavedLoadedResourceTest {
 
-    protected SampleModel mapSampleModel;
-    protected SampleModelContentObject mapSampleContentObject;
-
-    protected SampleModel neo4jSampleModel;
-    protected SampleModelContentObject neo4jSampleContentObject;
-
-    protected SampleModel tinkerSampleModel;
-    protected SampleModelContentObject tinkerSampleContentObject;
+    protected SampleModel model;
+    protected SampleModelContentObject modelContentObject;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        createPersistentStores();
+        createPersistentStore();
 
-        mapSampleModel = factory.createSampleModel();
-        mapSampleContentObject = factory.createSampleModelContentObject();
-        mapSampleModel.getContentObjects().add(mapSampleContentObject);
-        mapResource.getContents().add(mapSampleModel);
-
-        neo4jSampleModel = factory.createSampleModel();
-        neo4jSampleContentObject = factory.createSampleModelContentObject();
-        neo4jSampleModel.getContentObjects().add(neo4jSampleContentObject);
-        neo4jResource.getContents().add(neo4jSampleModel);
-
-        tinkerSampleModel = factory.createSampleModel();
-        tinkerSampleContentObject = factory.createSampleModelContentObject();
-        tinkerSampleModel.getContentObjects().add(tinkerSampleContentObject);
-        tinkerResource.getContents().add(tinkerSampleModel);
+        model = factory.createSampleModel();
+        modelContentObject = factory.createSampleModelContentObject();
+        model.getContentObjects().add(modelContentObject);
+        resource.getContents().add(model);
     }
 }

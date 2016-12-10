@@ -21,8 +21,8 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public abstract class AllSavedLoadedResourceTest extends AllBackendTest {
 
-    protected void getAllContentsContainer(PersistentResource persistentResource) {
-        Iterator<EObject> it = persistentResource.getAllContents();
+    protected void getAllContentsContainer(PersistentResource resource) {
+        Iterator<EObject> it = resource.getAllContents();
 
         EObject sampleModel = it.next();
         assertThat(sampleModel.eContainer()).isNull(); // "Top Level EObject has a not null container"
@@ -31,13 +31,13 @@ public abstract class AllSavedLoadedResourceTest extends AllBackendTest {
         assertThat(sampleContentObject.eContainer()).isSameAs(sampleModel); // "Wrong eContainer value"
     }
 
-    protected void getAllContentsEResource(PersistentResource persistentResource) {
-        Iterator<EObject> it = persistentResource.getAllContents();
+    protected void getAllContentsEResource(PersistentResource resource) {
+        Iterator<EObject> it = resource.getAllContents();
 
         EObject sampleModel = it.next();
-        assertThat(sampleModel.eResource()).isSameAs(persistentResource); // "Wrong eResource value"
+        assertThat(sampleModel.eResource()).isSameAs(resource); // "Wrong eResource value"
 
         EObject sampleContentObject = it.next();
-        assertThat(sampleContentObject.eResource()).isSameAs(persistentResource); // "Wrong eResource value"
+        assertThat(sampleContentObject.eResource()).isSameAs(resource); // "Wrong eResource value"
     }
 }

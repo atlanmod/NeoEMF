@@ -26,77 +26,37 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 public class SavedResourceContainerTest extends AllSavedResourceTest {
 
     @Test
-    public void testEContainerMapDB() {
-        checkEContainer(mapSampleModel, mapSampleContentObject);
+    public void testEContainer() {
+        checkEContainer(model, modelContentObject);
     }
 
     @Test
-    public void testEContainerNeo4j() {
-        checkEContainer(neo4jSampleModel, neo4jSampleContentObject);
+    public void testGetAllContentsContainer() {
+        getAllContentsContainer(resource);
     }
 
     @Test
-    public void testEContainerTinker() {
-        checkEContainer(tinkerSampleModel, tinkerSampleContentObject);
+    public void testEInternalContainer() {
+        checkEInternalContainer(model, modelContentObject);
     }
 
     @Test
-    public void testGetAllContentsContainerMapDB() {
-        getAllContentsContainer(mapResource);
+    public void testGetAllContentsEInternalContainer() {
+        getAllContentsEInternalContainer(resource);
     }
 
-    @Test
-    public void testGetAllContentsContainerNeo4j() {
-        getAllContentsContainer(neo4jResource);
+    private void checkEContainer(SampleModel model, SampleModelContentObject modelContentObject) {
+        assertThat(model.eContainer()).isNull(); // "Top Level EObject has a not null container"
+        assertThat(modelContentObject.eContainer()).isSameAs(model); // "Wrong eContainer value"
     }
 
-    @Test
-    public void testGetAllContentsContainerTinker() {
-        getAllContentsContainer(tinkerResource);
+    private void checkEInternalContainer(SampleModel model, SampleModelContentObject modelContentObject) {
+        assertThat(model.eInternalContainer()).isNull(); // "Top Level EObject has a not null internal container"
+        assertThat(modelContentObject.eInternalContainer()).isSameAs((InternalEObject) model); // "Wrong eInternalContainer value"
     }
 
-    @Test
-    public void testEInternalContainerMapDB() {
-        checkEInternalContainer(mapSampleModel, mapSampleContentObject);
-    }
-
-    @Test
-    public void testEInternalContainerNeo4j() {
-        checkEInternalContainer(neo4jSampleModel, neo4jSampleContentObject);
-    }
-
-    @Test
-    public void testEInternalContainerTinker() {
-        checkEInternalContainer(tinkerSampleModel, tinkerSampleContentObject);
-    }
-
-    @Test
-    public void testGetAllContentsEInternalContainerMapDB() {
-        getAllContentsEInternalContainer(mapResource);
-    }
-
-    @Test
-    public void testGetAllContentsEInternalContainerNeo4j() {
-        getAllContentsEInternalContainer(neo4jResource);
-    }
-
-    @Test
-    public void testGetAllContentsEInternalContainerTinker() {
-        getAllContentsEInternalContainer(tinkerResource);
-    }
-
-    private void checkEContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        assertThat(sampleModel.eContainer()).isNull(); // "Top Level EObject has a not null container"
-        assertThat(sampleModelContentObject.eContainer()).isSameAs(sampleModel); // "Wrong eContainer value"
-    }
-
-    private void checkEInternalContainer(SampleModel sampleModel, SampleModelContentObject sampleModelContentObject) {
-        assertThat(sampleModel.eInternalContainer()).isNull(); // "Top Level EObject has a not null internal container"
-        assertThat(sampleModelContentObject.eInternalContainer()).isSameAs((InternalEObject) sampleModel); // "Wrong eInternalContainer value"
-    }
-
-    private void getAllContentsEInternalContainer(PersistentResource persistentResource) {
-        Iterator<EObject> it = persistentResource.getAllContents();
+    private void getAllContentsEInternalContainer(PersistentResource resource) {
+        Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
         assertThat(sampleModel.eInternalContainer()).isNull(); // "Top Level EObject has a not null container"

@@ -22,60 +22,24 @@ public class ContainsTransientTest extends AllContainsTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        createTransientStores();
+        createTransientStore();
     }
 
     @Test
     public void testContainsTransient3ElementsMapDB() {
-        createResourceContent(mapResource, 3);
-        checkContainsResult(mapResource, 3);
-    }
-
-    @Test
-    public void testContainsTransient3ElementsNeo4j() {
-        createResourceContent(neo4jResource, 3);
-        checkContainsResult(neo4jResource, 3);
-    }
-
-    @Test
-    public void testContainsTransient3ElementsTinker() {
-        createResourceContent(tinkerResource, 3);
-        checkContainsResult(tinkerResource, 3);
+        createResourceContent(resource, 3);
+        checkContainsResult(resource, 3);
     }
 
     @Test
     public void testContainsTransient4ElementsMapDB() {
-        createResourceContent(mapResource, 4);
-        checkContainsResult(mapResource, 4);
-    }
-
-    @Test
-    public void testContainsTransient4ElementsNeo4j() {
-        createResourceContent(neo4jResource, 4);
-        checkContainsResult(neo4jResource, 4);
-    }
-
-    @Test
-    public void testContainsTransient4ElementsTinker() {
-        createResourceContent(tinkerResource, 4);
-        checkContainsResult(tinkerResource, 4);
+        createResourceContent(resource, 4);
+        checkContainsResult(resource, 4);
     }
 
     @Test
     public void testContainsTransient5ElementsMapDB() {
-        createResourceContent(mapResource, 5);
-        checkContainsResult(mapResource, 5);
-    }
-
-    @Test
-    public void testContainsTransient5ElementsNeo4j() {
-        createResourceContent(neo4jResource, 5);
-        checkContainsResult(neo4jResource, 5);
-    }
-
-    @Test
-    public void testContainsTransient5ElementsTinker() {
-        createResourceContent(tinkerResource, 5);
-        checkContainsResult(tinkerResource, 5);
+        createResourceContent(resource, 5);
+        checkContainsResult(resource, 5);
     }
 }

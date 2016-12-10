@@ -32,15 +32,11 @@ public class CopyBackendContentTest extends AllBackendTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-
-        createTransientStores();
-
-        createResourceContent(mapResource);
-        createResourceContent(neo4jResource);
-        createResourceContent(tinkerResource);
+        createTransientStore();
+        createResourceContent(resource);
     }
 
-    private void createResourceContent(PersistentResource r) {
+    private void createResourceContent(PersistentResource resource) {
         SampleModel model = factory.createSampleModel();
         model.setName(MODEL_NAME);
 
@@ -52,16 +48,16 @@ public class CopyBackendContentTest extends AllBackendTest {
         content2.setName(CONTENT2_NAME);
         model.getContentObjects().add(content2);
 
-        r.getContents().add(model);
+        resource.getContents().add(model);
     }
 
     @Test
-    public void testCopyBackendMapDB() throws IOException {
-        mapResource.save(PersistenceOptionsBuilder.noOption());
-        assertThat(mapResource.getContents()).isNotEmpty(); // "Map resource content is empty"
-        assertThat(mapResource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
+    public void testCopyBackend() throws IOException {
+        resource.save(PersistenceOptionsBuilder.noOption());
+        assertThat(resource.getContents()).isNotEmpty(); // "Map resource content is empty"
+        assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
 
-        SampleModel sampleModel = (SampleModel) mapResource.getContents().get(0);
+        SampleModel sampleModel = (SampleModel) resource.getContents().get(0);
         assertThat(sampleModel.getName()).isEqualTo(MODEL_NAME); // "SampleModel has an invalid name attribute"
 
         EList<SampleModelContentObject> contentObjects = sampleModel.getContentObjects();

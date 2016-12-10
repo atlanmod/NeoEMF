@@ -27,91 +27,47 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 public class LoadedResourceContainerTest extends AllLoadedResourceTest {
 
     @Test
-    public void testGetElementsContainerMapDB() {
-        getElementsContainer(mapResource);
+    public void testGetElementsContainer() {
+        getElementsContainer(resource);
     }
 
     @Test
-    public void testGetElementsContainerNeo4j() {
-        getElementsContainer(neo4jResource);
-    }
-
-    @Test
-    public void testGetElementsContainerTinker() {
-        getElementsContainer(tinkerResource);
-    }
-
-    @Test
-    public void testGetAllContentsContainerMapDB() {
-        getAllContentsContainer(mapResource);
-    }
-
-    @Test
-    public void testGetAllContentsContainerNeo4j() {
-        getAllContentsContainer(neo4jResource);
-    }
-
-    @Test
-    public void testGetAllContentsContainerTinker() {
-        getAllContentsContainer(tinkerResource);
+    public void testGetAllContentsContainer() {
+        getAllContentsContainer(resource);
     }
 
     @Test
     @Ignore("Performance issues")
-    public void testGetElementsEInternalContainerMapDB() {
-        getElementsEInternalContainer(mapResource);
+    public void testGetElementsEInternalContainer() {
+        getElementsEInternalContainer(resource);
     }
 
     @Test
     @Ignore("Performance issues")
-    public void testGetElementsEInternalContainerNeo4j() {
-        getElementsEInternalContainer(neo4jResource);
+    public void testGetAllContentsEInternalContainer() {
+        getAllContentsEInternalContainer(resource);
     }
 
-    @Test
-    @Ignore("Performance issues")
-    public void testGetElementsEInternalContainerTinker() {
-        getElementsEInternalContainer(tinkerResource);
-    }
-
-    @Test
-    @Ignore("Performance issues")
-    public void testGetAllContentsEInternalContainerMapDB() {
-        getAllContentsEInternalContainer(mapResource);
-    }
-
-    @Test
-    @Ignore("Performance issues")
-    public void testGetAllContentsEInternalContainerNeo4j() {
-        getAllContentsEInternalContainer(neo4jResource);
-    }
-
-    @Test
-    @Ignore("Performance issues")
-    public void testGetAllContentsEInternalContainerTinker() {
-        getAllContentsEInternalContainer(tinkerResource);
-    }
-
-    private void getElementsContainer(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    private void getElementsContainer(PersistentResource resource) {
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.eContainer()).isNull();
 
         SampleModelContentObject modelContent = model.getContentObjects().get(0);
         assertThat(modelContent.eContainer()).isSameAs(model);
     }
 
-    private void getElementsEInternalContainer(PersistentResource persistentResource) {
+    private void getElementsEInternalContainer(PersistentResource resource) {
         // TODO Check if we have to correct it or not (performance issues)
-        InternalEObject model = (InternalEObject) persistentResource.getContents().get(0);
+        InternalEObject model = (InternalEObject) resource.getContents().get(0);
         assertThat(model.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
 
         InternalEObject modelContent = ((SampleModel) model).getContentObjects().get(0);
         assertThat(modelContent.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
     }
 
-    private void getAllContentsEInternalContainer(PersistentResource persistentResource) {
+    private void getAllContentsEInternalContainer(PersistentResource resource) {
         // TODO Check if we have to correct it or not (performance issues)
-        Iterator<EObject> it = persistentResource.getAllContents();
+        Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
         assertThat(sampleModel.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"

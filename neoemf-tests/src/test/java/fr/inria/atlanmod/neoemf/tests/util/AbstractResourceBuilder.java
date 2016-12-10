@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractResourceBuilder {
+abstract class AbstractResourceBuilder {
 
     private final EPackage ePackage;
 

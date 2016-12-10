@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class EObjectEContentsTest extends AllBackendTest {
         subPacks = new ArrayList<>();
         packContents = new ArrayList<>();
         super.setUp();
-        createPersistentStores();
+        createPersistentStore();
     }
 
     @Override
@@ -56,66 +56,26 @@ public class EObjectEContentsTest extends AllBackendTest {
     }
 
     @Test
-    public void testEObjectEContentsMapDB() {
-        createResourceContent(mapResource);
+    public void testEObjectEContents() {
+        createResourceContent(resource);
         checkEContents();
     }
 
     @Test
-    public void testEObjectEContentsNeo4j() {
-        createResourceContent(neo4jResource);
-        checkEContents();
-    }
-
-    @Test
-    public void testEObjectEContentsTinker() {
-        createResourceContent(tinkerResource);
-        checkEContents();
-    }
-
-    @Test
-    public void testEObjectEmptyEContentsSizeMapDB() {
-        createEmptyPackResourceContent(mapResource);
+    public void testEObjectEmptyEContentsSize() {
+        createEmptyPackResourceContent(resource);
         checkEmptyEContentsSize();
     }
 
     @Test
-    public void testEObjectEmptyEContentsSizeNeo4j() {
-        createEmptyPackResourceContent(neo4jResource);
-        checkEmptyEContentsSize();
-    }
-
-    @Test
-    public void testEObjectEmptyEContentsSizeTinker() {
-        createEmptyPackResourceContent(tinkerResource);
-        checkEmptyEContentsSize();
-    }
-
-    @Test
-    public void testEObjectEmptyEContentsGetMapDB() {
-        createEmptyPackResourceContent(mapResource);
+    public void testEObjectEmptyEContentsGet() {
+        createEmptyPackResourceContent(resource);
 
         Throwable thrown = catchThrowable(this::checkEmptyEContentsGet);
         assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    @Test
-    public void testEObjectEmptyEContentsGetNeo4j() {
-        createEmptyPackResourceContent(neo4jResource);
-
-        Throwable thrown = catchThrowable(this::checkEmptyEContentsGet);
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
-    }
-
-    @Test
-    public void testEObjectEmptyEContentsGetTinker() {
-        createEmptyPackResourceContent(tinkerResource);
-
-        Throwable thrown = catchThrowable(this::checkEmptyEContentsGet);
-        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
-    }
-
-    protected void createResourceContent(Resource r) {
+    protected void createResourceContent(PersistentResource resource) {
         Pack parentPack = factory.createPack();
         parentPack.setName("ParentPack");
 
@@ -136,13 +96,13 @@ public class EObjectEContentsTest extends AllBackendTest {
             p.getOwnedContents().add(pContent);
             packContents.add(pContent);
         }
-        r.getContents().add(p);
+        resource.getContents().add(p);
     }
 
-    protected void createEmptyPackResourceContent(Resource r) {
+    protected void createEmptyPackResourceContent(PersistentResource resource) {
         p = factory.createPack();
         p.setName("Empty Pack");
-        r.getContents().add(p);
+        resource.getContents().add(p);
     }
 
     private void checkEContents() {
