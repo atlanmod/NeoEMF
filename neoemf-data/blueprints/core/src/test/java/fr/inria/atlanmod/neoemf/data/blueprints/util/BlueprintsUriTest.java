@@ -11,65 +11,38 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
-import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.util.AllUriTest;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+public class BlueprintsUriTest extends AllUriTest {
 
-public class BlueprintsUriTest extends AllTest {
-
-    private static final String SCHEME_INVALID = "invalid";
-
-    private final PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
-
-    private File testFile;
-
-    @Before
-    public void setUp() {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = tempFile("Blueprints");
+    @Override
+    protected String name() {
+        return "Blueprints";
     }
 
-    @After
-    public void tearDown() {
-        PersistenceBackendFactoryRegistry.unregisterAll();
+    @Override
+    protected String uriScheme() {
+        return BlueprintsURI.SCHEME;
     }
 
-    @Test
-    public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(BlueprintsURI.SCHEME + ":/test");
-        URI neoURI = BlueprintsURI.createURI(validURI);
-        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
+    @Override
+    protected PersistenceBackendFactory persistenceBackendFactory() {
+        return BlueprintsPersistenceBackendFactory.getInstance();
     }
 
-    @Test
-    public void testCreateNeoGraphURIFromFileURI() {
-        URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = BlueprintsURI.createURI(fileURI);
-        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
+    @Override
+    protected URI createUri(URI uri) {
+        return BlueprintsURI.createURI(uri);
     }
 
-    @Test
-    public void testCreateNeoURIFromFile() {
-        URI neoURI = BlueprintsURI.createFileURI(testFile);
-        assertThat(neoURI).hasScheme(BlueprintsURI.SCHEME);
-    }
-
-    @Test
-    public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
-
-        Throwable thrown = catchThrowable(() -> BlueprintsURI.createURI(invalidURI));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+    @Override
+    protected URI createUri(File file) {
+        return BlueprintsURI.createFileURI(file);
     }
 }

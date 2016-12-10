@@ -27,8 +27,6 @@ public interface Context {
 
     /**
      * Creates a new {@link URI}.
-     *
-     * @see fr.inria.atlanmod.neoemf.util.PersistenceURI#createFileURI(File, String)
      */
     URI createFileUri(File file);
 

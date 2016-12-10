@@ -11,65 +11,38 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
-import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.util.AllUriTest;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+public class MapDbUriTest extends AllUriTest {
 
-public class MapDbUriTest extends AllTest {
-
-    private static final String SCHEME_INVALID = "invalid";
-
-    private final PersistenceBackendFactory persistenceBackendFactory = MapDbPersistenceBackendFactory.getInstance();
-
-    private File testFile;
-
-    @Before
-    public void setUp() {
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, persistenceBackendFactory);
-        testFile = tempFile("MapDb");
+    @Override
+    protected String name() {
+        return "MapDb";
     }
 
-    @After
-    public void tearDown() {
-        PersistenceBackendFactoryRegistry.unregisterAll();
+    @Override
+    protected String uriScheme() {
+        return MapDbURI.SCHEME;
     }
 
-    @Test
-    public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(MapDbURI.SCHEME + ":/test");
-        URI neoURI = MapDbURI.createURI(validURI);
-        assertThat(neoURI).hasScheme(MapDbURI.SCHEME);
+    @Override
+    protected PersistenceBackendFactory persistenceBackendFactory() {
+        return MapDbPersistenceBackendFactory.getInstance();
     }
 
-    @Test
-    public void testCreateNeoGraphURIFromFileURI() {
-        URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = MapDbURI.createURI(fileURI);
-        assertThat(neoURI).hasScheme(MapDbURI.SCHEME);
+    @Override
+    protected URI createUri(URI uri) {
+        return MapDbURI.createURI(uri);
     }
 
-    @Test
-    public void testCreateNeoURIFromFile() {
-        URI neoURI = MapDbURI.createFileURI(testFile);
-        assertThat(neoURI).hasScheme(MapDbURI.SCHEME);
-    }
-
-    @Test
-    public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
-
-        Throwable thrown = catchThrowable(() -> MapDbURI.createURI(invalidURI));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+    @Override
+    protected URI createUri(File file) {
+        return MapDbURI.createFileURI(file);
     }
 }

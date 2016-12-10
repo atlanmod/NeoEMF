@@ -11,65 +11,38 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
-import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.util.AllUriTest;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+public class HBaseUriTest extends AllUriTest {
 
-public class HBaseUriTest extends AllTest {
-
-    private static final String SCHEME_INVALID = "invalid";
-
-    private final PersistenceBackendFactory persistenceBackendFactory = HBasePersistenceBackendFactory.getInstance();
-
-    private File testFile;
-
-    @Before
-    public void setUp() {
-        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, persistenceBackendFactory);
-        testFile = tempFile("HBase");
+    @Override
+    protected String name() {
+        return "HBase";
     }
 
-    @After
-    public void tearDown() {
-        PersistenceBackendFactoryRegistry.unregisterAll();
+    @Override
+    protected String uriScheme() {
+        return HBaseURI.SCHEME;
     }
 
-    @Test
-    public void testCreateNeoGraphURIFromStandardURIValidScheme() {
-        URI validURI = URI.createURI(HBaseURI.SCHEME + ":/test");
-        URI neoURI = HBaseURI.createURI(validURI);
-        assertThat(neoURI).hasScheme(HBaseURI.SCHEME);
+    @Override
+    protected PersistenceBackendFactory persistenceBackendFactory() {
+        return HBasePersistenceBackendFactory.getInstance();
     }
 
-    @Test
-    public void testCreateNeoGraphURIFromFileURI() {
-        URI fileURI = URI.createFileURI(testFile.getAbsolutePath());
-        URI neoURI = HBaseURI.createURI(fileURI);
-        assertThat(neoURI).hasScheme(HBaseURI.SCHEME);
+    @Override
+    protected URI createUri(URI uri) {
+        return HBaseURI.createURI(uri);
     }
 
-    @Test
-    public void testCreateNeoURIFromFile() {
-        URI neoURI = HBaseURI.createFileURI(testFile);
-        assertThat(neoURI).hasScheme(HBaseURI.SCHEME);
-    }
-
-    @Test
-    public void testCreateNeoGraphURIFromStandardURIInvalidScheme() {
-        URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
-
-        Throwable thrown = catchThrowable(() -> HBaseURI.createURI(invalidURI));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+    @Override
+    protected URI createUri(File file) {
+        return HBaseURI.createFileURI(file);
     }
 }
