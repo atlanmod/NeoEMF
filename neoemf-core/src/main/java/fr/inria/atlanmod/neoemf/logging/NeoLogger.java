@@ -89,7 +89,13 @@ public final class NeoLogger {
     }
 
     private static void logMessage(Level level, Throwable throwable, String pattern, Object... args) {
-        Runnable loggerCall = () -> log.log(level, () -> MessageFormat.format(pattern, args), throwable);
+        Runnable loggerCall = () -> {
+            try {
+                log.log(level, () -> MessageFormat.format(pattern, args), throwable);
+            } catch (Exception ignore) {
+            }
+        };
+
         try {
             // Asynchronous call
             pool.submit(loggerCall);
