@@ -42,7 +42,7 @@ public class MapDbUriTest extends AllUriTest {
     }
 
     @Override
-    protected URI createURI(File file) {
+    protected URI createFileURI(File file) {
         return MapDbURI.createFileURI(file);
     }
 }

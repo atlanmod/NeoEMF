@@ -45,15 +45,15 @@ public class PersistenceUriTest extends AllUriTest {
     }
 
     @Override
-    protected URI createURI(File file) {
+    protected URI createFileURI(File file) {
         return PersistenceURI.createFileURI(file, uriScheme());
     }
 
-    protected URI createURI(URI uri, String scheme) {
+    protected URI createFileURI(URI uri, String scheme) {
         return PersistenceURI.createFileURI(uri, scheme);
     }
 
-    protected URI createURI(File file, String scheme) {
+    protected URI createFileURI(File file, String scheme) {
         return PersistenceURI.createFileURI(file, scheme);
     }
 
@@ -65,30 +65,37 @@ public class PersistenceUriTest extends AllUriTest {
     }
 
     @Test
-    public void testCreateUriFromFileInvalidScheme() {
-        Throwable thrown = catchThrowable(() -> createURI(file(), SCHEME_INVALID));
+    public void testCreateFileUriFromFileUri() {
+        URI fileURI = URI.createFileURI(file().getAbsolutePath());
+        URI neoURI = createFileURI(fileURI, uriScheme());
+        assertThat(neoURI).hasScheme(uriScheme());
+    }
+
+    @Test
+    public void testCreateFileUriFromFileInvalidScheme() {
+        Throwable thrown = catchThrowable(() -> createFileURI(file(), SCHEME_INVALID));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void testCreateUriFromFileNullScheme() {
-        Throwable thrown = catchThrowable(() -> createURI(file(), null));
+    public void testCreateFileUriFromFileNullScheme() {
+        Throwable thrown = catchThrowable(() -> createFileURI(file(), null));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void testCreateUriFromFileUriInvalidScheme() {
+    public void testCreateFileUriFromFileUriInvalidScheme() {
         URI fileUri = URI.createFileURI(file().getAbsolutePath());
 
-        Throwable thrown = catchThrowable(() -> createURI(fileUri, SCHEME_INVALID));
+        Throwable thrown = catchThrowable(() -> createFileURI(fileUri, SCHEME_INVALID));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void testCreateUriFromFileUriNullScheme() {
+    public void testCreateFileUriFromFileUriNullScheme() {
         URI fileURI = URI.createFileURI(file().getAbsolutePath());
 
-        Throwable thrown = catchThrowable(() -> createURI(fileURI, null));
+        Throwable thrown = catchThrowable(() -> createFileURI(fileURI, null));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 }

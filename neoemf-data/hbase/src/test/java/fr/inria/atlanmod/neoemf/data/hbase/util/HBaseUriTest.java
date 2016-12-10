@@ -42,7 +42,7 @@ public class HBaseUriTest extends AllUriTest {
     }
 
     @Override
-    protected URI createURI(File file) {
+    protected URI createFileURI(File file) {
         return HBaseURI.createFileURI(file);
     }
 }

@@ -33,7 +33,7 @@ public abstract class AllUriTest extends AllTest {
 
     protected abstract URI createURI(URI uri);
 
-    protected abstract URI createURI(File file);
+    protected abstract URI createFileURI(File file);
 
     @Before
     public void setUp() {
@@ -61,8 +61,8 @@ public abstract class AllUriTest extends AllTest {
     }
 
     @Test
-    public void testCreateUriFromFile() {
-        URI neoURI = createURI(file());
+    public void testCreateFileUriFromFile() {
+        URI neoURI = createFileURI(file());
         assertThat(neoURI).hasScheme(uriScheme());
     }
 
