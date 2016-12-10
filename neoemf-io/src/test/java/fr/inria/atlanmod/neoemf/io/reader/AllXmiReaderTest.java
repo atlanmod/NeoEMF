@@ -31,9 +31,6 @@ import java.io.FileInputStream;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static java.util.Objects.isNull;
 
-/**
- *
- */
 public abstract class AllXmiReaderTest extends AllInputTest {
 
     @Before

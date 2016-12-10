@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
@@ -24,7 +25,7 @@ import org.mapdb.Serializer;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class MapDbPersistenceBackendTest {
+public class MapDbPersistenceBackendTest extends AllTest {
 
     @Test
     public void testStoreFeature() {

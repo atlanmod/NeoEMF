@@ -29,9 +29,6 @@ import java.io.File;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-/**
- *
- */
 public abstract class AllInputTest extends AllTest {
 
     protected static final int UNKNOWN_INDEX = -1;

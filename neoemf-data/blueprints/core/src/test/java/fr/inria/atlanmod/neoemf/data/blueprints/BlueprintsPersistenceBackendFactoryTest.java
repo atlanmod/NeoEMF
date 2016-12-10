@@ -31,11 +31,9 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class BlueprintsPersistenceBackendFactoryTest extends AllPersistenceBackendFactoryTest {
 
-    public static final String NAME = "Tinker";
-
     @Override
     protected String name() {
-        return NAME;
+        return "Blueprints";
     }
 
     @Override

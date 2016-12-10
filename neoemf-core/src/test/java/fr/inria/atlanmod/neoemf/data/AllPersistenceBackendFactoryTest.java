@@ -11,43 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.AllUnitTest;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 import org.eclipse.emf.ecore.InternalEObject;
-import org.junit.After;
-import org.junit.Before;
 
-import java.io.File;
 import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class AllPersistenceBackendFactoryTest extends AllTest {
-
-    private File file;
-
-    public File file() {
-        return file;
-    }
-
-    @Before
-    public void setUp() throws InvalidDataStoreException, InvalidOptionsException {
-        PersistenceBackendFactoryRegistry.register(uriScheme(), persistenceBackendFactory());
-        file = tempFile(name());
-    }
-
-    @After
-    public void tearDown() {
-        PersistenceBackendFactoryRegistry.unregisterAll();
-    }
-
-    protected abstract String name();
-
-    protected abstract String uriScheme();
-
-    protected abstract PersistenceBackendFactory persistenceBackendFactory() throws InvalidDataStoreException, InvalidOptionsException;
+public abstract class AllPersistenceBackendFactoryTest extends AllUnitTest {
 
     /**
      * Utility method to retreive the {@link PersistentStore} included in the given {@code store}.

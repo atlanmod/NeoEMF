@@ -23,9 +23,6 @@ import java.util.List;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-/**
- *
- */
 public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
 
     @Override

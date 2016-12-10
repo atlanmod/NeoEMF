@@ -43,7 +43,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -53,7 +53,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
          */
         assertConfigurationHasEntry(configuration,
                 OPTIONS_GRAPH_NEO4J_STORE_DIR,
-                testFile.getAbsolutePath());
+                file().getAbsolutePath());
 
         assertConfigurationHasSize(configuration, 0);
     }
@@ -66,7 +66,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -92,7 +92,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -118,7 +118,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -144,7 +144,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -170,7 +170,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -196,7 +196,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -223,7 +223,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -270,7 +270,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -295,7 +295,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -342,7 +342,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -369,7 +369,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -416,7 +416,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -443,7 +443,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -490,7 +490,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -517,7 +517,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -564,7 +564,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -592,7 +592,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -657,7 +657,7 @@ public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest 
 
         resource.save(options);
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists();
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);

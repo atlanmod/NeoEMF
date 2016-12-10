@@ -33,13 +33,10 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 public class MapDbPersistenceBackendFactoryTest extends AllPersistenceBackendFactoryTest {
 
-    public static final String NAME = "MapDb";
-
     @Override
     protected String name() {
-        return NAME;
+        return "MapDb";
     }
-
 
     @Override
     protected String uriScheme() {

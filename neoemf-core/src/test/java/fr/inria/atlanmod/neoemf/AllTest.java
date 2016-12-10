@@ -79,7 +79,7 @@ public abstract class AllTest {
     }
 
     protected File tempFile(String name) {
-        File file =  temporaryFolder.getRoot().toPath().resolve(getClass().getSimpleName() + name + String.valueOf(Instant.now().toEpochMilli())).toFile();
+        File file = temporaryFolder.getRoot().toPath().resolve(getClass().getSimpleName() + name + String.valueOf(Instant.now().toEpochMilli())).toFile();
 
         try {
             FileUtils.forceDeleteOnExit(file);

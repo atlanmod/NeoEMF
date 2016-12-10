@@ -1,13 +1,9 @@
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.AllTest;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.AllUnitTest;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.emf.common.util.URI;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,36 +11,13 @@ import java.io.File;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
 
-public abstract class AllUriTest extends AllTest {
+public abstract class AllUriTest extends AllUnitTest {
 
     protected static final String SCHEME_INVALID = "invalid";
-
-    private File file;
-
-    protected File file() {
-        return file;
-    }
-
-    protected abstract String name();
-
-    protected abstract String uriScheme();
-
-    protected abstract PersistenceBackendFactory persistenceBackendFactory();
 
     protected abstract URI createURI(URI uri);
 
     protected abstract URI createFileURI(File file);
-
-    @Before
-    public void setUp() {
-        PersistenceBackendFactoryRegistry.register(uriScheme(), persistenceBackendFactory());
-        file = tempFile(name());
-    }
-
-    @After
-    public void tearDown() {
-        PersistenceBackendFactoryRegistry.unregisterAll();
-    }
 
     @Test
     public void testCreateUriFromStandardUri() {

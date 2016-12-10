@@ -49,19 +49,19 @@ public class PersistenceUriTest extends AllUriTest {
         return PersistenceURI.createFileURI(file, uriScheme());
     }
 
+    @Test
+    @Override
+    public void testCreateUriFromFileUri() {
+        Throwable thrown = catchThrowable(super::testCreateUriFromFileUri);
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+    }
+
     protected URI createFileURI(URI uri, String scheme) {
         return PersistenceURI.createFileURI(uri, scheme);
     }
 
     protected URI createFileURI(File file, String scheme) {
         return PersistenceURI.createFileURI(file, scheme);
-    }
-
-    @Test
-    @Override
-    public void testCreateUriFromFileUri() {
-        Throwable thrown = catchThrowable(super::testCreateUriFromFileUri);
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

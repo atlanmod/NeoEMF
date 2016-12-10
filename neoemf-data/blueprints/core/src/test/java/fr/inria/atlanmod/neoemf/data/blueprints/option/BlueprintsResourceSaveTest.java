@@ -11,9 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.AllUnitTest;
+import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -34,32 +35,44 @@ import java.util.Iterator;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class BlueprintsResourceSaveTest extends AllTest {
+public class BlueprintsResourceSaveTest extends AllUnitTest {
 
     protected final String configFileName = "/config.properties";
 
-    protected File testFile;
-
-    protected PersistenceBackendFactory persistenceBackendFactory = BlueprintsPersistenceBackendFactory.getInstance();
-
-    protected ResourceSet resSet;
     protected Resource resource;
 
-    @Before
-    public void setUp() {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, persistenceBackendFactory);
-        testFile = tempFile("Blueprints");
+    private ResourceSet resourceSet;
 
-        resSet = new ResourceSetImpl();
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        resource = resSet.createResource(BlueprintsURI.createFileURI(testFile));
+    @Before
+    public void setUp() throws InvalidDataStoreException, InvalidOptionsException {
+        super.setUp();
+
+        resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
+        resource = resourceSet.createResource(BlueprintsURI.createFileURI(file()));
     }
 
     @After
     public void tearDown() {
         resource.unload();
-        resSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
-        PersistenceBackendFactoryRegistry.unregisterAll();
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
+
+        super.tearDown();
+    }
+
+    @Override
+    protected String name() {
+        return "Blueprints";
+    }
+
+    @Override
+    protected String uriScheme() {
+        return BlueprintsURI.SCHEME;
+    }
+
+    @Override
+    protected PersistenceBackendFactory persistenceBackendFactory() throws InvalidDataStoreException, InvalidOptionsException {
+        return BlueprintsPersistenceBackendFactory.getInstance();
     }
 
     protected int getKeyCount(PropertiesConfiguration configuration) {
@@ -76,7 +89,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
     public void testSaveGraphResourceNoOption() throws IOException, ConfigurationException {
         resource.save(Collections.emptyMap());
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists(); // "Config file does not exist"
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);
@@ -89,7 +102,7 @@ public class BlueprintsResourceSaveTest extends AllTest {
     public void testSaveGraphResourceDefaultGraphTypeOption() throws IOException, ConfigurationException {
         resource.save(BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        File configFile = new File(testFile + configFileName);
+        File configFile = new File(file() + configFileName);
         assertThat(configFile).exists(); // "Config file does not exist"
 
         PropertiesConfiguration configuration = new PropertiesConfiguration(configFile);

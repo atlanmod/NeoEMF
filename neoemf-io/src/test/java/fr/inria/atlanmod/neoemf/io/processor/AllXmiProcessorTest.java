@@ -30,9 +30,6 @@ import java.io.FileInputStream;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static java.util.Objects.isNull;
 
-/**
- *
- */
 public class AllXmiProcessorTest extends AllInputTest {
 
     @Before

@@ -36,18 +36,14 @@ import static org.mockito.Mockito.when;
  */
 public class PersistenceBackendFactoryTest extends AllPersistenceBackendFactoryTest {
 
-    public static final String NAME = "Core";
-
-    private static final String URI_SCHEME = "mock";
-
     @Override
     protected String name() {
-        return NAME;
+        return "Core";
     }
 
     @Override
     protected String uriScheme() {
-        return URI_SCHEME;
+        return "mock";
     }
 
     @Override

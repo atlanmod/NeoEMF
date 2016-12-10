@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.serializer;
 
+import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
@@ -22,7 +23,7 @@ import java.io.IOException;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
-public class FeatureKeySerializerTest {
+public class FeatureKeySerializerTest extends AllTest {
 
     @Test
     public void testSerialize() throws IOException {
