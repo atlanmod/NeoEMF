@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.tests.util;
+package fr.inria.atlanmod.neoemf.tests.context;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -7,10 +7,7 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- *
- */
-public class BlueprintsNeo4jBackendHelper extends BlueprintsBackendHelper {
+public class BlueprintsNeo4JContext extends BlueprintsContext {
 
     public static final String NAME = "Neo4j";
 

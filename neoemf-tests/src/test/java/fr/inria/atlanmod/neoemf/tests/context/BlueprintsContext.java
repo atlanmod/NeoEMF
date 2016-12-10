@@ -1,7 +1,7 @@
-package fr.inria.atlanmod.neoemf.tests.util;
+package fr.inria.atlanmod.neoemf.tests.context;
 
-import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -10,12 +10,9 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- *
- */
-public class MapDbBackendHelper implements BackendHelper {
+public class BlueprintsContext extends AbstractContext {
 
-    public static final String NAME = "MapDb";
+    public static final String NAME = "Tinker";
 
     @Override
     public String name() {
@@ -24,26 +21,26 @@ public class MapDbBackendHelper implements BackendHelper {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbResourceBuilder(ePackage).persistent().file(file).build();
+        return new BlueprintsResourceBuilder(ePackage).tinkerGraph().persistent().file(file).build();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new MapDbResourceBuilder(ePackage).file(file).build();
+        return new BlueprintsResourceBuilder(ePackage).tinkerGraph().file(file).build();
     }
 
     @Override
     public URI createFileUri(File file) {
-        return MapDbURI.createFileURI(file);
+        return BlueprintsURI.createFileURI(file);
     }
 
     @Override
     public String uriScheme() {
-        return MapDbURI.SCHEME;
+        return BlueprintsURI.SCHEME;
     }
 
     @Override
     public Class<?> directWriteClass() {
-        return DirectWriteMapDbStore.class;
+        return DirectWriteBlueprintsStore.class;
     }
 }

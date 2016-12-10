@@ -35,15 +35,16 @@ import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
  */
 public class TransientStoreListTest extends AllTest {
 
-    protected SampleModel model;
-    protected MapSamplePackage mapPackage;
-    protected MapSampleFactory mapFactory;
+    private SampleModel model;
+    private MapSampleFactory mapFactory;
 
     @Before
     public void setUp() {
-        mapPackage = MapSamplePackage.eINSTANCE;
+        @SuppressWarnings("unused")
+        MapSamplePackage mapPackage = MapSamplePackage.eINSTANCE;
+
         mapFactory = MapSampleFactory.eINSTANCE;
-        this.model = mapFactory.createSampleModel();
+        model = mapFactory.createSampleModel();
     }
 
     @Test

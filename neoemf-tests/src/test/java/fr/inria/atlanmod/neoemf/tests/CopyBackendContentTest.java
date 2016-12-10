@@ -12,11 +12,11 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.common.util.EList;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -27,28 +27,11 @@ public class CopyBackendContentTest extends AllBackendTest {
 
     private static final String MODEL_NAME = "Model", CONTENT1_NAME = "Content1", CONTENT2_NAME = "Content2";
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        createTransientStore();
-
-        SampleModel model = factory.createSampleModel();
-        model.setName(MODEL_NAME);
-
-        SampleModelContentObject content1 = factory.createSampleModelContentObject();
-        content1.setName(CONTENT1_NAME);
-        model.getContentObjects().add(content1);
-
-        SampleModelContentObject content2 = factory.createSampleModelContentObject();
-        content2.setName(CONTENT2_NAME);
-        model.getContentObjects().add(content2);
-
-        resource.getContents().add(model);
-    }
-
     @Test
     public void testCopyBackend() throws IOException {
+        PersistentResource resource = createTransientStore();
+        createResourceContent(resource);
+
         resource.save(PersistenceOptionsBuilder.noOption());
         assertThat(resource.getContents()).isNotEmpty(); // "Map resource content is empty"
         assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
@@ -65,5 +48,20 @@ public class CopyBackendContentTest extends AllBackendTest {
 
         assertThat(contentObjects.get(0).eContainer()).isSameAs(sampleModel); // "First element in contentObjects collection has an invalid container"
         assertThat(contentObjects.get(1).eContainer()).isSameAs(sampleModel); // "Second element in contentObjects collection has an invalid container"
+    }
+
+    private void createResourceContent(final PersistentResource resource) {
+        SampleModel model = EFACTORY.createSampleModel();
+        model.setName(MODEL_NAME);
+
+        SampleModelContentObject content1 = EFACTORY.createSampleModelContentObject();
+        content1.setName(CONTENT1_NAME);
+        model.getContentObjects().add(content1);
+
+        SampleModelContentObject content2 = EFACTORY.createSampleModelContentObject();
+        content2.setName(CONTENT2_NAME);
+        model.getContentObjects().add(content2);
+
+        resource.getContents().add(model);
     }
 }

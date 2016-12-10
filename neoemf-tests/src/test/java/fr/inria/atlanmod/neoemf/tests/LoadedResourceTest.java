@@ -21,40 +21,20 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoadedResourceTest extends AllBackendTest {
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        createPersistentStore();
-
-        SampleModel mapSampleModel = factory.createSampleModel();
-        SampleModelContentObject mapSampleContentObject = factory.createSampleModelContentObject();
-        mapSampleModel.getContentObjects().add(mapSampleContentObject);
-        resource.getContents().add(mapSampleModel);
-
-        resource.save(PersistenceOptionsBuilder.noOption());
-
-        resource.close();
-
-        ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(helper.uriScheme(), PersistentResourceFactory.getInstance());
-        resource = (PersistentResource) rSet.getResource(helper.createFileUri(resourceFile), true);
-
-        resource.load(PersistenceOptionsBuilder.noOption());
-    }
-
     @Test
-    public void testGetElementsContainer() {
+    public void testGetElementsContainer() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.eContainer()).isNull();
 
@@ -63,7 +43,9 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
-    public void testGetAllContentsContainer() {
+    public void testGetAllContentsContainer() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         Iterator<EObject> it = resource.getAllContents();
 
         EObject sampleModel = it.next();
@@ -74,9 +56,10 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Ignore("Performance issues")
-    public void testGetElementsEInternalContainer() {
-        // TODO Check if we have to correct it or not (performance issues)
+    @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
+    public void testGetElementsEInternalContainer() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         InternalEObject model = (InternalEObject) resource.getContents().get(0);
         assertThat(model.eInternalContainer()).isNull(); // "eInternalContainer must return null if eContainer has not been called"
 
@@ -85,9 +68,10 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
-    @Ignore("Performance issues")
-    public void testGetAllContentsEInternalContainer() {
-        // TODO Check if we have to correct it or not (performance issues)
+    @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
+    public void testGetAllContentsEInternalContainer() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
@@ -98,7 +82,9 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
-    public void testGetElementsEResource() {
+    public void testGetElementsEResource() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.eResource()).isSameAs(resource); // "Wrong eResource value"
 
@@ -107,7 +93,9 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
-    public void testGetAllContentsEResource() {
+    public void testGetAllContentsEResource() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         Iterator<EObject> it = resource.getAllContents();
 
         EObject sampleModel = it.next();
@@ -118,7 +106,9 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
-    public void testGetElementsEDirectResource() {
+    public void testGetElementsEDirectResource() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         InternalEObject model = (InternalEObject) resource.getContents().get(0);
         assertThat(model.eDirectResource()).isNull(); // "eDirectResource must return null"
 
@@ -127,7 +117,9 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
-    public void testGetAllContentsEDirectResource() {
+    public void testGetAllContentsEDirectResource() throws IOException {
+        PersistentResource resource = createResourceContent(createPersistentStore());
+
         Iterator<EObject> it = resource.getAllContents();
 
         InternalEObject sampleModel = (InternalEObject) it.next();
@@ -135,5 +127,22 @@ public class LoadedResourceTest extends AllBackendTest {
 
         InternalEObject sampleContentObject = (InternalEObject) it.next();
         assertThat(sampleContentObject.eDirectResource()).isNull(); // "eDirectResource must return null"
+    }
+
+    private PersistentResource createResourceContent(final PersistentResource resource) throws IOException {
+        SampleModel mapSampleModel = EFACTORY.createSampleModel();
+        SampleModelContentObject mapSampleContentObject = EFACTORY.createSampleModelContentObject();
+        mapSampleModel.getContentObjects().add(mapSampleContentObject);
+        resource.getContents().add(mapSampleModel);
+
+        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.close();
+
+        ResourceSet rSet = new ResourceSetImpl();
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(context.uriScheme(), PersistentResourceFactory.getInstance());
+
+        PersistentResource newResource = (PersistentResource) rSet.getResource(context.createFileUri(resourceFile()), true);
+        newResource.load(PersistenceOptionsBuilder.noOption());
+        return closeAtExit(newResource);
     }
 }

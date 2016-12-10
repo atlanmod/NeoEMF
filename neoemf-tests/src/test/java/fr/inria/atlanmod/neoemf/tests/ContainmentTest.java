@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContentCommen
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,25 +26,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ContainmentTest extends AllBackendTest {
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        createPersistentStore();
-    }
-
     @Test
     public void testAddContainmentSubtree() {
-        Pack p1 = factory.createPack();
+        PersistentResource resource = createPersistentStore();
+
+        Pack p1 = EFACTORY.createPack();
         p1.setName("p1");
 
         resource.getContents().add(p1);
 
-        Pack p2 = factory.createPack();
+        Pack p2 = EFACTORY.createPack();
         p2.setName("p2");
-        PackContent pc1 = factory.createPackContent();
+        PackContent pc1 = EFACTORY.createPackContent();
 
-        Pack p3 = factory.createPack();
+        Pack p3 = EFACTORY.createPack();
         p3.setName("p3");
         p2.getPacks().add(p3);
         pc1.setName("pc1");
@@ -53,10 +47,10 @@ public class ContainmentTest extends AllBackendTest {
 
         p1.getPacks().add(p2);
 
-        assertThat(p1.eStore()).isInstanceOf(helper.directWriteClass());
-        assertThat(p2.eStore()).isInstanceOf(helper.directWriteClass());
-        assertThat(p3.eStore()).isInstanceOf(helper.directWriteClass());
-        assertThat(pc1.eStore()).isInstanceOf(helper.directWriteClass());
+        assertThat(p1.eStore()).isInstanceOf(context.directWriteClass());
+        assertThat(p2.eStore()).isInstanceOf(context.directWriteClass());
+        assertThat(p3.eStore()).isInstanceOf(context.directWriteClass());
+        assertThat(pc1.eStore()).isInstanceOf(context.directWriteClass());
 
         assertThat(p1.resource()).isSameAs(resource);
         assertThat(p2.resource()).isSameAs(resource);
@@ -66,19 +60,21 @@ public class ContainmentTest extends AllBackendTest {
 
     @Test
     public void testSetContainmentAfterNonContainment() {
-        Pack p1 = factory.createPack();
+        PersistentResource resource = createPersistentStore();
+
+        Pack p1 = EFACTORY.createPack();
         p1.setName("p1");
 
         resource.getContents().add(p1);
 
-        Pack p2 = factory.createPack();
+        Pack p2 = EFACTORY.createPack();
         p2.setName("p2");
         p1.getPacks().add(p2);
-        PackContent pc1 = factory.createPackContent();
+        PackContent pc1 = EFACTORY.createPackContent();
         pc1.setName("pc1");
         p2.getOwnedContents().add(pc1);
 
-        AbstractPackContentComment com1 = factory.createAbstractPackContentComment();
+        AbstractPackContentComment com1 = EFACTORY.createAbstractPackContentComment();
         com1.setContent("My Content");
 
         // Add using the non-containment reference
@@ -87,7 +83,7 @@ public class ContainmentTest extends AllBackendTest {
         // Then add the element to the resource tree using the containment reference
         pc1.getContainmentNoOppositeRefComment().add(com1);
 
-        assertThat(com1.eStore()).isInstanceOf(helper.directWriteClass());
+        assertThat(com1.eStore()).isInstanceOf(context.directWriteClass());
         assertThat(com1.resource()).isSameAs(resource);
 
         // Check that the element has a container (it cannot be in the resource if it does not)

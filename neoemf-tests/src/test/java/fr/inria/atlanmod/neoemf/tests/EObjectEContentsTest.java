@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
@@ -35,83 +36,76 @@ public class EObjectEContentsTest extends AllBackendTest {
     private static final int PACK_CONTENT_COUNT = 3;
     private static final int ECONTENTS_COUNT = SUB_PACK_COUNT + PACK_CONTENT_COUNT;
 
-    protected Pack p;
-    protected List<EObject> subPacks;
-    protected List<EObject> packContents;
-
-    @Override
-    public void setUp() throws Exception {
-        subPacks = new ArrayList<>();
-        packContents = new ArrayList<>();
-        super.setUp();
-        createPersistentStore();
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        p = null;
-        subPacks = null;
-        packContents = null;
-        super.tearDown();
-    }
+    private Pack pack;
+    private List<EObject> subPacks;
+    private List<EObject> packContents;
 
     @Test
     public void testEObjectEContents() {
+        PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
 
-        EList<EObject> eContents = p.eContents();
+        EList<EObject> eContents = pack.eContents();
         assertThat(eContents).hasSize(ECONTENTS_COUNT);
-        for (int i = 0; i < SUB_PACK_COUNT; i++) {
-            assertThat(eContents.get(i)).isEqualTo(subPacks.get(i)); // "p.eContents().get(i) != subPacks.get(i)"
-        }
-        for (int i = 0; i < PACK_CONTENT_COUNT; i++) {
-            assertThat(eContents.get(i + SUB_PACK_COUNT)).isEqualTo(packContents.get(i)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
-        }
+
+        IntStream.range(0, SUB_PACK_COUNT).forEach(index -> {
+            assertThat(eContents.get(index)).isEqualTo(subPacks.get(index)); // "p.eContents().get(i) != subPacks.get(i)"
+        });
+
+        IntStream.range(0, PACK_CONTENT_COUNT).forEach(index -> {
+            assertThat(eContents.get(index + SUB_PACK_COUNT)).isEqualTo(packContents.get(index)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
+        });
     }
 
     @Test
     public void testEObjectEmptyEContentsSize() {
+        PersistentResource resource = createPersistentStore();
         createEmptyPackResourceContent(resource);
 
-        EList<EObject> eContents = p.eContents();
+        EList<EObject> eContents = pack.eContents();
         assertThat(eContents).isEmpty();
     }
 
     @Test
     public void testEObjectEmptyEContentsGet() {
+        PersistentResource resource = createPersistentStore();
         createEmptyPackResourceContent(resource);
 
-        Throwable thrown = catchThrowable(() -> p.eContents().get(0));
+        Throwable thrown = catchThrowable(() -> pack.eContents().get(0));
         assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
-    protected void createResourceContent(PersistentResource resource) {
-        Pack parentPack = factory.createPack();
+    private void createResourceContent(final PersistentResource resource) {
+        subPacks = new ArrayList<>();
+        packContents = new ArrayList<>();
+
+        Pack parentPack = EFACTORY.createPack();
         parentPack.setName("ParentPack");
 
-        p = factory.createPack();
-        p.setName("Pack");
-        p.setParentPack(parentPack);
+        pack = EFACTORY.createPack();
+        pack.setName("Pack");
+        pack.setParentPack(parentPack);
 
-        for (int i = 0; i < SUB_PACK_COUNT; i++) {
-            Pack subPack = factory.createPack();
+        IntStream.range(0, SUB_PACK_COUNT).forEach(i -> {
+            Pack subPack = EFACTORY.createPack();
             subPack.setName("SubPack" + i);
-            p.getPacks().add(subPack);
+            pack.getPacks().add(subPack);
             subPacks.add(subPack);
-        }
+        });
 
-        for (int i = 0; i < PACK_CONTENT_COUNT; i++) {
-            AbstractPackContent pContent = factory.createPackContent();
+        IntStream.range(0, PACK_CONTENT_COUNT).forEach(i -> {
+            AbstractPackContent pContent = EFACTORY.createPackContent();
             pContent.setName("PackContent" + i);
-            p.getOwnedContents().add(pContent);
+            pack.getOwnedContents().add(pContent);
             packContents.add(pContent);
-        }
-        resource.getContents().add(p);
+        });
+
+        resource.getContents().add(pack);
     }
 
-    protected void createEmptyPackResourceContent(PersistentResource resource) {
-        p = factory.createPack();
-        p.setName("Empty Pack");
-        resource.getContents().add(p);
+    private void createEmptyPackResourceContent(final PersistentResource resource) {
+        pack = EFACTORY.createPack();
+        pack.setName("Empty Pack");
+        resource.getContents().add(pack);
     }
 }

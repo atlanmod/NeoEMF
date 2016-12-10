@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
 
 import org.eclipse.emf.common.util.EMap;
-import org.junit.Before;
 import org.junit.Test;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
@@ -25,16 +25,11 @@ public class EMapSupportTest extends AllBackendTest {
 
     private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        createPersistentStore();
-        resource.getContents().add(factory.createSampleModel());
-    }
-
     @Test
     public void testGetMapStringStringEmpty() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
+
         SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getMap()).isInstanceOf(EMap.class); // "Map field is not an instance of EMap"
 
@@ -44,6 +39,9 @@ public class EMapSupportTest extends AllBackendTest {
 
     @Test
     public void testPutMapStringString() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
+
         SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<String, String> map = model.getMap();
         map.put(KEY1, VALUE1);
@@ -58,6 +56,9 @@ public class EMapSupportTest extends AllBackendTest {
 
     @Test
     public void testGetMapKVEmpty() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
+
         SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getKvMap()).isInstanceOf(EMap.class); // "KvMap field is not an instance of EMap"
 
@@ -67,22 +68,25 @@ public class EMapSupportTest extends AllBackendTest {
 
     @Test
     public void testPutMapKV() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
+
         SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<K, V> map = model.getKvMap();
 
-        K k1 = factory.createK();
+        K k1 = EFACTORY.createK();
         k1.setKName(KEY1);
         k1.setKInt(10);
 
-        K k2 = factory.createK();
+        K k2 = EFACTORY.createK();
         k2.setKName(KEY2);
         k2.setKInt(100);
 
-        V v1 = factory.createV();
+        V v1 = EFACTORY.createV();
         v1.setVName(VALUE1);
         v1.setVInt(1);
 
-        V v2 = factory.createV();
+        V v2 = EFACTORY.createV();
         v2.setVName(VALUE2);
         v2.setVInt(5);
 

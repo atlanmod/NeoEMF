@@ -13,12 +13,12 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.tests.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.tests.context.BlueprintsNeo4JContext;
+import fr.inria.atlanmod.neoemf.tests.context.Context;
+import fr.inria.atlanmod.neoemf.tests.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
-import fr.inria.atlanmod.neoemf.tests.util.BackendHelper;
-import fr.inria.atlanmod.neoemf.tests.util.BlueprintsBackendHelper;
-import fr.inria.atlanmod.neoemf.tests.util.BlueprintsNeo4jBackendHelper;
-import fr.inria.atlanmod.neoemf.tests.util.MapDbBackendHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,65 +27,78 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
-import static java.util.Objects.nonNull;
+import java.util.List;
 
 @RunWith(Parameterized.class)
 public abstract class AllBackendTest extends AllTest {
 
+    protected static final MapSampleFactory EFACTORY = MapSampleFactory.eINSTANCE;
+
+    private static final MapSamplePackage EPACKAGE = MapSamplePackage.eINSTANCE;
+
     @Parameterized.Parameter
-    public BackendHelper helper;
+    public Context context;
 
     @Parameterized.Parameter(1)
     public String name;
 
-    protected PersistentResource resource;
+    private List<PersistentResource> loadedResources;
 
-    protected File resourceFile;
-
-    protected MapSampleFactory factory = MapSampleFactory.eINSTANCE;
-    protected MapSamplePackage ePackage = MapSamplePackage.eINSTANCE;
+    private File resourceFile;
 
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
-                new Object[]{new MapDbBackendHelper(), MapDbBackendHelper.NAME},
-                new Object[]{new BlueprintsBackendHelper(), BlueprintsBackendHelper.NAME},
-                new Object[]{new BlueprintsNeo4jBackendHelper(), BlueprintsNeo4jBackendHelper.NAME}
+                new Object[]{new MapDbContext(), MapDbContext.NAME},
+                new Object[]{new BlueprintsContext(), BlueprintsContext.NAME},
+                new Object[]{new BlueprintsNeo4JContext(), BlueprintsNeo4JContext.NAME}
         );
+    }
+
+    public File resourceFile() {
+        return resourceFile;
+    }
+
+    public PersistentResource createPersistentStore() {
+        try {
+            return closeAtExit(context.createPersistentResource(EPACKAGE, resourceFile));
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public PersistentResource createTransientStore() {
+        try {
+            return closeAtExit(context.createTransientResource(EPACKAGE, resourceFile));
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public PersistentResource closeAtExit(final PersistentResource resource) {
+        loadedResources.add(resource);
+        return resource;
     }
 
     @Before
     public void setUp() throws Exception {
-        resourceFile = tempFile(helper.name());
-    }
-
-    public void createPersistentStore() {
-        try {
-            resource = helper.createPersistentResource(ePackage, resourceFile);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void createTransientStore() {
-        try {
-            resource = helper.createTransientResource(ePackage, resourceFile);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        loadedResources = new ArrayList<>();
+        resourceFile = tempFile(context.name());
     }
 
     @After
     public void tearDown() throws Exception {
         //printMemoryUsage();
 
-        if (nonNull(resource)) {
+        for (PersistentResource resource : loadedResources) {
             resource.close();
         }
+
+        loadedResources.clear();
     }
 }
