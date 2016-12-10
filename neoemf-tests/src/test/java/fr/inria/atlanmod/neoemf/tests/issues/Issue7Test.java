@@ -20,7 +20,7 @@ import org.junit.Test;
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
 /**
- * Test case to reproduce the issue #7 @link{https://github.com/atlanmod/NeoEMF/issues/7}
+ * Test case to reproduce the issue <a href="https://github.com/atlanmod/NeoEMF/issues/7">#7</a>.
  */
 public class Issue7Test extends AllTest {
 

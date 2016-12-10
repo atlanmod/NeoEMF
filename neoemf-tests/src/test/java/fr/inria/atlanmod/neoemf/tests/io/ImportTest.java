@@ -218,7 +218,7 @@ public class ImportTest extends AllInputTest {
         assertEqualEObject(neoObject, emfObject);
     }
 
-    private void assertEqualEObject(EObject actual, EObject expected) {
+    private void assertEqualEObject(final EObject actual, final EObject expected) {
         NeoLogger.debug("Actual object     : {0}", actual);
         NeoLogger.debug("Expected object   : {0}", expected);
 
@@ -243,7 +243,7 @@ public class ImportTest extends AllInputTest {
     }
 
     @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
-    private void assertEqualFeature(EObject actual, EObject expected, int featureId) {
+    private void assertEqualFeature(final EObject actual, final EObject expected, final int featureId) {
         EStructuralFeature eStructuralFeature = expected.eClass().getEStructuralFeature(featureId);
 
         if (!testedFeatures.contains(eStructuralFeature)) {
@@ -337,7 +337,7 @@ public class ImportTest extends AllInputTest {
         }
     }
 
-    private EObject loadWithEMF(File file) throws Exception {
+    private EObject loadWithEMF(final File file) throws Exception {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
@@ -346,14 +346,14 @@ public class ImportTest extends AllInputTest {
         return resource.getContents().get(0);
     }
 
-    private void loadWithNeo(File file, PersistenceHandler persistenceHandler) throws Exception {
+    private void loadWithNeo(final File file, final PersistenceHandler persistenceHandler) throws Exception {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
         Importer.fromXmi(new FileInputStream(file), persistenceHandler);
     }
 
-    private EObject loadWithNeoBlueprints(File file) throws Exception {
+    private EObject loadWithNeoBlueprints(final File file) throws Exception {
         BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
         PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(persistenceBackend, false);
 
