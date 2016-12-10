@@ -26,20 +26,20 @@ public class ContainsTransientTest extends AllContainsTest {
     }
 
     @Test
-    public void testContainsTransient3ElementsMapDB() {
+    public void testContainsTransient3Elements() {
         createResourceContent(resource, 3);
-        checkContainsResult(resource, 3);
+        assertContainsExactly(resource, 3);
     }
 
     @Test
-    public void testContainsTransient4ElementsMapDB() {
+    public void testContainsTransient4Elements() {
         createResourceContent(resource, 4);
-        checkContainsResult(resource, 4);
+        assertContainsExactly(resource, 4);
     }
 
     @Test
-    public void testContainsTransient5ElementsMapDB() {
+    public void testContainsTransient5Elements() {
         createResourceContent(resource, 5);
-        checkContainsResult(resource, 5);
+        assertContainsExactly(resource, 5);
     }
 }

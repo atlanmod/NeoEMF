@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,45 +30,29 @@ public class AllInstancesPersistentTest extends AllInstancesTest {
 
     @Test
     public void testAllInstancesPersistent() {
-        allInstancesPersistent(resource);
+        assertAllInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
     @Test
     public void testAllInstancesStricPersistent() {
-        allInstancesStrictPersistent(resource);
+        assertAllInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
 
     @Test
     public void testAllInstancesPersistentLoaded() throws IOException {
-        allInstancesPersistentLoaded(resource);
+        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.close();
+        resource.load(PersistenceOptionsBuilder.noOption());
+
+        assertAllInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
     @Test
     public void testAllInstancesStrictPersistentLoaded() throws IOException {
-        allInstancesStrictPersistentLoaded(resource);
-    }
-
-    private void allInstancesPersistentLoaded(PersistentResource resource) throws IOException {
         resource.save(PersistenceOptionsBuilder.noOption());
         resource.close();
         resource.load(PersistenceOptionsBuilder.noOption());
 
-        allInstancesPersistent(resource);
-    }
-
-    private void allInstancesStrictPersistentLoaded(PersistentResource resource) throws IOException {
-        resource.save(PersistenceOptionsBuilder.noOption());
-        resource.close();
-        resource.load(PersistenceOptionsBuilder.noOption());
-
-        allInstancesStrictPersistent(resource);
-    }
-
-    private void allInstancesPersistent(PersistentResource resource) {
-        allInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
-    }
-
-    private void allInstancesStrictPersistent(PersistentResource resource) {
-        allInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+        assertAllInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
 }

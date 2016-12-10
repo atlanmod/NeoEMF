@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
@@ -36,25 +35,6 @@ public class EMapSupportTest extends AllBackendTest {
 
     @Test
     public void testGetMapStringStringEmpty() {
-        getMapStringStringEmpty(resource);
-    }
-
-    @Test
-    public void testPutMapStringString() {
-        putMapStringString(resource);
-    }
-
-    @Test
-    public void testGetMapKVEmpty() {
-        getMapKVEmpty(resource);
-    }
-
-    @Test
-    public void testPutMapKV() {
-        putMapKV(resource);
-    }
-
-    private void getMapStringStringEmpty(PersistentResource resource) {
         SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getMap()).isInstanceOf(EMap.class); // "Map field is not an instance of EMap"
 
@@ -62,7 +42,8 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat(map).isEmpty(); // "EMap is not empty"
     }
 
-    private void putMapStringString(PersistentResource resource) {
+    @Test
+    public void testPutMapStringString() {
         SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<String, String> map = model.getMap();
         map.put(KEY1, VALUE1);
@@ -75,7 +56,8 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat(map.get(KEY2)).isEqualTo(VALUE2); // "Wrong value for KEY2"
     }
 
-    private void getMapKVEmpty(PersistentResource resource) {
+    @Test
+    public void testGetMapKVEmpty() {
         SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getKvMap()).isInstanceOf(EMap.class); // "KvMap field is not an instance of EMap"
 
@@ -83,7 +65,8 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat(map).isEmpty(); // "KvMap is not empty"
     }
 
-    private void putMapKV(PersistentResource resource) {
+    @Test
+    public void testPutMapKV() {
         SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<K, V> map = model.getKvMap();
 

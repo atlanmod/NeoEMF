@@ -58,20 +58,30 @@ public class EObjectEContentsTest extends AllBackendTest {
     @Test
     public void testEObjectEContents() {
         createResourceContent(resource);
-        checkEContents();
+
+        EList<EObject> eContents = p.eContents();
+        assertThat(eContents).hasSize(ECONTENTS_COUNT);
+        for (int i = 0; i < SUB_PACK_COUNT; i++) {
+            assertThat(eContents.get(i)).isEqualTo(subPacks.get(i)); // "p.eContents().get(i) != subPacks.get(i)"
+        }
+        for (int i = 0; i < PACK_CONTENT_COUNT; i++) {
+            assertThat(eContents.get(i + SUB_PACK_COUNT)).isEqualTo(packContents.get(i)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
+        }
     }
 
     @Test
     public void testEObjectEmptyEContentsSize() {
         createEmptyPackResourceContent(resource);
-        checkEmptyEContentsSize();
+
+        EList<EObject> eContents = p.eContents();
+        assertThat(eContents).isEmpty();
     }
 
     @Test
     public void testEObjectEmptyEContentsGet() {
         createEmptyPackResourceContent(resource);
 
-        Throwable thrown = catchThrowable(this::checkEmptyEContentsGet);
+        Throwable thrown = catchThrowable(() -> p.eContents().get(0));
         assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
@@ -103,25 +113,5 @@ public class EObjectEContentsTest extends AllBackendTest {
         p = factory.createPack();
         p.setName("Empty Pack");
         resource.getContents().add(p);
-    }
-
-    private void checkEContents() {
-        EList<EObject> eContents = p.eContents();
-        assertThat(eContents).hasSize(ECONTENTS_COUNT);
-        for (int i = 0; i < SUB_PACK_COUNT; i++) {
-            assertThat(eContents.get(i)).isEqualTo(subPacks.get(i)); // "p.eContents().get(i) != subPacks.get(i)"
-        }
-        for (int i = 0; i < PACK_CONTENT_COUNT; i++) {
-            assertThat(eContents.get(i + SUB_PACK_COUNT)).isEqualTo(packContents.get(i)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
-        }
-    }
-
-    private void checkEmptyEContentsSize() {
-        EList<EObject> eContents = p.eContents();
-        assertThat(eContents).isEmpty();
-    }
-
-    private void checkEmptyEContentsGet() {
-        p.eContents().get(0);
     }
 }

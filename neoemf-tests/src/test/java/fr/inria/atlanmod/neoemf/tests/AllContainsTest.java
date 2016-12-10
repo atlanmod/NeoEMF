@@ -49,7 +49,7 @@ public abstract class AllContainsTest extends AllBackendTest {
         resource.getContents().add(model);
     }
 
-    protected void checkContainsResult(PersistentResource resource, int count) {
+    protected void assertContainsExactly(PersistentResource resource, int count) {
         SampleModel m = (SampleModel) resource.getContents().get(0);
         assertThat(m.getContentObjects()).hasSize(count);
         assertThat(m.getContentObjects()).containsExactlyElementsOf(addedContent);

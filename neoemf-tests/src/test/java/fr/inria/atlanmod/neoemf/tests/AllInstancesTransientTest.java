@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,19 +26,11 @@ public class AllInstancesTransientTest extends AllInstancesTest {
 
     @Test
     public void testAllInstancesTransient() {
-        allInstancesTransient(resource);
+        assertAllInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
     @Test
     public void testAllInstancesStrictTransient() {
-        allInstancesStrictTransient(resource);
-    }
-
-    private void allInstancesTransient(PersistentResource resource) {
-        allInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
-    }
-
-    private void allInstancesStrictTransient(PersistentResource resource) {
-        allInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+        assertAllInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }
 }

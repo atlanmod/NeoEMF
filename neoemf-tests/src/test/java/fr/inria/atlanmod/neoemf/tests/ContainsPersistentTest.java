@@ -28,18 +28,18 @@ public class ContainsPersistentTest extends AllContainsTest {
     @Test
     public void testContainsPersistent3Elements() {
         createResourceContent(resource, 3);
-        checkContainsResult(resource, 3);
+        assertContainsExactly(resource, 3);
     }
 
     @Test
     public void testContainsPersistent4Elements() {
         createResourceContent(resource, 4);
-        checkContainsResult(resource, 4);
+        assertContainsExactly(resource, 4);
     }
 
     @Test
     public void testContainsPersistent5Elements() {
         createResourceContent(resource, 5);
-        checkContainsResult(resource, 5);
+        assertContainsExactly(resource, 5);
     }
 }

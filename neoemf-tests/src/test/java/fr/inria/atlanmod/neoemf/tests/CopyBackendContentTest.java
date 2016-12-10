@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
@@ -33,10 +32,7 @@ public class CopyBackendContentTest extends AllBackendTest {
     public void setUp() throws Exception {
         super.setUp();
         createTransientStore();
-        createResourceContent(resource);
-    }
 
-    private void createResourceContent(PersistentResource resource) {
         SampleModel model = factory.createSampleModel();
         model.setName(MODEL_NAME);
 

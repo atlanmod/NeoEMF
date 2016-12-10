@@ -62,7 +62,7 @@ public abstract class AllInstancesTest extends AllBackendTest {
         resource.getContents().add(rootPack);
     }
 
-    protected void allInstancesPersistentTranscient(PersistentResource resource, boolean strict, int abstractPackContentCount, int packContentCount) {
+    protected void assertAllInstancesPersistentTranscient(PersistentResource resource, boolean strict, int abstractPackContentCount, int packContentCount) {
         EList<EObject> allPacks = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
         assertThat(allPacks).hasSize(PACK_COUNT); // "Invalid count"
 
