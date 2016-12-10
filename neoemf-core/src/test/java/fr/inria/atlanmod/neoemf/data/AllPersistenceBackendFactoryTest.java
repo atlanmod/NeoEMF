@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.InternalEObject;
 import org.junit.After;
@@ -27,21 +26,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AllPersistenceBackendFactoryTest extends AllTest {
 
-    private File resourceFile;
+    private File file;
+
+    public File file() {
+        return file;
+    }
 
     @Before
     public void setUp() throws InvalidDataStoreException, InvalidOptionsException {
         PersistenceBackendFactoryRegistry.register(uriScheme(), persistenceBackendFactory());
-        resourceFile = tempFile(name());
+        file = tempFile(name());
     }
 
     @After
     public void tearDown() {
         PersistenceBackendFactoryRegistry.unregisterAll();
-    }
-
-    public File resourceFile() {
-        return resourceFile;
     }
 
     protected abstract String name();
@@ -51,24 +50,6 @@ public abstract class AllPersistenceBackendFactoryTest extends AllTest {
     protected abstract PersistenceBackendFactory persistenceBackendFactory() throws InvalidDataStoreException, InvalidOptionsException;
 
     /**
-     * Utility method to retrieve the {@link PersistenceBackend} associated to the given {@code store}.
-     */
-    protected PersistenceBackend getInnerBackend(PersistentStore store) {
-        PersistentStore context = store.getEStore();
-
-        try {
-            Field field = AbstractDirectWriteStore.class.getDeclaredField("persistenceBackend");
-            field.setAccessible(true);
-            return (PersistenceBackend) field.get(context);
-        }
-        catch (NoSuchFieldException | IllegalAccessException e) {
-            NeoLogger.error(e);
-        }
-
-        return null;
-    }
-
-    /**
      * Utility method to retreive the {@link PersistentStore} included in the given {@code store}.
      */
     protected PersistentStore getChildStore(InternalEObject.EStore store) throws SecurityException, IllegalArgumentException {
@@ -76,8 +57,15 @@ public abstract class AllPersistenceBackendFactoryTest extends AllTest {
         return ((PersistentStore) store).getEStore();
     }
 
-    protected void assertHasInnerBackend(PersistentStore store, PersistenceBackend expectedInnerBackend) {
-        PersistenceBackend innerBackend = getInnerBackend(store);
+    protected void assertHasInnerBackend(PersistentStore store, PersistenceBackend expectedInnerBackend) throws NoSuchFieldException, IllegalAccessException {
+        PersistentStore context = store.getEStore();
+        PersistenceBackend innerBackend;
+
+        Field field = AbstractDirectWriteStore.class.getDeclaredField("persistenceBackend");
+        field.setAccessible(true);
+        innerBackend = (PersistenceBackend) field.get(context);
+
+
         assertThat(innerBackend).isSameAs(expectedInnerBackend); // "The backend in the EStore is not the created one"
     }
 }

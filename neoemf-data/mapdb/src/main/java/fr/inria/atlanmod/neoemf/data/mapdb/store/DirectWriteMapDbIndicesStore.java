@@ -48,7 +48,7 @@ public class DirectWriteMapDbIndicesStore extends DirectWriteMapDbStore {
         }
         persistenceBackend.storeValue(featureKey, size + 1);
 
-        // add element
+        // Add element
         MultivaluedFeatureKey multivaluedFeatureKey = featureKey.withPosition(index);
         if (feature instanceof EAttribute) {
             persistenceBackend.storeValueAtIndex(multivaluedFeatureKey, value);

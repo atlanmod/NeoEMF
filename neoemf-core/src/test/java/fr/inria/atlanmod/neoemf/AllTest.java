@@ -55,20 +55,20 @@ public abstract class AllTest {
     };
 
     protected void printMemoryUsage() {
-        //Getting the runtime reference from system
+        // Getting the runtime reference from system
         Runtime runtime = Runtime.getRuntime();
         System.out.println("[INFO] --- Heap utilization statistics [MB] #####");
 
-        //Print used memory
+        // Print used memory
         System.out.println(formatMemoryUsage("[INFO] Used memory", (runtime.totalMemory() - runtime.freeMemory()) / MB));
 
-        //Print free memory
+        // Print free memory
         System.out.println(formatMemoryUsage("[INFO] Free memory", runtime.freeMemory() / MB));
 
-        //Print total available memory
+        // Print total available memory
         System.out.println(formatMemoryUsage(" [INFO] Total memory", runtime.totalMemory() / MB));
 
-        //Print Maximum available memory
+        // Print Maximum available memory
         System.out.println(formatMemoryUsage("[INFO] Max memory", runtime.maxMemory() / MB));
 
         System.out.println("[INFO] ---");

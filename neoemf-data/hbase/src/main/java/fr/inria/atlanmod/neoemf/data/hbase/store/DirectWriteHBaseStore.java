@@ -205,9 +205,9 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.id().toString()));
                 put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(eReference.getName()));
                 // No need to use the CAS mech
-//				table.checkAndPut(
-//						Bytes.toBytes(referencedObject.id().toString()), CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, CompareOp.NOT_EQUAL,
-//						Bytes.toBytes(object.id().toString()), put);
+//                table.checkAndPut(
+//                        Bytes.toBytes(referencedObject.id().toString()), CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, CompareOp.NOT_EQUAL,
+//                        Bytes.toBytes(object.id().toString()), put);
                 table.put(put);
 
             }
@@ -298,7 +298,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     @Override
     public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
         return false;
-        //return indexOf(object, feature, value) != -1;
+//        return indexOf(object, feature, value) != -1;
     }
 
     @Override
@@ -394,7 +394,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
                     do {
                         array = (String[]) getFromTable(object, eAttribute);
-                        //array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+//                        array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
 
                         Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                                 PROPERTY_FAMILY,
@@ -473,7 +473,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
             do {
                 array = (String[]) getFromTable(object, eAttribute);
-                //array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+//                array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
 
                 Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
@@ -531,7 +531,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
                 do {
                     array = (String[]) getFromTable(object, eReference);
-                    //array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
+//                    array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
 
                     Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                             PROPERTY_FAMILY,
@@ -577,7 +577,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
             do {
                 array = (String[]) getFromTable(object, eAttribute);
-                //array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+//                array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
 
                 Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
@@ -625,7 +625,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
             do {
                 array = (String[]) getFromTable(object, eReference);
-                //array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
+//                array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
 
                 Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,

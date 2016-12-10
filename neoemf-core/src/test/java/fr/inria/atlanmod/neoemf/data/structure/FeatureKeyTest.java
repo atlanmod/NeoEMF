@@ -45,7 +45,6 @@ public class FeatureKeyTest {
         FeatureKey key1 = FeatureKey.of(new StringId("AAA"), "aaa");
         FeatureKey key2 = FeatureKey.of(new StringId("BBB"), "zzz");
 
-        //System.out.println(key1.compareTo(key2) );
         assertThat(key1.compareTo(key2)).isGreaterThan(0);
     }
 

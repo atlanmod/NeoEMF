@@ -44,14 +44,14 @@ public class HBaseEncoderUtil {
             int length = (value.length + 1) / (UUID_LENGTH + 1);
 
             Iterator<String> iterator = Splitter.on(VALUE_SEPERATOR_DEFAULT).split(Bytes.toString(value)).iterator();
-            //List<String>  strings = new LinkedList<String>();
+//            List<String>  strings = new LinkedList<String>();
             String[] strings = new String[length];
             int index = 0;
             while (iterator.hasNext()) {
-                //strings.add(iterator.next());
+//                strings.add(iterator.next());
                 strings[index++] = iterator.next();
             }
-            //return strings.toArray(new String[strings.size()]);
+//            return strings.toArray(new String[strings.size()]);
             return strings;
         }
         return null;

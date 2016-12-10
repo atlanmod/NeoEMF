@@ -93,7 +93,7 @@ public abstract class AllBackendTest extends AllTest {
 
     @After
     public void tearDown() throws Exception {
-        //printMemoryUsage();
+//        printMemoryUsage();
 
         for (PersistentResource resource : loadedResources) {
             resource.close();
