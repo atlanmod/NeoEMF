@@ -37,12 +37,12 @@ public class BlueprintsUriTest extends AllUriTest {
     }
 
     @Override
-    protected URI createUri(URI uri) {
+    protected URI createURI(URI uri) {
         return BlueprintsURI.createURI(uri);
     }
 
     @Override
-    protected URI createUri(File file) {
+    protected URI createURI(File file) {
         return BlueprintsURI.createFileURI(file);
     }
 }

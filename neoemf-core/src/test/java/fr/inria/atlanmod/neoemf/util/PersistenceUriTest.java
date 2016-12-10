@@ -40,20 +40,20 @@ public class PersistenceUriTest extends AllUriTest {
     }
 
     @Override
-    protected URI createUri(URI uri) {
+    protected URI createURI(URI uri) {
         return PersistenceURI.createURI(uri);
     }
 
     @Override
-    protected URI createUri(File file) {
+    protected URI createURI(File file) {
         return PersistenceURI.createFileURI(file, uriScheme());
     }
 
-    protected URI createUri(URI uri, String scheme) {
+    protected URI createURI(URI uri, String scheme) {
         return PersistenceURI.createFileURI(uri, scheme);
     }
 
-    protected URI createUri(File file, String scheme) {
+    protected URI createURI(File file, String scheme) {
         return PersistenceURI.createFileURI(file, scheme);
     }
 
@@ -66,13 +66,13 @@ public class PersistenceUriTest extends AllUriTest {
 
     @Test
     public void testCreateUriFromFileInvalidScheme() {
-        Throwable thrown = catchThrowable(() -> createUri(file(), SCHEME_INVALID));
+        Throwable thrown = catchThrowable(() -> createURI(file(), SCHEME_INVALID));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testCreateUriFromFileNullScheme() {
-        Throwable thrown = catchThrowable(() -> createUri(file(), null));
+        Throwable thrown = catchThrowable(() -> createURI(file(), null));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -80,7 +80,7 @@ public class PersistenceUriTest extends AllUriTest {
     public void testCreateUriFromFileUriInvalidScheme() {
         URI fileUri = URI.createFileURI(file().getAbsolutePath());
 
-        Throwable thrown = catchThrowable(() -> createUri(fileUri, SCHEME_INVALID));
+        Throwable thrown = catchThrowable(() -> createURI(fileUri, SCHEME_INVALID));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -88,7 +88,7 @@ public class PersistenceUriTest extends AllUriTest {
     public void testCreateUriFromFileUriNullScheme() {
         URI fileURI = URI.createFileURI(file().getAbsolutePath());
 
-        Throwable thrown = catchThrowable(() -> createUri(fileURI, null));
+        Throwable thrown = catchThrowable(() -> createURI(fileURI, null));
         assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 }

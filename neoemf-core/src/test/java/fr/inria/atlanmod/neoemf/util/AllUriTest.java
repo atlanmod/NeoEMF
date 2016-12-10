@@ -31,9 +31,9 @@ public abstract class AllUriTest extends AllTest {
 
     protected abstract PersistenceBackendFactory persistenceBackendFactory();
 
-    protected abstract URI createUri(URI uri);
+    protected abstract URI createURI(URI uri);
 
-    protected abstract URI createUri(File file);
+    protected abstract URI createURI(File file);
 
     @Before
     public void setUp() {
@@ -49,20 +49,20 @@ public abstract class AllUriTest extends AllTest {
     @Test
     public void testCreateUriFromStandardUri() {
         URI validURI = URI.createURI(uriScheme() + ":/test");
-        URI neoURI = createUri(validURI);
+        URI neoURI = createURI(validURI);
         assertThat(neoURI).hasScheme(uriScheme());
     }
 
     @Test
     public void testCreateUriFromFileUri() {
         URI fileURI = URI.createFileURI(file().getAbsolutePath());
-        URI neoURI = createUri(fileURI);
+        URI neoURI = createURI(fileURI);
         assertThat(neoURI).hasScheme(uriScheme());
     }
 
     @Test
     public void testCreateUriFromFile() {
-        URI neoURI = createUri(file());
+        URI neoURI = createURI(file());
         assertThat(neoURI).hasScheme(uriScheme());
     }
 
@@ -70,7 +70,7 @@ public abstract class AllUriTest extends AllTest {
     public void testCreateUriFromStandardUriInvalidScheme() {
         URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
 
-        Throwable thrown = catchThrowable(() -> createUri(invalidURI));
+        Throwable thrown = catchThrowable(() -> createURI(invalidURI));
         Assertions.assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 }
