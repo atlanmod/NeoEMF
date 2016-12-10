@@ -9,8 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
+import fr.inria.atlanmod.neoemf.context.AbstractResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
@@ -21,7 +22,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 
-class MapDbResourceBuilder extends AbstractResourceBuilder {
+public class MapDbResourceBuilder extends AbstractResourceBuilder {
 
     public MapDbResourceBuilder(EPackage ePackage) {
         super(ePackage);

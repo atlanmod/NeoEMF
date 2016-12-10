@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SpecializedPackContent;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.stream.IntStream;
@@ -40,6 +41,7 @@ public class AllInstancesTest extends AllBackendTest {
     private static final int PACK_CONTENT_STRICT_COUNT = 50;
 
     @Test
+    @Category(PersistentTests.class)
     public void testAllInstancesPersistent() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -48,6 +50,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testAllInstancesStricPersistent() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -56,6 +59,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testAllInstancesPersistentLoaded() throws IOException {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -68,6 +72,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testAllInstancesStrictPersistentLoaded() throws IOException {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -80,6 +85,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
+    @Category(TransientTests.class)
     public void testAllInstancesTransient() {
         PersistentResource resource = createTransientStore();
         createResourceContent(resource);
@@ -88,6 +94,7 @@ public class AllInstancesTest extends AllBackendTest {
     }
 
     @Test
+    @Category(TransientTests.class)
     public void testAllInstancesStrictTransient() {
         PersistentResource resource = createTransientStore();
         createResourceContent(resource);

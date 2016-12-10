@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class AbstractResourceBuilder {
+public abstract class AbstractResourceBuilder {
 
     private final EPackage ePackage;
 

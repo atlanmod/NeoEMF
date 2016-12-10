@@ -12,11 +12,11 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.tests.context.BlueprintsNeo4JContext;
-import fr.inria.atlanmod.neoemf.tests.context.Context;
-import fr.inria.atlanmod.neoemf.tests.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 
@@ -54,7 +54,7 @@ public abstract class AllBackendTest extends AllTest {
         return Arrays.asList(
                 new Object[]{new MapDbContext(), MapDbContext.NAME},
                 new Object[]{new BlueprintsContext(), BlueprintsContext.NAME},
-                new Object[]{new BlueprintsNeo4JContext(), BlueprintsNeo4JContext.NAME}
+                new Object[]{new BlueprintsNeo4jContext(), BlueprintsNeo4jContext.NAME}
         );
     }
 
@@ -101,4 +101,14 @@ public abstract class AllBackendTest extends AllTest {
 
         loadedResources.clear();
     }
+
+    /**
+     * Category marker for tests using a persistent store.
+     */
+    interface PersistentTests {}
+
+    /**
+     * Category marker for tests using a transient store.
+     */
+    interface TransientTests {}
 }

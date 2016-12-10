@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class EObjectEContentsTest extends AllBackendTest {
     private List<EObject> packContents;
 
     @Test
+    @Category(PersistentTests.class)
     public void testEObjectEContents() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -58,6 +60,7 @@ public class EObjectEContentsTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testEObjectEmptyEContentsSize() {
         PersistentResource resource = createPersistentStore();
         createEmptyPackResourceContent(resource);
@@ -67,6 +70,7 @@ public class EObjectEContentsTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testEObjectEmptyEContentsGet() {
         PersistentResource resource = createPersistentStore();
         createEmptyPackResourceContent(resource);

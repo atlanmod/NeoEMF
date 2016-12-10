@@ -9,11 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
+import fr.inria.atlanmod.neoemf.context.AbstractResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jResourceOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -22,7 +23,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 
-class BlueprintsResourceBuilder extends AbstractResourceBuilder {
+public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
 
     public BlueprintsResourceBuilder(EPackage ePackage) {
         super(ePackage);
@@ -54,13 +55,8 @@ class BlueprintsResourceBuilder extends AbstractResourceBuilder {
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
-    public BlueprintsResourceBuilder neo4j() {
-        resourceOptions.put(BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
-        return this;
-    }
-
     public BlueprintsResourceBuilder tinkerGraph() {
-        resourceOptions.put(BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_DEFAULT);
+        resourceOptions.put(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         return this;
     }
 }

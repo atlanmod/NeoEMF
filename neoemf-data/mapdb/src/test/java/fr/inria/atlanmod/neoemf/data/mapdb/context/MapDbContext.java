@@ -1,5 +1,6 @@
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
+import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;

@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
 
 import org.eclipse.emf.common.util.EMap;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
 
@@ -26,6 +27,7 @@ public class EMapSupportTest extends AllBackendTest {
     private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetMapStringStringEmpty() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
@@ -38,6 +40,7 @@ public class EMapSupportTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testPutMapStringString() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
@@ -55,6 +58,7 @@ public class EMapSupportTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetMapKVEmpty() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());
@@ -67,6 +71,7 @@ public class EMapSupportTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testPutMapKV() {
         PersistentResource resource = createPersistentStore();
         resource.getContents().add(EFACTORY.createSampleModel());

@@ -108,6 +108,30 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-blueprints-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-blueprints-neo4j</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-mapdb</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>

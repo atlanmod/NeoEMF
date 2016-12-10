@@ -1,5 +1,6 @@
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
+import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;

@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Iterator;
 
@@ -29,6 +30,7 @@ public class SavedResourceTest extends AllBackendTest {
     private SampleModelContentObject modelContentObject;
 
     @Test
+    @Category(PersistentTests.class)
     public void testEContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -38,6 +40,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetAllContentsContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -52,6 +55,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testEInternalContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -61,6 +65,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetAllContentsEInternalContainer() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -75,6 +80,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testEResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -84,6 +90,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetAllContentsEResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -98,6 +105,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testEDirectResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
@@ -107,6 +115,7 @@ public class SavedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetAllContentsEDirectResource() {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);

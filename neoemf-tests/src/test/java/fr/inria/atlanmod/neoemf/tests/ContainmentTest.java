@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ContainmentTest extends AllBackendTest {
 
     @Test
+    @Category(PersistentTests.class)
     public void testAddContainmentSubtree() {
         PersistentResource resource = createPersistentStore();
 
@@ -59,6 +61,7 @@ public class ContainmentTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testSetContainmentAfterNonContainment() {
         PersistentResource resource = createPersistentStore();
 

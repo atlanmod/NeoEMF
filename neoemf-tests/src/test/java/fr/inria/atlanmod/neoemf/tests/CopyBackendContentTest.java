@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
 
 import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 
@@ -28,6 +29,7 @@ public class CopyBackendContentTest extends AllBackendTest {
     private static final String MODEL_NAME = "Model", CONTENT1_NAME = "Content1", CONTENT2_NAME = "Content2";
 
     @Test
+    @Category(TransientTests.class)
     public void testCopyBackend() throws IOException {
         PersistentResource resource = createTransientStore();
         createResourceContent(resource);

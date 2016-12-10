@@ -1,10 +1,7 @@
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-/**
- *
- */
 public abstract class AbstractContext implements Context {
 
     public AbstractContext() {

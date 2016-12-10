@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LoadedResourceTest extends AllBackendTest {
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetElementsContainer() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
 
@@ -43,6 +45,7 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetAllContentsContainer() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
 
@@ -56,6 +59,7 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
     public void testGetElementsEInternalContainer() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
@@ -68,6 +72,7 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     @Ignore("Performance issues") // TODO Check if we have to correct it or not (performance issues)
     public void testGetAllContentsEInternalContainer() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
@@ -82,6 +87,7 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetElementsEResource() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
 
@@ -93,6 +99,7 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetAllContentsEResource() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
 
@@ -106,6 +113,7 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetElementsEDirectResource() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
 
@@ -117,6 +125,7 @@ public class LoadedResourceTest extends AllBackendTest {
     }
 
     @Test
+    @Category(PersistentTests.class)
     public void testGetAllContentsEDirectResource() throws IOException {
         PersistentResource resource = createResourceContent(createPersistentStore());
 

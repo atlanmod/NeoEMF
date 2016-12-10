@@ -1,4 +1,4 @@
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -8,9 +8,6 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- *
- */
 public interface Context {
 
     /**
