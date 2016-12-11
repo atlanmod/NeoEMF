@@ -94,7 +94,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     @Before
     public final void createWorkspace() throws Exception {
         loadedResources = new ArrayList<>();
-        file = newFile(context.name());
+        file = workspace.newFile(context.name());
     }
 
     @After

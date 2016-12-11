@@ -28,11 +28,10 @@ public class XmiProcessorTest extends AbstractXmiProcessorTest {
 
     @Override
     @Before
-    public void setUp() throws IOException {
+    public void readResource() throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         this.sample = getXmiStandard();
-
-        super.setUp();
+        super.readResource();
     }
 
     /**

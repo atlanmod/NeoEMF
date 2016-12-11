@@ -28,10 +28,9 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
 
     @Override
     @Before
-    public void setUp() throws IOException {
+    public void readResource() throws IOException {
         this.sample = getXmiWithId();
-
-        super.setUp();
+        super.readResource();
     }
 
     /**

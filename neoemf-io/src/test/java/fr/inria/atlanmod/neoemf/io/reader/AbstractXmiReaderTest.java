@@ -35,12 +35,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractXmiReaderTest extends AbstractInputTest {
 
     @Before
-    public void setUp() throws IOException {
+    public void readResource() throws IOException {
         persistanceHandler = read(sample);
     }
 
     @After
-    public void tearDown() {
+    public final void unregisterNamespaces() {
         Namespace.Registry.getInstance().clean();
     }
 

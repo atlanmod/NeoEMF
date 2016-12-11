@@ -43,15 +43,15 @@ public abstract class AbstractInputTest extends AbstractTest {
 
     protected File sample;
 
-    protected File getXmiStandard() {
+    protected static File getXmiStandard() {
         return getResourceFile(XMI_STANDARD);
     }
 
-    protected File getXmiWithId() {
+    protected static File getXmiWithId() {
         return getResourceFile(XMI_WITH_ID);
     }
 
-    protected File getResourceFile(String path) {
+    protected static File getResourceFile(String path) {
         return new File(AbstractInputTest.class.getResource(path).getFile());
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractInputTest extends AbstractTest {
      * <p/>
      * The targetted Ecore file must be present in {@code /resources/ecore}.
      */
-    protected void registerEPackageFromEcore(String prefix, String uri) {
+    protected static void registerEPackageFromEcore(String prefix, String uri) {
         File file = getResourceFile(ECORE_PATH.replaceAll("\\{name\\}", prefix));
 
         EPackage ePackage = null;

@@ -21,7 +21,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
     @Before
     public final void registerFactories() throws IOException, InvalidOptionsException {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
-        file = newFile(context().name());
+        file = workspace.newFile(context().name());
     }
 
     @After
