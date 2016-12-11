@@ -75,7 +75,7 @@ public class ImportTest extends AbstractInputTest {
 
     @Before
     public void setUp() throws IOException {
-        testFile = newFile("Neo4j");
+        testFile = workspace.newFile("Neo4j");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();
@@ -208,8 +208,7 @@ public class ImportTest extends AbstractInputTest {
     }
 
     @Test
-    @Ignore
-    // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
+    @Ignore // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
     public void testImportWithIdNeo4j() throws IOException {
         File file = getXmiWithId();
 
