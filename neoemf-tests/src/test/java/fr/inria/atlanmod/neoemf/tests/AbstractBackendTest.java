@@ -88,13 +88,11 @@ public abstract class AbstractBackendTest extends AbstractTest {
     @Before
     public void setUp() throws Exception {
         loadedResources = new ArrayList<>();
-        file = tempFile(context.name());
+        file = newFile(context.name());
     }
 
     @After
     public void tearDown() throws Exception {
-//        printMemoryUsage();
-
         for (PersistentResource resource : loadedResources) {
             resource.close();
         }

@@ -19,13 +19,13 @@ public abstract class AbstractUnitTest extends AbstractTest {
     }
 
     @Before
-    public void setUp() throws InvalidDataStoreException, InvalidOptionsException {
+    public final void registerFactories() throws InvalidDataStoreException, InvalidOptionsException {
         PersistenceBackendFactoryRegistry.register(uriScheme(), persistenceBackendFactory());
-        file = tempFile(name());
+        file = newFile(name());
     }
 
     @After
-    public void tearDown() {
+    public final void unregisterFactories() {
         PersistenceBackendFactoryRegistry.unregisterAll();
     }
 

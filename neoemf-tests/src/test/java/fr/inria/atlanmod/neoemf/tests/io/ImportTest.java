@@ -74,7 +74,7 @@ public class ImportTest extends AbstractInputTest {
 
     @Before
     public void setUp() throws Exception {
-        testFile = tempFile("Neo4j");
+        testFile = newFile("Neo4j");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();

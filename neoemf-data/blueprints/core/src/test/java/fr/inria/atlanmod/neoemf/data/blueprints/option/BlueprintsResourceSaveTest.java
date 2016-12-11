@@ -44,9 +44,7 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest {
     private ResourceSet resourceSet;
 
     @Before
-    public void setUp() throws InvalidDataStoreException, InvalidOptionsException {
-        super.setUp();
-
+    public void setUp() {
         resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         resource = resourceSet.createResource(BlueprintsURI.createFileURI(file()));
@@ -56,8 +54,6 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest {
     public void tearDown() {
         resource.unload();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
-
-        super.tearDown();
     }
 
     @Override
