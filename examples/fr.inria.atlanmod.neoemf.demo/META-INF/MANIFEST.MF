@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Demo
+Bundle-SymbolicName: fr.inria.atlanmod.neoemf.demo
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.gmt.modisco.java;bundle-version="0.1.0",
+ org.eclipse.ocl.ecore;bundle-version="3.3.100",
+ fr.inria.atlanmod.neoemf.core;bundle-version="1.0.1",
+ fr.inria.atlanmod.neoemf.data.blueprints.core;bundle-version="1.0.1",
+ fr.inria.atlanmod.neoemf.data.blueprints.neo4j;bundle-version="1.0.1",
+ fr.inria.atlanmod.neoemf.data.hbase;bundle-version="1.0.1",
+ fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.1",
+ fr.inria.atlanmod.neoemf.io;bundle-version="1.0.1"
