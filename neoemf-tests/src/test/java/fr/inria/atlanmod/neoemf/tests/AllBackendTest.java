@@ -47,7 +47,7 @@ public abstract class AllBackendTest extends AllTest {
 
     private List<PersistentResource> loadedResources;
 
-    private File resourceFile;
+    private File file;
 
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
@@ -58,13 +58,13 @@ public abstract class AllBackendTest extends AllTest {
         );
     }
 
-    public File resourceFile() {
-        return resourceFile;
+    public File file() {
+        return file;
     }
 
     public PersistentResource createPersistentStore() {
         try {
-            return closeAtExit(context.createPersistentResource(EPACKAGE, resourceFile));
+            return closeAtExit(context.createPersistentResource(EPACKAGE, file));
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -73,7 +73,7 @@ public abstract class AllBackendTest extends AllTest {
 
     public PersistentResource createTransientStore() {
         try {
-            return closeAtExit(context.createTransientResource(EPACKAGE, resourceFile));
+            return closeAtExit(context.createTransientResource(EPACKAGE, file));
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -88,7 +88,7 @@ public abstract class AllBackendTest extends AllTest {
     @Before
     public void setUp() throws Exception {
         loadedResources = new ArrayList<>();
-        resourceFile = tempFile(context.name());
+        file = tempFile(context.name());
     }
 
     @After
