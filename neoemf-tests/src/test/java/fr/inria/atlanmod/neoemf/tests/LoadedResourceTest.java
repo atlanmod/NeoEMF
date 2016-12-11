@@ -31,7 +31,7 @@ import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LoadedResourceTest extends AllBackendTest {
+public class LoadedResourceTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)

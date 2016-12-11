@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Checks that adding a transient containment sub-tree to an existing {@link PersistentResource} add all its elements to
  * the resource.
  */
-public class ContainmentTest extends AllBackendTest {
+public class ContainmentTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)

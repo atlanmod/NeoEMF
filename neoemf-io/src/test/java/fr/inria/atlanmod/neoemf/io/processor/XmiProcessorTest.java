@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class XmiProcessorTest extends AllXmiProcessorTest {
+public class XmiProcessorTest extends AbstractXmiProcessorTest {
 
     @Override
     @Before

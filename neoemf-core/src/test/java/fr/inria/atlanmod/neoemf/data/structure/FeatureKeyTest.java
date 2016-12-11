@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.structure;
 
-import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.junit.Test;
@@ -23,7 +23,7 @@ import java.io.ObjectOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FeatureKeyTest extends AllTest {
+public class FeatureKeyTest extends AbstractTest {
 
     @Test
     public void testCompareEqualTo() {

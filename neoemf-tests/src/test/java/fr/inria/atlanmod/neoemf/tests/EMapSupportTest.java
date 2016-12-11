@@ -23,7 +23,7 @@ import org.junit.experimental.categories.Category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EMapSupportTest extends AllBackendTest {
+public class EMapSupportTest extends AbstractBackendTest {
 
     private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
 

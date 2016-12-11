@@ -13,13 +13,13 @@ package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.util.AllUriTest;
+import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 
-public class MapDbUriTest extends AllUriTest {
+public class MapDbUriTest extends AbstractUriTest {
 
     @Override
     protected String name() {

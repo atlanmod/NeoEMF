@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 
-public abstract class AllTest {
+public abstract class AbstractTest {
 
     private static final int MB = 1024 * 1024;
 

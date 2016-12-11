@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SavedResourceTest extends AllBackendTest {
+public class SavedResourceTest extends AbstractBackendTest {
 
     private SampleModel model;
     private SampleModelContentObject modelContentObject;

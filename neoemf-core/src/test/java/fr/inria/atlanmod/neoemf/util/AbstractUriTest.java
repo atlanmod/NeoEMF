@@ -1,6 +1,6 @@
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.AllUnitTest;
+import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.emf.common.util.URI;
@@ -11,7 +11,7 @@ import java.io.File;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-public abstract class AllUriTest extends AllUnitTest {
+public abstract class AbstractUriTest extends AbstractUnitTest {
 
     protected static final String SCHEME_INVALID = "invalid";
 

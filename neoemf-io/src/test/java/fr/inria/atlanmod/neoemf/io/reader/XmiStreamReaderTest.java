@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * Tests that verify that the {@link XmiStreamReader} properly interprets the read data.
  */
-public class XmiStreamReaderTest extends AllXmiReaderTest {
+public class XmiStreamReaderTest extends AbstractXmiReaderTest {
 
     @Override
     @Before

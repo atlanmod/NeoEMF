@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.AbstractTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class PersistenceBackendFactoryRegistryTest extends AllTest {
+public class PersistenceBackendFactoryRegistryTest extends AbstractTest {
 
     private static final String MOCK_1 = "mock1";
     private static final String MOCK_2 = "mock2";

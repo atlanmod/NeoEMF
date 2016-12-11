@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CopyBackendContentTest extends AllBackendTest {
+public class CopyBackendContentTest extends AbstractBackendTest {
 
     private static final String MODEL_NAME = "Model", CONTENT1_NAME = "Content1", CONTENT2_NAME = "Content2";
 

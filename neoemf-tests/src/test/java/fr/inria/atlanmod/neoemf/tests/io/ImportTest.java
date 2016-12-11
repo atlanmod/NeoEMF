@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFact
 import fr.inria.atlanmod.neoemf.data.blueprints.io.BlueprintsHandlerFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.io.AllInputTest;
+import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
@@ -51,7 +51,7 @@ import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public class ImportTest extends AllInputTest {
+public class ImportTest extends AbstractInputTest {
 
     private File testFile;
 

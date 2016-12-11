@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.data.AllPersistenceBackendFactoryTest;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlueprintsPersistenceBackendFactoryTest extends AllPersistenceBackendFactoryTest {
+public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
     @Override
     protected String name() {

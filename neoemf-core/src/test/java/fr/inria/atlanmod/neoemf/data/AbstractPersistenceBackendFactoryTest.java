@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.neoemf.AllUnitTest;
+import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class AllPersistenceBackendFactoryTest extends AllUnitTest {
+public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnitTest {
 
     /**
      * Utility method to retreive the {@link PersistentStore} included in the given {@code store}.

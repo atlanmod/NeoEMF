@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class XmiStreamReaderWithIdTest extends AllXmiReaderTest {
+public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
 
     @Override
     @Before

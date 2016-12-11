@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentStore(PersistentResource,
  * PersistenceBackend, Map)}
  */
-public class PersistenceBackendFactoryTest extends AllPersistenceBackendFactoryTest {
+public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
 
     @Override
     protected String name() {

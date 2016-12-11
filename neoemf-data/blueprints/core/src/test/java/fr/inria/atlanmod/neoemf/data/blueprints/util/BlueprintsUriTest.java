@@ -13,13 +13,13 @@ package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.util.AllUriTest;
+import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 
-public class BlueprintsUriTest extends AllUriTest {
+public class BlueprintsUriTest extends AbstractUriTest {
 
     @Override
     protected String name() {

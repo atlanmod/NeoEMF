@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.tests.issues;
 
-import fr.inria.atlanmod.neoemf.AllTest;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Test case to reproduce the issue <a href="https://github.com/atlanmod/NeoEMF/issues/7">#7</a>.
  */
-public class Issue7Test extends AllTest {
+public class Issue7Test extends AbstractIssueTest {
 
     @Test
     public void testIssue7() {

@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Test class for the contains method, related to performance issue descibed in #30
  * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
-public class ContainsTest extends AllBackendTest {
+public class ContainsTest extends AbstractBackendTest {
 
     @Test
     @Category(Tags.PersistentTests.class)

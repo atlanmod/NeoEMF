@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
-public class PersistenceUriTest extends AllUriTest {
+public class PersistenceUriTest extends AbstractUriTest {
 
     @Override
     protected String name() {

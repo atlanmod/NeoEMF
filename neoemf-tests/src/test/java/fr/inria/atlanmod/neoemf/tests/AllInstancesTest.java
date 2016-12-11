@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AllInstancesTest extends AllBackendTest {
+public class AllInstancesTest extends AbstractBackendTest {
 
     // These variables should be updated if createResourceContent is changed
     private static final int PACK_COUNT = 6;

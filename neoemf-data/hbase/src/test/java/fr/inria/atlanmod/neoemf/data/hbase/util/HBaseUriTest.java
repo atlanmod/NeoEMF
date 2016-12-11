@@ -13,13 +13,13 @@ package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.util.AllUriTest;
+import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 
-public class HBaseUriTest extends AllUriTest {
+public class HBaseUriTest extends AbstractUriTest {
 
     @Override
     protected String name() {

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.AllTest;
+import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 
 import org.eclipse.emf.common.util.URI;
@@ -29,7 +29,7 @@ import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class AllInputTest extends AllTest {
+public abstract class AbstractInputTest extends AbstractTest {
 
     protected static final int UNKNOWN_INDEX = -1;
 
@@ -52,7 +52,7 @@ public abstract class AllInputTest extends AllTest {
     }
 
     protected File getResourceFile(String path) {
-        return new File(AllInputTest.class.getResource(path).getFile());
+        return new File(AbstractInputTest.class.getResource(path).getFile());
     }
 
     /**

@@ -10,7 +10,7 @@ import org.junit.Before;
 
 import java.io.File;
 
-public abstract class AllUnitTest extends AllTest {
+public abstract class AbstractUnitTest extends AbstractTest {
 
     private File file;
 

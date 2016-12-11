@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import fr.inria.atlanmod.neoemf.AllUnitTest;
+import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
@@ -35,7 +35,7 @@ import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlueprintsResourceSaveTest extends AllUnitTest {
+public class BlueprintsResourceSaveTest extends AbstractUnitTest {
 
     protected final String configFileName = "/config.properties";
 

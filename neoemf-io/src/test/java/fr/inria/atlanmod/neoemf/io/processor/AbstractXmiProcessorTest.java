@@ -9,13 +9,12 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.reader;
+package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.AllInputTest;
+import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
@@ -31,7 +30,7 @@ import java.io.FileInputStream;
 import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class AllXmiReaderTest extends AllInputTest {
+public class AbstractXmiProcessorTest extends AbstractInputTest {
 
     @Before
     public void setUp() throws Exception {
@@ -43,9 +42,11 @@ public abstract class AllXmiReaderTest extends AllInputTest {
         Namespace.Registry.getInstance().clean();
     }
 
-    protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id) {
+    protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id, final String className, final boolean root) {
         assertThat(mock.getLocalName()).isEqualTo(name);
         assertThat(mock.getElements()).hasSize(size);
+        assertThat(mock.getClassName()).isEqualTo(className);
+        assertThat(mock.isRoot()).isEqualTo(root);
 
         if (isNull(id)) {
             assertThat(mock.getId()).isNull();
@@ -57,26 +58,31 @@ public abstract class AllXmiReaderTest extends AllInputTest {
 
     protected void assertValidMetaClass(final MetaClassifier metaClassifier, final String name, final Namespace ns) {
         assertThat(metaClassifier.getLocalName()).isEqualTo(name);
-        assertThat(metaClassifier.getNamespace()).isEqualTo(ns);
+        assertThat(metaClassifier.getNamespace()).isSameAs(ns);
     }
 
-    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference) {
+    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
         assertThat(reference.getLocalName()).isEqualTo(name);
         assertThat(reference.getIndex()).isEqualTo(index);
         assertThat(reference.getIdReference().getValue()).isEqualTo(idReference);
+        assertThat(reference.isContainment()).isEqualTo(containment);
+        assertThat(reference.isMany()).isEqualTo(many);
     }
 
-    protected void assertValidAttribute(final Attribute attribute, final String name, final Object value) {
+    protected void assertValidAttribute(final Attribute attribute, final String name, final int index, final Object value) {
         assertThat(attribute.getLocalName()).isEqualTo(name);
         assertThat(attribute.getValue()).isEqualTo(value);
+        assertThat(attribute.getIndex()).isEqualTo(index);
     }
 
-    protected StructuralPersistanceHandler read(File filePath) throws Exception {
+    private StructuralPersistanceHandler read(File filePath) throws Exception {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
         XmiStreamReader reader = new XmiStreamReader();
 
         Processor processor = new PersistenceNotifier();
+        processor = new XPathProcessor(processor);
+        processor = new EcoreProcessor(processor);
         processor.addHandler(persistanceHandler);
 
         reader.addHandler(processor);
