@@ -6,16 +6,8 @@ abstract class AbstractLogger implements Logger {
 
     private final org.apache.logging.log4j.Logger logger;
 
-    protected AbstractLogger() {
-        this(LogManager.getRootLogger());
-    }
-
     protected AbstractLogger(String name) {
-        this(LogManager.getLogger(name));
-    }
-
-    private AbstractLogger(org.apache.logging.log4j.Logger logger) {
-        this.logger = logger;
+        this.logger = LogManager.getLogger(name);
     }
 
     protected org.apache.logging.log4j.Logger logger() {

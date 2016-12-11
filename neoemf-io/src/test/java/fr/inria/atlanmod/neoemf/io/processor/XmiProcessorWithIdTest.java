@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +28,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
 
     @Override
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
         this.sample = getXmiWithId();
 
@@ -40,7 +41,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * All elements must have an id and a class name.
      */
     @Test
-    public void testElementsAndChildrenWithId() throws Exception {
+    public void testElementsAndChildrenWithId() {
         assertThat(persistanceHandler.getElements()).isNotEmpty();
 
         ClassifierMock mock;
@@ -85,7 +86,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * Check that the attributes are properly processed.
      */
     @Test
-    public void testAttributesWithId() throws Exception {
+    public void testAttributesWithId() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -142,7 +143,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * References previously detected as attributes, are now well placed.
      */
     @Test
-    public void testReferencesWithId() throws Exception {
+    public void testReferencesWithId() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -207,7 +208,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
      * Check that the metaclasses ({@code xsi:type} or {@code xmi:type}) are properly processed.
      */
     @Test
-    public void testMetaClassesWithId() throws Exception {
+    public void testMetaClassesWithId() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 

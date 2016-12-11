@@ -42,6 +42,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +74,7 @@ public class ImportTest extends AbstractInputTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         testFile = newFile("Neo4j");
 
         testedObjects = new HashSet<>();
@@ -81,7 +82,7 @@ public class ImportTest extends AbstractInputTest {
     }
 
     @Test
-    public void testCompareWithEMFNeo4j() throws Exception {
+    public void testCompareWithEMFNeo4j() throws IOException {
         File file = getXmiStandard();
 
         EObject emfObject = loadWithEMF(file);
@@ -96,7 +97,7 @@ public class ImportTest extends AbstractInputTest {
      * All elements must have an id and a class name.
      */
     @Test
-    public void testElementsAndChildrenNeo4j() throws Exception {
+    public void testElementsAndChildrenNeo4j() throws IOException {
         EObject eObject;
         EObject eObjectChild;
 
@@ -139,7 +140,7 @@ public class ImportTest extends AbstractInputTest {
      * Check that the attributes are properly processed.
      */
     @Test
-    public void testAttributesNeo4j() throws Exception {
+    public void testAttributesNeo4j() throws IOException {
         EObject eObject;
 
         EObject root = loadWithNeoBlueprints(getXmiStandard());
@@ -165,7 +166,7 @@ public class ImportTest extends AbstractInputTest {
      * References previously detected as attributes, are now well placed.
      */
     @Test
-    public void testReferencesNeo4j() throws Exception {
+    public void testReferencesNeo4j() throws IOException {
         EObject eObject;
         EObject eObjectChild;
 
@@ -209,7 +210,7 @@ public class ImportTest extends AbstractInputTest {
     @Test
     @Ignore
     // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
-    public void testImportWithIdNeo4j() throws Exception {
+    public void testImportWithIdNeo4j() throws IOException {
         File file = getXmiWithId();
 
         EObject emfObject = loadWithEMF(file);
@@ -337,7 +338,7 @@ public class ImportTest extends AbstractInputTest {
         }
     }
 
-    private EObject loadWithEMF(final File file) throws Exception {
+    private EObject loadWithEMF(final File file) throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
@@ -346,14 +347,14 @@ public class ImportTest extends AbstractInputTest {
         return resource.getContents().get(0);
     }
 
-    private void loadWithNeo(final File file, final PersistenceHandler persistenceHandler) throws Exception {
+    private void loadWithNeo(final File file, final PersistenceHandler persistenceHandler) throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
         Importer.fromXmi(new FileInputStream(file), persistenceHandler);
     }
 
-    private EObject loadWithNeoBlueprints(final File file) throws Exception {
+    private EObject loadWithNeoBlueprints(final File file) throws IOException {
         BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
         PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(persistenceBackend, false);
 

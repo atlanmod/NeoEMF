@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf;
 
+import fr.inria.atlanmod.neoemf.logging.Logger;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.commons.io.FileUtils;
@@ -30,35 +31,16 @@ import static java.util.Objects.nonNull;
 
 public abstract class AbstractTest {
 
+    private static final String PREFIX = "neoemf";
+
     private static File temporaryFolder;
 
     @Rule
-    public TestRule watcher = new TestWatcher() {
-        @Override
-        protected void succeeded(Description description) {
-            NeoLogger.custom("test").info("[INFO] --- Succeeded");
-        }
-
-        @Override
-        protected void failed(Throwable e, Description description) {
-            NeoLogger.custom("test").warn("[WARN] --- Failed");
-        }
-
-        @Override
-        protected void starting(Description description) {
-            NeoLogger.custom("test").trace("");
-            NeoLogger.custom("test").info("[INFO] --- Running " + description.getMethodName());
-        }
-
-        @Override
-        protected void finished(Description description) {
-            NeoLogger.custom("test").trace("");
-        }
-    };
+    public TestRule watcher = new TestLogger();
 
     @BeforeClass
     public static void createTemporaryFolder() throws IOException {
-        temporaryFolder = Files.createTempDirectory("neoemf").toFile();
+        temporaryFolder = Files.createTempDirectory(PREFIX).toFile();
     }
 
     @AfterClass
@@ -72,14 +54,35 @@ public abstract class AbstractTest {
         }
     }
 
-    protected File newFile(String name) {
-        try {
-            Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), getClass().getSimpleName() + name);
-            Files.deleteIfExists(createdFolder);
-            return createdFolder.toFile();
+    protected File newFile(String name) throws IOException {
+        Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), getClass().getSimpleName() + name);
+        Files.deleteIfExists(createdFolder);
+        return createdFolder.toFile();
+    }
+
+    private static class TestLogger extends TestWatcher {
+
+        private static final Logger LOG = NeoLogger.custom("test");
+
+        @Override
+        protected void succeeded(Description description) {
+            LOG.info("[INFO] --- Succeeded");
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            LOG.warn("[WARN] --- Failed");
+        }
+
+        @Override
+        protected void starting(Description description) {
+            LOG.info("");
+            LOG.info("[INFO] --- Running " + description.getMethodName());
+        }
+
+        @Override
+        protected void finished(Description description) {
+            LOG.info("");
         }
     }
 }

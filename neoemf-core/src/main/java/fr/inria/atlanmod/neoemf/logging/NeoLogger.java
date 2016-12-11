@@ -21,75 +21,121 @@ public final class NeoLogger {
     private NeoLogger() {
     }
 
-    private static Logger async() {
-        return AsyncLogger.getRootLogger();
+    /**
+     * Returns the root logger.
+     *
+     * @return the root logger, named "".
+     */
+    private static Logger root() {
+        return custom(Logger.ROOT_LOGGER_NAME);
     }
 
+    /**
+     * Returns a {@link Logger} with the specified name.
+     *
+     * @param name the logger name
+     *
+     * @return the {@link Logger}
+     */
     public static Logger custom(String name) {
         return LOGGERS.get(name, AsyncLogger::new);
     }
 
-    public static void trace(String msg) {
-        async().trace(msg);
+    /**
+     * @see Logger#debug(CharSequence)
+     */
+    public static void debug(CharSequence msg) {
+        root().debug(msg);
     }
 
-    public static void trace(String pattern, Object... args) {
-        async().trace(pattern, args);
+    /**
+     * @see Logger#debug(CharSequence, Object...)
+     */
+    public static void debug(CharSequence pattern, Object... args) {
+        root().debug(pattern, args);
     }
 
-    public static void debug(String msg) {
-        async().debug(msg);
+    /**
+     * @see Logger#info(CharSequence)
+     */
+    public static void info(CharSequence msg) {
+        root().info(msg);
     }
 
-    public static void debug(String pattern, Object... args) {
-        async().debug(pattern, args);
+    /**
+     * @see Logger#info(CharSequence, Object...)
+     */
+    public static void info(CharSequence pattern, Object... args) {
+        root().info(pattern, args);
     }
 
-    public static void info(String msg) {
-        async().info(msg);
+    /**
+     * @see Logger#warn(CharSequence)
+     */
+    public static void warn(CharSequence msg) {
+        root().warn(msg);
     }
 
-    public static void info(String pattern, Object... args) {
-        async().info(pattern, args);
+    /**
+     * @see Logger#warn(CharSequence, Object...)
+     */
+    public static void warn(CharSequence pattern, Object... args) {
+        root().warn(pattern, args);
     }
 
-    public static void warn(String msg) {
-        async().warn(msg);
-    }
-
-    public static void warn(String pattern, Object... args) {
-        async().warn(pattern, args);
-    }
-
+    /**
+     * @see Logger#warn(Throwable)
+     */
     public static void warn(Throwable e) {
-        async().warn(e);
+        root().warn(e);
     }
 
-    public static void warn(Throwable e, String msg) {
-        async().warn(e, msg);
+    /**
+     * @see Logger#warn(Throwable, CharSequence)
+     */
+    public static void warn(Throwable e, CharSequence msg) {
+        root().warn(e, msg);
     }
 
-    public static void warn(Throwable e, String pattern, Object... args) {
-        async().warn(e, pattern, args);
+    /**
+     * @see Logger#warn(Throwable, CharSequence, Object...)
+     */
+    public static void warn(Throwable e, CharSequence pattern, Object... args) {
+        root().warn(e, pattern, args);
     }
 
-    public static void error(String msg) {
-        async().error(msg);
+    /**
+     * @see Logger#error(CharSequence)
+     */
+    public static void error(CharSequence msg) {
+        root().error(msg);
     }
 
-    public static void error(String pattern, Object... args) {
-        async().error(pattern, args);
+    /**
+     * @see Logger#error(CharSequence, Object...)
+     */
+    public static void error(CharSequence pattern, Object... args) {
+        root().error(pattern, args);
     }
 
+    /**
+     * @see Logger#error(Throwable)
+     */
     public static void error(Throwable e) {
-        async().error(e);
+        root().error(e);
     }
 
-    public static void error(Throwable e, String msg) {
-        async().error(e, msg);
+    /**
+     * @see Logger#error(Throwable, CharSequence)
+     */
+    public static void error(Throwable e, CharSequence msg) {
+        root().error(e, msg);
     }
 
-    public static void error(Throwable e, String pattern, Object... args) {
-        async().error(e, pattern, args);
+    /**
+     * @see Logger#error(Throwable, CharSequence, Object...)
+     */
+    public static void error(Throwable e, CharSequence pattern, Object... args) {
+        root().error(e, pattern, args);
     }
 }

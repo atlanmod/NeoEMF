@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +33,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
 
     @Override
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         this.sample = getXmiStandard();
 
         super.setUp();
@@ -42,7 +43,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      * Check that the namespaces are properly read.
      */
     @Test
-    public void testNamespaces() throws Exception {
+    public void testNamespaces() {
         Namespace.Registry nsRegistry = Namespace.Registry.getInstance();
         Iterable<String> prefixes = nsRegistry.getPrefixes();
         assertThat(prefixes).containsExactlyInAnyOrder("xsi", "java", "xmi");
@@ -56,7 +57,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      * Check that the elements and their children are properly read.
      */
     @Test
-    public void testElementsAndChildren() throws Exception {
+    public void testElementsAndChildren() {
         assertThat(persistanceHandler.getElements()).isNotEmpty();
 
         ClassifierMock mock;
@@ -101,7 +102,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      * Check that the attributes are properly read.
      */
     @Test
-    public void testAttributes() throws Exception {
+    public void testAttributes() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -155,7 +156,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      * Several references can be present in only one XML attribute.
      */
     @Test
-    public void testReferences() throws Exception {
+    public void testReferences() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -212,7 +213,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      * Check that the metaclasses ('xsi:type' or 'xmi:type') are properly read.
      */
     @Test
-    public void testMetaClasses() throws Exception {
+    public void testMetaClasses() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -253,16 +254,17 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
     }
 
     @Test
-    public void testMalformedMetaClass() throws Exception {
+    public void testMalformedMetaClass() {
         Throwable thrown = catchThrowable(() -> read(getResourceFile("/io/xmi/sampleMalformedMetaClass.xmi")));
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+        assertThat(thrown).isInstanceOf(IOException.class);
+        assertThat(thrown).hasCauseInstanceOf(IllegalArgumentException.class);
     }
 
     /**
      * Check if the reader stop its execution if it hasn't any handler.
      */
     @Test
-    public void testReaderWithoutHandler() throws Exception {
+    public void testReaderWithoutHandler() {
         Throwable thrown = catchThrowable(() -> new XmiStreamReader().read(null));
         assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }

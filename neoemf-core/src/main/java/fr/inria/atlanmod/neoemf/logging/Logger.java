@@ -1,72 +1,108 @@
 package fr.inria.atlanmod.neoemf.logging;
 
-import org.apache.logging.log4j.Level;
-
 public interface Logger {
 
-    default void trace(String msg) {
-        logMessage(Level.TRACE, null, msg);
-    }
+    String ROOT_LOGGER_NAME = "";
 
-    default void trace(String pattern, Object... args) {
-        logMessage(Level.TRACE, null, pattern, args);
-    }
-
-    default void debug(String msg) {
+    /**
+     * Logs a message at the {@link Level#DEBUG DEBUG} level.
+     */
+    default void debug(CharSequence msg) {
         logMessage(Level.DEBUG, null, msg);
     }
 
-    default void debug(String pattern, Object... args) {
+    /**
+     * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
+     */
+    default void debug(CharSequence pattern, Object... args) {
         logMessage(Level.DEBUG, null, pattern, args);
     }
 
-    default void info(String msg) {
+    /**
+     * Logs a message at the {@link Level#INFO INFO} level.
+     */
+    default void info(CharSequence msg) {
         logMessage(Level.INFO, null, msg);
     }
 
-    default void info(String pattern, Object... args) {
+    /**
+     * Logs a message with parameters at the {@link Level#INFO INFO} level.
+     */
+    default void info(CharSequence pattern, Object... args) {
         logMessage(Level.INFO, null, pattern, args);
     }
 
-    default void warn(String msg) {
+    /**
+     * Logs a message at the {@link Level#WARN WARN} level.
+     */
+    default void warn(CharSequence msg) {
         logMessage(Level.WARN, null, msg);
     }
 
-    default void warn(String pattern, Object... args) {
+    /**
+     * Logs a message with parameters at the {@link Level#WARN WARN} level.
+     */
+    default void warn(CharSequence pattern, Object... args) {
         logMessage(Level.WARN, null, pattern, args);
     }
 
+    /**
+     * Logs the stack trace of the {@link Throwable} {@code e} at the {@link Level#WARN WARN} level.
+     */
     default void warn(Throwable e) {
         logMessage(Level.WARN, e, null);
     }
 
-    default void warn(Throwable e, String msg) {
+    /**
+     * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the given {@link Throwable}.
+     */
+    default void warn(Throwable e, CharSequence msg) {
         logMessage(Level.WARN, e, msg);
     }
 
-    default void warn(Throwable e, String pattern, Object... args) {
+    /**
+     * Logs a message with parameters at the {@link Level#WARN WARN} level including the stack trace of the given {@link
+     * Throwable}.
+     */
+    default void warn(Throwable e, CharSequence pattern, Object... args) {
         logMessage(Level.WARN, e, pattern, args);
     }
 
-    default void error(String msg) {
+    /**
+     * Logs a message at the {@link Level#ERROR ERROR} level.
+     */
+    default void error(CharSequence msg) {
         logMessage(Level.ERROR, null, msg);
     }
 
-    default void error(String pattern, Object... args) {
+    /**
+     * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
+     */
+    default void error(CharSequence pattern, Object... args) {
         logMessage(Level.ERROR, null, pattern, args);
     }
 
+    /**
+     * Logs the stack trace of the given {@link Throwable} at the {@link Level#ERROR ERROR} level.
+     */
     default void error(Throwable e) {
         logMessage(Level.ERROR, e, null);
     }
 
-    default void error(Throwable e, String msg) {
-        logMessage(Level.ERROR, e, msg);
+    /**
+     * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the given {@link Throwable}.
+     */
+    default void error(Throwable throwable, CharSequence msg) {
+        logMessage(Level.ERROR, throwable, msg);
     }
 
-    default void error(Throwable e, String pattern, Object... args) {
+    /**
+     * Logs a message with parameters at the {@link Level#ERROR ERROR} level including the stack trace of the given
+     * {@link Throwable}.
+     */
+    default void error(Throwable e, CharSequence pattern, Object... args) {
         logMessage(Level.ERROR, e, pattern, args);
     }
 
-    void logMessage(Level level, Throwable throwable, String pattern, Object... args);
+    void logMessage(Level level, Throwable throwable, CharSequence pattern, Object... args);
 }

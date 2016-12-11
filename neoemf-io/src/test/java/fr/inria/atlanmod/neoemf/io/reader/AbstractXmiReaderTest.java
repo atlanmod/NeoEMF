@@ -27,6 +27,7 @@ import org.junit.Before;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import static java.util.Objects.isNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractXmiReaderTest extends AbstractInputTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         persistanceHandler = read(sample);
     }
 
@@ -71,7 +72,7 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
         assertThat(attribute.getValue()).isEqualTo(value);
     }
 
-    protected StructuralPersistanceHandler read(File filePath) throws Exception {
+    protected StructuralPersistanceHandler read(File filePath) throws IOException {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
         XmiStreamReader reader = new XmiStreamReader();

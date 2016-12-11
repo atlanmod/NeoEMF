@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +28,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
 
     @Override
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         this.sample = getXmiWithId();
 
         super.setUp();
@@ -37,7 +38,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Check that the namespaces are properly read.
      */
     @Test
-    public void testNamespacesWithId() throws Exception {
+    public void testNamespacesWithId() {
         Namespace.Registry nsRegistry = Namespace.Registry.getInstance();
         Iterable<String> prefixes = nsRegistry.getPrefixes();
         assertThat(prefixes).containsExactlyInAnyOrder("uml", "xmi");
@@ -51,7 +52,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Check that the elements (and the 'xmi:id' attribute) and their children are properly read.
      */
     @Test
-    public void testElementsAndChildrenWithId() throws Exception {
+    public void testElementsAndChildrenWithId() {
         assertThat(persistanceHandler.getElements()).isNotEmpty();
 
         ClassifierMock mock;
@@ -97,7 +98,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Most references are recognized as attributes, until the next step...
      */
     @Test
-    public void testAttributesWithId() throws Exception {
+    public void testAttributesWithId() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -156,7 +157,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Most are not recognized as references yet
      */
     @Test
-    public void testReferencesWithId() throws Exception {
+    public void testReferencesWithId() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -204,7 +205,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      * Check that the metaclasses ('xsi:type' or 'xmi:type') are properly read.
      */
     @Test
-    public void testMetaClassesWithId() throws Exception {
+    public void testMetaClassesWithId() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
