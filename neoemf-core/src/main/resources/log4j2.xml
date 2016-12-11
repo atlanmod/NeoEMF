@@ -3,15 +3,22 @@
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%-7level{WARN=[WARN], DEBUG=[DEBUG], ERROR=[ERROR], TRACE=[TRACE], INFO=[INFO]} %d{ABSOLUTE} - %msg%n%ex{full}" />
+                    pattern="%highlight{%-7level{WARN=[WARN], DEBUG=[DEBUG], ERROR=[ERROR], TRACE=[TRACE], INFO=[INFO]} %d{ABSOLUTE} - %msg%n%ex{full}}{FATAL=red, ERROR=red, WARN=yellow, INFO=normal, DEBUG=normal, TRACE=normal}" />
+        </Console>
+        <Console name="ConsoleTest" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%msg%n" />
         </Console>
     </Appenders>
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="Console" />
         </Root>
-        <Logger name="org.apache.commons.configuration" level="ERROR" additivity="false">
+        <Logger name="org.apache.commons" level="OFF" additivity="false">
             <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="test" level="ALL" additivity="false">
+            <AppenderRef ref="ConsoleTest" />
         </Logger>
     </Loggers>
 </Configuration>

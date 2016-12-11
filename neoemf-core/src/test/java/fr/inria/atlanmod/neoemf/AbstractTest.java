@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf;
 
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,23 +36,23 @@ public abstract class AbstractTest {
     public TestRule watcher = new TestWatcher() {
         @Override
         protected void succeeded(Description description) {
-            System.out.println("[INFO] --- Succeeded");
+            NeoLogger.custom("test").info("[INFO] --- Succeeded");
         }
 
         @Override
         protected void failed(Throwable e, Description description) {
-            System.out.println("[WARN] --- Failed");
+            NeoLogger.custom("test").warn("[WARN] --- Failed");
         }
 
         @Override
         protected void starting(Description description) {
-            System.out.println();
-            System.out.println("[INFO] --- Running " + description.getMethodName());
+            NeoLogger.custom("test").trace("");
+            NeoLogger.custom("test").info("[INFO] --- Running " + description.getMethodName());
         }
 
         @Override
         protected void finished(Description description) {
-            System.out.println();
+            NeoLogger.custom("test").trace("");
         }
     };
 
