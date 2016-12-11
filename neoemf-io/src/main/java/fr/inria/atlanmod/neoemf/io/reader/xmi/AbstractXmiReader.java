@@ -231,7 +231,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
-                NeoLogger.info("XMI version : " + value);
+                NeoLogger.debug("XMI version : " + value);
                 isSpecialFeature = true;
             }
         }
