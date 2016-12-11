@@ -18,6 +18,9 @@ public final class NeoLogger {
 
     private static final Cache<String, Logger> LOGGERS = Caffeine.newBuilder().build();
 
+    private NeoLogger() {
+    }
+
     private static Logger async() {
         return AsyncLogger.getRootLogger();
     }
