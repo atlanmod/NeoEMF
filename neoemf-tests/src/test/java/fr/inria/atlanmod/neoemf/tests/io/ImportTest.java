@@ -74,7 +74,7 @@ public class ImportTest extends AbstractInputTest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void init() throws IOException {
         testFile = workspace.newFile("Neo4j");
 
         testedObjects = new HashSet<>();

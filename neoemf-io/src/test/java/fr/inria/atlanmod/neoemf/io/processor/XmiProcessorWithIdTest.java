@@ -28,11 +28,10 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
 
     @Override
     @Before
-    public void setUp() throws IOException {
+    public void readResource() throws IOException {
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
         this.sample = getXmiWithId();
-
-        super.setUp();
+        super.readResource();
     }
 
     /**
