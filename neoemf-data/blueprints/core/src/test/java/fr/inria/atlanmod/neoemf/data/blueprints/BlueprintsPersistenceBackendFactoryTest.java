@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BlueprintsPersistenceBackendFactoryTest extends AllPersistenceBackendFactoryTest {
 

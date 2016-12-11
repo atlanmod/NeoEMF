@@ -18,8 +18,8 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
 public class PersistenceUriTest extends AllUriTest {
@@ -68,7 +68,7 @@ public class PersistenceUriTest extends AllUriTest {
     public void testCreateFileUriFromFileUri() {
         URI fileURI = URI.createFileURI(file().getAbsolutePath());
         URI neoURI = createFileURI(fileURI, uriScheme());
-        assertThat(neoURI).hasScheme(uriScheme());
+        assertThat(neoURI.scheme()).isEqualTo(uriScheme());
     }
 
     @Test

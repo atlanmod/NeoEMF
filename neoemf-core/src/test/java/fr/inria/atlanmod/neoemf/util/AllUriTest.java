@@ -8,8 +8,8 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 public abstract class AllUriTest extends AllUnitTest {
 
@@ -23,20 +23,20 @@ public abstract class AllUriTest extends AllUnitTest {
     public void testCreateUriFromStandardUri() {
         URI validURI = URI.createURI(uriScheme() + ":/test");
         URI neoURI = createURI(validURI);
-        assertThat(neoURI).hasScheme(uriScheme());
+        assertThat(neoURI.scheme()).isEqualTo(uriScheme());
     }
 
     @Test
     public void testCreateUriFromFileUri() {
         URI fileURI = URI.createFileURI(file().getAbsolutePath());
         URI neoURI = createURI(fileURI);
-        assertThat(neoURI).hasScheme(uriScheme());
+        assertThat(neoURI.scheme()).isEqualTo(uriScheme());
     }
 
     @Test
     public void testCreateFileUriFromFile() {
         URI neoURI = createFileURI(file());
-        assertThat(neoURI).hasScheme(uriScheme());
+        assertThat(neoURI.scheme()).isEqualTo(uriScheme());
     }
 
     @Test

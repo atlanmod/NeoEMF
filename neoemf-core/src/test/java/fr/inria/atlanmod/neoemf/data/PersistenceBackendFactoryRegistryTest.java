@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.AllTest;
 import org.junit.Before;
 import org.junit.Test;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PersistenceBackendFactoryRegistryTest extends AllTest {

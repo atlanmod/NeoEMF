@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.EMap;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EMapSupportTest extends AllBackendTest {
 

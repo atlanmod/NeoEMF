@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BlueprintsResourceSaveTest extends AllUnitTest {
 

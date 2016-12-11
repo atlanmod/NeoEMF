@@ -47,9 +47,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
 import static java.util.Objects.isNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ImportTest extends AllInputTest {
 

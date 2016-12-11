@@ -22,8 +22,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * Tests that verify that the {@link XmiStreamReader} properly interprets the read data.

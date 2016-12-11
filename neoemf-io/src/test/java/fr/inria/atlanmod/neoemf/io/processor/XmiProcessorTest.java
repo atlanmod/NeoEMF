@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class XmiProcessorTest extends AllXmiProcessorTest {
 

@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * Test cases that check List method consistency for the {@link AbstractTransientStore} class.

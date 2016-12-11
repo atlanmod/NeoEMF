@@ -22,8 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class BlueprintsNeo4jResourceSaveTest extends BlueprintsResourceSaveTest {
 

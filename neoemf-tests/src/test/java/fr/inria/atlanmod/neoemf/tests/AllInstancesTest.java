@@ -28,7 +28,7 @@ import org.junit.experimental.categories.Category;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AllInstancesTest extends AllBackendTest {
 

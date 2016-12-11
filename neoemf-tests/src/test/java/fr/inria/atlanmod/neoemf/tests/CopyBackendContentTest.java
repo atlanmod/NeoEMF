@@ -23,7 +23,7 @@ import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CopyBackendContentTest extends AllBackendTest {
 
