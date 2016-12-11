@@ -28,7 +28,7 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
 
-public class MapPersistenceBackend extends AbstractPersistenceBackend {
+public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * The literal description of this backend.
