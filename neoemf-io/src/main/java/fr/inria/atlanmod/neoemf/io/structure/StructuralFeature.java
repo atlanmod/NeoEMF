@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.structure;
 
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 /**
  * A simple structural feature which can be either a reference or an attribute.

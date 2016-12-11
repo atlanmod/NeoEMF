@@ -14,10 +14,10 @@ package fr.inria.atlanmod.neoemf.resource;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.datastore.InvalidOptionsException;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.datastore.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -228,8 +228,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             returnValue = eStore.getAllInstances(eClass, strict);
         }
         catch (UnsupportedOperationException e) {
-            NeoLogger.warn(e.getMessage());
-            NeoLogger.warn("Using standard EMF API instead");
+            NeoLogger.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");
             EList<EObject> instanceList = new BasicEList<>();
             Iterator<EObject> it = getAllContents();
             while (it.hasNext()) {

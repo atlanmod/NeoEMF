@@ -158,7 +158,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                         attributes.getValue(i));
 
                 if (ignoreElement) {
-                    //No need to go further
+                    // No need to go further
                     return;
                 }
 
@@ -223,7 +223,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XMI_IDREF, prefixedValue)) { // xmi:idref
-                //It's not a feature of the current element, but a reference of the previous
+                // It's not a feature of the current element, but a reference of the previous
                 Reference reference = new Reference(classifier.getLocalName());
                 reference.setIdReference(Identifier.original(value));
                 notifyReference(reference);
@@ -231,7 +231,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
-                //NeoLogger.info("XMI version : " + value);
+                NeoLogger.debug("XMI version : " + value);
                 isSpecialFeature = true;
             }
         }

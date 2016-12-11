@@ -14,7 +14,7 @@
 
     <packaging>eclipse-feature</packaging>
 
-    <name>NeoEMF :: Eclipse :: Features :: Core</name>
+    <name>NeoEMF Eclipse Features : Core</name>
     <description>Base feature project (referencing core and ui components).</description>
 
     <dependencies>
@@ -32,13 +32,13 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-blueprints</artifactId>
+            <artifactId>neoemf-data-blueprints-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-map</artifactId>
+            <artifactId>neoemf-data-mapdb</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

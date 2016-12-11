@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.neoemf.io.InputNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -35,5 +36,5 @@ public interface Reader extends InputNotifier<Processor> {
      *
      * @param stream the stream to read
      */
-    void read(InputStream stream) throws Exception;
+    void read(InputStream stream) throws IOException;
 }

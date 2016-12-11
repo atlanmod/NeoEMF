@@ -38,10 +38,7 @@ import java.util.concurrent.TimeUnit;
 @Fork(
         value = 1,
         jvmArgsPrepend = "-Dfile.encoding=utf-8",
-        jvmArgs = {
-                "-XX:+UseConcMarkSweepGC",
-                "-XX:+DisableExplicitGC",
-        },
+        jvmArgs = {"-server", "-XX:+UseConcMarkSweepGC"},
         jvmArgsAppend = "-Xmx8g"
 )
 public class Runner {
@@ -52,7 +49,6 @@ public class Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
-    @Fork(jvmArgs = "")
     public void init(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
         // Let setup and tear down methods create resource and stores
     }
@@ -61,7 +57,6 @@ public class Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
-    @Fork(jvmArgs = "")
     public void create(RunnerState state) throws Exception {
         state.getBackend().createTempStore(state.getResourceFile());
     }

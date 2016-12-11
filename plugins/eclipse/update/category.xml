@@ -4,25 +4,25 @@
              id="fr.inria.atlanmod.neoemf.core.feature" version="1.0.1.qualifier">
         <category name="Base" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.graph.blueprints.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.core.feature_1.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature" version="1.0.1.qualifier">
         <category name="Backends" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature_1.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature" version="1.0.1.qualifier">
         <category name="Backends" />
     </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.map.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.map.feature" version="1.0.1.qualifier">
+    <feature url="features/fr.inria.atlanmod.neoemf.data.mapdb.feature_1.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.data.mapdb.feature" version="1.0.1.qualifier">
+        <category name="Backends" />
+    </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.data.hbase.feature_1.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.data.hbase.feature" version="1.0.1.qualifier">
         <category name="Backends" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.io.feature_1.0.1.qualifier.jar"
              id="fr.inria.atlanmod.neoemf.io.feature" version="1.0.1.qualifier">
         <category name="Utilities" />
-    </feature>
-    <feature url="features/fr.inria.atlanmod.neoemf.hbase.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.hbase.feature" version="1.0.1.qualifier">
-        <category name="Backends" />
     </feature>
     <category-def name="Base" label="Base">
         <description>

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 
 import org.eclipse.emf.common.util.URI;
 

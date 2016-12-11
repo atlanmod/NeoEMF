@@ -12,12 +12,17 @@
 
     <packaging>bundle</packaging>
 
-    <name>NeoEMF :: Core</name>
+    <name>NeoEMF Core</name>
     <description>
         NeoEMF core components. Specialize the standard EMF classes and provide abstract classes for dedicated backend
         extensions. (The core component can not be used in a standalone context, it needs at least one persistence
         solution to work properly).
     </description>
+
+    <properties>
+        <cglib-nodep.version>3.2.4</cglib-nodep.version>
+        <log4j.version>2.7</log4j.version>
+    </properties>
 
     <dependencies>
 
@@ -109,6 +114,48 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Proxy -->
+
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>${cglib-nodep.version}</version>
+            </dependency>
+
+            <!-- Logging -->
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jcl</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jul</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -116,7 +163,9 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${project.groupId}.core</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>
+                            ${project.groupId}.core
+                        </Bundle-SymbolicName>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>

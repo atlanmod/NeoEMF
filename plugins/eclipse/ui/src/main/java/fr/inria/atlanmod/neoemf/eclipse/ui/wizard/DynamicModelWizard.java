@@ -12,8 +12,8 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.wizard;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.core.resources.IFolder;

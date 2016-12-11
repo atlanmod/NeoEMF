@@ -11,8 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.PackContent;
@@ -21,74 +22,127 @@ import fr.inria.atlanmod.neoemf.tests.models.mapSample.SpecializedPackContent;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import java.io.IOException;
+import java.util.stream.IntStream;
 
-public abstract class AllInstancesTest extends AllBackendTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class AllInstancesTest extends AbstractBackendTest {
 
     // These variables should be updated if createResourceContent is changed
-    protected static final int PACK_COUNT = 6;
-    protected static final int ABSTRACT_PACK_CONTENT_COUNT = 150;
-    protected static final int PACK_CONTENT_COUNT = 100;
-    protected static final int SPECIALIZED_PACK_CONTENT_COUNT = 50;
-    protected static final int PACK_CONTENT_2_COUNT = 50;
-    protected static final int ABSTRACT_PACK_CONTENT_STRICT_COUNT = 0;
-    protected static final int PACK_CONTENT_STRICT_COUNT = 50;
+    private static final int PACK_COUNT = 6;
+    private static final int ABSTRACT_PACK_CONTENT_COUNT = 150;
+    private static final int PACK_CONTENT_COUNT = 100;
+    private static final int SPECIALIZED_PACK_CONTENT_COUNT = 50;
+    private static final int PACK_CONTENT_2_COUNT = 50;
+    private static final int ABSTRACT_PACK_CONTENT_STRICT_COUNT = 0;
+    private static final int PACK_CONTENT_STRICT_COUNT = 50;
 
-    protected MapSampleFactory factory;
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testAllInstancesPersistent() {
+        PersistentResource resource = createPersistentStore();
+        createResourceContent(resource);
 
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        this.ePackage = MapSamplePackage.eINSTANCE;
-        super.setUp();
+        assertAllInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
 
-    /**
-     * Creates a Pack hierarchy containing 1 root, 5 sub-pack elements, 10
-     * PackContent, and 10 SpecializedPackContent elements in each sub-pack
-     *
-     * @param r the PersistentResource to fill with the created model
-     */
-    protected void createResourceContent(PersistentResource r) {
-        Pack rootPack = factory.createPack();
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testAllInstancesStricPersistent() {
+        PersistentResource resource = createPersistentStore();
+        createResourceContent(resource);
+
+        assertAllInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+    }
+
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testAllInstancesPersistentLoaded() throws IOException {
+        PersistentResource resource = createPersistentStore();
+        createResourceContent(resource);
+
+        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.close();
+        resource.load(PersistenceOptionsBuilder.noOption());
+
+        assertAllInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
+    }
+
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testAllInstancesStrictPersistentLoaded() throws IOException {
+        PersistentResource resource = createPersistentStore();
+        createResourceContent(resource);
+
+        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.close();
+        resource.load(PersistenceOptionsBuilder.noOption());
+
+        assertAllInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+    }
+
+    @Test
+    @Category(Tags.TransientTests.class)
+    public void testAllInstancesTransient() {
+        PersistentResource resource = createTransientStore();
+        createResourceContent(resource);
+
+        assertAllInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
+    }
+
+    @Test
+    @Category(Tags.TransientTests.class)
+    public void testAllInstancesStrictTransient() {
+        PersistentResource resource = createTransientStore();
+        createResourceContent(resource);
+
+        assertAllInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
+    }
+
+    private void createResourceContent(final PersistentResource resource) {
+        Pack rootPack = EFACTORY.createPack();
         rootPack.setName("root");
-        for (int i = 0; i < 5; i++) {
-            Pack newPack = factory.createPack();
+
+        IntStream.range(0, 5).forEach(i -> {
+            Pack newPack = EFACTORY.createPack();
             newPack.setName("pack" + i);
             rootPack.getPacks().add(newPack);
-            for (int j = 0; j < 10; j++) {
-                PackContent newPackContent = factory.createPackContent();
+
+            IntStream.range(0, 10).forEach(j -> {
+                PackContent newPackContent = EFACTORY.createPackContent();
                 newPackContent.setName("pContent" + i + '-' + j);
                 newPack.getOwnedContents().add(newPackContent);
-                SpecializedPackContent newSpecializedPackContent = factory.createSpecializedPackContent();
+
+                SpecializedPackContent newSpecializedPackContent = EFACTORY.createSpecializedPackContent();
                 newSpecializedPackContent.setName("spContent" + i + '-' + j);
                 newPack.getOwnedContents().add(newSpecializedPackContent);
-                PackContent2 newPackContent2 = factory.createPackContent2();
+
+                PackContent2 newPackContent2 = EFACTORY.createPackContent2();
                 newPackContent2.setName("pContent2" + i + '-' + j);
                 newPack.getOwnedContents().add(newPackContent2);
-            }
-        }
-        r.getContents().add(rootPack);
+            });
+        });
+        resource.getContents().add(rootPack);
     }
 
-    protected void allInstancesPersistentTranscient(PersistentResource persistentResource, boolean strict, int abstractPackContentCount, int packContentCount) {
-        EList<EObject> allPacks = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
+    private void assertAllInstancesPersistentTranscient(final PersistentResource resource, final boolean strict, final int abstractPackContentCount, final int packContentCount) {
+        EList<EObject> allPacks = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPack(), strict);
         assertThat(allPacks).hasSize(PACK_COUNT); // "Invalid count"
 
-        EList<EObject> allAbstractPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
+        EList<EObject> allAbstractPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getAbstractPackContent(), strict);
         assertThat(allAbstractPackContents).hasSize(abstractPackContentCount); // "Invalid count"
 
-        EList<EObject> allPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
+        EList<EObject> allPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent(), strict);
         assertThat(allPackContents).hasSize(packContentCount); // "Invalid count"
 
-        EList<EObject> allSpecializedPackContents = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
+        EList<EObject> allSpecializedPackContents = resource.getAllInstances(MapSamplePackage.eINSTANCE.getSpecializedPackContent(), strict);
         assertThat(allSpecializedPackContents).hasSize(SPECIALIZED_PACK_CONTENT_COUNT); // "Invalid count"
 
-        EList<EObject> allPackContents2 = persistentResource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
+        EList<EObject> allPackContents2 = resource.getAllInstances(MapSamplePackage.eINSTANCE.getPackContent2(), strict);
         assertThat(allPackContents2).hasSize(PACK_CONTENT_2_COUNT); // "Invalid count"
     }
 }

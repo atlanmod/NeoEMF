@@ -14,7 +14,7 @@
 
     <packaging>eclipse-feature</packaging>
 
-    <name>NeoEMF :: Eclipse :: Features :: IO</name>
+    <name>NeoEMF Eclipse Features : IO</name>
     <description>IO feature project.</description>
 
     <dependencies>

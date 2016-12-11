@@ -11,81 +11,131 @@
 
 package fr.inria.atlanmod.neoemf.logging;
 
-import com.google.common.util.concurrent.MoreExecutors;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.text.MessageFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 public final class NeoLogger {
 
-    private static final Logger log = LogManager.getRootLogger();
+    private static final Cache<String, Logger> LOGGERS = Caffeine.newBuilder().build();
 
-    // Need to use Executors.newFixedThreadPool(1) because newSingleThreadExecutor cannot
-    // be casted to ThreadPoolExecutor
-    private static final ExecutorService pool = MoreExecutors.getExitingExecutorService(
-            (ThreadPoolExecutor) Executors.newFixedThreadPool(1), 1, TimeUnit.MILLISECONDS);
-
-    public static void debug(String msg) {
-        exec(() -> log.debug(msg));
+    private NeoLogger() {
     }
 
-    public static void debug(String pattern, Object... args) {
-        exec(() -> log.debug(MessageFormat.format(pattern, args)));
+    /**
+     * Returns the root logger.
+     *
+     * @return the root logger, named "".
+     */
+    private static Logger root() {
+        return custom(Logger.ROOT_LOGGER_NAME);
     }
 
-    public static void info(String msg) {
-        exec(() -> log.info(msg));
+    /**
+     * Returns a {@link Logger} with the specified name.
+     *
+     * @param name the logger name
+     *
+     * @return the {@link Logger}
+     */
+    public static Logger custom(String name) {
+        return LOGGERS.get(name, AsyncLogger::new);
     }
 
-    public static void info(String pattern, Object... args) {
-        exec(() -> log.info(MessageFormat.format(pattern, args)));
+    /**
+     * @see Logger#debug(CharSequence)
+     */
+    public static void debug(CharSequence msg) {
+        root().debug(msg);
     }
 
-    public static void warn(String msg) {
-        exec(() -> log.warn(msg));
+    /**
+     * @see Logger#debug(CharSequence, Object...)
+     */
+    public static void debug(CharSequence pattern, Object... args) {
+        root().debug(pattern, args);
     }
 
-    public static void warn(String pattern, Object... args) {
-        exec(() -> log.warn(MessageFormat.format(pattern, args)));
+    /**
+     * @see Logger#info(CharSequence)
+     */
+    public static void info(CharSequence msg) {
+        root().info(msg);
     }
 
+    /**
+     * @see Logger#info(CharSequence, Object...)
+     */
+    public static void info(CharSequence pattern, Object... args) {
+        root().info(pattern, args);
+    }
+
+    /**
+     * @see Logger#warn(CharSequence)
+     */
+    public static void warn(CharSequence msg) {
+        root().warn(msg);
+    }
+
+    /**
+     * @see Logger#warn(CharSequence, Object...)
+     */
+    public static void warn(CharSequence pattern, Object... args) {
+        root().warn(pattern, args);
+    }
+
+    /**
+     * @see Logger#warn(Throwable)
+     */
     public static void warn(Throwable e) {
-        exec(() -> log.warn(e));
+        root().warn(e);
     }
 
-    public static void warn(Throwable e, String pattern, Object... args) {
-        exec(() -> log.warn(MessageFormat.format(pattern, args), e));
+    /**
+     * @see Logger#warn(Throwable, CharSequence)
+     */
+    public static void warn(Throwable e, CharSequence msg) {
+        root().warn(e, msg);
     }
 
-    public static void error(String msg) {
-        exec(() -> log.error(msg));
+    /**
+     * @see Logger#warn(Throwable, CharSequence, Object...)
+     */
+    public static void warn(Throwable e, CharSequence pattern, Object... args) {
+        root().warn(e, pattern, args);
     }
 
-    public static void error(String pattern, Object... args) {
-        exec(() -> log.error(MessageFormat.format(pattern, args)));
+    /**
+     * @see Logger#error(CharSequence)
+     */
+    public static void error(CharSequence msg) {
+        root().error(msg);
     }
 
+    /**
+     * @see Logger#error(CharSequence, Object...)
+     */
+    public static void error(CharSequence pattern, Object... args) {
+        root().error(pattern, args);
+    }
+
+    /**
+     * @see Logger#error(Throwable)
+     */
     public static void error(Throwable e) {
-        exec(() -> log.error(e));
+        root().error(e);
     }
 
-    public static void error(Throwable e, String pattern, Object... args) {
-        exec(() -> log.error(MessageFormat.format(pattern, args), e));
+    /**
+     * @see Logger#error(Throwable, CharSequence)
+     */
+    public static void error(Throwable e, CharSequence msg) {
+        root().error(e, msg);
     }
 
-    private static void exec(Runnable runnable) {
-        try {
-            pool.submit(runnable);
-        }
-        catch (RejectedExecutionException e) {
-            runnable.run();
-        }
+    /**
+     * @see Logger#error(Throwable, CharSequence, Object...)
+     */
+    public static void error(Throwable e, CharSequence pattern, Object... args) {
+        root().error(e, pattern, args);
     }
 }

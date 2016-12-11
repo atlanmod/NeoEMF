@@ -11,155 +11,106 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.AbstractPackContent;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * Test class for the contains method, related to performance issue descibed in #30
  * <a href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
  */
-public class EObjectEContentsTest extends AllBackendTest {
+public class EObjectEContentsTest extends AbstractBackendTest {
 
     private static final int SUB_PACK_COUNT = 5;
     private static final int PACK_CONTENT_COUNT = 3;
     private static final int ECONTENTS_COUNT = SUB_PACK_COUNT + PACK_CONTENT_COUNT;
 
-    protected MapSampleFactory factory;
-    protected Pack p;
-    protected List<EObject> subPacks;
-    protected List<EObject> packContents;
-
-    @Override
-    public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        ePackage = MapSamplePackage.eINSTANCE;
-        subPacks = new ArrayList<>();
-        packContents = new ArrayList<>();
-        super.setUp();
-        createPersistentStores();
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        p = null;
-        subPacks = null;
-        packContents = null;
-        super.tearDown();
-    }
+    private Pack pack;
+    private List<EObject> subPacks;
+    private List<EObject> packContents;
 
     @Test
-    public void testEObjectEContentsMapDB() {
-        createResourceContent(mapResource);
-        checkEContents();
-    }
+    @Category(Tags.PersistentTests.class)
+    public void testEObjectEContents() {
+        PersistentResource resource = createPersistentStore();
+        createResourceContent(resource);
 
-    @Test
-    public void testEObjectEContentsNeo4j() {
-        createResourceContent(neo4jResource);
-        checkEContents();
-    }
-
-    @Test
-    public void testEObjectEContentsTinker() {
-        createResourceContent(tinkerResource);
-        checkEContents();
-    }
-
-    @Test
-    public void testEObjectEmptyEContentsSizeMapDB() {
-        createEmptyPackResourceContent(mapResource);
-        checkEmptyEContentsSize();
-    }
-
-    @Test
-    public void testEObjectEmptyEContentsSizeNeo4j() {
-        createEmptyPackResourceContent(neo4jResource);
-        checkEmptyEContentsSize();
-    }
-
-    @Test
-    public void testEObjectEmptyEContentsSizeTinker() {
-        createEmptyPackResourceContent(tinkerResource);
-        checkEmptyEContentsSize();
-    }
-
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testEObjectEmptyEContentsGetMapDB() {
-        createEmptyPackResourceContent(mapResource);
-        checkEmptyEContentsGet();
-    }
-
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testEObjectEmptyEContentsGetNeo4j() {
-        createEmptyPackResourceContent(neo4jResource);
-        checkEmptyEContentsGet();
-    }
-
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testEObjectEmptyEContentsGetTinker() {
-        createEmptyPackResourceContent(tinkerResource);
-        checkEmptyEContentsGet();
-    }
-
-    protected void createResourceContent(Resource r) {
-        Pack parentPack = factory.createPack();
-        parentPack.setName("ParentPack");
-
-        p = factory.createPack();
-        p.setName("Pack");
-        p.setParentPack(parentPack);
-
-        for (int i = 0; i < SUB_PACK_COUNT; i++) {
-            Pack subPack = factory.createPack();
-            subPack.setName("SubPack" + i);
-            p.getPacks().add(subPack);
-            subPacks.add(subPack);
-        }
-
-        for (int i = 0; i < PACK_CONTENT_COUNT; i++) {
-            AbstractPackContent pContent = factory.createPackContent();
-            pContent.setName("PackContent" + i);
-            p.getOwnedContents().add(pContent);
-            packContents.add(pContent);
-        }
-        r.getContents().add(p);
-    }
-
-    protected void createEmptyPackResourceContent(Resource r) {
-        p = factory.createPack();
-        p.setName("Empty Pack");
-        r.getContents().add(p);
-    }
-
-    private void checkEContents() {
-        EList<EObject> eContents = p.eContents();
+        EList<EObject> eContents = pack.eContents();
         assertThat(eContents).hasSize(ECONTENTS_COUNT);
-        for (int i = 0; i < SUB_PACK_COUNT; i++) {
-            assertThat(eContents.get(i)).isEqualTo(subPacks.get(i)); // "p.eContents().get(i) != subPacks.get(i)"
-        }
-        for (int i = 0; i < PACK_CONTENT_COUNT; i++) {
-            assertThat(eContents.get(i + SUB_PACK_COUNT)).isEqualTo(packContents.get(i)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
-        }
+
+        IntStream.range(0, SUB_PACK_COUNT).forEach(index -> {
+            assertThat(eContents.get(index)).isEqualTo(subPacks.get(index)); // "p.eContents().get(i) != subPacks.get(i)"
+        });
+
+        IntStream.range(0, PACK_CONTENT_COUNT).forEach(index -> {
+            assertThat(eContents.get(index + SUB_PACK_COUNT)).isEqualTo(packContents.get(index)); // "p.eContents().get(i + SUB_PACK_COUNT) != packContents.get(i)"
+        });
     }
 
-    private void checkEmptyEContentsSize() {
-        EList<EObject> eContents = p.eContents();
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testEObjectEmptyEContentsSize() {
+        PersistentResource resource = createPersistentStore();
+        createEmptyPackResourceContent(resource);
+
+        EList<EObject> eContents = pack.eContents();
         assertThat(eContents).isEmpty();
     }
 
-    private void checkEmptyEContentsGet() {
-        p.eContents().get(0);
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testEObjectEmptyEContentsGet() {
+        PersistentResource resource = createPersistentStore();
+        createEmptyPackResourceContent(resource);
+
+        Throwable thrown = catchThrowable(() -> pack.eContents().get(0));
+        assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
+    }
+
+    private void createResourceContent(final PersistentResource resource) {
+        subPacks = new ArrayList<>();
+        packContents = new ArrayList<>();
+
+        Pack parentPack = EFACTORY.createPack();
+        parentPack.setName("ParentPack");
+
+        pack = EFACTORY.createPack();
+        pack.setName("Pack");
+        pack.setParentPack(parentPack);
+
+        IntStream.range(0, SUB_PACK_COUNT).forEach(i -> {
+            Pack subPack = EFACTORY.createPack();
+            subPack.setName("SubPack" + i);
+            pack.getPacks().add(subPack);
+            subPacks.add(subPack);
+        });
+
+        IntStream.range(0, PACK_CONTENT_COUNT).forEach(i -> {
+            AbstractPackContent pContent = EFACTORY.createPackContent();
+            pContent.setName("PackContent" + i);
+            pack.getOwnedContents().add(pContent);
+            packContents.add(pContent);
+        });
+
+        resource.getContents().add(pack);
+    }
+
+    private void createEmptyPackResourceContent(final PersistentResource resource) {
+        pack = EFACTORY.createPack();
+        pack.setName("Empty Pack");
+        resource.getContents().add(pack);
     }
 }

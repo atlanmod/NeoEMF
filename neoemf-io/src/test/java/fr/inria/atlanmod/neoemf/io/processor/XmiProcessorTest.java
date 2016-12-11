@@ -19,18 +19,16 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- *
- */
-public class XmiProcessorTest extends AllXmiProcessorTest {
+public class XmiProcessorTest extends AbstractXmiProcessorTest {
 
     @Override
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         this.sample = getXmiStandard();
 
@@ -43,7 +41,7 @@ public class XmiProcessorTest extends AllXmiProcessorTest {
      * All elements must have an id and a class name.
      */
     @Test
-    public void testElementsAndChildren() throws Exception {
+    public void testElementsAndChildren() {
         assertThat(persistanceHandler.getElements()).isNotEmpty();
 
         ClassifierMock mock;
@@ -88,7 +86,7 @@ public class XmiProcessorTest extends AllXmiProcessorTest {
      * Check that the attributes are properly processed.
      */
     @Test
-    public void testAttributes() throws Exception {
+    public void testAttributes() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -146,7 +144,7 @@ public class XmiProcessorTest extends AllXmiProcessorTest {
      * References previously detected as attributes, are now well placed.
      */
     @Test
-    public void testReferences() throws Exception {
+    public void testReferences() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
@@ -212,7 +210,7 @@ public class XmiProcessorTest extends AllXmiProcessorTest {
      * Check that the metaclasses ({@code xsi:type} or {@code xmi:type}) are properly processed.
      */
     @Test
-    public void testMetaClasses() throws Exception {
+    public void testMetaClasses() {
         ClassifierMock mock;
         ClassifierMock mockChild;
 

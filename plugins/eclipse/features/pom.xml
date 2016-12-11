@@ -14,7 +14,7 @@
 
     <packaging>pom</packaging>
 
-    <name>NeoEMF :: Eclipse :: Features</name>
+    <name>NeoEMF Eclipse Features</name>
     <description>
         Parent project for the feature plugin generation. Is responsible of Base, Graph (and Blueprints
         connectors), and Map feature generation.
@@ -22,10 +22,10 @@
 
     <modules>
         <module>fr.inria.atlanmod.neoemf.core.feature</module>
-        <module>fr.inria.atlanmod.neoemf.graph.blueprints.feature</module>
-        <module>fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.feature</module>
-        <module>fr.inria.atlanmod.neoemf.map.feature</module>
-        <module>fr.inria.atlanmod.neoemf.hbase.feature</module>
+        <module>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</module>
+        <module>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</module>
+        <module>fr.inria.atlanmod.neoemf.data.mapdb.feature</module>
+        <module>fr.inria.atlanmod.neoemf.data.hbase.feature</module>
         <module>fr.inria.atlanmod.neoemf.io.feature</module>
     </modules>
 

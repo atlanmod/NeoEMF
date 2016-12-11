@@ -11,107 +11,42 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.neoemf.context.Tags;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.K;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
-import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.V;
 
 import org.eclipse.emf.common.util.EMap;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class EMapSupportTest extends AllBackendTest {
+public class EMapSupportTest extends AbstractBackendTest {
 
     private static final String KEY1 = "key1", KEY2 = "key2", VALUE1 = "value1", VALUE2 = "value2";
 
-    protected MapSampleFactory factory;
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        factory = MapSampleFactory.eINSTANCE;
-        this.ePackage = MapSamplePackage.eINSTANCE;
-        super.setUp();
-        createPersistentStores();
-        mapResource.getContents().add(factory.createSampleModel());
-        neo4jResource.getContents().add(factory.createSampleModel());
-        tinkerResource.getContents().add(factory.createSampleModel());
-    }
-
     @Test
-    public void testGetMapStringStringEmptyMapDB() {
-        getMapStringStringEmpty(mapResource);
-    }
+    @Category(Tags.PersistentTests.class)
+    public void testGetMapStringStringEmpty() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
 
-    @Test
-    public void testGetMapStringStringEmptyNeo4j() {
-        getMapStringStringEmpty(neo4jResource);
-    }
-
-    @Test
-    public void testGetMapStringStringEmptyTinker() {
-        getMapStringStringEmpty(tinkerResource);
-    }
-
-    @Test
-    public void testPutMapStringStringMapDB() {
-        putMapStringString(mapResource);
-    }
-
-    @Test
-    public void testPutMapStringStringNeo4j() {
-        putMapStringString(neo4jResource);
-    }
-
-    @Test
-    public void testPutMapStringStringTinker() {
-        putMapStringString(tinkerResource);
-    }
-
-    @Test
-    public void testGetMapKVEmptyMapDB() {
-        getMapKVEmpty(mapResource);
-    }
-
-    @Test
-    public void testGetMapKVEmptyNeo4j() {
-        getMapKVEmpty(neo4jResource);
-    }
-
-    @Test
-    public void testGetMapKVEmptyTinker() {
-        getMapKVEmpty(tinkerResource);
-    }
-
-    @Test
-    public void testPutMapKVMapDB() {
-        putMapKV(mapResource);
-    }
-
-    @Test
-    public void testPutMapKVNeo4j() {
-        putMapKV(neo4jResource);
-    }
-
-    @Test
-    public void testPutMapKVTinker() {
-        putMapKV(tinkerResource);
-    }
-
-    private void getMapStringStringEmpty(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getMap()).isInstanceOf(EMap.class); // "Map field is not an instance of EMap"
 
         EMap<String, String> map = model.getMap();
         assertThat(map).isEmpty(); // "EMap is not empty"
     }
 
-    private void putMapStringString(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testPutMapStringString() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
+
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<String, String> map = model.getMap();
         map.put(KEY1, VALUE1);
         map.put(KEY2, VALUE2);
@@ -123,31 +58,41 @@ public class EMapSupportTest extends AllBackendTest {
         assertThat(map.get(KEY2)).isEqualTo(VALUE2); // "Wrong value for KEY2"
     }
 
-    private void getMapKVEmpty(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testGetMapKVEmpty() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
+
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         assertThat(model.getKvMap()).isInstanceOf(EMap.class); // "KvMap field is not an instance of EMap"
 
         EMap<K, V> map = model.getKvMap();
         assertThat(map).isEmpty(); // "KvMap is not empty"
     }
 
-    private void putMapKV(PersistentResource persistentResource) {
-        SampleModel model = (SampleModel) persistentResource.getContents().get(0);
+    @Test
+    @Category(Tags.PersistentTests.class)
+    public void testPutMapKV() {
+        PersistentResource resource = createPersistentStore();
+        resource.getContents().add(EFACTORY.createSampleModel());
+
+        SampleModel model = (SampleModel) resource.getContents().get(0);
         EMap<K, V> map = model.getKvMap();
 
-        K k1 = factory.createK();
+        K k1 = EFACTORY.createK();
         k1.setKName(KEY1);
         k1.setKInt(10);
 
-        K k2 = factory.createK();
+        K k2 = EFACTORY.createK();
         k2.setKName(KEY2);
         k2.setKInt(100);
 
-        V v1 = factory.createV();
+        V v1 = EFACTORY.createV();
         v1.setVName(VALUE1);
         v1.setVInt(1);
 
-        V v2 = factory.createV();
+        V v2 = EFACTORY.createV();
         v2.setVName(VALUE2);
         v2.setVInt(5);
 

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.decorator;
 
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 
 import org.eclipse.core.resources.IFile;

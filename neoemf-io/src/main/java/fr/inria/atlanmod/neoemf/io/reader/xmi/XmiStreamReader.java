@@ -22,11 +22,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -50,7 +52,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         return defaultProcessor;
     }
 
-    public void read(InputStream stream) throws Exception {
+    public void read(InputStream stream) throws IOException {
         if (!hasHandler()) {
             throw new IllegalStateException("This notifier hasn't any handler");
         }
@@ -62,20 +64,21 @@ public class XmiStreamReader extends AbstractXmiReader {
         factory.setValidating(false);
 
         Timer logProgressTimer = new Timer(true);
+        logProgressTimer.schedule(new LogProgressTimer(stream, stream.available()), 10000, 30000);
 
         try {
-            // Log progress timer
-            logProgressTimer.schedule(new LogProgressTimer(stream, stream.available()), 10000, 30000);
-
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
         }
         catch (SAXException e) {
-            if (nonNull(e.getException())) {
-                throw e.getException();
+            if (nonNull(e.getCause())) {
+                throw new IOException(e.getCause());
             }
             else {
-                throw e;
+                throw new IOException(e);
             }
+        }
+        catch (ParserConfigurationException e) {
+            throw new IOException(e);
         }
         finally {
             logProgressTimer.cancel();

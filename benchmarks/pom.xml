@@ -15,7 +15,7 @@
 
     <packaging>pom</packaging>
 
-    <name>NeoEMF :: Benchmarks</name>
+    <name>NeoEMF Benchmarks</name>
 
     <modules>
         <module>core</module>
@@ -23,12 +23,11 @@
     </modules>
 
     <properties>
-
-        <!-- EMF -->
         <cdo.version>4.3.0</cdo.version>
         <neo4j.version>1.9.6</neo4j.version>
 
-        <!-- Benchmark -->
+        <log4j.version>2.7</log4j.version>
+
         <jmh.version>1.17.1</jmh.version>
     </properties>
 
@@ -61,20 +60,49 @@
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-blueprints</artifactId>
+                <artifactId>neoemf-data-blueprints-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-blueprints-neo4j</artifactId>
+                <artifactId>neoemf-data-blueprints-neo4j</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-map</artifactId>
+                <artifactId>neoemf-data-mapdb</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <!-- Logging -->
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jcl</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jul</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- Local -->

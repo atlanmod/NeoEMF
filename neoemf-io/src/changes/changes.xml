@@ -5,7 +5,7 @@
     <!-- For details on the structure : https://maven.apache.org/plugins/maven-changes-plugin/changes.html -->
 
     <properties>
-        <title>NeoEMF :: IO</title>
+        <title>NeoEMF IO</title>
     </properties>
 
     <body>

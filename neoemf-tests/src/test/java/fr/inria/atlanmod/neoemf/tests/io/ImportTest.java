@@ -11,14 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.neoemf.datastore.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.datastore.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.graph.blueprints.datastore.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.io.BlueprintsHandlerFactory;
-import fr.inria.atlanmod.neoemf.graph.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
-import fr.inria.atlanmod.neoemf.graph.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.io.AllInputTest;
+import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.io.BlueprintsHandlerFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
@@ -38,28 +38,23 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.time.Instant;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static fr.inria.atlanmod.neoemf.NeoAssertions.assertThat;
-import static fr.inria.atlanmod.neoemf.NeoAssertions.fail;
 import static java.util.Objects.isNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-public class ImportTest extends AllInputTest {
+public class ImportTest extends AbstractInputTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    private File neo4jFile;
+    private File testFile;
 
     private HashSet<Object> testedObjects;
     private HashSet<EStructuralFeature> testedFeatures;
@@ -79,16 +74,15 @@ public class ImportTest extends AllInputTest {
     }
 
     @Before
-    public void setUp() throws Exception {
-        String timestamp = String.valueOf(Instant.now().toEpochMilli());
-        neo4jFile = temporaryFolder.getRoot().toPath().resolve("import-Neo4j" + timestamp).toFile();
+    public void setUp() throws IOException {
+        testFile = newFile("Neo4j");
 
         testedObjects = new HashSet<>();
         testedFeatures = new HashSet<>();
     }
 
     @Test
-    public void testCompareWithEMFNeo4j() throws Exception {
+    public void testCompareWithEMFNeo4j() throws IOException {
         File file = getXmiStandard();
 
         EObject emfObject = loadWithEMF(file);
@@ -103,7 +97,7 @@ public class ImportTest extends AllInputTest {
      * All elements must have an id and a class name.
      */
     @Test
-    public void testElementsAndChildrenNeo4j() throws Exception {
+    public void testElementsAndChildrenNeo4j() throws IOException {
         EObject eObject;
         EObject eObjectChild;
 
@@ -146,7 +140,7 @@ public class ImportTest extends AllInputTest {
      * Check that the attributes are properly processed.
      */
     @Test
-    public void testAttributesNeo4j() throws Exception {
+    public void testAttributesNeo4j() throws IOException {
         EObject eObject;
 
         EObject root = loadWithNeoBlueprints(getXmiStandard());
@@ -172,7 +166,7 @@ public class ImportTest extends AllInputTest {
      * References previously detected as attributes, are now well placed.
      */
     @Test
-    public void testReferencesNeo4j() throws Exception {
+    public void testReferencesNeo4j() throws IOException {
         EObject eObject;
         EObject eObjectChild;
 
@@ -216,7 +210,7 @@ public class ImportTest extends AllInputTest {
     @Test
     @Ignore
     // FIXME Inverse references don't exist in EMF... It's a problem, or not ?
-    public void testImportWithIdNeo4j() throws Exception {
+    public void testImportWithIdNeo4j() throws IOException {
         File file = getXmiWithId();
 
         EObject emfObject = loadWithEMF(file);
@@ -225,7 +219,7 @@ public class ImportTest extends AllInputTest {
         assertEqualEObject(neoObject, emfObject);
     }
 
-    private void assertEqualEObject(EObject actual, EObject expected) {
+    private void assertEqualEObject(final EObject actual, final EObject expected) {
         NeoLogger.debug("Actual object     : {0}", actual);
         NeoLogger.debug("Expected object   : {0}", expected);
 
@@ -250,7 +244,7 @@ public class ImportTest extends AllInputTest {
     }
 
     @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
-    private void assertEqualFeature(EObject actual, EObject expected, int featureId) {
+    private void assertEqualFeature(final EObject actual, final EObject expected, final int featureId) {
         EStructuralFeature eStructuralFeature = expected.eClass().getEStructuralFeature(featureId);
 
         if (!testedFeatures.contains(eStructuralFeature)) {
@@ -344,7 +338,7 @@ public class ImportTest extends AllInputTest {
         }
     }
 
-    private EObject loadWithEMF(File file) throws Exception {
+    private EObject loadWithEMF(final File file) throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
@@ -353,14 +347,14 @@ public class ImportTest extends AllInputTest {
         return resource.getContents().get(0);
     }
 
-    private void loadWithNeo(File file, PersistenceHandler persistenceHandler) throws Exception {
+    private void loadWithNeo(final File file, final PersistenceHandler persistenceHandler) throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
         Importer.fromXmi(new FileInputStream(file), persistenceHandler);
     }
 
-    private EObject loadWithNeoBlueprints(File file) throws Exception {
+    private EObject loadWithNeoBlueprints(final File file) throws IOException {
         BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
         PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(persistenceBackend, false);
 
@@ -377,7 +371,7 @@ public class ImportTest extends AllInputTest {
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
 
-        Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(neo4jFile));
+        Resource resource = resourceSet.createResource(BlueprintsURI.createFileURI(testFile));
         resource.load(BlueprintsNeo4jOptionsBuilder.newBuilder().asMap());
 
         return resource.getContents().get(0);
@@ -389,6 +383,6 @@ public class ImportTest extends AllInputTest {
                 .noCache()
                 .asMap();
 
-        return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(neo4jFile, options);
+        return (BlueprintsPersistenceBackend) BlueprintsPersistenceBackendFactory.getInstance().createPersistentBackend(testFile, options);
     }
 }
