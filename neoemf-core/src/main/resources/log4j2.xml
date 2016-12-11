@@ -9,16 +9,22 @@
             <PatternLayout
                     pattern="%msg%n" />
         </Console>
+        <Async name="AsyncConsole">
+            <AppenderRef ref="Console"/>
+        </Async>
+        <Async name="AsyncConsoleTest">
+            <AppenderRef ref="ConsoleTest"/>
+        </Async>
     </Appenders>
     <Loggers>
         <Root level="INFO">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="AsyncConsole" />
         </Root>
         <Logger name="org.apache.commons" level="OFF" additivity="false">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="AsyncConsole" />
         </Logger>
         <Logger name="test" level="ALL" additivity="false">
-            <AppenderRef ref="ConsoleTest" />
+            <AppenderRef ref="AsyncConsoleTest" />
         </Logger>
     </Loggers>
 </Configuration>
