@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.logging;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-public class NeoLogger {
+public final class NeoLogger {
 
     private static final Cache<String, Logger> LOGGERS = Caffeine.newBuilder().build();
 
