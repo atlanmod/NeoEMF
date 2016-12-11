@@ -39,7 +39,6 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
         field.setAccessible(true);
         innerBackend = (PersistenceBackend) field.get(context);
 
-
         assertThat(innerBackend).isSameAs(expectedInnerBackend); // "The backend in the EStore is not the created one"
     }
 }

@@ -35,16 +35,16 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 public class TransientStoreListTest extends AbstractTest {
 
+    private static final MapSampleFactory EFACTORY = MapSampleFactory.eINSTANCE;
+
+    @SuppressWarnings("unused")
+    private static final MapSamplePackage EPACKAGE = MapSamplePackage.eINSTANCE;
+
     private SampleModel model;
-    private MapSampleFactory mapFactory;
 
     @Before
-    public void setUp() {
-        @SuppressWarnings("unused")
-        MapSamplePackage mapPackage = MapSamplePackage.eINSTANCE;
-
-        mapFactory = MapSampleFactory.eINSTANCE;
-        model = mapFactory.createSampleModel();
+    public final void initModel() {
+        model = EFACTORY.createSampleModel();
     }
 
     @Test
@@ -54,22 +54,22 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testAdd() {
-        assertThat(model.getContentObjects().add(mapFactory.createSampleModelContentObject())).isTrue(); // "Adding valid item to the list returns false"
+        assertThat(model.getContentObjects().add(EFACTORY.createSampleModelContentObject())).isTrue(); // "Adding valid item to the list returns false"
     }
 
     @Test
     public void testAddAllCollection() {
         List<SampleModelContentObject> list = new ArrayList<>();
-        list.add(mapFactory.createSampleModelContentObject());
-        list.add(mapFactory.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
         assertThat(model.getContentObjects().addAll(list)).isTrue(); // "Adding valid item list returns false"
     }
 
     @Test
     public void testAddAllCollectionIndex() {
         List<SampleModelContentObject> list = new ArrayList<>();
-        list.add(mapFactory.createSampleModelContentObject());
-        list.add(mapFactory.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
         assertThat(model.getContentObjects().addAll(0, list)).isTrue(); // "Adding valid item list at a given index returns false"
     }
 
@@ -81,22 +81,22 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testContains() {
-        assertThat(model.getContentObjects().contains(mapFactory.createSampleModelContentObject())).isFalse(); // "Accessed list contains the created element"
+        assertThat(model.getContentObjects().contains(EFACTORY.createSampleModelContentObject())).isFalse(); // "Accessed list contains the created element"
     }
 
     @Test
     public void testContainsAll() {
         List<SampleModelContentObject> list = new ArrayList<>();
-        list.add(mapFactory.createSampleModelContentObject());
-        list.add(mapFactory.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
         assertThat(model.getContentObjects().containsAll(list)).isFalse(); // "Accessed list contains the given collection"
     }
 
     @Test
     public void testEquals() {
         List<SampleModelContentObject> list = new ArrayList<>();
-        list.add(mapFactory.createSampleModelContentObject());
-        list.add(mapFactory.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
+        list.add(EFACTORY.createSampleModelContentObject());
         assertThat(Objects.equals(model.getContentObjects(), list)).isFalse(); // "Accessed list is equal to the given collection"
     }
 
@@ -114,7 +114,7 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testIndexOf() {
-        assertThat(model.getContentObjects().indexOf(mapFactory.createSampleModelContentObject())).isEqualTo(-1); // "IndexOf returns a wrong value"
+        assertThat(model.getContentObjects().indexOf(EFACTORY.createSampleModelContentObject())).isEqualTo(-1); // "IndexOf returns a wrong value"
     }
 
     @Test
@@ -129,7 +129,7 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testLastIndexOf() {
-        assertThat(model.getContentObjects().lastIndexOf(mapFactory.createSampleModelContentObject())).isEqualTo(-1); // "LastIndexOf returns a wrong value"
+        assertThat(model.getContentObjects().lastIndexOf(EFACTORY.createSampleModelContentObject())).isEqualTo(-1); // "LastIndexOf returns a wrong value"
     }
 
     @Test
@@ -156,7 +156,7 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testMoveObject() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().move(0, mapFactory.createSampleModelContentObject()));
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().move(0, EFACTORY.createSampleModelContentObject()));
         assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
@@ -168,14 +168,14 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testRemoveObject() {
-        model.getContentObjects().remove(mapFactory.createSampleModelContentObject());
+        model.getContentObjects().remove(EFACTORY.createSampleModelContentObject());
     }
 
     @Test
     public void testRemoveAllCollection() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().removeAll(collection);
     }
 
@@ -187,8 +187,8 @@ public class TransientStoreListTest extends AbstractTest {
     @Test
     public void testRetainAllCollection() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().retainAll(collection);
     }
 
@@ -199,27 +199,27 @@ public class TransientStoreListTest extends AbstractTest {
 
     @Test
     public void testSetInvalidIndex() {
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, mapFactory.createSampleModelContentObject()));
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, EFACTORY.createSampleModelContentObject()));
         assertThat(thrown).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testSetValidIndex() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
-        model.getContentObjects().set(0, mapFactory.createSampleModelContentObject());
+        model.getContentObjects().set(0, EFACTORY.createSampleModelContentObject());
     }
 
     @Test
     public void testSetInvalidObject() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
 
-        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, (SampleModelContentObject) mapFactory.createSampleModel()));
+        Throwable thrown = catchThrowable(() -> model.getContentObjects().set(0, (SampleModelContentObject) EFACTORY.createSampleModel()));
         assertThat(thrown).isInstanceOf(ClassCastException.class);
     }
 
@@ -231,8 +231,8 @@ public class TransientStoreListTest extends AbstractTest {
     @Test
     public void testSize() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
         assertThat(model.getContentObjects().size()).isEqualTo(2);
     }
@@ -246,8 +246,8 @@ public class TransientStoreListTest extends AbstractTest {
     @Test
     public void testSubList() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
         assertThat(model.getContentObjects().subList(0, 1).size()).isEqualTo(1);
     }
@@ -260,8 +260,8 @@ public class TransientStoreListTest extends AbstractTest {
     @Test
     public void testToArray() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
         assertThat(model.getContentObjects().toArray().length).isEqualTo(2);
     }
@@ -276,8 +276,8 @@ public class TransientStoreListTest extends AbstractTest {
     public void testToArrayParameter() {
         Object[] array = new Object[2];
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
         assertThat(model.getContentObjects().toArray(array).length).isEqualTo(2);
     }
@@ -291,8 +291,8 @@ public class TransientStoreListTest extends AbstractTest {
     @Test
     public void testToString() {
         Collection<SampleModelContentObject> collection = new ArrayList<>();
-        collection.add(mapFactory.createSampleModelContentObject());
-        collection.add(mapFactory.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
+        collection.add(EFACTORY.createSampleModelContentObject());
         model.getContentObjects().addAll(collection);
         //noinspection ResultOfMethodCallIgnored
         model.getContentObjects().toString();

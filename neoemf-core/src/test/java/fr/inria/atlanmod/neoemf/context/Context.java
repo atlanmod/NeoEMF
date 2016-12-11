@@ -1,5 +1,6 @@
 package fr.inria.atlanmod.neoemf.context;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -15,25 +16,17 @@ public interface Context {
      */
     String name();
 
-    /**
-     * Creates a new {@link PersistentResource} with a persistent backend.
-     */
+    String uriScheme();
+
     PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
 
-    /**
-     * Creates a new {@link PersistentResource} with a transient backend.
-     */
     PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
 
-    /**
-     * Creates a new {@link URI}.
-     */
-    URI createFileUri(File file);
+    PersistenceBackendFactory persistenceBackendFactory();
 
-    /**
-     * Returns the URI scheme of this {@code Context}.
-     */
-    String uriScheme();
+    URI createURI(URI uri);
+
+    URI createFileURI(File file);
 
     Class<?> directWriteClass();
 }

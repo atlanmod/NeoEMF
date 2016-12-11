@@ -1,11 +1,9 @@
-package fr.inria.atlanmod.neoemf.data.blueprints.context;
+package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -13,11 +11,13 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
-public class BlueprintsContext implements Context {
+import static org.mockito.Mockito.mock;
 
-    public static final String NAME = "Tinker";
+public class CoreContext implements Context {
 
-    protected BlueprintsContext() {
+    public static final String NAME = "Core";
+
+    protected CoreContext() {
     }
 
     public static Context get() {
@@ -31,41 +31,41 @@ public class BlueprintsContext implements Context {
 
     @Override
     public String uriScheme() {
-        return BlueprintsURI.SCHEME;
+        return "mock";
     }
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).tinkerGraph().persistent().file(file).build();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).tinkerGraph().file(file).build();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
-        return BlueprintsPersistenceBackendFactory.getInstance();
+        return mock(AbstractPersistenceBackendFactory.class);
     }
 
     @Override
     public URI createURI(URI uri) {
-        return BlueprintsURI.createURI(uri);
+        return PersistenceURI.createURI(uri);
     }
 
     @Override
     public URI createFileURI(File file) {
-        return BlueprintsURI.createFileURI(file);
+        return PersistenceURI.createFileURI(file, uriScheme());
     }
 
     @Override
     public Class<?> directWriteClass() {
-        return DirectWriteBlueprintsStore.class;
+        throw new UnsupportedOperationException();
     }
 
     private static class Holder {
 
-        private static final Context INSTANCE = new BlueprintsContext();
+        private static final Context INSTANCE = new CoreContext();
     }
 }

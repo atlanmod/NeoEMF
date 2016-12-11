@@ -50,10 +50,10 @@ public class ContainmentTest extends AbstractBackendTest {
 
         p1.getPacks().add(p2);
 
-        assertThat(p1.eStore()).isInstanceOf(context.directWriteClass());
-        assertThat(p2.eStore()).isInstanceOf(context.directWriteClass());
-        assertThat(p3.eStore()).isInstanceOf(context.directWriteClass());
-        assertThat(pc1.eStore()).isInstanceOf(context.directWriteClass());
+        assertThat(p1.eStore()).isInstanceOf(context().directWriteClass());
+        assertThat(p2.eStore()).isInstanceOf(context().directWriteClass());
+        assertThat(p3.eStore()).isInstanceOf(context().directWriteClass());
+        assertThat(pc1.eStore()).isInstanceOf(context().directWriteClass());
 
         assertThat(p1.resource()).isSameAs(resource);
         assertThat(p2.resource()).isSameAs(resource);
@@ -87,7 +87,7 @@ public class ContainmentTest extends AbstractBackendTest {
         // Then add the element to the resource tree using the containment reference
         pc1.getContainmentNoOppositeRefComment().add(com1);
 
-        assertThat(com1.eStore()).isInstanceOf(context.directWriteClass());
+        assertThat(com1.eStore()).isInstanceOf(context().directWriteClass());
         assertThat(com1.resource()).isSameAs(resource);
 
         // Check that the element has a container (it cannot be in the resource if it does not)

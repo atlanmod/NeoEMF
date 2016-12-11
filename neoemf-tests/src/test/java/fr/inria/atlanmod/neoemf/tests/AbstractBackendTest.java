@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.Contextual;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
@@ -33,7 +34,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RunWith(Parameterized.class)
-public abstract class AbstractBackendTest extends AbstractTest {
+public abstract class AbstractBackendTest extends AbstractTest implements Contextual {
 
     protected static final MapSampleFactory EFACTORY = MapSampleFactory.eINSTANCE;
 
@@ -52,10 +53,15 @@ public abstract class AbstractBackendTest extends AbstractTest {
     @Parameterized.Parameters(name = "{1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(
-                new Object[]{new MapDbContext(), MapDbContext.NAME},
-                new Object[]{new BlueprintsContext(), BlueprintsContext.NAME},
-                new Object[]{new BlueprintsNeo4jContext(), BlueprintsNeo4jContext.NAME}
+                new Object[]{MapDbContext.get(), MapDbContext.NAME},
+                new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
+                new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME}
         );
+    }
+
+    @Override
+    public Context context() {
+        return context;
     }
 
     public File file() {
@@ -86,13 +92,13 @@ public abstract class AbstractBackendTest extends AbstractTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public final void createWorkspace() throws Exception {
         loadedResources = new ArrayList<>();
         file = newFile(context.name());
     }
 
     @After
-    public void tearDown() throws Exception {
+    public final void cleanWorkspace() throws Exception {
         for (PersistentResource resource : loadedResources) {
             resource.close();
         }

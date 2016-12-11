@@ -28,7 +28,7 @@ public class PersistenceBackendFactoryRegistryTest extends AbstractTest {
     private final PersistenceBackendFactory persistenceBackendFactory2 = mock(PersistenceBackendFactory.class);
 
     @Before
-    public void setUp() {
+    public void unregisterFactories() {
         PersistenceBackendFactoryRegistry.unregisterAll();
     }
 

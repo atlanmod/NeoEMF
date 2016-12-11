@@ -11,38 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
-import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
-
-public class BlueprintsUriTest extends AbstractUriTest {
-
-    @Override
-    protected String name() {
-        return "Blueprints";
-    }
-
-    @Override
-    protected String uriScheme() {
-        return BlueprintsURI.SCHEME;
-    }
-
-    @Override
-    protected PersistenceBackendFactory persistenceBackendFactory() {
-        return BlueprintsPersistenceBackendFactory.getInstance();
-    }
-
-    @Override
-    protected URI createURI(URI uri) {
-        return BlueprintsURI.createURI(uri);
-    }
-
-    @Override
-    protected URI createFileURI(File file) {
-        return BlueprintsURI.createFileURI(file);
-    }
+public class BlueprintsUriTest extends AbstractUriTest implements BlueprintsTest {
 }

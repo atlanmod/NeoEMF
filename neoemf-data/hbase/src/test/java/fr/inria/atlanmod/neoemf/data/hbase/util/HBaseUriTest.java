@@ -11,38 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
-import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
-
-public class HBaseUriTest extends AbstractUriTest {
-
-    @Override
-    protected String name() {
-        return "HBase";
-    }
-
-    @Override
-    protected String uriScheme() {
-        return HBaseURI.SCHEME;
-    }
-
-    @Override
-    protected PersistenceBackendFactory persistenceBackendFactory() {
-        return HBasePersistenceBackendFactory.getInstance();
-    }
-
-    @Override
-    protected URI createURI(URI uri) {
-        return HBaseURI.createURI(uri);
-    }
-
-    @Override
-    protected URI createFileURI(File file) {
-        return HBaseURI.createFileURI(file);
-    }
+public class HBaseUriTest extends AbstractUriTest implements HBaseTest {
 }

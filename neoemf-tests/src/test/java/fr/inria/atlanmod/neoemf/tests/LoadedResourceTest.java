@@ -149,9 +149,9 @@ public class LoadedResourceTest extends AbstractBackendTest {
         resource.close();
 
         ResourceSet rSet = new ResourceSetImpl();
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(context.uriScheme(), PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(context().uriScheme(), PersistentResourceFactory.getInstance());
 
-        PersistentResource newResource = (PersistentResource) rSet.getResource(context.createFileUri(file()), true);
+        PersistentResource newResource = (PersistentResource) rSet.getResource(context().createFileURI(file()), true);
         newResource.load(PersistenceOptionsBuilder.noOption());
         return closeAtExit(newResource);
     }

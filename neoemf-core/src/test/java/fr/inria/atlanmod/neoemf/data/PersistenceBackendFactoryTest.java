@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.neoemf.CoreTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
@@ -34,30 +37,11 @@ import static org.mockito.Mockito.when;
  * Test cases for the only non-abstract method in {@link PersistenceBackendFactory#createPersistentStore(PersistentResource,
  * PersistenceBackend, Map)}
  */
-public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest {
-
-    @Override
-    protected String name() {
-        return "Core";
-    }
-
-    @Override
-    protected String uriScheme() {
-        return "mock";
-    }
-
-    @Override
-    protected PersistenceBackendFactory persistenceBackendFactory() throws InvalidDataStoreException, InvalidOptionsException {
-        AbstractPersistenceBackendFactory persistenceBackendFactory = mock(AbstractPersistenceBackendFactory.class);
-        when(persistenceBackendFactory.createPersistentBackend(any(File.class), any(Map.class))).thenReturn(mock(PersistenceBackend.class));
-        when(persistenceBackendFactory.createPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenCallRealMethod();
-        when(persistenceBackendFactory.createSpecificPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mock(PersistentStore.class));
-        return persistenceBackendFactory;
-    }
+public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements CoreTest {
 
     @Test
     public void testNoOptions() throws InvalidDataStoreException, InvalidOptionsException {
-        PersistentStore store = persistenceBackendFactory().createPersistentStore(null, null, PersistenceOptionsBuilder.noOption());
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, PersistenceOptionsBuilder.noOption());
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -72,7 +56,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -90,7 +74,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -108,7 +92,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -126,7 +110,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -144,7 +128,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
         store = getChildStore(store);
@@ -167,7 +151,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -193,7 +177,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -219,7 +203,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -248,7 +232,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         PersistentStore store;
 
-        store = persistenceBackendFactory().createPersistentStore(null, null, options);
+        store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
         store = getChildStore(store);
@@ -265,5 +249,39 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
 
         // Ensure this is the mock that is returned by checking the real class name
         assertThat(store.getClass().getSimpleName()).contains(PersistentStore.class.getSimpleName());
+    }
+
+    @Override
+    public Context context() {
+        return MockContext.get();
+    }
+
+    private static final class MockContext extends CoreContext {
+
+        protected MockContext() {
+        }
+
+        public static Context get() {
+            return Holder.INSTANCE;
+        }
+
+        @Override
+        public PersistenceBackendFactory persistenceBackendFactory() {
+            try {
+                AbstractPersistenceBackendFactory persistenceBackendFactory = (AbstractPersistenceBackendFactory) super.persistenceBackendFactory();
+                when(persistenceBackendFactory.createPersistentBackend(any(File.class), any(Map.class))).thenReturn(mock(PersistenceBackend.class));
+                when(persistenceBackendFactory.createPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenCallRealMethod();
+                when(persistenceBackendFactory.createSpecificPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mock(PersistentStore.class));
+                return persistenceBackendFactory;
+            }
+            catch (InvalidDataStoreException | InvalidOptionsException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private static class Holder {
+
+            private static final Context INSTANCE = new MockContext();
+        }
     }
 }

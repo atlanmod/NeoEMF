@@ -12,10 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -35,7 +32,7 @@ import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlueprintsResourceSaveTest extends AbstractUnitTest {
+public class BlueprintsResourceSaveTest extends AbstractUnitTest implements BlueprintsTest {
 
     protected final String configFileName = "/config.properties";
 
@@ -44,31 +41,16 @@ public class BlueprintsResourceSaveTest extends AbstractUnitTest {
     private ResourceSet resourceSet;
 
     @Before
-    public void setUp() {
+    public final void initResource() {
         resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         resource = resourceSet.createResource(BlueprintsURI.createFileURI(file()));
     }
 
     @After
-    public void tearDown() {
+    public final void closeResource() {
         resource.unload();
         resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().clear();
-    }
-
-    @Override
-    protected String name() {
-        return "Blueprints";
-    }
-
-    @Override
-    protected String uriScheme() {
-        return BlueprintsURI.SCHEME;
-    }
-
-    @Override
-    protected PersistenceBackendFactory persistenceBackendFactory() throws InvalidDataStoreException, InvalidOptionsException {
-        return BlueprintsPersistenceBackendFactory.getInstance();
     }
 
     protected int getKeyCount(PropertiesConfiguration configuration) {

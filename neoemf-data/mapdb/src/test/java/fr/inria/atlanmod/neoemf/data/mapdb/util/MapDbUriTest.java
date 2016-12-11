@@ -11,38 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbTest;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
-import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
-
-public class MapDbUriTest extends AbstractUriTest {
-
-    @Override
-    protected String name() {
-        return "MapDb";
-    }
-
-    @Override
-    protected String uriScheme() {
-        return MapDbURI.SCHEME;
-    }
-
-    @Override
-    protected PersistenceBackendFactory persistenceBackendFactory() {
-        return MapDbPersistenceBackendFactory.getInstance();
-    }
-
-    @Override
-    protected URI createURI(URI uri) {
-        return MapDbURI.createURI(uri);
-    }
-
-    @Override
-    protected URI createFileURI(File file) {
-        return MapDbURI.createFileURI(file);
-    }
+public class MapDbUriTest extends AbstractUriTest implements MapDbTest {
 }
