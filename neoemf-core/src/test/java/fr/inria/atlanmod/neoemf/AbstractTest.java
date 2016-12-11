@@ -44,7 +44,8 @@ public abstract class AbstractTest {
 
         @Override
         protected void starting(Description description) {
-            System.out.println("\n[INFO] --- Running " + description.getMethodName());
+            System.out.println();
+            System.out.println("[INFO] --- Running " + description.getMethodName());
         }
 
         @Override
