@@ -228,8 +228,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             returnValue = eStore.getAllInstances(eClass, strict);
         }
         catch (UnsupportedOperationException e) {
-            NeoLogger.warn(e.getMessage());
-            NeoLogger.warn("Using standard EMF API instead");
+            NeoLogger.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");
             EList<EObject> instanceList = new BasicEList<>();
             Iterator<EObject> it = getAllContents();
             while (it.hasNext()) {

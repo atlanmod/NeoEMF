@@ -49,7 +49,7 @@ public interface PersistentStore extends EStore {
      * @throws UnsupportedOperationException if the back-end does not support custom all instances computation
      */
     default EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException("PersistenceBackend does not support advanced allInstances() computation");
+        throw new UnsupportedOperationException();
     }
 
     /**
