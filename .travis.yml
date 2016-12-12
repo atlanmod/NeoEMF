@@ -24,7 +24,7 @@ before_install:
 
 script:
   # Build and test with code coverage
-  - mvn -B jacoco:prepare-agent install jacoco:report-aggregate
+  - mvn -B jacoco:prepare-agent install jacoco:report jacoco:report-aggregate
 
 after_success:
   # Publish code coverage in CodeCov
