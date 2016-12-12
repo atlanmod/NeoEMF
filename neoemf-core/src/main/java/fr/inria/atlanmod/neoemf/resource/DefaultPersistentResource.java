@@ -14,11 +14,11 @@ package fr.inria.atlanmod.neoemf.resource;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.apache.commons.io.FileUtils;
@@ -133,10 +133,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         if (nonNull(this.options)) {
             // Check that the save options do not collide with previous load options
             for (Entry<?, ?> entry : options.entrySet()) {
-                if (this.options.containsKey(entry.getKey())
-                        && !Objects.equals(entry.getValue(), this.options.get(entry.getKey())))
-                {
-                    throw new IOException(new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString())));
+                if (this.options.containsKey(entry.getKey()) && !Objects.equals(entry.getValue(), this.options.get(entry.getKey()))) {
+                    throw new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString()));
                 }
             }
         }
@@ -144,12 +142,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
             PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(persistenceBackend, newBackend);
             this.persistenceBackend = newBackend;
-            try {
-                this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
-            }
-            catch (InvalidOptionException e) {
-                throw new IOException(e);
-            }
+            this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
             this.isLoaded = true;
             this.isPersistent = true;
         }
@@ -165,12 +158,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                 if (getFile().exists() || nonNull(uri.authority())) {
                     // Check authority to enable remote resource loading
                     this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-                    try {
-                        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
-                    }
-                    catch (InvalidOptionException e) {
-                        throw new IOException(e);
-                    }
+                    this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
                     this.isPersistent = true;
                     dummyRootEObject.setMapped(true);
                 }

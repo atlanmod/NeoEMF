@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-public class PersistenceOptionsBuilder extends AbstractPersistenceOptionsBuilder<PersistenceOptionsBuilder> {
+public class PersistenceOptionsBuilder extends AbstractPersistenceOptionsBuilder<PersistenceOptionsBuilder, PersistenceOptions> {
 
     protected PersistenceOptionsBuilder() {
     }

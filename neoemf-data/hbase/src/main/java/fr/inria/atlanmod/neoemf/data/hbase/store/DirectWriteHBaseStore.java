@@ -18,11 +18,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
+import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.commons.lang3.ArrayUtils;

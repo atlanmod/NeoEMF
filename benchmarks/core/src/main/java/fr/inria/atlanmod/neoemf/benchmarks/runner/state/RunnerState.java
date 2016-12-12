@@ -4,9 +4,9 @@ import com.google.common.base.CaseFormat;
 
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoTinkerBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoNeo4jBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapdbBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoNeo4jBackend;
+import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoTinkerBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
 

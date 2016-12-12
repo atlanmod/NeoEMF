@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersistenceOptionsBuilder<B>> {
+public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersistenceOptionsBuilder<B, O>, O extends AbstractPersistenceOptions> {
 
     private final Map<String, Object> options;
 
@@ -37,6 +37,8 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
 
     /**
      * Returns a immutable {@link Map} containing all defined options.
+     *
+     * @throws InvalidOptionException if a conflit is detected during building
      */
     public final Map<String, Object> asMap() throws InvalidOptionException {
         validate();

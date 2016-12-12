@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.extension.Workspace;
 import fr.inria.atlanmod.neoemf.extension.Watcher;
+import fr.inria.atlanmod.neoemf.extension.Workspace;
 
 import org.junit.ClassRule;
 import org.junit.Rule;

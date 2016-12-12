@@ -41,7 +41,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * Returns a list of store options from the given {@code options}.
      */
     @SuppressWarnings("unchecked")
-    protected static List<PersistentStoreOptions> getStoreOptions(Map<?, ?> options) throws InvalidOptionException {
+    protected static List<PersistentStoreOptions> getStoreOptions(Map<?, ?> options) {
         Object storeOptions = options.get(PersistentResourceOptions.STORE_OPTIONS);
         try {
             return (List<PersistentStoreOptions>) storeOptions;
@@ -57,7 +57,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     protected abstract String getName();
 
     @Override
-    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionException {
+    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         PersistentStore eStore = createSpecificPersistentStore(resource, backend, options);
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
@@ -81,7 +81,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         return eStore;
     }
 
-    protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionException;
+    protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
 
     /**
      * Creates and saves the NeoEMF configuration.

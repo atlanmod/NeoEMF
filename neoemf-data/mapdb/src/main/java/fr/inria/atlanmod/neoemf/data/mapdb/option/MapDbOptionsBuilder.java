@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
-public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDbOptionsBuilder> {
+public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDbOptionsBuilder, MapDbOptions> {
 
     protected MapDbOptionsBuilder() {
     }

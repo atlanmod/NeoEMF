@@ -9,11 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.option;
+package fr.inria.atlanmod.neoemf.option;
 
-public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<BlueprintsOptionsBuilder, BlueprintsOptions> {
-
-    public static BlueprintsOptionsBuilder newBuilder() {
-        return new BlueprintsOptionsBuilder();
-    }
+public class PersistenceOptions extends AbstractPersistenceOptions {
 }

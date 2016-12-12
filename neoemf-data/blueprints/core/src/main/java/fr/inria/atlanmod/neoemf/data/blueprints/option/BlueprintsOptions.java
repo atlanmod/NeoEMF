@@ -11,9 +11,5 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<BlueprintsOptionsBuilder, BlueprintsOptions> {
-
-    public static BlueprintsOptionsBuilder newBuilder() {
-        return new BlueprintsOptionsBuilder();
-    }
+public class BlueprintsOptions extends AbstractBlueprintsOptions {
 }

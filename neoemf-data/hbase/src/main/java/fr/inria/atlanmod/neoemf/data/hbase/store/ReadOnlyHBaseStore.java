@@ -15,9 +15,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.hbase.structure.HBaseFeatureKey;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.hadoop.hbase.TableName;
