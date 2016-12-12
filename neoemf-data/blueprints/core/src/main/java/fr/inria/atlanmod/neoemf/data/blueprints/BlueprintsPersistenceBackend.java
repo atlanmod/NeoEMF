@@ -281,6 +281,20 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         GraphHelper.copyGraph(graph, target.graph);
         target.initMetaClassesIndex(indexedEClasses);
     }
+    
+    /**
+     * <p>
+     * Provides a direct access to the underlying graph. This method is public
+     * for tool compatibility (see 
+     * <a href="https://github.com/atlanmod/Mogwai">the Mogwaï framework</a>),
+     * NeoEMF consistency is not guaranteed if the graph is modified manually
+     * </p>
+     * 
+     * @return the underlying Blueprints {@link IdGraph}
+     */
+    public IdGraph<KeyIndexableGraph> getGraph() {
+        return graph;
+    }
 
     private void initMetaClassesIndex(List<EClass> eClassList) {
         for (EClass eClass : eClassList) {
