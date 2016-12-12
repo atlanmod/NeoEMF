@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
+
 package fr.inria.atlanmod.neoemf.extension;
 
 import org.apache.commons.io.FileUtils;
@@ -32,8 +43,8 @@ public class Workspace extends ExternalResource {
         }
     }
 
-    public File newFile(String name) throws IOException {
-        Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), getClass().getSimpleName() + name);
+    public File newFile(String prefix) throws IOException {
+        Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), prefix);
         Files.deleteIfExists(createdFolder);
         return createdFolder.toFile();
     }
