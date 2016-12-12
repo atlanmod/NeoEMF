@@ -24,7 +24,7 @@ public final class NeoLogger {
     /**
      * Returns the root logger.
      *
-     * @return the root {@link Logger}, named "".
+     * @return the root {@link Logger}, named ""
      *
      * @see #customLogger(String)
      */
