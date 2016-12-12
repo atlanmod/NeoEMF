@@ -28,10 +28,10 @@ class AsyncLogger extends AbstractLogger {
     }
 
     @Override
-    public void logMessage(Level level, Throwable throwable, CharSequence pattern, Object... args) {
+    public void log(Level level, Throwable e, CharSequence message, Object... params) {
         execute(() -> {
             try {
-                logger().log(level.level(), () -> MessageFormat.format(pattern.toString(), args), throwable);
+                logger().log(level.level(), () -> MessageFormat.format(message.toString(), params), e);
             }
             catch (Exception ignore) {
             }
