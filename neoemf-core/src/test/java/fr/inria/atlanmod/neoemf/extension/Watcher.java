@@ -7,7 +7,7 @@ import org.junit.runner.Description;
 
 public class Watcher extends org.junit.rules.TestWatcher {
 
-    private static final Logger LOG = NeoLogger.custom("test");
+    private static final Logger LOG = NeoLogger.customLogger("test");
 
     @Override
     protected void succeeded(Description description) {
