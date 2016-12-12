@@ -9,24 +9,24 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.option;
 
-public class InvalidOptionsException extends Exception {
+public class InvalidOptionException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public InvalidOptionsException() {
+    public InvalidOptionException() {
     }
 
-    public InvalidOptionsException(String message) {
+    public InvalidOptionException(String message) {
         super(message);
     }
 
-    public InvalidOptionsException(Throwable t) {
+    public InvalidOptionException(Throwable t) {
         super(t);
     }
 
-    public InvalidOptionsException(String message, Throwable t) {
+    public InvalidOptionException(String message, Throwable t) {
         super(message, t);
     }
 }

@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
@@ -59,7 +59,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     @Test
-    public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
+    public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionException {
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, MapDbOptionsBuilder.newBuilder().asMap());
@@ -69,7 +69,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
+    public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
                 .directWrite()
                 .asMap();
@@ -83,7 +83,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteWithListsOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
+    public void testCreatePersistentEStoreDirectWriteWithListsOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
                 .directWriteLists()
                 .asMap();
@@ -97,7 +97,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteWithIndexesOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
+    public void testCreatePersistentEStoreDirectWriteWithIndexesOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
                 .directWriteIndices()
                 .asMap();
@@ -111,7 +111,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     @Test
-    public void testCreatePersistentEStoreAutocommitOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
+    public void testCreatePersistentEStoreAutocommitOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
                 .autocommit()
                 .asMap();
@@ -125,7 +125,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     @Test
-    public void testCreatePersistentEStoreCachedManyOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionsException {
+    public void testCreatePersistentEStoreCachedManyOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidOptionException {
         Map<String, Object> options = MapDbOptionsBuilder.newBuilder()
                 .directWriteCacheMany()
                 .asMap();

@@ -38,7 +38,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Returns a immutable {@link Map} containing all defined options.
      */
-    public final Map<String, Object> asMap() {
+    public final Map<String, Object> asMap() throws InvalidOptionException {
         validate();
 
         if (!storeOptions.isEmpty()) {
@@ -48,10 +48,12 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     }
 
     /**
-     * Returns {@code true} if no conflict is detected, {@code false} otherwise.
+     * Validates the defined options, and checks if there is conflit between them.
+     *
+     * @throws InvalidOptionException if a conflit is detected
      */
-    protected boolean validate() {
-        return true;
+    protected void validate() throws InvalidOptionException {
+        // Do nothing, for now
     }
 
     @SuppressWarnings("unchecked")

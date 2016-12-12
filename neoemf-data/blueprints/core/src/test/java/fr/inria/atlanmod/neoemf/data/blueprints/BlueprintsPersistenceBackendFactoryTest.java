@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
@@ -56,7 +56,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     }
 
     @Test
-    public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, InvalidOptionsException, NoSuchFieldException, IllegalAccessException {
+    public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, InvalidOptionException, NoSuchFieldException, IllegalAccessException {
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, BlueprintsOptionsBuilder.newBuilder().asMap());
@@ -66,7 +66,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     }
 
     @Test
-    public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, InvalidOptionsException, NoSuchFieldException, IllegalAccessException {
+    public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, InvalidOptionException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWrite()
                 .asMap();
@@ -80,7 +80,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     }
 
     @Test
-    public void testCreatePersistentEStoreManyCacheOption() throws InvalidDataStoreException, InvalidOptionsException, NoSuchFieldException, IllegalAccessException {
+    public void testCreatePersistentEStoreManyCacheOption() throws InvalidDataStoreException, InvalidOptionException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWriteCacheMany()
                 .asMap();
@@ -94,7 +94,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     }
 
     @Test
-    public void testCreatePersistentEStoreAutocommitOptionNoBase() throws InvalidDataStoreException, InvalidOptionsException, NoSuchFieldException, IllegalAccessException {
+    public void testCreatePersistentEStoreAutocommitOptionNoBase() throws InvalidDataStoreException, InvalidOptionException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .autocommit()
                 .asMap();
@@ -108,7 +108,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     }
 
     @Test
-    public void testCreatePersistentEStoreAutocommitOptionDirectWriteBase() throws InvalidDataStoreException, InvalidOptionsException, NoSuchFieldException, IllegalAccessException {
+    public void testCreatePersistentEStoreAutocommitOptionDirectWriteBase() throws InvalidDataStoreException, InvalidOptionException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWrite()
                 .autocommit()
@@ -123,7 +123,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     }
 
     @Test
-    public void testCreatePersistentEStoreAutocommitOptionCachedManyBase() throws InvalidDataStoreException, InvalidOptionsException, NoSuchFieldException, IllegalAccessException {
+    public void testCreatePersistentEStoreAutocommitOptionCachedManyBase() throws InvalidDataStoreException, InvalidOptionException, NoSuchFieldException, IllegalAccessException {
         Map<String, Object> options = BlueprintsOptionsBuilder.newBuilder()
                 .directWriteCacheMany()
                 .autocommit()

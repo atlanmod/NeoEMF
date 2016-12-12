@@ -18,7 +18,7 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
@@ -75,7 +75,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     }
 
     @Override
-    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
+    protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionException {
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 

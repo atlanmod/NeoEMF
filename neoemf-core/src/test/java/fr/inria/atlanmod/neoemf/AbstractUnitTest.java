@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf;
 
 import fr.inria.atlanmod.neoemf.context.Contextual;
-import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 
 import org.junit.After;
@@ -30,7 +30,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements Contextua
     }
 
     @Before
-    public final void registerFactories() throws IOException, InvalidOptionsException {
+    public final void registerFactories() throws IOException, InvalidOptionException {
         PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
         file = workspace.newFile(context().name());
     }

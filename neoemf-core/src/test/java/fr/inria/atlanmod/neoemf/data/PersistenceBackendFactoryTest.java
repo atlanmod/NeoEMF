@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements CoreTest {
 
     @Test
-    public void testNoOptions() throws InvalidDataStoreException, InvalidOptionsException {
+    public void testNoOptions() throws InvalidDataStoreException, InvalidOptionException {
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, null, PersistenceOptionsBuilder.noOption());
         assertThat(store).isInstanceOf(PersistentStore.class);
 
@@ -49,7 +50,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     @Test
-    public void testIsSetCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testIsSetCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .cacheIsSet()
                 .asMap();
@@ -67,7 +68,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     @Test
-    public void testLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .log()
                 .asMap();
@@ -85,7 +86,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     @Test
-    public void testSizeCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testSizeCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .cacheSizes()
                 .asMap();
@@ -103,7 +104,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     @Test
-    public void testEStructuralFeatureCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testEStructuralFeatureCachingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .cacheFeatures()
                 .asMap();
@@ -121,7 +122,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
     }
 
     @Test
-    public void testLoadedObjectCounterLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testLoadedObjectCounterLoggingOption() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .countLoadedObjects()
                 .asMap();
@@ -143,7 +144,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * 2 stores : {@link IsSetCachingStoreDecorator} and {@link LoggingStoreDecorator}
      */
     @Test
-    public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testIsSetCachingLoggingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .cacheIsSet()
                 .log()
@@ -169,7 +170,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * 2 stores : {@link IsSetCachingStoreDecorator} and {@link SizeCachingStoreDecorator}
      */
     @Test
-    public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testIsSetCachingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
@@ -195,7 +196,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * 2 stores : {@link SizeCachingStoreDecorator} and {@link FeatureCachingStoreDecorator}
      */
     @Test
-    public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testSizeCachingEStructuralFeatureCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .cacheSizes()
                 .cacheFeatures()
@@ -222,7 +223,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
      * {@link LoggingStoreDecorator} and {@link SizeCachingStoreDecorator}
      */
     @Test
-    public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionsException {
+    public void testEStructuralFeatureCachingIsSetCachingLoggingSizeCachingOptions() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvalidDataStoreException, InvalidOptionException {
         Map<String, Object> options = PersistenceOptionsBuilder.newBuilder()
                 .cacheIsSet()
                 .cacheSizes()
@@ -274,7 +275,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
                 when(persistenceBackendFactory.createSpecificPersistentStore(any(PersistentResource.class), any(PersistenceBackend.class), any(Map.class))).thenReturn(mock(PersistentStore.class));
                 return persistenceBackendFactory;
             }
-            catch (InvalidDataStoreException | InvalidOptionsException e) {
+            catch (InvalidDataStoreException | InvalidOptionException e) {
                 throw new RuntimeException(e);
             }
         }

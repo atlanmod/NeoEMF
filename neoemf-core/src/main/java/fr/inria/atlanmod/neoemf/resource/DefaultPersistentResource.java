@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.resource;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
-import fr.inria.atlanmod.neoemf.data.InvalidOptionsException;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
@@ -136,7 +136,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                 if (this.options.containsKey(entry.getKey())
                         && !Objects.equals(entry.getValue(), this.options.get(entry.getKey())))
                 {
-                    throw new IOException(new InvalidOptionsException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString())));
+                    throw new IOException(new InvalidOptionException(MessageFormat.format("key = {0}; value = {1}", entry.getKey().toString(), entry.getValue().toString())));
                 }
             }
         }
@@ -147,7 +147,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             try {
                 this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
             }
-            catch (InvalidOptionsException e) {
+            catch (InvalidOptionException e) {
                 throw new IOException(e);
             }
             this.isLoaded = true;
@@ -168,7 +168,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     try {
                         this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
                     }
-                    catch (InvalidOptionsException e) {
+                    catch (InvalidOptionException e) {
                         throw new IOException(e);
                     }
                     this.isPersistent = true;

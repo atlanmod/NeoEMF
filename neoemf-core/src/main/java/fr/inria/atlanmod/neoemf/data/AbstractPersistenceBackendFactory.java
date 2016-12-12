@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
+import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -40,13 +41,13 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * Returns a list of store options from the given {@code options}.
      */
     @SuppressWarnings("unchecked")
-    protected static List<PersistentStoreOptions> getStoreOptions(Map<?, ?> options) throws InvalidOptionsException {
+    protected static List<PersistentStoreOptions> getStoreOptions(Map<?, ?> options) throws InvalidOptionException {
         Object storeOptions = options.get(PersistentResourceOptions.STORE_OPTIONS);
         try {
             return (List<PersistentStoreOptions>) storeOptions;
         }
         catch (ClassCastException e) {
-            throw new InvalidOptionsException("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>");
+            throw new InvalidOptionException("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>");
         }
     }
 
@@ -56,7 +57,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     protected abstract String getName();
 
     @Override
-    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException {
+    public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionException {
         PersistentStore eStore = createSpecificPersistentStore(resource, backend, options);
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
@@ -80,7 +81,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         return eStore;
     }
 
-    protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionsException;
+    protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException, InvalidOptionException;
 
     /**
      * Creates and saves the NeoEMF configuration.
