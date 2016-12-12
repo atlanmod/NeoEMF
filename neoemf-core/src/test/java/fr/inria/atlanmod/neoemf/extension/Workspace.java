@@ -43,8 +43,8 @@ public class Workspace extends ExternalResource {
         }
     }
 
-    public File newFile(String name) throws IOException {
-        Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), getClass().getSimpleName() + name);
+    public File newFile(String prefix) throws IOException {
+        Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), prefix);
         Files.deleteIfExists(createdFolder);
         return createdFolder.toFile();
     }
