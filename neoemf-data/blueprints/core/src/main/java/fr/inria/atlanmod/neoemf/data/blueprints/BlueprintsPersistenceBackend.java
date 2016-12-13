@@ -236,12 +236,30 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         }
         return returnValue;
     }
+    
+    /**
+     * Reifies the given {@link Vertex} as an {@link EObject}
+     * <p/>
+     * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
+     * unless the {@link EObject} returned in previous calls has been already garbage collected.
+     * <p/>
+     * This method is a shortcut for {@link BlueprintsPersistenceBackend#reifyVertex(Vertex, EClass)} with a {@code null}
+     * EClass.
+     * @param vertex the {@link Vertex} to reify
+     * @return a {@link PersistentEObject} representing the given vertex
+     */
+    public PersistentEObject reifyVertex(Vertex vertex) {
+        return reifyVertex(vertex, null);
+    }
 
     /**
      * Reifies the given {@link Vertex} as an {@link EObject}.
      * <p/>
      * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
      * unless the {@link EObject} returned in previous calls has been already garbage collected.
+     * @param vertex the {@link Vertex} to reify
+     * @param eClass the expected {@link EClass} of the reified object. Can be set to {@code null} if not known.
+     * @return a {@link PersistentEObject} representing the given vertex 
      */
     public PersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
         PersistentEObject persistentEObject = null;
