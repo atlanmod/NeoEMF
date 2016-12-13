@@ -29,20 +29,20 @@ public class BlueprintsURI extends PersistenceURI {
     }
 
     public static URI createURI(URI uri) {
-        URI returnValue;
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
-            returnValue = createFileURI(FileUtils.getFile(uri.toFileString()));
+            return createFileURI(uri);
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
-            returnValue = PersistenceURI.createURI(uri);
+            return PersistenceURI.createURI(uri);
         }
-        else {
-            throw new IllegalArgumentException(MessageFormat.format("Can not create NeoGraphURI from the URI scheme {0}", uri.scheme()));
-        }
-        return returnValue;
+        throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", BlueprintsURI.class.getSimpleName(), uri.scheme()));
     }
 
     public static URI createFileURI(File file) {
         return PersistenceURI.createFileURI(file, SCHEME);
+    }
+
+    public static URI createFileURI(URI uri) {
+        return createFileURI(FileUtils.getFile(uri.toFileString()));
     }
 }
