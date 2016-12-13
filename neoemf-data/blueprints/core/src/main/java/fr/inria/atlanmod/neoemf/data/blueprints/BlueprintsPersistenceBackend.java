@@ -242,7 +242,6 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * <p/>
      * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
      * unless the {@link EObject} returned in previous calls has been already garbage collected.
-     * <p/>
      * This method is a shortcut for {@link BlueprintsPersistenceBackend#reifyVertex(Vertex, EClass)} with a {@code null}
      * EClass.
      * @param vertex the {@link Vertex} to reify
