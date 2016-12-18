@@ -21,6 +21,7 @@
         <module>blueprints</module>
         <module>mapdb</module>
         <module>hbase</module>
+        <module>berkeleydb</module>
     </modules>
 
     <properties>
