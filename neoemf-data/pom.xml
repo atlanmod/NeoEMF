@@ -19,9 +19,8 @@
 
     <modules>
         <module>blueprints</module>
-        <module>mapdb</module>
+        <module>map</module>
         <module>hbase</module>
-        <module>berkeleydb</module>
     </modules>
 
     <properties>
