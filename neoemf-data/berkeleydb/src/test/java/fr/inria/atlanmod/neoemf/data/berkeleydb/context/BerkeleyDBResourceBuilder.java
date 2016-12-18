@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDBPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDBURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -49,8 +48,10 @@ public class BerkeleyDBResourceBuilder extends AbstractResourceBuilder {
 
     private void initMapBuilder() {
         if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDBURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BerkeleyDBURI.SCHEME, BerkeleyDBPersistenceBackendFactory.getInstance());
+            PersistenceBackendFactoryRegistry.register(BerkeleyDBURI.SCHEME,
+                    BerkeleyDBPersistenceBackendFactory.getInstance());
         }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDBURI.SCHEME, PersistentResourceFactory.getInstance());
+        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDBURI.SCHEME,
+                PersistentResourceFactory.getInstance());
     }
 }

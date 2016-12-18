@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -16,12 +17,13 @@
     <description>BerkeleyDB implementation of the core component.</description>
 
     <properties>
-        <berkeleydb.version>3.2.76</berkeleydb.version>
+        <berkeleydb.version>5.0.73</berkeleydb.version>
     </properties>
 
     <dependencies>
+
         <dependency>
-            <groupId>berkeleydb</groupId>
+            <groupId>com.sleepycat</groupId>
             <artifactId>je</artifactId>
         </dependency>
 
@@ -110,7 +112,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>berkeleydb</groupId>
+                <groupId>com.sleepycat</groupId>
                 <artifactId>je</artifactId>
                 <version>${berkeleydb.version}</version>
             </dependency>

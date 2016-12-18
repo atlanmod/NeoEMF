@@ -1,12 +1,20 @@
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.io.*;
 
-/**
- * Created by sunye on 17/12/2016.
- */
+
 public class Serializer {
 
 
@@ -26,7 +34,7 @@ public class Serializer {
 
     public static Object deserialize(byte[] data) {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
-         Object result = null;
+        Object result = null;
         try {
             ObjectInput in = new ObjectInputStream(bis);
             result = in.readObject();

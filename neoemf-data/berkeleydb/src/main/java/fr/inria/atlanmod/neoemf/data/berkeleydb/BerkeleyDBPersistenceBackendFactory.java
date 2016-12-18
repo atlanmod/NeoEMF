@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.Environment;
+import com.sleepycat.je.EnvironmentConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -26,7 +29,6 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 
@@ -59,7 +61,7 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
         checkArgument(backend instanceof BerkeleyDBPersistenceBackend,
-                "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
+                "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
         PersistentStore eStore = null;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
@@ -89,23 +91,36 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        throw new UnsupportedOperationException();
+        Environment env = null;
+        EnvironmentConfig envConfig = new EnvironmentConfig();
+        envConfig.setAllowCreate(true);
+        envConfig.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
+        File envHome = new File(System.getProperty("java.io.tmpdir"));
+        try {
+            env = new Environment(envHome, envConfig);
+        } catch (DatabaseException e) {
+            NeoLogger.error(e);
+            e.printStackTrace();
+        }
+
+        return new BerkeleyDBPersistenceBackend(env);
     }
 
     @Override
     public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
         BerkeleyDBPersistenceBackend backend;
-
-        File dbFile = FileUtils.getFile(BerkeleyDBURI.createURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.berkeleydb")).toFileString());
-        if (!dbFile.getParentFile().exists()) {
+        URI uri = BerkeleyDBURI.createURI(URI.createFileURI(file.getAbsolutePath()));
+        File dir = FileUtils.getFile(uri.toFileString());
+        if (!dir.exists()) {
             try {
-                Files.createDirectories(dbFile.getParentFile().toPath());
+                Files.createDirectories(dir.toPath());
             }
             catch (IOException e) {
                 NeoLogger.error(e);
+                e.printStackTrace();
             }
         }
-        backend = new BerkeleyDBPersistenceBackend(dbFile);
+        backend = new BerkeleyDBPersistenceBackend(dir);
         processGlobalConfiguration(file);
 
         return backend;
@@ -114,7 +129,7 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
         checkArgument(backend instanceof BerkeleyDBPersistenceBackend,
-                "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
+                "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
         return new DirectWriteBerkeleyDBStore(resource, (BerkeleyDBPersistenceBackend) backend);
     }

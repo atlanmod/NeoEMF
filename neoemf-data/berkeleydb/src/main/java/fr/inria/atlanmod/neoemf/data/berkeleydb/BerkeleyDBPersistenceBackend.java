@@ -14,18 +14,14 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import com.sleepycat.je.*;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.CISerializer;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ContainerInfoSerializer;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.FKSerializer;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.IdSerializer;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.*;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import java.io.*;
+import java.io.File;
 import java.util.Map;
 
 public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
@@ -34,12 +30,11 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
      * The literal description of this backend.
      */
     public static final String NAME = "berkeleydb";
-
     private static final String KEY_CONTAINER = "eContainer";
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
     private static final String KEY_FEATURES = "features";
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
-
+    private boolean isClosed = true;
     /**
      * A persistent map that stores the container of persistent EObjects.
      */
@@ -82,12 +77,21 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
         }
     }
 
+    BerkeleyDBPersistenceBackend(Environment e) {
+        env = e;
+        dbconf = new DatabaseConfig();
+        dbconf.setAllowCreate(true);
+        dbconf.setSortedDuplicates(false);
+        dbconf.setDeferredWrite(true);
+    }
+
     public void open() {
         try {
             this.containers = env.openDatabase(null, KEY_CONTAINER, dbconf);
             this.instances = env.openDatabase(null, KEY_INSTANCE_OF, dbconf);
             this.features = env.openDatabase(null, KEY_FEATURES, dbconf);
             this.multivaluedFeatures = env.openDatabase(null, KEY_MULTIVALUED_FEATURES, dbconf);
+            isClosed = false;
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
@@ -96,6 +100,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
 
     public void close() {
         try {
+            isClosed = true;
             this.containers.close();
             this.instances.close();
             this.features.close();
@@ -103,6 +108,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             //env.close();
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
     }
 
@@ -116,7 +122,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public boolean isClosed() {
-        throw new UnsupportedOperationException();
+        return isClosed;
     }
 
 
@@ -131,6 +137,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             env.sync();
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
     }
 
@@ -143,12 +150,13 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
         DatabaseEntry value = new DatabaseEntry();
 
         try {
-            if (instances.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            if (containers.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
                 result = ContainerInfoSerializer.deserialize(data);
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
         return result;
     }
@@ -160,9 +168,10 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
         DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
         DatabaseEntry value = new DatabaseEntry(ContainerInfoSerializer.serialize(container));
         try {
-            instances.put(null, key, value);
+            containers.put(null, key, value);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
     }
 
@@ -171,16 +180,17 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
      */
     public ClassInfo metaclassFor(Id id) {
         ClassInfo result = null;
-        DatabaseEntry key = new DatabaseEntry(id.toString().getBytes());
+        DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
         DatabaseEntry value = new DatabaseEntry();
 
         try {
             if (instances.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                result = CISerializer.deserialize(data);
+                result = ClassInfoSerializer.deserialize(data);
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
         return result;
     }
@@ -190,11 +200,12 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
      */
     public void storeMetaclass(Id id, ClassInfo metaclass) {
         DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
-        DatabaseEntry value = new DatabaseEntry(CISerializer.serialize(metaclass));
+        DatabaseEntry value = new DatabaseEntry(ClassInfoSerializer.serialize(metaclass));
         try {
             instances.put(null, key, value);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
     }
 
@@ -209,6 +220,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             return obj;
         } catch (DatabaseException e) {
             e.printStackTrace();
+
         }
         return null;
     }
@@ -226,6 +238,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
         return result;
     }
@@ -243,6 +256,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             result = Serializer.deserialize(value.getData());
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
         return result;
     }
@@ -258,6 +272,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             result = (features.get(null,key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
 
         return result;
@@ -274,6 +289,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             return val;
         } catch (DatabaseException e) {
             e.printStackTrace();
+
         }
         return null;
     }
@@ -291,6 +307,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
         return result;
     }
@@ -306,6 +323,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             this.copyDatabaseTo(multivaluedFeatures, target.multivaluedFeatures);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
+            e.printStackTrace();
         }
     }
 

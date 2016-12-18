@@ -22,7 +22,6 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBLists
 import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-
 import org.junit.Test;
 
 import java.util.Map;
@@ -31,15 +30,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements BerkeleyDBTest {
 
-    //@Test
+    @Test
     public void testCreateTransientBackend() {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
         assertThat(transientBackend).isInstanceOf(BerkeleyDBPersistenceBackend.class); // "Invalid backend created"
 
-        // TODO Need to test further the nature of the MapDB engine
+        // TODO Need to test further the nature of the BerkeleyDB engine
     }
 
-    //@Test
+    @Test
     public void testCreateTransientEStore() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
 
@@ -54,7 +53,7 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
         assertThat(persistentBackend).isInstanceOf(BerkeleyDBPersistenceBackend.class); // "Invalid backend created"
 
-        // TODO Need to test further the nature of the MapDB engine
+        // TODO Need to test further the nature of the BerkeleyDB engine
     }
 
     @Test
@@ -151,6 +150,7 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
         assertThat(persistentBackend).isInstanceOf(BerkeleyDBPersistenceBackend.class); // "Persistent backend is not an instance of BerkeleyDBPersistenceBackend"
 
         BerkeleyDBPersistenceBackend persistentMap = (BerkeleyDBPersistenceBackend) persistentBackend;
+
         context().persistenceBackendFactory().copyBackend(transientMap, persistentMap);
         for (String tKey : transientMap.getAll().keySet()) {
             assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"

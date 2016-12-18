@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDBPersistenceBackendFact
 import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBStore;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDBURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -76,7 +75,6 @@ public class BerkeleyDBContext implements Context {
     }
 
     private static class Holder {
-
         private static final Context INSTANCE = new BerkeleyDBContext();
     }
 }

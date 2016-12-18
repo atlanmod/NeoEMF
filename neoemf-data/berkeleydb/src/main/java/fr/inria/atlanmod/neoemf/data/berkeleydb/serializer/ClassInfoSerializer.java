@@ -10,17 +10,17 @@
  */
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import org.apache.commons.lang3.SerializationUtils;
 
 
-public class ContainerInfoSerializer {
+public class ClassInfoSerializer {
 
-    public static byte[] serialize(ContainerInfo ci) {
+    public static byte[] serialize(ClassInfo ci) {
         return SerializationUtils.serialize(ci);
     }
 
-    public static ContainerInfo deserialize(byte[] data) {
-        return (ContainerInfo) SerializationUtils.deserialize(data);
+    public static ClassInfo deserialize(byte[] data) {
+        return (ClassInfo) SerializationUtils.deserialize(data);
     }
 }

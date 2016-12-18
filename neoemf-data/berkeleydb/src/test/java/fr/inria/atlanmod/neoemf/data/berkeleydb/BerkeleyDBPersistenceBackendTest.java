@@ -11,28 +11,29 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import com.sleepycat.je.*;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
+import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
-
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BerkeleyDBPersistenceBackendTest extends AbstractTest {
 
@@ -105,5 +106,70 @@ public class BerkeleyDBPersistenceBackendTest extends AbstractTest {
         }
     }
 
+    @Test
+    public void testIsFeatureSet() {
+        FeatureKey fk1 = FeatureKey.of(new StringId("objectId"), "isSet");
+        assertThat(backend.isFeatureSet(fk1)).isFalse();
+
+        backend.storeValue(fk1, "yes");
+        assertThat(backend.isFeatureSet(fk1)).isTrue();
+    }
+
+    @Test
+    public void testRemoveFeature() {
+        FeatureKey fk1 = FeatureKey.of(new StringId("objectId"), "unSet");
+        assertThat(backend.isFeatureSet(fk1)).isFalse();
+
+        backend.storeValue(fk1, "yes");
+        assertThat(backend.isFeatureSet(fk1)).isTrue();
+
+        backend.removeFeature(fk1);
+        assertThat(backend.isFeatureSet(fk1)).isFalse();
+    }
+
+    @Test
+    public void testStoreContainer() {
+        Id id1 = StringId.generate();
+        Id id2 = StringId.generate();
+
+        PersistentEObject po = mock(PersistentEObject.class);
+        when(po.id()).thenReturn(id2);
+        EReference eref = mock(EReference.class);
+        when(eref.getName()).thenReturn("ref-name");
+
+        ContainerInfo ci = ContainerInfo.from(po, eref);
+        backend.storeContainer(id1, ci);
+
+        ContainerInfo result = backend.containerFor(id1);
+
+        assertThat(result.id()).isEqualTo(id2);
+        assertThat(result.name()).isEqualTo("ref-name");
+    }
+
+    @Test
+    public void testStoreMetaclass() {
+        Id id1 = StringId.generate();
+        Id id2 = StringId.generate();
+
+        EPackage ePackage = mock(EPackage.class);
+        when(ePackage.getNsURI()).thenReturn("URI://my.uri/");
+
+        EClass eClass = mock(EClass.class);
+        when(eClass.getName()).thenReturn("eClassTest");
+        when(eClass.getEPackage()).thenReturn(ePackage);
+
+        PersistentEObject po = mock(PersistentEObject.class);
+        when(po.eClass()).thenReturn(eClass);
+
+        ClassInfo ci = ClassInfo.from(po);
+        backend.storeMetaclass(id2, ci);
+
+        ClassInfo result = backend.metaclassFor(id2);
+        assertThat(result).isNotNull();
+        assertThat(result.name()).isEqualTo("eClassTest");
+        assertThat(result.uri()).isEqualTo("URI://my.uri/");
+
+    }
 
 }
+
