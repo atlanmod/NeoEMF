@@ -19,7 +19,7 @@
 
     <modules>
         <module>blueprints</module>
-        <module>mapdb</module>
+        <module>map</module>
         <module>hbase</module>
     </modules>
 
