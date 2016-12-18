@@ -127,13 +127,13 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>
-                            ${project.groupId}.data.mapdb
+                            ${project.groupId}.data.berkeleydb
                         </Bundle-SymbolicName>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.data.berkeleydb.*
                         </Export-Package>
                         <_exportcontents>
-                            org.mapdb,
+                            com.sleepycat,
                         </_exportcontents>
                         <Require-Bundle>
                             ${project.groupId}.core,
