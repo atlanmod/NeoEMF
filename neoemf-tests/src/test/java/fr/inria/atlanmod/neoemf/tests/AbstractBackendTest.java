@@ -14,13 +14,14 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.Contextual;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDBContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
 
     private static final MapSamplePackage EPACKAGE = MapSamplePackage.eINSTANCE;
 
-    @Parameterized.Parameter
+    @Parameterized.Parameter(0)
     public Context context;
 
     @Parameterized.Parameter(1)
@@ -55,7 +56,8 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         return Arrays.asList(
                 new Object[]{MapDbContext.get(), MapDbContext.NAME},
                 new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
-                new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME}
+                new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME},
+                new Object[]{BerkeleyDBContext.get(), BerkeleyDBContext.NAME}
         );
     }
 
@@ -71,10 +73,13 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     public PersistentResource createPersistentStore() {
         try {
             return closeAtExit(context.createPersistentResource(EPACKAGE, file));
+        } catch (NullPointerException e) {
+            NeoLogger.error(e);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     public PersistentResource createTransientStore() {
@@ -102,7 +107,6 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
         for (PersistentResource resource : loadedResources) {
             resource.close();
         }
-
         loadedResources.clear();
     }
 }
