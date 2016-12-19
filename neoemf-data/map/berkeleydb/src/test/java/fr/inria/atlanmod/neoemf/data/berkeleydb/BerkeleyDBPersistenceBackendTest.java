@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import com.sleepycat.je.EnvironmentConfig;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -47,14 +48,13 @@ public class BerkeleyDBPersistenceBackendTest extends AbstractTest {
     public static void initialize() throws IOException {
         File file = new File(pathname);
         file.mkdir();
-        backend = new BerkeleyDBPersistenceBackend(file);
-        backend.open();
+        EnvironmentConfig envConfig = new EnvironmentConfig();
+        envConfig.setAllowCreate(true);
+        backend = new BerkeleyDBPersistenceBackend(file, envConfig);
     }
 
     @AfterClass
     public static void tearDown() throws IOException {
-        backend.close();
-
         Files.walk(new File(pathname).toPath(), FileVisitOption.FOLLOW_LINKS)
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
