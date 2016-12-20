@@ -11,15 +11,17 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 import org.apache.commons.lang3.SerializationUtils;
 
 public class IdSerializer {
 
     public static byte[] serialize(Id id) {
-        return SerializationUtils.serialize(id);
+        return SerializationUtils.serialize(id.toString());
     }
 
     public static Id deserialize(byte[] data) {
-        return (Id) SerializationUtils.deserialize(data);
+        //return (Id) SerializationUtils.deserialize(data);
+        return new StringId(SerializationUtils.deserialize(data));
     }
 }

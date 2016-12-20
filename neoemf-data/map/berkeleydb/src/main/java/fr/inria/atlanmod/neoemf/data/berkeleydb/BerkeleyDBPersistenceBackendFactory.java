@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import com.sleepycat.je.DatabaseException;
-import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
@@ -29,8 +27,6 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +61,7 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
 
         PersistentStore eStore = null;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
-
+        NeoLogger.info("BerkeleyDBStoreOptions: " + storeOptions);
         // Store
         if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BerkeleyDBStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BerkeleyDBStoreOptions.AUTOCOMMIT))) {
             eStore = new DirectWriteBerkeleyDBStore(resource, (BerkeleyDBPersistenceBackend) backend);
@@ -91,38 +87,46 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        Environment env = null;
-        EnvironmentConfig envConfig = new EnvironmentConfig();
-        envConfig.setAllowCreate(true);
-        envConfig.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
-        File envHome = new File(System.getProperty("java.io.tmpdir"));
-        try {
-            env = new Environment(envHome, envConfig);
-        } catch (DatabaseException e) {
-            NeoLogger.error(e);
-            e.printStackTrace();
-        }
+        NeoLogger.info("createTransientBackend()");
+        BerkeleyDBPersistenceBackend backend = null;
 
-        return new BerkeleyDBPersistenceBackend(env);
+        try {
+            File temporaryFolder = Files.createTempDirectory("neoemf").toFile();
+            EnvironmentConfig envConfig = new EnvironmentConfig();
+            envConfig.setAllowCreate(true);
+            envConfig.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
+
+            File dir = new File(BerkeleyDBURI.createFileURI(temporaryFolder).toFileString());
+            backend = new BerkeleyDBPersistenceBackend(dir, envConfig);
+            backend.open();
+            return backend;
+
+        } catch (IOException e) {
+            NeoLogger.error(e);
+        }
+        return backend;
     }
 
     @Override
-    public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
+    public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options)
+            throws InvalidDataStoreException {
+        NeoLogger.info("createPersistentBackend() " + directory.toString());
+
         BerkeleyDBPersistenceBackend backend;
-        URI uri = BerkeleyDBURI.createURI(URI.createFileURI(file.getAbsolutePath()));
-        File dir = FileUtils.getFile(uri.toFileString());
+        EnvironmentConfig envConfig = new EnvironmentConfig();
+        envConfig.setAllowCreate(true);
+        File dir = new File(BerkeleyDBURI.createFileURI(directory).toFileString());
         if (!dir.exists()) {
             try {
                 Files.createDirectories(dir.toPath());
             }
             catch (IOException e) {
                 NeoLogger.error(e);
-                e.printStackTrace();
             }
         }
-        backend = new BerkeleyDBPersistenceBackend(dir);
-        processGlobalConfiguration(file);
-
+        backend = new BerkeleyDBPersistenceBackend(dir, envConfig);
+        backend.open();
+        processGlobalConfiguration(directory);
         return backend;
     }
 

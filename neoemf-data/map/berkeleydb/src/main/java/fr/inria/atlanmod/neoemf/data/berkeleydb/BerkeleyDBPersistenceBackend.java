@@ -30,6 +30,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
      * The literal description of this backend.
      */
     public static final String NAME = "berkeleydb";
+
     private static final String KEY_CONTAINER = "eContainer";
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
     private static final String KEY_FEATURES = "features";
@@ -58,57 +59,61 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
      */
     private Database multivaluedFeatures;
 
-    private Environment env;
-    private DatabaseConfig dbconf;
+    private Environment environment;
+    private DatabaseConfig databaseConfig;
+    private File file;
+    private EnvironmentConfig environmentConfig;
 
 
-
-    BerkeleyDBPersistenceBackend(File file) {
-        EnvironmentConfig envConfig = new EnvironmentConfig();
-        envConfig.setAllowCreate(true);
-        try {
-            env = new Environment(file, envConfig);
-            dbconf = new DatabaseConfig();
-            dbconf.setAllowCreate(true);
-            dbconf.setSortedDuplicates(false);
-            dbconf.setDeferredWrite(true);
-        } catch (DatabaseException e) {
-            NeoLogger.error(e);
-        }
-    }
-
-    BerkeleyDBPersistenceBackend(Environment e) {
-        env = e;
-        dbconf = new DatabaseConfig();
-        dbconf.setAllowCreate(true);
-        dbconf.setSortedDuplicates(false);
-        dbconf.setDeferredWrite(true);
+    BerkeleyDBPersistenceBackend(File f, EnvironmentConfig ec) {
+        file = f;
+        environmentConfig = ec;
+        databaseConfig = new DatabaseConfig();
+        databaseConfig.setAllowCreate(true);
+        databaseConfig.setSortedDuplicates(false);
+        databaseConfig.setDeferredWrite(true);
     }
 
     public void open() {
+
+        NeoLogger.info("BerkeleyDBPersistentBackend::open()");
+        //NeoLogger.info(environmentConfig.getConfigParam(EnvironmentConfig.LOG_MEM_ONLY));
+        if (!isClosed()) {
+            NeoLogger.warn("Opening an open backend");
+        }
         try {
-            this.containers = env.openDatabase(null, KEY_CONTAINER, dbconf);
-            this.instances = env.openDatabase(null, KEY_INSTANCE_OF, dbconf);
-            this.features = env.openDatabase(null, KEY_FEATURES, dbconf);
-            this.multivaluedFeatures = env.openDatabase(null, KEY_MULTIVALUED_FEATURES, dbconf);
+            environment = new Environment(file, environmentConfig);
+
+            this.containers = environment.openDatabase(null, KEY_CONTAINER, databaseConfig);
+            this.instances = environment.openDatabase(null, KEY_INSTANCE_OF, databaseConfig);
+            this.features = environment.openDatabase(null, KEY_FEATURES, databaseConfig);
+            this.multivaluedFeatures = environment.openDatabase(null, KEY_MULTIVALUED_FEATURES, databaseConfig);
             isClosed = false;
+
+            //NeoLogger.info("BerkeleyDB Environment info: {0}", environment.getConfig());
+            NeoLogger.info("Databases: {0}", environment.getDatabaseNames());
+            NeoLogger.info("Database containers open, size: {0}", this.containers.count());
+            NeoLogger.info("Database instances open, size: {0}", this.instances.count());
+            NeoLogger.info("Database features open, size: {0}", this.features.count());
+            NeoLogger.info("Database multivaluedFeatures open, size: {0}", this.multivaluedFeatures.count());
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-
     }
 
     public void close() {
+        NeoLogger.info("Closing databases");
+
+        this.save();
         try {
             isClosed = true;
             this.containers.close();
             this.instances.close();
             this.features.close();
             this.multivaluedFeatures.close();
-            //env.close();
+            this.environment.close();
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
     }
 
@@ -126,7 +131,6 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
     }
 
 
-
     @Override
     public void save() {
         try {
@@ -134,7 +138,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             this.instances.sync();
             this.features.sync();
             this.multivaluedFeatures.sync();
-            env.sync();
+            //env.sync();
         } catch (DatabaseException e) {
             NeoLogger.error(e);
             e.printStackTrace();
@@ -156,7 +160,6 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
         return result;
     }
@@ -171,7 +174,6 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             containers.put(null, key, value);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
     }
 
@@ -190,7 +192,6 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
         return result;
     }
@@ -205,7 +206,6 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             instances.put(null, key, value);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
     }
 
@@ -213,16 +213,16 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
      * Store the value of a given feature.
      */
     public Object storeValue(FeatureKey fk, Object obj) {
+        Object result = null;
         try {
             DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
             DatabaseEntry value = new DatabaseEntry(Serializer.serialize(obj));
             features.put(null, key, value);
-            return obj;
+            result = obj;
         } catch (DatabaseException e) {
-            e.printStackTrace();
-
+            NeoLogger.error(e);
         }
-        return null;
+        return result;
     }
 
     /**
@@ -238,7 +238,6 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
         return result;
     }
@@ -269,7 +268,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
         DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
         DatabaseEntry value = new DatabaseEntry();
         try {
-            result = (features.get(null,key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
+            result = (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
             e.printStackTrace();
@@ -316,6 +315,10 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
      * Copies all the contents of this backend to the target one.
      */
     public void copyTo(BerkeleyDBPersistenceBackend target) {
+        NeoLogger.info("Copying " + this.toString() + "to: " + target.toString());
+        NeoLogger.info("This is closed: " + this.isClosed);
+        NeoLogger.info("Target is closed: " + target.isClosed);
+
         try {
             this.copyDatabaseTo(instances, target.instances);
             this.copyDatabaseTo(features, target.features);
@@ -323,17 +326,18 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             this.copyDatabaseTo(multivaluedFeatures, target.multivaluedFeatures);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
     }
 
     /**
      * Utility method to copy the contents from one database to another.
+     *
      * @param from
      * @param to
      * @throws DatabaseException
      */
     private void copyDatabaseTo(Database from, Database to) throws DatabaseException {
+
         Cursor cursor = from.openCursor(null, null);
         DatabaseEntry key = new DatabaseEntry();
         DatabaseEntry value = new DatabaseEntry();
@@ -343,5 +347,6 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
             to.put(null, key, value);
         }
         cursor.close();
+        to.sync();
     }
 }

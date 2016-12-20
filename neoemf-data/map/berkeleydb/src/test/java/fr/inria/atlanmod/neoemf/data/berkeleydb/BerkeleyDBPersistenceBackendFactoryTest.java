@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
+import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -22,6 +23,7 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBLists
 import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import org.junit.Test;
 
 import java.util.Map;
@@ -157,4 +159,29 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
             assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent backend structure %s is not equal to transient one"
         }
     }
+
+    @Test
+    public void testTransientBackend() {
+        BerkeleyDBPersistenceBackend backend = (BerkeleyDBPersistenceBackend) context()
+                .persistenceBackendFactory().createTransientBackend();
+
+        for (int i = 0; i < 1000; i++) {
+            FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
+            assertThat(backend.storeValue(key, "value" + i)).isNotNull();
+        }
+
+        backend.close();
+
+        BerkeleyDBPersistenceBackend other = (BerkeleyDBPersistenceBackend) context()
+                .persistenceBackendFactory().createTransientBackend();
+
+
+        for (int i = 0; i < 1000; i++) {
+            assertThat(other.isFeatureSet(FeatureKey.of(new StringId("object" + i), "name" + i))).isFalse();
+        }
+
+        other.close();
+
+    }
+
 }
