@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
-        <artifactId>neoemf-data</artifactId>
+        <artifactId>neoemf-data-map</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>neoemf-data-mapdb</artifactId>
+    <artifactId>neoemf-data-berkeleydb</artifactId>
 
     <packaging>bundle</packaging>
 
-    <name>NeoEMF Data MapDB</name>
-    <description>MapDB implementation of the core component.</description>
+    <name>NeoEMF Data BerkeleyDB</name>
+    <description>BerkeleyDB implementation of the core component.</description>
 
     <properties>
-        <mapdb.version>3.0.2</mapdb.version>
+        <berkeleydb.version>5.0.73</berkeleydb.version>
     </properties>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.mapdb</groupId>
-            <artifactId>mapdb</artifactId>
+            <groupId>com.sleepycat</groupId>
+            <artifactId>je</artifactId>
         </dependency>
 
         <!-- Cache -->
@@ -83,6 +85,13 @@
             <artifactId>assertj-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Internal -->
 
         <dependency>
@@ -103,9 +112,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.mapdb</groupId>
-                <artifactId>mapdb</artifactId>
-                <version>${mapdb.version}</version>
+                <groupId>com.sleepycat</groupId>
+                <artifactId>je</artifactId>
+                <version>${berkeleydb.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -118,20 +127,20 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>
-                            ${project.groupId}.data.mapdb
+                            ${project.groupId}.data.berkeleydb
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.data.mapdb.*
+                            fr.inria.atlanmod.neoemf.data.berkeleydb.*
                         </Export-Package>
                         <_exportcontents>
-                            org.mapdb,
+                            com.sleepycat,
                         </_exportcontents>
                         <Require-Bundle>
                             ${project.groupId}.core,
                             org.eclipse.core.runtime
                         </Require-Bundle>
                         <Bundle-Activator>
-                            fr.inria.atlanmod.neoemf.data.mapdb.Activator
+                            fr.inria.atlanmod.neoemf.data.berkeleydb.Activator
                         </Bundle-Activator>
                         <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                     </instructions>
