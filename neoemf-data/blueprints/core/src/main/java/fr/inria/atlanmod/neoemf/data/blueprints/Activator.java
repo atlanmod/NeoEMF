@@ -11,34 +11,24 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.AbstractActivator;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+public class Activator extends AbstractActivator {
 
-public class Activator implements BundleActivator {
-
-    private static BundleContext context;
-
-    static BundleContext getContext() {
-        return context;
+    @Override
+    protected String name() {
+        return "Blueprints";
     }
 
     @Override
-    public void start(BundleContext bundleContext) throws Exception {
-        context = bundleContext;
-        NeoLogger.info("NeoEMF Graph.Blueprints plugin started");
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME,
-                    BlueprintsPersistenceBackendFactory.getInstance());
-            NeoLogger.info("Graph persistence backend registered");
-        }
+    protected String scheme() {
+        return BlueprintsURI.SCHEME;
     }
 
     @Override
-    public void stop(BundleContext bundleContext) throws Exception {
-        context = null;
+    protected PersistenceBackendFactory factory() {
+        return BlueprintsPersistenceBackendFactory.getInstance();
     }
 }

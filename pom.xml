@@ -332,6 +332,7 @@
                                 *;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi;groupId=!${project.groupId}|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
+                            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         </instructions>
                     </configuration>
                 </plugin>

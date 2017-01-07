@@ -48,11 +48,6 @@
             <artifactId>guava</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-        </dependency>
-
         <!-- EMF -->
 
         <dependency>
@@ -99,6 +94,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>

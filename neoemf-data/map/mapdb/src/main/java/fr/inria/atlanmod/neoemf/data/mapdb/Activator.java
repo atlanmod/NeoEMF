@@ -11,33 +11,24 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.AbstractActivator;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+public class Activator extends AbstractActivator {
 
-public class Activator implements BundleActivator {
-
-    private static BundleContext context;
-
-    static BundleContext getContext() {
-        return context;
+    @Override
+    protected String name() {
+        return "MapDB";
     }
 
     @Override
-    public void start(BundleContext bundleContext) throws Exception {
-        context = bundleContext;
-        NeoLogger.info("NeoEMF MapDB plugin started");
-        if (!PersistenceBackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME,
-                    MapDbPersistenceBackendFactory.getInstance());
-            NeoLogger.info("MapDB persistence backend registered");
-        }
+    protected String scheme() {
+        return MapDbURI.SCHEME;
     }
 
-    public void stop(BundleContext bundleContext) throws Exception {
-        context = null;
+    @Override
+    protected PersistenceBackendFactory factory() {
+        return MapDbPersistenceBackendFactory.getInstance();
     }
 }
