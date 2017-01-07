@@ -8,11 +8,12 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import org.apache.commons.lang3.SerializationUtils;
 
+import org.apache.commons.lang3.SerializationUtils;
 
 public class ClassInfoSerializer {
 

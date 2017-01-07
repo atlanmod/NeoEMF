@@ -12,16 +12,17 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import com.sleepycat.je.EnvironmentConfig;
+
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDBStoreOptions;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBIndicesStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBListsStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDBURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbStoreOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbCacheManyStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbIndicesStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbListsStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
@@ -38,11 +39,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
-    public static final String NAME = BerkeleyDBPersistenceBackend.NAME;
+    public static final String NAME = BerkeleyDbPersistenceBackend.NAME;
 
-    private BerkeleyDBPersistenceBackendFactory() {
+    private BerkeleyDbPersistenceBackendFactory() {
     }
 
     public static PersistenceBackendFactory getInstance() {
@@ -56,30 +57,30 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
 
     @Override
     protected PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        checkArgument(backend instanceof BerkeleyDBPersistenceBackend,
+        checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
         PersistentStore eStore = null;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
-        NeoLogger.info("BerkeleyDBStoreOptions: " + storeOptions);
+        NeoLogger.info("BerkeleyDbStoreOptions: " + storeOptions);
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BerkeleyDBStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BerkeleyDBStoreOptions.AUTOCOMMIT))) {
-            eStore = new DirectWriteBerkeleyDBStore(resource, (BerkeleyDBPersistenceBackend) backend);
+        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT))) {
+            eStore = new DirectWriteBerkeleyDbStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(BerkeleyDBStoreOptions.CACHE_MANY)) {
-            eStore = new DirectWriteBerkeleyDBCacheManyStore(resource, (BerkeleyDBPersistenceBackend) backend);
+        else if (storeOptions.contains(BerkeleyDbStoreOptions.CACHE_MANY)) {
+            eStore = new DirectWriteBerkeleyDbCacheManyStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(BerkeleyDBStoreOptions.DIRECT_WRITE_LISTS)) {
-            eStore = new DirectWriteBerkeleyDBListsStore(resource, (BerkeleyDBPersistenceBackend) backend);
+        else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS)) {
+            eStore = new DirectWriteBerkeleyDbListsStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
-        else if (storeOptions.contains(BerkeleyDBStoreOptions.DIRECT_WRITE_INDICES)) {
-            eStore = new DirectWriteBerkeleyDBIndicesStore(resource, (BerkeleyDBPersistenceBackend) backend);
+        else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_INDICES)) {
+            eStore = new DirectWriteBerkeleyDbIndicesStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         // Autocommit
         if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-        else if (nonNull(storeOptions) && storeOptions.contains(BerkeleyDBStoreOptions.AUTOCOMMIT)) {
+        else if (nonNull(storeOptions) && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
             eStore = new AutocommitStoreDecorator(eStore);
         }
         return eStore;
@@ -88,7 +89,7 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
     @Override
     public PersistenceBackend createTransientBackend() {
         NeoLogger.info("createTransientBackend()");
-        BerkeleyDBPersistenceBackend backend = null;
+        BerkeleyDbPersistenceBackend backend = null;
 
         try {
             File temporaryFolder = Files.createTempDirectory("neoemf").toFile();
@@ -96,8 +97,8 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
             envConfig.setAllowCreate(true);
             envConfig.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
 
-            File dir = new File(BerkeleyDBURI.createFileURI(temporaryFolder).toFileString());
-            backend = new BerkeleyDBPersistenceBackend(dir, envConfig);
+            File dir = new File(BerkeleyDbURI.createFileURI(temporaryFolder).toFileString());
+            backend = new BerkeleyDbPersistenceBackend(dir, envConfig);
             backend.open();
             return backend;
 
@@ -112,10 +113,10 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
             throws InvalidDataStoreException {
         NeoLogger.info("createPersistentBackend() " + directory.toString());
 
-        BerkeleyDBPersistenceBackend backend;
+        BerkeleyDbPersistenceBackend backend;
         EnvironmentConfig envConfig = new EnvironmentConfig();
         envConfig.setAllowCreate(true);
-        File dir = new File(BerkeleyDBURI.createFileURI(directory).toFileString());
+        File dir = new File(BerkeleyDbURI.createFileURI(directory).toFileString());
         if (!dir.exists()) {
             try {
                 Files.createDirectories(dir.toPath());
@@ -124,7 +125,7 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
                 NeoLogger.error(e);
             }
         }
-        backend = new BerkeleyDBPersistenceBackend(dir, envConfig);
+        backend = new BerkeleyDbPersistenceBackend(dir, envConfig);
         backend.open();
         processGlobalConfiguration(directory);
         return backend;
@@ -132,25 +133,25 @@ public final class BerkeleyDBPersistenceBackendFactory extends AbstractPersisten
 
     @Override
     public PersistentStore createTransientStore(PersistentResource resource, PersistenceBackend backend) {
-        checkArgument(backend instanceof BerkeleyDBPersistenceBackend,
+        checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        return new DirectWriteBerkeleyDBStore(resource, (BerkeleyDBPersistenceBackend) backend);
+        return new DirectWriteBerkeleyDbStore(resource, (BerkeleyDbPersistenceBackend) backend);
     }
 
     @Override
     public void copyBackend(PersistenceBackend from, PersistenceBackend to) {
-        checkArgument(from instanceof BerkeleyDBPersistenceBackend && to instanceof BerkeleyDBPersistenceBackend,
-                "The backend to copy is not an instance of BerkeleyDBPersistenceBackend");
+        checkArgument(from instanceof BerkeleyDbPersistenceBackend && to instanceof BerkeleyDbPersistenceBackend,
+                "The backend to copy is not an instance of BerkeleyDbPersistenceBackend");
 
-        BerkeleyDBPersistenceBackend source = (BerkeleyDBPersistenceBackend) from;
-        BerkeleyDBPersistenceBackend target = (BerkeleyDBPersistenceBackend) to;
+        BerkeleyDbPersistenceBackend source = (BerkeleyDbPersistenceBackend) from;
+        BerkeleyDbPersistenceBackend target = (BerkeleyDbPersistenceBackend) to;
 
         source.copyTo(target);
     }
 
     private static class Holder {
 
-        private static final PersistenceBackendFactory INSTANCE = new BerkeleyDBPersistenceBackendFactory();
+        private static final PersistenceBackendFactory INSTANCE = new BerkeleyDbPersistenceBackendFactory();
     }
 }

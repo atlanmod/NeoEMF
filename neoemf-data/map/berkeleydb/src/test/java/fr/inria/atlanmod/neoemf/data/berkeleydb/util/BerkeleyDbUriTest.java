@@ -9,9 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
+package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbTest;
+import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
 
-public class BerkeleyDBOptions extends AbstractPersistenceOptions {
+public class BerkeleyDbUriTest extends AbstractUriTest implements BerkeleyDbTest {
 }

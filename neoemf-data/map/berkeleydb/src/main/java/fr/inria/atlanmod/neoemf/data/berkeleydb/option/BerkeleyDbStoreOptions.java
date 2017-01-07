@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
-public enum BerkeleyDBStoreOptions implements PersistentStoreOptions {
+public enum BerkeleyDbStoreOptions implements PersistentStoreOptions {
     AUTOCOMMIT,
     DIRECT_WRITE,
     DIRECT_WRITE_LISTS,

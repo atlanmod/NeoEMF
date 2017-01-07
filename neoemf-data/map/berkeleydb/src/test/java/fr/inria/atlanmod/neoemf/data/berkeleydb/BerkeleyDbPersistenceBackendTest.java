@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import com.sleepycat.je.EnvironmentConfig;
+
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -20,46 +21,48 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class BerkeleyDBPersistenceBackendTest extends AbstractTest {
+public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
 
-    private static BerkeleyDBPersistenceBackend backend;
-    private static String pathname = "/tmp/test/";
+    private static BerkeleyDbPersistenceBackend backend;
 
-
-    public BerkeleyDBPersistenceBackendTest() {}
+    public BerkeleyDbPersistenceBackendTest() {}
 
     @BeforeClass
     public static void initialize() throws IOException {
-        File file = new File(pathname);
-        file.mkdir();
+        File file = workspace.newFile("BerkeleyDB");
+        file = Files.createDirectory(file.toPath()).toFile();
         EnvironmentConfig envConfig = new EnvironmentConfig();
         envConfig.setAllowCreate(true);
-        backend = new BerkeleyDBPersistenceBackend(file, envConfig);
+        backend = new BerkeleyDbPersistenceBackend(file, envConfig);
     }
 
     @AfterClass
     public static void tearDown() throws IOException {
-        Files.walk(new File(pathname).toPath(), FileVisitOption.FOLLOW_LINKS)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .peek(System.out::println)
-                .forEach(File::delete);
+        // Temp directories are automatically cleaned
+//        Files.walk(new File(pathname).toPath(), FileVisitOption.FOLLOW_LINKS)
+//                .sorted(Comparator.reverseOrder())
+//                .map(Path::toFile)
+//                .peek(System.out::println)
+//                .forEach(File::delete);
     }
 
     @Before
@@ -74,19 +77,18 @@ public class BerkeleyDBPersistenceBackendTest extends AbstractTest {
 
     @Test
     public void testStoreFeature() {
+        final int TIMES = 1000;
 
-        for (int i = 0; i < 1000; i++) {
+        IntStream.range(0, TIMES).forEach(i -> {
             FeatureKey key = FeatureKey.of(new StringId("object"+i), "name"+i);
             assertThat(backend.storeValue(key, "value"+i)).isNotNull();
-        }
+        });
 
-        //backend.save();
-        backend.close();backend.open();
+//        backend.save();
+        backend.close();
+        backend.open();
 
-        for (int i = 0; i < 1000; i++) {
-            assertThat(backend.valueOf(FeatureKey.of(new StringId("object" + i), "name" + i))).isEqualTo("value" + i);
-        }
-
+        IntStream.range(0, TIMES).forEach(i -> assertThat(backend.valueOf(FeatureKey.of(new StringId("object" + i), "name" + i))).isEqualTo("value" + i));
     }
 
     @Test
@@ -96,14 +98,12 @@ public class BerkeleyDBPersistenceBackendTest extends AbstractTest {
         MultivaluedFeatureKey[] keys = new MultivaluedFeatureKey[TIMES];
         FeatureKey featureKey = FeatureKey.of(new StringId("object"), "name");
 
-        for (int i = 0; i < 10; i++) {
+        IntStream.range(0, TIMES).forEach(i -> {
             keys[i] = featureKey.withPosition(i);
             backend.storeValueAtIndex(keys[i], i);
-        }
+        });
 
-        for (int i = 0; i < TIMES; i++) {
-            assertThat(i).isEqualTo(backend.valueAtIndex(keys[i]));
-        }
+        IntStream.range(0, TIMES).forEach(i -> assertThat(i).isEqualTo(backend.valueAtIndex(keys[i])));
     }
 
     @Test
@@ -168,8 +168,6 @@ public class BerkeleyDBPersistenceBackendTest extends AbstractTest {
         assertThat(result).isNotNull();
         assertThat(result.name()).isEqualTo("eClassTest");
         assertThat(result.uri()).isEqualTo("URI://my.uri/");
-
     }
-
 }
 

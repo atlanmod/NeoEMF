@@ -1,19 +1,27 @@
+/*
+ * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ */
+
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import com.sleepycat.je.*;
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
-import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import com.sleepycat.je.Database;
+import com.sleepycat.je.DatabaseConfig;
+import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.Environment;
+import com.sleepycat.je.EnvironmentConfig;
+
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.io.File;
 
-/**
- * Created by sunye on 16/12/2016.
- */
-public class BerkeleyDB {
+public class BerkeleyDb {
 
     private static final String KEY_CONTAINER = "eContainer";
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
@@ -46,7 +54,7 @@ public class BerkeleyDB {
     private Environment env;
     DatabaseConfig dbconf;
 
-    public BerkeleyDB(File file) {
+    public BerkeleyDb(File file) {
 
         EnvironmentConfig envConfig = new EnvironmentConfig();
         envConfig.setAllowCreate(true);

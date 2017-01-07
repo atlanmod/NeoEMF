@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.Contextual;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDBContext;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
@@ -57,7 +57,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
                 new Object[]{MapDbContext.get(), MapDbContext.NAME},
                 new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
                 new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME},
-                new Object[]{BerkeleyDBContext.get(), BerkeleyDBContext.NAME}
+                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME}
         );
     }
 

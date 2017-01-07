@@ -11,10 +11,23 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import com.sleepycat.je.*;
+import com.sleepycat.je.Cursor;
+import com.sleepycat.je.Database;
+import com.sleepycat.je.DatabaseConfig;
+import com.sleepycat.je.DatabaseEntry;
+import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.Environment;
+import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.LockMode;
+import com.sleepycat.je.OperationStatus;
+
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.*;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ClassInfoSerializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ContainerInfoSerializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.FKSerializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.IdSerializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -24,7 +37,7 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import java.io.File;
 import java.util.Map;
 
-public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
+public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * The literal description of this backend.
@@ -65,7 +78,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
     private EnvironmentConfig environmentConfig;
 
 
-    BerkeleyDBPersistenceBackend(File f, EnvironmentConfig ec) {
+    BerkeleyDbPersistenceBackend(File f, EnvironmentConfig ec) {
         file = f;
         environmentConfig = ec;
         databaseConfig = new DatabaseConfig();
@@ -314,7 +327,7 @@ public class BerkeleyDBPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Copies all the contents of this backend to the target one.
      */
-    public void copyTo(BerkeleyDBPersistenceBackend target) {
+    public void copyTo(BerkeleyDbPersistenceBackend target) {
         NeoLogger.info("Copying " + this.toString() + "to: " + target.toString());
         NeoLogger.info("This is closed: " + this.isClosed);
         NeoLogger.info("Target is closed: " + target.isClosed);

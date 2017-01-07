@@ -16,26 +16,28 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDBOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBIndicesStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBListsStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbCacheManyStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbIndicesStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbListsStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements BerkeleyDBTest {
+public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistenceBackendFactoryTest implements BerkeleyDbTest {
 
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BerkeleyDBPersistenceBackend.class); // "Invalid backend created"
+        assertThat(transientBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Invalid backend created"
 
         // TODO Need to test further the nature of the BerkeleyDB engine
     }
@@ -45,78 +47,78 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
 
         PersistentStore eStore = context().persistenceBackendFactory().createTransientStore(null, transientBackend);
-        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDBStore.class); // "Invalid EStore created"
+        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDbStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, transientBackend);
     }
 
     @Test
     public void testCreatePersistentBackendNoOption() throws InvalidDataStoreException {
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
-        assertThat(persistentBackend).isInstanceOf(BerkeleyDBPersistenceBackend.class); // "Invalid backend created"
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
+        assertThat(persistentBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Invalid backend created"
 
         // TODO Need to test further the nature of the BerkeleyDB engine
     }
 
     @Test
     public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, BerkeleyDBOptionsBuilder.newBuilder().asMap());
-        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDBStore.class); // "Invalid EStore created"
+        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, BerkeleyDbOptionsBuilder.newBuilder().asMap());
+        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDbStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
     public void testCreatePersistentEStoreDirectWriteOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Map<String, Object> options = BerkeleyDBOptionsBuilder.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
                 .directWrite()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDBStore.class); // "Invalid EStore created"
+        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDbStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
     public void testCreatePersistentEStoreDirectWriteWithListsOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Map<String, Object> options = BerkeleyDBOptionsBuilder.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
                 .directWriteLists()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDBListsStore.class); // "Invalid EStore created"
+        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDbListsStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
     public void testCreatePersistentEStoreDirectWriteWithIndexesOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Map<String, Object> options = BerkeleyDBOptionsBuilder.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
                 .directWriteIndices()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDBIndicesStore.class); // "Invalid EStore created"
+        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDbIndicesStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
 
     @Test
     public void testCreatePersistentEStoreAutocommitOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Map<String, Object> options = BerkeleyDBOptionsBuilder.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
                 .autocommit()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
         assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
@@ -126,14 +128,14 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreatePersistentEStoreCachedManyOption() throws InvalidDataStoreException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Map<String, Object> options = BerkeleyDBOptionsBuilder.newBuilder()
+        Map<String, Object> options = BerkeleyDbOptionsBuilder.newBuilder()
                 .directWriteCacheMany()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
 
         PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDBCacheManyStore.class); // "Invalid EStore created"
+        assertThat(eStore).isInstanceOf(DirectWriteBerkeleyDbCacheManyStore.class); // "Invalid EStore created"
 
         assertHasInnerBackend(eStore, persistentBackend);
     }
@@ -142,16 +144,17 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
      * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent data stores from the transient ones.
      * Only empty backends are tested.
      */
-    //@Test
+    @Test
+    @Ignore
     public void testCopyBackend() throws InvalidDataStoreException {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BerkeleyDBPersistenceBackend.class); // "Transient backend is not an instance of BerkeleyDBPersistenceBackend"
-        BerkeleyDBPersistenceBackend transientMap = (BerkeleyDBPersistenceBackend) transientBackend;
+        assertThat(transientBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Transient backend is not an instance of BerkeleyDbPersistenceBackend"
+        BerkeleyDbPersistenceBackend transientMap = (BerkeleyDbPersistenceBackend) transientBackend;
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDBOptionsBuilder.newBuilder().asMap());
-        assertThat(persistentBackend).isInstanceOf(BerkeleyDBPersistenceBackend.class); // "Persistent backend is not an instance of BerkeleyDBPersistenceBackend"
+        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
+        assertThat(persistentBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Persistent backend is not an instance of BerkeleyDbPersistenceBackend"
 
-        BerkeleyDBPersistenceBackend persistentMap = (BerkeleyDBPersistenceBackend) persistentBackend;
+        BerkeleyDbPersistenceBackend persistentMap = (BerkeleyDbPersistenceBackend) persistentBackend;
 
         context().persistenceBackendFactory().copyBackend(transientMap, persistentMap);
         for (String tKey : transientMap.getAll().keySet()) {
@@ -162,7 +165,7 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testTransientBackend() {
-        BerkeleyDBPersistenceBackend backend = (BerkeleyDBPersistenceBackend) context()
+        BerkeleyDbPersistenceBackend backend = (BerkeleyDbPersistenceBackend) context()
                 .persistenceBackendFactory().createTransientBackend();
 
         for (int i = 0; i < 1000; i++) {
@@ -172,7 +175,7 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
 
         backend.close();
 
-        BerkeleyDBPersistenceBackend other = (BerkeleyDBPersistenceBackend) context()
+        BerkeleyDbPersistenceBackend other = (BerkeleyDbPersistenceBackend) context()
                 .persistenceBackendFactory().createTransientBackend();
 
 
@@ -181,7 +184,5 @@ public class BerkeleyDBPersistenceBackendFactoryTest extends AbstractPersistence
         }
 
         other.close();
-
     }
-
 }

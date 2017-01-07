@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.URI;
 
@@ -19,11 +20,11 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Objects;
 
-public class BerkeleyDBURI extends PersistenceURI {
+public class BerkeleyDbURI extends PersistenceURI {
 
     public static final String SCHEME = "neo-berkeleydb";
 
-    protected BerkeleyDBURI(int hashCode, URI internalURI) {
+    protected BerkeleyDbURI(int hashCode, URI internalURI) {
         super(hashCode, internalURI);
     }
 
@@ -34,7 +35,7 @@ public class BerkeleyDBURI extends PersistenceURI {
         } else if (Objects.equals(SCHEME, uri.scheme())) {
             returnValue = PersistenceURI.createURI(uri);
         } else {
-            throw new IllegalArgumentException(MessageFormat.format("Can not create BerkeleyDBURI from the URI scheme {0}", uri.scheme()));
+            throw new IllegalArgumentException(MessageFormat.format("Can not create BerkeleyDbURI from the URI scheme {0}", uri.scheme()));
         }
         return returnValue;
     }

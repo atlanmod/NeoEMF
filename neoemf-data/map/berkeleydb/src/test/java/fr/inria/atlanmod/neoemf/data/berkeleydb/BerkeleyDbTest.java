@@ -9,10 +9,16 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
+package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDBTest;
-import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.Contextual;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 
-public class BerkeleyDBUriTest extends AbstractUriTest implements BerkeleyDBTest {
+public interface BerkeleyDbTest extends Contextual {
+
+    @Override
+    default Context context() {
+        return BerkeleyDbContext.get();
+    }
 }

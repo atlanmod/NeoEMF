@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDBPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDBStore;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDBURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbStore;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -23,11 +23,11 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
-public class BerkeleyDBContext implements Context {
+public class BerkeleyDbContext implements Context {
 
     public static final String NAME = "BerkeleyDB";
 
-    protected BerkeleyDBContext() {
+    protected BerkeleyDbContext() {
     }
 
     public static Context get() {
@@ -41,40 +41,40 @@ public class BerkeleyDBContext implements Context {
 
     @Override
     public String uriScheme() {
-        return BerkeleyDBURI.SCHEME;
+        return BerkeleyDbURI.SCHEME;
     }
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDBResourceBuilder(ePackage).persistent().file(file).build();
+        return new BerkeleyDbResourceBuilder(ePackage).persistent().file(file).build();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BerkeleyDBResourceBuilder(ePackage).file(file).build();
+        return new BerkeleyDbResourceBuilder(ePackage).file(file).build();
     }
 
     @Override
     public PersistenceBackendFactory persistenceBackendFactory() {
-        return BerkeleyDBPersistenceBackendFactory.getInstance();
+        return BerkeleyDbPersistenceBackendFactory.getInstance();
     }
 
     @Override
     public URI createURI(URI uri) {
-        return BerkeleyDBURI.createURI(uri);
+        return BerkeleyDbURI.createURI(uri);
     }
 
     @Override
     public URI createFileURI(File file) {
-        return BerkeleyDBURI.createFileURI(file);
+        return BerkeleyDbURI.createFileURI(file);
     }
 
     @Override
     public Class<?> directWriteClass() {
-        return DirectWriteBerkeleyDBStore.class;
+        return DirectWriteBerkeleyDbStore.class;
     }
 
     private static class Holder {
-        private static final Context INSTANCE = new BerkeleyDBContext();
+        private static final Context INSTANCE = new BerkeleyDbContext();
     }
 }

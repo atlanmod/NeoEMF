@@ -8,15 +8,20 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
-import java.io.*;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
 public class Serializer {
-
 
     public static byte[] serialize(Object obj) {
         byte[] data;
@@ -38,9 +43,8 @@ public class Serializer {
         try {
             ObjectInput in = new ObjectInputStream(bis);
             result = in.readObject();
-        } catch (IOException e) {
-            NeoLogger.error(e);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (IOException | ClassNotFoundException e) {
             NeoLogger.error(e);
         }
         return result;

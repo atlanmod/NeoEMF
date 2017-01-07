@@ -17,7 +17,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDBPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
@@ -43,14 +43,14 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class DirectWriteBerkeleyDBStore extends AbstractDirectWriteStore<BerkeleyDBPersistenceBackend> {
+public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<BerkeleyDbPersistenceBackend> {
 
     /**
      * An in-memory cache for persistent EObjects.
      */
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
-    public DirectWriteBerkeleyDBStore(Resource.Internal resource, BerkeleyDBPersistenceBackend persistenceBackend) {
+    public DirectWriteBerkeleyDbStore(Resource.Internal resource, BerkeleyDbPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
         this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();
     }

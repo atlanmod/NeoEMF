@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDBURI;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -29,9 +30,9 @@ public class Activator implements BundleActivator {
     public void start(BundleContext bundleContext) throws Exception {
         context = bundleContext;
         NeoLogger.info("NeoEMF BerkeleyDB plugin started");
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDBURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BerkeleyDBURI.SCHEME,
-                    BerkeleyDBPersistenceBackendFactory.getInstance());
+        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME,
+                    BerkeleyDbPersistenceBackendFactory.getInstance());
             NeoLogger.info("BerkeleyDB persistence backend registered");
         }
     }

@@ -9,16 +9,9 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb;
+package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.Contextual;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDBContext;
+import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
-public interface BerkeleyDBTest extends Contextual {
-
-    @Override
-    default Context context() {
-        return BerkeleyDBContext.get();
-    }
+public class BerkeleyDbOptions extends AbstractPersistenceOptions {
 }

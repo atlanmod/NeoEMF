@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.store;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDBPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -27,9 +27,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class DirectWriteBerkeleyDBIndicesStore extends DirectWriteBerkeleyDBStore {
+public class DirectWriteBerkeleyDbIndicesStore extends DirectWriteBerkeleyDbStore {
 
-    public DirectWriteBerkeleyDBIndicesStore(Resource.Internal resource, BerkeleyDBPersistenceBackend persistenceBackend) {
+    public DirectWriteBerkeleyDbIndicesStore(Resource.Internal resource, BerkeleyDbPersistenceBackend persistenceBackend) {
         super(resource, persistenceBackend);
     }
 

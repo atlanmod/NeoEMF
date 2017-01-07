@@ -8,9 +8,11 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
+
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+
 import org.apache.commons.lang3.SerializationUtils;
 
 public class FKSerializer {
