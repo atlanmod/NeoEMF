@@ -19,6 +19,7 @@ import java.io.File;
 
 import static java.util.Objects.isNull;
 
+@SuppressWarnings("unused") // Called dynamically
 public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
     private static final String DIRECTORY = "blueprints.tg.directory";
