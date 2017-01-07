@@ -88,11 +88,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     public void open() {
+        NeoLogger.debug("BerkeleyDBPersistentBackend::open()");
+        //NeoLogger.debug(environmentConfig.getConfigParam(EnvironmentConfig.LOG_MEM_ONLY));
 
-        NeoLogger.info("BerkeleyDBPersistentBackend::open()");
-        //NeoLogger.info(environmentConfig.getConfigParam(EnvironmentConfig.LOG_MEM_ONLY));
         if (!isClosed()) {
-            NeoLogger.warn("Opening an open backend");
+            NeoLogger.warn("This backend is already open");
         }
         try {
             environment = new Environment(file, environmentConfig);
@@ -103,28 +103,29 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             this.multivaluedFeatures = environment.openDatabase(null, KEY_MULTIVALUED_FEATURES, databaseConfig);
             isClosed = false;
 
-            //NeoLogger.info("BerkeleyDB Environment info: {0}", environment.getConfig());
-            NeoLogger.info("Databases: {0}", environment.getDatabaseNames());
-            NeoLogger.info("Database containers open, size: {0}", this.containers.count());
-            NeoLogger.info("Database instances open, size: {0}", this.instances.count());
-            NeoLogger.info("Database features open, size: {0}", this.features.count());
-            NeoLogger.info("Database multivaluedFeatures open, size: {0}", this.multivaluedFeatures.count());
+            NeoLogger.debug("BerkeleyDB Environment info: {0}", environment.getConfig());
+            NeoLogger.debug("Databases: {0}", environment.getDatabaseNames());
+            NeoLogger.debug("Database containers open, size: {0}", this.containers.count());
+            NeoLogger.debug("Database instances open, size: {0}", this.instances.count());
+            NeoLogger.debug("Database features open, size: {0}", this.features.count());
+            NeoLogger.debug("Database multivaluedFeatures open, size: {0}", this.multivaluedFeatures.count());
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
     }
 
     public void close() {
-        NeoLogger.info("Closing databases");
+        NeoLogger.debug("Closing databases");
 
         this.save();
+
         try {
-            isClosed = true;
             this.containers.close();
             this.instances.close();
             this.features.close();
             this.multivaluedFeatures.close();
             this.environment.close();
+            isClosed = true;
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
@@ -151,10 +152,9 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             this.instances.sync();
             this.features.sync();
             this.multivaluedFeatures.sync();
-            //env.sync();
+//            env.sync();
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
     }
 
@@ -165,7 +165,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         ContainerInfo result = null;
         DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
         DatabaseEntry value = new DatabaseEntry();
-
         try {
             if (containers.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
@@ -197,7 +196,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         ClassInfo result = null;
         DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
         DatabaseEntry value = new DatabaseEntry();
-
         try {
             if (instances.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
@@ -268,7 +266,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             result = Serializer.deserialize(value.getData());
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
         return result;
     }
@@ -284,9 +281,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             result = (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
-
         return result;
     }
 
@@ -299,9 +294,9 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             DatabaseEntry value = new DatabaseEntry(Serializer.serialize(val));
             multivaluedFeatures.put(null, key, value);
             return val;
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-
+        }
+        catch (DatabaseException e) {
+            NeoLogger.error(e);
         }
         return null;
     }
@@ -319,7 +314,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
-            e.printStackTrace();
         }
         return result;
     }
@@ -328,9 +322,9 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
      * Copies all the contents of this backend to the target one.
      */
     public void copyTo(BerkeleyDbPersistenceBackend target) {
-        NeoLogger.info("Copying " + this.toString() + "to: " + target.toString());
-        NeoLogger.info("This is closed: " + this.isClosed);
-        NeoLogger.info("Target is closed: " + target.isClosed);
+        NeoLogger.debug("Copying " + this.toString() + "to: " + target.toString());
+        NeoLogger.debug("This is closed: " + this.isClosed);
+        NeoLogger.debug("Target is closed: " + target.isClosed);
 
         try {
             this.copyDatabaseTo(instances, target.instances);
@@ -344,22 +338,15 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Utility method to copy the contents from one database to another.
-     *
-     * @param from
-     * @param to
-     * @throws DatabaseException
      */
     private void copyDatabaseTo(Database from, Database to) throws DatabaseException {
-
-        Cursor cursor = from.openCursor(null, null);
-        DatabaseEntry key = new DatabaseEntry();
-        DatabaseEntry value = new DatabaseEntry();
-
-        while (cursor.getNext(key, value, LockMode.DEFAULT) ==
-                OperationStatus.SUCCESS) {
-            to.put(null, key, value);
+        try (Cursor cursor = from.openCursor(null, null)) {
+            DatabaseEntry key = new DatabaseEntry();
+            DatabaseEntry value = new DatabaseEntry();
+            while (cursor.getNext(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+                to.put(null, key, value);
+            }
         }
-        cursor.close();
         to.sync();
     }
 }
