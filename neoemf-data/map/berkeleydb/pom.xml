@@ -131,8 +131,7 @@
                             com.sleepycat,
                         </_exportcontents>
                         <Require-Bundle>
-                            ${project.groupId}.core,
-                            org.eclipse.core.runtime
+                            ${project.groupId}.core
                         </Require-Bundle>
                         <Bundle-Activator>
                             fr.inria.atlanmod.neoemf.data.berkeleydb.Activator

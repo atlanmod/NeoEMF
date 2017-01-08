@@ -120,6 +120,7 @@
                         <Bundle-SymbolicName>
                             ${project.groupId}.data.blueprints.core
                         </Bundle-SymbolicName>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.data.blueprints.*
                         </Export-Package>
@@ -143,8 +144,7 @@
                             org.apache.commons.logging,
                         </_exportcontents>
                         <Require-Bundle>
-                            ${project.groupId}.core,
-                            org.eclipse.core.runtime
+                            ${project.groupId}.core
                         </Require-Bundle>
                         <Bundle-Activator>
                             fr.inria.atlanmod.neoemf.data.blueprints.Activator
