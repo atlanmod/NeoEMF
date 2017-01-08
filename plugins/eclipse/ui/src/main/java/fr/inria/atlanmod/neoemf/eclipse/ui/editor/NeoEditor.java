@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
+import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
@@ -46,6 +48,7 @@ public class NeoEditor extends EcoreEditor {
         super();
         this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
+        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     @Override
@@ -56,14 +59,21 @@ public class NeoEditor extends EcoreEditor {
 
         // Create the store options depending of the backend
         Map<String, Object> options;
-        if (Objects.equals(resource.getURI().scheme(), MapDbURI.SCHEME)) {
+        String scheme = resource.getURI().scheme();
+        if (Objects.equals(scheme, BlueprintsURI.SCHEME)) {
+            options = BlueprintsOptionsBuilder.newBuilder()
+//                  .log()
+                    .directWriteCacheMany()
+                    .asMap();
+        }
+        else if (Objects.equals(scheme, MapDbURI.SCHEME)) {
             options = MapDbOptionsBuilder.newBuilder()
 //                  .log()
                     .directWriteCacheMany()
                     .asMap();
         }
-        else if (Objects.equals(resource.getURI().scheme(), BlueprintsURI.SCHEME)) {
-            options = BlueprintsOptionsBuilder.newBuilder()
+        else if (Objects.equals(scheme, BerkeleyDbURI.SCHEME)) {
+            options = BerkeleyDbOptionsBuilder.newBuilder()
 //                  .log()
                     .directWriteCacheMany()
                     .asMap();
