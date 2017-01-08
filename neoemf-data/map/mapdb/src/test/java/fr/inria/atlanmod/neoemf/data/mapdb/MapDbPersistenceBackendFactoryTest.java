@@ -151,7 +151,9 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
         assertThat(persistentBackend).isInstanceOf(MapDbPersistenceBackend.class); // "Persistent backend is not an instance of MapDbPersistenceBackend"
 
         MapDbPersistenceBackend persistentMap = (MapDbPersistenceBackend) persistentBackend;
+
         context().persistenceBackendFactory().copyBackend(transientMap, persistentMap);
+
         for (String tKey : transientMap.getAll().keySet()) {
             assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"
             assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent backend structure %s is not equal to transient one"

@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import static java.util.Objects.isNull;
 
-public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore {
+public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements DirectWriteStore {
 
     protected final P persistenceBackend;
 

@@ -21,8 +21,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * A {@link PersistentStore} wrapper that delegates method calls to an
- * internal {@link PersistentStore}.
+ * A {@link PersistentStore} wrapper that delegates method calls to an internal {@link PersistentStore}.
  */
 public abstract class AbstractPersistentStoreDecorator extends AbstractPersistentStore {
 

@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -46,6 +47,16 @@ public class BlueprintsContext implements Context {
     }
 
     @Override
+    public URI createURI(URI uri) {
+        return BlueprintsURI.createURI(uri);
+    }
+
+    @Override
+    public URI createFileURI(File file) {
+        return BlueprintsURI.createFileURI(file);
+    }
+
+    @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
         return new BlueprintsResourceBuilder(ePackage).tinkerGraph().persistent().file(file).build();
     }
@@ -61,17 +72,7 @@ public class BlueprintsContext implements Context {
     }
 
     @Override
-    public URI createURI(URI uri) {
-        return BlueprintsURI.createURI(uri);
-    }
-
-    @Override
-    public URI createFileURI(File file) {
-        return BlueprintsURI.createFileURI(file);
-    }
-
-    @Override
-    public Class<?> directWriteClass() {
+    public Class<? extends DirectWriteStore> directWriteClass() {
         return DirectWriteBlueprintsStore.class;
     }
 

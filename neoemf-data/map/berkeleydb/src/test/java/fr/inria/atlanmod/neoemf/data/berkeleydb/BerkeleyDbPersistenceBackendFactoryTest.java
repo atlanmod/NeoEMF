@@ -29,6 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -157,6 +158,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         BerkeleyDbPersistenceBackend persistentMap = (BerkeleyDbPersistenceBackend) persistentBackend;
 
         context().persistenceBackendFactory().copyBackend(transientMap, persistentMap);
+
         for (String tKey : transientMap.getAll().keySet()) {
             assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"
             assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent backend structure %s is not equal to transient one"
@@ -165,24 +167,20 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testTransientBackend() {
-        BerkeleyDbPersistenceBackend backend = (BerkeleyDbPersistenceBackend) context()
-                .persistenceBackendFactory().createTransientBackend();
+        final int TIMES = 1000;
 
-        for (int i = 0; i < 1000; i++) {
-            FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
-            assertThat(backend.storeValue(key, "value" + i)).isNotNull();
+        try (BerkeleyDbPersistenceBackend backend = (BerkeleyDbPersistenceBackend) context().persistenceBackendFactory().createTransientBackend()) {
+            IntStream.range(0, TIMES).forEach(i -> {
+                FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
+                assertThat(backend.storeValue(key, "value" + i)).isNotNull();
+            });
         }
 
-        backend.close();
-
-        BerkeleyDbPersistenceBackend other = (BerkeleyDbPersistenceBackend) context()
-                .persistenceBackendFactory().createTransientBackend();
-
-
-        for (int i = 0; i < 1000; i++) {
-            assertThat(other.isFeatureSet(FeatureKey.of(new StringId("object" + i), "name" + i))).isFalse();
+        try (BerkeleyDbPersistenceBackend other = (BerkeleyDbPersistenceBackend) context().persistenceBackendFactory().createTransientBackend()) {
+            IntStream.range(0, TIMES).forEach(i -> {
+                FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
+                assertThat(other.isFeatureSet(key)).isFalse();
+            });
         }
-
-        other.close();
     }
 }

@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbStore;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
@@ -45,6 +46,16 @@ public class BerkeleyDbContext implements Context {
     }
 
     @Override
+    public URI createURI(URI uri) {
+        return BerkeleyDbURI.createURI(uri);
+    }
+
+    @Override
+    public URI createFileURI(File file) {
+        return BerkeleyDbURI.createFileURI(file);
+    }
+
+    @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
         return new BerkeleyDbResourceBuilder(ePackage).persistent().file(file).build();
     }
@@ -60,17 +71,7 @@ public class BerkeleyDbContext implements Context {
     }
 
     @Override
-    public URI createURI(URI uri) {
-        return BerkeleyDbURI.createURI(uri);
-    }
-
-    @Override
-    public URI createFileURI(File file) {
-        return BerkeleyDbURI.createFileURI(file);
-    }
-
-    @Override
-    public Class<?> directWriteClass() {
+    public Class<? extends DirectWriteStore> directWriteClass() {
         return DirectWriteBerkeleyDbStore.class;
     }
 

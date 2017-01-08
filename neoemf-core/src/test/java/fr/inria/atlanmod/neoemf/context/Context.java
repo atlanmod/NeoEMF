@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -29,15 +30,15 @@ public interface Context {
 
     String uriScheme();
 
+    URI createURI(URI uri);
+
+    URI createFileURI(File file);
+
     PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
 
     PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
 
     PersistenceBackendFactory persistenceBackendFactory();
 
-    URI createURI(URI uri);
-
-    URI createFileURI(File file);
-
-    Class<?> directWriteClass();
+    Class<? extends DirectWriteStore> directWriteClass();
 }

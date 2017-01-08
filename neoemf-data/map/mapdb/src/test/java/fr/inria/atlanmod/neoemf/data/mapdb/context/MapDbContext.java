@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -46,6 +47,16 @@ public class MapDbContext implements Context {
     }
 
     @Override
+    public URI createURI(URI uri) {
+        return MapDbURI.createURI(uri);
+    }
+
+    @Override
+    public URI createFileURI(File file) {
+        return MapDbURI.createFileURI(file);
+    }
+
+    @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
         return new MapDbResourceBuilder(ePackage).persistent().file(file).build();
     }
@@ -61,17 +72,7 @@ public class MapDbContext implements Context {
     }
 
     @Override
-    public URI createURI(URI uri) {
-        return MapDbURI.createURI(uri);
-    }
-
-    @Override
-    public URI createFileURI(File file) {
-        return MapDbURI.createFileURI(file);
-    }
-
-    @Override
-    public Class<?> directWriteClass() {
+    public Class<? extends DirectWriteStore> directWriteClass() {
         return DirectWriteMapDbStore.class;
     }
 
