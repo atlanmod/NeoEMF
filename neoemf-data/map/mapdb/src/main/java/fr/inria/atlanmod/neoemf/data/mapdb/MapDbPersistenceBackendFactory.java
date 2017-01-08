@@ -40,7 +40,6 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
@@ -67,7 +66,7 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT))) {
+        if (storeOptions.isEmpty() || storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
             eStore = new DirectWriteMapDbStore(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.CACHE_MANY)) {
@@ -83,7 +82,7 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
         if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-        else if (nonNull(storeOptions) && storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
+        else if (storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
             eStore = new AutocommitStoreDecorator(eStore);
         }
         return eStore;

@@ -37,7 +37,6 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
@@ -62,9 +61,9 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
 
         PersistentStore eStore = null;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
-        NeoLogger.info("BerkeleyDbStoreOptions: " + storeOptions);
+
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT))) {
+        if (storeOptions.isEmpty() || storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
             eStore = new DirectWriteBerkeleyDbStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.CACHE_MANY)) {
@@ -80,7 +79,7 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
         if (isNull(eStore)) {
             throw new InvalidDataStoreException();
         }
-        else if (nonNull(storeOptions) && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
+        else if (storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
             eStore = new AutocommitStoreDecorator(eStore);
         }
         return eStore;
@@ -88,7 +87,7 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
 
     @Override
     public PersistenceBackend createTransientBackend() {
-        NeoLogger.info("createTransientBackend()");
+        NeoLogger.debug("createTransientBackend()");
         BerkeleyDbPersistenceBackend backend = null;
 
         try {
@@ -100,7 +99,6 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
             File dir = new File(BerkeleyDbURI.createFileURI(temporaryFolder).toFileString());
             backend = new BerkeleyDbPersistenceBackend(dir, envConfig);
             backend.open();
-            return backend;
 
         } catch (IOException e) {
             NeoLogger.error(e);
@@ -109,9 +107,8 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
     }
 
     @Override
-    public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options)
-            throws InvalidDataStoreException {
-        NeoLogger.info("createPersistentBackend() " + directory.toString());
+    public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
+        NeoLogger.debug("createPersistentBackend() " + directory.toString());
 
         BerkeleyDbPersistenceBackend backend;
         EnvironmentConfig envConfig = new EnvironmentConfig();

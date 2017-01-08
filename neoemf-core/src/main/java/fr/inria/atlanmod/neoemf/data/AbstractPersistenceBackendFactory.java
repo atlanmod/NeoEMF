@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.CommonStoreOptions;
-import fr.inria.atlanmod.neoemf.option.InvalidOptionException;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -30,29 +29,58 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.nonNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * The abstract implementation of a {@link PersistenceBackendFactory}.
+ */
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
     /**
-     * Returns a list of store options from the given {@code options}.
+     * Parses the store options from the given {@code options}.
+     * <p>
+     * The store options must be a {@link List<PersistentStoreOptions>} registered with the
+     * {@link PersistentResourceOptions#STORE_OPTIONS} key.
+     *
+     * @param options the options
+     *
+     * @return a immutable list of store options
      */
     @SuppressWarnings("unchecked")
-    protected static List<PersistentStoreOptions> getStoreOptions(Map<?, ?> options) {
-        Object storeOptions = options.get(PersistentResourceOptions.STORE_OPTIONS);
+    @Nonnull
+    protected static List<PersistentStoreOptions> getStoreOptions(@Nullable Map<?, ?> options) {
+        List<PersistentStoreOptions> storeOptions;
+
         try {
-            return (List<PersistentStoreOptions>) storeOptions;
+            try {
+                Object storeOptionsRaw = checkNotNull(options).get(PersistentResourceOptions.STORE_OPTIONS);
+                storeOptions = (List<PersistentStoreOptions>) storeOptionsRaw;
+
+                // Use an immutable list to avoid later modification
+                storeOptions = Collections.unmodifiableList(storeOptions);
+            }
+            catch (ClassCastException e) {
+                NeoLogger.warn("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>. Consider that there is no option.");
+                throw new NullPointerException();
+            }
+        } catch (NullPointerException e) {
+            storeOptions = Collections.emptyList();
         }
-        catch (ClassCastException e) {
-            throw new InvalidOptionException("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>");
-        }
+
+        NeoLogger.debug("StoreOptions: " + storeOptions);
+
+        return storeOptions;
     }
 
     /**
-     * Returns a literal description of the created persistence backend.
+     * Returns the literal description of the created persistence backend.
      */
     protected abstract String getName();
 
@@ -61,7 +89,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         PersistentStore eStore = createSpecificPersistentStore(resource, backend, options);
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
-        if (nonNull(storeOptions) && !storeOptions.isEmpty()) {
+        if (!storeOptions.isEmpty()) {
             if (storeOptions.contains(CommonStoreOptions.CACHE_IS_SET)) {
                 eStore = new IsSetCachingStoreDecorator(eStore);
             }
@@ -88,6 +116,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      *
      * @param directory the directory where the configuration must be stored.
      */
+    // TODO Create a new PersistenceConfiguration to manage the configuration of backends
     protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);
