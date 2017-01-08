@@ -16,6 +16,10 @@
              id="fr.inria.atlanmod.neoemf.data.mapdb.feature" version="1.0.1.qualifier">
         <category name="Backends" />
     </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.data.berkeleydb.feature_1.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature" version="1.0.1.qualifier">
+        <category name="Backends" />
+    </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.hbase.feature_1.0.1.qualifier.jar"
              id="fr.inria.atlanmod.neoemf.data.hbase.feature" version="1.0.1.qualifier">
         <category name="Backends" />

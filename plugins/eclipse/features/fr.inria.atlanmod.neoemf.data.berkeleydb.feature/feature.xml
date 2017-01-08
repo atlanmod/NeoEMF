@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-        id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature"
-        label="NeoEMF Data Blueprints Core"
+        id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature"
+        label="NeoEMF Data BerkeleyDB"
         version="1.0.1.qualifier">
 
     <description url="http://www.example.com/description">
-        The Blueprints implementation of the Core component.
+        The BerkeleyDB implementation of the Core component.
     </description>
 
     <includes
@@ -31,7 +31,7 @@
     </requires>
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.data.blueprints.core"
+            id="fr.inria.atlanmod.neoemf.data.berkeleydb"
             download-size="0"
             install-size="0"
             version="1.0.1.qualifier"

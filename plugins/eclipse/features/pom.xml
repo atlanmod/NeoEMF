@@ -22,10 +22,19 @@
 
     <modules>
         <module>fr.inria.atlanmod.neoemf.core.feature</module>
+
+        <!-- Graph-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</module>
         <module>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</module>
+
+        <!-- Map-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.mapdb.feature</module>
+        <module>fr.inria.atlanmod.neoemf.data.berkeleydb.feature</module>
+
+        <!-- Column-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.hbase.feature</module>
+
+        <!-- Utils -->
         <module>fr.inria.atlanmod.neoemf.io.feature</module>
     </modules>
 

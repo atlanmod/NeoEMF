@@ -37,15 +37,14 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-berkeleydb</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
-        <dependency><!-- TODO: Check if this dependency is used -->
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-            <scope>runtime</scope>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
         </dependency>
     </dependencies>
 

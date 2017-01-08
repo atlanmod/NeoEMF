@@ -10,17 +10,17 @@
         <version>1.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fr.inria.atlanmod.neoemf.data.mapdb.feature</artifactId>
+    <artifactId>fr.inria.atlanmod.neoemf.data.berkeleydb.feature</artifactId>
 
     <packaging>eclipse-feature</packaging>
 
-    <name>NeoEMF Eclipse Features : MapDB</name>
-    <description>MapDB feature project.</description>
+    <name>NeoEMF Eclipse Features : BerkeleyDB</name>
+    <description>BerkeleyDB feature project.</description>
 
     <dependencies>
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-mapdb</artifactId>
+            <artifactId>neoemf-data-berkeleydb</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore.editor,
  fr.inria.atlanmod.neoemf.core;bundle-version="1.0.1",
  fr.inria.atlanmod.neoemf.data.blueprints.core;bundle-version="1.0.1",
- fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.1"
+ fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.1",
+ fr.inria.atlanmod.neoemf.data.berkeleydb;bundle-version="1.0.1"
 Bundle-ClassPath: .,
  commons-configuration.jar,
  commons-lang.jar,

@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
@@ -26,30 +28,19 @@ import org.osgi.framework.BundleContext;
 
 public class NeoUIPlugin extends AbstractUIPlugin {
 
-    // The plug-in ID
+    /**
+     * The plug-in ID.
+     */
     public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui"; //$NON-NLS-1$
 
-    private static final ILogListener logListener = (status, plugin1) -> {
+    private static final ILogListener logListener = (status, listener) -> {
         if (status.matches(IStatus.ERROR)) {
             StatusManager.getManager().handle(status, StatusManager.BLOCK);
         }
     };
 
-    // The shared instance
-    private static NeoUIPlugin plugin;
-
     /**
-     * Returns the shared instance
-     *
-     * @return the shared instance
-     */
-    public static NeoUIPlugin getDefault() {
-        return plugin;
-    }
-
-    /**
-     * Returns an image descriptor for the image file at the given
-     * plug-in relative path
+     * Returns an image descriptor for the image file at the given plug-in relative path.
      *
      * @param path the path
      *
@@ -66,19 +57,8 @@ public class NeoUIPlugin extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        plugin = this;
-        getDefault().getLog().addLogListener(logListener);
-        /*
-         * Needed because auto-registration doesn't work if only static String are accessed before resource loading.
-		 * This happens when an eclipse instance is loaded with an opened NeoEMF editor
-		 * (only NeoBlueprintsURI.NEO_GRAPH_SCHEME is accessed)
-		 */
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        }
-        if (!PersistenceBackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
-        }
+        getLog().addLogListener(logListener);
+        registerFactories();
     }
 
     /*
@@ -87,8 +67,27 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      */
     @Override
     public void stop(BundleContext context) throws Exception {
-        getDefault().getLog().removeLogListener(logListener);
-        plugin = null;
+        getLog().removeLogListener(logListener);
         super.stop(context);
+    }
+
+    /**
+     * Registers all instances of {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} in the
+     * {@link PersistenceBackendFactoryRegistry}.
+     * <p/>
+     * Needed because auto-registration doesn't work if only static {@link String} are accessed before resource loading.
+     * This happens when an Eclipse instance is loaded with an opened NeoEMF editor (only {@link BlueprintsURI#SCHEME}
+     * is accessed).
+     */
+    private static void registerFactories() {
+        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
+        }
+        if (!PersistenceBackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
+        }
+        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbPersistenceBackendFactory.getInstance());
+        }
     }
 }

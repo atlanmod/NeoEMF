@@ -5,7 +5,7 @@
         version="1.0.1.qualifier">
 
     <description url="http://www.example.com/description">
-        The NeoEMF Core component (store logic and utils, no implementation provided)
+        The Core component (store logic and utils, no implementation provided)
     </description>
 
     <requires>

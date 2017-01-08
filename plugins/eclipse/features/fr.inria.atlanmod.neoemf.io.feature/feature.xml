@@ -5,7 +5,7 @@
         version="1.0.1.qualifier">
 
     <description url="http://www.example.com/description">
-        NeoEMF IO Module: Efficient model importer/exporter
+        An efficient model importer/exporter
     </description>
 
     <includes
