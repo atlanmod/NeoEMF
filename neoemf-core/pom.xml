@@ -21,7 +21,7 @@
 
     <properties>
         <cglib-nodep.version>3.2.4</cglib-nodep.version>
-        <osgi.version>3.11.0.v20160603-1336</osgi.version>
+        <osgi.version>6.0.0</osgi.version>
         <log4j.version>2.7</log4j.version>
     </properties>
 
@@ -64,8 +64,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
         </dependency>
 
         <!-- Logging -->
@@ -139,9 +139,10 @@
             <!-- Common -->
 
             <dependency>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>org.eclipse.osgi</artifactId>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
                 <version>${osgi.version}</version>
+                <optional>true</optional>
             </dependency>
 
             <!-- Logging -->
@@ -195,9 +196,11 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
-                        <_exportcontents />
+                        <_exportcontents>
+                        </_exportcontents>
                         <Require-Bundle>
-                            org.eclipse.emf.ecore;visibility:=reexport
+                            org.eclipse.emf.ecore;visibility:=reexport,
+                            org.eclipse.core.runtime
                         </Require-Bundle>
                     </instructions>
                 </configuration>

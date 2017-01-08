@@ -120,7 +120,6 @@
                         <Bundle-SymbolicName>
                             ${project.groupId}.data.blueprints.core
                         </Bundle-SymbolicName>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.data.blueprints.*
                         </Export-Package>
@@ -150,6 +149,7 @@
                         <Bundle-Activator>
                             fr.inria.atlanmod.neoemf.data.blueprints.Activator
                         </Bundle-Activator>
+                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                     </instructions>
                 </configuration>
             </plugin>

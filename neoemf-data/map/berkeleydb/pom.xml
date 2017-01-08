@@ -137,6 +137,7 @@
                         <Bundle-Activator>
                             fr.inria.atlanmod.neoemf.data.berkeleydb.Activator
                         </Bundle-Activator>
+                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                     </instructions>
                 </configuration>
             </plugin>

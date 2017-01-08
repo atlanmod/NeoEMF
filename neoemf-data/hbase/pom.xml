@@ -142,7 +142,8 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.data.hbase.*
                         </Export-Package>
-                        <_exportcontents />
+                        <_exportcontents>
+                        </_exportcontents>
                         <Require-Bundle>
                             ${project.groupId}.core,
                             org.eclipse.core.runtime
@@ -150,6 +151,7 @@
                         <Bundle-Activator>
                             fr.inria.atlanmod.neoemf.data.hbase.Activator
                         </Bundle-Activator>
+                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                     </instructions>
                 </configuration>
             </plugin>

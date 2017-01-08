@@ -31,6 +31,7 @@ public abstract class AbstractActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
+        NeoLogger.info("NeoEMF-{0} plugin stopped", name());
     }
 
     protected abstract String name();
