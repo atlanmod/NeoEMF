@@ -40,6 +40,10 @@ public class ContainerInfo implements Serializable {
         return new ContainerInfo(eObject.id(), eReference.getName());
     }
 
+    public static ContainerInfo of(Id id, String name) {
+        return new ContainerInfo(id, name);
+    }
+
     public Id id() {
         return id;
     }

@@ -28,11 +28,11 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -227,14 +227,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     private EClass resolveInstanceOf(Vertex vertex) {
-        EClass returnValue = null;
+        EClass eClass = null;
         Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
         if (nonNull(eClassVertex)) {
-            String name = eClassVertex.getProperty(KEY_ECLASS_NAME);
-            String nsUri = eClassVertex.getProperty(KEY_EPACKAGE_NSURI);
-            returnValue = (EClass) Registry.INSTANCE.getEPackage(nsUri).getEClassifier(name);
+            ClassInfo classInfo = ClassInfo.of(eClassVertex.getProperty(KEY_ECLASS_NAME), eClassVertex.getProperty(KEY_EPACKAGE_NSURI));
+            eClass = classInfo.eClass();
         }
-        return returnValue;
+        return eClass;
     }
     
     /**

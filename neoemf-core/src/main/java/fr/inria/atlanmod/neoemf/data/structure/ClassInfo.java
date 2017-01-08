@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.structure;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -19,6 +20,7 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 
 /**
  * Memento class for storing metaclass/{@link EClass} information.
@@ -38,7 +40,11 @@ public class ClassInfo implements Serializable {
 
     public static ClassInfo from(PersistentEObject object) {
         final EClass eClass = object.eClass();
-        return new ClassInfo(eClass.getName(), eClass.getEPackage().getNsURI());
+        return of(eClass.getName(), eClass.getEPackage().getNsURI());
+    }
+
+    public static ClassInfo of(String name, String uri) {
+        return new ClassInfo(name, uri);
     }
 
     public String name() {
@@ -50,10 +56,19 @@ public class ClassInfo implements Serializable {
     }
 
     /**
-     * Retrieves the EClass corresponding to this memento.
+     * Retrieves the {@link EClass} corresponding to this memento.
+     *
+     * @return an {@link EClass}, or {@code null} if it can not be found
      */
     public EClass eClass() {
-        return (EClass) EPackage.Registry.INSTANCE.getEPackage(uri).getEClassifier(name);
+        EClass eClass = null;
+        EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);
+        if (isNull(ePackage)) {
+            NeoLogger.warn("Unable to find EPackage for URI: {0}", uri);
+        } else {
+            eClass = (EClass) ePackage.getEClassifier(name);
+        }
+        return eClass;
     }
 }
 
