@@ -10,23 +10,17 @@
         <version>1.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
+    <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature</artifactId>
 
     <packaging>eclipse-feature</packaging>
 
-    <name>NeoEMF Eclipse Features : Blueprints Neo4j</name>
-    <description>Blueprints extension using Neo4j</description>
+    <name>NeoEMF Eclipse Features : Blueprints Neo4j - Wrapper</name>
+    <description>Neo4j convenience wrapper</description>
 
     <dependencies>
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-blueprints-neo4j</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</artifactId>
+            <artifactId>neoemf-data-blueprints-neo4j-wrapper</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

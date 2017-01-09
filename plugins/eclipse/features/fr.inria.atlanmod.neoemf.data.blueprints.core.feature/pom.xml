@@ -15,7 +15,7 @@
     <packaging>eclipse-feature</packaging>
 
     <name>NeoEMF Eclipse Features : Blueprints Core</name>
-    <description>Blueprints feature project (does not include blueprints implementations).</description>
+    <description>Blueprints feature project (does not include Blueprints implementations).</description>
 
     <dependencies>
         <dependency>

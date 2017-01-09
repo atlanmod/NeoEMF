@@ -1,46 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
     <feature url="features/fr.inria.atlanmod.neoemf.core.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.core.feature" version="1.0.1.qualifier">
-        <category name="Base" />
+             id="fr.inria.atlanmod.neoemf.core.feature"
+             version="1.0.1.qualifier">
+        <category name="base" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.core.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature" version="1.0.1.qualifier">
-        <category name="Backends" />
+             id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature"
+             version="1.0.1.qualifier">
+        <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature" version="1.0.1.qualifier">
-        <category name="Backends" />
+             id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature"
+             version="1.0.1.qualifier">
+        <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.mapdb.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.data.mapdb.feature" version="1.0.1.qualifier">
-        <category name="Backends" />
+             id="fr.inria.atlanmod.neoemf.data.mapdb.feature"
+             version="1.0.1.qualifier">
+        <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.berkeleydb.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature" version="1.0.1.qualifier">
-        <category name="Backends" />
+             id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature"
+             version="1.0.1.qualifier">
+        <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.hbase.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.data.hbase.feature" version="1.0.1.qualifier">
-        <category name="Backends" />
+             id="fr.inria.atlanmod.neoemf.data.hbase.feature"
+             version="1.0.1.qualifier">
+        <category name="backend" />
+    </feature>
+    <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature_1.0.1.qualifier.jar"
+             id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
+             version="1.0.1.qualifier">
+        <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.io.feature_1.0.1.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.io.feature" version="1.0.1.qualifier">
-        <category name="Utilities" />
+             id="fr.inria.atlanmod.neoemf.io.feature"
+             version="1.0.1.qualifier">
+        <category name="utils" />
     </feature>
-    <category-def name="Base" label="Base">
+
+    <category-def name="base" label="NeoEMF">
         <description>
-            NeoEMF core components and utils (no implementation provided, see Backends components to plug a specific
-            datastore)
+            NeoEMF base components (no implementation provided, see Adapters components to plug a specific datastore)
         </description>
     </category-def>
-    <category-def name="Backends" label="Backends">
+    <category-def name="backend" label="NeoEMF Adapters">
         <description>
-            Backend-specific implementations of NeoEMF Base component. Provided components can be plugged separately to
-            store models in a specific manner. See plugins descriptions for usages.
+            Backend-specific implementations of NeoEMF. Provided components can be plugged separately to store models in a specific manner. See plugins descriptions for usages.
         </description>
     </category-def>
-    <category-def name="Utilities" label="Utilities">
+    <category-def name="utils" label="NeoEMF Utilities">
         <description>
             Optional modules providing additional features (scalable importer, efficient exporter,...)
         </description>
