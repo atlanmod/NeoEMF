@@ -132,16 +132,10 @@
     </extension>
     <extension
             point="org.eclipse.ui.popupMenus">
-        <objectContribution
-                adaptable="false"
-                id="org.eclipse.epsilon.perspective.popups.ecore"
-                nameFilter="*.ecore"
-                objectClass="org.eclipse.core.resources.IFile">
-            <action
-                    class="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
-                    icon="icons/full/obj16/register.png"
-                    id="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
-                    label="Register EPackages" />
-        </objectContribution>
+        <action
+                class="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
+                icon="icons/full/obj16/register.png"
+                id="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
+                label="Register EPackages" />
     </extension>
 </plugin>

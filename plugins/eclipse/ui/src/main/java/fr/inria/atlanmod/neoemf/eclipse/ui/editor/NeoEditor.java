@@ -153,13 +153,15 @@ public class NeoEditor extends EcoreEditor {
 
         NeoLogger.info("NeoEMF Editor Opened in {0}", Duration.between(begin, end));
     }
-    
+
     @Override
     public void setSelection(ISelection selection) {
         try {
-        super.setSelection(selection);
-        } catch(NoSuchMethodError e) {
-            NeoLogger.warn("Captured aNoSuchMethod error when changing the selection, please check this is not related to Dynamic EMF, which is not supported for now in the editor.");
+            super.setSelection(selection);
+        }
+        catch (NoSuchMethodError e) {
+            NeoLogger.warn("Captured a NoSuchMethod error when changing the selection." +
+                    "Please check this is not related to Dynamic EMF, which is not supported for now in the editor.");
         }
     }
 
