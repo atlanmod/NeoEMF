@@ -17,7 +17,7 @@
         <modelImporterDescriptor
                 description="Create the Ecore model based on other Ecore or EMOF models"
                 extensions="ecore,emof"
-                icon="icons/full/obj16/NeoEMFModelFile.gif"
+                icon="icons/full/obj16/model.gif"
                 id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
                 name="Ecore model (NeoEMF Native)"
                 wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoModelImporterWizard">
@@ -129,5 +129,19 @@
                 objectClass="org.eclipse.core.resources.IFolder"
                 state="true">
         </decorator>
+    </extension>
+    <extension
+            point="org.eclipse.ui.popupMenus">
+        <objectContribution
+                adaptable="false"
+                id="org.eclipse.epsilon.perspective.popups.ecore"
+                nameFilter="*.ecore"
+                objectClass="org.eclipse.core.resources.IFile">
+            <action
+                    class="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
+                    icon="icons/full/obj16/register.png"
+                    id="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
+                    label="Register EPackages" />
+        </objectContribution>
     </extension>
 </plugin>

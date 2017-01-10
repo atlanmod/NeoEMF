@@ -24,9 +24,6 @@ public class IsNeoBackendTester extends PropertyTester {
     public IsNeoBackendTester() {
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.expressions.IPropertyTester#test(java.lang.Object, java.lang.String, java.lang.Object[], java.lang.Object)
-     */
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         if (Objects.equals(IS_NEOEMF_DB, property) && receiver instanceof IFolder) {

@@ -31,13 +31,23 @@ public class NeoUIPlugin extends AbstractUIPlugin {
     /**
      * The plug-in ID.
      */
-    public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui";
+
+    private static NeoUIPlugin SHARED_INSTANCE;
 
     private static final ILogListener logListener = (status, listener) -> {
         if (status.matches(IStatus.ERROR)) {
             StatusManager.getManager().handle(status, StatusManager.BLOCK);
         }
     };
+
+    public NeoUIPlugin() {
+        SHARED_INSTANCE = this;
+    }
+
+    public static NeoUIPlugin getDefault() {
+        return SHARED_INSTANCE;
+    }
 
     /**
      * Returns an image descriptor for the image file at the given plug-in relative path.
@@ -50,21 +60,14 @@ public class NeoUIPlugin extends AbstractUIPlugin {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-     */
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         getLog().addLogListener(logListener);
         registerFactories();
+        MetamodelRegistry.getInstance();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-     */
     @Override
     public void stop(BundleContext context) throws Exception {
         getLog().removeLogListener(logListener);
