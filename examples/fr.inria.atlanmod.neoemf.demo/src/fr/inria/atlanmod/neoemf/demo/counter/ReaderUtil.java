@@ -23,7 +23,7 @@ public class ReaderUtil {
     public static int countElements(Resource resource) {
         int count = 0;
         Iterable<EObject> allContents = resource::getAllContents;
-        for (EObject ignored : allContents) {
+        for (@SuppressWarnings("unused") EObject ignored : allContents) {
             count++;
         }
         return count;
