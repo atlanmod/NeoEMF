@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * An {@link org.eclipse.emf.ecore.EObject} able to persist in a data store.
+ * An {@link org.eclipse.emf.ecore.EObject} able to persist in data stores.
  */
 public interface PersistentEObject extends InternalEObject {
 
@@ -73,7 +73,7 @@ public interface PersistentEObject extends InternalEObject {
     Resource.Internal resource();
 
     /**
-     * Defines the resource that containsthis {@code PersistentEObject}.
+     * Defines the resource that contains this {@code PersistentEObject}.
      *
      * @param resource the containing resource
      */

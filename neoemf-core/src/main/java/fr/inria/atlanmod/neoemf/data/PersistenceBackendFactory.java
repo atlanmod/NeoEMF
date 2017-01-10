@@ -64,7 +64,7 @@ public interface PersistenceBackendFactory {
     /**
      * Creates a {@link PersistentStore} between the given {@code resource} and the given {@code backend}
      * according to the given {@code options}.
-     * <p/>
+     * <p>
      * The returned {@link PersistentStore} may be a succession of several {@link PersistentStore}.
      *
      * @param resource the resource

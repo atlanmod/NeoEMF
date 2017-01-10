@@ -36,7 +36,7 @@ public class XmiProcessorTest extends AbstractXmiProcessorTest {
 
     /**
      * Check that the elements are properly processed.
-     * <p/>
+     * <p>
      * All elements must have an id and a class name.
      */
     @Test
@@ -138,7 +138,7 @@ public class XmiProcessorTest extends AbstractXmiProcessorTest {
 
     /**
      * Check that the {@code XPath} references/id are properly processed.
-     * <p/>
+     * <p>
      * Containment and inverse reference must have been created.
      * References previously detected as attributes, are now well placed.
      */

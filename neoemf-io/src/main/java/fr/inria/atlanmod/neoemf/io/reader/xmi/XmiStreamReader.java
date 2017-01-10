@@ -36,7 +36,7 @@ import static java.util.Objects.nonNull;
 
 /**
  * A XMI {@link Reader reader} that uses stream for reading.
- * <p/>
+ * <p>
  * It uses a SAX implementation of XML parsing.
  */
 public class XmiStreamReader extends AbstractXmiReader {

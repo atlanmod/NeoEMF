@@ -289,7 +289,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     /**
      * Returns the container of the {@link PersistentEObject}.
-     * <p/>
+     * <p>
      * Do not return the same value as standard EMF implementation if the container has not been accessed with the
      * public method {@link #eContainer()} before.
      *

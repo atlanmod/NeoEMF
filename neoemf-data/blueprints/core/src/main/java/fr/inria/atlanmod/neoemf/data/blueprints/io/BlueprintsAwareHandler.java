@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 
 /**
  * A {@link PersistenceHandler} for a {@link BlueprintsPersistenceBackend}.
- * <p/>
+ * <p>
  * <b>NOTE :</b> This handler has a key conflicts resolution feature, but it consumes much more memory than a backend
  * without conflicts resolution. Make sure you have enough memory to avoid heap space.
  */

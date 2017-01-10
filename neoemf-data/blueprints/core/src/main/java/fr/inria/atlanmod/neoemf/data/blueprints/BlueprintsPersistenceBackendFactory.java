@@ -55,7 +55,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 
     /**
      * The configuration file name.
-     * <p/>
+     * <p>
      * This file stores the metadata information about the underlying graph, i.e., graph type and other configuration
      * options.
      */

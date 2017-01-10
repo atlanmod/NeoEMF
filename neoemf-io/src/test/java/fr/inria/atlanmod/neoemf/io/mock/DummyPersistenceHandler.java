@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
  * A persistence handler that does nothing.
- * <p/>
+ * <p>
  * Using for basic tests.
  */
 public class DummyPersistenceHandler implements PersistenceHandler {

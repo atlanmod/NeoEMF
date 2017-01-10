@@ -16,13 +16,14 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 
 /**
- * An identifier used to identify a {@link PersistentEObject} in data stores. Each {@code Id} must be unique to ensure
- * data consistency.
+ * An identifier used to identify a {@link PersistentEObject} in data stores.
+ * <p>
+ * This is the primary key in data stores, so, each {@code Id} must be unique at backend-level to ensure data consistency.
  */
 public interface Id extends Comparable<Id>, Serializable {
 
     /**
-     * Returns the {@code String} representation of this {@code Id}.
+     * Returns the {@link String} representation of this {@code Id}.
      *
      * @return a string
      */
@@ -30,7 +31,7 @@ public interface Id extends Comparable<Id>, Serializable {
     String toString();
 
     /**
-     * Returns the {@code long} number of this {@code Id}.
+     * Returns the {@link Long} number of this {@code Id}.
      *
      * @return a long
      */

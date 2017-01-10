@@ -30,7 +30,7 @@ import static java.util.Objects.isNull;
 
 /**
  * Serializer for {@link Id}.
- * <p/>
+ * <p>
  * <b>NOTE:</b> Only works with {@link StringId} instances.
  */
 public class IdSerializer implements Serializer<Id> {

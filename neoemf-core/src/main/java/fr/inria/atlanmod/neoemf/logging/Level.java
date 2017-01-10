@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.logging;
 
 /**
  * Levels used for identifying the severity of an event.
- * <p/>
+ * <p>
  * Levels are organized from most specific to least:
  * <ul>
  * <li>{@link #FATAL} (most specific, little data)</li>
@@ -23,7 +23,7 @@ package fr.inria.atlanmod.neoemf.logging;
  * <li>{@link #DEBUG}</li>
  * <li>{@link #TRACE} (least specific, a lot of data)</li>
  * </ul>
- * <p/>
+ * <p>
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those that are
  * more specific to pass through the filter.
  */

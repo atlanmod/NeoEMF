@@ -39,9 +39,9 @@ class PersistentEObjectAdapter {
     /**
      * {@link Cache} that stores the {@link InternalEObject} that have been already adapted to avoid
      * duplication of {@link PersistentEObject}s.
-     * <p/>
-     * We use a soft value cache since the adaptor is no longer needed when the original {@link InternalEObject} has
-     * been garbage collected.
+     * <p>
+     * We use a weak-references cache since the adaptor is no longer needed when the original {@link InternalEObject}
+     * has been garbage collected.
      */
     private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
             Caffeine.newBuilder().weakKeys().build();
@@ -139,6 +139,7 @@ class PersistentEObjectAdapter {
              * TODO Dynamically transform 'obj' as a PersistentEObject or its implementation.
              * For now, it only works if the given 'obj' is natively a PersistentEObject.
              */
+            // 'invokeSuper()' calls the method itself, not the super method
             return methodProxy.invokeSuper(obj, args);
         }
     }

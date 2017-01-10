@@ -74,9 +74,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * A regex pattern of an attribute containing one or several references (XPath reference).
-     * <p/>
+     * <p>
      * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
-     * <p/>
+     * <p>
      * Multiple references must be seperated by a space
      */
     private static final Pattern PATTERN_WELL_FORMED_REF =
@@ -84,7 +84,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * A regex pattern of a prefixed value.
-     * <p/>
+     * <p>
      * Example of recognized strings : {@code "&lt;prefix&gt;:&lt;name&gt;"}
      */
     private static final Pattern PATTERN_PREFIXED_VALUE =

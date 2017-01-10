@@ -28,7 +28,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
 
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).
-     * <p/>
+     * <p>
      * This method is similar to {@link #getAllInstances(EClass, boolean)} with {@code strict=false}.
      *
      * @param eClass the {@link EClass} for which look for instances
