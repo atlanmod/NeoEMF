@@ -101,8 +101,7 @@
                             org.apache.lucene.*;-split-package:=first,
                             org.neo4j.kernel.impl.cache;-split-package:=merge-last,
                             org.neo4j.*;-split-package:=first,
-                            javax.transaction.*;split-package:=first,
-                            javax.transaction.xa.*;split-package:=first,
+                            javax.transaction.*;-split-package:=first,
                         </Export-Package>
                         <Private-Package>
 <!--                             javax.transaction, -->
