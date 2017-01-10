@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Demo
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.demo
 Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi,
  org.eclipse.gmt.modisco.java;bundle-version="0.1.0",
