@@ -16,6 +16,9 @@ package fr.inria.atlanmod.neoemf.io.hash;
  */
 public class HasherFactory {
 
+    private HasherFactory() {
+    }
+
     /**
      * Returns an instance of a {@link Hasher} using {@code MD5}.
      *
