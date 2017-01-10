@@ -13,3 +13,8 @@ Require-Bundle: org.eclipse.emf.ecore,
  fr.inria.atlanmod.neoemf.data.hbase;bundle-version="1.0.1",
  fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.1",
  fr.inria.atlanmod.neoemf.io;bundle-version="1.0.1"
+Import-Package: org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.eclipse.ocl.ecore,
+ org.eclipse.ocl,
+ org.eclipse.gmt.modisco.java

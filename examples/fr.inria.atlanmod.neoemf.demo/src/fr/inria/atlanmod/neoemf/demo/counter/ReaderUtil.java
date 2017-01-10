@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,8 @@
  * Contributors:
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
-package fr.inria.atlanmod.neoemf.demo.counter;
 
-import java.util.Iterator;
+package fr.inria.atlanmod.neoemf.demo.counter;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -22,10 +21,9 @@ public class ReaderUtil {
      * @return the number of elements in the containment tree of the Resource
      */
     public static int countElements(Resource resource) {
-        Iterator<EObject> it = resource.getAllContents();
         int count = 0;
-        while(it.hasNext()) {
-            it.next();
+        Iterable<EObject> allContents = resource::getAllContents;
+        for (EObject ignored : allContents) {
             count++;
         }
         return count;
