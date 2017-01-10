@@ -414,6 +414,9 @@
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
                         <notimestamp>true</notimestamp>
+                        <excludePackageNames>
+                            *.tests
+                        </excludePackageNames>
                     </configuration>
                 </plugin>
 

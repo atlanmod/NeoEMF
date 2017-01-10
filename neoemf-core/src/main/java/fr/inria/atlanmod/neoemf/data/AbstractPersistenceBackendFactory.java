@@ -46,7 +46,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     /**
      * Parses the store options from the given {@code options}.
      * <p>
-     * The store options must be a {@link List<PersistentStoreOptions>} registered with the
+     * The store options must be a {@code List<PersistentStoreOptions>} registered with the
      * {@link PersistentResourceOptions#STORE_OPTIONS} key.
      *
      * @param options the options
