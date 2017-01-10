@@ -47,6 +47,12 @@
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
         </dependency>
+        
+        <dependency>
+		    <groupId>javax.transaction</groupId>
+		    <artifactId>jta</artifactId>
+		    <version>1.1</version>
+		</dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -95,15 +101,18 @@
                             org.apache.lucene.*;-split-package:=first,
                             org.neo4j.kernel.impl.cache;-split-package:=merge-last,
                             org.neo4j.*;-split-package:=first,
+                            javax.transaction.*;split-package:=first,
+                            javax.transaction.xa.*;split-package:=first,
                         </Export-Package>
                         <Private-Package>
-                            javax.transaction,
-                            javax.transaction.xa,
+<!--                             javax.transaction, -->
+<!--                             javax.transaction.xa, -->
                         </Private-Package>
                         <Embed-Dependency>
                             neo4j-lucene-index,
                             lucene-core,
                             neo4j-kernel,
+                            jta,
                         </Embed-Dependency>
                     </instructions>
                 </configuration>
