@@ -23,18 +23,4 @@
         <module>hbase</module>
     </modules>
 
-    <properties>
-        <osgi.version>3.11.0.v20160603-1336</osgi.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>org.eclipse.osgi</artifactId>
-                <version>${osgi.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 </project>

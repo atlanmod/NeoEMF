@@ -12,7 +12,7 @@
 
     <packaging>bundle</packaging>
 
-    <name>NeoEMF IO</name>
+    <name>NeoEMF I/O</name>
     <description />
 
     <dependencies>

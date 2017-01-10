@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,119 +25,119 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
 
     private final Set<Id> loadedObjects = new HashSet<>();
 
-    public LoadedObjectCounterStoreDecorator(PersistentStore eStore) {
-        super(eStore);
+    public LoadedObjectCounterStoreDecorator(PersistentStore store) {
+        super(store);
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
 
     @Override
-    public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-        setAsLoaded(object);
-        Object result = super.get(object, feature, index);
-        setAsLoaded(result);
-        return result;
+    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        setAsLoaded(internalObject);
+        Object soughtValue = super.get(internalObject, feature, index);
+        setAsLoaded(soughtValue);
+        return soughtValue;
     }
 
     @Override
-    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        setAsLoaded(object);
-        return super.set(object, feature, index, value);
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        setAsLoaded(internalObject);
+        return super.set(internalObject, feature, index, value);
     }
 
     @Override
-    public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        setAsLoaded(object);
-        return super.isSet(object, feature);
+    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        setAsLoaded(internalObject);
+        return super.isSet(internalObject, feature);
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
-        setAsLoaded(object);
-        super.unset(object, feature);
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        setAsLoaded(internalObject);
+        super.unset(internalObject, feature);
     }
 
     @Override
-    public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-        setAsLoaded(object);
-        return super.isEmpty(object, feature);
+    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
+        setAsLoaded(internalObject);
+        return super.isEmpty(internalObject, feature);
     }
 
     @Override
-    public int size(InternalEObject object, EStructuralFeature feature) {
-        setAsLoaded(object);
-        return super.size(object, feature);
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        setAsLoaded(internalObject);
+        return super.size(internalObject, feature);
     }
 
     @Override
-    public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-        setAsLoaded(object);
-        return super.contains(object, feature, value);
+    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        setAsLoaded(internalObject);
+        return super.contains(internalObject, feature, value);
     }
 
     @Override
-    public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        setAsLoaded(object);
-        return super.indexOf(object, feature, value);
+    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        setAsLoaded(internalObject);
+        return super.indexOf(internalObject, feature, value);
     }
 
     @Override
-    public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        setAsLoaded(object);
-        return super.lastIndexOf(object, feature, value);
+    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        setAsLoaded(internalObject);
+        return super.lastIndexOf(internalObject, feature, value);
     }
 
     @Override
-    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        setAsLoaded(object);
-        super.add(object, feature, index, value);
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        setAsLoaded(internalObject);
+        super.add(internalObject, feature, index, value);
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        setAsLoaded(object);
-        return super.remove(object, feature, index);
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        setAsLoaded(internalObject);
+        return super.remove(internalObject, feature, index);
     }
 
     @Override
-    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        setAsLoaded(object);
-        return super.move(object, feature, targetIndex, sourceIndex);
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        setAsLoaded(internalObject);
+        return super.move(internalObject, feature, targetIndex, sourceIndex);
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        setAsLoaded(object);
-        super.clear(object, feature);
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        setAsLoaded(internalObject);
+        super.clear(internalObject, feature);
     }
 
     @Override
-    public Object[] toArray(InternalEObject object, EStructuralFeature feature) {
-        setAsLoaded(object);
-        return super.toArray(object, feature);
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        setAsLoaded(internalObject);
+        return super.toArray(internalObject, feature);
     }
 
     @Override
-    public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
-        setAsLoaded(object);
-        return super.toArray(object, feature, array);
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        setAsLoaded(internalObject);
+        return super.toArray(internalObject, feature, array);
     }
 
     @Override
-    public int hashCode(InternalEObject object, EStructuralFeature feature) {
-        setAsLoaded(object);
-        return super.hashCode(object, feature);
+    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
+        setAsLoaded(internalObject);
+        return super.hashCode(internalObject, feature);
     }
 
     @Override
-    public InternalEObject getContainer(InternalEObject object) {
-        setAsLoaded(object);
-        return super.getContainer(object);
+    public InternalEObject getContainer(InternalEObject internalObject) {
+        setAsLoaded(internalObject);
+        return super.getContainer(internalObject);
     }
 
     @Override
-    public EStructuralFeature getContainingFeature(InternalEObject object) {
-        setAsLoaded(object);
-        return super.getContainingFeature(object);
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+        setAsLoaded(internalObject);
+        return super.getContainingFeature(internalObject);
     }
 
     private void setAsLoaded(Object object) {

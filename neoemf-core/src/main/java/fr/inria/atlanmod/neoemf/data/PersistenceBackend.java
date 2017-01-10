@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
+/**
+ * An adapter on top of a data store.
+ */
 public interface PersistenceBackend extends Closeable {
 
     /**
      * Returns whether the underlying data store has been started or not.
+     *
+     * @return {@code true} if the data store is closed, otherwise {@code false}
      */
     boolean isClosed();
 

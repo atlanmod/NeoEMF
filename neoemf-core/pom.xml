@@ -21,6 +21,7 @@
 
     <properties>
         <cglib-nodep.version>3.2.4</cglib-nodep.version>
+        <osgi.version>6.0.0</osgi.version>
         <log4j.version>2.7</log4j.version>
     </properties>
 
@@ -60,6 +61,11 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
         </dependency>
 
         <!-- Logging -->
@@ -130,6 +136,15 @@
                 <version>${cglib-nodep.version}</version>
             </dependency>
 
+            <!-- Common -->
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>${osgi.version}</version>
+                <optional>true</optional>
+            </dependency>
+
             <!-- Logging -->
 
             <dependency>
@@ -181,9 +196,11 @@
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
-                        <_exportcontents />
+                        <_exportcontents>
+                        </_exportcontents>
                         <Require-Bundle>
-                            org.eclipse.emf.ecore;visibility:=reexport
+                            org.eclipse.emf.ecore;visibility:=reexport,
+                            org.eclipse.core.runtime
                         </Require-Bundle>
                     </instructions>
                 </configuration>

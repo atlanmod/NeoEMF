@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,20 +29,20 @@ public class MapDbURI extends PersistenceURI {
     }
 
     public static URI createURI(URI uri) {
-        URI returnValue;
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
-            returnValue = createFileURI(FileUtils.getFile(uri.toFileString()));
+            return createFileURI(uri);
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
-            returnValue = PersistenceURI.createURI(uri);
+            return PersistenceURI.createURI(uri);
         }
-        else {
-            throw new IllegalArgumentException(MessageFormat.format("Can not create MapDbURI from the URI scheme {0}", uri.scheme()));
-        }
-        return returnValue;
+        throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", MapDbURI.class.getSimpleName(), uri.scheme()));
     }
 
     public static URI createFileURI(File file) {
         return PersistenceURI.createFileURI(file, SCHEME);
+    }
+
+    public static URI createFileURI(URI uri) {
+        return createFileURI(FileUtils.getFile(uri.toFileString()));
     }
 }

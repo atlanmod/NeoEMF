@@ -41,6 +41,12 @@
             <artifactId>neoemf-data-mapdb</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-berkeleydb</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -228,12 +228,12 @@ public class ImportTest extends AbstractInputTest {
             assertThat(actual.eClass().getName()).isEqualTo(expected.eClass().getName());
             assertThat(actual.eContents()).hasSameSizeAs(expected.eContents());
 
-            for (EAttribute eAttribute : expected.eClass().getEAttributes()) {
-                assertEqualFeature(actual, expected, eAttribute.getFeatureID());
+            for (EAttribute attribute : expected.eClass().getEAttributes()) {
+                assertEqualFeature(actual, expected, attribute.getFeatureID());
             }
 
-            for (EReference eReference : expected.eClass().getEReferences()) {
-                assertEqualFeature(actual, expected, eReference.getFeatureID());
+            for (EReference reference : expected.eClass().getEReferences()) {
+                assertEqualFeature(actual, expected, reference.getFeatureID());
             }
 
             for (int i = 0; i < expected.eContents().size(); i++) {
@@ -244,12 +244,12 @@ public class ImportTest extends AbstractInputTest {
 
     @SuppressWarnings("unchecked") // Unchecked method 'hasSameSizeAs(Iterable<?>)' invocation
     private void assertEqualFeature(final EObject actual, final EObject expected, final int featureId) {
-        EStructuralFeature eStructuralFeature = expected.eClass().getEStructuralFeature(featureId);
+        EStructuralFeature feature = expected.eClass().getEStructuralFeature(featureId);
 
-        if (!testedFeatures.contains(eStructuralFeature)) {
-            testedFeatures.add(eStructuralFeature);
+        if (!testedFeatures.contains(feature)) {
+            testedFeatures.add(feature);
 
-            Object expectedValue = expected.eGet(eStructuralFeature);
+            Object expectedValue = expected.eGet(feature);
             Object actualValue = actual.eGet(actual.eClass().getEStructuralFeature(featureId));
 
             NeoLogger.debug("Actual feature    : {0}", actualValue);
@@ -293,9 +293,9 @@ public class ImportTest extends AbstractInputTest {
 
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'EList<...>'
     private void assertValidReference(final EObject eObject, final String name, final int index, final String referenceClassName, final String referenceName, final boolean many, final boolean containment) {
-        EReference eReference = (EReference) eObject.eClass().getEStructuralFeature(name);
+        EReference reference = (EReference) eObject.eClass().getEStructuralFeature(name);
 
-        Object objectReference = eObject.eGet(eReference);
+        Object objectReference = eObject.eGet(reference);
         EObject eObjectReference;
 
         if (many) {
@@ -310,30 +310,30 @@ public class ImportTest extends AbstractInputTest {
 
         if (isNull(referenceName)) {
             try {
-                EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
-                assertThat(eObjectReference.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
+                EAttribute attribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
+                assertThat(eObjectReference.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
             }
             catch (NullPointerException ignore) {
                 // It's good
             }
         }
         else {
-            EAttribute eAttribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
-            assertThat(eObjectReference.eGet(eAttribute).toString()).isEqualTo(referenceName);
+            EAttribute attribute = (EAttribute) eObjectReference.eClass().getEStructuralFeature("name");
+            assertThat(eObjectReference.eGet(attribute).toString()).isEqualTo(referenceName);
         }
 
-        assertThat(eReference.isContainment()).isEqualTo(containment);
-        assertThat(eReference.isMany()).isEqualTo(many);
+        assertThat(reference.isContainment()).isEqualTo(containment);
+        assertThat(reference.isMany()).isEqualTo(many);
     }
 
     private void assertValidAttribute(final EObject eObject, final String name, final Object value) {
-        EAttribute eAttribute = (EAttribute) eObject.eClass().getEStructuralFeature(name);
+        EAttribute attribute = (EAttribute) eObject.eClass().getEStructuralFeature(name);
 
         if (isNull(value)) {
-            assertThat(eObject.eGet(eAttribute)).isEqualTo(eAttribute.getDefaultValue());
+            assertThat(eObject.eGet(attribute)).isEqualTo(attribute.getDefaultValue());
         }
         else {
-            assertThat(eObject.eGet(eAttribute).toString()).isEqualTo(value);
+            assertThat(eObject.eGet(attribute).toString()).isEqualTo(value);
         }
     }
 
@@ -354,8 +354,8 @@ public class ImportTest extends AbstractInputTest {
     }
 
     private EObject loadWithNeoBlueprints(final File file) throws IOException {
-        BlueprintsPersistenceBackend persistenceBackend = createNeo4jPersistenceBackend();
-        PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(persistenceBackend, false);
+        BlueprintsPersistenceBackend backend = createNeo4jPersistenceBackend();
+        PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
 
         persistenceHandler = new LoggingPersistenceHandlerDecorator(persistenceHandler);
         persistenceHandler = new CounterPersistenceHandlerDecorator(persistenceHandler);
@@ -363,7 +363,7 @@ public class ImportTest extends AbstractInputTest {
 
         loadWithNeo(file, persistenceHandler);
 
-        persistenceBackend.close();
+        backend.close();
 
         PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
 

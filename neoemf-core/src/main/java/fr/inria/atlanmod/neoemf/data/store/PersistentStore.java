@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public interface PersistentStore extends EStore {
     }
 
     /**
-     * Utility method used for tests. Returns the decorated eStore, if it exists.
+     * Utility method used for tests. Returns the decorated {@link PersistentStore}, if it exists.
      */
     PersistentStore getEStore();
 

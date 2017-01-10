@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,12 @@
 package fr.inria.atlanmod.neoemf.io.hash;
 
 /**
- * A factory of {@link Hasher}.
+ * The factory of {@link Hasher}.
  */
 public class HasherFactory {
+
+    private HasherFactory() {
+    }
 
     /**
      * Returns an instance of a {@link Hasher} using {@code MD5}.

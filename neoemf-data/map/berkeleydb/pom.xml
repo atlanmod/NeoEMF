@@ -56,11 +56,6 @@
             <artifactId>guava</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-        </dependency>
-
         <!-- EMF -->
 
         <dependency>
@@ -136,8 +131,7 @@
                             com.sleepycat,
                         </_exportcontents>
                         <Require-Bundle>
-                            ${project.groupId}.core,
-                            org.eclipse.core.runtime
+                            ${project.groupId}.core
                         </Require-Bundle>
                         <Bundle-Activator>
                             fr.inria.atlanmod.neoemf.data.berkeleydb.Activator

@@ -15,7 +15,7 @@
     <packaging>eclipse-feature</packaging>
 
     <name>NeoEMF Eclipse Features : Blueprints Neo4j</name>
-    <description>Blueprints Neo4j connector feature project.</description>
+    <description>Blueprints extension using Neo4j</description>
 
     <dependencies>
         <dependency>

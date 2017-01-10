@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,13 +33,21 @@ import org.eclipse.emf.ecore.util.EcoreEMap;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * The default implementation of a {@link PersistentEObject}.
+ */
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     private static final int UNSETTED_FEATURE_ID = -1;
 
+    @Nonnull
     private Id id;
 
     private Resource.Internal resource;
@@ -47,33 +55,42 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private boolean isMapped;
 
     /**
-     * The internal cached value of the eContainer. This information should be
-     * also maintained in the underlying {@link EStore}.
+     * The internal cached value of the eContainer. This information should be also maintained in the underlying
+     * {@link EStore}.
      */
     private InternalEObject eContainer;
 
     private int eContainerFeatureId;
 
-    private EStore eStore;
+    private EStore store;
 
+    /**
+     * Instantiates a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
+     */
     public DefaultPersistentEObject() {
         this(StringId.generate());
     }
 
-    protected DefaultPersistentEObject(Id id) {
-        this.id = id;
+    /**
+     * Instantiates a new {@code DefaultPersistentEObject} with the given {@code id}.
+     *
+     * @param id the identifier of this {@link DefaultPersistentEObject}
+     */
+    protected DefaultPersistentEObject(@Nonnull Id id) {
+        this.id = checkNotNull(id);
         this.eContainerFeatureId = UNSETTED_FEATURE_ID;
         this.isMapped = false;
     }
 
+    @Nonnull
     @Override
     public Id id() {
         return id;
     }
 
     @Override
-    public void id(Id id) {
-        this.id = id;
+    public void id(@Nonnull Id id) {
+        this.id = checkNotNull(id);
     }
 
     @Override
@@ -87,6 +104,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
+    @Nullable
     public Internal resource() {
         return resource;
     }
@@ -94,31 +112,33 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public void resource(Internal resource) {
         this.resource = resource;
-        EStore oldStore = eStore;
+        EStore oldStore = store;
+
         // Set the new EStore
         if (resource instanceof PersistentResource) {
-            eStore = ((PersistentResource) resource).eStore();
+            store = ((PersistentResource) resource).eStore();
         }
         else {
-            eStore = new OwnedTransientStore(this);
+            store = new OwnedTransientStore(this);
         }
-        // Move contents from oldStore to eStore
-        if (nonNull(oldStore) && nonNull(eStore) && eStore != oldStore) {
+
+        // Move contents from oldStore to store
+        if (nonNull(oldStore) && nonNull(store) && store != oldStore) {
             // If the new store is different, initialize the new store with the data stored in the old store
             for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
                 if (oldStore.isSet(this, feature)) {
                     if (!feature.isMany()) {
                         Object value = getAdaptedValue(oldStore, feature, PersistentStore.NO_INDEX);
                         if (nonNull(value)) {
-                            eStore.set(this, feature, PersistentStore.NO_INDEX, value);
+                            store.set(this, feature, PersistentStore.NO_INDEX, value);
                         }
                     }
                     else {
-                        eStore.clear(this, feature);
+                        store.clear(this, feature);
                         for (int i = 0; i < oldStore.size(this, feature); i++) {
                             Object value = getAdaptedValue(oldStore, feature, i);
                             if (nonNull(value)) {
-                                eStore.add(this, feature, i, value);
+                                store.add(this, feature, i, value);
                             }
                         }
                     }
@@ -129,17 +149,17 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public EObject eContainer() {
-        EObject returnValue;
+        EObject container;
         if (resource instanceof PersistentResource) {
-            InternalEObject container = eStore().getContainer(this);
-            eBasicSetContainer(container);
+            InternalEObject internalContainer = eStore().getContainer(this);
+            eBasicSetContainer(internalContainer);
             eBasicSetContainerFeatureID(eContainerFeatureID());
-            returnValue = container;
+            container = internalContainer;
         }
         else {
-            returnValue = super.eContainer();
+            container = super.eContainer();
         }
-        return returnValue;
+        return container;
     }
 
     @Override
@@ -149,43 +169,43 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(getClass().getName());
-        result.append('@');
-        result.append(Integer.toHexString(hashCode()));
+        StringBuilder sb = new StringBuilder(getClass().getName());
+        sb.append('@');
+        sb.append(Integer.toHexString(hashCode()));
 
         if (eIsProxy()) {
-            result.append(" (eProxyURI: ");
-            result.append(eProxyURI());
+            sb.append(" (eProxyURI: ");
+            sb.append(eProxyURI());
             if (nonNull(eDynamicClass())) {
-                result.append(" eClass: ");
-                result.append(eDynamicClass());
+                sb.append(" eClass: ");
+                sb.append(eDynamicClass());
             }
-            result.append(')');
+            sb.append(')');
         }
         else if (nonNull(eDynamicClass())) {
-            result.append(" (eClass: ");
-            result.append(eDynamicClass());
-            result.append(')');
+            sb.append(" (eClass: ");
+            sb.append(eDynamicClass());
+            sb.append(')');
         }
         else if (nonNull(eStaticClass())) {
-            result.append(" (eClass: ");
-            result.append(eStaticClass());
-            result.append(')');
+            sb.append(" (eClass: ");
+            sb.append(eStaticClass());
+            sb.append(')');
         }
-        return result.toString();
+        return sb.toString();
     }
 
     @Override
-    protected void eBasicSetContainer(InternalEObject newContainer) {
-        eContainer = newContainer;
-        if (nonNull(newContainer) && newContainer.eResource() != resource) {
-            resource((Resource.Internal) eContainer.eResource());
+    protected void eBasicSetContainer(InternalEObject eContainer) {
+        this.eContainer = eContainer;
+        if (nonNull(eContainer) && eContainer.eResource() != resource) {
+            resource((Resource.Internal) this.eContainer.eResource());
         }
     }
 
     @Override
-    protected void eBasicSetContainerFeatureID(int newContainerFeatureId) {
-        eContainerFeatureId = newContainerFeatureId;
+    protected void eBasicSetContainerFeatureID(int eContainerFeatureId) {
+        this.eContainerFeatureId = eContainerFeatureId;
     }
 
     @Override
@@ -211,10 +231,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public EStore eStore() {
-        if (isNull(eStore)) {
-            eStore = new OwnedTransientStore(this);
+        if (isNull(store)) {
+            store = new OwnedTransientStore(this);
         }
-        return eStore;
+        return store;
     }
 
     @Override
@@ -224,21 +244,21 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public Object dynamicGet(int dynamicFeatureId) {
-        Object returnValue;
+        Object value;
         final EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
         final EClassifier eType = feature.getEType();
         if (feature.isMany()) {
-            if (Objects.equals(eType.getInstanceClassName(), "java.util.Map$Entry")) {
-                returnValue = new EStoreEcoreEMap(eType, feature);
+            if (Objects.equals(eType.getInstanceClassName(), java.util.Map.Entry.class.getName())) {
+                value = new EStoreEcoreEMap(eType, feature);
             }
             else {
-                returnValue = new EStoreEcoreEList(feature);
+                value = new EStoreEcoreEList(feature);
             }
         }
         else {
-            returnValue = eStore().get(this, feature, PersistentStore.NO_INDEX);
+            value = eStore().get(this, feature, PersistentStore.NO_INDEX);
         }
-        return returnValue;
+        return value;
     }
 
     @Override
@@ -277,7 +297,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @Override
     public InternalEObject eInternalContainer() {
-        // Do not load the container from the eStore here: it creates an important overhead and performance loss
+        // Do not load the container from the store here: it creates an important overhead and performance loss
         return isNull(eContainer) ? super.eInternalContainer() : eContainer;
     }
 
@@ -306,14 +326,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(@Nullable Object o) {
+        if (this == o) {
             return true;
         }
-        if (isNull(obj) || getClass() != obj.getClass()) {
+        if (isNull(o) || getClass() != o.getClass()) {
             return false;
         }
-        PersistentEObject other = (PersistentEObject) obj;
+        PersistentEObject other = (PersistentEObject) o;
         return Objects.equals(id, other.id());
     }
 
@@ -377,15 +397,15 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
 
         /**
-         * Override the default implementation which relies on size() to compute the insertion index by providing a
-         * custom NO_INDEX features, meaning that the back-end has to append the result to the existing list.
+         * Override the default implementation which relies on {@link #size()} to compute the insertion index by
+         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the
+         * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} has to append the result to the existing list.
          * <p>
-         * This behavior allows fast write operation on back-ends which would otherwise need to deserialize the
-         * underlying list to add the element at the specified index.
+         * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} which
+         * would otherwise need to deserialize the underlying list to add the element at the specified index.
          */
         @Override
-        public boolean add(Object object)
-        {
+        public boolean add(Object object) {
             if (isUnique() && contains(object)) {
                 return false;
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
@@ -42,7 +44,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.progress.UIJob;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import static java.util.Objects.isNull;
@@ -86,31 +89,39 @@ public class OpenBackendCommand extends AbstractHandler {
 
         @Override
         public IStatus runInUIThread(IProgressMonitor monitor) {
-            System.out.println(folder.getRawLocation().toOSString() + '/' + PersistenceBackendFactory.CONFIG_FILE);
-            File neoConfigFile = new File(folder.getRawLocation().toOSString() + '/' + PersistenceBackendFactory.CONFIG_FILE);
-            PropertiesConfiguration neoConfig;
+            Path root = Paths.get(folder.getRawLocation().toOSString());
+            Path path = root.resolve(PersistenceBackendFactory.CONFIG_FILE);
+            NeoLogger.info("Running at: {0}", path.toString());
+
+            PropertiesConfiguration configuration;
             try {
-                neoConfig = new PropertiesConfiguration(neoConfigFile);
+                configuration = new PropertiesConfiguration(path.toFile());
             }
-            catch (ConfigurationException e1) {
-                NeoLogger.error("Unable to find neoconfig.properties file");
-                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", e1);
+            catch (ConfigurationException e) {
+                NeoLogger.error("Unable to find {0} file", PersistenceBackendFactory.CONFIG_FILE);
+                return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open the editor", e);
             }
-            String backendType = neoConfig.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
+
             URI uri = null;
+            String backendType = configuration.getString(PersistenceBackendFactory.BACKEND_PROPERTY);
             if (isNull(backendType)) {
-                NeoLogger.error("neoconfig.properties does not contain {0} property", PersistenceBackendFactory.BACKEND_PROPERTY);
+                NeoLogger.error("{0} does not contain {1} property", PersistenceBackendFactory.CONFIG_FILE, PersistenceBackendFactory.BACKEND_PROPERTY);
                 return new Status(IStatus.ERROR, NeoUIPlugin.PLUGIN_ID, "Unable to open editor");
             }
             else if (Objects.equals(backendType, MapDbPersistenceBackendFactory.NAME)) {
-                uri = MapDbURI.createFileURI(new File(folder.getRawLocation().toOSString()));
+                uri = MapDbURI.createFileURI(root.toFile());
             }
             else if (Objects.equals(backendType, BlueprintsPersistenceBackendFactory.NAME)) {
-                uri = BlueprintsURI.createFileURI(new File(folder.getRawLocation().toOSString()));
+                uri = BlueprintsURI.createFileURI(root.toFile());
             }
+            else if (Objects.equals(backendType, BerkeleyDbPersistenceBackendFactory.NAME)) {
+                uri = BerkeleyDbURI.createFileURI(root.toFile());
+            }
+
             URIEditorInput editorInput = new URIEditorInput(uri);
             IWorkbench workbench = PlatformUI.getWorkbench();
             IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+
             try {
                 page.openEditor(editorInput, NeoEditor.EDITOR_ID);
             }

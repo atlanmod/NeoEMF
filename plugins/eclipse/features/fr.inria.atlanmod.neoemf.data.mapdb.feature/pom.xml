@@ -15,7 +15,7 @@
     <packaging>eclipse-feature</packaging>
 
     <name>NeoEMF Eclipse Features : MapDB</name>
-    <description>Map feature project.</description>
+    <description>MapDB feature project.</description>
 
     <dependencies>
         <dependency>

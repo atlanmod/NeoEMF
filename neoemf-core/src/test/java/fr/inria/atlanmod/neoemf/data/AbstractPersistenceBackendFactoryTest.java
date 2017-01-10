@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
         PersistentStore context = store.getEStore();
         PersistenceBackend innerBackend;
 
-        Field field = AbstractDirectWriteStore.class.getDeclaredField("persistenceBackend");
+        Field field = AbstractDirectWriteStore.class.getDeclaredField("backend");
         field.setAccessible(true);
         innerBackend = (PersistenceBackend) field.get(context);
 

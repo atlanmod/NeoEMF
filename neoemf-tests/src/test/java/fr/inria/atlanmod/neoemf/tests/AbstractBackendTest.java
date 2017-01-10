@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.AbstractTest;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.Contextual;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDBContext;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
@@ -57,7 +57,7 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
                 new Object[]{MapDbContext.get(), MapDbContext.NAME},
                 new Object[]{BlueprintsContext.get(), BlueprintsContext.NAME},
                 new Object[]{BlueprintsNeo4jContext.get(), BlueprintsNeo4jContext.NAME},
-                new Object[]{BerkeleyDBContext.get(), BerkeleyDBContext.NAME}
+                new Object[]{BerkeleyDbContext.get(), BerkeleyDbContext.NAME}
         );
     }
 

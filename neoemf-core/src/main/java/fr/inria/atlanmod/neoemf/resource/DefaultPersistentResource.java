@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,12 +63,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     private final DummyRootEObject dummyRootEObject;
 
-    protected PersistentStore eStore;
+    protected PersistentStore store;
 
     /**
      * The underlying {@link PersistenceBackend} that stores the data.
      */
-    protected PersistenceBackend persistenceBackend;
+    protected PersistenceBackend backend;
 
     private Map<?, ?> options;
 
@@ -77,8 +77,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public DefaultPersistentResource(URI uri) {
         super(uri);
         this.dummyRootEObject = new DummyRootEObject(this);
-        this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
-        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, persistenceBackend);
+        this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
+        this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
         this.isPersistent = false;
         // Stop the backend when the application is terminated
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -110,20 +110,20 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public String getURIFragment(EObject eObject) {
-        String returnValue = URI_UNKNOWN;
+        String fragment = URI_UNKNOWN;
         if (eObject.eResource() == this) {
             // Try to adapt as a PersistentEObject and return the ID
-            PersistentEObject persistentEObject = PersistentEObject.from(eObject);
-            if (nonNull(persistentEObject)) {
-                returnValue = persistentEObject.id().toString();
+            PersistentEObject object = PersistentEObject.from(eObject);
+            if (nonNull(object)) {
+                fragment = object.id().toString();
             }
         }
-        return returnValue;
+        return fragment;
     }
 
     @Override
     public EObject getEObject(String uriFragment) {
-        EObject eObject = eStore.eObject(new StringId(uriFragment));
+        EObject eObject = store.eObject(new StringId(uriFragment));
         return isNull(eObject) ? super.getEObject(uriFragment) : eObject;
     }
 
@@ -140,13 +140,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
         if (!isLoaded() || !isPersistent) {
             PersistenceBackend newBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-            PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(persistenceBackend, newBackend);
-            this.persistenceBackend = newBackend;
-            this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
+            PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).copyBackend(backend, newBackend);
+            this.backend = newBackend;
+            this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, backend, options);
             this.isLoaded = true;
             this.isPersistent = true;
         }
-        persistenceBackend.save();
+        backend.save();
         NeoLogger.info("{0} saved: {1}", PersistentResource.class.getSimpleName(), uri);
     }
 
@@ -157,8 +157,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             if (!isLoaded) {
                 if (getFile().exists() || nonNull(uri.authority())) {
                     // Check authority to enable remote resource loading
-                    this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
-                    this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, persistenceBackend, options);
+                    this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentBackend(getFile(), options);
+                    this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createPersistentStore(this, backend, options);
                     this.isPersistent = true;
                     dummyRootEObject.setMapped(true);
                 }
@@ -188,10 +188,10 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public void close() {
-        this.persistenceBackend.close();
+        this.backend.close();
 
-        this.persistenceBackend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
-        this.eStore = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, persistenceBackend);
+        this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
+        this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
 
         this.isPersistent = false;
         this.isLoaded = false;
@@ -201,7 +201,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public InternalEObject.EStore eStore() {
-        return eStore;
+        return store;
     }
 
     @Override
@@ -211,9 +211,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        EList<EObject> returnValue;
+        EList<EObject> allInstances;
         try {
-            returnValue = eStore.getAllInstances(eClass, strict);
+            allInstances = store.getAllInstances(eClass, strict);
         }
         catch (UnsupportedOperationException e) {
             NeoLogger.warn("This PersistenceBackend does not support advanced allInstances() computation. Using standard EMF API instead");
@@ -232,9 +232,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                     }
                 }
             }
-            returnValue = instanceList;
+            allInstances = instanceList;
         }
-        return returnValue;
+        return allInstances;
     }
 
     @Override
@@ -280,8 +280,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         protected static final long serialVersionUID = 1L;
 
-        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature eStructuralFeature, EStore store) {
-            super(owner, eStructuralFeature, store);
+        public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, EStore store) {
+            super(owner, feature, store);
         }
 
         @Override
@@ -307,19 +307,19 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         public NotificationChain inverseAdd(E object, NotificationChain notifications) {
-            InternalEObject eObject = (InternalEObject) object;
-            notifications = eObject.eSetResource(DefaultPersistentResource.this, notifications);
-            attached(eObject);
+            InternalEObject internalObject = (InternalEObject) object;
+            notifications = internalObject.eSetResource(DefaultPersistentResource.this, notifications);
+            attached(internalObject);
             return notifications;
         }
 
         @Override
         public NotificationChain inverseRemove(E object, NotificationChain notifications) {
-            InternalEObject eObject = (InternalEObject) object;
+            InternalEObject internalObject = (InternalEObject) object;
             if (isLoaded || nonNull(unloadingContents)) {
-                detached(eObject);
+                detached(internalObject);
             }
-            return eObject.eSetResource(null, notifications);
+            return internalObject.eSetResource(null, notifications);
         }
 
         @Override
@@ -437,8 +437,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         @Override
         public void run() {
-            if (!persistenceBackend.isClosed()) {
-                persistenceBackend.close();
+            if (!backend.isClosed()) {
+                backend.close();
                 NeoLogger.info("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
             }
         }

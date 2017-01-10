@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class PersistenceBackendFactoryRegistry {
 
@@ -32,6 +37,7 @@ public class PersistenceBackendFactoryRegistry {
      *
      * @return an immutable {@link Map} of {@link PersistenceBackendFactory}
      */
+    @Nonnull
     public static Map<String, PersistenceBackendFactory> getFactories() {
         return Collections.unmodifiableMap(FACTORIES);
     }
@@ -45,6 +51,7 @@ public class PersistenceBackendFactoryRegistry {
      *
      * @throws NullPointerException if no backend factory is registered for the given {@code uriScheme}
      */
+    @Nonnull
     public static PersistenceBackendFactory getFactoryProvider(String uriScheme) {
         return checkNotNull(FACTORIES.get(uriScheme),
                 "No factory is registered to process the URI scheme %s. Use the %s.register() method first",
@@ -59,30 +66,34 @@ public class PersistenceBackendFactoryRegistry {
      *
      * @return {@code true} if a backend factory is registered for the given {@code uriScheme}
      */
-    public static boolean isRegistered(String uriScheme) {
-        return FACTORIES.containsKey(uriScheme);
+    public static boolean isRegistered(@Nullable String uriScheme) {
+        return !isNull(uriScheme) && FACTORIES.containsKey(uriScheme);
     }
 
     /**
-     * Register a {@link PersistenceBackendFactory} identified by the given {@code uriScheme}.
+     * Registers a {@link PersistenceBackendFactory} identified by the given {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
      */
-    public static void register(String uriScheme, PersistenceBackendFactory factory) {
+    public static void register(@Nonnull String uriScheme, @Nonnull PersistenceBackendFactory factory) {
+        checkNotNull(uriScheme);
+        checkNotNull(factory);
         FACTORIES.put(uriScheme, factory);
     }
 
     /**
-     * Unregister a {@link PersistenceBackendFactory} identified by the given {@code uriScheme}.
+     * Unregisters a {@link PersistenceBackendFactory} identified by the given {@code uriScheme}.
      *
      * @param uriScheme the uri scheme identifying the backend factory
      */
-    public static void unregister(String uriScheme) {
-        FACTORIES.remove(uriScheme);
+    public static void unregister(@Nullable String uriScheme) {
+        if (nonNull(uriScheme)) {
+            FACTORIES.remove(uriScheme);
+        }
     }
 
     /**
-     * Unregister all backend factories.
+     * Unregisters all backend factories.
      */
     public static void unregisterAll() {
         FACTORIES.clear();

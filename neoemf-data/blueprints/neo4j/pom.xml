@@ -13,12 +13,7 @@
     <packaging>bundle</packaging>
 
     <name>NeoEMF Data Blueprints Neo4j</name>
-    <description />
-
-    <properties>
-        <neo4j.version>1.9.6</neo4j.version>
-        <lucene.version>3.6.2</lucene.version>
-    </properties>
+    <description>Blueprints extension using Neo4j.</description>
 
     <dependencies>
         <dependency>
@@ -26,44 +21,11 @@
             <artifactId>blueprints-neo4j-graph</artifactId>
         </dependency>
 
-        <!-- By default, imports a POM file instead of a JAR, which is not recognized by Eclipse -->
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-lucene-index</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-        </dependency>
-
         <!-- Common -->
 
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
-        </dependency>
-
-        <!-- EMF -->
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
         <!-- Test -->
@@ -117,34 +79,6 @@
                 <version>${blueprints.version}</version>
                 <scope>runtime</scope>
             </dependency>
-
-            <dependency>
-                <groupId>org.neo4j</groupId>
-                <artifactId>neo4j</artifactId>
-                <version>${neo4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.neo4j</groupId>
-                <artifactId>neo4j-kernel</artifactId>
-                <version>${neo4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.neo4j</groupId>
-                <artifactId>neo4j-lucene-index</artifactId>
-                <version>${neo4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.lucene</groupId>
-                <artifactId>lucene-core</artifactId>
-                <version>${lucene.version}</version>
-                <scope>runtime</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -158,17 +92,11 @@
                         <Bundle-SymbolicName>
                             ${project.groupId}.data.blueprints.neo4j
                         </Bundle-SymbolicName>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*,
-                            org.apache.lucene.*;-split-package:=first,
-                            com.tinkerpop.blueprints.impls.neo4j,
-                            org.neo4j.kernel.impl.cache;-split-package:=merge-last,
-                            org.neo4j.*;-split-package:=first,
+                            com.tinkerpop.blueprints.impls.neo4j.*,
                         </Export-Package>
-                        <Private-Package>
-                            javax.transaction,
-                            javax.transaction.xa
-                        </Private-Package>
                         <_exportcontents>
                             org.apache.commons.configuration,
                             org.apache.commons.configuration.beanutils,
@@ -184,9 +112,6 @@
                             org.apache.commons.logging,
                         </_exportcontents>
                         <Embed-Dependency>
-                            neo4j-lucene-index,
-                            lucene-core,
-                            neo4j-kernel,
                             blueprints-neo4j-graph
                         </Embed-Dependency>
                         <Require-Bundle>

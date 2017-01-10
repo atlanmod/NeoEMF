@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import java.util.Set;
 
 /**
  * An abstract implementation of a {@link InputNotifier}.
+ *
+ * @param <T> the type of the notified {@link InputHandler}
  */
 public abstract class AbstractInputNotifier<T extends InputHandler> implements InputNotifier<T> {
 

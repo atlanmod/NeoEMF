@@ -329,7 +329,11 @@
                                 <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
                                      otherwise it creates conflicts with running osgi version (these dependencies are
                                      only needed when running the plugins in an eclipse-based environment) -->
-                                *;scope=compile|runtime;type=!pom;artifactId=!org.eclipse.osgi;groupId=!${project.groupId}|org.eclipse.emf
+                                *;
+                                scope=compile|runtime;
+                                type=!pom;
+                                artifactId=!jsr305;
+                                groupId=!${project.groupId}|org.eclipse.emf|org.osgi
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>
@@ -432,7 +436,8 @@
                     <configuration>
                         <!-- Property @{argLine} : created by jacoco:prepare-agent -->
                         <argLine>@{argLine} ${argLine.global}</argLine>
-                        <argLine>-Djava.io.tmpdir=/tmp/</argLine>
+                        <!-- '/tmp' directory doesn't exist in Windows : think to comment this line before commit -->
+                        <!--<argLine>-Djava.io.tmpdir=/tmp/</argLine>-->
                         <failIfNoTests>false</failIfNoTests>
                     </configuration>
                 </plugin>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,32 +11,24 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDBURI;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import fr.inria.atlanmod.neoemf.AbstractActivator;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 
-public class Activator implements BundleActivator {
+public class Activator extends AbstractActivator {
 
-    private static BundleContext context;
-
-    static BundleContext getContext() {
-        return context;
+    @Override
+    protected String name() {
+        return "BerkeleyDB";
     }
 
     @Override
-    public void start(BundleContext bundleContext) throws Exception {
-        context = bundleContext;
-        NeoLogger.info("NeoEMF BerkeleyDB plugin started");
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDBURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BerkeleyDBURI.SCHEME,
-                    BerkeleyDBPersistenceBackendFactory.getInstance());
-            NeoLogger.info("BerkeleyDB persistence backend registered");
-        }
+    protected String scheme() {
+        return BerkeleyDbURI.SCHEME;
     }
 
-    public void stop(BundleContext bundleContext) throws Exception {
-        context = null;
+    @Override
+    protected PersistenceBackendFactory factory() {
+        return BerkeleyDbPersistenceBackendFactory.getInstance();
     }
 }

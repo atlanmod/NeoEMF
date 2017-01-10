@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,8 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Notifies that start of a new element.
      *
+     * @param classifier the classifier of the new element
+     *
      * @see #notifyEndElement()
      * @see InputHandler#processStartElement(Classifier)
      */
@@ -66,6 +68,8 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Notifies a new attribute.
      *
+     * @param attribute the new attribute
+     *
      * @see InputHandler#processAttribute(Attribute)
      */
     default void notifyAttribute(Attribute attribute) {
@@ -75,6 +79,8 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Notifies a new reference.
      *
+     * @param reference the new reference
+     *
      * @see InputHandler#processReference(Reference)
      */
     default void notifyReference(Reference reference) {
@@ -83,6 +89,8 @@ public interface InputNotifier<T extends InputHandler> {
 
     /**
      * Notifies a new set of characters.
+     *
+     * @param characters the new characters
      */
     default void notifyCharacters(String characters) {
         getHandlers().forEach(p -> p.processCharacters(characters));

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,30 +78,30 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        PersistentStore eStore;
+        PersistentStore store;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
-        if (isNull(storeOptions) || storeOptions.isEmpty() || storeOptions.contains(BlueprintsStoreOptions.DIRECT_WRITE) || (storeOptions.size() == 1 && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT))) {
-            eStore = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
+        if (storeOptions.isEmpty() || storeOptions.contains(BlueprintsStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
+            store = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
-            eStore = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
+            store = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else {
             throw new InvalidDataStoreException("No valid base EStore found in the options");
         }
         // Autocommit
-        if (nonNull(storeOptions) && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
+        if (storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
             if (options.containsKey(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK)) {
                 int autoCommitChunk = Integer.parseInt((String) options.get(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK));
-                eStore = new AutocommitStoreDecorator(eStore, autoCommitChunk);
+                store = new AutocommitStoreDecorator(store, autoCommitChunk);
             }
             else {
-                eStore = new AutocommitStoreDecorator(eStore);
+                store = new AutocommitStoreDecorator(store);
             }
         }
-        return eStore;
+        return store;
     }
 
     @Override

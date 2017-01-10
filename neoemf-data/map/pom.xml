@@ -14,15 +14,12 @@
 
     <name>NeoEMF Data Map</name>
     <description>
-        Parent project for database implementations of the core component.
+        Parent project for Map-based database implementations of the core component.
     </description>
 
     <modules>
-        <module>core</module>
         <module>berkeleydb</module>
 		<module>mapdb</module>
     </modules>
-
-
 
 </project>

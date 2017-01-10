@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,11 +22,22 @@ import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+/**
+ * The import factory.
+ */
 public class Importer {
 
     private Importer() {
     }
 
+    /**
+     * Import a XMI file into persistence handlers.
+     *
+     * @param stream              the stream of XMI data
+     * @param persistenceHandlers persistence handlers where to store the read data
+     *
+     * @throws IOException if an error occurred during the import
+     */
     public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws IOException {
         checkArgument(persistenceHandlers.length > 0);
 

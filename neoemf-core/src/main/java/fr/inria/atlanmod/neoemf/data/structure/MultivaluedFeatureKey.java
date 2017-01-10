@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,35 +19,44 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class MultivaluedFeatureKey extends FeatureKey {
 
     private static final long serialVersionUID = 1L;
 
+    @Nonnegative
     private final int position;
 
-    protected MultivaluedFeatureKey(Id id, String name, int position) {
+    protected MultivaluedFeatureKey(@Nonnull Id id, @Nonnull String name, @Nonnegative int position) {
         super(id, name);
+        checkArgument(position >= 0, "Position must be >= 0");
         this.position = position;
     }
 
-    public static MultivaluedFeatureKey from(InternalEObject object, EStructuralFeature feature, int position) {
-        return from(PersistentEObject.from(object), feature, position);
+    public static MultivaluedFeatureKey from(@Nonnull InternalEObject internalObject, @Nonnull EStructuralFeature feature, @Nonnegative int position) {
+        return from(PersistentEObject.from(internalObject), feature, position);
     }
 
-    public static MultivaluedFeatureKey from(PersistentEObject object, EStructuralFeature feature, int position) {
+    public static MultivaluedFeatureKey from(@Nonnull PersistentEObject object, @Nonnull EStructuralFeature feature, @Nonnegative int position) {
         return of(object.id(), feature.getName(), position);
     }
 
-    public static MultivaluedFeatureKey of(Id id, String name, int position) {
+    public static MultivaluedFeatureKey of(@Nonnull Id id, @Nonnull String name, @Nonnegative int position) {
         return new MultivaluedFeatureKey(id, name, position);
     }
 
+    @Nonnegative
     public int position() {
         return position;
     }
 
     @Override
-    public int compareTo(FeatureKey o) {
+    public int compareTo(@Nonnull FeatureKey o) {
         final int BEFORE = -1;
         final int EQUAL = 0;
         final int AFTER = 1;
@@ -55,13 +64,13 @@ public class MultivaluedFeatureKey extends FeatureKey {
         if (!(o instanceof MultivaluedFeatureKey)) {
             return AFTER;
         }
-        int result = super.compareTo(o);
-        if (result == EQUAL) {
+        int comparison = super.compareTo(o);
+        if (comparison == EQUAL) {
             MultivaluedFeatureKey that = (MultivaluedFeatureKey) o;
             return (position > that.position) ? AFTER : (position < that.position) ? BEFORE : EQUAL;
         }
         else {
-            return result;
+            return comparison;
         }
     }
 
@@ -74,7 +83,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * Defines equality between multivalued feature keys.
      */
     @Override
-    public boolean equals(Object other) {
-        return super.equals(other) && position == ((MultivaluedFeatureKey) other).position;
+    public boolean equals(@Nullable Object o) {
+        return super.equals(o) && position == ((MultivaluedFeatureKey) o).position;
     }
 }

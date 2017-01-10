@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,8 +84,8 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
 
-    private PersistentStore embedInDefaultWrapper(PersistentStore eStore) {
-        return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(eStore));
+    private PersistentStore embedInDefaultWrapper(PersistentStore store) {
+        return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(store));
     }
 
     private static class Holder {

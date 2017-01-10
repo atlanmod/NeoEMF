@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,28 +30,24 @@ public class HBaseURI extends PersistenceURI {
 
     public static URI createURI(URI uri) {
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
-            return createFileURI(FileUtils.getFile(uri.toFileString()));
+            return createFileURI(uri);
         }
         else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
         }
-        else {
-            throw new IllegalArgumentException(MessageFormat.format("Can not create HBaseURI from the URI scheme {0}", uri.scheme()));
-        }
-    }
-
-    public static URI createURI(String host, String port, URI modelURI) {
-        return URI.createHierarchicalURI(
-                SCHEME,
-                host + ":" + port,
-                null,
-                modelURI.segments(),
-                null,
-                null);
+        throw new IllegalArgumentException(MessageFormat.format("Can not create {0} from the URI scheme {1}", HBaseURI.class.getSimpleName(), uri.scheme()));
     }
 
     public static URI createFileURI(File file) {
         return PersistenceURI.createFileURI(file, SCHEME);
+    }
+
+    public static URI createFileURI(URI uri) {
+        return createFileURI(FileUtils.getFile(uri.toFileString()));
+    }
+
+    public static URI createHierarchicalURI(String host, String port, URI modelURI) {
+        return URI.createHierarchicalURI(SCHEME, host + ":" + port, null, modelURI.segments(), null, null);
     }
 
     public static String format(URI uri) {

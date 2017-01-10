@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
         id="fr.inria.atlanmod.neoemf.io.feature"
-        label="NeoEMF IO"
+        label="NeoEMF : I/O"
         version="1.0.1.qualifier">
 
     <description url="http://www.example.com/description">
-        NeoEMF IO Module: Efficient model importer/exporter
+        Efficient model importer/exporter
     </description>
 
     <includes
@@ -19,15 +19,15 @@
             version="1.0.1.qualifier"
             unpack="false" />
 
-    <copyright url="http://www.example.com/copyright">
-Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+    <copyright url="https://www.eclipse.org/legal/epl-v10.html">
+Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
 which accompanies this distribution, and is available at
 http://www.eclipse.org/legal/epl-v10.html
     </copyright>
 
-    <license url="http://www.example.com/license">
+    <license url="https://www.eclipse.org/legal/epl-v10.html">
 Eclipse Public License - v 1.0
 
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE PUBLC LICENSE (&quot;AGREEMENT&quot;). ANY USE, REPRODUCTION OR DISTRIBUTION OF THE PROGRAM CONSTITUTES RECIPIENT&apos;S ACCEPTANCE OF THIS AGREEMENT.

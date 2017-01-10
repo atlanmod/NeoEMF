@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,8 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         this.owner = PersistentEObject.from(owner);
     }
 
-    protected NeoEContentsEList(EObject owner, EStructuralFeature[] eStructuralFeatures) {
-        super(owner, eStructuralFeatures);
+    protected NeoEContentsEList(EObject owner, EStructuralFeature[] features) {
+        super(owner, features);
         this.owner = PersistentEObject.from(owner);
     }
 
@@ -48,13 +48,12 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
 
     public static <E> NeoEContentsEList<E> createNeoEContentsEList(EObject owner) {
         NeoEContentsEList<E> contentEList;
-        EStructuralFeature[] eStructuralFeatures =
-                ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
-        if (isNull(eStructuralFeatures)) {
+        EStructuralFeature[] features = ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
+        if (isNull(features)) {
             contentEList = NeoEContentsEList.emptyNeoContentsEList();
         }
         else {
-            contentEList = new NeoEContentsEList<>(owner, eStructuralFeatures);
+            contentEList = new NeoEContentsEList<>(owner, features);
         }
         return contentEList;
     }
@@ -65,18 +64,18 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         checkNotNull(eStructuralFeatures, "index=" + index + ", size=0");
         // Find the feature to look for
         int featureSize = 0;
-        for (EStructuralFeature eStructuralFeature : eStructuralFeatures) {
+        for (EStructuralFeature feature : eStructuralFeatures) {
             int localFeatureSize;
-            if (eStructuralFeature.isMany()) {
-                localFeatureSize = owner.eStore().size(owner, eStructuralFeature);
+            if (feature.isMany()) {
+                localFeatureSize = owner.eStore().size(owner, feature);
             }
             else {
-                localFeatureSize = owner.eStore().isSet(owner, eStructuralFeature) ? 1 : 0;
+                localFeatureSize = owner.eStore().isSet(owner, feature) ? 1 : 0;
             }
             featureSize += localFeatureSize;
             if (featureSize > index) {
                 // The correct feature has been found
-                return (E) owner.eStore().get(owner, eStructuralFeature, (index - (featureSize - localFeatureSize)));
+                return (E) owner.eStore().get(owner, feature, (index - (featureSize - localFeatureSize)));
             }
         }
         throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);

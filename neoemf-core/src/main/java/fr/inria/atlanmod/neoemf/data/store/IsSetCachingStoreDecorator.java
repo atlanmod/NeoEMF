@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -29,81 +28,80 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     private final Cache<FeatureKey, Boolean> isSetCache;
 
-    public IsSetCachingStoreDecorator(PersistentStore eStore) {
-        this(eStore, 10000);
+    public IsSetCachingStoreDecorator(PersistentStore store) {
+        this(store, 10000);
     }
 
-    public IsSetCachingStoreDecorator(PersistentStore eStore, int cacheSize) {
-        super(eStore);
+    public IsSetCachingStoreDecorator(PersistentStore store, int cacheSize) {
+        super(store);
         this.isSetCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Override
-    public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-        Object returnValue = super.get(object, feature, index);
-        if (nonNull(returnValue)) {
-            FeatureKey featureKey = FeatureKey.from(object, feature);
+    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        Object soughtValue = super.get(internalObject, feature, index);
+        if (nonNull(soughtValue)) {
+            FeatureKey featureKey = FeatureKey.from(internalObject, feature);
             isSetCache.put(featureKey, true);
         }
-        return returnValue;
+        return soughtValue;
     }
 
     @Override
-    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         isSetCache.put(featureKey, true);
-        return super.set(object, feature, index, value);
+        return super.set(internalObject, feature, index, value);
     }
 
     @Override
-    public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
-        Boolean isSet = isSetCache.getIfPresent(featureKey);
-        return isNull(isSet) ? super.isSet(object, feature) : isSet;
+    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        return isSetCache.get(featureKey, key -> super.isSet(internalObject, feature));
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         isSetCache.put(featureKey, false);
-        super.unset(object, feature);
+        super.unset(internalObject, feature);
     }
 
     @Override
-    public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
-        boolean returnValue = super.contains(object, feature, value);
-        if (returnValue) {
-            FeatureKey featureKey = FeatureKey.from(object, feature);
+    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        boolean contains = super.contains(internalObject, feature, value);
+        if (contains) {
+            FeatureKey featureKey = FeatureKey.from(internalObject, feature);
             isSetCache.put(featureKey, true);
         }
-        return returnValue;
+        return contains;
     }
 
     @Override
-    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         isSetCache.put(featureKey, true);
-        super.add(object, feature, index, value);
+        super.add(internalObject, feature, index, value);
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         isSetCache.invalidate(featureKey);
-        return super.remove(object, feature, index);
+        return super.remove(internalObject, feature, index);
     }
 
     @Override
-    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         isSetCache.put(featureKey, true);
-        return super.move(object, feature, targetIndex, sourceIndex);
+        return super.move(internalObject, feature, targetIndex, sourceIndex);
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         isSetCache.put(featureKey, false);
-        super.clear(object, feature);
+        super.clear(internalObject, feature);
     }
 }

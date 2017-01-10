@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,19 +20,19 @@ public class BlueprintsHandlerFactory {
     }
 
     /**
-     * Creates a {@link PersistenceHandler} on the given {@code persistenceBackend}.
+     * Creates a {@link PersistenceHandler} on the given {@code backend}.
      *
-     * @param persistenceBackend the persistence backend where data must persist
+     * @param backend the persistence backend where data must persist
      * @param conflictResolution {@code true} if you want a conflict resolution feature
      *
      * @return a newly created {@link PersistenceHandler}
      */
-    public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend persistenceBackend, boolean conflictResolution) {
+    public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend backend, boolean conflictResolution) {
         if (conflictResolution) {
-            return new BlueprintsAwareHandler(persistenceBackend);
+            return new BlueprintsAwareHandler(backend);
         }
         else {
-            return new BlueprintsNaiveHandler(persistenceBackend);
+            return new BlueprintsNaiveHandler(backend);
         }
     }
 }

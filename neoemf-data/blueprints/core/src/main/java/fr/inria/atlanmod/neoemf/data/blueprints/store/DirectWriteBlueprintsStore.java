@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,180 +52,179 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected static final String CONTAINING_FEATURE = "containingFeature";
     protected static final String SIZE_LITERAL = "size";
 
-    public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend graph) {
-        super(resource, graph);
+    public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
+        super(resource, backend);
     }
 
     @Override
-    protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        Vertex vertex = persistenceBackend.getVertex(object.id());
-        String propertyName = eAttribute.getName();
-        if (eAttribute.isMany()) {
-            checkElementIndex(index, getSize(vertex, eAttribute), "Invalid get index " + index);
+    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        Vertex vertex = backend.getVertex(object.id());
+        String propertyName = attribute.getName();
+        if (attribute.isMany()) {
+            checkElementIndex(index, getSize(vertex, attribute), "Invalid get index " + index);
             propertyName += SEPARATOR + index;
         }
-        return parseProperty(eAttribute, vertex.getProperty(propertyName));
+        return parseProperty(attribute, vertex.getProperty(propertyName));
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference eReference, int index) {
-        Object returnValue = null;
-        Vertex vertex = persistenceBackend.getVertex(object.id());
+    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+        Object soughtReference = null;
+        Vertex vertex = backend.getVertex(object.id());
         Vertex referencedVertex;
-        if (!eReference.isMany()) {
+        if (!reference.isMany()) {
             referencedVertex = Iterables.getOnlyElement(
-                    vertex.getVertices(Direction.OUT, eReference.getName()), null);
+                    vertex.getVertices(Direction.OUT, reference.getName()), null);
         }
         else {
-            checkElementIndex(index, getSize(vertex, eReference), "Invalid get index " + index);
+            checkElementIndex(index, getSize(vertex, reference), "Invalid get index " + index);
             referencedVertex = Iterables.getOnlyElement(
                     vertex.query()
-                            .labels(eReference.getName())
+                            .labels(reference.getName())
                             .direction(Direction.OUT)
                             .has(POSITION, index)
                             .vertices(),
                     null);
         }
         if (nonNull(referencedVertex)) {
-            returnValue = reifyVertex(referencedVertex);
+            soughtReference = reifyVertex(referencedVertex);
         }
-        return returnValue;
+        return soughtReference;
     }
 
     @Override
-    protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-        Object returnValue;
+    protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
+        Object old;
         if (isNull(value)) {
-            returnValue = get(object, eAttribute, index);
-            clear(object, eAttribute);
+            old = get(object, attribute, index);
+            clear(object, attribute);
         }
         else {
-            Vertex vertex = persistenceBackend.getOrCreateVertex(object);
-            String propertyName = eAttribute.getName();
-            if (!eAttribute.isMany()) {
+            Vertex vertex = backend.getOrCreateVertex(object);
+            String propertyName = attribute.getName();
+            if (!attribute.isMany()) {
                 Object property = vertex.getProperty(propertyName);
-                returnValue = parseProperty(eAttribute, property);
+                old = parseProperty(attribute, property);
             }
             else {
-                checkElementIndex(index, getSize(vertex, eAttribute));
+                checkElementIndex(index, getSize(vertex, attribute));
                 propertyName += SEPARATOR + index;
-                returnValue = vertex.getProperty(propertyName);
+                old = vertex.getProperty(propertyName);
             }
-            vertex.setProperty(propertyName, serializeToProperty(eAttribute, value));
+            vertex.setProperty(propertyName, serializeToProperty(attribute, value));
         }
-        return returnValue;
+        return old;
     }
 
     @Override
-    protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
-        Object returnValue = null;
+    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
+        Object old = null;
         if (isNull(value)) {
-            returnValue = get(object, eReference, index);
-            clear(object, eReference);
+            old = get(object, reference, index);
+            clear(object, reference);
         }
         else {
-            Vertex vertex = persistenceBackend.getOrCreateVertex(object);
-            Vertex newReferencedVertex = persistenceBackend.getOrCreateVertex(value);
+            Vertex vertex = backend.getOrCreateVertex(object);
+            Vertex newReferencedVertex = backend.getOrCreateVertex(value);
 
             // Update the containment reference if needed
-            if (eReference.isContainment()) {
-                updateContainment(eReference, vertex, newReferencedVertex);
+            if (reference.isContainment()) {
+                updateContainment(reference, vertex, newReferencedVertex);
             }
 
-            if (!eReference.isMany()) {
-                Edge edge = Iterables.getOnlyElement(
-                        vertex.getEdges(Direction.OUT, eReference.getName()), null);
+            if (!reference.isMany()) {
+                Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, reference.getName()), null);
                 if (nonNull(edge)) {
                     Vertex referencedVertex = edge.getVertex(Direction.IN);
-                    returnValue = reifyVertex(referencedVertex);
+                    old = reifyVertex(referencedVertex);
                     edge.remove();
                 }
-                vertex.addEdge(eReference.getName(), newReferencedVertex);
+                vertex.addEdge(reference.getName(), newReferencedVertex);
             }
             else {
-                checkElementIndex(index, getSize(vertex, eReference));
+                checkElementIndex(index, getSize(vertex, reference));
                 Iterable<Edge> edges = vertex.query()
-                        .labels(eReference.getName())
+                        .labels(reference.getName())
                         .direction(Direction.OUT)
                         .has(POSITION, index)
                         .edges();
 
                 for (Edge edge : edges) {
                     Vertex referencedVertex = edge.getVertex(Direction.IN);
-                    returnValue = reifyVertex(referencedVertex);
+                    old = reifyVertex(referencedVertex);
                     edge.remove();
                 }
-                Edge edge = vertex.addEdge(eReference.getName(), newReferencedVertex);
+                Edge edge = vertex.addEdge(reference.getName(), newReferencedVertex);
                 edge.setProperty(POSITION, index);
             }
         }
-        return returnValue;
+        return old;
     }
 
     @Override
-    protected boolean isSetAttribute(PersistentEObject object, EAttribute eAttribute) {
-        boolean returnValue = false;
-        Vertex vertex = persistenceBackend.getVertex(object.id());
+    protected boolean isSetAttribute(PersistentEObject object, EAttribute attribute) {
+        boolean isSet = false;
+        Vertex vertex = backend.getVertex(object.id());
         if (nonNull(vertex)) {
-            String propertyName = eAttribute.getName();
-            if (eAttribute.isMany()) {
+            String propertyName = attribute.getName();
+            if (attribute.isMany()) {
                 propertyName += SEPARATOR + SIZE_LITERAL;
             }
-            returnValue = nonNull(vertex.getProperty(propertyName));
+            isSet = nonNull(vertex.getProperty(propertyName));
         }
-        return returnValue;
+        return isSet;
     }
 
     @Override
-    protected boolean isSetReference(PersistentEObject object, EReference eReference) {
-        boolean returnValue = false;
-        Vertex vertex = persistenceBackend.getVertex(object.id());
+    protected boolean isSetReference(PersistentEObject object, EReference reference) {
+        boolean isSet = false;
+        Vertex vertex = backend.getVertex(object.id());
         if (nonNull(vertex)) {
-            returnValue = !Iterables.isEmpty(vertex.getVertices(Direction.OUT, eReference.getName()));
+            isSet = !Iterables.isEmpty(vertex.getVertices(Direction.OUT, reference.getName()));
         }
-        return returnValue;
+        return isSet;
     }
 
     @Override
-    protected void unsetAttribute(PersistentEObject object, EAttribute eAttribute) {
-        Vertex vertex = persistenceBackend.getVertex(object.id());
-        String propertyName = eAttribute.getName();
-        if (eAttribute.isMany()) {
+    protected void unsetAttribute(PersistentEObject object, EAttribute attribute) {
+        Vertex vertex = backend.getVertex(object.id());
+        String propertyName = attribute.getName();
+        if (attribute.isMany()) {
             propertyName += SEPARATOR + SIZE_LITERAL;
             Integer size = vertex.getProperty(propertyName);
             for (int i = 0; i < size; i++) {
-                vertex.removeProperty(eAttribute.getName() + SEPARATOR + i);
+                vertex.removeProperty(attribute.getName() + SEPARATOR + i);
             }
         }
         vertex.removeProperty(propertyName);
     }
 
     @Override
-    protected void unsetReference(PersistentEObject object, EReference eReference) {
-        Vertex vertex = persistenceBackend.getVertex(object.id());
-        if (!eReference.isMany()) {
-            Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, eReference.getName()), null);
+    protected void unsetReference(PersistentEObject object, EReference reference) {
+        Vertex vertex = backend.getVertex(object.id());
+        if (!reference.isMany()) {
+            Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, reference.getName()), null);
             if (nonNull(edge)) {
                 edge.remove();
             }
         }
         else {
-            for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges()) {
+            for (Edge edge : vertex.query().labels(reference.getName()).direction(Direction.OUT).edges()) {
                 edge.remove();
             }
-            vertex.removeProperty(eReference.getName() + SEPARATOR + SIZE_LITERAL);
+            vertex.removeProperty(reference.getName() + SEPARATOR + SIZE_LITERAL);
         }
     }
 
     @Override
-    protected boolean containsAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
-        return ArrayUtils.contains(toArray(object, eAttribute), value);
+    protected boolean containsAttribute(PersistentEObject object, EAttribute attribute, Object value) {
+        return ArrayUtils.contains(toArray(object, attribute), value);
     }
 
     @Override
-    protected boolean containsReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
-        Vertex v = persistenceBackend.getOrCreateVertex(object);
-        for (Vertex vOut : v.getVertices(Direction.OUT, eReference.getName())) {
+    protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
+        Vertex v = backend.getOrCreateVertex(object);
+        for (Vertex vOut : v.getVertices(Direction.OUT, reference.getName())) {
             if (Objects.equals(vOut.getId(), value.id().toString())) {
                 return true;
             }
@@ -234,40 +233,38 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     @Override
-    protected int indexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
-        return ArrayUtils.indexOf(toArray(object, eAttribute), value);
+    protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
+        return ArrayUtils.indexOf(toArray(object, attribute), value);
     }
 
     @Override
-    protected int indexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
+        int index = ArrayUtils.INDEX_NOT_FOUND;
         if (nonNull(value)) {
-            Vertex inVertex = persistenceBackend.getVertex(object.id());
-            Vertex outVertex = persistenceBackend.getVertex(value.id());
-            for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
+            Vertex inVertex = backend.getVertex(object.id());
+            Vertex outVertex = backend.getVertex(value.id());
+            for (Edge e : outVertex.getEdges(Direction.IN, reference.getName())) {
                 if (Objects.equals(e.getVertex(Direction.OUT), inVertex)) {
                     return e.getProperty(POSITION);
                 }
             }
         }
-        return ArrayUtils.INDEX_NOT_FOUND;
+        return index;
     }
 
     @Override
-    protected int lastIndexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
-        return ArrayUtils.lastIndexOf(toArray(object, eAttribute), value);
+    protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
+        return ArrayUtils.lastIndexOf(toArray(object, attribute), value);
     }
 
     @Override
-    protected int lastIndexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
-        int resultValue;
-        if (isNull(value)) {
-            resultValue = ArrayUtils.INDEX_NOT_FOUND;
-        }
-        else {
-            Vertex inVertex = persistenceBackend.getVertex(object.id());
-            Vertex outVertex = persistenceBackend.getVertex(value.id());
+    protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
+        int index = ArrayUtils.INDEX_NOT_FOUND;
+        if (nonNull(value)) {
+            Vertex inVertex = backend.getVertex(object.id());
+            Vertex outVertex = backend.getVertex(value.id());
             Edge lastPositionEdge = null;
-            for (Edge e : outVertex.getEdges(Direction.IN, eReference.getName())) {
+            for (Edge e : outVertex.getEdges(Direction.IN, reference.getName())) {
                 if (Objects.equals(e.getVertex(Direction.OUT), inVertex)
                         && (isNull(lastPositionEdge)
                         || (int) e.getProperty(POSITION) > (int) lastPositionEdge.getProperty(POSITION)))
@@ -275,62 +272,59 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                     lastPositionEdge = e;
                 }
             }
-            if (isNull(lastPositionEdge)) {
-                resultValue = ArrayUtils.INDEX_NOT_FOUND;
-            }
-            else {
-                resultValue = lastPositionEdge.getProperty(POSITION);
+            if (nonNull(lastPositionEdge)) {
+                index = lastPositionEdge.getProperty(POSITION);
             }
         }
-        return resultValue;
+        return index;
     }
 
     @Override
-    protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         if (index == PersistentStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
 			 * The call to size should not cause an overhead because it would have been done in regular
 			 * addUnique() otherwise.
 			 */
-            index = size(object, eAttribute);
+            index = size(object, attribute);
         }
-        Vertex vertex = persistenceBackend.getOrCreateVertex(object);
-        Integer size = getSize(vertex, eAttribute);
+        Vertex vertex = backend.getOrCreateVertex(object);
+        Integer size = getSize(vertex, attribute);
         size++;
-        setSize(vertex, eAttribute, size);
+        setSize(vertex, attribute, size);
         checkPositionIndex(index, size, "Invalid add index");
         for (int i = size - 1; i > index; i--) {
-            Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + (i - 1));
-            vertex.setProperty(eAttribute.getName() + SEPARATOR + i, movingProperty);
+            Object movingProperty = vertex.getProperty(attribute.getName() + SEPARATOR + (i - 1));
+            vertex.setProperty(attribute.getName() + SEPARATOR + i, movingProperty);
         }
-        vertex.setProperty(eAttribute.getName() + SEPARATOR + index, serializeToProperty(eAttribute, value));
+        vertex.setProperty(attribute.getName() + SEPARATOR + index, serializeToProperty(attribute, value));
     }
 
     @Override
-    protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         if (index == PersistentStore.NO_INDEX) {
             /*
              * Handle NO_INDEX index, which represent direct-append feature.
 			 * The call to size should not cause an overhead because it would have been done in regular
 			 * addUnique() otherwise.
 			 */
-            index = size(object, eReference);
+            index = size(object, reference);
         }
-        Vertex vertex = persistenceBackend.getOrCreateVertex(object);
+        Vertex vertex = backend.getOrCreateVertex(object);
 
-        Vertex referencedVertex = persistenceBackend.getOrCreateVertex(value);
+        Vertex referencedVertex = backend.getOrCreateVertex(value);
         // Update the containment reference if needed
-        if (eReference.isContainment()) {
-            updateContainment(eReference, vertex, referencedVertex);
+        if (reference.isContainment()) {
+            updateContainment(reference, vertex, referencedVertex);
         }
 
-        Integer size = getSize(vertex, eReference);
+        Integer size = getSize(vertex, reference);
         int newSize = size + 1;
         checkPositionIndex(index, newSize, "Invalid add index");
         if (index != size) {
             Iterable<Edge> edges = vertex.query()
-                    .labels(eReference.getName())
+                    .labels(reference.getName())
                     .direction(Direction.OUT)
                     .interval(POSITION, index, newSize)
                     .edges();
@@ -341,35 +335,35 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                 edge.setProperty(POSITION, position + 1);
             }
         }
-        Edge edge = vertex.addEdge(eReference.getName(), referencedVertex);
+        Edge edge = vertex.addEdge(reference.getName(), referencedVertex);
         edge.setProperty(POSITION, index);
 
-        setSize(vertex, eReference, newSize);
+        setSize(vertex, reference, newSize);
     }
 
     @Override
-    protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        Vertex vertex = persistenceBackend.getVertex(object.id());
-        Integer size = getSize(vertex, eAttribute);
-        Object returnValue;
+    protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        Vertex vertex = backend.getVertex(object.id());
+        Integer size = getSize(vertex, attribute);
+        Object old;
         checkPositionIndex(index, size, "Invalid remove index");
 
-        returnValue = parseProperty(eAttribute, vertex.getProperty(eAttribute.getName() + SEPARATOR + index));
+        old = parseProperty(attribute, vertex.getProperty(attribute.getName() + SEPARATOR + index));
         int newSize = size - 1;
         for (int i = newSize; i > index; i--) {
-            Object movingProperty = vertex.getProperty(eAttribute.getName() + SEPARATOR + i);
-            vertex.setProperty(eAttribute.getName() + SEPARATOR + (i - 1), movingProperty);
+            Object movingProperty = vertex.getProperty(attribute.getName() + SEPARATOR + i);
+            vertex.setProperty(attribute.getName() + SEPARATOR + (i - 1), movingProperty);
         }
-        setSize(vertex, eAttribute, newSize);
-        return returnValue;
+        setSize(vertex, attribute, newSize);
+        return old;
     }
 
     @Override
-    protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
-        Vertex vertex = persistenceBackend.getVertex(object.id());
-        String referenceName = eReference.getName();
-        Integer size = getSize(vertex, eReference);
-        InternalEObject returnValue = null;
+    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
+        Vertex vertex = backend.getVertex(object.id());
+        String referenceName = reference.getName();
+        Integer size = getSize(vertex, reference);
+        InternalEObject old = null;
         checkPositionIndex(index, size, "Invalid remove index");
 
         Iterable<Edge> edges = vertex.query()
@@ -382,9 +376,9 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
             int position = edge.getProperty(POSITION);
             if (position == index) {
                 Vertex referencedVertex = edge.getVertex(Direction.IN);
-                returnValue = reifyVertex(referencedVertex);
+                old = reifyVertex(referencedVertex);
                 edge.remove();
-                if (eReference.isContainment()) {
+                if (reference.isContainment()) {
                     for (Edge conEdge : referencedVertex.getEdges(Direction.OUT, CONTAINER)) {
                         conEdge.remove();
                     }
@@ -394,69 +388,69 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
                 edge.setProperty(POSITION, position - 1);
             }
         }
-        setSize(vertex, eReference, size - 1); // Update size
-        checkNotNull(returnValue);
-        if (eReference.isContainment()) {
-            returnValue.eBasicSetContainer(null, -1, null);
-            ((PersistentEObject) returnValue).resource(null);
+        setSize(vertex, reference, size - 1); // Update size
+        checkNotNull(old);
+        if (reference.isContainment()) {
+            old.eBasicSetContainer(null, -1, null);
+            ((PersistentEObject) old).resource(null);
         }
-        return returnValue;
+        return old;
     }
 
     @Override
-    protected void clearAttribute(PersistentEObject object, EAttribute eAttribute) {
-        Vertex vertex = persistenceBackend.getVertex(object.id());
-        Integer size = getSize(vertex, eAttribute);
+    protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
+        Vertex vertex = backend.getVertex(object.id());
+        Integer size = getSize(vertex, attribute);
         for (int i = 0; i < size; i++) {
-            vertex.removeProperty(eAttribute.getName() + SEPARATOR + i);
+            vertex.removeProperty(attribute.getName() + SEPARATOR + i);
         }
-        setSize(vertex, eAttribute, 0);
+        setSize(vertex, attribute, 0);
     }
 
     @Override
-    protected void clearReference(PersistentEObject object, EReference eReference) {
-        Vertex vertex = persistenceBackend.getOrCreateVertex(object);
-        for (Edge edge : vertex.query().labels(eReference.getName()).direction(Direction.OUT).edges()) {
+    protected void clearReference(PersistentEObject object, EReference reference) {
+        Vertex vertex = backend.getOrCreateVertex(object);
+        for (Edge edge : vertex.query().labels(reference.getName()).direction(Direction.OUT).edges()) {
             edge.remove();
         }
-        setSize(vertex, eReference, 0);
+        setSize(vertex, reference, 0);
     }
 
     @Override
-    public int size(InternalEObject object, EStructuralFeature feature) {
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
         checkArgument(feature.isMany(), "Cannot compute size of a single-valued feature");
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        Vertex vertex = persistenceBackend.getVertex(persistentEObject.id());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Vertex vertex = backend.getVertex(object.id());
         return isNull(vertex) ? 0 : getSize(vertex, feature);
     }
 
     @Override
-    public InternalEObject getContainer(InternalEObject object) {
-        InternalEObject returnValue = null;
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        Vertex vertex = persistenceBackend.getVertex(persistentEObject.id());
+    public InternalEObject getContainer(InternalEObject internalObject) {
+        InternalEObject container = null;
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Vertex vertex = backend.getVertex(object.id());
         Vertex containerVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, CONTAINER), null);
         if (nonNull(containerVertex)) {
-            returnValue = reifyVertex(containerVertex);
+            container = reifyVertex(containerVertex);
         }
-        return returnValue;
+        return container;
     }
 
     @Override
-    public EStructuralFeature getContainingFeature(InternalEObject object) {
-        EStructuralFeature resultValue = null;
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        Vertex vertex = persistenceBackend.getVertex(persistentEObject.id());
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+        EStructuralFeature feature = null;
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Vertex vertex = backend.getVertex(object.id());
         Edge edge = Iterables.getOnlyElement(vertex.getEdges(Direction.OUT, CONTAINER), null);
         if (nonNull(edge)) {
             String featureName = edge.getProperty(CONTAINING_FEATURE);
             Vertex containerVertex = edge.getVertex(Direction.IN);
             if (nonNull(featureName)) {
                 EObject container = reifyVertex(containerVertex);
-                resultValue = container.eClass().getEStructuralFeature(featureName);
+                feature = container.eClass().getEStructuralFeature(featureName);
             }
         }
-        return resultValue;
+        return feature;
     }
 
     protected Integer getSize(Vertex vertex, EStructuralFeature feature) {
@@ -468,12 +462,12 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         vertex.setProperty(feature.getName() + SEPARATOR + SIZE_LITERAL, size);
     }
 
-    private void updateContainment(EReference eReference, Vertex parentVertex, Vertex childVertex) {
+    private void updateContainment(EReference reference, Vertex parentVertex, Vertex childVertex) {
         for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
             edge.remove();
         }
         Edge edge = childVertex.addEdge(CONTAINER, parentVertex);
-        edge.setProperty(CONTAINING_FEATURE, eReference.getName());
+        edge.setProperty(CONTAINING_FEATURE, reference.getName());
     }
 
     protected InternalEObject reifyVertex(Vertex vertex) {
@@ -481,7 +475,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
-        PersistentEObject internalEObject = persistenceBackend.reifyVertex(vertex, eClass);
+        PersistentEObject internalEObject = backend.reifyVertex(vertex, eClass);
         if (internalEObject.resource() != resource()) {
             if (Iterables.isEmpty(vertex.getEdges(Direction.OUT, CONTAINER))) {
                 if (!Iterables.isEmpty(vertex.getVertices(Direction.IN, CONTENTS))) {
@@ -498,13 +492,13 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     @Override
     public EObject eObject(Id uriFragment) {
-        Vertex vertex = persistenceBackend.getVertex(uriFragment);
+        Vertex vertex = backend.getVertex(uriFragment);
         return isNull(vertex) ? null : reifyVertex(vertex);
     }
 
     @Override
     public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        Map<EClass, Iterable<Vertex>> indexHits = persistenceBackend.getAllInstances(eClass, strict);
+        Map<EClass, Iterable<Vertex>> indexHits = backend.getAllInstances(eClass, strict);
         EList<EObject> instances = new BasicEList<>();
         for (Map.Entry<EClass, Iterable<Vertex>> entry : indexHits.entrySet()) {
             for (Vertex instanceVertex : entry.getValue()) {

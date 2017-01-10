@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,11 @@ public abstract class AbstractPersistenceHandlerDecorator implements Persistence
 
     private final PersistenceHandler handler;
 
+    /**
+     * Instantiates a new {@code AbstractPersistenceHandlerDecorator} with an embed handler.
+     *
+     * @param handler the embed handler
+     */
     public AbstractPersistenceHandlerDecorator(PersistenceHandler handler) {
         this.handler = handler;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
     }
 
     @Override
-    protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
+    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         throw unsupportedOperation();
     }
 
@@ -73,46 +73,44 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
      */
     @Override
     protected Object getFromTable(PersistentEObject object, EStructuralFeature feature) {
-        PersistentEObject neoEObject = PersistentEObject.from(object);
-
-        HBaseFeatureKey entry = HBaseFeatureKey.from(neoEObject, feature);
-        Object returnValue = null;
+        HBaseFeatureKey entry = HBaseFeatureKey.from(object, feature);
+        Object value = null;
         try {
-            returnValue = objectsCache.get(entry, new FeatureCacheLoader());
+            value = objectsCache.get(entry, new FeatureCacheLoader());
         }
         catch (Exception e) {
             NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
         }
-        return returnValue;
+        return value;
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         throw unsupportedOperation();
     }
 
     @Override
-    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         throw unsupportedOperation();
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         throw unsupportedOperation();
     }
 
     @Override
-    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
         throw unsupportedOperation();
     }
 

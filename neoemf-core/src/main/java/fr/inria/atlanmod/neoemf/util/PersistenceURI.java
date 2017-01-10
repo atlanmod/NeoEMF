@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,34 +43,23 @@ public class PersistenceURI extends URI {
     }
 
     public static URI createFileURI(File file, String scheme) {
-        URI returnValue;
         URI fileUri = URI.createFileURI(file.getAbsolutePath());
+
         if (isNull(scheme)) {
-            returnValue = PersistenceURI.createURI(fileUri);
+            return PersistenceURI.createURI(fileUri);
         }
         else {
-            returnValue = createFileURI(fileUri, scheme);
+            return createFileURI(fileUri, scheme);
         }
-        return returnValue;
     }
 
-    public static URI createFileURI(URI fileUri, String scheme) {
-        URI returnValue;
+    public static URI createFileURI(URI uri, String scheme) {
         if (isNull(scheme)) {
-            returnValue = createURI(fileUri);
+            return createURI(uri);
         }
         else {
-            URI uri = URI.createHierarchicalURI(
-                    scheme,
-                    fileUri.authority(),
-                    fileUri.device(),
-                    fileUri.segments(),
-                    fileUri.query(),
-                    fileUri.fragment()
-            );
-            returnValue = createURI(uri);
+            return createURI(URI.createHierarchicalURI(scheme, uri.authority(), uri.device(), uri.segments(), uri.query(), uri.fragment()));
         }
-        return returnValue;
     }
 
     @Override

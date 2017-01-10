@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.io.File;
 
 import static java.util.Objects.isNull;
 
+@SuppressWarnings("unused") // Called dynamically
 public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
     private static final String DIRECTORY = "blueprints.tg.directory";

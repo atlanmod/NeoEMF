@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,38 +30,38 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
 
     @Test
     public void testCreateTransientBackend() {
-        PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid backend created"
+        PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
+        assertThat(backend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid backend created"
 
         // TODO Need to test further the nature of the Blueprints engine
     }
 
     @Test
     public void testCreateTransientEStore() throws NoSuchFieldException, IllegalAccessException {
-        PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
+        PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
 
-        PersistentStore eStore = context().persistenceBackendFactory().createTransientStore(null, transientBackend);
-        assertThat(eStore).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
+        PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
+        assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(eStore, transientBackend);
+        assertHasInnerBackend(store, backend);
     }
 
     @Test
     public void testCreatePersistentBackendNoOptionNoConfigFile() throws InvalidDataStoreException {
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
-        assertThat(persistentBackend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid backend created"
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
+        assertThat(backend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid backend created"
 
         // TODO Need to test further the nature of the Blueprints engine
     }
 
     @Test
     public void testCreatePersistentEStoreNoOption() throws InvalidDataStoreException, NoSuchFieldException, IllegalAccessException {
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, BlueprintsOptionsBuilder.newBuilder().asMap());
-        assertThat(eStore).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BlueprintsOptionsBuilder.newBuilder().asMap());
+        assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(eStore, persistentBackend);
+        assertHasInnerBackend(store, backend);
     }
 
     @Test
@@ -70,12 +70,12 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
                 .directWrite()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
+        assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(eStore, persistentBackend);
+        assertHasInnerBackend(store, backend);
     }
 
     @Test
@@ -84,12 +84,12 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
                 .directWriteCacheMany()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(DirectWriteBlueprintsCacheManyStore.class); // "Invalid EStore created"
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
+        assertThat(store).isInstanceOf(DirectWriteBlueprintsCacheManyStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(eStore, persistentBackend);
+        assertHasInnerBackend(store, backend);
     }
 
     @Test
@@ -98,12 +98,12 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
                 .autocommit()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
+        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(eStore, persistentBackend);
+        assertHasInnerBackend(store, backend);
     }
 
     @Test
@@ -113,12 +113,12 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
                 .autocommit()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
+        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(eStore, persistentBackend);
+        assertHasInnerBackend(store, backend);
     }
 
     @Test
@@ -128,11 +128,11 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
                 .autocommit()
                 .asMap();
 
-        PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
+        PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
 
-        PersistentStore eStore = context().persistenceBackendFactory().createPersistentStore(null, persistentBackend, options);
-        assertThat(eStore).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
+        PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
+        assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(eStore, persistentBackend);
+        assertHasInnerBackend(store, backend);
     }
 }

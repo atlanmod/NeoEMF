@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 Atlanmod INRIA LINA Mines Nantes.
+ * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
@@ -46,6 +47,16 @@ public class CoreContext implements Context {
     }
 
     @Override
+    public URI createURI(URI uri) {
+        return PersistenceURI.createURI(uri);
+    }
+
+    @Override
+    public URI createFileURI(File file) {
+        return PersistenceURI.createFileURI(file, uriScheme());
+    }
+
+    @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
@@ -61,17 +72,7 @@ public class CoreContext implements Context {
     }
 
     @Override
-    public URI createURI(URI uri) {
-        return PersistenceURI.createURI(uri);
-    }
-
-    @Override
-    public URI createFileURI(File file) {
-        return PersistenceURI.createFileURI(file, uriScheme());
-    }
-
-    @Override
-    public Class<?> directWriteClass() {
+    public Class<? extends DirectWriteStore> directWriteClass() {
         throw new UnsupportedOperationException();
     }
 
