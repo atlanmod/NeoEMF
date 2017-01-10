@@ -12,12 +12,17 @@
 package fr.inria.atlanmod.neoemf.io;
 
 /**
- *
+ * Exception thrown when an {@link fr.inria.atlanmod.neoemf.core.Id} is already defined in a datastore.
  */
 public class AlreadyExistingIdException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Instantiates a new {@code AlreadyExistingIdException} with a detail message.
+     *
+     * @param message the detail message
+     */
     public AlreadyExistingIdException(String message) {
         super(message);
     }

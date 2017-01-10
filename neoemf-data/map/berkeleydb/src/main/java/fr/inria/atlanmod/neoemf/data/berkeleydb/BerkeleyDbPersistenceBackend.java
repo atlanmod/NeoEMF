@@ -25,9 +25,9 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ClassInfoSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ContainerInfoSerializer;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.FKSerializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.IdSerializer;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.Serializer;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ObjectSerializer;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -49,6 +49,13 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     private static final String KEY_FEATURES = "features";
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
     private boolean isClosed = true;
+
+    private static final IdSerializer idSerializer = new IdSerializer();
+    private static final FeatureKeySerializer fkSerializer = new FeatureKeySerializer();
+    private static final ClassInfoSerializer classSerializer = new ClassInfoSerializer();
+    private static final ContainerInfoSerializer containerSerializer = new ContainerInfoSerializer();
+    private static final ObjectSerializer objSerializer = new ObjectSerializer();
+
     /**
      * A persistent map that stores the container of persistent EObjects.
      */
@@ -162,26 +169,26 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
      * Retrieves container for a given object id.
      */
     public ContainerInfo containerFor(Id id) {
-        ContainerInfo result = null;
-        DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
+        ContainerInfo containerInfo = null;
+        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (containers.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                result = ContainerInfoSerializer.deserialize(data);
+                containerInfo = containerSerializer.deserialize(data);
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return result;
+        return containerInfo;
     }
 
     /**
      * Stores containter information for an object id
      */
     public void storeContainer(Id id, ContainerInfo container) {
-        DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
-        DatabaseEntry value = new DatabaseEntry(ContainerInfoSerializer.serialize(container));
+        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
+        DatabaseEntry value = new DatabaseEntry(containerSerializer.serialize(container));
         try {
             containers.put(null, key, value);
         } catch (DatabaseException e) {
@@ -193,26 +200,26 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
      * Retrieves metaclass (EClass) for a given object id
      */
     public ClassInfo metaclassFor(Id id) {
-        ClassInfo result = null;
-        DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
+        ClassInfo classInfo = null;
+        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
         DatabaseEntry value = new DatabaseEntry();
         try {
             if (instances.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 byte[] data = value.getData();
-                result = ClassInfoSerializer.deserialize(data);
+                classInfo = classSerializer.deserialize(data);
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return result;
+        return classInfo;
     }
 
     /**
      * Stores metaclass (EClass) information for an object id.
      */
     public void storeMetaclass(Id id, ClassInfo metaclass) {
-        DatabaseEntry key = new DatabaseEntry(IdSerializer.serialize(id));
-        DatabaseEntry value = new DatabaseEntry(ClassInfoSerializer.serialize(metaclass));
+        DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
+        DatabaseEntry value = new DatabaseEntry(classSerializer.serialize(metaclass));
         try {
             instances.put(null, key, value);
         } catch (DatabaseException e) {
@@ -223,77 +230,77 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Store the value of a given feature.
      */
-    public Object storeValue(FeatureKey fk, Object obj) {
-        Object result = null;
+    public Object storeValue(FeatureKey featureKey, Object obj) {
+        Object old = null;
         try {
-            DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
-            DatabaseEntry value = new DatabaseEntry(Serializer.serialize(obj));
+            DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
+            DatabaseEntry value = new DatabaseEntry(objSerializer.serialize(obj));
             features.put(null, key, value);
-            result = obj;
+            old = obj;
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return result;
+        return old;
     }
 
     /**
      * Retrieves the value of a given feature.
      */
-    public Object valueOf(FeatureKey fk) {
-        DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
+    public Object valueOf(FeatureKey featureKey) {
+        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
-        Object result = null;
+        Object old = null;
         try {
             if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                result = Serializer.deserialize(value.getData());
+                old = objSerializer.deserialize(value.getData());
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return result;
+        return old;
     }
 
     /**
      * Removes the value of a given feature. The feature becomes unset.
      */
-    public Object removeFeature(FeatureKey fk) {
-        DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
+    public Object removeFeature(FeatureKey featureKey) {
+        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
-        Object result = null;
+        Object old = null;
         try {
             features.get(null, key, value, LockMode.DEFAULT);
             features.delete(null, key);
-            result = Serializer.deserialize(value.getData());
+            old = objSerializer.deserialize(value.getData());
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return result;
+        return old;
     }
 
     /**
      * Return true if the feature was set, false otherwise.
      */
-    public boolean isFeatureSet(FeatureKey fk) {
-        boolean result = false;
-        DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
+    public boolean isFeatureSet(FeatureKey featureKey) {
+        boolean isSet = false;
+        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         try {
-            result = (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
+            isSet = (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return result;
+        return isSet;
     }
 
     /**
      * Stores the single value of a given multivalued feature at the given index.
      */
-    public Object storeValueAtIndex(MultivaluedFeatureKey fk, Object val) {
+    public Object storeValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
         try {
-            DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
-            DatabaseEntry value = new DatabaseEntry(Serializer.serialize(val));
+            DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
+            DatabaseEntry value = new DatabaseEntry(objSerializer.serialize(obj));
             multivaluedFeatures.put(null, key, value);
-            return val;
+            return obj;
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
@@ -304,18 +311,18 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Retrieves the value of a given multivalued feature at a given index.
      */
-    public Object valueAtIndex(MultivaluedFeatureKey fk) {
-        DatabaseEntry key = new DatabaseEntry(FKSerializer.serialize(fk));
+    public Object valueAtIndex(MultivaluedFeatureKey featureKey) {
+        DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
-        Object result = null;
+        Object old = null;
         try {
             if (multivaluedFeatures.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                result = Serializer.deserialize(value.getData());
+                old = objSerializer.deserialize(value.getData());
             }
         } catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-        return result;
+        return old;
     }
 
     /**

@@ -35,14 +35,22 @@ import static java.util.Objects.isNull;
 
 /**
  * An handler able to persist newly created data in a {@link PersistenceBackend}.
+ *
+ * @param <P> the type of the {@link PersistenceBackend} targeted by this handler.
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
+    /**
+     * The default cache size. It is calculated according to the maximum memory dedicated to the JVM.
+     */
     protected static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
 
+    /**
+     * The default operation between commits. It is calculated according to the maximum memory dedicated to the JVM.
+     */
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
-    private final P persistenceBackend;
+    private final P backend;
 
     private final Deque<Id> elementIdStack;
 
@@ -72,8 +80,13 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     private long opCount;
 
-    protected AbstractPersistenceHandler(P persistenceBackend) {
-        this.persistenceBackend = persistenceBackend;
+    /**
+     * Instantiates a new {@code AbstractPersistenceHandler} with its targeted {@link PersistenceBackend}.
+     *
+     * @param backend the targetted persistence backend
+     */
+    protected AbstractPersistenceHandler(P backend) {
+        this.backend = backend;
         this.opCount = 0;
         this.elementIdStack = new ArrayDeque<>();
 
@@ -103,18 +116,63 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         return value * factor;
     }
 
+    /**
+     * Returns the targeted {@link PersistenceBackend}.
+     *
+     * @return the persistence backend
+     */
     protected P getPersistenceBackend() {
-        return persistenceBackend;
+        return backend;
     }
 
+    /**
+     * Returns the {@link Id} of the given {@code reference}.
+     *
+     * @param reference the reference
+     *
+     * @return the {@link Id} of the given {@code reference}
+     */
     protected abstract Id getId(String reference);
 
+    /**
+     * Adds a new element.
+     *
+     * @param id    the identifier of the new element
+     * @param nsUri the uri of the new element
+     * @param name  the name of the new element
+     * @param root  {@code true} if the new element is a root node
+     */
     protected abstract void addElement(Id id, String nsUri, String name, boolean root);
 
+    /**
+     * Adds a new attribute to the element identified by the given {@code id}.
+     *
+     * @param id    the identifier of the element
+     * @param name  the name of the attribute
+     * @param index the index of the attribute if it's a multivalued attribute
+     * @param many  {@code true} if the attribute is multivalued
+     * @param value the value of the attribute
+     */
     protected abstract void addAttribute(Id id, String name, int index, boolean many, Object value);
 
+    /**
+     * Adds a new reference to the element identified by the given {@code id}.
+     *
+     * @param id          the identifier of the element
+     * @param name        the name of the reference
+     * @param index       the index of the reference if it's a multivalued reference
+     * @param many        {@code true} if the reference is multivalued
+     * @param containment {@code true} if the reference is a containment
+     * @param idReference the identifier of the referenced element
+     */
     protected abstract void addReference(Id id, String name, int index, boolean many, boolean containment, Id idReference);
 
+    /**
+     * Defines the metaclass to the element identified by the given {@code id}.
+     *
+     * @param id          the identifier of the element
+     * @param metaClassId the identifier of the metaclass
+     */
     protected abstract void setMetaClass(Id id, Id metaClassId);
 
     @Override
@@ -175,9 +233,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         }
         catch (NoSuchElementException e) {
             // Referenced element does not exist : we save it in a cache
-            unlinkedElementsMap.put(
-                    reference.getIdReference().getValue(),
-                    new UnlinkedElement(id, reference.getLocalName(), reference.getIndex(), reference.isMany(), reference.isContainment()));
+            unlinkedElementsMap.put(reference.getIdReference().getValue(), new UnlinkedElement(id, reference));
         }
     }
 
@@ -203,7 +259,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             conflictElementIdCache.invalidateAll();
         }
 
-        persistenceBackend.save();
+        backend.save();
     }
 
     @Override
@@ -212,9 +268,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Creates an element from the given {@code classifier} with the given {@code id}, and returns the given {@code id}.
+     * Creates an element from the given {@code classifier} with the given {@code id}.
      * <p/>
      * If {@code id} is {@code null}, it is calculated by the {@link #getId(String)} method.
+     *
+     * @param classifier the information about the new element
+     * @param id         the identifier of the element
      *
      * @return the given {@code id}
      */
@@ -233,6 +292,13 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         return id;
     }
 
+    /**
+     * Creates an element from the given {@code classifier}.
+     *
+     * @param classifier the information about the new element
+     *
+     * @return the identifier of the newly created element
+     */
     private Id createElement(final Classifier classifier) {
         checkNotNull(classifier.getId());
 
@@ -260,6 +326,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Creates a metaclass form the given {@code metaClassifier} and returns its {@link Id}.
+     *
+     * @param metaClassifier the meta classifier
      *
      * @return the {@link Id} of the newly created metaclass
      */
@@ -345,7 +413,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private void incrementAndCommit() {
         opCount = (opCount + 1) % OPS_BETWEEN_COMMITS_DEFAULT;
         if (opCount == 0) {
-            persistenceBackend.save();
+            backend.save();
         }
     }
 
@@ -366,6 +434,10 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             this.index = index;
             this.many = many;
             this.containment = containment;
+        }
+
+        public UnlinkedElement(Id id, Reference reference) {
+            this(id, reference.getLocalName(), reference.getIndex(), reference.isMany(), reference.isContainment());
         }
     }
 }

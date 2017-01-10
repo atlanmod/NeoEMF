@@ -86,27 +86,27 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
 
     @Override
     public PersistentStore createPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException {
-        PersistentStore eStore = createSpecificPersistentStore(resource, backend, options);
+        PersistentStore store = createSpecificPersistentStore(resource, backend, options);
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         if (!storeOptions.isEmpty()) {
             if (storeOptions.contains(CommonStoreOptions.CACHE_IS_SET)) {
-                eStore = new IsSetCachingStoreDecorator(eStore);
+                store = new IsSetCachingStoreDecorator(store);
             }
             if (storeOptions.contains(CommonStoreOptions.CACHE_STRUCTURAL_FEATURE)) {
-                eStore = new FeatureCachingStoreDecorator(eStore);
+                store = new FeatureCachingStoreDecorator(store);
             }
             if (storeOptions.contains(CommonStoreOptions.CACHE_SIZE)) {
-                eStore = new SizeCachingStoreDecorator(eStore);
+                store = new SizeCachingStoreDecorator(store);
             }
             if (storeOptions.contains(CommonStoreOptions.LOG)) {
-                eStore = new LoggingStoreDecorator(eStore);
+                store = new LoggingStoreDecorator(store);
             }
             if (storeOptions.contains(CommonStoreOptions.COUNT_LOADED_OBJECT)) {
-                eStore = new LoadedObjectCounterStoreDecorator(eStore);
+                store = new LoadedObjectCounterStoreDecorator(store);
             }
         }
-        return eStore;
+        return store;
     }
 
     protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;

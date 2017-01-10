@@ -27,8 +27,8 @@ import static java.util.Objects.isNull;
  */
 public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {
 
-    public BlueprintsNaiveHandler(BlueprintsPersistenceBackend persistenceBackend) {
-        super(persistenceBackend);
+    public BlueprintsNaiveHandler(BlueprintsPersistenceBackend backend) {
+        super(backend);
     }
 
     @Override

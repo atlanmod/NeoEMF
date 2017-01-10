@@ -26,6 +26,8 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
@@ -50,6 +52,7 @@ class PersistentEObjectAdapter {
     /**
      * Returns the given {@code object} adapted in a specific {@code type}.
      *
+     * @param <T>             the type of the adapted object
      * @param adaptableObject the object to adapt
      * @param adapterType     the class in which the object must be adapted
      *
@@ -58,7 +61,7 @@ class PersistentEObjectAdapter {
      *
      * @throws NullPointerException if the {@code type} is {@code null}
      */
-    public static <T extends PersistentEObject> T getAdapter(Object adaptableObject, Class<T> adapterType) {
+    public static <T extends PersistentEObject> T getAdapter(@Nullable Object adaptableObject, Class<T> adapterType) {
         if (isNull(adaptableObject)) {
             return null;
         }
@@ -93,7 +96,7 @@ class PersistentEObjectAdapter {
      *
      * @see #getAdapter(Object, Class)
      */
-    public static PersistentEObject getAdapter(Object adaptableObject) {
+    public static PersistentEObject getAdapter(@Nullable Object adaptableObject) {
         return getAdapter(adaptableObject, PersistentEObject.class);
     }
 

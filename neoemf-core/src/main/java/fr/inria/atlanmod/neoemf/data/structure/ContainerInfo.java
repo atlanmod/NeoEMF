@@ -18,6 +18,8 @@ import org.eclipse.emf.ecore.EReference;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -27,27 +29,33 @@ public class ContainerInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Nonnull
     private final Id id;
 
+    @Nonnull
     private final String name;
 
-    protected ContainerInfo(Id id, String name) {
+    protected ContainerInfo(@Nonnull Id id, @Nonnull String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
 
-    public static ContainerInfo from(PersistentEObject eObject, EReference eReference) {
-        return new ContainerInfo(eObject.id(), eReference.getName());
+    @Nonnull
+    public static ContainerInfo from(@Nonnull PersistentEObject object, @Nonnull EReference reference) {
+        return new ContainerInfo(object.id(), reference.getName());
     }
 
-    public static ContainerInfo of(Id id, String name) {
+    @Nonnull
+    public static ContainerInfo of(@Nonnull Id id, @Nonnull String name) {
         return new ContainerInfo(id, name);
     }
 
+    @Nonnull
     public Id id() {
         return id;
     }
 
+    @Nonnull
     public String name() {
         return name;
     }

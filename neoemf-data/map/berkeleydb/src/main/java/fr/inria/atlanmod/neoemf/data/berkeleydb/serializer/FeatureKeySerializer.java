@@ -15,13 +15,13 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-public class FKSerializer {
+public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
-    public static byte[] serialize(FeatureKey fk) {
-        return SerializationUtils.serialize(fk);
+    public byte[] serialize(FeatureKey value) {
+        return SerializationUtils.serialize(value);
     }
 
-    public static FeatureKey deserialize(byte[] data) {
+    public FeatureKey deserialize(byte[] data) {
         return (FeatureKey) SerializationUtils.deserialize(data);
     }
 }

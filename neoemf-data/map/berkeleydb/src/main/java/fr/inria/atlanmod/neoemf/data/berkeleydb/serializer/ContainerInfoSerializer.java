@@ -15,13 +15,13 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-public class ContainerInfoSerializer {
+public class ContainerInfoSerializer implements Serializer<ContainerInfo> {
 
-    public static byte[] serialize(ContainerInfo ci) {
-        return SerializationUtils.serialize(ci);
+    public byte[] serialize(ContainerInfo value) {
+        return SerializationUtils.serialize(value);
     }
 
-    public static ContainerInfo deserialize(byte[] data) {
+    public ContainerInfo deserialize(byte[] data) {
         return (ContainerInfo) SerializationUtils.deserialize(data);
     }
 }

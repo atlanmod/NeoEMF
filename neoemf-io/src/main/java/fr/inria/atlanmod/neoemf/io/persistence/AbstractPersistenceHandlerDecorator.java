@@ -22,6 +22,11 @@ public abstract class AbstractPersistenceHandlerDecorator implements Persistence
 
     private final PersistenceHandler handler;
 
+    /**
+     * Instantiates a new {@code AbstractPersistenceHandlerDecorator} with an embed handler.
+     *
+     * @param handler the embed handler
+     */
     public AbstractPersistenceHandlerDecorator(PersistenceHandler handler) {
         this.handler = handler;
     }

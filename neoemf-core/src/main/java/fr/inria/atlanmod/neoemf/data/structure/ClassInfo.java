@@ -19,6 +19,9 @@ import org.eclipse.emf.ecore.EPackage;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
@@ -29,28 +32,34 @@ public class ClassInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Nonnull
     private final String name;
 
+    @Nonnull
     private final String uri;
 
-    protected ClassInfo(String name, String uri) {
+    protected ClassInfo(@Nonnull String name, @Nonnull String uri) {
         this.name = checkNotNull(name);
         this.uri = checkNotNull(uri);
     }
 
-    public static ClassInfo from(PersistentEObject object) {
+    @Nonnull
+    public static ClassInfo from(@Nonnull PersistentEObject object) {
         final EClass eClass = object.eClass();
         return of(eClass.getName(), eClass.getEPackage().getNsURI());
     }
 
-    public static ClassInfo of(String name, String uri) {
+    @Nonnull
+    public static ClassInfo of(@Nonnull String name, @Nonnull String uri) {
         return new ClassInfo(name, uri);
     }
 
+    @Nonnull
     public String name() {
         return name;
     }
 
+    @Nonnull
     public String uri() {
         return uri;
     }
@@ -60,6 +69,7 @@ public class ClassInfo implements Serializable {
      *
      * @return an {@link EClass}, or {@code null} if it can not be found
      */
+    @Nullable
     public EClass eClass() {
         EClass eClass = null;
         EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);

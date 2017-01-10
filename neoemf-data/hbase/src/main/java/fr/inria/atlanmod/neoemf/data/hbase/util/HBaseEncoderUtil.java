@@ -84,12 +84,12 @@ public class HBaseEncoderUtil {
             return null;
         }
 
-        String[] result = null;
+        String[] strings = null;
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         ObjectInputStream objectInputStream = null;
         try {
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            result = (String[]) objectInputStream.readObject();
+            strings = (String[]) objectInputStream.readObject();
         }
         catch (IOException e) {
             NeoLogger.error("Unable to convert ''{0}'' to String[]", Arrays.toString(bytes));
@@ -100,6 +100,6 @@ public class HBaseEncoderUtil {
         finally {
             IOUtils.closeQuietly(objectInputStream);
         }
-        return result;
+        return strings;
     }
 }

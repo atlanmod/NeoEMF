@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.hash;
 
 /**
- * A factory of {@link Hasher}.
+ * The factory of {@link Hasher}.
  */
 public class HasherFactory {
 

@@ -15,13 +15,13 @@ import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-public class ClassInfoSerializer {
+public class ClassInfoSerializer implements Serializer<ClassInfo> {
 
-    public static byte[] serialize(ClassInfo ci) {
-        return SerializationUtils.serialize(ci);
+    public byte[] serialize(ClassInfo value) {
+        return SerializationUtils.serialize(value);
     }
 
-    public static ClassInfo deserialize(byte[] data) {
+    public ClassInfo deserialize(byte[] data) {
         return (ClassInfo) SerializationUtils.deserialize(data);
     }
 }

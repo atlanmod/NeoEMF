@@ -59,30 +59,30 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
         checkArgument(backend instanceof BerkeleyDbPersistenceBackend,
                 "Trying to create a BerkeleyDB store with an invalid backend: " + backend.getClass().getName());
 
-        PersistentStore eStore = null;
+        PersistentStore store = null;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
         if (storeOptions.isEmpty() || storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
-            eStore = new DirectWriteBerkeleyDbStore(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteBerkeleyDbStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.CACHE_MANY)) {
-            eStore = new DirectWriteBerkeleyDbCacheManyStore(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteBerkeleyDbCacheManyStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS)) {
-            eStore = new DirectWriteBerkeleyDbListsStore(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteBerkeleyDbListsStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.DIRECT_WRITE_INDICES)) {
-            eStore = new DirectWriteBerkeleyDbIndicesStore(resource, (BerkeleyDbPersistenceBackend) backend);
+            store = new DirectWriteBerkeleyDbIndicesStore(resource, (BerkeleyDbPersistenceBackend) backend);
         }
         // Autocommit
-        if (isNull(eStore)) {
+        if (isNull(store)) {
             throw new InvalidDataStoreException();
         }
         else if (storeOptions.contains(BerkeleyDbStoreOptions.AUTOCOMMIT)) {
-            eStore = new AutocommitStoreDecorator(eStore);
+            store = new AutocommitStoreDecorator(store);
         }
-        return eStore;
+        return store;
     }
 
     @Override

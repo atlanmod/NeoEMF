@@ -13,15 +13,27 @@ package fr.inria.atlanmod.neoemf.core;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
+/**
+ * An identifier used to identify a {@link PersistentEObject} in data stores. Each {@code Id} must be unique to ensure
+ * data consistency.
+ */
 public interface Id extends Comparable<Id>, Serializable {
 
     /**
-     * Returns the {@code String} representation of the {@code Id}.
+     * Returns the {@code String} representation of this {@code Id}.
+     *
+     * @return a string
      */
+    @Nonnull
     String toString();
 
     /**
-     * Returns the {@code long} number of the {@code Id}.
+     * Returns the {@code long} number of this {@code Id}.
+     *
+     * @return a long
      */
-    long toLong();
+    @Nonnull
+    Long toLong();
 }

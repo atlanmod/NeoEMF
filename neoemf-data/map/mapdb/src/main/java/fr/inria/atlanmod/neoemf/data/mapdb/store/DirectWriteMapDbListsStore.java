@@ -36,162 +36,162 @@ public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
 
     private final Cache<FeatureKey, Object> objectsCache;
 
-    public DirectWriteMapDbListsStore(Resource.Internal resource, MapDbPersistenceBackend persistenceBackend) {
-        super(resource, persistenceBackend);
+    public DirectWriteMapDbListsStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
+        super(resource, backend);
         this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
-    public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        int returnValue;
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
+    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        int index;
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        List<Object> list = manyValueFrom(getFromMap(object, feature));
         if (isNull(list)) {
-            returnValue = NO_INDEX;
+            index = NO_INDEX;
         }
         else if (feature instanceof EAttribute) {
-            returnValue = list.indexOf(serializeToProperty((EAttribute) feature, value));
+            index = list.indexOf(serializeToProperty((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
-            returnValue = list.indexOf(childEObject.id());
+            index = list.indexOf(childEObject.id());
         }
-        return returnValue;
+        return index;
     }
 
     @Override
-    public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        int returnValue;
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
+    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        int index;
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        List<Object> list = manyValueFrom(getFromMap(object, feature));
         if (isNull(list)) {
-            returnValue = NO_INDEX;
+            index = NO_INDEX;
         }
         else if (feature instanceof EAttribute) {
-            returnValue = list.lastIndexOf(serializeToProperty((EAttribute) feature, value));
+            index = list.lastIndexOf(serializeToProperty((EAttribute) feature, value));
         }
         else {
             PersistentEObject childEObject = PersistentEObject.from(value);
-            returnValue = list.lastIndexOf(childEObject.id());
+            index = list.lastIndexOf(childEObject.id());
         }
-        return returnValue;
+        return index;
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
-        persistenceBackend.storeValue(featureKey, new ArrayList<>());
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        backend.storeValue(featureKey, new ArrayList<>());
     }
 
     @Override
-    protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        Object value = getFromMap(object, eAttribute);
-        if (eAttribute.isMany()) {
-            value = manyValueFrom(value).get(index);
+    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        Object soughtAttribute = getFromMap(object, attribute);
+        if (attribute.isMany()) {
+            soughtAttribute = manyValueFrom(soughtAttribute).get(index);
         }
-        return parseProperty(eAttribute, value);
+        return parseProperty(attribute, soughtAttribute);
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference eReference, int index) {
-        Object value = getFromMap(object, eReference);
-        if (eReference.isMany()) {
-            value = eObject((Id) manyValueFrom(value).get(index));
+    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+        Object soughtReference = getFromMap(object, reference);
+        if (reference.isMany()) {
+            soughtReference = eObject((Id) manyValueFrom(soughtReference).get(index));
         }
-        return eObject((Id) value);
+        return eObject((Id) soughtReference);
     }
 
     @Override
-    protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-        Object oldValue;
-        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
-        if (!eAttribute.isMany()) {
-            oldValue = persistenceBackend.storeValue(featureKey, serializeToProperty(eAttribute, value));
+    protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
+        Object old;
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
+        if (!attribute.isMany()) {
+            old = backend.storeValue(featureKey, serializeToProperty(attribute, value));
         }
         else {
             List<Object> list = manyValueFrom(getFromMap(featureKey));
-            oldValue = list.get(index);
-            list.set(index, serializeToProperty(eAttribute, value));
-            persistenceBackend.storeValue(featureKey, list.toArray());
-            oldValue = parseProperty(eAttribute, oldValue);
+            old = list.get(index);
+            list.set(index, serializeToProperty(attribute, value));
+            backend.storeValue(featureKey, list.toArray());
+            old = parseProperty(attribute, old);
         }
-        return parseProperty(eAttribute, oldValue);
+        return parseProperty(attribute, old);
     }
 
     @Override
-    protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         Object oldId;
-        FeatureKey featureKey = FeatureKey.from(object, eReference);
-        updateContainment(object, eReference, value);
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+        updateContainment(object, reference, value);
         updateInstanceOf(value);
-        if (!eReference.isMany()) {
-            oldId = persistenceBackend.storeValue(featureKey, value.id());
+        if (!reference.isMany()) {
+            oldId = backend.storeValue(featureKey, value.id());
         }
         else {
             List<Object> list = manyValueFrom(getFromMap(featureKey));
             oldId = list.get(index);
             list.set(index, value.id());
-            persistenceBackend.storeValue(featureKey, list.toArray());
+            backend.storeValue(featureKey, list.toArray());
         }
         return isNull(oldId) ? null : eObject((Id) oldId);
     }
 
     @Override
-    protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
+    protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
         List<Object> list = manyValueFrom(getFromMap(featureKey));
-        list.add(index, serializeToProperty(eAttribute, value));
-        persistenceBackend.storeValue(featureKey, list.toArray());
+        list.add(index, serializeToProperty(attribute, value));
+        backend.storeValue(featureKey, list.toArray());
     }
 
     @Override
-    protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
-        FeatureKey featureKey = FeatureKey.from(object, eReference);
-        updateContainment(object, eReference, referencedObject);
+    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject referencedObject) {
+        FeatureKey featureKey = FeatureKey.from(object, reference);
+        updateContainment(object, reference, referencedObject);
         updateInstanceOf(referencedObject);
         List<Object> list = manyValueFrom(getFromMap(featureKey));
         list.add(index, referencedObject.id());
-        persistenceBackend.storeValue(featureKey, list.toArray());
+        backend.storeValue(featureKey, list.toArray());
     }
 
     @Override
-    protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        FeatureKey featureKey = FeatureKey.from(object, eAttribute);
+    protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        FeatureKey featureKey = FeatureKey.from(object, attribute);
         List<Object> list = manyValueFrom(getFromMap(featureKey));
-        Object oldValue = list.get(index);
+        Object old = list.get(index);
         list.remove(index);
-        persistenceBackend.storeValue(featureKey, list.toArray());
-        return parseProperty(eAttribute, oldValue);
+        backend.storeValue(featureKey, list.toArray());
+        return parseProperty(attribute, old);
     }
 
     @Override
-    protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
-        FeatureKey featureKey = FeatureKey.from(object, eReference);
+    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
+        FeatureKey featureKey = FeatureKey.from(object, reference);
         List<Object> list = manyValueFrom(getFromMap(featureKey));
         Object oldId = list.get(index);
         list.remove(index);
-        persistenceBackend.storeValue(featureKey, list.toArray());
+        backend.storeValue(featureKey, list.toArray());
         return eObject((Id) oldId);
     }
 
     @Override
-    public int size(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject persistentEObject = PersistentEObject.from(object);
-        List<Object> list = manyValueFrom(getFromMap(persistentEObject, feature));
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        List<Object> list = manyValueFrom(getFromMap(object, feature));
         return isNull(list) ? 0 : list.size();
     }
 
     @Override
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
-        Object returnValue;
+        Object value;
         FeatureKey featureKey = FeatureKey.from(object, feature);
         if (!feature.isMany()) {
-            returnValue = persistenceBackend.valueOf(featureKey);
+            value = backend.valueOf(featureKey);
         }
         else {
-            returnValue = objectsCache.get(featureKey, new FeatureKeyCacheLoader());
+            value = objectsCache.get(featureKey, new FeatureKeyCacheLoader());
         }
-        return returnValue;
+        return value;
     }
 
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
@@ -205,21 +205,17 @@ public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
 
         @Override
         public Object apply(FeatureKey key) {
-            Object returnValue;
-            Object value = persistenceBackend.valueOf(key);
+            Object value = backend.valueOf(key);
             if (isNull(value)) {
-                returnValue = new ArrayList<>();
+                value = new ArrayList<>();
             }
             else if (value instanceof Object[]) {
                 Object[] array = (Object[]) value;
                 List<Object> list = new ArrayList<>(array.length + ARRAY_SIZE_OFFSET);
                 CollectionUtils.addAll(list, array);
-                returnValue = list;
+                value = list;
             }
-            else {
-                returnValue = value;
-            }
-            return returnValue;
+            return value;
         }
     }
 }

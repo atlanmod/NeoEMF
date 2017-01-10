@@ -53,7 +53,7 @@ public interface PersistentStore extends EStore {
     }
 
     /**
-     * Utility method used for tests. Returns the decorated eStore, if it exists.
+     * Utility method used for tests. Returns the decorated {@link PersistentStore}, if it exists.
      */
     PersistentStore getEStore();
 

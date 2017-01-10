@@ -20,22 +20,27 @@ import org.mapdb.Serializer;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
+/**
+ * Serializer for {@link MultivaluedFeatureKey}.
+ */
 public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
 
     final Serializer<Integer> intSerializer = INTEGER;
 
     @Override
-    public void serialize(DataOutput2 out, FeatureKey fk) throws IOException {
-        super.serialize(out, fk);
-        intSerializer.serialize(out, ((MultivaluedFeatureKey) fk).position());
+    public void serialize(@Nonnull DataOutput2 out, @Nonnull FeatureKey key) throws IOException {
+        super.serialize(out, key);
+        intSerializer.serialize(out, ((MultivaluedFeatureKey) key).position());
     }
 
     @Override
-    public FeatureKey deserialize(DataInput2 input, int i) throws IOException {
+    public FeatureKey deserialize(@Nonnull DataInput2 in, int i) throws IOException {
         return MultivaluedFeatureKey.of(
-                idSerializer.deserialize(input, -1),
-                stringSerializer.deserialize(input, -1),
-                intSerializer.deserialize(input, -1));
+                idSerializer.deserialize(in, -1),
+                stringSerializer.deserialize(in, -1),
+                intSerializer.deserialize(in, -1));
     }
 
 }

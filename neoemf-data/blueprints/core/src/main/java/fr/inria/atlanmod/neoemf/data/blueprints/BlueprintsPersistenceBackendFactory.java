@@ -78,15 +78,15 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         checkArgument(backend instanceof BlueprintsPersistenceBackend,
                 "Trying to create a Graph-based EStore with an invalid backend");
 
-        PersistentStore eStore;
+        PersistentStore store;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
         if (storeOptions.isEmpty() || storeOptions.contains(BlueprintsStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
-            eStore = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
+            store = new DirectWriteBlueprintsStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else if (storeOptions.contains(BlueprintsStoreOptions.CACHE_MANY)) {
-            eStore = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
+            store = new DirectWriteBlueprintsCacheManyStore(resource, (BlueprintsPersistenceBackend) backend);
         }
         else {
             throw new InvalidDataStoreException("No valid base EStore found in the options");
@@ -95,13 +95,13 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         if (storeOptions.contains(BlueprintsStoreOptions.AUTOCOMMIT)) {
             if (options.containsKey(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK)) {
                 int autoCommitChunk = Integer.parseInt((String) options.get(BlueprintsResourceOptions.AUTOCOMMIT_CHUNK));
-                eStore = new AutocommitStoreDecorator(eStore, autoCommitChunk);
+                store = new AutocommitStoreDecorator(store, autoCommitChunk);
             }
             else {
-                eStore = new AutocommitStoreDecorator(eStore);
+                store = new AutocommitStoreDecorator(store);
             }
         }
-        return eStore;
+        return store;
     }
 
     @Override

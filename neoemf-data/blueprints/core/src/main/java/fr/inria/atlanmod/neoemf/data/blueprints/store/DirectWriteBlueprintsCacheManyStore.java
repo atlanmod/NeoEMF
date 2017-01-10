@@ -33,21 +33,21 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
     // TODO Cache many properties in addition to vertices
     private final Cache<FeatureKey, Object[]> verticesCache;
 
-    public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend graph) {
-        super(resource, graph);
+    public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend backend) {
+        super(resource, backend);
         this.verticesCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference eReference, int index) {
-        if (eReference.isMany()) {
-            FeatureKey key = FeatureKey.from(object, eReference);
+    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+        if (reference.isMany()) {
+            FeatureKey key = FeatureKey.from(object, reference);
             Object[] list = verticesCache.getIfPresent(key);
             if (nonNull(list)) {
                 Object o = list[index];
                 if (isNull(o)) {
                     NeoLogger.warn("Inconsistent content in CachedMany map, null value found for key " + key + " at index " + index);
-                    return super.get(object, eReference, index);
+                    return super.get(object, reference, index);
                 }
                 else {
                     NeoLogger.debug("Found in cache {0} - {1} - idx={2}", key, object.eClass().getName(), index);
@@ -55,18 +55,18 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
                 }
             }
             else {
-                Vertex vertex = persistenceBackend.getVertex(object.id());
-                Integer size = getSize(vertex, eReference);
+                Vertex vertex = backend.getVertex(object.id());
+                Integer size = getSize(vertex, reference);
                 Object[] vertices = new Object[size];
                 verticesCache.put(key, vertices);
                 if (index < 0 || index >= size) {
                     NeoLogger.error("Invalid get index {0}", index);
                     throw new IndexOutOfBoundsException("Invalid get index " + index);
                 }
-                for (Edge edge : vertex.getEdges(Direction.OUT, eReference.getName())) {
+                for (Edge edge : vertex.getEdges(Direction.OUT, reference.getName())) {
                     if (isNull(edge.getProperty(POSITION))) {
-                        NeoLogger.error("An edge corresponding to the many EReference {0} does not have a position property", eReference.getName());
-                        throw new RuntimeException("An edge corresponding to the many EReference " + eReference.getName() + " does not have a position property");
+                        NeoLogger.error("An edge corresponding to the many EReference {0} does not have a position property", reference.getName());
+                        throw new RuntimeException("An edge corresponding to the many EReference " + reference.getName() + " does not have a position property");
                     }
                     else {
                         Integer position = edge.getProperty(POSITION);
@@ -79,7 +79,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
             }
         }
         else {
-            return super.getReference(object, eReference, index);
+            return super.getReference(object, reference, index);
         }
     }
 }

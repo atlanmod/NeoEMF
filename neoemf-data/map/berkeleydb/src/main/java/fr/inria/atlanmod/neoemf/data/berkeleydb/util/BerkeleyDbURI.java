@@ -29,15 +29,13 @@ public class BerkeleyDbURI extends PersistenceURI {
     }
 
     public static URI createURI(URI uri) {
-        URI returnValue;
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
-            returnValue = createFileURI(FileUtils.getFile(uri.toFileString()));
+            return createFileURI(FileUtils.getFile(uri.toFileString()));
         } else if (Objects.equals(SCHEME, uri.scheme())) {
-            returnValue = PersistenceURI.createURI(uri);
+            return PersistenceURI.createURI(uri);
         } else {
             throw new IllegalArgumentException(MessageFormat.format("Can not create BerkeleyDbURI from the URI scheme {0}", uri.scheme()));
         }
-        return returnValue;
     }
 
     public static URI createFileURI(File file) {

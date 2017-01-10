@@ -29,64 +29,59 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator 
 
     private final Cache<FeatureKey, Integer> sizesCache;
 
-    public SizeCachingStoreDecorator(PersistentStore eStore) {
-        this(eStore, 10000);
+    public SizeCachingStoreDecorator(PersistentStore store) {
+        this(store, 10000);
     }
 
-    public SizeCachingStoreDecorator(PersistentStore eStore, int cacheSize) {
-        super(eStore);
+    public SizeCachingStoreDecorator(PersistentStore store, int cacheSize) {
+        super(store);
         this.sizesCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         sizesCache.put(featureKey, 0);
-        super.unset(object, feature);
+        super.unset(internalObject, feature);
     }
 
     @Override
-    public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         Integer size = sizesCache.getIfPresent(featureKey);
-        return isNull(size) ? super.isEmpty(object, feature) : (size == 0);
+        return isNull(size) ? super.isEmpty(internalObject, feature) : (size == 0);
     }
 
     @Override
-    public int size(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
-        Integer size = sizesCache.getIfPresent(featureKey);
-        if (isNull(size)) {
-            size = super.size(object, feature);
-            sizesCache.put(featureKey, size);
-        }
-        return size;
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        return sizesCache.get(featureKey, key -> super.size(internalObject, feature));
     }
 
     @Override
-    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         Integer size = sizesCache.getIfPresent(featureKey);
         if (nonNull(size)) {
             sizesCache.put(featureKey, size + 1);
         }
-        super.add(object, feature, index, value);
+        super.add(internalObject, feature, index, value);
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         Integer size = sizesCache.getIfPresent(featureKey);
         if (nonNull(size)) {
             sizesCache.put(featureKey, size - 1);
         }
-        return super.remove(object, feature, index);
+        return super.remove(internalObject, feature, index);
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         sizesCache.put(featureKey, 0);
-        super.clear(object, feature);
+        super.clear(internalObject, feature);
     }
 }

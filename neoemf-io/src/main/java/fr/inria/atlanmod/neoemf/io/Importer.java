@@ -22,11 +22,22 @@ import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+/**
+ * The import factory.
+ */
 public class Importer {
 
     private Importer() {
     }
 
+    /**
+     * Import a XMI file into persistence handlers.
+     *
+     * @param stream              the stream of XMI data
+     * @param persistenceHandlers persistence handlers where to store the read data
+     *
+     * @throws IOException if an error occurred during the import
+     */
     public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws IOException {
         checkArgument(persistenceHandlers.length > 0);
 

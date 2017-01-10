@@ -20,6 +20,8 @@ import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import java.util.function.Function;
+
 import static java.util.Objects.isNull;
 
 /**
@@ -29,82 +31,77 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
 
     private final Cache<FeatureKey, Object> objectsCache;
 
-    public FeatureCachingStoreDecorator(PersistentStore eStore) {
-        this(eStore, 10000);
+    public FeatureCachingStoreDecorator(PersistentStore store) {
+        this(store, 10000);
     }
 
-    public FeatureCachingStoreDecorator(PersistentStore eStore, int cacheSize) {
-        super(eStore);
+    public FeatureCachingStoreDecorator(PersistentStore store, int cacheSize) {
+        super(store);
         this.objectsCache = Caffeine.newBuilder().maximumSize(cacheSize).build();
     }
 
     @Override
-    public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, index);
-        Object returnValue = objectsCache.getIfPresent(featureKey);
-        if (isNull(returnValue)) {
-            returnValue = super.get(object, feature, index);
-            objectsCache.put(featureKey, returnValue);
-        }
-        return returnValue;
+    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, index);
+        return objectsCache.get(featureKey, key -> super.get(internalObject, feature, index));
     }
 
     @Override
-    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, index);
-        Object returnValue = super.set(object, feature, index, value);
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, index);
+        Object old = super.set(internalObject, feature, index, value);
         objectsCache.put(featureKey, value);
-        return returnValue;
+        return old;
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         if (!feature.isMany()) {
-            FeatureKey featureKey = FeatureKey.from(object, feature);
+            FeatureKey featureKey = FeatureKey.from(internalObject, feature);
             objectsCache.invalidate(featureKey);
         }
         else {
-            invalidateValues(object, feature, 0);
+            invalidateValues(internalObject, feature, 0);
         }
-        super.unset(object, feature);
+        super.unset(internalObject, feature);
     }
 
     @Override
-    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, index);
-        super.add(object, feature, index, value);
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, index);
+        super.add(internalObject, feature, index, value);
         objectsCache.put(featureKey, value);
-        invalidateValues(object, feature, index + 1);
+        invalidateValues(internalObject, feature, index + 1);
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        Object returnValue = super.remove(object, feature, index);
-        invalidateValues(object, feature, index);
-        return returnValue;
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        Object old = super.remove(internalObject, feature, index);
+        invalidateValues(internalObject, feature, index);
+        return old;
     }
 
     @Override
-    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        FeatureKey featureKey = MultivaluedFeatureKey.from(object, feature, targetIndex);
-        Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
-        invalidateValues(object, feature, Math.min(sourceIndex, targetIndex));
-        objectsCache.put(featureKey, returnValue);
-        return returnValue;
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        FeatureKey featureKey = MultivaluedFeatureKey.from(internalObject, feature, targetIndex);
+        Object old = super.move(internalObject, feature, targetIndex, sourceIndex);
+        invalidateValues(internalObject, feature, Math.min(sourceIndex, targetIndex));
+        objectsCache.put(featureKey, old);
+        return old;
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        super.clear(object, feature);
-        invalidateValues(object, feature, 0);
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        super.clear(internalObject, feature);
+        invalidateValues(internalObject, feature, 0);
     }
 
     /**
      * Remove cached elements, from a initial position to the size of an element.
      */
-    private void invalidateValues(InternalEObject object, EStructuralFeature feature, int startIndex) {
-        FeatureKey featureKey = FeatureKey.from(object, feature);
-        for (int i = startIndex; i < size(object, feature); i++) {
+    private void invalidateValues(InternalEObject internalObject, EStructuralFeature feature, int startIndex) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        for (int i = startIndex; i < size(internalObject, feature); i++) {
             objectsCache.invalidate(featureKey.withPosition(i));
         }
     }

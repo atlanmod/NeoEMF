@@ -29,13 +29,13 @@ import static java.util.Objects.isNull;
 
 public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements DirectWriteStore {
 
-    protected final P persistenceBackend;
+    protected final P backend;
 
     private final Resource.Internal resource;
 
-    public AbstractDirectWriteStore(Resource.Internal resource, P persistenceBackend) {
+    public AbstractDirectWriteStore(Resource.Internal resource, P backend) {
         this.resource = resource;
-        this.persistenceBackend = persistenceBackend;
+        this.backend = backend;
     }
 
     @Override
@@ -44,170 +44,171 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     @Override
+    // TODO Should returns null instead of this
     public PersistentStore getEStore() {
         return this;
     }
 
     @Override
     public void save() {
-        persistenceBackend.save();
+        backend.save();
     }
 
     @Override
-    public Object get(InternalEObject object, EStructuralFeature feature, int index) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            return getAttribute(eObject, (EAttribute) feature, index);
+            return getAttribute(object, (EAttribute) feature, index);
         }
         else {
-            return getReference(eObject, (EReference) feature, index);
+            return getReference(object, (EReference) feature, index);
         }
     }
 
     @Override
-    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            return setAttribute(eObject, (EAttribute) feature, index, value);
+            return setAttribute(object, (EAttribute) feature, index, value);
         }
         else {
-            PersistentEObject referencedEObject = PersistentEObject.from(value);
-            return setReference(eObject, (EReference) feature, index, referencedEObject);
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            return setReference(object, (EReference) feature, index, referencedObject);
         }
     }
 
     @Override
-    public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            return isSetAttribute(eObject, (EAttribute) feature);
+            return isSetAttribute(object, (EAttribute) feature);
         }
         else {
-            return isSetReference(eObject, (EReference) feature);
+            return isSetReference(object, (EReference) feature);
         }
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            unsetAttribute(eObject, (EAttribute) feature);
+            unsetAttribute(object, (EAttribute) feature);
         }
         else {
-            unsetReference(eObject, (EReference) feature);
+            unsetReference(object, (EReference) feature);
         }
     }
 
     @Override
-    public boolean isEmpty(InternalEObject object, EStructuralFeature feature) {
-        return size(object, feature) == 0;
+    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
+        return size(internalObject, feature) == 0;
     }
 
     @Override
-    public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         if (isNull(value)) {
             return false;
         }
 
-        PersistentEObject eObject = PersistentEObject.from(object);
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            return containsAttribute(eObject, (EAttribute) feature, value);
+            return containsAttribute(object, (EAttribute) feature, value);
         }
         else {
-            PersistentEObject referencedEObject = PersistentEObject.from(value);
-            return containsReference(eObject, (EReference) feature, referencedEObject);
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            return containsReference(object, (EReference) feature, referencedObject);
         }
     }
 
     @Override
-    public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            return indexOfAttribute(eObject, (EAttribute) feature, value);
+            return indexOfAttribute(object, (EAttribute) feature, value);
         }
         else {
-            PersistentEObject referencedEObject = PersistentEObject.from(value);
-            return indexOfReference(eObject, (EReference) feature, referencedEObject);
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            return indexOfReference(object, (EReference) feature, referencedObject);
         }
     }
 
     @Override
-    public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            return lastIndexOfAttribute(eObject, (EAttribute) feature, value);
+            return lastIndexOfAttribute(object, (EAttribute) feature, value);
         }
         else {
-            PersistentEObject referencedEObject = PersistentEObject.from(value);
-            return lastIndexOfReference(eObject, (EReference) feature, referencedEObject);
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            return lastIndexOfReference(object, (EReference) feature, referencedObject);
         }
     }
 
     @Override
-    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            addAttribute(eObject, (EAttribute) feature, index, value);
+            addAttribute(object, (EAttribute) feature, index, value);
         }
         else {
-            PersistentEObject referencedEObject = PersistentEObject.from(value);
-            addReference(eObject, (EReference) feature, index, referencedEObject);
+            PersistentEObject referencedObject = PersistentEObject.from(value);
+            addReference(object, (EReference) feature, index, referencedObject);
         }
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            return removeAttribute(eObject, (EAttribute) feature, index);
+            return removeAttribute(object, (EAttribute) feature, index);
         }
         else {
-            return removeReference(eObject, (EReference) feature, index);
+            return removeReference(object, (EReference) feature, index);
         }
     }
 
     @Override
-    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        Object movedElement = remove(object, feature, sourceIndex);
-        add(object, feature, targetIndex, movedElement);
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        Object movedElement = remove(internalObject, feature, sourceIndex);
+        add(internalObject, feature, targetIndex, movedElement);
         return movedElement;
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject eObject = PersistentEObject.from(object);
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         if (feature instanceof EAttribute) {
-            clearAttribute(eObject, (EAttribute) feature);
+            clearAttribute(object, (EAttribute) feature);
         }
         else {
-            clearReference(eObject, (EReference) feature);
+            clearReference(object, (EReference) feature);
         }
     }
 
     @Override
-    public Object[] toArray(InternalEObject object, EStructuralFeature feature) {
-        int size = size(object, feature);
-        Object[] result = new Object[size];
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        int size = size(internalObject, feature);
+        Object[] array = new Object[size];
         for (int index = 0; index < size; index++) {
-            result[index] = get(object, feature, index);
+            array[index] = get(internalObject, feature, index);
         }
-        return result;
+        return array;
     }
 
     @Override
     @SuppressWarnings("unchecked") // Unchecked cast 'Object' to 'T'
-    public <T> T[] toArray(InternalEObject object, EStructuralFeature feature, T[] array) {
-        int size = size(object, feature);
-        T[] result = array.length < size ? Arrays.copyOf(array, size) : array;
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        int size = size(internalObject, feature);
+        array = array.length < size ? Arrays.copyOf(array, size) : array;
         for (int index = 0; index < size; index++) {
-            result[index] = (T) get(object, feature, index);
+            array[index] = (T) get(internalObject, feature, index);
         }
-        return result;
-    }
-
-    @Override
-    public int hashCode(InternalEObject object, EStructuralFeature feature) {
-        return Arrays.hashCode(toArray(object, feature));
+        return array;
     }
 
     @Override
@@ -215,97 +216,112 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         throw new IllegalStateException("This method should not be called");
     }
 
-    protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+    @Override
+    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
+        return Arrays.hashCode(toArray(internalObject, feature));
+    }
+
+    @Override
+    public InternalEObject getContainer(InternalEObject internalObject) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object getReference(PersistentEObject object, EReference eReference, int index) {
+    @Override
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected Object getReference(PersistentEObject object, EReference reference, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean isSetAttribute(PersistentEObject object, EAttribute eAttribute) {
+    protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean isSetReference(PersistentEObject object, EReference eReference) {
+    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
-    protected void unsetAttribute(PersistentEObject object, EAttribute eAttribute) {
+    protected boolean isSetAttribute(PersistentEObject object, EAttribute attribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected void unsetReference(PersistentEObject object, EReference eReference) {
+    protected boolean isSetReference(PersistentEObject object, EReference reference) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean containsAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+    protected void unsetAttribute(PersistentEObject object, EAttribute attribute) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean containsReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected void unsetReference(PersistentEObject object, EReference reference) {
         throw new UnsupportedOperationException();
     }
 
-    protected int indexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+    protected boolean containsAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected int indexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
-    protected int lastIndexOfAttribute(PersistentEObject object, EAttribute eAttribute, Object value) {
+    protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected int lastIndexOfReference(PersistentEObject object, EReference eReference, PersistentEObject value) {
+    protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
-    protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
+    protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
+    protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
+    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
-    protected void clearAttribute(PersistentEObject object, EAttribute eAttribute) {
+    protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected void clearReference(PersistentEObject object, EReference eReference) {
+    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
         throw new UnsupportedOperationException();
     }
 
-    protected Object parseProperty(EAttribute eAttribute, Object property) {
+    protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected void clearReference(PersistentEObject object, EReference reference) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected Object parseProperty(EAttribute attribute, Object property) {
         if (isNull(property)) {
             return null;
         }
-        return EcoreUtil.createFromString(eAttribute.getEAttributeType(), property.toString());
+        return EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
     }
 
-    protected Object serializeToProperty(EAttribute eAttribute, Object value) {
+    protected Object serializeToProperty(EAttribute attribute, Object value) {
         if (isNull(value)) {
             return null;
         }
-        return EcoreUtil.convertToString(eAttribute.getEAttributeType(), value);
+        return EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 }

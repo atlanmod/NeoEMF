@@ -104,17 +104,17 @@ public class EcoreProcessor extends AbstractProcessor {
     @Override
     public void processAttribute(Attribute attribute) {
         EClass eClass = classesStack.getLast();
-        EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(attribute.getLocalName());
+        EStructuralFeature feature = eClass.getEStructuralFeature(attribute.getLocalName());
 
         // Checks that the attribute is well a attribute
-        if (eStructuralFeature instanceof EAttribute) {
-            EAttribute eAttribute = (EAttribute) eStructuralFeature;
+        if (feature instanceof EAttribute) {
+            EAttribute eAttribute = (EAttribute) feature;
             attribute.setMany(eAttribute.isMany());
             notifyAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
-        else if (eStructuralFeature instanceof EReference) {
+        else if (feature instanceof EReference) {
             processReference(Reference.from(attribute));
         }
     }
@@ -122,18 +122,18 @@ public class EcoreProcessor extends AbstractProcessor {
     @Override
     public void processReference(Reference reference) {
         EClass eClass = classesStack.getLast();
-        EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(reference.getLocalName());
+        EStructuralFeature feature = eClass.getEStructuralFeature(reference.getLocalName());
 
         // Checks that the reference is well a reference
-        if (eStructuralFeature instanceof EReference) {
-            EReference eReference = (EReference) eStructuralFeature;
+        if (feature instanceof EReference) {
+            EReference eReference = (EReference) feature;
             reference.setContainment(eReference.isContainment());
             reference.setMany(eReference.isMany());
             notifyReference(reference);
         }
 
         // Otherwise redirect to the attribute handler
-        else if (eStructuralFeature instanceof EAttribute) {
+        else if (feature instanceof EAttribute) {
             processAttribute(Attribute.from(reference));
         }
     }
@@ -204,29 +204,29 @@ public class EcoreProcessor extends AbstractProcessor {
         Namespace ns = Namespace.Registry.getInstance().getFromPrefix(ePackage.getNsPrefix());
 
         // Gets the structural feature from the parent, according the its local name (the attr/ref name)
-        EStructuralFeature eStructuralFeature = parentEClass.getEStructuralFeature(classifier.getLocalName());
+        EStructuralFeature feature = parentEClass.getEStructuralFeature(classifier.getLocalName());
 
-        if (eStructuralFeature instanceof EAttribute) {
-            processAttribute(classifier, (EAttribute) eStructuralFeature);
+        if (feature instanceof EAttribute) {
+            processAttribute(classifier, (EAttribute) feature);
         }
-        else if (eStructuralFeature instanceof EReference) {
-            processReference(classifier, ns, (EReference) eStructuralFeature, ePackage);
+        else if (feature instanceof EReference) {
+            processReference(classifier, ns, (EReference) feature, ePackage);
         }
     }
 
-    private void processAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute eAttribute) {
+    private void processAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute attribute) {
         if (nonNull(waitingAttribute)) {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
         }
 
         // Waiting a plain text value
-        waitingAttribute = new Attribute(eAttribute.getName());
+        waitingAttribute = new Attribute(attribute.getName());
         previousWasAttribute = true;
     }
 
-    private void processReference(Classifier classifier, Namespace ns, EReference eReference, EPackage ePackage) {
+    private void processReference(Classifier classifier, Namespace ns, EReference reference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass
-        EClass eClass = getEClass(classifier, ns, (EClass) eReference.getEType(), ePackage);
+        EClass eClass = getEClass(classifier, ns, (EClass) reference.getEType(), ePackage);
 
         classifier.setNamespace(ns);
 
@@ -235,10 +235,10 @@ public class EcoreProcessor extends AbstractProcessor {
         Identifier currentId = classifier.getId();
 
         // Create a reference from the parent to this element, with the given local name
-        if (eReference.isContainment()) {
-            NeoLogger.debug("{0}#{1} is a containment : creating the reverse reference.", classifier.getMetaClassifier(), eReference.getName());
+        if (reference.isContainment()) {
+            NeoLogger.debug("{0}#{1} is a containment : creating the reverse reference.", classifier.getMetaClassifier(), reference.getName());
 
-            Reference ref = new Reference(eReference.getName());
+            Reference ref = new Reference(reference.getName());
             ref.setId(idsStack.getLast());
             ref.setIdReference(currentId);
 

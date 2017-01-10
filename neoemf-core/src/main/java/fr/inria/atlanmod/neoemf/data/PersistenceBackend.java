@@ -17,10 +17,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
+/**
+ * An adapter on top of a data store.
+ */
 public interface PersistenceBackend extends Closeable {
 
     /**
      * Returns whether the underlying data store has been started or not.
+     *
+     * @return {@code true} if the data store is closed, otherwise {@code false}
      */
     boolean isClosed();
 

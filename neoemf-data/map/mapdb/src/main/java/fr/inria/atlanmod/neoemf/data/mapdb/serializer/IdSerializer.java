@@ -19,32 +19,32 @@ import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * Serializer for persistent object ids. Only works with StringId instances.
+ * Serializer for {@link Id}.
+ * <p/>
+ * <b>NOTE:</b> Only works with {@link StringId} instances.
  */
 public class IdSerializer implements Serializer<Id> {
 
     final Serializer<String> serializer = Serializer.STRING;
 
-    /**
-     * Serializes id to a DataOutput. Uses a String Serializer.
-     */
     @Override
-    public void serialize(DataOutput2 out, Id id) throws IOException {
+    public void serialize(@Nonnull DataOutput2 out, @Nonnull Id id) throws IOException {
         serializer.serialize(out, id.toString());
     }
 
     @Override
-    public Id deserialize(DataInput2 in, int i) throws IOException {
+    public Id deserialize(@Nonnull DataInput2 in, int i) throws IOException {
         return new StringId(serializer.deserialize(in, i));
-    }
-
-    public int compare(Id one, Id other) {
-        return one.compareTo(other);
     }
 
     @Override
@@ -53,15 +53,15 @@ public class IdSerializer implements Serializer<Id> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(@Nullable Object o) {
+        if (this == o) {
             return true;
         }
-        if (isNull(other) || !(other instanceof IdSerializer)) {
+        if (isNull(o) || !(o instanceof IdSerializer)) {
             return false;
         }
 
-        IdSerializer that = (IdSerializer) other;
+        IdSerializer that = (IdSerializer) o;
 
         return Objects.equals(serializer, that.serializer);
     }

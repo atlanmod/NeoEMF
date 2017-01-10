@@ -36,92 +36,92 @@ public class InvalidStore implements PersistentStore {
     }
 
     @Override
-    public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
+    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
         throw unsupportedOperation();
     }
 
     @Override
-    public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         throw unsupportedOperation();
     }
 
     @Override
-    public boolean isSet(InternalEObject eObject, EStructuralFeature feature) {
+    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public void unset(InternalEObject eObject, EStructuralFeature feature) {
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
+    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public int size(InternalEObject eObject, EStructuralFeature feature) {
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
+    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         throw unsupportedOperation();
     }
 
     @Override
-    public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
+    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         throw unsupportedOperation();
     }
 
     @Override
-    public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
+    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         throw unsupportedOperation();
     }
 
     @Override
-    public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         throw unsupportedOperation();
     }
 
     @Override
-    public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         throw unsupportedOperation();
     }
 
     @Override
-    public Object move(InternalEObject eObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
         throw unsupportedOperation();
     }
 
     @Override
-    public void clear(InternalEObject eObject, EStructuralFeature feature) {
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public Object[] toArray(InternalEObject eObject, EStructuralFeature feature) {
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
         throw unsupportedOperation();
     }
 
     @Override
-    public int hashCode(InternalEObject object, EStructuralFeature feature) {
+    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
     @Override
-    public InternalEObject getContainer(InternalEObject eObject) {
+    public InternalEObject getContainer(InternalEObject internalObject) {
         throw unsupportedOperation();
     }
 
     @Override
-    public EStructuralFeature getContainingFeature(InternalEObject eObject) {
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
         throw unsupportedOperation();
     }
 

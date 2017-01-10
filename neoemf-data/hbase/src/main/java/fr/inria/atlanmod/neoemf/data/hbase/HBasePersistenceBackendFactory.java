@@ -84,8 +84,8 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
 
-    private PersistentStore embedInDefaultWrapper(PersistentStore eStore) {
-        return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(eStore));
+    private PersistentStore embedInDefaultWrapper(PersistentStore store) {
+        return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(store));
     }
 
     private static class Holder {

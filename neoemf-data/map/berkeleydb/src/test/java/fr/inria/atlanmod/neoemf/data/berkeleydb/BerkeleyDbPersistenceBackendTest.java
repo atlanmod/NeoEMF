@@ -140,10 +140,10 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         ContainerInfo ci = ContainerInfo.from(po, eref);
         backend.storeContainer(id1, ci);
 
-        ContainerInfo result = backend.containerFor(id1);
+        ContainerInfo containerInfo = backend.containerFor(id1);
 
-        assertThat(result.id()).isEqualTo(id2);
-        assertThat(result.name()).isEqualTo("ref-name");
+        assertThat(containerInfo.id()).isEqualTo(id2);
+        assertThat(containerInfo.name()).isEqualTo("ref-name");
     }
 
     @Test
@@ -161,13 +161,12 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         PersistentEObject po = mock(PersistentEObject.class);
         when(po.eClass()).thenReturn(eClass);
 
-        ClassInfo ci = ClassInfo.from(po);
-        backend.storeMetaclass(id2, ci);
+        backend.storeMetaclass(id2, ClassInfo.from(po));
 
-        ClassInfo result = backend.metaclassFor(id2);
-        assertThat(result).isNotNull();
-        assertThat(result.name()).isEqualTo("eClassTest");
-        assertThat(result.uri()).isEqualTo("URI://my.uri/");
+        ClassInfo classInfo = backend.metaclassFor(id2);
+        assertThat(classInfo).isNotNull();
+        assertThat(classInfo.name()).isEqualTo("eClassTest");
+        assertThat(classInfo.uri()).isEqualTo("URI://my.uri/");
     }
 }
 

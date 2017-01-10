@@ -29,9 +29,9 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
     @Override
     public PersistentEObject create(EClass eClass) {
-        DefaultPersistentEObject eObject = new DefaultPersistentEObject();
-        eObject.eSetClass(eClass);
-        return eObject;
+        DefaultPersistentEObject object = new DefaultPersistentEObject();
+        object.eSetClass(eClass);
+        return object;
     }
 
     private static class Holder {

@@ -29,114 +29,114 @@ public class OwnedTransientStore extends AbstractTransientStore {
     }
 
     @Override
-    public Object get(InternalEObject eObject, EStructuralFeature feature, int index) {
-        checkOwner(eObject);
-        return super.get(eObject, feature, index);
+    public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        checkOwner(internalObject);
+        return super.get(internalObject, feature, index);
     }
 
     @Override
-    public Object set(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        checkOwner(eObject);
-        return super.set(eObject, feature, index, value);
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        checkOwner(internalObject);
+        return super.set(internalObject, feature, index, value);
     }
 
     @Override
-    public boolean isSet(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.isSet(eObject, feature);
+    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        checkOwner(internalObject);
+        return super.isSet(internalObject, feature);
     }
 
     @Override
-    public void unset(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        super.unset(eObject, feature);
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        checkOwner(internalObject);
+        super.unset(internalObject, feature);
     }
 
     @Override
-    public boolean isEmpty(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.isEmpty(eObject, feature);
+    public boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
+        checkOwner(internalObject);
+        return super.isEmpty(internalObject, feature);
     }
 
     @Override
-    public int size(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.size(eObject, feature);
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        checkOwner(internalObject);
+        return super.size(internalObject, feature);
     }
 
     @Override
-    public boolean contains(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        checkOwner(eObject);
-        return super.contains(eObject, feature, value);
+    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkOwner(internalObject);
+        return super.contains(internalObject, feature, value);
     }
 
     @Override
-    public int indexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        checkOwner(eObject);
-        return super.indexOf(eObject, feature, value);
+    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkOwner(internalObject);
+        return super.indexOf(internalObject, feature, value);
     }
 
     @Override
-    public int lastIndexOf(InternalEObject eObject, EStructuralFeature feature, Object value) {
-        checkOwner(eObject);
-        return super.lastIndexOf(eObject, feature, value);
+    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        checkOwner(internalObject);
+        return super.lastIndexOf(internalObject, feature, value);
     }
 
     @Override
-    public void add(InternalEObject eObject, EStructuralFeature feature, int index, Object value) {
-        checkOwner(eObject);
-        super.add(eObject, feature, index, value);
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        checkOwner(internalObject);
+        super.add(internalObject, feature, index, value);
     }
 
     @Override
-    public Object remove(InternalEObject eObject, EStructuralFeature feature, int index) {
-        checkOwner(eObject);
-        return super.remove(eObject, feature, index);
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        checkOwner(internalObject);
+        return super.remove(internalObject, feature, index);
     }
 
     @Override
-    public Object move(InternalEObject eObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        checkOwner(eObject);
-        return super.move(eObject, feature, targetIndex, sourceIndex);
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        checkOwner(internalObject);
+        return super.move(internalObject, feature, targetIndex, sourceIndex);
     }
 
     @Override
-    public void clear(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        super.clear(eObject, feature);
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        checkOwner(internalObject);
+        super.clear(internalObject, feature);
     }
 
     @Override
-    public Object[] toArray(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.toArray(eObject, feature);
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        checkOwner(internalObject);
+        return super.toArray(internalObject, feature);
     }
 
     @Override
-    public <T> T[] toArray(InternalEObject eObject, EStructuralFeature feature, T[] array) {
-        checkOwner(eObject);
-        return super.toArray(eObject, feature, array);
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkOwner(internalObject);
+        return super.toArray(internalObject, feature, array);
     }
 
     @Override
-    public int hashCode(InternalEObject eObject, EStructuralFeature feature) {
-        checkOwner(eObject);
-        return super.hashCode(eObject, feature);
+    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
+        checkOwner(internalObject);
+        return super.hashCode(internalObject, feature);
     }
 
     @Override
-    public InternalEObject getContainer(InternalEObject eObject) {
-        checkOwner(eObject);
-        return super.getContainer(eObject);
+    public InternalEObject getContainer(InternalEObject internalObject) {
+        checkOwner(internalObject);
+        return super.getContainer(internalObject);
     }
 
     @Override
-    public EStructuralFeature getContainingFeature(InternalEObject eObject) {
-        checkOwner(eObject);
-        return super.getContainingFeature(eObject);
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+        checkOwner(internalObject);
+        return super.getContainingFeature(internalObject);
     }
 
-    private void checkOwner(InternalEObject eObject) {
-        checkArgument(owner == eObject);
+    private void checkOwner(InternalEObject internalObject) {
+        checkArgument(owner == internalObject);
     }
 }

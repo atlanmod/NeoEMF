@@ -38,8 +38,8 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     /**
      * Allows to specify the number of allowed modification on the underlying {@link EStore} before saving automatically.
      */
-    public AutocommitStoreDecorator(PersistentStore eStore, long opsBetweenCommits) {
-        super(eStore);
+    public AutocommitStoreDecorator(PersistentStore store, long opsBetweenCommits) {
+        super(store);
         this.opCount = 0;
         this.opsBetweenCommits = opsBetweenCommits;
         NeoLogger.info("{0} chunk = {1}", getClass().getSimpleName(), opsBetweenCommits);
@@ -49,46 +49,46 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
      * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying {@link EStore} before saving
      * automatically.
      */
-    public AutocommitStoreDecorator(PersistentStore eStore) {
-        this(eStore, OPS_BETWEEN_COMMITS_DEFAULT);
+    public AutocommitStoreDecorator(PersistentStore store) {
+        this(store, OPS_BETWEEN_COMMITS_DEFAULT);
     }
 
     @Override
-    public Object set(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        Object returnValue = super.set(object, feature, index, value);
+    public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        Object old = super.set(internalObject, feature, index, value);
         incrementAndCommit();
-        return returnValue;
+        return old;
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
-        super.unset(object, feature);
-        incrementAndCommit();
-    }
-
-    @Override
-    public void add(InternalEObject object, EStructuralFeature feature, int index, Object value) {
-        super.add(object, feature, index, value);
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        super.unset(internalObject, feature);
         incrementAndCommit();
     }
 
     @Override
-    public Object remove(InternalEObject object, EStructuralFeature feature, int index) {
-        Object returnValue = super.remove(object, feature, index);
+    public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
+        super.add(internalObject, feature, index, value);
         incrementAndCommit();
-        return returnValue;
     }
 
     @Override
-    public Object move(InternalEObject object, EStructuralFeature feature, int targetIndex, int sourceIndex) {
-        Object returnValue = super.move(object, feature, targetIndex, sourceIndex);
+    public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
+        Object old = super.remove(internalObject, feature, index);
         incrementAndCommit();
-        return returnValue;
+        return old;
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        super.clear(object, feature);
+    public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
+        Object old = super.move(internalObject, feature, targetIndex, sourceIndex);
+        incrementAndCommit();
+        return old;
+    }
+
+    @Override
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        super.clear(internalObject, feature);
         incrementAndCommit();
     }
 
@@ -104,8 +104,8 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
         try {
             this.save();
         }
-        catch (Exception ex) {
-            NeoLogger.error(ex);
+        catch (Exception e) {
+            NeoLogger.error(e);
         }
         super.finalize();
     }

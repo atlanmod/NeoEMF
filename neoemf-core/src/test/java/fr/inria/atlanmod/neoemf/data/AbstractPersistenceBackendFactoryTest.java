@@ -35,7 +35,7 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
         PersistentStore context = store.getEStore();
         PersistenceBackend innerBackend;
 
-        Field field = AbstractDirectWriteStore.class.getDeclaredField("persistenceBackend");
+        Field field = AbstractDirectWriteStore.class.getDeclaredField("backend");
         field.setAccessible(true);
         innerBackend = (PersistenceBackend) field.get(context);
 

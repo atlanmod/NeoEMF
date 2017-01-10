@@ -209,13 +209,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
-    public Vertex getOrCreateVertex(PersistentEObject eObject) {
+    public Vertex getOrCreateVertex(PersistentEObject object) {
         Vertex vertex;
-        if (eObject.isMapped()) {
-            vertex = getVertex(eObject.id());
+        if (object.isMapped()) {
+            vertex = getVertex(object.id());
         }
         else {
-            vertex = createVertex(eObject);
+            vertex = createVertex(object);
         }
         return vertex;
     }
@@ -261,24 +261,24 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * @return a {@link PersistentEObject} representing the given vertex 
      */
     public PersistentEObject reifyVertex(Vertex vertex, EClass eClass) {
-        PersistentEObject persistentEObject = null;
+        PersistentEObject object = null;
 
         Id id = new StringId(vertex.getId().toString());
         if (isNull(eClass)) {
             eClass = resolveInstanceOf(vertex);
         }
         try {
-            persistentEObject = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
+            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
         }
         catch (Exception e) {
             NeoLogger.error(e);
         }
-        return persistentEObject;
+        return object;
     }
 
-    private Vertex createVertex(PersistentEObject persistentEObject) {
-        Vertex vertex = addVertex(persistentEObject.id());
-        EClass eClass = persistentEObject.eClass();
+    private Vertex createVertex(PersistentEObject object) {
+        Vertex vertex = addVertex(object.id());
+        EClass eClass = object.eClass();
 
         Vertex eClassVertex = Iterables.getOnlyElement(metaclassIndex.get(KEY_NAME, eClass.getName()), null);
         if (isNull(eClassVertex)) {
@@ -287,7 +287,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             indexedEClasses.add(eClass);
         }
         vertex.addEdge(KEY_INSTANCE_OF, eClassVertex);
-        setMappedVertex(vertex, persistentEObject);
+        setMappedVertex(vertex, object);
         return vertex;
     }
 
@@ -330,7 +330,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
         @Override
         public PersistentEObject apply(Id id) {
-            PersistentEObject persistentEObject;
+            PersistentEObject object;
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
@@ -340,14 +340,14 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
                 else {
                     eObject = EcoreUtil.create(eClass);
                 }
-                persistentEObject = PersistentEObject.from(eObject);
-                persistentEObject.id(id);
-                persistentEObject.setMapped(true);
+                object = PersistentEObject.from(eObject);
+                object.id(id);
+                object.setMapped(true);
             }
             else {
                 throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
-            return persistentEObject;
+            return object;
         }
     }
 

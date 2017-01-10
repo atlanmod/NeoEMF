@@ -28,8 +28,8 @@ import java.util.NoSuchElementException;
  */
 public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
 
-    public BlueprintsAwareHandler(BlueprintsPersistenceBackend persistenceBackend) {
-        super(persistenceBackend);
+    public BlueprintsAwareHandler(BlueprintsPersistenceBackend backend) {
+        super(backend);
     }
 
     @Override

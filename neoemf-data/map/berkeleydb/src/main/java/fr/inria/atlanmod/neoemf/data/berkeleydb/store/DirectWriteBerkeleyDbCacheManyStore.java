@@ -30,24 +30,24 @@ public class DirectWriteBerkeleyDbCacheManyStore extends DirectWriteBerkeleyDbSt
 
     private final Cache<FeatureKey, Object> objectsCache;
 
-    public DirectWriteBerkeleyDbCacheManyStore(Resource.Internal resource, BerkeleyDbPersistenceBackend persistenceBackend) {
-        super(resource, persistenceBackend);
+    public DirectWriteBerkeleyDbCacheManyStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
+        super(resource, backend);
         this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
     }
 
     @Override
-    protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject value) {
-        if (eReference.isMany()) {
-            FeatureKey featureKey = FeatureKey.from(object, eReference);
+    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
+        if (reference.isMany()) {
+            FeatureKey featureKey = FeatureKey.from(object, reference);
             if (index == NO_INDEX) {
                 /*
                  * Handle NO_INDEX index, which represent direct-append feature.
 	             * The call to size should not cause an overhead because it would have been done in regular
 	             * addUnique() otherwise.
 	             */
-                index = size(object, eReference);
+                index = size(object, reference);
             }
-            updateContainment(object, eReference, value);
+            updateContainment(object, reference, value);
             updateInstanceOf(value);
             Object[] array = (Object[]) getFromMap(featureKey);
             if (isNull(array)) {
@@ -56,11 +56,11 @@ public class DirectWriteBerkeleyDbCacheManyStore extends DirectWriteBerkeleyDbSt
             checkPositionIndex(index, array.length, "Invalid add index " + index);
             array = ArrayUtils.add(array, index, value.id());
             objectsCache.put(featureKey, array);
-            persistenceBackend.storeValue(featureKey, array);
+            backend.storeValue(featureKey, array);
             persistentObjectsCache.put(value.id(), value);
         }
         else {
-            super.addReference(object, eReference, index, value);
+            super.addReference(object, reference, index, value);
         }
     }
 

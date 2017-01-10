@@ -56,6 +56,8 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Notifies that start of a new element.
      *
+     * @param classifier the classifier of the new element
+     *
      * @see #notifyEndElement()
      * @see InputHandler#processStartElement(Classifier)
      */
@@ -66,6 +68,8 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Notifies a new attribute.
      *
+     * @param attribute the new attribute
+     *
      * @see InputHandler#processAttribute(Attribute)
      */
     default void notifyAttribute(Attribute attribute) {
@@ -75,6 +79,8 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Notifies a new reference.
      *
+     * @param reference the new reference
+     *
      * @see InputHandler#processReference(Reference)
      */
     default void notifyReference(Reference reference) {
@@ -83,6 +89,8 @@ public interface InputNotifier<T extends InputHandler> {
 
     /**
      * Notifies a new set of characters.
+     *
+     * @param characters the new characters
      */
     default void notifyCharacters(String characters) {
         getHandlers().forEach(p -> p.processCharacters(characters));

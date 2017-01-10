@@ -84,13 +84,13 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
         this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();
 
-        Configuration conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum", resource.getURI().host());
-        conf.set("hbase.zookeeper.property.clientPort", isNull(resource.getURI().port()) ? "2181" : resource.getURI().port());
+        Configuration configuration = HBaseConfiguration.create();
+        configuration.set("hbase.zookeeper.quorum", resource.getURI().host());
+        configuration.set("hbase.zookeeper.property.clientPort", isNull(resource.getURI().port()) ? "2181" : resource.getURI().port());
 
         TableName tableName = TableName.valueOf(HBaseURI.format(resource.getURI()));
 
-        Connection connection = ConnectionFactory.createConnection(conf);
+        Connection connection = ConnectionFactory.createConnection(configuration);
         Admin admin = connection.getAdmin();
 
         this.table = initTable(connection, tableName, admin);
@@ -110,10 +110,10 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         return connection.getTable(tableName);
     }
 
-    private void addAsAppend(PersistentEObject object, EReference eReference, boolean atEnd, PersistentEObject referencedObject) throws IOException {
+    private void addAsAppend(PersistentEObject object, EReference reference, boolean atEnd, PersistentEObject referencedObject) throws IOException {
         Append append = new Append(Bytes.toBytes(object.id().toString()));
         append.add(PROPERTY_FAMILY,
-                Bytes.toBytes(eReference.getName()),
+                Bytes.toBytes(reference.getName()),
                 atEnd ? Bytes.toBytes(HBaseEncoderUtil.VALUE_SEPERATOR_DEFAULT + referencedObject.id().toString()) :
                         Bytes.toBytes(referencedObject.id().toString() + HBaseEncoderUtil.VALUE_SEPERATOR_DEFAULT));
 
@@ -121,38 +121,37 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
-    public int size(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject eObject = PersistentEObject.from(object);
-        String[] array = (String[]) getFromTable(eObject, feature);
+    public int size(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        String[] array = (String[]) getFromTable(object, feature);
         return isNull(array) ? 0 : array.length;
     }
 
     @Override
-    public InternalEObject getContainer(InternalEObject object) {
-        PersistentEObject neoEObject = PersistentEObject.from(object);
+    public InternalEObject getContainer(InternalEObject internalObject) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
         try {
-            Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
+            Result result = table.get(new Get(Bytes.toBytes(object.id().toString())));
             String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
             if (nonNull(containerId) && nonNull(containingFeatureName)) {
                 return (InternalEObject) eObject(new StringId(containerId));
             }
-
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to get containment information for {0}", neoEObject);
+            NeoLogger.error("Unable to get containment information for {0}", object);
         }
         return null;
     }
 
     @Override
-    public EStructuralFeature getContainingFeature(InternalEObject object) {
-        PersistentEObject neoEObject = PersistentEObject.from(object);
+    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
 
         try {
-            Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
+            Result result = table.get(new Get(Bytes.toBytes(object.id().toString())));
             String containerId = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER));
             String containingFeatureName = Bytes.toString(result.getValue(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER));
 
@@ -160,10 +159,9 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 EObject container = eObject(new StringId(containerId));
                 return container.eClass().getEStructuralFeature(containingFeatureName);
             }
-
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to get containment information for {0}", neoEObject);
+            NeoLogger.error("Unable to get containment information for {0}", object);
         }
         return null;
     }
@@ -171,11 +169,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     @Override
     public EObject eObject(Id id) {
         EClass eClass = resolveInstanceOf(id);
-        PersistentEObject persistentEObject = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
-        if (persistentEObject.resource() != resource()) {
-            persistentEObject.resource(resource());
+        PersistentEObject object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
+        if (object.resource() != resource()) {
+            object.resource(resource());
         }
-        return persistentEObject;
+        return object;
     }
 
     private EClass resolveInstanceOf(Id id) {
@@ -193,21 +191,16 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         return null;
     }
 
-    private void updateLoadedEObjects(PersistentEObject eObject) {
-        persistentObjectsCache.put(eObject.id(), eObject);
+    private void updateLoadedEObjects(PersistentEObject object) {
+        persistentObjectsCache.put(object.id(), object);
     }
 
-    protected void updateContainment(PersistentEObject object, EReference eReference, PersistentEObject referencedObject) {
-        if (eReference.isContainment()) {
-            // Remove from root
+    protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
+        if (reference.isContainment()) {
             try {
                 Put put = new Put(Bytes.toBytes(referencedObject.id().toString()));
                 put.addColumn(CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, Bytes.toBytes(object.id().toString()));
-                put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(eReference.getName()));
-                // No need to use the CAS mech
-//                table.checkAndPut(
-//                        Bytes.toBytes(referencedObject.id().toString()), CONTAINMENT_FAMILY, CONTAINER_QUALIFIER, CompareOp.NOT_EQUAL,
-//                        Bytes.toBytes(object.id().toString()), put);
+                put.addColumn(CONTAINMENT_FAMILY, CONTAINING_FEATURE_QUALIFIER, Bytes.toBytes(reference.getName()));
                 table.put(put);
 
             }
@@ -263,48 +256,49 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
+    // TODO Implement this method
     public void save() {
-        // TODO Implement this method
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isSet(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject neoEObject = PersistentEObject.from(object);
+    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         try {
-            Result result = table.get(new Get(Bytes.toBytes(neoEObject.id().toString())));
+            Result result = table.get(new Get(Bytes.toBytes(object.id().toString())));
             byte[] value = result.getValue(PROPERTY_FAMILY, Bytes.toBytes(feature.getName()));
             return nonNull(value);
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to get information for element ''{0}''", neoEObject);
+            NeoLogger.error("Unable to get information for element ''{0}''", object);
         }
         return false;
     }
 
     @Override
-    public void unset(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject neoEObject = PersistentEObject.from(object);
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         try {
-            Delete delete = new Delete(Bytes.toBytes(neoEObject.id().toString()));
+            Delete delete = new Delete(Bytes.toBytes(object.id().toString()));
             delete.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()));
             table.delete(delete);
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to get containment information for {0}", neoEObject);
+            NeoLogger.error("Unable to get containment information for {0}", object);
         }
     }
 
     @Override
-    public boolean contains(InternalEObject object, EStructuralFeature feature, Object value) {
+    // TODO Implement this method
+    public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         return false;
-//        return indexOf(object, feature, value) != -1;
+//        return indexOf(internalObject, feature, value) != -1;
     }
 
     @Override
-    public int indexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        PersistentEObject eObject = PersistentEObject.from(object);
-        String[] array = (String[]) getFromTable(eObject, feature);
+    public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        String[] array = (String[]) getFromTable(object, feature);
         if (isNull(array)) {
             return PersistentStore.NO_INDEX;
         }
@@ -318,9 +312,9 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
-    public int lastIndexOf(InternalEObject object, EStructuralFeature feature, Object value) {
-        PersistentEObject eObject = PersistentEObject.from(object);
-        String[] array = (String[]) getFromTable(eObject, feature);
+    public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        String[] array = (String[]) getFromTable(object, feature);
         if (isNull(array)) {
             return PersistentStore.NO_INDEX;
         }
@@ -334,56 +328,56 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
-    public void clear(InternalEObject object, EStructuralFeature feature) {
-        PersistentEObject neoEObject = PersistentEObject.from(object);
+    public void clear(InternalEObject internalObject, EStructuralFeature feature) {
+        PersistentEObject object = PersistentEObject.from(internalObject);
         try {
-            Put put = new Put(Bytes.toBytes(neoEObject.id().toString()));
+            Put put = new Put(Bytes.toBytes(object.id().toString()));
             put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(feature.toString()), HBaseEncoderUtil.toBytes(new String[]{}));
             table.put(put);
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to get containment information for {0}", neoEObject);
+            NeoLogger.error("Unable to get containment information for {0}", object);
         }
     }
 
     @Override
-    protected Object getAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        Object value = getFromTable(object, eAttribute);
-        if (!eAttribute.isMany()) {
-            return parseProperty(eAttribute, value);
+    protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        Object soughtAttribute = getFromTable(object, attribute);
+        if (!attribute.isMany()) {
+            return parseProperty(attribute, soughtAttribute);
         }
         else {
-            String[] array = (String[]) value;
-            return parseProperty(eAttribute, array[index]);
+            String[] array = (String[]) soughtAttribute;
+            return parseProperty(attribute, array[index]);
         }
     }
 
     @Override
-    protected Object getReference(PersistentEObject object, EReference eReference, int index) {
-        if (eReference.isContainer()) {
+    protected Object getReference(PersistentEObject object, EReference reference, int index) {
+        if (reference.isContainer()) {
             return getContainer(object);
         }
 
-        Object value = getFromTable(object, eReference);
-        if (isNull(value)) {
+        Object soughtReference = getFromTable(object, reference);
+        if (isNull(soughtReference)) {
             return null;
         }
-        if (!eReference.isMany()) {
-            return eObject(new StringId((String) value));
+        if (!reference.isMany()) {
+            return eObject(new StringId((String) soughtReference));
         }
         else {
-            String[] array = (String[]) value;
+            String[] array = (String[]) soughtReference;
             return eObject(new StringId(array[index]));
         }
     }
 
     @Override
-    protected Object setAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
-        Object oldValue = isSet(object, eAttribute) ? get(object, eAttribute, index) : null;
+    protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
+        Object old = isSet(object, attribute) ? get(object, attribute, index) : null;
         try {
-            if (!eAttribute.isMany()) {
+            if (!attribute.isMany()) {
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
-                put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(eAttribute.getName()), Bytes.toBytes(serializeToProperty(eAttribute, value).toString()));
+                put.addColumn(PROPERTY_FAMILY, Bytes.toBytes(attribute.getName()), Bytes.toBytes(serializeToProperty(attribute, value).toString()));
                 table.put(put);
             }
             else {
@@ -391,18 +385,16 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                     String[] array;
                     boolean passed;
                     int attemp = 0;
-
                     do {
-                        array = (String[]) getFromTable(object, eAttribute);
-//                        array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+                        array = (String[]) getFromTable(object, attribute);
 
                         Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                                 PROPERTY_FAMILY,
-                                Bytes.toBytes(eAttribute.getName()),
-                                HBaseEncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeToProperty(eAttribute, value))));
+                                Bytes.toBytes(attribute.getName()),
+                                HBaseEncoderUtil.toBytes((String[]) ArrayUtils.add(array, index, serializeToProperty(attribute, value))));
                         passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                                 PROPERTY_FAMILY,
-                                Bytes.toBytes(eAttribute.getName()),
+                                Bytes.toBytes(attribute.getName()),
                                 isNull(array) ? null : HBaseEncoderUtil.toBytes(array),
                                 put);
                         if (!passed) {
@@ -411,16 +403,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                             }
                             Thread.sleep((++attemp) * SLEEP_DEFAULT);
                         }
-
                     }
                     while (!passed);
-
                 }
                 catch (IOException e) {
-                    NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}''", value, eAttribute.getName(), object);
+                    NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}''", value, attribute.getName(), object);
                 }
                 catch (TimeoutException e) {
-                    NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT);
+                    NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
                 }
                 catch (InterruptedException e) {
                     NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
@@ -430,30 +420,30 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         catch (IOException e) {
             NeoLogger.error("Unable to set information for element ''{0}''", object);
         }
-        return oldValue;
+        return old;
     }
 
     @Override
-    protected Object setReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
-        Object oldValue = isSet(object, eReference) ? get(object, eReference, index) : null;
+    protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject referencedObject) {
+        Object old = isSet(object, reference) ? get(object, reference, index) : null;
         updateLoadedEObjects(referencedObject);
-        updateContainment(object, eReference, referencedObject);
+        updateContainment(object, reference, referencedObject);
         updateInstanceOf(referencedObject);
 
         try {
-            if (!eReference.isMany()) {
+            if (!reference.isMany()) {
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
                 put.addColumn(PROPERTY_FAMILY,
-                        Bytes.toBytes(eReference.getName()),
+                        Bytes.toBytes(reference.getName()),
                         Bytes.toBytes(referencedObject.id().toString()));
                 table.put(put);
             }
             else {
-                String[] array = (String[]) getFromTable(object, eReference);
+                String[] array = (String[]) getFromTable(object, reference);
                 array[index] = referencedObject.id().toString();
                 Put put = new Put(Bytes.toBytes(object.id().toString()));
                 put.addColumn(PROPERTY_FAMILY,
-                        Bytes.toBytes(eReference.getName()),
+                        Bytes.toBytes(reference.getName()),
                         HBaseEncoderUtil.toBytesReferences(array));
                 table.put(put);
             }
@@ -461,30 +451,28 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         catch (IOException e) {
             NeoLogger.error("Unable to set information for element ''{0}''", object);
         }
-        return oldValue;
+        return old;
     }
 
     @Override
-    protected void addAttribute(PersistentEObject object, EAttribute eAttribute, int index, Object value) {
+    protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         try {
             String[] array;
             boolean passed;
             int attemp = 0;
-
             do {
-                array = (String[]) getFromTable(object, eAttribute);
-//                array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+                array = (String[]) getFromTable(object, attribute);
 
                 Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
-                        Bytes.toBytes(eAttribute.getName()),
+                        Bytes.toBytes(attribute.getName()),
                         HBaseEncoderUtil.toBytes(index < 0 ?
-                                (String[]) ArrayUtils.add(array, serializeToProperty(eAttribute, value)) :
-                                (String[]) ArrayUtils.add(array, serializeToProperty(eAttribute, value))
+                                (String[]) ArrayUtils.add(array, serializeToProperty(attribute, value)) :
+                                (String[]) ArrayUtils.add(array, serializeToProperty(attribute, value))
                         ));
                 passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                         PROPERTY_FAMILY,
-                        Bytes.toBytes(eAttribute.getName()),
+                        Bytes.toBytes(attribute.getName()),
                         isNull(array) ? null : HBaseEncoderUtil.toBytes(array),
                         put);
                 if (!passed) {
@@ -493,16 +481,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                     }
                     Thread.sleep((++attemp) * SLEEP_DEFAULT);
                 }
-
             }
             while (!passed);
-
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", value, eAttribute.getName(), object);
+            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", value, attribute.getName(), object);
         }
         catch (TimeoutException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT);
+            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
         }
         catch (InterruptedException e) {
             NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
@@ -510,37 +496,34 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
-    protected void addReference(PersistentEObject object, EReference eReference, int index, PersistentEObject referencedObject) {
+    protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject referencedObject) {
         try {
             /*
              * As long as the element is not attached to the resource, the containment and type  information are not
 			 * stored.
 			 */
             updateLoadedEObjects(referencedObject);
-            updateContainment(object, eReference, referencedObject);
+            updateContainment(object, reference, referencedObject);
             updateInstanceOf(referencedObject);
 
             if (index == NO_INDEX) {
-                addAsAppend(object, eReference, true, referencedObject);
+                addAsAppend(object, reference, true, referencedObject);
             }
             else {
-
                 String[] array;
                 boolean passed;
                 int attemp = 0;
-
                 do {
-                    array = (String[]) getFromTable(object, eReference);
-//                    array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
+                    array = (String[]) getFromTable(object, reference);
 
                     Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                             PROPERTY_FAMILY,
-                            Bytes.toBytes(eReference.getName()),
+                            Bytes.toBytes(reference.getName()),
                             HBaseEncoderUtil.toBytesReferences(ArrayUtils.add(array, index, referencedObject.id().toString())));
 
                     passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                             PROPERTY_FAMILY,
-                            Bytes.toBytes(eReference.getName()),
+                            Bytes.toBytes(reference.getName()),
                             isNull(array) ? null : HBaseEncoderUtil.toBytesReferences(array),
                             put);
                     if (!passed) {
@@ -549,17 +532,15 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                         }
                         Thread.sleep((++attemp) * SLEEP_DEFAULT);
                     }
-
                 }
                 while (!passed);
             }
-
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", referencedObject, eReference.getName(), object);
+            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", referencedObject, reference.getName(), object);
         }
         catch (TimeoutException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", referencedObject, eReference.getName(), object, ATTEMP_TIMES_DEFAULT);
+            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", referencedObject, reference.getName(), object, ATTEMP_TIMES_DEFAULT);
         }
         catch (InterruptedException e) {
             NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
@@ -567,25 +548,22 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
-    protected Object removeAttribute(PersistentEObject object, EAttribute eAttribute, int index) {
-        Object oldValue = get(object, eAttribute, index);
+    protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
+        Object old = get(object, attribute, index);
         try {
-
             String[] array;
             boolean passed;
             int attemp = 0;
-
             do {
-                array = (String[]) getFromTable(object, eAttribute);
-//                array = (String[]) ArrayUtils.add(array, index, serializeValue(eAttribute, value));
+                array = (String[]) getFromTable(object, attribute);
 
                 Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
-                        Bytes.toBytes(eAttribute.getName()),
+                        Bytes.toBytes(attribute.getName()),
                         HBaseEncoderUtil.toBytes(ArrayUtils.remove(array, index)));
                 passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                         PROPERTY_FAMILY,
-                        Bytes.toBytes(eAttribute.getName()),
+                        Bytes.toBytes(attribute.getName()),
                         HBaseEncoderUtil.toBytes(array),
                         put);
                 if (!passed) {
@@ -593,48 +571,42 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                         throw new TimeoutException();
                     }
                     Thread.sleep((++attemp) * SLEEP_DEFAULT);
-                    oldValue = get(object, eAttribute, index);
+                    old = get(object, attribute, index);
                 }
-
             }
             while (!passed);
-
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}''", oldValue, eAttribute.getName(), object);
+            NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}''", old, attribute.getName(), object);
         }
         catch (TimeoutException e) {
-            NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", oldValue, eAttribute.getName(), object, ATTEMP_TIMES_DEFAULT);
+            NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", old, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
         }
         catch (InterruptedException e) {
             NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
         }
 
-        return oldValue;
+        return old;
     }
 
     @Override
-    protected Object removeReference(PersistentEObject object, EReference eReference, int index) {
-        Object oldValue = get(object, eReference, index);
-
+    protected Object removeReference(PersistentEObject object, EReference reference, int index) {
+        Object old = get(object, reference, index);
         try {
-
             String[] array;
             boolean passed;
             int attemp = 0;
-
             do {
-                array = (String[]) getFromTable(object, eReference);
-//                array = (String[]) ArrayUtils.add(array, index, referencedObject.neoemfId());
+                array = (String[]) getFromTable(object, reference);
 
                 Put put = new Put(Bytes.toBytes(object.id().toString())).addColumn(
                         PROPERTY_FAMILY,
-                        Bytes.toBytes(eReference.getName()),
+                        Bytes.toBytes(reference.getName()),
                         HBaseEncoderUtil.toBytesReferences(ArrayUtils.remove(array, index)));
 
                 passed = table.checkAndPut(Bytes.toBytes(object.id().toString()),
                         PROPERTY_FAMILY,
-                        Bytes.toBytes(eReference.getName()),
+                        Bytes.toBytes(reference.getName()),
                         HBaseEncoderUtil.toBytesReferences(array),
                         put);
 
@@ -644,19 +616,17 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                     }
                     Thread.sleep((++attemp) * SLEEP_DEFAULT);
                 }
-
             }
             while (!passed);
-
         }
         catch (IOException | TimeoutException e) {
-            NeoLogger.error("Unable to delete ''{0}[{1}''] for element ''{2}''", eReference.getName(), index, object);
+            NeoLogger.error("Unable to delete ''{0}[{1}''] for element ''{2}''", reference.getName(), index, object);
         }
         catch (InterruptedException e) {
             NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
         }
 
-        return oldValue;
+        return old;
     }
 
     private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
@@ -669,7 +639,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
         @Override
         public PersistentEObject apply(Id id) {
-            PersistentEObject persistentEObject;
+            PersistentEObject object;
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
@@ -679,14 +649,14 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                 else {
                     eObject = EcoreUtil.create(eClass);
                 }
-                persistentEObject = PersistentEObject.from(eObject);
-                persistentEObject.id(id);
-                persistentEObject.setMapped(true);
+                object = PersistentEObject.from(eObject);
+                object.id(id);
+                object.setMapped(true);
             }
             else {
                 throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
-            return persistentEObject;
+            return object;
         }
     }
 }

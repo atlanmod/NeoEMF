@@ -42,8 +42,8 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
     protected final Cache<Id, Vertex> verticesCache;
 
-    public AbstractBlueprintsHandler(BlueprintsPersistenceBackend persistenceBackend) {
-        super(persistenceBackend);
+    public AbstractBlueprintsHandler(BlueprintsPersistenceBackend backend) {
+        super(backend);
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 

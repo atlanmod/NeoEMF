@@ -62,30 +62,30 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
         checkArgument(backend instanceof MapDbPersistenceBackend,
                 "Trying to create a MapDB store with an invalid backend: " + backend.getClass().getName());
 
-        PersistentStore eStore = null;
+        PersistentStore store = null;
         List<PersistentStoreOptions> storeOptions = getStoreOptions(options);
 
         // Store
         if (storeOptions.isEmpty() || storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE) || storeOptions.size() == 1 && storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
-            eStore = new DirectWriteMapDbStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapDbStore(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.CACHE_MANY)) {
-            eStore = new DirectWriteMapDbCacheManyStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapDbCacheManyStore(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_LISTS)) {
-            eStore = new DirectWriteMapDbListsStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapDbListsStore(resource, (MapDbPersistenceBackend) backend);
         }
         else if (storeOptions.contains(MapDbStoreOptions.DIRECT_WRITE_INDICES)) {
-            eStore = new DirectWriteMapDbIndicesStore(resource, (MapDbPersistenceBackend) backend);
+            store = new DirectWriteMapDbIndicesStore(resource, (MapDbPersistenceBackend) backend);
         }
         // Autocommit
-        if (isNull(eStore)) {
+        if (isNull(store)) {
             throw new InvalidDataStoreException();
         }
         else if (storeOptions.contains(MapDbStoreOptions.AUTOCOMMIT)) {
-            eStore = new AutocommitStoreDecorator(eStore);
+            store = new AutocommitStoreDecorator(store);
         }
-        return eStore;
+        return store;
     }
 
     @Override
