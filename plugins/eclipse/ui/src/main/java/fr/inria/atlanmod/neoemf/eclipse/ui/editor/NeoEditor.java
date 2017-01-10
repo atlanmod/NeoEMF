@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -151,6 +152,15 @@ public class NeoEditor extends EcoreEditor {
         Instant end = Instant.now();
 
         NeoLogger.info("NeoEMF Editor Opened in {0}", Duration.between(begin, end));
+    }
+    
+    @Override
+    public void setSelection(ISelection selection) {
+        try {
+        super.setSelection(selection);
+        } catch(NoSuchMethodError e) {
+            NeoLogger.warn("Captured aNoSuchMethod error when changing the selection, please check this is not related to Dynamic EMF, which is not supported for now in the editor.");
+        }
     }
 
     @Override
