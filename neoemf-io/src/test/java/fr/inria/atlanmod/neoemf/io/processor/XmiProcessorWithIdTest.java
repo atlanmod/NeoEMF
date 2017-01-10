@@ -36,7 +36,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
 
     /**
      * Check that the elements are properly processed.
-     * <p/>
+     * <p>
      * All elements must have an id and a class name.
      */
     @Test
@@ -137,7 +137,7 @@ public class XmiProcessorWithIdTest extends AbstractXmiProcessorTest {
 
     /**
      * Check that the {@code xmi:idref} references are properly processed.
-     * <p/>
+     * <p>
      * Containments and inverse references must have been created.
      * References previously detected as attributes, are now well placed.
      */

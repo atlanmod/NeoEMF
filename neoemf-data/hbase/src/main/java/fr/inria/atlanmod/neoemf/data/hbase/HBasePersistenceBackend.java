@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
 
 /**
  * Dummy backend implementation for HBase to fit core architecture.
- * <p/>
+ * <p>
  * The real access to the HBase Table is done in {@link DirectWriteHBaseStore} and
  * {@link ReadOnlyHBaseStore}.
  */

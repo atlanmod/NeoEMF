@@ -58,7 +58,7 @@ public abstract class AbstractInputTest extends AbstractTest {
     /**
      * Registers a EPackage in {@link org.eclipse.emf.ecore.EPackage.Registry} according to its {@code prefix} and
      * {@code uri}, from an Ecore file.
-     * <p/>
+     * <p>
      * The targetted Ecore file must be present in {@code /resources/ecore}.
      */
     protected static void registerEPackageFromEcore(String prefix, String uri) {

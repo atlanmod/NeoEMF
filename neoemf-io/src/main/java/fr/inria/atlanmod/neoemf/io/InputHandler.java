@@ -38,7 +38,7 @@ public interface InputHandler {
 
     /**
      * Process an attribute in the current element.
-     * <p/>
+     * <p>
      * An attribute is a simple key/value.
      *
      * @param attribute the new attribute
@@ -49,7 +49,7 @@ public interface InputHandler {
 
     /**
      * Process a reference from the current element to another element.
-     * <p/>
+     * <p>
      * A reference is an attribute which is link to another element.
      *
      * @param reference the new reference

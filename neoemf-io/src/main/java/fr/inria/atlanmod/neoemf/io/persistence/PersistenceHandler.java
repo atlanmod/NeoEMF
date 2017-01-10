@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.InputNotifier;
 
 /**
  * A {@link InputHandler} able to persist notications sent by a {@link InputNotifier}.
- * <p/>
+ * <p>
  * It correspond to the tail of the parsing process in case of an import.
  */
 public interface PersistenceHandler extends InputHandler {

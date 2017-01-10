@@ -41,7 +41,7 @@ public class XPathProcessor extends AbstractProcessor {
 
     /**
      * Pattern for detecting nodes which have no index in their path.
-     * <p/>
+     * <p>
      * Example : {@code .../@nodename/...} instead of {@code .../@nodename.0/...}
      */
     private static final Pattern PATTERN_NODE_WITHOUT_INDEX =
@@ -51,7 +51,7 @@ public class XPathProcessor extends AbstractProcessor {
 
     /**
      * The start of an XPath expression in this {@link XPathProcessor}.
-     * <p/>
+     * <p>
      * This variable is necessary to replace the malformed XPath reference in XMI files
      */
     private String expressionStart;

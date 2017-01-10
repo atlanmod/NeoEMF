@@ -33,7 +33,7 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
 
     /**
      * Possible values for {@link #CACHE_TYPE}.
-     * <p/>
+     * <p>
      * The cache type hpc is not available because the embedded Neo4j the Community Edition.
      */
     enum CacheType {

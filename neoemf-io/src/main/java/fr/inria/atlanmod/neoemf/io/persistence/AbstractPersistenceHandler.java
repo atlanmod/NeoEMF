@@ -66,14 +66,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Cache of unlinked elements, waiting until their reference is created.
-     * <p/>
+     * <p>
      * In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
      * Cache of conflited {@code Id}.
-     * <p/>
+     * <p>
      * In case of conflict detection only.
      */
     private final Cache<String, Id> conflictElementIdCache;
@@ -102,7 +102,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Adapts the given {@code value} according to the max memory.
-     * <p/>
+     * <p>
      * The formulas can be improved, for sure.
      */
     private static long adaptFromMemory(int value) {
@@ -269,7 +269,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Creates an element from the given {@code classifier} with the given {@code id}.
-     * <p/>
+     * <p>
      * If {@code id} is {@code null}, it is calculated by the {@link #getId(String)} method.
      *
      * @param classifier the information about the new element

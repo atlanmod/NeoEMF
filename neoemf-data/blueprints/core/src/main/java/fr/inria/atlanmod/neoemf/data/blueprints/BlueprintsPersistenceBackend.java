@@ -238,7 +238,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     
     /**
      * Reifies the given {@link Vertex} as an {@link EObject}
-     * <p/>
+     * <p>
      * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
      * unless the {@link EObject} returned in previous calls has been already garbage collected.
      * This method is a shortcut for {@link BlueprintsPersistenceBackend#reifyVertex(Vertex, EClass)} with a {@code null}
@@ -252,7 +252,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Reifies the given {@link Vertex} as an {@link EObject}.
-     * <p/>
+     * <p>
      * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
      * unless the {@link EObject} returned in previous calls has been already garbage collected.
      * @param vertex the {@link Vertex} to reify
@@ -378,9 +378,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
             /**
              * {@inheritDoc}
-             * <p/>
-             * If the {@link Edge} references a {@link Vertex} with no more incoming
-             * {@link Edge}, the referenced {@link Vertex} is removed as well.
+             * <p>
+             * If the {@link Edge} references a {@link Vertex} with no more incoming {@link Edge}, the referenced
+             * {@link Vertex} is removed as well.
              */
             @Override
             public void remove() {
