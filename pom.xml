@@ -410,13 +410,58 @@
                     <version>2.10.4</version>
                     <configuration>
                         <additionalparam>-Xdoclint:none</additionalparam>
-                        <detectLinks>false</detectLinks>
+                        <detectLinks>true</detectLinks>
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
                         <notimestamp>true</notimestamp>
                         <excludePackageNames>
                             *.tests
                         </excludePackageNames>
+                        <links>
+                            <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
+                            <link>https://google.github.io/guava/releases/20.0/api/docs/</link>
+                            <link>https://osgi.org/javadoc/r6/core/</link>
+                            <link>https://commons.apache.org/proper/commons-io/javadocs/api-release/</link>
+                            <link>https://commons.apache.org/proper/commons-configuration/javadocs/v1.10/apidocs/</link>
+                            <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
+                            <link>https://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
+
+                            <link>http://www.tinkerpop.com/docs/javadocs/blueprints/2.6.0/</link>
+                            <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>
+                            <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>
+                            <link>https://hbase.apache.org/1.2/apidocs/</link>
+                            <link>https://hadoop.apache.org/docs/r2.7.3/api/</link>
+                        </links>
+                        <groups>
+                            <group>
+                                <title>Core</title>
+                                <packages>fr.inria.atlanmod.neoemf*</packages>
+                            </group>
+                            <group>
+                                <title>I/O</title>
+                                <packages>fr.inria.atlanmod.neoemf.io*</packages>
+                            </group>
+                            <group>
+                                <title>Blueprints</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.blueprints*</packages>
+                            </group>
+                            <group>
+                                <title>Blueprints Neo4j</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.blueprints.neo4j*</packages>
+                            </group>
+                            <group>
+                                <title>MapDB</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.mapdb*</packages>
+                            </group>
+                            <group>
+                                <title>BerkeleyDB</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.berkeleydb*</packages>
+                            </group>
+                            <group>
+                                <title>HBase</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.hbase*</packages>
+                            </group>
+                        </groups>
                     </configuration>
                 </plugin>
 
