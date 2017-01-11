@@ -414,8 +414,10 @@
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
                         <notimestamp>true</notimestamp>
+                        <nosince>true</nosince>
+                        <author>false</author>
                         <excludePackageNames>
-                            *.tests
+                            fr.inria.atlanmod.neoemf.tests*
                         </excludePackageNames>
                         <links>
                             <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>

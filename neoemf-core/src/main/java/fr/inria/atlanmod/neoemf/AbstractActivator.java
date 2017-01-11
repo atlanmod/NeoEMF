@@ -26,7 +26,7 @@ import org.osgi.framework.BundleContext;
 public abstract class AbstractActivator implements BundleActivator {
 
     /**
-     * Called when this bundle is started.
+     * {@inheritDoc}
      * <p>
      * Registers the {@link PersistenceBackendFactory factory} from {@link #factory()}, with its {@link
      * org.eclipse.emf.common.util.URI URI} scheme from {@link #scheme()}, in the {@link
@@ -43,11 +43,6 @@ public abstract class AbstractActivator implements BundleActivator {
         }
     }
 
-    /**
-     * Called when this bundle is stopped.
-     *
-     * @param bundleContext the execution context of the bundle being stopped
-     */
     @Override
     public final void stop(BundleContext bundleContext) throws Exception {
         NeoLogger.info("NeoEMF-{0} plugin stopped", name());

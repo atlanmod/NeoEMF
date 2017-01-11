@@ -288,6 +288,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Returns the container of the {@link PersistentEObject}.
      * <p>
      * Do not return the same value as standard EMF implementation if the container has not been accessed with the
@@ -397,6 +399,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
 
         /**
+         * {@inheritDoc}
+         * <p>
          * Override the default implementation which relies on {@link #size()} to compute the insertion index by
          * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the
          * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} has to append the result to the existing list.

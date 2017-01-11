@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A {@link AbstractTransientStore} that belongs to a single {@link EObject} owner.
+ * A {@link TransientStore} that belongs to a single {@link EObject} owner.
  */
 public class OwnedTransientStore extends AbstractTransientStore {
 

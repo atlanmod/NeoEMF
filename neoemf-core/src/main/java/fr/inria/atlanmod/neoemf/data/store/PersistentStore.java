@@ -20,8 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * This interface extends the {@link EStore} interface and allows to establish a mapping between {@link Resource}s and
- * {@link EStore}s.
+ * An {@link EStore} that allows to establish a mapping between {@link Resource}s and {@link EStore}s.
  */
 public interface PersistentStore extends EStore {
 
