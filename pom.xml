@@ -138,8 +138,8 @@
         <commons-lang.version>3.5</commons-lang.version>
         <guava.version>20.0</guava.version>
 
-        <emf.version>2.11.0-v20150805-0538</emf.version>
-        <ecore.version>2.11.1-v20150805-0538</ecore.version>
+        <emf.version>2.12.0</emf.version>
+        <ecore.version>2.12.0</ecore.version>
         <xcore.version>1.1.100</xcore.version>
 
         <javax-annotations.version>3.0.1</javax-annotations.version>
