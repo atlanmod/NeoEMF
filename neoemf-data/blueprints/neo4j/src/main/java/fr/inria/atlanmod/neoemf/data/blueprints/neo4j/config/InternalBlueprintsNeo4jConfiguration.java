@@ -11,14 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config;
 
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
+
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import java.io.File;
 
 import static java.util.Objects.isNull;
 
+/**
+ * An internal class that sets Blueprints Neo4j default configuration properties
+ * in the current NeoEMF {@link Configuration}.
+ * <p>
+ * This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if Neo4j 
+ * implementation is used to store the underlying database.
+ * 
+ * @see BlueprintsPersistenceBackendFactory
+ */
 @SuppressWarnings("unused") // Called dynamically
 public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {
 
@@ -28,12 +40,17 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
     }
 
     /**
-     * Returns the instance of this {@link InternalBlueprintsConfiguration}.
+     * Returns the instance of this class.
      */
     public static InternalBlueprintsConfiguration getInstance() {
         return Holder.INSTANCE;
     }
 
+    /**
+     * Add Neo4j database directory to the current resource {@link Configuration}
+     * @param currentConfiguration the {@link Configuration} holding resource properties
+     * @param dbLocation the {@link File} that contains the Blueprints database
+     */
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
         if (isNull(currentConfiguration.getString(DIRECTORY))) {

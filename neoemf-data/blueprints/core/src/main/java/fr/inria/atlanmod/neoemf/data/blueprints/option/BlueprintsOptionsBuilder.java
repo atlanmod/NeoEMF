@@ -16,10 +16,11 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import javax.annotation.Nonnull;
 
 /**
- * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints {@link TinkerGraph} specific options.
+ * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints {@link TinkerGraph} specific
+ * options.
  * <p>
  * This builder doesn't contain specific methods for now: the only {@link TinkerGraph} configuration
- * supported is the graph type, which is set in the constructor.
+ * supported is the graph type, which is set by default.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
