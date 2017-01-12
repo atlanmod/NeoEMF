@@ -45,6 +45,9 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
     private BerkeleyDbPersistenceBackendFactory() {
     }
 
+    /**
+     * Returns the instance of this class.
+     */
     public static PersistenceBackendFactory getInstance() {
         return Holder.INSTANCE;
     }

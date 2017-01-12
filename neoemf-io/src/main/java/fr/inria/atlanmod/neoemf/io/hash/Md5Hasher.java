@@ -25,6 +25,9 @@ public class Md5Hasher implements Hasher {
     private Md5Hasher() {
     }
 
+    /**
+     * Returns the instance of this class.
+     */
     public static Hasher getInstance() {
         return Holder.INSTANCE;
     }

@@ -13,11 +13,11 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jResourceOptions.CacheType;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
+
+import javax.annotation.Nonnull;
 
 /**
- * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints Neo4j specific
- * options.
+ * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints Neo4j specific options.
  * <p>
  * This builder contains methods to set the Neo4j cache type, the low-level buffer sizes, and the use of
  * memory mapped files. The graph type is automatically set to {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}
@@ -33,8 +33,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * Instantiates a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
      * {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
      * <p>
-     * This constructor is protected for API consistency purpose, to create a new builder use
-     * {@link BlueprintsNeo4jOptionsBuilder#newBuilder()}
+     * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
      */
     protected BlueprintsNeo4jOptionsBuilder() {
         graph(BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
@@ -44,6 +43,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * Constructs a new {@code BlueprintsNeo4jOptionsBuilder} instance.
      * @return a new builder
      */
+    @Nonnull
     public static BlueprintsNeo4jOptionsBuilder newBuilder() {
         return new BlueprintsNeo4jOptionsBuilder();
     }
@@ -55,6 +55,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType
      */
+    @Nonnull
     protected BlueprintsNeo4jOptionsBuilder cache(BlueprintsNeo4jResourceOptions.CacheType type) {
         return option(BlueprintsNeo4jResourceOptions.CACHE_TYPE, type);
     }
@@ -66,6 +67,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#NONE
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder noCache() {
         return cache(BlueprintsNeo4jResourceOptions.CacheType.NONE);
     }
@@ -77,6 +79,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#SOFT
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder softCache() {
         return cache(BlueprintsNeo4jResourceOptions.CacheType.SOFT);
     }
@@ -88,6 +91,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#WEAK
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder weakCache() {
         return cache(BlueprintsNeo4jResourceOptions.CacheType.WEAK);
     }
@@ -101,6 +105,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#STRONG
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder strongCache() {
         return cache(BlueprintsNeo4jResourceOptions.CacheType.STRONG);
     }
@@ -112,6 +117,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions#USE_MEMORY_MAPPED_BUFFERS
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder memoryMappedBuffers() {
         return option(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, true);
     }
@@ -123,6 +129,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions#USE_MEMORY_MAPPED_BUFFERS
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder memoryMappedBuffers(boolean memoryBuffers) {
         return option(BlueprintsNeo4jResourceOptions.USE_MEMORY_MAPPED_BUFFERS, memoryBuffers);
     }
@@ -135,6 +142,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions#STRINGS_MAPPED_MEMORY
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder stringsMappedBuffer(String size) {
         return option(BlueprintsNeo4jResourceOptions.STRINGS_MAPPED_MEMORY, size);
     }
@@ -147,6 +155,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions#ARRAYS_MAPPED_MEMORY
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder arraysMappedBuffer(String size) {
         return option(BlueprintsNeo4jResourceOptions.ARRAYS_MAPPED_MEMORY, size);
     }
@@ -159,6 +168,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions#NODES_MAPPED_MEMORY
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder nodesMappedBuffer(String size) {
         return option(BlueprintsNeo4jResourceOptions.NODES_MAPPED_MEMORY, size);
     }
@@ -171,6 +181,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions#PROPERTIES_MAPPED_MEMORY
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder propertiesMappedBuffer(String size) {
         return option(BlueprintsNeo4jResourceOptions.PROPERTIES_MAPPED_MEMORY, size);
     }
@@ -183,6 +194,7 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      *
      * @see BlueprintsNeo4jResourceOptions#RELATIONSHIPS_MAPPED_MEMORY
      */
+    @Nonnull
     public BlueprintsNeo4jOptionsBuilder relationshipsMappedBuffer(String size) {
         return option(BlueprintsNeo4jResourceOptions.RELATIONSHIPS_MAPPED_MEMORY, size);
     }

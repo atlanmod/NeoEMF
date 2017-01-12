@@ -16,8 +16,7 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import javax.annotation.Nonnull;
 
 /**
- * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints {@link TinkerGraph} specific
- * options.
+ * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints TinkerGraph specific options.
  * <p>
  * This builder doesn't contain specific methods for now: the only {@link TinkerGraph} configuration
  * supported is the graph type, which is set by default.
@@ -28,6 +27,8 @@ public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<B
 
     /**
      * Instantiates a new {@code BlueprintsOptionsBuilder}.
+     * <p>
+     * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}.
      */
     protected BlueprintsOptionsBuilder() {
     }

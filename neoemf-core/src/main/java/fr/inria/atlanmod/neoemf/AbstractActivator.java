@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * A {@link BundleActivator} that automatically registers a {@link PersistenceBackendFactory} with its
- * associated {@link org.eclipse.emf.common.util.URI URI} in the {@link PersistenceBackendFactoryRegistry} when
+ * associated {@link org.eclipse.emf.common.util.URI URI} in the global {@link PersistenceBackendFactoryRegistry} when
  * loading an OSGi bundle.
  */
 public abstract class AbstractActivator implements BundleActivator {

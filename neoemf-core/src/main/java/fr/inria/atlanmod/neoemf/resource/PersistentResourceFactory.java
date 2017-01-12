@@ -21,6 +21,9 @@ public class PersistentResourceFactory implements Resource.Factory {
     protected PersistentResourceFactory() {
     }
 
+    /**
+     * Returns the instance of this class.
+     */
     public static PersistentResourceFactory getInstance() {
         return Holder.INSTANCE;
     }

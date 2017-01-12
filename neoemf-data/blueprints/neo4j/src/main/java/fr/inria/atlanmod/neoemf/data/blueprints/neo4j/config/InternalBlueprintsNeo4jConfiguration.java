@@ -16,8 +16,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfigu
 
 import org.apache.commons.configuration.Configuration;
 
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
-
 import java.io.File;
 
 import static java.util.Objects.isNull;

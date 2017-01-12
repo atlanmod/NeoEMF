@@ -62,6 +62,9 @@ public class Namespace {
             nsByUriCache = Caffeine.newBuilder().build();
         }
 
+        /**
+         * Returns the instance of this class.
+         */
         public static Registry getInstance() {
             return Holder.INSTANCE;
         }

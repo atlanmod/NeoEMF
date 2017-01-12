@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 
 /**
- * An Eclipse {@link BundleActivator} that automatically registers an instance of {@link BlueprintsPersistenceBackendFactory}
+ * A {@link BundleActivator} that automatically registers an instance of {@link BlueprintsPersistenceBackendFactory}
  * in the global {@link PersistenceBackendFactoryRegistry}.
  * 
  * @see BlueprintsPersistenceBackendFactory

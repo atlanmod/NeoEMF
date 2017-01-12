@@ -35,6 +35,9 @@ public class HBaseResourceUtil {
     private HBaseResourceUtil() {
     }
 
+    /**
+     * Returns the instance of this class.
+     */
     public static HBaseResourceUtil getInstance() {
         return Holder.INSTANCE;
     }

@@ -24,9 +24,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
     }
 
     /**
-     * Returns the single instance of this factory.
-     *
-     * @return the single instance of this factory
+     * Returns the instance of this class.
      */
     public static PersistenceFactory getInstance() {
         return Holder.INSTANCE;

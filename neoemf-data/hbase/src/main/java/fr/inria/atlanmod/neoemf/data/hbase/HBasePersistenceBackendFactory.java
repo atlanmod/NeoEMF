@@ -37,6 +37,9 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     private HBasePersistenceBackendFactory() {
     }
 
+    /**
+     * Returns the instance of this class.
+     */
     public static PersistenceBackendFactory getInstance() {
         return Holder.INSTANCE;
     }
