@@ -11,10 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.logging;
 
+/**
+ * Loggers provide logging operations, filtered by {@link Level levels}.
+ */
 public interface Logger {
 
     /**
-     * The name of the root Logger.
+     * The name of the root {@code Logger}.
      */
     String ROOT_LOGGER_NAME = "";
 

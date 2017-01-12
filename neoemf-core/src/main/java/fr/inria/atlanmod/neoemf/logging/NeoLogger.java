@@ -14,6 +14,12 @@ package fr.inria.atlanmod.neoemf.logging;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+/**
+ * A factory of {@link Logger loggers}.
+ * <p>
+ * It also provides static methods for logging without declaring a specific instance. In this case, the root logger is
+ * used by default.
+ */
 public final class NeoLogger {
 
     private static final Cache<String, Logger> LOGGERS = Caffeine.newBuilder().build();
@@ -22,7 +28,7 @@ public final class NeoLogger {
     }
 
     /**
-     * Returns the root logger.
+     * Returns the root {@link Logger}.
      *
      * @return the root {@link Logger}, named ""
      *

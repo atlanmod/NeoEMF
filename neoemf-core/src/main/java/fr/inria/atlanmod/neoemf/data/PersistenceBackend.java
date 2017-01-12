@@ -18,7 +18,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.Closeable;
 
 /**
- * An adapter on top of a data store.
+ * An adapter on top of a data store that provides specific methods for communicating with a data store implementation.
+ * <p>
+ * Each {@code PersistenceBackend} manage one single instance of a data store.
+ *
+ * @future an abstraction of {@code PersistenceBackend} will be implemented to define a global behaviour
  */
 public interface PersistenceBackend extends Closeable {
 
@@ -30,13 +34,15 @@ public interface PersistenceBackend extends Closeable {
     boolean isClosed();
 
     /**
-     * Cleanly stops the underlying data store.
+     * {@inheritDoc}
+     *
+     * In our case, it cleanly stops the underlying data store.
      */
     @Override
     void close();
 
     /**
-     * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
+     * Saves the modifications of the owned {@link EObject}s in the underlying data store.
      */
     void save();
 
