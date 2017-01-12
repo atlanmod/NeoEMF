@@ -23,6 +23,9 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
  * {@link BlueprintsStoreOptions} if they define datastore access feature.
  * @param <B> the builder subclass returned by each method
  * @param <O> the {@link AbstractBlueprintsOptions} subclass handled by the builder
+ * 
+ * @see BlueprintsResourceOptions
+ * @see BlueprintsStoreOptions
  */
 public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBlueprintsOptionsBuilder<B, O>, O extends AbstractBlueprintsOptions> extends AbstractPersistenceOptionsBuilder<B, O> {
 

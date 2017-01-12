@@ -41,7 +41,7 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
     }
 
     /**
-     * Returns the instance of this {@link InternalBlueprintsConfiguration}.
+     * Returns the instance of this class.
      */
     public static InternalBlueprintsConfiguration getInstance() {
         return Holder.INSTANCE;
