@@ -390,6 +390,7 @@
                     <version>0.7.7.201606060606</version>
                     <configuration>
                         <excludes>
+                            <exclude>**/berkeleydb/*</exclude> <!-- Experimental functionality -->
                             <exclude>**/tests/*</exclude>
                         </excludes>
                     </configuration>
@@ -417,23 +418,27 @@
                         <nosince>true</nosince>
                         <author>false</author>
                         <excludePackageNames>
-                            fr.inria.atlanmod.neoemf.data.berkeleydb*;
+                            fr.inria.atlanmod.neoemf.data.berkeleydb*; <!-- Experimental functionality -->
                             fr.inria.atlanmod.neoemf.tests*
                         </excludePackageNames>
                         <links>
-                            <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
+                            <!-- Common -->
                             <link>https://google.github.io/guava/releases/20.0/api/docs/</link>
-                            <link>https://osgi.org/javadoc/r6/core/</link>
                             <link>https://commons.apache.org/proper/commons-io/javadocs/api-release/</link>
                             <link>https://commons.apache.org/proper/commons-configuration/javadocs/v1.10/apidocs/</link>
                             <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
                             <link>https://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
+                            <link>https://osgi.org/javadoc/r6/core/</link>
 
-                            <link>http://www.tinkerpop.com/docs/javadocs/blueprints/2.6.0/</link>
-                            <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>
-                            <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>
-                            <link>https://hbase.apache.org/1.2/apidocs/</link>
-                            <link>https://hadoop.apache.org/docs/r2.7.3/api/</link>
+                            <!-- EMF -->
+                            <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
+
+                            <!-- Back-end implementations -->
+                            <link>http://www.tinkerpop.com/docs/javadocs/blueprints/2.6.0/</link>   <!-- Blueprints -->
+                            <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>            <!-- BerkeleyDB -->
+                            <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>                 <!-- MapDB -->
+                            <link>https://hbase.apache.org/1.2/apidocs/</link>                      <!-- HBase -->
+                            <link>https://hadoop.apache.org/docs/r2.7.3/api/</link>                 <!-- Hadoop -->
                         </links>
                         <groups>
                             <group>
