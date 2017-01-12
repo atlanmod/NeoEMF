@@ -464,6 +464,13 @@
                                 <packages>fr.inria.atlanmod.neoemf.data.hbase*</packages>
                             </group>
                         </groups>
+                        <tags>
+                            <tag>
+                                <name>future</name>
+                                <placement>a</placement>
+                                <head>In future:</head>
+                            </tag>
+                        </tags>
                     </configuration>
                 </plugin>
 
