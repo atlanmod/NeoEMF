@@ -11,14 +11,26 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.tg.config;
 
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
+
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import java.io.File;
 
 import static java.util.Objects.isNull;
 
+/**
+ * An internal class that sets Blueprints {@link TinkerGraph} default configuration properties
+ * in the current NeoEMF {@link Configuration}.
+ * <p>
+ * This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if {@link TinkerGraph} 
+ * implementation is used to store the underlying database.
+ * 
+ * @see BlueprintsPersistenceBackendFactory
+ */
 @SuppressWarnings("unused") // Called dynamically
 public final class InternalBlueprintsTgConfiguration implements InternalBlueprintsConfiguration {
 
@@ -35,8 +47,13 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
         return Holder.INSTANCE;
     }
 
+    /**
+     * Add Blueprints database directory and file-type to the current resource {@link Configuration}
+     * @param currentConfiguration the {@link Configuration} holding resource properties
+     * @param dbLocation the {@link File} that contains the Blueprints database
+     */
     @Override
-    public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) throws IllegalArgumentException {
+    public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
         if (isNull(currentConfiguration.getString(DIRECTORY))) {
             currentConfiguration.addProperty(DIRECTORY, dbLocation.getAbsolutePath());
         }

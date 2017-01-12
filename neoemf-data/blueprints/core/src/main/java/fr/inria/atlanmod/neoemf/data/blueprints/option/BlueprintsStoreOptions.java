@@ -13,6 +13,10 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
+/**
+ * An implementation of {@link PersistentStoreOptions} holding Blueprints related datastore access
+ * features, such as autocommit or direct write behavior.
+ */
 public enum BlueprintsStoreOptions implements PersistentStoreOptions {
     AUTOCOMMIT,
     DIRECT_WRITE,
