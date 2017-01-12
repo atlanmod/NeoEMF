@@ -13,6 +13,10 @@ package fr.inria.atlanmod.neoemf.data;
 
 import java.io.IOException;
 
+/**
+ * Exception thrown when an error occurred when creating {@link PersistenceBackend back-end} or
+ * {@link fr.inria.atlanmod.neoemf.data.store.PersistentStore store} in {@link PersistenceBackendFactory}.
+ */
 public class InvalidDataStoreException extends IOException {
 
     private static final long serialVersionUID = 1L;
