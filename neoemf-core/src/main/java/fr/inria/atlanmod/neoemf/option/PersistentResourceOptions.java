@@ -11,7 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import java.util.Map;
+
+/**
+ * Represents options related to resource-level features.
+ */
 public interface PersistentResourceOptions {
 
+    /**
+     * The key identifying the {@link PersistentStoreOptions} list in the options {@link java.util.Map}.
+     *
+     * @see org.eclipse.emf.ecore.resource.Resource#load(Map)
+     * @see org.eclipse.emf.ecore.resource.Resource#save(Map)
+     */
     String STORE_OPTIONS = "stores";
 }

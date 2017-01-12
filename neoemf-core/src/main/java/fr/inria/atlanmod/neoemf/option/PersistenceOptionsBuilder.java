@@ -11,12 +11,19 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-public class PersistenceOptionsBuilder extends AbstractPersistenceOptionsBuilder<PersistenceOptionsBuilder, PersistenceOptions> {
+import java.util.Map;
 
-    protected PersistenceOptionsBuilder() {
-    }
+/**
+ * A builder of {@link CommonOptions}.
+ * <p>
+ * All features are all optional: options can be created using all or none of them.
+ */
+public interface PersistenceOptionsBuilder {
 
-    public static PersistenceOptionsBuilder newBuilder() {
-        return new PersistenceOptionsBuilder();
-    }
+    /**
+     * Returns a immutable {@link Map} containing all defined options.
+     *
+     * @throws InvalidOptionException if a conflit is detected during building
+     */
+    Map<String, Object> asMap() throws InvalidOptionException;
 }

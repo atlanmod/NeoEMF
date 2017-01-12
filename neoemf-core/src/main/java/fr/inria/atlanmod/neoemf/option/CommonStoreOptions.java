@@ -12,12 +12,36 @@
 package fr.inria.atlanmod.neoemf.option;
 
 /**
- * {@link PersistentStoreOptions} that are available for all modules.
+ * Represents common options related to datastore access, managed by
+ * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}.
  */
 public enum CommonStoreOptions implements PersistentStoreOptions {
+    /**
+     * Caches the presence of a value.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
+     */
     CACHE_IS_SET,
+    /**
+     * Caches the size data.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
+     */
     CACHE_SIZE,
+    /**
+     * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
+     */
     CACHE_STRUCTURAL_FEATURE,
+    /**
+     * Logs every call to a methods.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
+     */
     LOG,
+    /**
+     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
+     */
     COUNT_LOADED_OBJECT
 }

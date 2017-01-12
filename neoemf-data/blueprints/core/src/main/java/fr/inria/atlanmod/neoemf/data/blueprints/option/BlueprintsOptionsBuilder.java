@@ -13,19 +13,29 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
+import javax.annotation.Nonnull;
+
 /**
- * A specific of {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints {@link TinkerGraph} specific
- * options.
+ * A specific {@link AbstractBlueprintsOptionsBuilder} that creates Blueprints {@link TinkerGraph} specific options.
  * <p>
  * This builder doesn't contain specific methods for now: the only {@link TinkerGraph} configuration
  * supported is the graph type, which is set in the constructor.
+ * <p>
+ * All features are all optional: options can be created using all or none of them.
  */
 public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<BlueprintsOptionsBuilder, BlueprintsOptions> {
 
     /**
-     * Creates a new builder
-     * @return a fresh instance of the builder
+     * Instantiates a new {@code BlueprintsOptionsBuilder}.
      */
+    protected BlueprintsOptionsBuilder() {
+    }
+
+    /**
+     * Constructs a new {@code BlueprintsOptionsBuilder} instance.
+     * @return a new builder
+     */
+    @Nonnull
     public static BlueprintsOptionsBuilder newBuilder() {
         return new BlueprintsOptionsBuilder();
     }

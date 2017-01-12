@@ -11,5 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-public class PersistenceOptions extends AbstractPersistenceOptions {
+/**
+ * Represents options managed by {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}.
+ *
+ * @future This class is not used in the current release of the tool, it will simplify option management in the near
+ * future.
+ */
+public interface PersistenceOptions {
 }

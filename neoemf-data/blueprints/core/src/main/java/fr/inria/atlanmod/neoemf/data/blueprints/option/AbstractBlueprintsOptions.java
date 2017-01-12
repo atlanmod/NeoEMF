@@ -12,11 +12,13 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
+import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 /**
- * An abstract class that holds generic options for all Blueprints based implementations.
+ * The abstract implementation of {@link CommonOptions} that holds generic options
+ * for all Blueprints based implementations.
  * <p>
- * This class is not used in the current release of the tool, it will simplify option management 
+ * @future This class is not used in the current release of the tool, it will simplify option management
  * in the near future.
  */
 public abstract class AbstractBlueprintsOptions extends AbstractPersistenceOptions {

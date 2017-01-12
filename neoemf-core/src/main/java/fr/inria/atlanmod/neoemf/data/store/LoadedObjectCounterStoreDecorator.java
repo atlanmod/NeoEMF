@@ -21,6 +21,9 @@ import org.eclipse.emf.ecore.InternalEObject;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ *
+ */
 public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDecorator {
 
     private final Set<Id> loadedObjects = new HashSet<>();

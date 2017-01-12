@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.context.Tags;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.Pack;
@@ -65,9 +65,9 @@ public class AllInstancesTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
 
-        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.save(CommonOptionsBuilder.noOption());
         resource.close();
-        resource.load(PersistenceOptionsBuilder.noOption());
+        resource.load(CommonOptionsBuilder.noOption());
 
         assertAllInstancesPersistentTranscient(resource, false, ABSTRACT_PACK_CONTENT_COUNT, PACK_CONTENT_COUNT);
     }
@@ -78,9 +78,9 @@ public class AllInstancesTest extends AbstractBackendTest {
         PersistentResource resource = createPersistentStore();
         createResourceContent(resource);
 
-        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.save(CommonOptionsBuilder.noOption());
         resource.close();
-        resource.load(PersistenceOptionsBuilder.noOption());
+        resource.load(CommonOptionsBuilder.noOption());
 
         assertAllInstancesPersistentTranscient(resource, true, ABSTRACT_PACK_CONTENT_STRICT_COUNT, PACK_CONTENT_STRICT_COUNT);
     }

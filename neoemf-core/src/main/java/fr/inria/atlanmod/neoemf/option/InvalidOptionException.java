@@ -11,6 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+/**
+ * Exception thrown if an error is detected when validating options during assembly.
+ *
+ * @see PersistenceOptionsBuilder#asMap()
+ */
 public class InvalidOptionException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.context.Tags;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
@@ -145,14 +145,14 @@ public class LoadedResourceTest extends AbstractBackendTest {
         mapSampleModel.getContentObjects().add(mapSampleContentObject);
         resource.getContents().add(mapSampleModel);
 
-        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.save(CommonOptionsBuilder.noOption());
         resource.close();
 
         ResourceSet rSet = new ResourceSetImpl();
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(context().uriScheme(), PersistentResourceFactory.getInstance());
 
         PersistentResource newResource = (PersistentResource) rSet.getResource(context().createFileURI(file()), true);
-        newResource.load(PersistenceOptionsBuilder.noOption());
+        newResource.load(CommonOptionsBuilder.noOption());
         return closeAtExit(newResource);
     }
 }

@@ -13,31 +13,71 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
+import javax.annotation.Nonnull;
+
+/**
+ *
+ * <p>
+ * All features are all optional: options can be created using all or none of them.
+ */
 public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<BerkeleyDbOptionsBuilder, BerkeleyDbOptions> {
 
+    /**
+     * Instantiates a new {@code BerkeleyDbOptionsBuilder}.
+     */
     protected BerkeleyDbOptionsBuilder() {
     }
 
+    /**
+     * Constructs a new {@code BerkeleyDbOptionsBuilder} instance.
+     * @return a new builder
+     */
+    @Nonnull
     public static BerkeleyDbOptionsBuilder newBuilder() {
         return new BerkeleyDbOptionsBuilder();
     }
 
+    /**
+     *
+     * @return this {@code CommonOptionsBuilder} (for chaining)
+     */
+    @Nonnull
     public BerkeleyDbOptionsBuilder autocommit() {
         return storeOption(BerkeleyDbStoreOptions.AUTOCOMMIT);
     }
 
+    /**
+     *
+     * @return this {@code CommonOptionsBuilder} (for chaining)
+     */
+    @Nonnull
     public BerkeleyDbOptionsBuilder directWrite() {
         return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE);
     }
 
+    /**
+     *
+     * @return this {@code CommonOptionsBuilder} (for chaining)
+     */
+    @Nonnull
     public BerkeleyDbOptionsBuilder directWriteLists() {
         return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_LISTS);
     }
 
+    /**
+     *
+     * @return this {@code CommonOptionsBuilder} (for chaining)
+     */
+    @Nonnull
     public BerkeleyDbOptionsBuilder directWriteIndices() {
         return storeOption(BerkeleyDbStoreOptions.DIRECT_WRITE_INDICES);
     }
 
+    /**
+     *
+     * @return this {@code CommonOptionsBuilder} (for chaining)
+     */
+    @Nonnull
     public BerkeleyDbOptionsBuilder directWriteCacheMany() {
         return storeOption(BerkeleyDbStoreOptions.CACHE_MANY);
     }

@@ -11,5 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
-public abstract class AbstractPersistenceOptions {
+/**
+ * The abstract implementation of {@link PersistenceOptions}.
+ *
+ * @future This class is not used in the current release of the tool, it will simplify option management in the near
+ * future.
+ */
+public abstract class AbstractPersistenceOptions implements PersistenceOptions {
 }

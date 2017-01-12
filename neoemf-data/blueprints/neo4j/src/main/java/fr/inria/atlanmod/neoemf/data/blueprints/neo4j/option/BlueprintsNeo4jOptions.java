@@ -13,5 +13,9 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
 import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptions;
 
+/**
+ * @future This class is not used in the current release of the tool, it will simplify option management
+ * in the near future.
+ */
 public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
 }

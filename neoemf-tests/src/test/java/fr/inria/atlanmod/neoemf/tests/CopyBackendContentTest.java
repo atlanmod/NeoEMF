@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.context.Tags;
-import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.CommonOptionsBuilder;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModel;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.SampleModelContentObject;
@@ -35,7 +35,7 @@ public class CopyBackendContentTest extends AbstractBackendTest {
         PersistentResource resource = createTransientStore();
         createResourceContent(resource);
 
-        resource.save(PersistenceOptionsBuilder.noOption());
+        resource.save(CommonOptionsBuilder.noOption());
         assertThat(resource.getContents()).isNotEmpty(); // "Map resource content is empty"
         assertThat(resource.getContents().get(0)).isInstanceOf(SampleModel.class); // "Top-level element is not a SampleModel"
 

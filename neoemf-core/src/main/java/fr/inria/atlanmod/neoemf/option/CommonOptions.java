@@ -9,13 +9,13 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.hbase.option;
-
-import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
+package fr.inria.atlanmod.neoemf.option;
 
 /**
- * @future This class is not used in the current release of the tool, it will simplify option management
- * in the near future.
+ * Represents common options managed by {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}.
+ *
+ * @future This class is not used in the current release of the tool, it will simplify option management in the near
+ * future.
  */
-public class HBaseOptions extends AbstractPersistenceOptions {
+public class CommonOptions extends AbstractPersistenceOptions {
 }

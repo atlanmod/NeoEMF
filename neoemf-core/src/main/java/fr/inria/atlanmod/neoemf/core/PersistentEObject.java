@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * An {@link org.eclipse.emf.ecore.EObject} able to persist in data stores.
+ * An {@link org.eclipse.emf.ecore.EObject} identified by a unique {@link Id}, able to persist in data stores.
  */
 public interface PersistentEObject extends InternalEObject {
 

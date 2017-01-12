@@ -13,15 +13,35 @@ package fr.inria.atlanmod.neoemf.data.hbase.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
+import javax.annotation.Nonnull;
+
+/**
+ *
+ * <p>
+ * All features are all optional: options can be created using all or none of them.
+ */
 public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBaseOptionsBuilder, HBaseOptions> {
 
+    /**
+     * Instantiates a new {@code HBaseOptionsBuilder}.
+     */
     protected HBaseOptionsBuilder() {
     }
 
+    /**
+     * Constructs a new {@code HBaseOptionsBuilder} instance.
+     * @return a new builder
+     */
+    @Nonnull
     public static HBaseOptionsBuilder newBuilder() {
         return new HBaseOptionsBuilder();
     }
 
+    /**
+     *
+     * @return this {@code CommonOptionsBuilder} (for chaining)
+     */
+    @Nonnull
     public HBaseOptionsBuilder readOnly() {
         return option(HBaseResourceOptions.READ_ONLY, true);
     }
