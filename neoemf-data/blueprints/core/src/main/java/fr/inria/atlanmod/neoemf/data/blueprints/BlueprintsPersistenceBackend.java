@@ -28,11 +28,14 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
+import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -51,17 +54,47 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * This class is responsible of low-level access to a Blueprints database. It wraps an existing Blueprints
+ * database and provides facilities to create and retrieve elements, map {@link PersistentEObject}s to 
+ * {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight caches 
+ * to improve access time of {@link Vertex} from  their corresponding {@link PersistentEObject}.
+ * <p>
+ * This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to
+ * access and manipulate the database.
+ * <p>
+ * Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory} that
+ * provides a usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
+ * 
+ * @see BlueprintsPersistenceBackendFactory
+ * @see DirectWriteBlueprintsStore
+ * @see DirectWriteBlueprintsCacheManyStore
+ */
 public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * The literal description of this back-end.
      */
     public static final String NAME = "blueprints";
-
+    /**
+     * The property key used to set metaclass name in metaclass vertices
+     */
     public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+    /**
+     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass vertices
+     */
     public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+    /**
+     * The label of type conformance {@link Edge}s
+     */
     public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
+    /**
+     * The name of the index entry holding metaclass vertices
+     */
     public static final String KEY_METACLASSES = "metaclasses";
+    /**
+     * The index key used to retrieve metaclass vertices
+     */
     public static final String KEY_NAME = "name";
 
     // TODO Find the more predictable maximum cache size
@@ -76,6 +109,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private Index<Vertex> metaclassIndex;
     private boolean isClosed = false;
 
+    /**
+     * Creates a new {@link BlueprintsPersistenceBackend} wrapping the provided {@code baseGraph}
+     * <p>
+     * This method initialize the caches and create the metaclass index
+     * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
+     */
     BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
         this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
@@ -151,7 +190,9 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Builds the {@link Id} used to identify {@link EClass} {@link Vertex}es.
+     * Builds the {@link Id} used to identify an {@link EClass} {@link Vertex}.
+     * @param eClass the {@link EClass} to build an {@link Id} from
+     * @return the create {@link Id}
      */
     private static Id buildId(EClass eClass) {
         return isNull(eClass) ? null : new StringId(eClass.getName() + '@' + eClass.getEPackage().getNsURI());
@@ -159,9 +200,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Create a new vertex, add it to the graph, and return the newly created vertex.
-     *
      * @param id the identifier of the {@link Vertex}
-     *
      * @return the newly created vertex
      */
     public Vertex addVertex(Id id) {
@@ -171,9 +210,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Create a new vertex, add it to the graph, and return the newly created vertex. The issued {@link EClass} is used
      * to calculate the {@link Vertex} {@code id}.
-     *
      * @param eClass The corresponding {@link EClass}
-     *
      * @return the newly created vertex
      */
     private Vertex addVertex(EClass eClass) {
@@ -186,7 +223,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Returns the vertex corresponding to the provided {@code id}. If no vertex corresponds to that {@code id}, then
      * return {@code null}.
-     *
+     * @param id the {@link Id} of the element to find
      * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
     public Vertex getVertex(Id id) {
@@ -196,17 +233,17 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Returns the vertex corresponding to the provided {@link EClass}. If no vertex corresponds to that {@link EClass},
      * then return {@code null}.
-     *
-     * @return the vertex referenced by the provided {@link EClass} or {@code null} when no such vertex exists
+     * @param eClass the {@link EClass} to find
+     * @return the vertex corresponding to the provided {@link EClass} or {@code null} when no such vertex exists
      */
     private Vertex getVertex(EClass eClass) {
         return getVertex(buildId(eClass));
     }
 
     /**
-     * Return the vertex corresponding to the provided {@link EObject}. If no vertex corresponds to that {@link EObject},
+     * Return the vertex corresponding to the provided {@link PersistentEObject}. If no vertex corresponds to that {@link EObject},
      * then the corresponding {@link Vertex} together with its {@link #KEY_INSTANCE_OF} relationship is created.
-     *
+     * @param object the {@link PersistentEObject} to find
      * @return the vertex referenced by the provided {@link EObject} or {@code null} when no such vertex exists
      */
     public Vertex getOrCreateVertex(PersistentEObject object) {
@@ -237,10 +274,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
     
     /**
-     * Reifies the given {@link Vertex} as an {@link EObject}
+     * Reifies the given {@link Vertex} as a {@link PersistentEObject}
      * <p>
-     * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
-     * unless the {@link EObject} returned in previous calls has been already garbage collected.
+     * The method guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in subsequent calls,
+     * unless the {@link PersistentEObject} returned in previous calls has been already garbage collected.
      * This method is a shortcut for {@link BlueprintsPersistenceBackend#reifyVertex(Vertex, EClass)} with a {@code null}
      * EClass.
      * @param vertex the {@link Vertex} to reify
@@ -291,7 +328,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Copies all the contents of this back-end to the target one.
+     * Copies all the contents of this backend to the target one.
+     * @param target the {@link BlueprintsPersistenceBackend} to copy the elements to
      */
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
@@ -299,13 +337,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
     
     /**
-     * <p>
      * Provides a direct access to the underlying graph. This method is public
      * for tool compatibility (see 
      * <a href="https://github.com/atlanmod/Mogwai">the Mogwaï framework</a>),
-     * NeoEMF consistency is not guaranteed if the graph is modified manually
-     * </p>
-     * 
+     * NeoEMF consistency is not guaranteed if the graph is modified manually 
      * @return the underlying Blueprints {@link IdGraph}
      */
     public IdGraph<KeyIndexableGraph> getGraph() {

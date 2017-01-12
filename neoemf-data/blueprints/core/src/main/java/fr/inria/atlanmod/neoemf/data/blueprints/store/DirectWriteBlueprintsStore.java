@@ -43,15 +43,42 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * An {@link AbstractDirectWriteStore} implementation that translates model-level operations
+ * into Blueprints calls.
+ */
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
 
+    /**
+     * The string used as a separator between values of multi-valued attributes
+     */
     protected static final String SEPARATOR = ":";
+    /**
+     * The property key used to define the index of an edge
+     */
     protected static final String POSITION = "position";
+    /**
+     * The label used to define container {@link Edge}s
+     */
     protected static final String CONTAINER = "eContainer";
+    /**
+     * The label used to link root vertex to top-level elements
+     */
     protected static final String CONTENTS = "eContents";
+    /**
+     * The property key used to define the opposite containing feature in container {@link Edge}s
+     */
     protected static final String CONTAINING_FEATURE = "containingFeature";
+    /**
+     * The property key used to define the number of edges with a specific label
+     */
     protected static final String SIZE_LITERAL = "size";
 
+    /**
+     * Creates a new {@link DirectWriteBlueprintsStore} for the given {@link Resource} and {@link BlueprintsPersistenceBackend}.
+     * @param resource the {@link Resource} to persist and access
+     * @param backend the {@link BlueprintsPersistenceBackend} used to store the model
+     */
     public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);
     }
@@ -453,15 +480,38 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         return feature;
     }
 
+    /**
+     * Find the number of elements contained in the given {@code feature}
+     * @param vertex the input {@link Vertex} of the {@code feature}
+     * @param feature the {@link EStructuralFeature} describing the feature to access
+     * @return the size of the {@code feature} if it is multi-valued, {@code 0} otherwise
+     */
     protected Integer getSize(Vertex vertex, EStructuralFeature feature) {
         Integer size = vertex.getProperty(feature.getName() + SEPARATOR + SIZE_LITERAL);
         return isNull(size) ? 0 : size;
     }
 
+    /**
+     * Set the size property of the given {@code feature} in the given {@code vertex} to {@code size}
+     * @param vertex the input {@link Vertex} of the {@code feature}
+     * @param feature the {@link EStructuralFeature} describing the feature to access
+     * @param size the new size 
+     */
     private void setSize(Vertex vertex, EStructuralFeature feature, int size) {
         vertex.setProperty(feature.getName() + SEPARATOR + SIZE_LITERAL, size);
     }
 
+    /**
+     * Creates a new container edge between {@code parentVertex} and {@code childVertex}, and deletes any
+     * container edge previously linked to {@code childVertex}
+     * @param reference the containment {@link EReference}. This parameter is used to set the containing feature property
+     * in the create edge.
+     * @param parentVertex the {@link Vertex} representing the container element
+     * @param childVertex the {@link Vertex} representing the contained element
+     * 
+     * @see DirectWriteBlueprintsStore#CONTAINER
+     * @see DirectWriteBlueprintsStore#CONTAINING_FEATURE
+     */
     private void updateContainment(EReference reference, Vertex parentVertex, Vertex childVertex) {
         for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
             edge.remove();
@@ -470,10 +520,25 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         edge.setProperty(CONTAINING_FEATURE, reference.getName());
     }
 
+    /**
+     * Creates an {@link InternalEObject} from the given {@code vertex}
+     * @param vertex the {@link Vertex} to reify
+     * @return an {@link InternalEObject} built from the provided {@link Vertex}
+     * 
+     * @see DirectWriteBlueprintsStore#reifyVertex(Vertex, EClass)
+     */
     protected InternalEObject reifyVertex(Vertex vertex) {
         return reifyVertex(vertex, null);
     }
 
+    /**
+     * Creates an {@link InternalEObject} from the given {@code vertex}, and sets its {@link EClass} with the given {@code EClass}.
+     * <p>
+     * This method speeds-up the reification for objects with a known {@link EClass} by avoiding unnecessary database accesses.
+     * @param vertex the {@link Vertex} to reify
+     * @param eClass the {@link EClass} representing the type of the element to create
+     * @return an {@link InternalEObject} build from the provided {@link Vertex}
+     */
     protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
         PersistentEObject internalEObject = backend.reifyVertex(vertex, eClass);
         if (internalEObject.resource() != resource()) {
@@ -490,12 +555,24 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         return internalEObject;
     }
 
+    /**
+     * Search in the database the {@link Vertex} corresponing to the given {@code id} and reifies it
+     * @param id the {@link Id} to search
+     * @return a reified {@link EObject} if the corresponding {@link Vertex} has been found in the database, {@code null} otherwise
+     */
     @Override
-    public EObject eObject(Id uriFragment) {
-        Vertex vertex = backend.getVertex(uriFragment);
+    public EObject eObject(Id id) {
+        Vertex vertex = backend.getVertex(id);
         return isNull(vertex) ? null : reifyVertex(vertex);
     }
 
+    /**
+     * Computes efficiently {@code allInstances} operation by using underlying graph facilities. This method uses
+     * database indices to avoid costly traversal of the entire model.
+     * @param eClass the {@link EClass} to get the instances of
+     * @param strict set to {@code true} if the method should look for instances of {@code eClass} only, set to {@code false}
+     * if the method should also return elements that are subclasses of {@code eClass}
+     */
     @Override
     public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
         Map<EClass, Iterable<Vertex>> indexHits = backend.getAllInstances(eClass, strict);

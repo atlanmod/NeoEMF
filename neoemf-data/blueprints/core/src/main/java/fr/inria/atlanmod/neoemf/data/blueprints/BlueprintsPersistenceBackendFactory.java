@@ -11,28 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import com.tinkerpop.blueprints.Graph;
-import com.tinkerpop.blueprints.GraphFactory;
-import com.tinkerpop.blueprints.KeyIndexableGraph;
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
-
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfiguration;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
-import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -45,10 +26,45 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
+import com.tinkerpop.blueprints.Graph;
+import com.tinkerpop.blueprints.GraphFactory;
+import com.tinkerpop.blueprints.KeyIndexableGraph;
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+
+import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfiguration;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
+import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
+import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
+import fr.inria.atlanmod.neoemf.data.blueprints.tg.config.InternalBlueprintsTgConfiguration;
+import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+
+/**
+ * A factory that creates instances of {@link BlueprintsPersistenceBackend}. As other implementations of 
+ * {@link AbstractPersistenceBackendFactory}, this class can create transient and persistent databases.
+ * Persistent backend creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
+ * option maps.
+ * <p>
+ * The factory handles transient backends by creating an in-memory {@link TinkerGraph} instance. Persistent
+ * backends are created according to the provided resource options. Default backend configuration (store directory and
+ * graph type) is called dynamically according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
+ * 
+ * @see PersistentResource
+ * @see BlueprintsPersistenceBackend
+ * @see BlueprintsOptionsBuilder
+ */
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     public static final String NAME = BlueprintsPersistenceBackend.NAME;
