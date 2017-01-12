@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * A factory of {@link PersistenceBackend}.
+ * A factory of {@link PersistenceBackend} and {@link PersistentStore}.
  */
 public interface PersistenceBackendFactory {
 
@@ -43,7 +43,7 @@ public interface PersistenceBackendFactory {
      * Creates a {@link PersistenceBackend} in the given {@code file}.
      *
      * @param file    the file
-     * @param options the options
+     * @param options the options that defines the behaviour of the back-end
      *
      * @return the persistence back-end
      *
@@ -52,7 +52,7 @@ public interface PersistenceBackendFactory {
     PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException;
 
     /**
-     * Creates a {@link PersistentStore} between the given {@code resource} and the given {@code backend}.
+     * Creates a {@link PersistentStore} between the given {@code resource} and the given in-memory {@code backend}.
      *
      * @param resource the resource
      * @param backend  the back-end
@@ -69,7 +69,7 @@ public interface PersistenceBackendFactory {
      *
      * @param resource the resource
      * @param backend  the back-end
-     * @param options  the options
+     * @param options  the options that defines the behaviour of the back-end
      *
      * @return the newly created persistent store.
      *

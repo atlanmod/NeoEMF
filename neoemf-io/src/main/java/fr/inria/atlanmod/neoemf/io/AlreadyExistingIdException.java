@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io;
 
 /**
- * Exception thrown when an {@link fr.inria.atlanmod.neoemf.core.Id} is already defined in a datastore.
+ * Exception thrown when an {@link fr.inria.atlanmod.neoemf.core.Id} is already defined in a data store.
  */
 public class AlreadyExistingIdException extends RuntimeException {
 
