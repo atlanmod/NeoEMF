@@ -417,6 +417,7 @@
                         <nosince>true</nosince>
                         <author>false</author>
                         <excludePackageNames>
+                            fr.inria.atlanmod.neoemf.data.berkeleydb*;
                             fr.inria.atlanmod.neoemf.tests*
                         </excludePackageNames>
                         <links>
@@ -462,6 +463,10 @@
                             <group>
                                 <title>HBase</title>
                                 <packages>fr.inria.atlanmod.neoemf.data.hbase*</packages>
+                            </group>
+                            <group>
+                                <title>Tests</title>
+                                <packages>fr.inria.atlanmod.neoemf.tests*</packages>
                             </group>
                         </groups>
                         <tags>
