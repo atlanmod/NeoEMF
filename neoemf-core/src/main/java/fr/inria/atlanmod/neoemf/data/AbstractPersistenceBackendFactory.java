@@ -111,14 +111,14 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     }
 
     /**
-     * Creates a {@link PersistentStore store} between the given {@code resource} and the given {@code backend}
+     * Creates a {@link PersistentStore} between the given {@code resource} and the given {@code backend}
      * according to the given {@code options}.
      * <p>
      * The returned {@link PersistentStore} may be a succession of several {@link PersistentStore}.
      * <p>
      * Contrary to {@link #createPersistentStore(PersistentResource, PersistenceBackend, Map)}, this method is
-     * associated to a specific {@link PersistenceBackend back-end}, and called before creating global
-     * {@link PersistentStore stores}.
+     * associated to a specific {@link PersistenceBackend}, and called before creating global
+     * {@link PersistentStore}.
      *
      * @param resource the resource
      * @param backend  the back-end

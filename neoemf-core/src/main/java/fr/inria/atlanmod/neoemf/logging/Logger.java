@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.logging;
 
 /**
- * Loggers provide logging operations, filtered by {@link Level levels}.
+ * Loggers provide logging operations, filtered by {@link Level}s.
  */
 public interface Logger {
 

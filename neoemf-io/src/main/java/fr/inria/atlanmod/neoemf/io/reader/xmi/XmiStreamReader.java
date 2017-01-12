@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A XMI {@link Reader reader} that uses stream for reading.
+ * A XMI {@link Reader} that uses stream for reading.
  * <p>
  * It uses a SAX implementation of XML parsing.
  */

@@ -25,6 +25,10 @@ import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+/**
+ * A simple representation of a multivalued {@link EStructuralFeature} of a {@link PersistentEObject}. The "multivalued"
+ * characteric is identified with a position.
+ */
 public class MultivaluedFeatureKey extends FeatureKey {
 
     private static final long serialVersionUID = 1L;
@@ -32,24 +36,80 @@ public class MultivaluedFeatureKey extends FeatureKey {
     @Nonnegative
     private final int position;
 
+    /**
+     * Instantiates a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
+     * used as a simple representation of a feature of an object. The "multivalued" characteric is identified with the
+     * {@code position}.
+     *
+     * @param id       the identifier of the {@link PersistentEObject}
+     * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param position the position of the {@link EStructuralFeature}
+     */
     protected MultivaluedFeatureKey(@Nonnull Id id, @Nonnull String name, @Nonnegative int position) {
         super(id, name);
         checkArgument(position >= 0, "Position must be >= 0");
         this.position = position;
     }
 
+    /**
+     * Creates a new {@code FeatureKey} from the given {@code internalObject} and the given {@code feature}.
+     * <p>
+     * This method behaves like: <pre>MultivaluedFeatureKey.from(PersistentEObject.from(internalObject), feature,
+     * position)</pre>
+     *
+     * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its identifier
+     * @param feature        the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be extracted
+     * @param position       the position of the {@link EStructuralFeature}
+     *
+     * @return a new {@code MultivaluedFeatureKey}
+     *
+     * @see #from(PersistentEObject, EStructuralFeature, int)
+     * @see PersistentEObject#from(Object)
+     * @see EStructuralFeature#getName()
+     */
     public static MultivaluedFeatureKey from(@Nonnull InternalEObject internalObject, @Nonnull EStructuralFeature feature, @Nonnegative int position) {
         return from(PersistentEObject.from(internalObject), feature, position);
     }
 
+    /**
+     * Creates a new {@code FeatureKey} from the given {@code object} and the given {@code feature}.
+     * <p>
+     * This method behaves like: <pre>MultivaluedFeatureKey.of(object.id(), feature.getName(), position)</pre>
+     *
+     * @param object   the {@link PersistentEObject} from which the identifier will be extracted
+     * @param feature  the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be extracted
+     * @param position the position of the {@link EStructuralFeature}
+     *
+     * @return a new {@code MultivaluedFeatureKey}
+     *
+     * @see #of(Id, String, int)
+     * @see PersistentEObject#id()
+     * @see EStructuralFeature#getName()
+     */
     public static MultivaluedFeatureKey from(@Nonnull PersistentEObject object, @Nonnull EStructuralFeature feature, @Nonnegative int position) {
         return of(object.id(), feature.getName(), position);
     }
 
+    /**
+     * Creates a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
+     * used as a simple representation of a feature of an object. The "multivalued" characteric is identified with the
+     * {@code position}.
+     *
+     * @param id the identifier of the {@link PersistentEObject}
+     * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param position the position of the {@link EStructuralFeature}
+     *
+     * @return a new {@code MultivaluedFeatureKey}
+     */
     public static MultivaluedFeatureKey of(@Nonnull Id id, @Nonnull String name, @Nonnegative int position) {
         return new MultivaluedFeatureKey(id, name, position);
     }
 
+    /**
+     * Returns the position of the {@link EStructuralFeature}.
+     *
+     * @return the position of the feature
+     */
     @Nonnegative
     public int position() {
         return position;

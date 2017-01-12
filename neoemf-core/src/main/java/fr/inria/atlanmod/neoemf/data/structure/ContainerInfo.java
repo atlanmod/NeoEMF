@@ -23,7 +23,8 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- *
+ * A simple representation of a containment between a {@link PersistentEObject} and another. The referenced
+ * {@link PersistentEObject} is identified by the name the reference used to retrieve it.
  */
 public class ContainerInfo implements Serializable {
 
@@ -35,26 +36,62 @@ public class ContainerInfo implements Serializable {
     @Nonnull
     private final String name;
 
+    /**
+     * Instantiates a new {@code ContainerInfo} with the given {@code id} and the given {@code name}.
+     *
+     * @param id   the identifier of the {@link PersistentEObject}
+     * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
+     */
     protected ContainerInfo(@Nonnull Id id, @Nonnull String name) {
         this.id = checkNotNull(id);
         this.name = checkNotNull(name);
     }
 
+    /**
+     * Creates a new {@code ContainerInfo} from the given {@code object} and {@code reference}.
+     * <p>
+     * This method behaves like: <pre>ContainerInfo.of(object.id(), reference.getName())</pre>
+     *
+     * @param object    the {@link PersistentEObject}
+     * @param reference the reference used to retrieve the container of the {@link PersistentEObject}
+     *
+     * @return a new {@code ContainerInfo}
+     *
+     * @see #of(Id, String)
+     */
     @Nonnull
     public static ContainerInfo from(@Nonnull PersistentEObject object, @Nonnull EReference reference) {
-        return new ContainerInfo(object.id(), reference.getName());
+        return of(object.id(), reference.getName());
     }
 
+    /**
+     * Creates a new {@code ContainerInfo} with the given {@code id} and {@code name}.
+     *
+     * @param id   the identifier of the {@link PersistentEObject}
+     * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
+     *
+     * @return a new {@code ContainerInfo}
+     */
     @Nonnull
     public static ContainerInfo of(@Nonnull Id id, @Nonnull String name) {
         return new ContainerInfo(id, name);
     }
 
+    /**
+     * Returns the identifier of the {@link PersistentEObject}.
+     *
+     * @return the identifier of the object
+     */
     @Nonnull
     public Id id() {
         return id;
     }
 
+    /**
+     * Returns the name the {@link EReference} used to retrieve the container of the {@link PersistentEObject}.
+     *
+     * @return the name of the reference
+     */
     @Nonnull
     public String name() {
         return name;

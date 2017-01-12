@@ -24,12 +24,12 @@ import static java.util.Objects.nonNull;
 
 /**
  * A registry that keeps in memory links of registered {@link org.eclipse.emf.common.util.URI} schemes to their
- * associated {@link PersistenceBackendFactory factory}.
+ * associated {@link PersistenceBackendFactory}.
  * <p>
  * This {@code PersistenceBackendFactoryRegistry} is used for dynamically create
  * {@link fr.inria.atlanmod.neoemf.data.store.PersistentStore} and {@link PersistenceBackend} when loading and saving a
  * {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}. For this reason, a
- * {@link PersistenceBackendFactory factory} must be registered before using these operations, with the
+ * {@link PersistenceBackendFactory} must be registered before using these operations, with the
  * {@link #register(String, PersistenceBackendFactory)} method.
  *
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)
@@ -38,7 +38,7 @@ import static java.util.Objects.nonNull;
 public class PersistenceBackendFactoryRegistry {
 
     /**
-     * A map containing all registered {@link PersistenceBackendFactory factory} identified by a URI scheme.
+     * A map containing all registered {@link PersistenceBackendFactory} identified by a URI scheme.
      */
     private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
 
@@ -49,7 +49,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Returns all registered URI schemes with their {@link PersistenceBackendFactory back-end factory}.
+     * Returns all registered URI schemes with their {@link PersistenceBackendFactory}.
      *
      * @return an immutable {@link Map}
      */
@@ -59,7 +59,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Returns a specific {@link PersistenceBackendFactory factory} identified by the given URI {@code scheme}.
+     * Returns a specific {@link PersistenceBackendFactory} identified by the given URI {@code scheme}.
      *
      * @param scheme the URI scheme identifying the back-end factory
      *
@@ -76,7 +76,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Defines if a {@link PersistenceBackendFactory factory} is registered for the given URI {@code scheme}.
+     * Defines if a {@link PersistenceBackendFactory} is registered for the given URI {@code scheme}.
      *
      * @param scheme the URI scheme identifying the back-end factory
      *
@@ -87,7 +87,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Registers a {@link PersistenceBackendFactory factory} identified by the given URI {@code scheme}.
+     * Registers a {@link PersistenceBackendFactory} identified by the given URI {@code scheme}.
      * <p>
      * If the given {@code scheme} is already registered, its value will be overriden by the given {@code factory}.
      *
@@ -100,7 +100,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Unregisters a {@link PersistenceBackendFactory factory} identified by the given URI {@code scheme}.
+     * Unregisters a {@link PersistenceBackendFactory} identified by the given URI {@code scheme}.
      *
      * @param scheme the URI scheme identifying the back-end factory
      */

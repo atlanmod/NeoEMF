@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data;
 import java.io.IOException;
 
 /**
- * Exception thrown when an error occurred when creating {@link PersistenceBackend back-end} or
- * {@link fr.inria.atlanmod.neoemf.data.store.PersistentStore store} in {@link PersistenceBackendFactory}.
+ * Exception thrown when an error occurred when creating {@link PersistenceBackend} or
+ * {@link fr.inria.atlanmod.neoemf.data.store.PersistentStore} in {@link PersistenceBackendFactory}.
  */
 public class InvalidDataStoreException extends IOException {
 
