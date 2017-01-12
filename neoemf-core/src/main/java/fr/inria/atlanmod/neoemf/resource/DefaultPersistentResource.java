@@ -80,8 +80,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
         this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
         this.isPersistent = false;
-        // Stop the backend when the application is terminated
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(backend, getURI()));
         NeoLogger.info("{0} created", PersistentResource.class.getSimpleName());
     }
 
@@ -433,7 +432,19 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         }
     }
 
-    private class ShutdownHook extends Thread {
+    /**
+     * A shutdown-hook that stops a back-end when the application is terminated.
+     */
+    private static class ShutdownHook extends Thread {
+
+        private final PersistenceBackend backend;
+
+        private final URI uri;
+
+        public ShutdownHook(PersistenceBackend backend, URI uri) {
+            this.backend = backend;
+            this.uri = uri;
+        }
 
         @Override
         public void run() {

@@ -37,7 +37,7 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
      * Processes a {@link Namespace} declaration.
      *
      * @param prefix the prefix
-     * @param uri    the uri associated with the {@code prefix}
+     * @param uri    the URI associated with the {@code prefix}
      *
      * @see fr.inria.atlanmod.neoemf.io.structure.Namespace.Registry#register(String, String)
      */

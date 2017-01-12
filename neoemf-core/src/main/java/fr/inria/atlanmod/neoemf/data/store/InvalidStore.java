@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * Utility class which can be used by backend-specific implementations that does not provide a transient layer.
+ * Utility class which can be used by back-end implementations that do not provide transient layer.
  */
 public class InvalidStore implements PersistentStore {
 

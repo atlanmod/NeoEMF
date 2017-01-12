@@ -83,7 +83,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Instantiates a new {@code AbstractPersistenceHandler} with its targeted {@link PersistenceBackend}.
      *
-     * @param backend the targetted persistence backend
+     * @param backend the targetted persistence back-end
      */
     protected AbstractPersistenceHandler(P backend) {
         this.backend = backend;
@@ -119,7 +119,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Returns the targeted {@link PersistenceBackend}.
      *
-     * @return the persistence backend
+     * @return the persistence back-end
      */
     protected P getPersistenceBackend() {
         return backend;
@@ -138,7 +138,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * Adds a new element.
      *
      * @param id    the identifier of the new element
-     * @param nsUri the uri of the new element
+     * @param nsUri the URI of the new element
      * @param name  the name of the new element
      * @param root  {@code true} if the new element is a root node
      */
@@ -313,7 +313,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
                 elementIdCache.put(idValue, id);
             }
             catch (AlreadyExistingIdException e) {
-                // Id already exists in the backend : try another
+                // Id already exists in the back-end : try another
                 id = createId(Identifier.generated(id.toString()));
                 conflictElementIdCache.put(idValue, id);
                 conflict = true;
@@ -407,7 +407,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Increments the operation counter, and commit the persistence backend if the number of operation is equals to
+     * Increments the operation counter, and commit the persistence back-end if the number of operation is equals to
      * {@code OPS_BETWEEN_COMMITS_DEFAULT}.
      */
     private void incrementAndCommit() {

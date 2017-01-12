@@ -106,7 +106,7 @@ public class Namespace {
          * Registers a new {@link Namespace} with the given {@code prefix} and {@code uri}.
          *
          * @param prefix the prefix of the new namespace
-         * @param uri    the uri associated with the prefix
+         * @param uri    the URI associated with the prefix
          */
         public void register(String prefix, String uri) {
             Namespace ns = new Namespace(prefix, uri);

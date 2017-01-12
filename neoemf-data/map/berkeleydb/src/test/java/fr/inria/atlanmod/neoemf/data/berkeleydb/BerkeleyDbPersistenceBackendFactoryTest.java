@@ -38,7 +38,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(backend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Invalid backend created"
+        assertThat(backend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Invalid back-end created"
 
         // TODO Need to test further the nature of the BerkeleyDB engine
     }
@@ -56,7 +56,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
     @Test
     public void testCreatePersistentBackendNoOption() throws InvalidDataStoreException {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
-        assertThat(backend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Invalid backend created"
+        assertThat(backend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Invalid back-end created"
 
         // TODO Need to test further the nature of the BerkeleyDB engine
     }
@@ -143,25 +143,25 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
 
     /**
      * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent data stores from the transient ones.
-     * Only empty backends are tested.
+     * Only empty back-ends are tested.
      */
     @Test
     @Ignore
     public void testCopyBackend() throws InvalidDataStoreException {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Transient backend is not an instance of BerkeleyDbPersistenceBackend"
+        assertThat(transientBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Transient back-end is not an instance of BerkeleyDbPersistenceBackend"
         BerkeleyDbPersistenceBackend transientMap = (BerkeleyDbPersistenceBackend) transientBackend;
 
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), BerkeleyDbOptionsBuilder.newBuilder().asMap());
-        assertThat(persistentBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Persistent backend is not an instance of BerkeleyDbPersistenceBackend"
+        assertThat(persistentBackend).isInstanceOf(BerkeleyDbPersistenceBackend.class); // "Persistent back-end is not an instance of BerkeleyDbPersistenceBackend"
 
         BerkeleyDbPersistenceBackend persistentMap = (BerkeleyDbPersistenceBackend) persistentBackend;
 
         context().persistenceBackendFactory().copyBackend(transientMap, persistentMap);
 
         for (String tKey : transientMap.getAll().keySet()) {
-            assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"
-            assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent backend structure %s is not equal to transient one"
+            assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent back-end does not contain the key"
+            assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent back-end structure %s is not equal to transient one"
         }
     }
 

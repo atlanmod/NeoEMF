@@ -70,7 +70,8 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
                 NeoLogger.warn("STORE_OPTIONS must be a List<PersistentResourceOptions.StoreOption>. Consider that there is no option.");
                 throw new NullPointerException();
             }
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             storeOptions = Collections.emptyList();
         }
 
@@ -80,7 +81,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     }
 
     /**
-     * Returns the literal description of the created persistence backend.
+     * Returns the literal description of the created persistence back-end.
      */
     protected abstract String getName();
 
@@ -109,14 +110,35 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
         return store;
     }
 
+    /**
+     * Creates a {@link PersistentStore store} between the given {@code resource} and the given {@code backend}
+     * according to the given {@code options}.
+     * <p>
+     * The returned {@link PersistentStore} may be a succession of several {@link PersistentStore}.
+     * <p>
+     * Contrary to {@link #createPersistentStore(PersistentResource, PersistenceBackend, Map)}, this method is
+     * associated to a specific {@link PersistenceBackend back-end}, and called before creating global
+     * {@link PersistentStore stores}.
+     *
+     * @param resource the resource
+     * @param backend  the back-end
+     * @param options  the options
+     *
+     * @return the newly created persistent store
+     *
+     * @throws InvalidDataStoreException if there is at least one invalid value in {@code options}, or if an option is
+     *                                   missing
+     */
     protected abstract PersistentStore createSpecificPersistentStore(PersistentResource resource, PersistenceBackend backend, Map<?, ?> options) throws InvalidDataStoreException;
 
     /**
      * Creates and saves the NeoEMF configuration.
+     * <p>
+     * The configuration is stored beside a data store in order to identify a {@link PersistenceBackend}.
      *
      * @param directory the directory where the configuration must be stored.
      */
-    // TODO Create a new PersistenceConfiguration to manage the configuration of backends
+    // TODO Create a new PersistenceConfiguration to manage the configuration of back-ends
     protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);

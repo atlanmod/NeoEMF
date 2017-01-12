@@ -34,7 +34,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(backend).isInstanceOf(MapDbPersistenceBackend.class); // "Invalid backend created"
+        assertThat(backend).isInstanceOf(MapDbPersistenceBackend.class); // "Invalid back-end created"
 
         // TODO Need to test further the nature of the MapDB engine
     }
@@ -52,7 +52,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     @Test
     public void testCreatePersistentBackendNoOption() throws InvalidDataStoreException {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
-        assertThat(backend).isInstanceOf(MapDbPersistenceBackend.class); // "Invalid backend created"
+        assertThat(backend).isInstanceOf(MapDbPersistenceBackend.class); // "Invalid back-end created"
 
         // TODO Need to test further the nature of the MapDB engine
     }
@@ -139,24 +139,24 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
 
     /**
      * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent data stores from the transient ones.
-     * Only empty backends are tested.
+     * Only empty back-ends are tested.
      */
     @Test
     public void testCopyBackend() throws InvalidDataStoreException {
         PersistenceBackend transientBackend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(MapDbPersistenceBackend.class); // "Transient backend is not an instance of MapDbPersistenceBackend"
+        assertThat(transientBackend).isInstanceOf(MapDbPersistenceBackend.class); // "Transient back-end is not an instance of MapDbPersistenceBackend"
         MapDbPersistenceBackend transientMap = (MapDbPersistenceBackend) transientBackend;
 
         PersistenceBackend persistentBackend = context().persistenceBackendFactory().createPersistentBackend(file(), MapDbOptionsBuilder.newBuilder().asMap());
-        assertThat(persistentBackend).isInstanceOf(MapDbPersistenceBackend.class); // "Persistent backend is not an instance of MapDbPersistenceBackend"
+        assertThat(persistentBackend).isInstanceOf(MapDbPersistenceBackend.class); // "Persistent back-end is not an instance of MapDbPersistenceBackend"
 
         MapDbPersistenceBackend persistentMap = (MapDbPersistenceBackend) persistentBackend;
 
         context().persistenceBackendFactory().copyBackend(transientMap, persistentMap);
 
         for (String tKey : transientMap.getAll().keySet()) {
-            assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent backend does not contain the key"
-            assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent backend structure %s is not equal to transient one"
+            assertThat(persistentMap.getAll()).containsKey(tKey); // "Persistent back-end does not contain the key"
+            assertThat(persistentMap.getAll().get(tKey)).isEqualTo(transientMap.get(tKey)); // "Persistent back-end structure %s is not equal to transient one"
         }
     }
 }

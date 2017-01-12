@@ -40,7 +40,7 @@ import java.util.Map;
 public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
-     * The literal description of this backend.
+     * The literal description of this back-end.
      */
     public static final String NAME = "berkeleydb";
 
@@ -326,7 +326,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Copies all the contents of this backend to the target one.
+     * Copies all the contents of this back-end to the target one.
      */
     public void copyTo(BerkeleyDbPersistenceBackend target) {
         NeoLogger.debug("Copying " + this.toString() + "to: " + target.toString());

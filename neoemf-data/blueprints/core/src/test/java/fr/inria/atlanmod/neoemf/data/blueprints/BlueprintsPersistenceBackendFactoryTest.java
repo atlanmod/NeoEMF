@@ -31,7 +31,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     @Test
     public void testCreateTransientBackend() {
         PersistenceBackend backend = context().persistenceBackendFactory().createTransientBackend();
-        assertThat(backend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid backend created"
+        assertThat(backend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid back-end created"
 
         // TODO Need to test further the nature of the Blueprints engine
     }
@@ -49,7 +49,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
     @Test
     public void testCreatePersistentBackendNoOptionNoConfigFile() throws InvalidDataStoreException {
         PersistenceBackend backend = context().persistenceBackendFactory().createPersistentBackend(file(), BlueprintsOptionsBuilder.newBuilder().asMap());
-        assertThat(backend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid backend created"
+        assertThat(backend).isInstanceOf(BlueprintsPersistenceBackend.class); // "Invalid back-end created"
 
         // TODO Need to test further the nature of the Blueprints engine
     }

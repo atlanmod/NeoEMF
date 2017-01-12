@@ -70,7 +70,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
 
     @Override
     public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) {
-        // TODO Externalise the backend implementation from the HBase EStores.
+        // TODO Externalise the back-end implementation from the HBase EStores.
         return new HBasePersistenceBackend();
     }
 

@@ -31,7 +31,7 @@ import java.util.Map;
 public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
-     * The literal description of this backend.
+     * The literal description of this back-end.
      */
     public static final String NAME = "mapdb";
 
@@ -189,7 +189,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Copies all the contents of this backend to the target one.
+     * Copies all the contents of this back-end to the target one.
      */
     @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
     public void copyTo(MapDbPersistenceBackend target) {

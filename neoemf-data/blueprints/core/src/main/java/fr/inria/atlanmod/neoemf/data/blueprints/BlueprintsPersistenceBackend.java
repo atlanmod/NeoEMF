@@ -54,7 +54,7 @@ import static java.util.Objects.nonNull;
 public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
-     * The literal description of this backend.
+     * The literal description of this back-end.
      */
     public static final String NAME = "blueprints";
 
@@ -291,7 +291,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Copies all the contents of this backend to the target one.
+     * Copies all the contents of this back-end to the target one.
      */
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
