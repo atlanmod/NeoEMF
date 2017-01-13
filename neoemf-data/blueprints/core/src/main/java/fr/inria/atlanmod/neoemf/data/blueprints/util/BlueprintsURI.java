@@ -63,7 +63,7 @@ public class BlueprintsURI extends PersistenceURI {
     /**
      * Creates a new {@link BlueprintsURI} from the given {@code uri}. This method checks that the
      * scheme of the provided {@code uri} can be used to create a new {@link BlueprintsURI}. If not an
-     * {@link IllegalArgumentException} is thrown
+     * {@link IllegalArgumentException} is thrown.
      * @param uri the base {@link URI}
      * @return the created {@link BlueprintsURI}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link BlueprintsURI#SCHEME} or {@link PersistenceURI#FILE_SCHEME} 
@@ -82,7 +82,7 @@ public class BlueprintsURI extends PersistenceURI {
     }
 
     /**
-     * Creates a new {@link BlueprintsURI} from the given {@link File} descriptor
+     * Creates a new {@link BlueprintsURI} from the given {@link File} descriptor.
      * @param file the {@link File} to build a {@link URI} from
      * @return the created {@link BlueprintsURI}
      */
@@ -92,7 +92,7 @@ public class BlueprintsURI extends PersistenceURI {
 
     /**
      * Creates a new {@link BlueprintsURI} from the given {@code uri} by checking the referenced file
-     * exists on the file system. A {@link NullPointerException} is thrown if the file cannot be found
+     * exists on the file system. A {@link NullPointerException} is thrown if the file cannot be found.
      * @param uri the base {@link URI}
      * @return the created {@link BlueprintsURI}
      * @throws NullPointerException if the file referenced by the {@code uri} cannot be found

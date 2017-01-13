@@ -20,6 +20,7 @@ import com.tinkerpop.blueprints.Vertex;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
@@ -33,19 +34,21 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link AbstractDirectWriteStore} implementation that translates model-level operations
- * into Blueprints calls.
- */
-
-/**
- * A specific subclass of {@link DirectWriteBlueprintsStore} that uses an internal cache to store {@link Vertex} elements
- * that are part of multi-valued {@link EReference}.
+ * A {@link DirectWriteBlueprintsStore} subclass that uses an internal cache to store {@link Vertex} elements
+ * that are part of multi-valued {@link EReference}s to speed-up their access.
  * <p>
  * Large multi-valued {@link EReference}s can be an execution time bottleneck in the graph implementation because any
  * element access forces the underlying database engine to load all the {@link Edge}s corresponding to the {@link EReference}.
  * We overcome this limitation by caching all the {@link Vertex} elements involved in multi-valued {@link EReference}s the first time they are
  * traversed, limiting database access. Note that the cache can contain up to {@code 10000} elements, limiting memory consumption. 
  * is accessed. 
+ * <p>
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
+ * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * 
+ * @see DirectWriteBlueprintsStore
+ * @see BlueprintsPersistenceBackend
+ * @see AbstractPersistentStoreDecorator
  */
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
