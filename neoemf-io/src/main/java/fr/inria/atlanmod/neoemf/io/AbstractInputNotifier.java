@@ -15,11 +15,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.util.Objects.nonNull;
+
 /**
- * The abstract implementation of {@link InputNotifier}.
+ * The abstract implementation of {@link InputNotifier} that provides overall behavior for the management of handlers.
  *
  * @param <T> the type of the notified {@link InputHandler}
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractInputNotifier<T extends InputHandler> implements InputNotifier<T> {
 
     /**
@@ -34,9 +39,16 @@ public abstract class AbstractInputNotifier<T extends InputHandler> implements I
         this.handlers = new HashSet<>();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the {@code handler} is {@code null}, it will be ignored.
+     */
     @Override
     public void addHandler(T handler) {
-        handlers.add(handler);
+        if (nonNull(handler)) {
+            handlers.add(handler);
+        }
     }
 
     @Override
@@ -44,6 +56,11 @@ public abstract class AbstractInputNotifier<T extends InputHandler> implements I
         return !handlers.isEmpty();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return an immutable collection
+     */
     @Override
     public Iterable<T> getHandlers() {
         return Collections.unmodifiableSet(handlers);

@@ -12,16 +12,29 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * An element which has a name.
+ * A simple element that has a name.
  */
 public class NamedElement {
 
+    /**
+     * The name of the element.
+     */
     private final String localName;
 
+    /**
+     * Constructs a new {@code NamedElement} with the given {@code localName}.
+     *
+     * @param localName the name of this element
+     */
     public NamedElement(String localName) {
         this.localName = localName;
     }
 
+    /**
+     * Returns the name of this element.
+     *
+     * @return the name
+     */
     public String getLocalName() {
         return localName;
     }

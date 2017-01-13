@@ -12,16 +12,31 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link StructuralFeature} of a simple key/value pair.
+ * A {@link StructuralFeature} representing an attribute, with a value.
  */
 public class Attribute extends StructuralFeature {
 
+    /**
+     * The value of this attribute.
+     */
     private Object value;
 
+    /**
+     * Constructs a new {@code Attribute} with the given {@code localName}.
+     *
+     * @param localName the name of this attribute
+     */
     public Attribute(String localName) {
         super(localName);
     }
 
+    /**
+     * Converts a {@link Reference} to an {@link Attribute}.
+     *
+     * @param reference the reference to convert
+     *
+     * @return a new attribute
+     */
     public static Attribute from(Reference reference) {
         Attribute attribute = new Attribute(reference.getLocalName());
         attribute.setId(reference.getId());
@@ -30,10 +45,20 @@ public class Attribute extends StructuralFeature {
         return attribute;
     }
 
+    /**
+     * Returns the value of this attribute.
+     *
+     * @return the value
+     */
     public Object getValue() {
         return value;
     }
 
+    /**
+     * Defines the value of this attribute.
+     *
+     * @param value the value
+     */
     public void setValue(Object value) {
         this.value = value;
     }

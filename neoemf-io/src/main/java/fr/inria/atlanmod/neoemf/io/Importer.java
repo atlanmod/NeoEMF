@@ -23,7 +23,7 @@ import java.util.Arrays;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * The import factory.
+ * Static methods to import data into NeoEMF.
  */
 public class Importer {
 

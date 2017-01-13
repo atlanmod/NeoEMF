@@ -14,32 +14,65 @@ package fr.inria.atlanmod.neoemf.io.structure;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import java.util.Collections;
+
 import javax.annotation.Nonnull;
 
 import static java.util.Objects.isNull;
 
 /**
- * A namespace identified by a prefix and a URI.
+ * A simple representation of a namespace with a prefix and an URI.
  */
 public class Namespace {
 
+    /**
+     * The instance of the default {@code Namespace}.
+     */
     private static final Namespace DEFAULT = new Namespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
+
+    /**
+     * The prefix of this namespace.
+     */
     private final String prefix;
+
+    /**
+     * The literal representation of the URI of this namespace.
+     */
     private final String uri;
 
+    /**
+     * Constructs a new {@code Namespace} with the given {@code prefix} and {@code uri}.
+     *
+     * @param prefix the prefix of this namespace
+     * @param uri the literal representation of the URI of this namespace
+     */
     private Namespace(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
     }
 
+    /**
+     * Returns the default namespace.
+     *
+     * @return the namespace representing "ecore @ http://www.eclipse.org/emf/2002/Ecore"
+     */
     public static Namespace getDefault() {
         return DEFAULT;
     }
 
+    /**
+     * Returns the prefix of this namespace.
+     *
+     * @return the prefix
+     */
     public String getPrefix() {
         return prefix;
     }
 
+    /**
+     * Returns the literal representation of the URI of this namespace
+     * @return the literal representation of the URI
+     */
     public String getUri() {
         return uri;
     }
@@ -59,6 +92,9 @@ public class Namespace {
          */
         private final Cache<String, Namespace> nsByUriCache;
 
+        /**
+         * Constrcuts a new {@code Registry}.
+         */
         private Registry() {
             nsByPrefixCache = Caffeine.newBuilder().build();
             nsByUriCache = Caffeine.newBuilder().build();
@@ -72,8 +108,13 @@ public class Namespace {
             return Holder.INSTANCE;
         }
 
+        /**
+         * Returns all registered namespace prefixes.
+         *
+         * @return a immutable collection
+         */
         public Iterable<String> getPrefixes() {
-            return nsByPrefixCache.asMap().keySet();
+            return Collections.unmodifiableSet(nsByPrefixCache.asMap().keySet());
         }
 
         /**

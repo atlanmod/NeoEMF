@@ -16,8 +16,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * A object able to notify previously registered {@link InputHandler}s of events during an I/O process, such as
- * import or export.
+ * An object that notifies registered {@link InputHandler}s of events during an I/O process, such as import or export.
  *
  * @param <T> the type of handlers
  *
@@ -26,7 +25,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 public interface InputNotifier<T extends InputHandler> {
 
     /**
-     * Add an {@link InputHandler} that will be notified.
+     * Adds an {@link InputHandler} that will be notified.
      *
      * @param handler the handler to add
      */
@@ -42,12 +41,12 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Returns all registered handlers.
      *
-     * @return an immutable collection
+     * @return an collection
      */
     Iterable<T> getHandlers();
 
     /**
-     * Notifies the start of a document to all registered handlers.
+     * Notifies all registered handlers of the start of a document.
      *
      * @see #notifyEndDocument()
      * @see InputHandler#processStartDocument()
@@ -57,7 +56,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies the start of a new element to all registered handlers.
+     * Notifies all registered handlers of the start of a new element.
      *
      * @param classifier the classifier of the new element
      *
@@ -69,7 +68,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies a new attribute to all registered handlers.
+     * Notifies all registered handlers of a new attribute.
      *
      * @param attribute the new attribute
      *
@@ -80,7 +79,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies a new reference to all registered handlers.
+     * Notifies all registered handlers of a new reference.
      *
      * @param reference the new reference
      *
@@ -91,7 +90,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies a new set of characters to all registered handlers.
+     * Notifies all registered handlers of a new set of characters.
      *
      * @param characters the new characters
      *
@@ -102,7 +101,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies the end of the current element to all registered handlers.
+     * Notifies all registered handlers of the end of the current element.
      *
      * @see #notifyStartElement(Classifier)
      * @see InputHandler#processEndElement()
@@ -112,7 +111,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies the end of the current document to all registered handlers.
+     * Notifies all registered handlers of the end of the current document.
      *
      * @see #notifyStartDocument()
      * @see InputHandler#processEndDocument()

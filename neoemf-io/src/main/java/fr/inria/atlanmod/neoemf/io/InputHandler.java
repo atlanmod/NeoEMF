@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * A object able to handle events notified by a {@link InputNotifier}.
+ * A object that handles events notified by a {@link InputNotifier}.
  * <p>
  * It must be previously registered with the {@link InputNotifier#addHandler(InputHandler)}.
  *

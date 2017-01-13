@@ -12,18 +12,37 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link StructuralFeature} of a link between two {@link Classifier}.
+ * A {@link StructuralFeature} representing an reference, which links several {@link Classifier}s.
  */
 public class Reference extends StructuralFeature {
 
+    /**
+     * The identifier of the referenced element.
+     */
     private Identifier idReference;
+
+    /**
+     * Whether this reference is a containment.
+     */
     private boolean containment;
 
+    /**
+     * Constructs a new {@code Reference} with the given {@code localName}.
+     *
+     * @param localName the name of this reference
+     */
     public Reference(String localName) {
         super(localName);
         this.containment = false;
     }
 
+    /**
+     * Converts an {@link Attribute} to a {@link Reference}.
+     *
+     * @param attribute the attribute to convert
+     *
+     * @return a new reference
+     */
     public static Reference from(Attribute attribute) {
         Reference reference = new Reference(attribute.getLocalName());
         reference.setId(attribute.getId());
@@ -32,10 +51,20 @@ public class Reference extends StructuralFeature {
         return reference;
     }
 
+    /**
+     * Returns the identifier of the referenced element.
+     *
+     * @return the identifier
+     */
     public Identifier getIdReference() {
         return idReference;
     }
 
+    /**
+     * Defines the identifier of the referenced element.
+     *
+     * @param idReference the identifier
+     */
     public void setIdReference(Identifier idReference) {
         this.idReference = idReference;
     }
@@ -45,10 +74,20 @@ public class Reference extends StructuralFeature {
         return true;
     }
 
+    /**
+     * Returns whether this reference is a containment.
+     *
+     * @return {@code true} if this reference is a containment
+     */
     public boolean isContainment() {
         return containment;
     }
 
+    /**
+     * Defines whether this reference is a containment.
+     *
+     * @param containment {@code true} if this reference is a containment
+     */
     public void setContainment(boolean containment) {
         this.containment = containment;
     }
