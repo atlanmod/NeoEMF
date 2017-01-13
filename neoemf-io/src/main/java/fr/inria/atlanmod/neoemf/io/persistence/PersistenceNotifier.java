@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * A simple {@link Processor} that notifies registered {@link PersistenceHandler}.
+ * A {@link Processor} that notifies registered {@link PersistenceHandler} of events.
  */
 public final class PersistenceNotifier extends AbstractInputNotifier<PersistenceHandler> implements Processor {
 

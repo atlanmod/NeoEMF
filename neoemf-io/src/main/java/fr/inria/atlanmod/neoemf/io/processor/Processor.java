@@ -16,8 +16,9 @@ import fr.inria.atlanmod.neoemf.io.InputNotifier;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
 /**
- * A structural handler that receives and uses events sent from a {@link InputNotifier} where it has to be registered by
- * the {@link InputNotifier#addHandler(InputHandler)} method.
+ * A {@code InputHandler} that pre-processes and post-processes received events.
+ * <p>
+ * It can add validation, redirection, cancellation, or data enhancement capabilities.
  */
 public interface Processor extends InputHandler, InputNotifier<PersistenceHandler> {
 }

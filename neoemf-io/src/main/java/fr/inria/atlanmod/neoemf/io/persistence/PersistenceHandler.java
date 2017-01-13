@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.InputHandler;
 import fr.inria.atlanmod.neoemf.io.InputNotifier;
 
 /**
- * A {@link InputHandler} that persists data based on received events.
+ * A {@link InputHandler} that process received events, in order to persist data.
  *
  * @note It correspond to the tail of the parsing process in case of an import.
  */

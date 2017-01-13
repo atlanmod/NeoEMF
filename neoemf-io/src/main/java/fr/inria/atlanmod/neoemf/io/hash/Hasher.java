@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.hash;
 
 /**
- * An object able to calculate the {@link HashCode} from a value.
+ * An object that calculates a {@link HashCode} from a value.
  */
 public interface Hasher {
 

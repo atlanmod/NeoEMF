@@ -16,7 +16,7 @@ import com.google.common.base.Stopwatch;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 /**
- * A delegated {@link PersistenceHandler} that gives the time to process.
+ * A {@link PersistenceHandler} wrapper that measures elapsed time between the start and the end of an I/O process.
  */
 public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 

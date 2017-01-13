@@ -27,7 +27,12 @@ import static java.util.Objects.isNull;
  */
 public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {
 
-    public BlueprintsNaiveHandler(BlueprintsPersistenceBackend backend) {
+    /**
+     * Constructs a new {@code BlueprintsNaiveHandler} on the given {@code backend}.
+     *
+     * @param backend the backend where to store data
+     */
+    protected BlueprintsNaiveHandler(BlueprintsPersistenceBackend backend) {
         super(backend);
     }
 

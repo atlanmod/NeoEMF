@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * An abstract implementation of a {@link PersistenceHandler} that delegates all methods to its underlying handler.
+ * A {@link PersistenceHandler} that delegates all methods to its underlying handler.
  */
 public abstract class AbstractPersistenceHandlerDecorator implements PersistenceHandler {
 

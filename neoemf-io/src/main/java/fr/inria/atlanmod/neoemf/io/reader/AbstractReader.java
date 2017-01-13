@@ -22,7 +22,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract implementation of {@link Reader} that notifies {@link Processor}.
+ * An abstract implementation of {@link Reader} that notifies {@link Processor} and provides overall behavior for the
+ * management of namespaces.
  */
 public abstract class AbstractReader extends AbstractInputNotifier<Processor> implements Reader {
 

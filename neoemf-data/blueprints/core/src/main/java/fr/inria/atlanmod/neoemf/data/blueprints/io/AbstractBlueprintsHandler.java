@@ -21,10 +21,13 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
+
+import java.util.NoSuchElementException;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -62,15 +65,18 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     private static final String SIZE_LITERAL = "size";
 
     /**
-     *
+     * The identifier of the root element.
      */
     private static final Id ROOT_ID = new StringId("ROOT");
 
     /**
-     *
+     * The property key used by the root element to define its content.
      */
     private static final String ROOT_FEATURE_NAME = "eContents";
 
+    /**
+     * {@code Cache} that holds recently processed {@code Vertex}.
+     */
     protected final Cache<Id, Vertex> verticesCache;
 
     /**
@@ -83,6 +89,13 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
+    /**
+     * Updates the containment identified by its {@code name} between the {@code parentVertex} and the {@code childVertex}.
+     *
+     * @param localName the name of the property identifying the reference (parent -> child)
+     * @param parentVertex the parent vertex
+     * @param childVertex the child vertex
+     */
     private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {
         for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
             edge.remove();
@@ -92,11 +105,26 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         edge.setProperty(CONTAINING_FEATURE, localName);
     }
 
+    /**
+     * Returns the size of the property identified by its {@code name} in the given {@code vertex}.
+     *
+     * @param vertex the vertex containing the property
+     * @param name the name of the property
+     *
+     * @return the size
+     */
     private static Integer getSize(final Vertex vertex, final String name) {
         Integer size = vertex.getProperty(formatKeyValue(name, SIZE_LITERAL));
         return isNull(size) ? 0 : size;
     }
 
+    /**
+     * Defines the {@code size} of the property identified by its {@code name} in the given {@code vertex}.
+     *
+     * @param vertex the vertex containing the property
+     * @param name the name of the property
+     * @param size the size
+     */
     private static void setSize(final Vertex vertex, final String name, final int size) {
         vertex.setProperty(formatKeyValue(name, SIZE_LITERAL), size);
     }
@@ -192,19 +220,30 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     /**
+     * Returns the {@link Vertex} which has the specified {@code id}.
      *
-     * @param id
-     * @return
+     * @param id the identifier of the vertex
+     *
+     * @return the {@code Vertex}
+     *
+     * @throws NoSuchElementException if no element is found with the {@code id}
      */
     protected abstract Vertex getVertex(final Id id);
 
     /**
+     * Creates a {@link Vertex} identified by the specified {@code id}.
      *
-     * @param id
-     * @return
+     * @param id the identifier of the vertex
+     *
+     * @return the new {@code Vertex}
+     *
+     * @throws AlreadyExistingIdException if the {@code id} is already used as primary key for another element
      */
     protected abstract Vertex createVertex(final Id id);
 
+    /**
+     * Creates the root element.
+     */
     private void createRootVertex() {
         // Create the 'ROOT' node with the default metaclass
         MetaClassifier metaClassifier = MetaClassifier.getDefault();

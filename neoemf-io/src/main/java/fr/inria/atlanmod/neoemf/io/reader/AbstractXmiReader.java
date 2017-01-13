@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.reader.xmi;
+package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 import static java.util.Objects.nonNull;
 
 /**
- * An abstract implementation of {@link Reader} able to process XMI files.
+ * An abstract implementation of {@link Reader} that processes XMI files.
  */
 public abstract class AbstractXmiReader extends AbstractReader {
 

@@ -28,7 +28,12 @@ import java.util.NoSuchElementException;
  */
 public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
 
-    public BlueprintsAwareHandler(BlueprintsPersistenceBackend backend) {
+    /**
+     * Constructs a new {@code BlueprintsAwareHandler} on the given {@code backend}.
+     *
+     * @param backend the backend where to store data
+     */
+    protected BlueprintsAwareHandler(BlueprintsPersistenceBackend backend) {
         super(backend);
     }
 

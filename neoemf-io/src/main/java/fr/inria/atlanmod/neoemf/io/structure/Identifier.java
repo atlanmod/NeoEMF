@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * The simple reprensetation of an identifier of a {@link Classifier}.
+ * The simple representation of an identifier of a {@link Classifier}.
  */
 public class Identifier {
 

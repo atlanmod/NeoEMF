@@ -33,7 +33,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link Processor} that analyses XML elements in order to create and to process XPath references.
+ * A {@link Processor} that analyses XML elements in order to create and to process XPath references.
  */
 public class XPathProcessor extends AbstractProcessor {
 

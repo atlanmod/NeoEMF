@@ -33,7 +33,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link Processor} that creates and links simple elements to an EMF structure.
+ * A {@link Processor} that creates and links simple elements to an EMF structure.
  */
 public class EcoreProcessor extends AbstractProcessor {
 

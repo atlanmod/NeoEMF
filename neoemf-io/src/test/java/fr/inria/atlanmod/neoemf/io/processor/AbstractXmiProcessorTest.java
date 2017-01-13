@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
-import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;

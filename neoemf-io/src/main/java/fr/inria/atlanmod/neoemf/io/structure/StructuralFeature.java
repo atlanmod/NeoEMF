@@ -99,7 +99,7 @@ public abstract class StructuralFeature extends NamedElement {
     }
 
     /**
-     * Defines whether this feature is a {@link Reference}.
+     * Defines whether this feature is a {@code Reference}.
      *
      * @return {@code true} if this feature is a reference.
      */
@@ -108,7 +108,7 @@ public abstract class StructuralFeature extends NamedElement {
     }
 
     /**
-     * Defines whether this feature is an {@link Attribute}.
+     * Defines whether this feature is an {@code Attribute}.
      *
      * @return {@code true} if this feature is an attribute.
      */

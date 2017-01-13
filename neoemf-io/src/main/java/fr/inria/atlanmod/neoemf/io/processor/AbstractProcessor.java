@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * An abstract implementation of a {@link Processor} that delegates all methods to its embedded processor.
+ * A {@link Processor} that delegates all methods to its underlying processor.
  */
 public class AbstractProcessor implements Processor {
 

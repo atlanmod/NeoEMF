@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link StructuralFeature} representing an reference, which links several {@link Classifier}s.
+ * A {@link StructuralFeature} representing a reference, which links several {@link Classifier}s.
  */
 public class Reference extends StructuralFeature {
 

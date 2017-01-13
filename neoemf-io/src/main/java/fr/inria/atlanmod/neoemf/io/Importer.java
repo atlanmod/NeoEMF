@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 
 import java.io.IOException;
 import java.io.InputStream;
