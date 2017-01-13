@@ -27,12 +27,18 @@ import javax.annotation.Nullable;
 import static java.util.Objects.isNull;
 
 /**
- * Serializer for {@link Id}.
- * <p>
- * @note Only works with {@link StringId} instances.
+ * A {@link Serializer} implementation for {@link Id}s.
+ *
+ * @note For now this serializer only works with {@link StringId} instances.
+ *
+ * @see Id
+ * @see StringId
  */
 public class IdSerializer implements Serializer<Id> {
 
+    /**
+     * An embedded {@link String} {@link Serializer} used to handle {@link StringId}s.
+     */
     final Serializer<String> serializer = Serializer.STRING;
 
     @Override

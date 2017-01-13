@@ -11,11 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
-
-import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.common.util.URI;
-
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Objects;
@@ -24,8 +19,38 @@ import javax.annotation.Nonnull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.util.PersistenceURI;
+
+/**
+ * A specific subclass of {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from
+ * a {@link File} descriptor or an existing {@link URI}.
+ * <p>
+ * The class defines a MapDB specific {@link URI} scheme that is used to register {@link MapDbPersistenceBackendFactory}
+ * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol-to-factory} map of an existing {@link ResourceSet}
+ * with a {@link PersistentResourceFactory}.
+ *
+ * @see PersistenceBackendFactoryRegistry
+ * @see MapDbPersistenceBackendFactory
+ * @see PersistentResourceFactory
+ *
+ */
 public class MapDbURI extends PersistenceURI {
 
+    /**
+     * The scheme associated to the URI. This scheme is used to register {@link MapDbPersistenceBackendFactory}
+     * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
+     *
+     * @see PersistenceBackendFactoryRegistry
+     * @see MapDbPersistenceBackendFactory
+     * @see PersistentResourceFactory
+     */
     @Nonnull
     public static final String SCHEME = "neo-mapdb";
 
@@ -42,12 +67,14 @@ public class MapDbURI extends PersistenceURI {
     }
 
     /**
-     *
-     * @param uri
-     * @return
+     * Create a new {@code MapDbURI} from the given {@code uri}. This method checks that the
+     * scheme of the provided {@code uri} can be used to create a new {@code MapDbURI}.
+     * @param uri the base {@code URI}
+     * @return the created {@code URI}
      * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or
-     *                                  {@link PersistenceURI#FILE_SCHEME}
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link PersistenceURI#FILE_SCHEME}
+     * @see MapDbURI#createFileURI(File)
+     * @see MapDbURI#createFileURI(URI)
      */
     @Nonnull
     public static URI createURI(@Nonnull URI uri) {
@@ -62,9 +89,9 @@ public class MapDbURI extends PersistenceURI {
     }
 
     /**
-     *
-     * @param file
-     * @return
+     * Creates a new {@code MapDbURI} from the given {@link File} descriptor.
+     * @param file the {@link File} to build a {@code URI} from
+     * @return the created {@code URI}
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull
@@ -74,10 +101,12 @@ public class MapDbURI extends PersistenceURI {
     }
 
     /**
-     *
-     * @param uri
-     * @return
-     * @throws NullPointerException if the {@code uri} is {@code null}
+     * Creates a new {@code MapDbURI} from the given {@code uri} by checking the referenced file
+     * exists on the file system.
+     * @param uri the base {@code URI}
+     * @return the created {@code URI}
+     * @throws NullPointerException if the {@code uri} is {@code null} or if the file referenced by the {@code uri}
+     * cannot be found
      */
     @Nonnull
     public static URI createFileURI(@Nonnull URI uri) {

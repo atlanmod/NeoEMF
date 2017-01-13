@@ -63,8 +63,8 @@ import static java.util.Objects.nonNull;
  * This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to
  * access and manipulate the database.
  * <p>
- * Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory} that
- * provides a usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
+ * Instances of and {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory} that
+ * provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * 
  * @see BlueprintsPersistenceBackendFactory
  * @see DirectWriteBlueprintsStore
@@ -112,8 +112,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Creates a new {@link BlueprintsPersistenceBackend} wrapping the provided {@code baseGraph}
      * <p>
-     * This method initialize the caches and create the metaclass index
+     * This constructor initialize the caches and create the metaclass index
+     * <p>
+     * <b>Note: </b> this constructor is package-private. To create a new {@link BlueprintsPersistenceBackend}
+     * see {@link BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
+     * 
+     * @see BlueprintsPersistenceBackendFactory
      */
     BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);

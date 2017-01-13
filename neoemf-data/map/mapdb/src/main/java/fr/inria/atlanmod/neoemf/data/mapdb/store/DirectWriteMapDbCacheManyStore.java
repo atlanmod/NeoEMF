@@ -11,21 +11,39 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+import static com.google.common.base.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
 
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import static com.google.common.base.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+
+/**
+ * A {@link DirectWriteMapDbStore} subclass that uses an internal cache to store persisted {@link Object}s
+ * that are part of multi-valued {@link EReference}s to speed-up their access.
+ * <p>
+ * Using a cache avoids multiple {@link List} deserialization to retrieve the same element, which can be an important bottleneck
+ * in terms of execution time and memory consumption if the underlying model contains very large {@link Collection}s.
+ * <p>
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
+ * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * 
+ * @see DirectWriteMapDbStore
+ * @see MapDbPersistenceBackend
+ * @see AbstractPersistentStoreDecorator
+ */
 public class DirectWriteMapDbCacheManyStore extends DirectWriteMapDbStore {
 
     private final Cache<FeatureKey, Object> objectsCache;

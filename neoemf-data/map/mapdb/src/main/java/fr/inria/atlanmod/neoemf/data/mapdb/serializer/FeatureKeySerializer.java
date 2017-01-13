@@ -23,11 +23,19 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 /**
- * Serializer for {@link FeatureKey}.
+ * A {@link Serializer} implementation for {@link FeatureKey}.
+ * 
+ * @see FeatureKey
  */
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
-
+    
+    /**
+     * The {@link Serializer} that manages {@link String}s
+     */
     final Serializer<String> stringSerializer = Serializer.STRING;
+    /**
+     * The {@link Serializer} the manages {@link Id}s
+     */
     final Serializer<Id> idSerializer = new IdSerializer();
 
     @Override

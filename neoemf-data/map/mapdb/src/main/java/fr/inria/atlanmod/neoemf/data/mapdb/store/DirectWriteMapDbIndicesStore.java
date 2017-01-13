@@ -11,9 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -27,8 +31,27 @@ import org.eclipse.emf.ecore.resource.Resource;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * A {@link DirectWriteMapDbStore} subclass that persists {@link Collection} indices instead of
+ * serialized arrays.
+ * <p>
+ * Indices are persisted with dedicated {@link FeatureKey}s containing the index of the element to
+ * store. Using this approach avoid to deserialize entire {@link Collection}s to retrieve a single
+ * element, which can be an important bottleneck in terms of execution time and memory consumption
+ * if the underlying model contains very large {@link Collections}.
+ * <p>
+ * This class reimplements {@link EStructuralFeature} accessors and mutators as well as {@link Collection}
+ * operations such as {@code size}, {@code clear}, or {@code indexOf}.
+ * <p>
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
+ * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * 
+ * @see DirectWriteMapDbStore
+ * @see MapDbPersistenceBackend
+ * @see AbstractPersistentStoreDecorator
+ */
 public class DirectWriteMapDbIndicesStore extends DirectWriteMapDbStore {
-
+    
     /**
      * Constructs a new {@code DirectWriteMapDbIndicesStore} between the given {@code resource} and the
      * {@code backend}.

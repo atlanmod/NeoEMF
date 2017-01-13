@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * A {@link AbstractPersistenceOptionsBuilder} subclass that creates MapDB specific options.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
