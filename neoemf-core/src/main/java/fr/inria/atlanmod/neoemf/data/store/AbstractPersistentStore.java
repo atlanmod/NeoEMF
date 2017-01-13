@@ -13,8 +13,14 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
+/**
+ * The abstract implementation of a {@link PersistentStore}.
+ */
 public abstract class AbstractPersistentStore implements PersistentStore {
 
+    /**
+     * Instantiates a new {@code AbstractPersistentStore}.
+     */
     public AbstractPersistentStore() {
         NeoLogger.info("{0} created", getClass().getSimpleName());
     }

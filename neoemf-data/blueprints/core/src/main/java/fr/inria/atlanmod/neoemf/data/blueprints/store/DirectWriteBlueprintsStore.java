@@ -44,7 +44,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link AbstractDirectWriteStore} implementation that translates model-level operations
+ * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} implementation that translates model-level operations
  * into Blueprints calls.
  */
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
@@ -75,9 +75,11 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected static final String SIZE_LITERAL = "size";
 
     /**
-     * Creates a new {@link DirectWriteBlueprintsStore} for the given {@link Resource} and {@link BlueprintsPersistenceBackend}.
-     * @param resource the {@link Resource} to persist and access
-     * @param backend the {@link BlueprintsPersistenceBackend} used to store the model
+     * Instantiates a new {@code DirectWriteBlueprintsStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
      */
     public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);

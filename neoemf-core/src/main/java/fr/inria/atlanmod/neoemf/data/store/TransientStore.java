@@ -13,5 +13,9 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
+/**
+ * An {@link EStore} to establish a mapping between {@link org.eclipse.emf.ecore.resource.Resource}s and {@link EStore}s
+ * in a transient context, i.e, when storing data in memory.
+ */
 public interface TransientStore extends EStore {
 }

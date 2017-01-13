@@ -50,8 +50,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
+    /**
+     * The persistence backend where to store data.
+     */
     private final P backend;
 
+    /**
+     *
+     */
     private final Deque<Id> elementIdStack;
 
     /**
@@ -67,14 +73,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Cache of unlinked elements, waiting until their reference is created.
      * <p>
-     * In case of conflict detection only.
+     * @note In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
      * Cache of conflited {@code Id}.
      * <p>
-     * In case of conflict detection only.
+     * @note In case of conflict detection only.
      */
     private final Cache<String, Id> conflictElementIdCache;
 

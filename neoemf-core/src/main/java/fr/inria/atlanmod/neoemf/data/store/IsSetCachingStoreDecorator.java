@@ -28,10 +28,21 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
 
     private final Cache<FeatureKey, Boolean> isSetCache;
 
+    /**
+     * Instantiates a new {@code IsSetCachingStoreDecorator} with the default cache size.
+     *
+     * @param store the underlying store
+     */
     public IsSetCachingStoreDecorator(PersistentStore store) {
         this(store, 10000);
     }
 
+    /**
+     * Instantiates a new {@code IsSetCachingStoreDecorator} with the given {@code cacheSize}.
+     *
+     * @param store the underlying store
+     * @param cacheSize the size of the cache
+     */
     public IsSetCachingStoreDecorator(PersistentStore store, int cacheSize) {
         super(store);
         this.isSetCache = Caffeine.newBuilder().maximumSize(cacheSize).build();

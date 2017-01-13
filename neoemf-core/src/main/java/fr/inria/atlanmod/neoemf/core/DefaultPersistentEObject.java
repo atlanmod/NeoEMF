@@ -55,8 +55,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private boolean isMapped;
 
     /**
-     * The internal cached value of the eContainer. This information should be also maintained in the underlying
-     * {@link EStore}.
+     * The internal cached value of the eContainer.
+     * <p>
+     * This information should be also maintained in the underlying {@link EStore}.
      */
     private InternalEObject eContainer;
 
@@ -290,12 +291,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * {@inheritDoc}
      * <p>
-     * Returns the container of the {@link PersistentEObject}.
+     * Returns the container of this {@code PersistentEObject}.
      * <p>
      * Do not return the same value as standard EMF implementation if the container has not been accessed with the
      * public method {@link #eContainer()} before.
      *
-     * @return the container of the {@link PersistentEObject}.
+     * @return the container of this {@code PersistentEObject}.
      */
     @Override
     public InternalEObject eInternalContainer() {

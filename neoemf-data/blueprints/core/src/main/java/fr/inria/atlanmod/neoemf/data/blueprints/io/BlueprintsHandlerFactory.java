@@ -14,6 +14,9 @@ package fr.inria.atlanmod.neoemf.data.blueprints.io;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
+/**
+ * The factory of {@link PersistenceHandler}s specific to the Blueprints implementation.
+ */
 public class BlueprintsHandlerFactory {
 
     private BlueprintsHandlerFactory() {
@@ -25,7 +28,7 @@ public class BlueprintsHandlerFactory {
      * @param backend the persistence back-end where data must persist
      * @param conflictResolution {@code true} if you want a conflict resolution feature
      *
-     * @return a newly created {@link PersistenceHandler}
+     * @return a new persistence handler
      */
     public static PersistenceHandler createPersistenceHandler(BlueprintsPersistenceBackend backend, boolean conflictResolution) {
         if (conflictResolution) {

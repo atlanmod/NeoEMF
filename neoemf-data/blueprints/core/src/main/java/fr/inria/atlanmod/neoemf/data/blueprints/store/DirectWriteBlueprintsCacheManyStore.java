@@ -44,8 +44,9 @@ import static java.util.Objects.nonNull;
  * Large multi-valued {@link EReference}s can be an execution time bottleneck in the graph implementation because any
  * element access forces the underlying database engine to load all the {@link Edge}s corresponding to the {@link EReference}.
  * We overcome this limitation by caching all the {@link Vertex} elements involved in multi-valued {@link EReference}s the first time they are
- * traversed, limiting database access. Note that the cache can contain up to {@code 10000} elements, limiting memory consumption. 
- * is accessed. 
+ * traversed, limiting database access.
+ * <p>
+ * @note The cache can contain up to {@code 10000} elements, limiting memory consumption.
  */
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
@@ -53,9 +54,11 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
     private final Cache<FeatureKey, Object[]> verticesCache;
 
     /**
-     * Creates a new {@link DirectWriteBlueprintsCacheManyStore} for the given {@link Resource} and {@link BlueprintsPersistenceBackend}.
-     * @param resource the {@link Resource} to persist and access
-     * @param backend the {@link BlueprintsPersistenceBackend} used to store the model
+     * Instantiates a new {@code DirectWriteBlueprintsCacheManyStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
      */
     public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);

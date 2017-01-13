@@ -36,13 +36,18 @@ import java.util.regex.Pattern;
 import static java.util.Objects.nonNull;
 
 /**
- * An abstract implementation of a {@link Reader} able to process {@code
- * XMI} files.
+ * An abstract implementation of {@link Reader} able to process XMI files.
  */
 public abstract class AbstractXmiReader extends AbstractReader {
 
+    /**
+     * The namespace prefix of XSI.
+     */
     protected static final String XSI_NS = "xsi";
 
+    /**
+     * The namespace prefix of XMI.
+     */
     protected static final String XMI_NS = "xmi";
 
     /**
@@ -51,7 +56,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final String XMI_ID = format(XMI_NS, "id");
 
     /**
-     * The attribute key representing the identifier of an element.
+     * The attribute key representing a reference to an identified element.
+     *
+     * @see #XMI_ID
      */
     private static final String XMI_IDREF = format(XMI_NS, "idref");
 
@@ -70,14 +77,16 @@ public abstract class AbstractXmiReader extends AbstractReader {
      */
     private static final String PROXY = "href";
 
+    /**
+     * The attribute key representing a name of an element.
+     */
     private static final String NAME = "name";
 
     /**
-     * A regex pattern of an attribute containing one or several references (XPath reference).
+     * A regex pattern of an attribute containing one or several references (XPath reference). Multiple references must
+     * be seperated by a space.
      * <p>
      * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
-     * <p>
-     * Multiple references must be seperated by a space
      */
     private static final Pattern PATTERN_WELL_FORMED_REF =
             Pattern.compile("(/{1,2}@\\w+(\\.\\d+)?[ ]?)+", Pattern.UNICODE_CASE);
@@ -93,11 +102,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private boolean ignoreElement = false;
 
     /**
-     * Returns a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
-     * does not match with {@link #PATTERN_WELL_FORMED_REF}.
+     * Returns a list of {@code String} representing XPath references, or {@code null} if the {@code attribute} does not
+     * match with {@link #PATTERN_WELL_FORMED_REF}.
      *
-     * @return a list of {@code String} representing XPath references, or {@code null} if the given {@code attribute}
-     * does not match with {@link #PATTERN_WELL_FORMED_REF}
+     * @return a list of {@code String} representing XPath references, or {@code null} if the {@code attribute} does not
+     * match with {@link #PATTERN_WELL_FORMED_REF}
      *
      * @see #PATTERN_WELL_FORMED_REF
      */
@@ -122,9 +131,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
     }
 
     /**
-     * Returns the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix.
+     * Returns the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix.
      *
-     * @return the prefix of the given {@code prefixedValue}, or {@code null} if there is no prefix
+     * @return the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix
      */
     private static String getPrefix(String prefixedValue) {
         String prefix = null;
@@ -182,9 +191,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
     }
 
     /**
-     * Processes an attribute
+     * Processes a feature, which can be an attribute or a reference.
      *
-     * @return a list of {@link StructuralFeature} that can be empty.
+     * @return a list of {@code StructuralFeature} that can be empty.
+     *
+     * @see #processAttributes(String, String)
+     * @see #processReferences(String, List)
      */
     private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) {
         List<StructuralFeature> features = null;
@@ -248,6 +260,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
         return isSpecialFeature;
     }
 
+    /**
+     * Processes an attribute.
+     *
+     * @return a singleton list of {@code StructuralFeature} containing the processed attribute.
+     */
     private List<StructuralFeature> processAttributes(String localName, String value) {
         Attribute attribute = new Attribute(localName);
         attribute.setIndex(0);
@@ -259,7 +276,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * Processes a list of {@code references} and returns a list of {@link Reference}.
      *
-     * @return a list of {@link Reference} from the given {@code references}
+     * @return a list of {@code Reference} from the given {@code references}
      */
     private List<StructuralFeature> processReferences(String localName, List<String> references) {
         List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
@@ -277,8 +294,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
     }
 
     /**
-     * Processes a metaclass attribute from the given {@code prefixedValue}, and defines is as the metaclass of the
-     * given {@code element}.
+     * Processes a metaclass attribute from the {@code prefixedValue}, and defines is as the metaclass of the given
+     * {@code element}.
      *
      * @see #PATTERN_PREFIXED_VALUE
      */
@@ -293,10 +310,16 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
     }
 
+    /**
+     * Processes characters.
+     */
     protected void processCharacters(String characters) {
         notifyCharacters(characters);
     }
 
+    /**
+     * Processes the end of an element.
+     */
     protected void processEndElement(String uri, String localName) {
         if (!ignoreElement) {
             notifyEndElement();

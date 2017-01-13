@@ -29,19 +29,55 @@ import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * A {@link fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler} specific to a Blueprints implementation.
+ */
 public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
+    /**
+     * The string used as a separator between values of multi-valued attributes.
+     *
+     * @see fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore#SEPARATOR
+     */
     private static final char SEPARATOR = ':';
+
+    /**
+     * The property key used to define the index of an edge.
+     */
     private static final String POSITION = "position";
+
+    /**
+     * The label used to link root vertex to top-level elements.
+     */
     private static final String CONTAINER = "eContainer";
+
+    /**
+     * The property key used to define the opposite containing feature in container {@link Edge}s.
+     */
     private static final String CONTAINING_FEATURE = "containingFeature";
+
+    /**
+     * The property key used to define the number of edges with a specific label.
+     */
     private static final String SIZE_LITERAL = "size";
 
+    /**
+     *
+     */
     private static final Id ROOT_ID = new StringId("ROOT");
+
+    /**
+     *
+     */
     private static final String ROOT_FEATURE_NAME = "eContents";
 
     protected final Cache<Id, Vertex> verticesCache;
 
+    /**
+     * Instantiates a new {@code AbstractBlueprintsHandler} on the given {@code backend}.
+     *
+     * @param backend the backend where to store data
+     */
     public AbstractBlueprintsHandler(BlueprintsPersistenceBackend backend) {
         super(backend);
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
@@ -65,6 +101,11 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         vertex.setProperty(formatKeyValue(name, SIZE_LITERAL), size);
     }
 
+    /**
+     * Formats a key/value pair as {@code "key:value"}.
+     *
+     * @return the literal representation of a key/value pair
+     */
     private static String formatKeyValue(final String key, final Object value) {
         return key + SEPARATOR + value;
     }
@@ -150,17 +191,25 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
         super.processStartDocument();
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     protected abstract Vertex getVertex(final Id id);
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     protected abstract Vertex createVertex(final Id id);
 
     private void createRootVertex() {
         // Create the 'ROOT' node with the default metaclass
         MetaClassifier metaClassifier = MetaClassifier.getDefault();
 
-        Classifier rootClassifier = new Classifier(
-                metaClassifier.getNamespace(),
-                metaClassifier.getLocalName());
+        Classifier rootClassifier = new Classifier(metaClassifier.getNamespace(), metaClassifier.getLocalName());
 
         rootClassifier.setId(Identifier.generated(ROOT_ID.toString()));
         rootClassifier.setClassName(metaClassifier.getLocalName());

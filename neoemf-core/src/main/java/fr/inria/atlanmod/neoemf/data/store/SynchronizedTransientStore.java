@@ -16,11 +16,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link TransientStore} that uses synchronized collections to store the data in memory, using
+ * A {@link TransientStore} that uses synchronized collections to store data in memory, using
  * {@link Collections#synchronizedMap(java.util.Map)}.
  */
 public class SynchronizedTransientStore extends AbstractTransientStore {
 
+    /**
+     * Instantiates a new {@ode SynchronizedTransientStore}.
+     */
     public SynchronizedTransientStore() {
         super();
         singleMap = Collections.synchronizedMap(singleMap);

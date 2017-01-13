@@ -16,14 +16,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * An abstract implementation of a {@link InputNotifier}.
+ * The abstract implementation of {@link InputNotifier}.
  *
  * @param <T> the type of the notified {@link InputHandler}
  */
 public abstract class AbstractInputNotifier<T extends InputHandler> implements InputNotifier<T> {
 
+    /**
+     * The set of registered handlers.
+     */
     private final Set<T> handlers;
 
+    /**
+     * Instantiates a new {@code AbstractInputNotifier}.
+     */
     public AbstractInputNotifier() {
         this.handlers = new HashSet<>();
     }

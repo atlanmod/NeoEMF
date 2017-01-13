@@ -54,8 +54,8 @@ public class MultivaluedFeatureKey extends FeatureKey {
     /**
      * Creates a new {@code FeatureKey} from the given {@code internalObject} and the given {@code feature}.
      * <p>
-     * This method behaves like: <pre>MultivaluedFeatureKey.from(PersistentEObject.from(internalObject), feature,
-     * position)</pre>
+     * This method behaves like: {@code MultivaluedFeatureKey.from(PersistentEObject.from(internalObject), feature,
+     * position)}
      *
      * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its identifier
      * @param feature        the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be extracted
@@ -74,7 +74,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
     /**
      * Creates a new {@code FeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
-     * This method behaves like: <pre>MultivaluedFeatureKey.of(object.id(), feature.getName(), position)</pre>
+     * This method behaves like: {@code MultivaluedFeatureKey.of(object.id(), feature.getName(), position)}
      *
      * @param object   the {@link PersistentEObject} from which the identifier will be extracted
      * @param feature  the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be extracted

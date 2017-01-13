@@ -50,6 +50,13 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      */
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
+    /**
+     * Instantiates a new {@code DirectWriteMapDbStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
+     */
     public DirectWriteMapDbStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);
         this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();

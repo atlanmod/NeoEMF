@@ -23,8 +23,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A registry that keeps in memory links of registered {@link org.eclipse.emf.common.util.URI} schemes to their
- * associated {@link PersistenceBackendFactory}.
+ * The registry that holds registered {@link org.eclipse.emf.common.util.URI} schemes with their associated
+ * {@link PersistenceBackendFactory}.
  * <p>
  * This {@code PersistenceBackendFactoryRegistry} is used for dynamically create
  * {@link fr.inria.atlanmod.neoemf.data.store.PersistentStore} and {@link PersistenceBackend} when loading and saving a
@@ -51,7 +51,7 @@ public class PersistenceBackendFactoryRegistry {
     /**
      * Returns all registered URI schemes with their {@link PersistenceBackendFactory}.
      *
-     * @return an immutable {@link Map}
+     * @return an immutable map
      */
     @Nonnull
     public static Map<String, PersistenceBackendFactory> getFactories() {
