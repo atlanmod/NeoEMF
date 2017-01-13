@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
  * A common {@link PersistenceOptionsBuilder} that creates common options that are available for all backend implementations.
  * <p>
  * All features are all optional: options can be created using all or none of them.
- * <p>
+ *
  * @note This class is intended for testing and should not be used in standard use.
  */
 public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<CommonOptionsBuilder, CommonOptions> {

@@ -15,7 +15,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
 /**
- * The factory of {@link PersistenceHandler}s specific to the Blueprints implementation.
+ * The factory that creates instances of {@link PersistenceHandler}s which are specific to the Blueprints
+ * implementation.
  */
 public class BlueprintsHandlerFactory {
 

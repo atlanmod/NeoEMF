@@ -17,8 +17,9 @@ import javax.annotation.Nonnull;
 
 /**
  * An identifier used to identify a {@link PersistentEObject} in data stores.
- * <p>
- * This is the primary key in data stores, so, each {@code Id} must be unique at back-end level to ensure data consistency.
+ *
+ * @note This is the primary key in data stores, so, each {@code Id} must be unique at back-end level to ensure data
+ * consistency.
  */
 public interface Id extends Comparable<Id>, Serializable {
 

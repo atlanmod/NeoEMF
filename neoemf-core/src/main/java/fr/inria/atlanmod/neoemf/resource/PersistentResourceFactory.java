@@ -16,20 +16,39 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * The factory that creates {@link PersistentResource}s.
+ */
 public class PersistentResourceFactory implements Resource.Factory {
 
+    /**
+     * Constructs a new {@code PersistentResourceFactory}.
+     */
     protected PersistentResourceFactory() {
     }
 
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static PersistentResourceFactory getInstance() {
         return Holder.INSTANCE;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The {@code uri} must be registered in the {@link PersistenceBackendFactoryRegistry}.
+     */
+    @Nullable
     @Override
-    public Resource createResource(URI uri) {
+    public Resource createResource(@Nonnull URI uri) {
+        checkNotNull(uri);
         Resource resource = null;
         if (PersistenceBackendFactoryRegistry.isRegistered(uri.scheme())) {
             resource = new DefaultPersistentResource(uri);
@@ -37,6 +56,9 @@ public class PersistentResourceFactory implements Resource.Factory {
         return resource;
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final PersistentResourceFactory INSTANCE = new PersistentResourceFactory();

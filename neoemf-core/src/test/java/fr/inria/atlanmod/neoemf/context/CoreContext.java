@@ -76,6 +76,9 @@ public class CoreContext implements Context {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final Context INSTANCE = new CoreContext();

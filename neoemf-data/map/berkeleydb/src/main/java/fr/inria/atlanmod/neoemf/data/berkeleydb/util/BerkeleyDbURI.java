@@ -20,25 +20,58 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class BerkeleyDbURI extends PersistenceURI {
 
+    @Nonnull
     public static final String SCHEME = "neo-berkeleydb";
 
-    protected BerkeleyDbURI(int hashCode, URI internalURI) {
-        super(hashCode, internalURI);
+    /**
+     * Constructs a new {@code BerkeleyDbURI} from the given {@code internalURI}.
+     * <p>
+     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)} or
+     * {@link #createFileURI(File)} instead.
+     *
+     * @param internalURI the base {@code URI}
+     */
+    protected BerkeleyDbURI(@Nonnull URI internalURI) {
+        super(internalURI);
     }
 
-    public static URI createURI(URI uri) {
+    /**
+     *
+     * @param uri
+     * @return
+     * @throws NullPointerException if the {@code uri} is {@code null}
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or
+     *                                  {@link PersistenceURI#FILE_SCHEME}
+     */
+    @Nonnull
+    public static URI createURI(@Nonnull URI uri) {
+        checkNotNull(uri);
         if (Objects.equals(PersistenceURI.FILE_SCHEME, uri.scheme())) {
             return createFileURI(FileUtils.getFile(uri.toFileString()));
-        } else if (Objects.equals(SCHEME, uri.scheme())) {
+        }
+        else if (Objects.equals(SCHEME, uri.scheme())) {
             return PersistenceURI.createURI(uri);
-        } else {
+        }
+        else {
             throw new IllegalArgumentException(MessageFormat.format("Can not create BerkeleyDbURI from the URI scheme {0}", uri.scheme()));
         }
     }
 
-    public static URI createFileURI(File file) {
+    /**
+     *
+     * @param file
+     * @return
+     * @throws NullPointerException if the {@code file} is {@code null}
+     */
+    @Nonnull
+    public static URI createFileURI(@Nonnull File file) {
+        checkNotNull(file);
         return PersistenceURI.createFileURI(file, SCHEME);
     }
 }

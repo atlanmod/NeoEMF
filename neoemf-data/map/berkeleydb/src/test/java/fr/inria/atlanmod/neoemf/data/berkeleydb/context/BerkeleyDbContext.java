@@ -75,6 +75,9 @@ public class BerkeleyDbContext implements Context {
         return DirectWriteBerkeleyDbStore.class;
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
         private static final Context INSTANCE = new BerkeleyDbContext();
     }

@@ -15,6 +15,8 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link Hasher} using the {@code MD5} algorithm.
  */
@@ -28,6 +30,7 @@ public class Md5Hasher implements Hasher {
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static Hasher getInstance() {
         return Holder.INSTANCE;
     }
@@ -39,6 +42,9 @@ public class Md5Hasher implements Hasher {
         return new StringHashCode(hash);
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final Hasher INSTANCE = new Md5Hasher();

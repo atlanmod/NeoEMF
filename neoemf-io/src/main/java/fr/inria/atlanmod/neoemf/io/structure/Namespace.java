@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.io.structure;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import javax.annotation.Nonnull;
+
 import static java.util.Objects.isNull;
 
 /**
@@ -65,6 +67,7 @@ public class Namespace {
         /**
          * Returns the instance of this class.
          */
+        @Nonnull
         public static Registry getInstance() {
             return Holder.INSTANCE;
         }
@@ -125,6 +128,9 @@ public class Namespace {
             nsByUriCache.invalidateAll();
         }
 
+        /**
+         * The initialization-on-demand holder of the singleton of this class.
+         */
         private static class Holder {
 
             private static final Registry INSTANCE = new Registry();

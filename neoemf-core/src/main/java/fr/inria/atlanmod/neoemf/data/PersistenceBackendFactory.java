@@ -19,6 +19,11 @@ import java.util.Map;
 
 /**
  * A factory of {@link PersistenceBackend} and {@link PersistentStore}.
+ * <p>
+ * The creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
+ * option maps.
+ *
+ * @see fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder
  */
 public interface PersistenceBackendFactory {
 

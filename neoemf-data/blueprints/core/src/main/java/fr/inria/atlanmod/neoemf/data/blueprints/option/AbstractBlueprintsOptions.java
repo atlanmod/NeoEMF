@@ -17,7 +17,7 @@ import fr.inria.atlanmod.neoemf.option.CommonOptions;
 /**
  * The abstract implementation of {@link CommonOptions} that holds generic options
  * for all Blueprints based implementations.
- * <p>
+ *
  * @future This class is not used in the current release of the tool, it will simplify option management
  * in the near future.
  */

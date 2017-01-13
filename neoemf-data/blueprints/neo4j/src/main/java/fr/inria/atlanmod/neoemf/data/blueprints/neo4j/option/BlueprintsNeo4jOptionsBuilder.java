@@ -101,10 +101,10 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
      * Set the {@code strong cache} feature in the created options. This tells Neo4j to use a cache
      * containing string references.
      *
-     * @note Using this option the created cache cannot be garbage collected, and {@link OutOfMemoryError} can
-     * occur if there is not enough memory to handle the model
      * @return this {@code CommonOptionsBuilder} (for chaining)
      *
+     * @note Using this option the created cache cannot be garbage collected, and {@link OutOfMemoryError} can occur if
+     * there is not enough memory to handle the model
      * @see BlueprintsNeo4jResourceOptions.CacheType#STRONG
      */
     @Nonnull

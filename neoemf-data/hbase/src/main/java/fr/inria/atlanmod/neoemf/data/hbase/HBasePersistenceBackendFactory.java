@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     public static final String NAME = HBasePersistenceBackend.NAME;
@@ -40,6 +42,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static PersistenceBackendFactory getInstance() {
         return Holder.INSTANCE;
     }
@@ -91,6 +94,9 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
         return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(store));
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final PersistenceBackendFactory INSTANCE = new HBasePersistenceBackendFactory();

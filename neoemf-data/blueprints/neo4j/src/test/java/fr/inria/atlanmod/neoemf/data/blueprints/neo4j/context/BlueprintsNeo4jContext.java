@@ -46,6 +46,9 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
         return new BlueprintsNeo4jResourceBuilder(ePackage).neo4j().file(file).build();
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final Context INSTANCE = new BlueprintsNeo4jContext();

@@ -279,6 +279,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
             }
         }
 
+        /**
+         * The initialization-on-demand holder of the singleton of this class.
+         */
         private static class Holder {
 
             private static final Context INSTANCE = new MockContext();

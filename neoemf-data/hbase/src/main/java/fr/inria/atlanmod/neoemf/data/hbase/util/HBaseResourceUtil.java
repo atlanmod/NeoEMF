@@ -26,6 +26,8 @@ import org.eclipse.emf.common.util.URI;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import static java.util.Objects.isNull;
 
 public class HBaseResourceUtil {
@@ -38,6 +40,7 @@ public class HBaseResourceUtil {
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static HBaseResourceUtil getInstance() {
         return Holder.INSTANCE;
     }
@@ -89,6 +92,9 @@ public class HBaseResourceUtil {
         return false;
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final HBaseResourceUtil INSTANCE = new HBaseResourceUtil();

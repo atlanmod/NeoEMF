@@ -38,6 +38,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
@@ -51,6 +53,7 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static PersistenceBackendFactory getInstance() {
         return Holder.INSTANCE;
     }
@@ -137,6 +140,9 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
         source.copyTo(target);
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final PersistenceBackendFactory INSTANCE = new MapDbPersistenceBackendFactory();

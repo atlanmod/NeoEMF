@@ -51,9 +51,11 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import javax.annotation.Nonnull;
+
 /**
  * A factory that creates instances of {@link BlueprintsPersistenceBackend}. As other implementations of 
- * {@link AbstractPersistenceBackendFactory}, this class can create transient and persistent databases.
+ * {@link PersistenceBackendFactory}, this class can create transient and persistent databases.
  * Persistent backend creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
  * option maps.
  * <p>
@@ -83,6 +85,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static PersistenceBackendFactory getInstance() {
         return Holder.INSTANCE;
     }
@@ -259,6 +262,9 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         return configuration;
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();

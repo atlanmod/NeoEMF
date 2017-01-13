@@ -110,7 +110,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * In our case, it commits the last modifications.
      */
     @Override

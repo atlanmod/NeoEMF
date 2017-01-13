@@ -15,6 +15,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
+import javax.annotation.Nonnull;
+
 /**
  * The factory that creates {@link PersistentEObject}s from {@link EClass}es.
  */
@@ -26,6 +28,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static PersistenceFactory getInstance() {
         return Holder.INSTANCE;
     }
@@ -37,6 +40,9 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
         return object;
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final PersistenceFactory INSTANCE = new PersistenceFactory();

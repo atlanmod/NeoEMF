@@ -35,7 +35,7 @@ public interface PersistenceBackend extends Closeable {
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * In our case, it cleanly stops the underlying data store.
      */
     @Override

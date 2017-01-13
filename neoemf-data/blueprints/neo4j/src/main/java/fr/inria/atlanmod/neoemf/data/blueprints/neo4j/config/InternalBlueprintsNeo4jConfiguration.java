@@ -18,6 +18,8 @@ import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 
+import javax.annotation.Nonnull;
+
 import static java.util.Objects.isNull;
 
 /**
@@ -40,6 +42,7 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
     /**
      * Returns the instance of this class.
      */
+    @Nonnull
     public static InternalBlueprintsConfiguration getInstance() {
         return Holder.INSTANCE;
     }
@@ -56,6 +59,9 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
         }
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static class Holder {
 
         private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsNeo4jConfiguration();

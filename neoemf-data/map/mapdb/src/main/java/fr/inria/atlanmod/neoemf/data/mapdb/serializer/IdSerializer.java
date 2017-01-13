@@ -19,13 +19,11 @@ import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**

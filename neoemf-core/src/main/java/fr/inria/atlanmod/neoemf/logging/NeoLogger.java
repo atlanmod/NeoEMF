@@ -15,7 +15,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 /**
- * A factory of {@link Logger}s.
+ * The factory that creates instances of {@link Logger}s.
  * <p>
  * It also provides static methods for logging without declaring a specific instance. In this case, the root logger is
  * used by default.

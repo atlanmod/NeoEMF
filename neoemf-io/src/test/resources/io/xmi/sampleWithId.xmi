@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<uml:Model xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmi:version="2.1" xmi:type="uml:Model"
+<uml:Model xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+           xmi:version="2.1" xmi:type="uml:Model"
            xmi:id="themodel" name="jbk">
     <packagedElement xmi:type="uml:Package" xmi:id="0x81_22" name="jbk">
         <packagedElement xmi:type="uml:Class" name="A" xmi:id="0x1f502_4" visibility="public" isAbstract="false">
             <ownedComment xmi:type="uml:Comment" xmi:id="COMMENT_1"
-                          body="This is the A class&#10;&#10;This is a good one"/>
+                          body="This is the A class&#10;&#10;This is a good one" />
             <ownedOperation xmi:type="uml:Operation" name="Request" xmi:id="0x1f402_2" visibility="public"
                             isAbstract="false">
             </ownedOperation>
@@ -15,62 +16,63 @@
                             isAbstract="false">
             </ownedOperation>
             <ownedAttribute xmi:type="uml:Property" name="attribute1" xmi:id="0x1f402_1" visibility="private">
-                <type xmi:type="uml:Class" xmi:idref="0x1f582_4"/>
+                <type xmi:type="uml:Class" xmi:idref="0x1f582_4" />
             </ownedAttribute>
         </packagedElement>
         <packagedElement xmi:type="uml:Class" name="B" xmi:id="0x1f582_4" visibility="package" isAbstract="true">
             <ownedOperation xmi:type="uml:Operation" name="answer" xmi:id="0x1f582_2" visibility="public"
                             isAbstract="false">
                 <ownedParameter name="return" xmi:id="return_1" direction="return">
-                    <type xmi:type="uml:Class" xmi:idref="0x1f502_4"/>
+                    <type xmi:type="uml:Class" xmi:idref="0x1f502_4" />
                 </ownedParameter>
             </ownedOperation>
         </packagedElement>
         <packagedElement xmi:type="uml:InstanceSpecification" xmi:id="0x1f502_77" name="a">
-            <classifier xmi:type="uml:Class" xmi:idref="0x1f502_4"/>
+            <classifier xmi:type="uml:Class" xmi:idref="0x1f502_4" />
         </packagedElement>
         <packagedElement xmi:type="uml:Collaboration" xmi:id="COLLABORATION_0x1f402_12" name="machine">
             <ownedBehavior xmi:type="uml:Interaction" xmi:id="INTERACTION_0x1f402_12" name="machine">
                 <ownedConnector xmi:type="uml:Connector" xmi:id="CONNECTOR1_2_0x1f402_12">
-                    <end xmi:type="uml:ConnectorEnd" xmi:id="END1_0x1f402_12" role="COLLATTR1_0x1f402_12"/>
-                    <end xmi:type="uml:ConnectorEnd" xmi:id="END2_0x1f402_12" role="COLLATTR2_0x1f402_12"/>
+                    <end xmi:type="uml:ConnectorEnd" xmi:id="END1_0x1f402_12" role="COLLATTR1_0x1f402_12" />
+                    <end xmi:type="uml:ConnectorEnd" xmi:id="END2_0x1f402_12" role="COLLATTR2_0x1f402_12" />
                 </ownedConnector>
                 <lifeline xmi:type="uml:Lifeline" xmi:id="LIFELINE1_0x1f402_12" name="a"
-                          represents="COLLATTR1_0x1f402_12"/>
+                          represents="COLLATTR1_0x1f402_12" />
                 <lifeline xmi:type="uml:Lifeline" xmi:id="LIFELINE2_0x1f402_12" name=""
-                          represents="COLLATTR2_0x1f402_12"/>
+                          represents="COLLATTR2_0x1f402_12" />
                 <fragment xmi:type="uml:CombinedFragment" xmi:id="COMBINEDFRAGMENT1_0x1f402_12"
                           covered="LIFELINE1_0x1f402_12 LIFELINE2_0x1f402_12" interactionOperator="loop">
                     <operand xmi:type="uml:InteractionOperand" xmi:id="OPERAND1_0x1f402_12">
                         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECSEND2_0x1f402_12"
                                   covered="LIFELINE1_0x1f402_12" event="SENDOPEREVT1_0x81_22"
-                                  message="MSG2_0x1f402_12"/>
+                                  message="MSG2_0x1f402_12" />
                         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECREC2_0x1f402_12"
-                                  covered="LIFELINE2_0x1f402_12" event="RECOPEREVT1_0x81_22" message="MSG2_0x1f402_12"/>
+                                  covered="LIFELINE2_0x1f402_12" event="RECOPEREVT1_0x81_22"
+                                  message="MSG2_0x1f402_12" />
                         <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="BEHEXECSPEC2_0x1f402_12"
                                   covered="LIFELINE2_0x1f402_12" start="MSGOCCSPECREC2_0x1f402_12"
-                                  finish="MSGOCCSPECSEND1_0x1f402_12"/>
+                                  finish="MSGOCCSPECSEND1_0x1f402_12" />
                         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECSEND1_0x1f402_12"
-                                  covered="LIFELINE2_0x1f402_12" event="SENDEVT1_0x81_22" message="MSG1_0x1f402_12"/>
+                                  covered="LIFELINE2_0x1f402_12" event="SENDEVT1_0x81_22" message="MSG1_0x1f402_12" />
                         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="MSGOCCSPECREC1_0x1f402_12"
-                                  covered="LIFELINE1_0x1f402_12" event="RECEVT2_0x81_22" message="MSG1_0x1f402_12"/>
+                                  covered="LIFELINE1_0x1f402_12" event="RECEVT2_0x81_22" message="MSG1_0x1f402_12" />
                     </operand>
                 </fragment>
                 <message xmi:type="uml:Message" xmi:id="MSG2_0x1f402_12" name="answer" messageSort="synchCall"
                          sendEvent="MSGOCCSPECSEND2_0x1f402_12" receiveEvent="MSGOCCSPECREC2_0x1f402_12"
-                         connector="CONNECTOR1_2_0x1f402_12"/>
+                         connector="CONNECTOR1_2_0x1f402_12" />
                 <message xmi:type="uml:Message" xmi:id="MSG1_0x1f402_12" name="" messageSort="reply"
                          sendEvent="MSGOCCSPECSEND1_0x1f402_12" receiveEvent="MSGOCCSPECREC1_0x1f402_12"
-                         connector="CONNECTOR1_2_0x1f402_12"/>
+                         connector="CONNECTOR1_2_0x1f402_12" />
             </ownedBehavior>
-            <ownedAttribute xmi:type="uml:Property" xmi:id="COLLATTR1_0x1f402_12" name="a" type="0x1f502_4"/>
-            <ownedAttribute xmi:type="uml:Property" xmi:id="COLLATTR2_0x1f402_12" name="" type="0x1f582_4"/>
+            <ownedAttribute xmi:type="uml:Property" xmi:id="COLLATTR1_0x1f402_12" name="a" type="0x1f502_4" />
+            <ownedAttribute xmi:type="uml:Property" xmi:id="COLLATTR2_0x1f402_12" name="" type="0x1f582_4" />
         </packagedElement>
     </packagedElement>
     <packagedElement xmi:type="uml:SendOperationEvent" xmi:id="SENDOPEREVT1_0x81_22" name="answer"
-                     operation="0x1f582_2"/>
+                     operation="0x1f582_2" />
     <packagedElement xmi:type="uml:ReceiveOperationEvent" xmi:id="RECOPEREVT1_0x81_22" name="answer"
-                     operation="0x1f582_2"/>
-    <packagedElement xmi:type="uml:ExecutionEvent" xmi:id="RECEVT2_0x81_22" name=""/>
-    <packagedElement xmi:type="uml:ExecutionEvent" xmi:id="SENDEVT1_0x81_22" name=""/>
+                     operation="0x1f582_2" />
+    <packagedElement xmi:type="uml:ExecutionEvent" xmi:id="RECEVT2_0x81_22" name="" />
+    <packagedElement xmi:type="uml:ExecutionEvent" xmi:id="SENDEVT1_0x81_22" name="" />
 </uml:Model>

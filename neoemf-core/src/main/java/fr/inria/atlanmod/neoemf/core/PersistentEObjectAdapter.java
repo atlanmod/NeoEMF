@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * The factory to adapt {@link Object}s in a specific {@link Class}.
+ * The factory that adapts {@link Object}s in a specific {@link Class}.
  */
 class PersistentEObjectAdapter {
 

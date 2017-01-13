@@ -72,14 +72,14 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
 
     /**
      * Cache of unlinked elements, waiting until their reference is created.
-     * <p>
+     *
      * @note In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
      * Cache of conflited {@code Id}.
-     * <p>
+     *
      * @note In case of conflict detection only.
      */
     private final Cache<String, Id> conflictElementIdCache;
