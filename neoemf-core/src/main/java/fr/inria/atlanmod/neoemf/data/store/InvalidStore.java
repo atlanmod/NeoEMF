@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * Utility class which can be used by back-end implementations that do not provide transient layer.
+ * {@link PersistentStore} which can be used by back-end implementations that do not provide transient layer.
  */
 public class InvalidStore implements PersistentStore {
 
@@ -30,6 +30,9 @@ public class InvalidStore implements PersistentStore {
             "The backend you are using does not provide a transient layer. " +
                     "You must save/load your resource before using it";
 
+    /**
+     * Constructs a new {@code InvalidStore}.
+     */
     public InvalidStore() {
         super();
         NeoLogger.warn(UNSUPPORTED_MSG);

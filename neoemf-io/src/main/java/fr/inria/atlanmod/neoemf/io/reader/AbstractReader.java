@@ -15,20 +15,33 @@ import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract implementation of a {@link Reader} that notifies {@link Processor}.
+ * An abstract implementation of {@link Reader} that notifies {@link Processor}.
  */
 public abstract class AbstractReader extends AbstractInputNotifier<Processor> implements Reader {
 
-    protected static String format(String prefix, String value) {
+    /**
+     * Formats a prefixed value as {@code "prefix:value"}. If the {@code prefix} is {@code null}, the returned value
+     * only contains the {@code value}.
+
+     * @return a formatted {@code String}
+     */
+    @Nonnull
+    protected static String format(@Nullable String prefix, @Nonnull String value) {
         checkNotNull(value);
 
         return (isNull(prefix) ? "" : prefix + ':') + value;
     }
 
+    /**
+     * Processes the start of the document.
+     */
     protected void processStartDocument() {
         notifyStartDocument();
     }
@@ -45,6 +58,9 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
         Namespace.Registry.getInstance().register(prefix, uri);
     }
 
+    /**
+     * Processes the end of the document.
+     */
     protected void processEndDocument() {
         notifyEndDocument();
     }

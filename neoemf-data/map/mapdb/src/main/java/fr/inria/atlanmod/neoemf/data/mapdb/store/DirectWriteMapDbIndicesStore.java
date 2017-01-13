@@ -53,9 +53,11 @@ import static java.util.Objects.nonNull;
 public class DirectWriteMapDbIndicesStore extends DirectWriteMapDbStore {
     
     /**
-     * Creates a new {@link DirectWriteMapDbIndicesStore} for the given {@link Resource} and {@link MapDbPersistenceBackend}.
-     * @param resource the {@link Resource} to persist and access
-     * @param backend the {@link MapDbPersistenceBackend} used to serialize and deserialize the model
+     * Constructs a new {@code DirectWriteMapDbIndicesStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
      */
     public DirectWriteMapDbIndicesStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);

@@ -37,7 +37,7 @@ public class ContainerInfo implements Serializable {
     private final String name;
 
     /**
-     * Instantiates a new {@code ContainerInfo} with the given {@code id} and the given {@code name}.
+     * Constructs a new {@code ContainerInfo} with the given {@code id} and the given {@code name}.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}
@@ -50,7 +50,7 @@ public class ContainerInfo implements Serializable {
     /**
      * Creates a new {@code ContainerInfo} from the given {@code object} and {@code reference}.
      * <p>
-     * This method behaves like: <pre>ContainerInfo.of(object.id(), reference.getName())</pre>
+     * This method behaves like: {@code ContainerInfo.of(object.id(), reference.getName())}
      *
      * @param object    the {@link PersistentEObject}
      * @param reference the reference used to retrieve the container of the {@link PersistentEObject}

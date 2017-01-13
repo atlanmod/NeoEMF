@@ -45,17 +45,17 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 /**
- * An {@link AbstractDirectWriteStore} subclass that translates model-level operations
+ * An {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} subclass that translates model-level operations
  * to Blueprints calls.
  * <p>
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order
- * to allow EMF persistence delegation. If this store is used, every method call and property access on 
- * {@link PersistentEObject} is forwarded to this class, that takes care of the database serialization and deserialization 
+ * to allow EMF persistence delegation. If this store is used, every method call and property access on
+ * {@link PersistentEObject} is forwarded to this class, that takes care of the database serialization and deserialization
  * using its embedded {@link BlueprintsPersistenceBackend}.
  * <p>
- * This store can be used as a base store that can be complemented by plugging decorator stores on top of it 
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
  * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
- * 
+ *
  * @see PersistentEObject
  * @see BlueprintsPersistenceBackend
  * @see AbstractPersistentStoreDecorator
@@ -88,9 +88,11 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected static final String SIZE_LITERAL = "size";
 
     /**
-     * Creates a new {@link DirectWriteBlueprintsStore} for the given {@link Resource} and {@link BlueprintsPersistenceBackend}.
-     * @param resource the {@link Resource} to persist and access
-     * @param backend the {@link BlueprintsPersistenceBackend} used to serialize and deserialize the model
+     * Constructs a new {@code DirectWriteBlueprintsStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
      */
     public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);

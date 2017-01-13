@@ -29,13 +29,16 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A simple {@link EStore} implementation that uses collections to store the data in memory.
+ * A {@link TransientStore} that uses collections to store data in memory.
  */
 public abstract class AbstractTransientStore implements TransientStore {
 
     protected Map<FeatureKey, Object> singleMap;
     protected Map<FeatureKey, List<Object>> manyMap;
 
+    /**
+     * Constructs a new {@code AbstractTransientStore}.
+     */
     public AbstractTransientStore() {
         singleMap = new HashMap<>();
         manyMap = new HashMap<>();

@@ -17,6 +17,9 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
+/**
+ * A {@link PersistentStore} wrapper that automatically saves modifications as calls are made.
+ */
 public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
@@ -25,8 +28,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = 100000;
 
     /**
-     * Number of allowed modifications between commits on the underlying {@link EStore} for this
-     * {@link AutocommitStoreDecorator}.
+     * Number of allowed modifications between commits on the underlying {@link EStore} for this store.
      */
     private final long opsBetweenCommits;
 
@@ -36,7 +38,10 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     private long opCount;
 
     /**
-     * Allows to specify the number of allowed modification on the underlying {@link EStore} before saving automatically.
+     * Constructs a new {@code AutocommitStoreDecorator} with the given {@code opsBetweenCommits}.
+     *
+     * @param store the underlying store
+     * @param opsBetweenCommits the number of modifications between commit
      */
     public AutocommitStoreDecorator(PersistentStore store, long opsBetweenCommits) {
         super(store);
@@ -46,8 +51,9 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     }
 
     /**
-     * Allows to make {@link #OPS_BETWEEN_COMMITS_DEFAULT} modifications on the underlying {@link EStore} before saving
-     * automatically.
+     * Constructs a new {@code AutocommitStoreDecorator} with the default number of modifications between commits.
+     *
+     * @param store the underlying store
      */
     public AutocommitStoreDecorator(PersistentStore store) {
         this(store, OPS_BETWEEN_COMMITS_DEFAULT);
@@ -92,6 +98,9 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
         incrementAndCommit();
     }
 
+    /**
+     * Increments the number of operation, and commits if necessary, i.e when {@code opCount % opsBetweenCommits == 0}.
+     */
     private void incrementAndCommit() {
         opCount = (opCount + 1) % opsBetweenCommits;
         if (opCount == 0) {
@@ -99,6 +108,11 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * In our case, it commits the last modifications.
+     */
     @Override
     protected void finalize() throws Throwable {
         try {

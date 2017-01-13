@@ -23,16 +23,27 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistentStore} decorator that caches the size data.
+ * A {@link PersistentStore} wrapper that caches the size data.
  */
 public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
     private final Cache<FeatureKey, Integer> sizesCache;
 
+    /**
+     * Constructs a new {@code SizeCachingStoreDecorator} with the default cache size.
+     *
+     * @param store the underlying store
+     */
     public SizeCachingStoreDecorator(PersistentStore store) {
         this(store, 10000);
     }
 
+    /**
+     * Constructs a new {@code SizeCachingStoreDecorator} with the given {@code cacheSize}.
+     *
+     * @param store the underlying store
+     * @param cacheSize the size of the cache
+     */
     public SizeCachingStoreDecorator(PersistentStore store, int cacheSize) {
         super(store);
         this.sizesCache = Caffeine.newBuilder().maximumSize(cacheSize).build();

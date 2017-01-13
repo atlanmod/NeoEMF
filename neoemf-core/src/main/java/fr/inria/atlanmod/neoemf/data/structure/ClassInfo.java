@@ -39,11 +39,11 @@ public class ClassInfo implements Serializable {
     private final String uri;
 
     /**
-     * Instantiates a new {@code ClassInfo} with the given {@code name} and {@code uri}, which are used as a simple
+     * Constructs a new {@code ClassInfo} with the given {@code name} and {@code uri}, which are used as a simple
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
-     * @param uri  the string of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}
+     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}
      */
     protected ClassInfo(@Nonnull String name, @Nonnull String uri) {
         this.name = checkNotNull(name);
@@ -54,7 +54,7 @@ public class ClassInfo implements Serializable {
      * Creates a new {@code ClassInfo} from the given {@code object}. The {@link EClass} will be found by calling the
      * {@link PersistentEObject#eClass()} method.
      * <p>
-     * This method behaves like: <pre>ClassInfo.of(eClass.getName(), eClass.getEPackage().getNsURI())</pre>
+     * This method behaves like: {@code ClassInfo.of(eClass.getName(), eClass.getEPackage().getNsURI())}
      *
      * @param object the object from which the {@link EClass} has to be retreive with the {@link
      *               PersistentEObject#eClass()} method
@@ -74,7 +74,7 @@ public class ClassInfo implements Serializable {
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
-     * @param uri  the string of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}
+     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}
      *
      * @return a new {@code ClassInfo}
      */
@@ -94,9 +94,9 @@ public class ClassInfo implements Serializable {
     }
 
     /**
-     * Returns the string of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}.
+     * Returns the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}.
      *
-     * @return the string of the URI
+     * @return the literal representation of the URI
      */
     @Nonnull
     public String uri() {

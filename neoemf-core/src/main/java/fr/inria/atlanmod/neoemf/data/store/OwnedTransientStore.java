@@ -18,12 +18,17 @@ import org.eclipse.emf.ecore.InternalEObject;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A {@link TransientStore} that belongs to a single {@link EObject} owner.
+ * A {@link TransientStore} that belongs to a single {@link EObject} owner. The ownership is checked at each method call.
  */
 public class OwnedTransientStore extends AbstractTransientStore {
 
     private final EObject owner;
 
+    /**
+     * Constructs a new {@code OwnedTransientStore} with the given {@code owner}.
+     *
+     * @param owner the owner of this store
+     */
     public OwnedTransientStore(EObject owner) {
         this.owner = owner;
     }
@@ -136,6 +141,9 @@ public class OwnedTransientStore extends AbstractTransientStore {
         return super.getContainingFeature(internalObject);
     }
 
+    /**
+     * Checks that the {@code internalObject} is the owner of this store.
+     */
     private void checkOwner(InternalEObject internalObject) {
         checkArgument(owner == internalObject);
     }

@@ -48,6 +48,13 @@ public class DirectWriteMapDbCacheManyStore extends DirectWriteMapDbStore {
 
     private final Cache<FeatureKey, Object> objectsCache;
 
+    /**
+     * Constructs a new {@code DirectWriteMapDbCacheManyStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
+     */
     public DirectWriteMapDbCacheManyStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);
         this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();

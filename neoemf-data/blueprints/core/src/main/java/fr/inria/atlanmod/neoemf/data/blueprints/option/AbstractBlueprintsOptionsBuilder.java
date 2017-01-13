@@ -33,7 +33,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBlueprintsOptionsBuilder<B, O>, O extends AbstractBlueprintsOptions> extends AbstractPersistenceOptionsBuilder<B, O> {
 
     /**
-     * Instantiates a new {@code AbstractBlueprintsOptionsBuilder}.
+     * Constructs a new {@code AbstractBlueprintsOptionsBuilder}.
      */
     protected AbstractBlueprintsOptionsBuilder() {
     }

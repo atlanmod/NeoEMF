@@ -16,14 +16,14 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * An abstract implementation of an {@link PersistenceHandler} that delegates all methods to its embedded handler.
+ * An abstract implementation of a {@link PersistenceHandler} that delegates all methods to its embedded handler.
  */
 public abstract class AbstractPersistenceHandlerDecorator implements PersistenceHandler {
 
     private final PersistenceHandler handler;
 
     /**
-     * Instantiates a new {@code AbstractPersistenceHandlerDecorator} with an embed handler.
+     * Constructs a new {@code AbstractPersistenceHandlerDecorator} with an embed {@code handler}.
      *
      * @param handler the embed handler
      */

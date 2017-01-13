@@ -79,6 +79,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
     protected Table table;
 
+    /**
+     * Constructs a new {@code DirectWriteBlueprintsStore} on the given {@code resource} .
+     *
+     * @param resource the resource to persist and access
+     */
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
 

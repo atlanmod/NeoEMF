@@ -36,6 +36,13 @@ public class DirectWriteBerkeleyDbListsStore extends DirectWriteBerkeleyDbStore 
 
     private final Cache<FeatureKey, Object> objectsCache;
 
+    /**
+     * Constructs a new {@code DirectWriteBerkeleyDbListsStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
+     */
     public DirectWriteBerkeleyDbListsStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
         super(resource, backend);
         this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();

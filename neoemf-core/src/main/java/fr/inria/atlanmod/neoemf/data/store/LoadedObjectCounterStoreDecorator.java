@@ -22,12 +22,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * A {@link PersistentStore} wrapper that count the number elements used.
  */
 public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDecorator {
 
     private final Set<Id> loadedObjects = new HashSet<>();
 
+    /**
+     * Constructs a new {@code LoadedObjectCounterStoreDecorator}.
+     *
+     * @param store the underlying store
+     */
     public LoadedObjectCounterStoreDecorator(PersistentStore store) {
         super(store);
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());

@@ -20,21 +20,28 @@ import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.util.function.Function;
-
-import static java.util.Objects.isNull;
-
 /**
- * A {@link PersistentStore} decorator that caches {@link EStructuralFeature}.
+ * A {@link PersistentStore} wrapper that caches {@link EStructuralFeature}.
  */
 public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
     private final Cache<FeatureKey, Object> objectsCache;
 
+    /**
+     * Constructs a new {@code FeatureCachingStoreDecorator} with the default cache size.
+     *
+     * @param store the underlying store
+     */
     public FeatureCachingStoreDecorator(PersistentStore store) {
         this(store, 10000);
     }
 
+    /**
+     * Constructs a new {@code FeatureCachingStoreDecorator} with the given {@code cacheSize}.
+     *
+     * @param store the underlying store
+     * @param cacheSize the size of the cache
+     */
     public FeatureCachingStoreDecorator(PersistentStore store, int cacheSize) {
         super(store);
         this.objectsCache = Caffeine.newBuilder().maximumSize(cacheSize).build();

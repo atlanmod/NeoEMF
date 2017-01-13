@@ -35,7 +35,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     private final List<PersistentStoreOptions> storeOptions;
 
     /**
-     * Instantiates a new {@code AbstractPersistenceOptionsBuilder}.
+     * Constructs a new {@code AbstractPersistenceOptionsBuilder}.
      */
     protected AbstractPersistenceOptionsBuilder() {
         this.options = new HashMap<>();

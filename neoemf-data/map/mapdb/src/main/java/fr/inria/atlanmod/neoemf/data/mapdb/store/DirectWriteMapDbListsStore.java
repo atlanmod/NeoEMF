@@ -54,11 +54,13 @@ import static java.util.Objects.isNull;
 public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
 
     private final Cache<FeatureKey, Object> objectsCache;
-    
+
     /**
-     * Creates a new {@link DirectWriteMapDbListsStore} for the given {@link Resource} and {@link MapDbPersistenceBackend}.
-     * @param resource the {@link Resource} to persist and access
-     * @param backend the {@link MapDbPersistenceBackend} used to serialize and deserialize the model
+     * Constructs a new {@code DirectWriteMapDbListsStore} between the given {@code resource} and the
+     * {@code backend}.
+     *
+     * @param resource the resource to persist and access
+     * @param backend the persistence backend used to store the model
      */
     public DirectWriteMapDbListsStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);

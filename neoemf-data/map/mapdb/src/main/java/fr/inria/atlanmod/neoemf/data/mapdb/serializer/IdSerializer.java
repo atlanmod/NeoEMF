@@ -29,10 +29,14 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 /**
  * A {@link Serializer} implementation for {@link Id}s.
  * <p>
+<<<<<<< HEAD
  * <b>Limitation:</b> For now this serializer only works with {@link StringId} instances.
  * 
  * @see Id
  * @see StringId
+=======
+ * @note Only works with {@link StringId} instances.
+>>>>>>> 3507b2f6f03d72e4fb7204d4ca71bd961339a246
  */
 public class IdSerializer implements Serializer<Id> {
     

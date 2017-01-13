@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.data;
 
 /**
- * The abstract implementation of a {@link PersistenceBackend}.
+ * The abstract implementation of {@link PersistenceBackend}.
  *
  * @future an abstraction of {@code PersistenceBackend} will be implemented to define a global behaviour
  */
 public abstract class AbstractPersistenceBackend implements PersistenceBackend {
 
     /**
-     * Instantiates a new {@code AbstractPersistenceBackend}.
+     * Constructs a new {@code AbstractPersistenceBackend}.
      */
     protected AbstractPersistenceBackend() {
     }

@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuilder<BlueprintsNeo4jOptionsBuilder, BlueprintsNeo4jOptions> {
 
     /**
-     * Instantiates a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
+     * Constructs a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
      * {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
      * <p>
      * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
@@ -86,7 +86,8 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
 
     /**
      * Set the {@code weak cache} feature in the created options. This tells Neo4j to use a cache
-     * containing weak values
+     * containing weak values.
+     *
      * @return this {@code CommonOptionsBuilder} (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#WEAK
@@ -98,9 +99,10 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
 
     /**
      * Set the {@code strong cache} feature in the created options. This tells Neo4j to use a cache
-     * containing string references. Note that using this option the created cache cannot be garbage
-     * collected, and {@link OutOfMemoryError} can occur if there is not enough memory to handle the
-     * model
+     * containing string references.
+     *
+     * @note Using this option the created cache cannot be garbage collected, and {@link OutOfMemoryError} can
+     * occur if there is not enough memory to handle the model
      * @return this {@code CommonOptionsBuilder} (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#STRONG

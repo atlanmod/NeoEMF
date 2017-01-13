@@ -40,7 +40,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     private final String name;
 
     /**
-     * Instantiates a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as a
+     * Constructs a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as a
      * simple representation of a feature of an object.
      *
      * @param id   the identifier of the {@link PersistentEObject}
@@ -54,7 +54,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     /**
      * Creates a new {@code FeatureKey} from the given {@code internalObject} and the given {@code feature}.
      * <p>
-     * This method behaves like: <pre>FeatureKey.from(PersistentEObject.from(internalObject), feature)</pre>
+     * This method behaves like: {@code FeatureKey.from(PersistentEObject.from(internalObject), feature)}
      *
      * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject}
      * @param feature        the {@link EStructuralFeature} of the {@link PersistentEObject}
@@ -73,7 +73,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     /**
      * Creates a new {@code FeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
-     * This method behaves like: <pre>FeatureKey.of(object.id(), feature.getName())</pre>
+     * This method behaves like: {@code FeatureKey.of(object.id(), feature.getName())}
      *
      * @param object  the {@link PersistentEObject}
      * @param feature the {@link EStructuralFeature} of the {@link PersistentEObject}

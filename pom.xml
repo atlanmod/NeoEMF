@@ -153,7 +153,6 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <version>${javax-annotations.version}</version>
             <optional>true</optional><!-- needed only for annotations -->
         </dependency>
     </dependencies>
@@ -225,6 +224,15 @@
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
                 <version>${xcore.version}</version>
+            </dependency>
+
+            <!-- Annotations -->
+
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${javax-annotations.version}</version>
+                <optional>true</optional><!-- needed only for annotations -->
             </dependency>
 
             <!-- Test -->
@@ -474,6 +482,11 @@
                             </group>
                         </groups>
                         <tags>
+                            <tag>
+                                <name>note</name>
+                                <placement>a</placement>
+                                <head>Note:</head>
+                            </tag>
                             <tag>
                                 <name>future</name>
                                 <placement>a</placement>

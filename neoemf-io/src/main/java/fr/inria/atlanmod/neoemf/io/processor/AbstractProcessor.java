@@ -17,12 +17,17 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * An abstract implementation of an {@link Processor} that delegates all methods to its embedded processor.
+ * An abstract implementation of a {@link Processor} that delegates all methods to its embedded processor.
  */
 public class AbstractProcessor implements Processor {
 
     private final Processor processor;
 
+    /**
+     * Constructs a new {@code AbstractProcessor} with an embedded {@code processor}.
+     *
+     * @param processor the embedded processor
+     */
     protected AbstractProcessor(Processor processor) {
         this.processor = processor;
     }

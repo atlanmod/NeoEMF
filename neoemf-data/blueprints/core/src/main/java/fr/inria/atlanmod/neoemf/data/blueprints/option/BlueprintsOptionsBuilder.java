@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<BlueprintsOptionsBuilder, BlueprintsOptions> {
 
     /**
-     * Instantiates a new {@code BlueprintsOptionsBuilder}.
+     * Constructs a new {@code BlueprintsOptionsBuilder}.
      * <p>
      * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}.
      */

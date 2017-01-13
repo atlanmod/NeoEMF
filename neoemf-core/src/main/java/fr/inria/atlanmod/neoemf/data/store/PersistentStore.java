@@ -20,14 +20,15 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * An {@link EStore} that allows to establish a mapping between {@link Resource}s and {@link EStore}s.
+ * An {@link EStore} to establish a mapping between {@link Resource}s and {@link EStore}s in a persistent context, i.e,
+ * when storing data in a data store.
  */
 public interface PersistentStore extends EStore {
 
     int NO_INDEX = EStore.NO_INDEX;
 
     /**
-     * Returns the {@link Resource} to which this {@link EStore} is associated.
+     * Returns the {@link Resource} to persist and access.
      */
     Resource resource();
 

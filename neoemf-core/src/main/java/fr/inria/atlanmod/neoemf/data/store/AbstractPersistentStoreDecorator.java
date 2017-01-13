@@ -25,11 +25,13 @@ import org.eclipse.emf.ecore.resource.Resource;
  */
 public abstract class AbstractPersistentStoreDecorator extends AbstractPersistentStore {
 
-    /**
-     * The decorated {@link PersistentStore}.
-     */
     private final PersistentStore store;
 
+    /**
+     * Constructs a new {@code AbstractPersistentStoreDecorator} on the given {@code store}.
+     *
+     * @param store the underlying store
+     */
     public AbstractPersistentStoreDecorator(PersistentStore store) {
         this.store = store;
     }

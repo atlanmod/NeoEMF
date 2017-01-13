@@ -41,6 +41,11 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
     private final Cache<FeatureKey, Object> objectsCache;
 
+    /**
+     * Constructs a new {@code ReadOnlyHBaseStore} on the given {@code resource}.
+     *
+     * @param resource the resource to persist and access
+     */
     public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
         this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();

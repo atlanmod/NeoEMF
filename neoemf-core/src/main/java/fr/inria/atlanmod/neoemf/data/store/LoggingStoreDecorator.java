@@ -21,10 +21,15 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * A {@link PersistentStore} decorator that logs every call to its methods in the {@link NeoLogger}.
+ * A {@link PersistentStore} wrapper that logs every call to its methods in the {@link NeoLogger}.
  */
 public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
 
+    /**
+     * Constructs a new {@code LoggingStoreDecorator}.
+     *
+     * @param store the underlying store
+     */
     public LoggingStoreDecorator(PersistentStore store) {
         super(store);
     }
