@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * A {@link InputNotifier} able to read a file.
- * </p>
- * It correspond to the head of the parsing process in case of an import.
+ * An {@link InputNotifier} that reads data from a file.
+ *
+ * @note It correspond to the head of the parsing process in case of an import.
  */
 public interface Reader extends InputNotifier<Processor> {
 
@@ -35,6 +35,9 @@ public interface Reader extends InputNotifier<Processor> {
      * Reads a stream and notifies registered {@link Processor}.
      *
      * @param stream the stream to read
+     *
+     * @throws IllegalArgumentException if this reader hasn't any handler
+     * @throws IOException if an error occurred during the I/O process
      */
     void read(InputStream stream) throws IOException;
 }

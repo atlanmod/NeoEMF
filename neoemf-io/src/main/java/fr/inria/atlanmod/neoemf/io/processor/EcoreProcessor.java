@@ -33,7 +33,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link Processor} that creates and links simple elements to an Ecore structure.
+ * An {@link Processor} that creates and links simple elements to an EMF structure.
  */
 public class EcoreProcessor extends AbstractProcessor {
 
@@ -57,6 +57,11 @@ public class EcoreProcessor extends AbstractProcessor {
      */
     private boolean previousWasAttribute;
 
+    /**
+     * Constructs a new {@code EcoreProcessor} on the given {@code processor}.
+     *
+     * @param processor the underlying processor
+     */
     public EcoreProcessor(Processor processor) {
         super(processor);
         this.classesStack = new ArrayDeque<>();
@@ -64,7 +69,19 @@ public class EcoreProcessor extends AbstractProcessor {
         this.previousWasAttribute = false;
     }
 
-    private static EClass getEClass(Classifier classifier, Namespace ns, EClass eClass, EPackage ePackage) {
+    /**
+     * Returns the {@link EClass} associated with the given {@code classifier}.
+     *
+     * @param classifier the classifier representing the class
+     * @param ns the namespace of the {@code superClass}
+     * @param superClass the super-type of the sought class
+     * @param ePackage the package where to find the class
+     *
+     * @return a class
+     *
+     * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
+     */
+    private static EClass getEClass(Classifier classifier, Namespace ns, EClass superClass, EPackage ePackage) {
         MetaClassifier metaClassifier = classifier.getMetaClassifier();
 
         if (nonNull(metaClassifier)) {
@@ -72,21 +89,21 @@ public class EcoreProcessor extends AbstractProcessor {
 
             // Checks that the metaclass is a subtype of the reference type.
             // If true, use it instead of supertype
-            if (eClass.isSuperTypeOf(subEClass)) {
-                eClass = subEClass;
+            if (superClass.isSuperTypeOf(subEClass)) {
+                superClass = subEClass;
             }
             else {
-                throw new IllegalArgumentException(subEClass.getName() + " is not a subclass of " + eClass.getName());
+                throw new IllegalArgumentException(subEClass.getName() + " is not a subclass of " + superClass.getName());
             }
         }
 
         // If not present, create the metaclass from the current class
         else {
-            metaClassifier = new MetaClassifier(ns, eClass.getName());
+            metaClassifier = new MetaClassifier(ns, superClass.getName());
             classifier.setMetaClassifier(metaClassifier);
         }
 
-        return eClass;
+        return superClass;
     }
 
     @Override
@@ -166,6 +183,8 @@ public class EcoreProcessor extends AbstractProcessor {
 
     /**
      * Creates the root element from the given {@code classifier}.
+     *
+     * @throws NullPointerException if the {@code classifier} does not have a namespace
      */
     private void createRootObject(Classifier classifier) {
         Namespace ns = checkNotNull(classifier.getNamespace(), "The root element must have a namespace");
@@ -195,6 +214,15 @@ public class EcoreProcessor extends AbstractProcessor {
         idsStack.addLast(classifier.getId());
     }
 
+    /**
+     * Processes a feature and redirects the processing to the associated method according to its type (attribute or
+     * reference).
+     *
+     * @param classifier the classifier representing the feature
+     *
+     * @see #processAttribute(Classifier, EAttribute)
+     * @see #processReference(Classifier, Namespace, EReference, EPackage)
+     */
     private void processFeature(Classifier classifier) {
         // Retreive the parent EClass
         EClass parentEClass = classesStack.getLast();
@@ -214,6 +242,12 @@ public class EcoreProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Processes an attribute.
+     *
+     * @param classifier the classifier representing the attribute
+     * @param attribute the associated EMF attribute
+     */
     private void processAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute attribute) {
         if (nonNull(waitingAttribute)) {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
@@ -224,6 +258,14 @@ public class EcoreProcessor extends AbstractProcessor {
         previousWasAttribute = true;
     }
 
+    /**
+     * Processes a reference.
+     *
+     * @param classifier the classifier representing the reference
+     * @param ns the namespace of the class of the reference
+     * @param reference the associated EMF reference
+     * @param ePackage the package where to find the class of the reference
+     */
     private void processReference(Classifier classifier, Namespace ns, EReference reference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass
         EClass eClass = getEClass(classifier, ns, (EClass) reference.getEType(), ePackage);

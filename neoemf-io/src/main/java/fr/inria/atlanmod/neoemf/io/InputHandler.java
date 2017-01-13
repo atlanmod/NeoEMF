@@ -16,7 +16,11 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * A object able to handle notifications sent by a {@link InputNotifier}.
+ * A object able to handle events notified by a {@link InputNotifier}.
+ * <p>
+ * It must be previously registered with the {@link InputNotifier#addHandler(InputHandler)}.
+ *
+ * @see InputNotifier
  */
 public interface InputHandler {
 
@@ -76,6 +80,8 @@ public interface InputHandler {
      * Process a set of characters.
      *
      * @param characters the new characters
+     *
+     * @see InputNotifier#notifyCharacters(String)
      */
     void processCharacters(String characters);
 }

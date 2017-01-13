@@ -20,9 +20,9 @@ public class HasherFactory {
     }
 
     /**
-     * Returns an instance of a {@link Hasher} using {@code MD5}.
+     * Returns an instance of a {@link Hasher} using {@code MD5} (128 bits).
      *
-     * @return an instance of a {@link Hasher} using {@code MD5}
+     * @return an instance of a {@link Hasher} using {@code MD5} (128 bits)
      */
     public static Hasher md5() {
         return Md5Hasher.getInstance();

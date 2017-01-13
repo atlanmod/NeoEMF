@@ -16,8 +16,16 @@ package fr.inria.atlanmod.neoemf.io.hash;
  */
 class StringHashCode implements HashCode {
 
+    /**
+     * The literal representation of this hashcode.
+     */
     private final String hashCode;
 
+    /**
+     * Constructs a new {@code StringHashCode} from the {@code hashCode}.
+     *
+     * @param hashCode the literal representation of this hashcode
+     */
     public StringHashCode(String hashCode) {
         this.hashCode = hashCode;
     }

@@ -31,11 +31,12 @@ public class Importer {
     }
 
     /**
-     * Import a XMI file into persistence handlers.
+     * Imports a XMI file into persistence handlers.
      *
      * @param stream              the stream of XMI data
      * @param persistenceHandlers persistence handlers where to store the read data
      *
+     * @throws IllegalArgumentException if there is no handler to notify
      * @throws IOException if an error occurred during the import
      */
     public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws IOException {

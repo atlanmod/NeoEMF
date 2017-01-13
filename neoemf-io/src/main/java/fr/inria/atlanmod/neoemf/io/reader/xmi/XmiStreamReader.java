@@ -52,6 +52,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         return defaultProcessor;
     }
 
+    @Override
     public void read(InputStream stream) throws IOException {
         if (!hasHandler()) {
             throw new IllegalStateException("This notifier hasn't any handler");
@@ -64,7 +65,7 @@ public class XmiStreamReader extends AbstractXmiReader {
         factory.setValidating(false);
 
         Timer logProgressTimer = new Timer(true);
-        logProgressTimer.schedule(new LogProgressTimer(stream, stream.available()), 10000, 30000);
+        logProgressTimer.schedule(new LogProgressTimer(stream), 10000, 30000);
 
         try {
             factory.newSAXParser().parse(stream, new XmiSaxHandler());
@@ -85,10 +86,9 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
     }
 
-    private void logProgress(double percent) {
-        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
-    }
-
+    /**
+     * The real implementation of the XML parser.
+     */
     private class XmiSaxHandler extends DefaultHandler {
 
         private String xmiUri;
@@ -171,14 +171,29 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
     }
 
-    private class LogProgressTimer extends TimerTask {
+    /**
+     * A {@link TimerTask} that logs progress.
+     */
+    private static class LogProgressTimer extends TimerTask {
 
+        /**
+         * The stream to watch.
+         */
         private final InputStream stream;
+
+        /**
+         * The total size of the stream.
+         */
         private final long total;
 
-        private LogProgressTimer(InputStream stream, long total) {
+        /**
+         * Constructs a new {@code LogProgressTimer}.
+         *
+         * @param stream the stream to watch
+         */
+        private LogProgressTimer(InputStream stream) throws IOException {
             this.stream = stream;
-            this.total = total;
+            this.total = stream.available();
         }
 
         @Override
@@ -189,5 +204,14 @@ public class XmiStreamReader extends AbstractXmiReader {
             catch (Exception ignore) {
             }
         }
+    }
+
+    /**
+     * Logs the progress of the current reading.
+     *
+     * @param percent the percentage of data read on the total size of the data
+     */
+    private static void logProgress(double percent) {
+        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
     }
 }

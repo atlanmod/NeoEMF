@@ -21,6 +21,9 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
  */
 public class AbstractProcessor implements Processor {
 
+    /**
+     * The underlying processor.
+     */
     private final Processor processor;
 
     /**

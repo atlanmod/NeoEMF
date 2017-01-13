@@ -29,24 +29,33 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
+
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An handler able to persist newly created data in a {@link PersistenceBackend}.
+ * A {@link PersistenceHandler} that persists data in a {@link PersistenceBackend}, based on received events.
  *
  * @param <P> the type of the {@link PersistenceBackend} targeted by this handler.
  */
 public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
     /**
-     * The default cache size. It is calculated according to the maximum memory dedicated to the JVM.
+     * The default cache size.
+     *
+     * @note It is calculated according to the maximum memory dedicated to the JVM.
      */
     protected static final long DEFAULT_CACHE_SIZE = adaptFromMemory(2000);
 
     /**
-     * The default operation between commits. It is calculated according to the maximum memory dedicated to the JVM.
+     * The default operation between commits.
+     *
+     * @note It is calculated according to the maximum memory dedicated to the JVM.
      */
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
@@ -56,40 +65,46 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private final P backend;
 
     /**
-     *
+     * Queue holding the current {@link Id} chain (current element and its parent).
+     * <p>
+     * It is updated after each addition/deletion of an element.
      */
     private final Deque<Id> elementIdStack;
 
     /**
-     * Cache of recently processed {@code Id}.
+     * Cache holding the recently processed {@link Id}.
      */
     private final Cache<String, Id> elementIdCache;
 
     /**
-     * Cache of registered metaclasses.
+     * Cache holding the registered metaclasses, identified by their {@link Id}.
      */
     private final Cache<String, Id> metaclassIdCache;
 
     /**
-     * Cache of unlinked elements, waiting until their reference is created.
+     * Cache holding the unlinked elements, waiting until their reference is created.
      *
      * @note In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
-     * Cache of conflited {@code Id}.
+     * Cache holding conflited {@code Id}s.
      *
      * @note In case of conflict detection only.
      */
     private final Cache<String, Id> conflictElementIdCache;
 
+    /**
+     * Current number of modifications modulo {@link #OPS_BETWEEN_COMMITS_DEFAULT}.
+     * Used for automatically saves modifications as calls are made.
+     */
     private long opCount;
 
     /**
-     * Constructs a new {@code AbstractPersistenceHandler} with its targeted {@link PersistenceBackend}.
+     * Constructs a new {@code AbstractPersistenceHandler} on top of the {@code backend}.
      *
-     * @param backend the targetted persistence back-end
+     * @param backend the persistence backend where to store data
      */
     protected AbstractPersistenceHandler(P backend) {
         this.backend = backend;
@@ -107,9 +122,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Adapts the given {@code value} according to the max memory.
+     * Adapts the given {@code value} according  to the maximum memory dedicated to the JVM.
      * <p>
      * The formulas can be improved, for sure.
+     *
+     * @see #DEFAULT_CACHE_SIZE
+     * @see #OPS_BETWEEN_COMMITS_DEFAULT
      */
     private static long adaptFromMemory(int value) {
         long maxMemoryGB = Runtime.getRuntime().maxMemory() / 1000 / 1000 / 1000;
@@ -123,7 +141,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Returns the targeted {@link PersistenceBackend}.
+     * Returns the {@code backend} where to store data.
      *
      * @return the persistence back-end
      */
@@ -136,7 +154,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param reference the reference
      *
-     * @return the {@link Id} of the given {@code reference}
+     * @return the {@code Id}
      */
     protected abstract Id getId(String reference);
 
@@ -282,8 +300,11 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      * @param id         the identifier of the element
      *
      * @return the given {@code id}
+     *
+     * @throws NullPointerException if any of the parameters is {@code null}
      */
-    protected Id createElement(final Classifier classifier, final Id id) {
+    protected Id createElement(@Nonnull final Classifier classifier, @Nonnull final Id id) {
+        checkNotNull(classifier);
         checkNotNull(id);
 
         addElement(id,
@@ -299,13 +320,15 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Creates an element from the given {@code classifier}.
+     * Creates an element from the given {@code classifier}, and creates its {@link Id}.
      *
      * @param classifier the information about the new element
      *
-     * @return the identifier of the newly created element
+     * @return the {@code Id} of the created element
+     *
+     * @throws NullPointerException if the {@code classifier} is {@code null} or if it does not have an {@code Id}
      */
-    private Id createElement(final Classifier classifier) {
+    private Id createElement(@Nonnull final Classifier classifier) {
         checkNotNull(classifier.getId());
 
         String idValue = classifier.getId().getValue();
@@ -335,9 +358,11 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param metaClassifier the meta classifier
      *
-     * @return the {@link Id} of the newly created metaclass
+     * @return the {@code Id} of the created metaclass
+     *
+     * @throws NullPointerException if the {@code metaClassifier} is {@code null}
      */
-    protected Id getOrCreateMetaClass(final MetaClassifier metaClassifier) {
+    protected Id getOrCreateMetaClass(@Nonnull final MetaClassifier metaClassifier) {
         String idValue = metaClassifier.getNamespace().getUri() + ':' + metaClassifier.getLocalName();
 
         // Gets from cache
@@ -371,24 +396,28 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Get the {@link Id} of the given identifier.
+     * Returns the {@link Id} of the given {@code identifier}.
      *
-     * @param identifier the identifier
+     * @param identifier the representation of the {@link Id}
      *
      * @return the registered {@code Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
+    @Nullable
     private Id getOrCreateId(final Identifier identifier) {
         Id id = conflictElementIdCache.getIfPresent(identifier.getValue());
         if (isNull(id)) {
-            id = elementIdCache.getIfPresent(identifier.getValue());
-            if (isNull(id)) {
-                id = createId(identifier);
-                elementIdCache.put(identifier.getValue(), id);
-            }
+            id = elementIdCache.get(identifier.getValue(), value -> createId(identifier));
         }
         return id;
     }
 
+    /**
+     * Creates an {@link Id} from the given {@code identifier}.
+     *
+     * @param identifier the representation of the {@link Id}
+     *
+     * @return the {@code Id}
+     */
     private Id createId(final Identifier identifier) {
         String idValue = identifier.getValue();
 
@@ -424,7 +453,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * An element that could not be linked at its creation.
+     * A simple representation of an element that could not be linked when it was created.
      */
     private class UnlinkedElement {
 

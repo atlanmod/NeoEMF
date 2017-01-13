@@ -19,10 +19,21 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.util.Objects;
 
+/**
+ * A {@link PersistenceHandler} wrapper that logs every events.
+ */
 public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
+    /**
+     * The current identifier, used to replace a full reference by "this".
+     */
     private Identifier currentId;
 
+    /**
+     * Constructs a new {@code LoggingPersistenceHandlerDecorator}.
+     *
+     * @param handler the underlying handler
+     */
     public LoggingPersistenceHandlerDecorator(PersistenceHandler handler) {
         super(handler);
     }

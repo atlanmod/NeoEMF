@@ -17,22 +17,51 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 /**
- * A delegated {@link PersistenceHandler} that counts the number of different element.
+ * A {@link PersistenceHandler} wrapper that counts the number of different element.
  */
 public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
+    /**
+     * The current number of created {@code CounterPersistenceHandlerDecorator}, used for name generation.
+     */
     private static int id = 0;
 
+    /**
+     * The name of this handler.
+     */
     private final String name;
 
+    /**
+     * The current number of element.
+     */
     private long elementCount;
+
+    /**
+     * The current number of attribute.
+     */
     private long attributeCount;
+
+    /**
+     * The current number of reference.
+     */
     private long referenceCount;
 
+    /**
+     * Constructs a new {@code CounterPersistenceHandlerDecorator} on the underlying {@code handler}.
+     *
+     * @param handler the underlying handler
+     */
     public CounterPersistenceHandlerDecorator(PersistenceHandler handler) {
         this(handler, "dummy-" + ++id);
     }
 
+    /**
+     * Constructs a new {@code CounterPersistenceHandlerDecorator} with the given {@code name} on the underlying
+     * {@code handler}.
+     *
+     * @param handler the underlying handler
+     * @param name the name of this handler
+     */
     public CounterPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
         super(handler);
         this.name = name;

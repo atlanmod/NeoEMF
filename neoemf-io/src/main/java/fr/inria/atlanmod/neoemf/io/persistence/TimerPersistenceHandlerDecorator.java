@@ -20,17 +20,38 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
  */
 public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
+    /**
+     * The current number of created {@code TimerPersistenceHandlerDecorator}, used for name generation.
+     */
     private static int id = 0;
 
+    /**
+     * The name of this handler.
+     */
     private final String name;
 
+    /**
+     * The stopwatch.
+     */
     private Stopwatch stopWatch;
 
+    /**
+     * Constructs a new {@code TimerPersistenceHandlerDecorator} with the given {@code name} on the underlying
+     * {@code handler}.
+     *
+     * @param handler the underlying handler
+     * @param name the name of this handler
+     */
     public TimerPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
         super(handler);
         this.name = name;
     }
 
+    /**
+     * Constructs a new {@code TimerPersistenceHandlerDecorator} on the underlying {@code handler}.
+     *
+     * @param handler the underlying handler
+     */
     public TimerPersistenceHandlerDecorator(PersistenceHandler handler) {
         this(handler, "dummy-" + ++id);
     }

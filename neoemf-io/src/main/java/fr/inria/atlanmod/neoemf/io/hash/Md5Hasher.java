@@ -22,8 +22,14 @@ import javax.annotation.Nonnull;
  */
 public class Md5Hasher implements Hasher {
 
+    /**
+     * The hash function implementing the MD5 hash algorithm (128 hash bits).
+     */
     private static final HashFunction hashFunction = Hashing.md5();
 
+    /**
+     * Constructs a new {@code Md5Hasher}.
+     */
     private Md5Hasher() {
     }
 

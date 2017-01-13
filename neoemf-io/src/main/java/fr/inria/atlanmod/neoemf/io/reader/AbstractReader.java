@@ -59,7 +59,7 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
     }
 
     /**
-     * Processes the end of the document.
+     * Processes the end of the current document.
      */
     protected void processEndDocument() {
         notifyEndDocument();

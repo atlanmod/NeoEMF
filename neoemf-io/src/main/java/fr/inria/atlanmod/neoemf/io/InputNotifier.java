@@ -16,9 +16,12 @@ import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 
 /**
- * A object able to notify {@link InputHandler}.
+ * A object able to notify previously registered {@link InputHandler}s of events during an I/O process, such as
+ * import or export.
  *
  * @param <T> the type of handlers
+ *
+ * @see InputHandler
  */
 public interface InputNotifier<T extends InputHandler> {
 
@@ -37,14 +40,14 @@ public interface InputNotifier<T extends InputHandler> {
     boolean hasHandler();
 
     /**
-     * Returns an immutable collection of registered handlers.
+     * Returns all registered handlers.
      *
      * @return an immutable collection
      */
     Iterable<T> getHandlers();
 
     /**
-     * Notifies that start of an action.
+     * Notifies the start of a document to all registered handlers.
      *
      * @see #notifyEndDocument()
      * @see InputHandler#processStartDocument()
@@ -54,7 +57,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies that start of a new element.
+     * Notifies the start of a new element to all registered handlers.
      *
      * @param classifier the classifier of the new element
      *
@@ -66,7 +69,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies a new attribute.
+     * Notifies a new attribute to all registered handlers.
      *
      * @param attribute the new attribute
      *
@@ -77,7 +80,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies a new reference.
+     * Notifies a new reference to all registered handlers.
      *
      * @param reference the new reference
      *
@@ -88,16 +91,18 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies a new set of characters.
+     * Notifies a new set of characters to all registered handlers.
      *
      * @param characters the new characters
+     *
+     * @see InputHandler#processCharacters(String)
      */
     default void notifyCharacters(String characters) {
         getHandlers().forEach(p -> p.processCharacters(characters));
     }
 
     /**
-     * Notifies the end of the current element.
+     * Notifies the end of the current element to all registered handlers.
      *
      * @see #notifyStartElement(Classifier)
      * @see InputHandler#processEndElement()
@@ -107,7 +112,7 @@ public interface InputNotifier<T extends InputHandler> {
     }
 
     /**
-     * Notifies the end of the current action.
+     * Notifies the end of the current document to all registered handlers.
      *
      * @see #notifyStartDocument()
      * @see InputHandler#processEndDocument()

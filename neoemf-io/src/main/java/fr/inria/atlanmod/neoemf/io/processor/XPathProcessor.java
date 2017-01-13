@@ -25,6 +25,9 @@ import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -34,19 +37,37 @@ import static java.util.Objects.nonNull;
  */
 public class XPathProcessor extends AbstractProcessor {
 
+    /**
+     * The string representing the start of a XPath expression.
+     */
     private static final String XPATH_START_EXPR = "//@";
-    private static final String XPATH_END_EXPR = "/";
+
+    /**
+     * The string representing the start of a XPath segment.
+     */
     private static final String XPATH_START_ELT = "/@";
+
+    /**
+     * The string reprensenting the end of a XPath segment.
+     */
+    private static final String XPATH_END_EXPR = "/";
+
+    /**
+     * The character used as separator between the name and the index of a XPath segment.
+     */
     private static final String XPATH_INDEX_SEPARATOR = ".";
 
     /**
      * Pattern for detecting nodes which have no index in their path.
      * <p>
-     * Example : {@code .../@nodename/...} instead of {@code .../@nodename.0/...}
+     * <b>Example:</b> {@code .../@name/...} instead of {@code .../@name.0/...}
      */
     private static final Pattern PATTERN_NODE_WITHOUT_INDEX =
             Pattern.compile("((@\\w+)(?!\\.\\d+)(/|\\z))", Pattern.UNICODE_CASE);
 
+    /**
+     * The XPath structure.
+     */
     private final XPathTree paths;
 
     /**
@@ -56,8 +77,17 @@ public class XPathProcessor extends AbstractProcessor {
      */
     private String expressionStart;
 
+    /**
+     * Defines whether the processed document already contains identifiers. In this case, XPath processing is
+     * unnecessary and this processor simply notifies the underlying processor.
+     */
     private boolean hasIds;
 
+    /**
+     * Constructs a new {@code XPathProcessor} on the given {@code processor}.
+     *
+     * @param processor the underlying processor
+     */
     public XPathProcessor(Processor processor) {
         super(processor);
         this.paths = new XPathTree();
@@ -117,7 +147,7 @@ public class XPathProcessor extends AbstractProcessor {
     @Override
     public void processEndDocument() {
         if (!hasIds) {
-            long size = paths.size();
+            long size = paths.estimatedSize();
             if (size > 1) {
                 NeoLogger.warn("Some elements have not been cleaned ({0})", size);
             }
@@ -126,6 +156,13 @@ public class XPathProcessor extends AbstractProcessor {
         notifyEndDocument();
     }
 
+    /**
+     * Formats an XPath expression to take the following form: {@code .../@name.index/@name2.index2}
+     *
+     * @param path the path to format
+     *
+     * @return the formatted XPath
+     */
     private String formatPath(String path) {
         // Replace the start of the given reference "//@" -> "/@<rootname>.<index>"
         String modifiedReference = path.replaceFirst(XPATH_START_EXPR, expressionStart);
@@ -144,14 +181,30 @@ public class XPathProcessor extends AbstractProcessor {
         return modifiedReference;
     }
 
+    /**
+     * A structure representing an XPath.
+     * <p>
+     * It takes the form of a tree that contains nodes: The XPath is updated for each addition/deletion of a node, and
+     * only the nodes representing the current XPath are hold. This allows to treat an XPath without keeping all the
+     * elements in memory.
+     */
     private static class XPathTree {
 
         /**
-         * The root of this tree. This does not represent the root node path.
+         * The root of this tree.
+         *
+         * @note It does not represent the root node path.
          */
         private final XPathNode dummyRoot;
+
+        /**
+         * A queue holding the current XPath.
+         */
         private final Deque<XPathNode> currentPath;
 
+        /**
+         * Constructs a new {@code XPathTree}.
+         */
         public XPathTree() {
             this.dummyRoot = new XPathNode("ROOT");
             this.currentPath = new ArrayDeque<>();
@@ -160,9 +213,9 @@ public class XPathProcessor extends AbstractProcessor {
         /**
          * Gets the XPath of the current element.
          *
-         * @param name the last element of the path
+         * @param name the name of the last element of the path
          *
-         * @return a String representing the XPath of the element
+         * @return a string representing the XPath of the element
          */
         public String getPath(String name) {
             checkNotNull(name);
@@ -172,22 +225,30 @@ public class XPathProcessor extends AbstractProcessor {
                 if (!first) {
                     str.append(XPATH_START_ELT);
                 }
-                str.append(node.getKey()).append(XPATH_INDEX_SEPARATOR).append(node.getValue());
+                str.append(node.getName()).append(XPATH_INDEX_SEPARATOR).append(node.getIndex());
                 first = false;
             }
             str.append(first ? "" : XPATH_START_ELT).append(name);
             return str.toString();
         }
 
-
-        public Integer createOrIncrement(String name) {
+        /**
+         * Creates or increments the node with the specified {@code name}. If a child node has already the {@code name},
+         * its index will be incremented, otherwise a new child will be added with {@code index = 0}.
+         *
+         * @param name the name of the node
+         *
+         * @return the index of the node
+         */
+        @Nonnegative
+        public int createOrIncrement(String name) {
             // Get the current Node or the root Node if no element exists
             XPathNode node = currentPath.isEmpty() ? dummyRoot : currentPath.getLast();
 
             if (node.hasChild(name)) {
                 // Try to get and increment the node if it exists
                 node = node.getChild(name);
-                node.incrementValue();
+                node.incrementIndex();
             }
             else {
                 // The node doesn't exist : we create him
@@ -195,65 +256,141 @@ public class XPathProcessor extends AbstractProcessor {
             }
             // Define the node as the current node in path
             currentPath.addLast(node);
-            return node.getValue();
+            return node.getIndex();
         }
 
+        /**
+         * Removes the last child and, recursively its children, from this tree.
+         */
         public void clearLast() {
             currentPath.removeLast().removeChildren();
         }
 
-        public long size() {
-            return dummyRoot.size();
+        /**
+         * Returns the approximate number of node in this tree.
+         *
+         * @return an approximate size
+         */
+        public long estimatedSize() {
+            return dummyRoot.estimatedSize();
         }
 
+        /**
+         * A node of the {@link XPathTree}.
+         * <p>
+         * A node is a segment of an XPath, for example {@code .../@name.index/...}.
+         */
         private static class XPathNode {
 
-            private final String key;
+            /**
+             * The name of this node.
+             */
+            private final String name;
+
+            /**
+             * The index of this node.
+             */
+            private int index;
+
+            /**
+             * A map containing all children of this node, identified by their name.
+             */
             private final Cache<String, XPathNode> childrenCache;
 
-            private Integer value;
-
-            public XPathNode(String key) {
-                this.key = key;
-                this.value = 0;
+            /**
+             * Constructs a new {@code XPathNode} with the given {@code name}.
+             *
+             * @param name the name of this node
+             */
+            public XPathNode(String name) {
+                this.name = name;
+                this.index = 0;
                 this.childrenCache = Caffeine.newBuilder().build();
             }
 
-            public String getKey() {
-                return key;
+            /**
+             * Returns the name of this node.
+             *
+             * @return the name
+             */
+            public String getName() {
+                return name;
             }
 
-            public Integer getValue() {
-                return value;
+            /**
+             * Returns the index of this node.
+             *
+             * @return the index
+             */
+            public int getIndex() {
+                return index;
             }
 
-            public void incrementValue() {
-                value++;
+            /**
+             * Increments the index of this node.
+             */
+            public void incrementIndex() {
+                index++;
             }
 
-            public XPathNode getChild(String key) {
-                XPathNode child = childrenCache.getIfPresent(key);
+            /**
+             * Returns the node which has the specified {@code name} amoung the children of this node.
+             *
+             * @param id he identifier of the sought child
+             *
+             * @return the child node if it exists
+             *
+             * @throws NoSuchElementException if no child has the given {@code name}
+             */
+            @Nonnull
+            public XPathNode getChild(@Nonnull String id) {
+                XPathNode child = childrenCache.getIfPresent(id);
                 if (isNull(child)) {
-                    throw new NoSuchElementException("No such element '" + key + "' in the element '" + this.key + "'");
+                    throw new NoSuchElementException("No such element '" + id + "' in the element '" + this.name + "'");
                 }
                 return child;
             }
 
-            public XPathNode addChild(XPathNode child) {
-                childrenCache.put(child.getKey(), child);
+            /**
+             * Adds a {@code child} to this node.
+             *
+             * @param child the node to add as child
+             *
+             * @return the given {@code child} (for chaining)
+             */
+            @Nonnull
+            public XPathNode addChild(@Nonnull XPathNode child) {
+                childrenCache.put(child.getName(), child);
                 return child;
             }
 
+            /**
+             * Removes all children of this node.
+             */
             public void removeChildren() {
                 childrenCache.invalidateAll();
             }
 
-            public boolean hasChild(String key) {
-                return nonNull(childrenCache.getIfPresent(key));
+            /**
+             * Defines whether this node has a child with the specified {@code name}.
+             *
+             * @param name the name of the sought child
+             *
+             * @return {@code true} if a child node has the specified {@code name}
+             */
+            public boolean hasChild(@Nonnull String name) {
+                return nonNull(childrenCache.getIfPresent(name));
             }
 
-            public long size() {
-                return childrenCache.estimatedSize() + childrenCache.asMap().values().stream().mapToLong(XPathNode::size).sum();
+            /**
+             * Returns the approximate number of children in this node. It includes the number of children of this node,
+             * and, recursively, of its children.
+             *
+             * @return an approximate size
+             */
+            @Nonnegative
+            public long estimatedSize() {
+                return childrenCache.estimatedSize() + childrenCache.asMap().values().stream().mapToLong(XPathNode::estimatedSize).sum();
             }
         }
     }
