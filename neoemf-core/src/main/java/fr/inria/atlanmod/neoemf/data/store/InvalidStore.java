@@ -31,7 +31,7 @@ public class InvalidStore implements PersistentStore {
                     "You must save/load your resource before using it";
 
     /**
-     * Instantiates a new {@code InvalidStore}.
+     * Constructs a new {@code InvalidStore}.
      */
     public InvalidStore() {
         super();

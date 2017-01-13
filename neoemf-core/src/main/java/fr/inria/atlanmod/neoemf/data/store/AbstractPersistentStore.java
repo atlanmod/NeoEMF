@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 public abstract class AbstractPersistentStore implements PersistentStore {
 
     /**
-     * Instantiates a new {@code AbstractPersistentStore}.
+     * Constructs a new {@code AbstractPersistentStore}.
      */
     public AbstractPersistentStore() {
         NeoLogger.info("{0} created", getClass().getSimpleName());

@@ -25,7 +25,7 @@ public class OwnedTransientStore extends AbstractTransientStore {
     private final EObject owner;
 
     /**
-     * Instantiates a new {@code OwnedTransientStore} with the given {@code owner}.
+     * Constructs a new {@code OwnedTransientStore} with the given {@code owner}.
      *
      * @param owner the owner of this store
      */

@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDbOptionsBuilder, MapDbOptions> {
 
     /**
-     * Instantiates a new {@code MapDbOptionsBuilder}.
+     * Constructs a new {@code MapDbOptionsBuilder}.
      * <p>
      * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
      */

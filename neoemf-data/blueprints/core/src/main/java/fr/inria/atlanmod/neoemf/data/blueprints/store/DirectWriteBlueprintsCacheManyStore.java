@@ -53,7 +53,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
     private final Cache<FeatureKey, Object[]> verticesCache;
 
     /**
-     * Instantiates a new {@code DirectWriteBlueprintsCacheManyStore} between the given {@code resource} and the
+     * Constructs a new {@code DirectWriteBlueprintsCacheManyStore} between the given {@code resource} and the
      * {@code backend}.
      *
      * @param resource the resource to persist and access

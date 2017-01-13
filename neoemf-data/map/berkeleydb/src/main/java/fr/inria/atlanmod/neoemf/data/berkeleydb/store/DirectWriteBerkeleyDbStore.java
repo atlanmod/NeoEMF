@@ -51,7 +51,7 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * Instantiates a new {@code DirectWriteBerkeleyDbStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code DirectWriteBerkeleyDbStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend the persistence backend used to store the model

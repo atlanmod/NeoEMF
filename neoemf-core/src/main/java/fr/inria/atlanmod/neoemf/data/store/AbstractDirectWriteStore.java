@@ -46,7 +46,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     private final Resource.Internal resource;
 
     /**
-     * Instantiates a new {@code AbstractDirectWriteStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code AbstractDirectWriteStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
      * @param backend the persistence backend used to store the model

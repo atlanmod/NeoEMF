@@ -87,7 +87,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private long opCount;
 
     /**
-     * Instantiates a new {@code AbstractPersistenceHandler} with its targeted {@link PersistenceBackend}.
+     * Constructs a new {@code AbstractPersistenceHandler} with its targeted {@link PersistenceBackend}.
      *
      * @param backend the targetted persistence back-end
      */

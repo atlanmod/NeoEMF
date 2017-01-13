@@ -39,7 +39,7 @@ public class ClassInfo implements Serializable {
     private final String uri;
 
     /**
-     * Instantiates a new {@code ClassInfo} with the given {@code name} and {@code uri}, which are used as a simple
+     * Constructs a new {@code ClassInfo} with the given {@code name} and {@code uri}, which are used as a simple
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}

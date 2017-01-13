@@ -30,7 +30,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator 
     private final Cache<FeatureKey, Integer> sizesCache;
 
     /**
-     * Instantiates a new {@code SizeCachingStoreDecorator} with the default cache size.
+     * Constructs a new {@code SizeCachingStoreDecorator} with the default cache size.
      *
      * @param store the underlying store
      */
@@ -39,7 +39,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator 
     }
 
     /**
-     * Instantiates a new {@code SizeCachingStoreDecorator} with the given {@code cacheSize}.
+     * Constructs a new {@code SizeCachingStoreDecorator} with the given {@code cacheSize}.
      *
      * @param store the underlying store
      * @param cacheSize the size of the cache

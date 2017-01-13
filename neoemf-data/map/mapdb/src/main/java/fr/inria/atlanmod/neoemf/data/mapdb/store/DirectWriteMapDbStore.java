@@ -51,7 +51,7 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * Instantiates a new {@code DirectWriteMapDbStore} between the given {@code resource} and the
+     * Constructs a new {@code DirectWriteMapDbStore} between the given {@code resource} and the
      * {@code backend}.
      *
      * @param resource the resource to persist and access

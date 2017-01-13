@@ -74,7 +74,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     protected final Cache<Id, Vertex> verticesCache;
 
     /**
-     * Instantiates a new {@code AbstractBlueprintsHandler} on the given {@code backend}.
+     * Constructs a new {@code AbstractBlueprintsHandler} on the given {@code backend}.
      *
      * @param backend the backend where to store data
      */

@@ -29,7 +29,7 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
     private final Set<Id> loadedObjects = new HashSet<>();
 
     /**
-     * Instantiates a new {@code LoadedObjectCounterStoreDecorator}.
+     * Constructs a new {@code LoadedObjectCounterStoreDecorator}.
      *
      * @param store the underlying store
      */

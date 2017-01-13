@@ -23,7 +23,7 @@ public abstract class AbstractPersistenceHandlerDecorator implements Persistence
     private final PersistenceHandler handler;
 
     /**
-     * Instantiates a new {@code AbstractPersistenceHandlerDecorator} with an embed {@code handler}.
+     * Constructs a new {@code AbstractPersistenceHandlerDecorator} with an embed {@code handler}.
      *
      * @param handler the embed handler
      */

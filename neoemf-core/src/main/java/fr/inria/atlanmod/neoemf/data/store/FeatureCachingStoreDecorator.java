@@ -20,10 +20,6 @@ import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import java.util.function.Function;
-
-import static java.util.Objects.isNull;
-
 /**
  * A {@link PersistentStore} wrapper that caches {@link EStructuralFeature}.
  */
@@ -32,7 +28,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**
-     * Instantiates a new {@code FeatureCachingStoreDecorator} with the default cache size.
+     * Constructs a new {@code FeatureCachingStoreDecorator} with the default cache size.
      *
      * @param store the underlying store
      */
@@ -41,7 +37,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     }
 
     /**
-     * Instantiates a new {@code FeatureCachingStoreDecorator} with the given {@code cacheSize}.
+     * Constructs a new {@code FeatureCachingStoreDecorator} with the given {@code cacheSize}.
      *
      * @param store the underlying store
      * @param cacheSize the size of the cache

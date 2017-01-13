@@ -28,7 +28,7 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     private final PersistentStore store;
 
     /**
-     * Instantiates a new {@code AbstractPersistentStoreDecorator} on the given {@code store}.
+     * Constructs a new {@code AbstractPersistentStoreDecorator} on the given {@code store}.
      *
      * @param store the underlying store
      */

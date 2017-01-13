@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBaseOptionsBuilder, HBaseOptions> {
 
     /**
-     * Instantiates a new {@code HBaseOptionsBuilder}.
+     * Constructs a new {@code HBaseOptionsBuilder}.
      * <p>
      * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
      */

@@ -19,7 +19,7 @@ package fr.inria.atlanmod.neoemf.data;
 public abstract class AbstractPersistenceBackend implements PersistenceBackend {
 
     /**
-     * Instantiates a new {@code AbstractPersistenceBackend}.
+     * Constructs a new {@code AbstractPersistenceBackend}.
      */
     protected AbstractPersistenceBackend() {
     }

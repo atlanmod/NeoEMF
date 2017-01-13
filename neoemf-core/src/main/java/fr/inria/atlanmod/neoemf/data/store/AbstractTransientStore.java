@@ -37,7 +37,7 @@ public abstract class AbstractTransientStore implements TransientStore {
     protected Map<FeatureKey, List<Object>> manyMap;
 
     /**
-     * Instantiates a new {@code AbstractTransientStore}.
+     * Constructs a new {@code AbstractTransientStore}.
      */
     public AbstractTransientStore() {
         singleMap = new HashMap<>();

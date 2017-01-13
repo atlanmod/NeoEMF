@@ -42,7 +42,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**
-     * Instantiates a new {@code ReadOnlyHBaseStore} on the given {@code resource}.
+     * Constructs a new {@code ReadOnlyHBaseStore} on the given {@code resource}.
      *
      * @param resource the resource to persist and access
      */

@@ -33,7 +33,7 @@ public class HBaseFeatureKey extends FeatureKey {
     private final EStructuralFeature feature;
 
     /**
-     * Instantiates a new {@code HBaseFeatureKey} with the given {@code id} and the given {@code feature}.
+     * Constructs a new {@code HBaseFeatureKey} with the given {@code id} and the given {@code feature}.
      *
      * @param id      the identifier of the {@link PersistentEObject}
      * @param feature the {@link EStructuralFeature} of the {@link PersistentEObject}

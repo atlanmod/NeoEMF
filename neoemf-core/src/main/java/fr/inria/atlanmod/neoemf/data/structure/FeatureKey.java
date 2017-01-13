@@ -40,7 +40,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
     private final String name;
 
     /**
-     * Instantiates a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as a
+     * Constructs a new {@code FeatureKey} with the given {@code id} and the given {@code name}, which are used as a
      * simple representation of a feature of an object.
      *
      * @param id   the identifier of the {@link PersistentEObject}

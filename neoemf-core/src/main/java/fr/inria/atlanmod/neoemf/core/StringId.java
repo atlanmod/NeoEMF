@@ -31,7 +31,7 @@ public class StringId implements Id {
     private final String literalId;
 
     /**
-     * Instantiates a new {@code StringId} with its literal representation.
+     * Constructs a new {@code StringId} with its literal representation.
      *
      * @param literalId the literal representation of this {@code StringId}
      */

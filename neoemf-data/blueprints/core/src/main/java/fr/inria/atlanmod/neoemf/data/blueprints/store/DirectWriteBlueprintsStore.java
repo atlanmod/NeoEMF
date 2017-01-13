@@ -88,7 +88,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     protected static final String SIZE_LITERAL = "size";
 
     /**
-     * Instantiates a new {@code DirectWriteBlueprintsStore} between the given {@code resource} and the
+     * Constructs a new {@code DirectWriteBlueprintsStore} between the given {@code resource} and the
      * {@code backend}.
      *
      * @param resource the resource to persist and access

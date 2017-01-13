@@ -43,7 +43,7 @@ public class PersistenceBackendFactoryRegistry {
     private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
 
     /**
-     * Instantiates a new {@code PersistenceBackendFactoryRegistry}.
+     * Constructs a new {@code PersistenceBackendFactoryRegistry}.
      */
     private PersistenceBackendFactoryRegistry() {
     }

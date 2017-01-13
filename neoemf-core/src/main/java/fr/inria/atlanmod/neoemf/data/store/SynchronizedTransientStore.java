@@ -22,7 +22,7 @@ import java.util.List;
 public class SynchronizedTransientStore extends AbstractTransientStore {
 
     /**
-     * Instantiates a new {@ode SynchronizedTransientStore}.
+     * Constructs a new {@ode SynchronizedTransientStore}.
      */
     public SynchronizedTransientStore() {
         super();

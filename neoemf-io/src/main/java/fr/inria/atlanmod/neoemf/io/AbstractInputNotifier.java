@@ -28,7 +28,7 @@ public abstract class AbstractInputNotifier<T extends InputHandler> implements I
     private final Set<T> handlers;
 
     /**
-     * Instantiates a new {@code AbstractInputNotifier}.
+     * Constructs a new {@code AbstractInputNotifier}.
      */
     public AbstractInputNotifier() {
         this.handlers = new HashSet<>();

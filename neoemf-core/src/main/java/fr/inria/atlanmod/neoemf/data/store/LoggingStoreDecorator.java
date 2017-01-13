@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 public class LoggingStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
-     * Instantiates a new {@code LoggingStoreDecorator}.
+     * Constructs a new {@code LoggingStoreDecorator}.
      *
      * @param store the underlying store
      */

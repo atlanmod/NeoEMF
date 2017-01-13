@@ -37,7 +37,7 @@ public class ContainerInfo implements Serializable {
     private final String name;
 
     /**
-     * Instantiates a new {@code ContainerInfo} with the given {@code id} and the given {@code name}.
+     * Constructs a new {@code ContainerInfo} with the given {@code id} and the given {@code name}.
      *
      * @param id   the identifier of the {@link PersistentEObject}
      * @param name the name the reference used to retrieve the container of the {@link PersistentEObject}

@@ -30,7 +30,7 @@ import static java.util.Objects.nonNull;
 public class DirectWriteMapDbIndicesStore extends DirectWriteMapDbStore {
 
     /**
-     * Instantiates a new {@code DirectWriteMapDbIndicesStore} between the given {@code resource} and the
+     * Constructs a new {@code DirectWriteMapDbIndicesStore} between the given {@code resource} and the
      * {@code backend}.
      *
      * @param resource the resource to persist and access

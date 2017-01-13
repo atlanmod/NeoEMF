@@ -66,14 +66,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private EStore store;
 
     /**
-     * Instantiates a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
+     * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
      */
     public DefaultPersistentEObject() {
         this(StringId.generate());
     }
 
     /**
-     * Instantiates a new {@code DefaultPersistentEObject} with the given {@code id}.
+     * Constructs a new {@code DefaultPersistentEObject} with the given {@code id}.
      *
      * @param id the identifier of this {@link DefaultPersistentEObject}
      */

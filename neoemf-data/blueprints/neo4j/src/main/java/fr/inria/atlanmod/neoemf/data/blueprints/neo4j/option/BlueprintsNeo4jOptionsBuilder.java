@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuilder<BlueprintsNeo4jOptionsBuilder, BlueprintsNeo4jOptions> {
 
     /**
-     * Instantiates a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
+     * Constructs a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
      * {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
      * <p>
      * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}

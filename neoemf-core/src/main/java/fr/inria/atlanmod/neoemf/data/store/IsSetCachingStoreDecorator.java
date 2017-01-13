@@ -29,7 +29,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     private final Cache<FeatureKey, Boolean> isSetCache;
 
     /**
-     * Instantiates a new {@code IsSetCachingStoreDecorator} with the default cache size.
+     * Constructs a new {@code IsSetCachingStoreDecorator} with the default cache size.
      *
      * @param store the underlying store
      */
@@ -38,7 +38,7 @@ public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator
     }
 
     /**
-     * Instantiates a new {@code IsSetCachingStoreDecorator} with the given {@code cacheSize}.
+     * Constructs a new {@code IsSetCachingStoreDecorator} with the given {@code cacheSize}.
      *
      * @param store the underlying store
      * @param cacheSize the size of the cache

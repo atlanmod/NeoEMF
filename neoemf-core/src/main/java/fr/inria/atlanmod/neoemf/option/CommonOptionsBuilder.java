@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<CommonOptionsBuilder, CommonOptions> {
 
     /**
-     * Instantiates a new {@code CommonOptionsBuilder}.
+     * Constructs a new {@code CommonOptionsBuilder}.
      * <p>
      * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
      */

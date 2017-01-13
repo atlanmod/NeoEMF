@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 /**
- * The factory to {@link #create} {@link PersistentEObject}s from {@link EClass}es.
+ * The factory that creates {@link PersistentEObject}s from {@link EClass}es.
  */
 public class PersistenceFactory extends EFactoryImpl implements EFactory {
 

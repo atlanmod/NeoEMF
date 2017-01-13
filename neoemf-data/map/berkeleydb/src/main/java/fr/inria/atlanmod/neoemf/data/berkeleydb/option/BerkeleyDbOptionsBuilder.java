@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<BerkeleyDbOptionsBuilder, BerkeleyDbOptions> {
 
     /**
-     * Instantiates a new {@code BerkeleyDbOptionsBuilder}.
+     * Constructs a new {@code BerkeleyDbOptionsBuilder}.
      * <p>
      * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
      */

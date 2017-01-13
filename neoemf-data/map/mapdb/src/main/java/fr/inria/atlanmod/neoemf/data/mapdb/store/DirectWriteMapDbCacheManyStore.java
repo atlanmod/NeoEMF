@@ -31,7 +31,7 @@ public class DirectWriteMapDbCacheManyStore extends DirectWriteMapDbStore {
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**
-     * Instantiates a new {@code DirectWriteMapDbCacheManyStore} between the given {@code resource} and the
+     * Constructs a new {@code DirectWriteMapDbCacheManyStore} between the given {@code resource} and the
      * {@code backend}.
      *
      * @param resource the resource to persist and access

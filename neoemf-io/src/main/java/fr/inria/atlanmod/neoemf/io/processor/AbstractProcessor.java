@@ -24,7 +24,7 @@ public class AbstractProcessor implements Processor {
     private final Processor processor;
 
     /**
-     * Instantiates a new {@code AbstractProcessor} with an embedded {@code processor}.
+     * Constructs a new {@code AbstractProcessor} with an embedded {@code processor}.
      *
      * @param processor the embedded processor
      */

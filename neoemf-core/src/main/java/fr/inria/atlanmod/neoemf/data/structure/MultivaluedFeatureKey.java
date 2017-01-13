@@ -37,7 +37,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
     private final int position;
 
     /**
-     * Instantiates a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
+     * Constructs a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
      * used as a simple representation of a feature of an object. The "multivalued" characteric is identified with the
      * {@code position}.
      *

@@ -80,7 +80,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     protected Table table;
 
     /**
-     * Instantiates a new {@code DirectWriteBlueprintsStore} on the given {@code resource} .
+     * Constructs a new {@code DirectWriteBlueprintsStore} on the given {@code resource} .
      *
      * @param resource the resource to persist and access
      */
