@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -27,6 +28,11 @@ import java.util.Arrays;
 
 import static java.util.Objects.isNull;
 
+/**
+ * The abstract implementation of {@link DirectWriteStore}.
+ *
+ * @param <P> the type of the supported {@link PersistenceBackend}
+ */
 public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements DirectWriteStore {
 
     protected final P backend;
@@ -54,6 +60,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         backend.save();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #getAttribute(PersistentEObject, EAttribute, int)
+     * @see #getReference(PersistentEObject, EReference, int)
+     */
     @Override
     public Object get(InternalEObject internalObject, EStructuralFeature feature, int index) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -65,6 +79,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #setAttribute(PersistentEObject, EAttribute, int, Object)
+     * @see #setReference(PersistentEObject, EReference, int, PersistentEObject)
+     */
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -77,6 +99,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #isSetAttribute(PersistentEObject, EAttribute)
+     * @see #isSetReference(PersistentEObject, EReference)
+     */
     @Override
     public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -88,6 +118,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #unsetAttribute(PersistentEObject, EAttribute)
+     * @see #unsetReference(PersistentEObject, EReference)
+     */
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -104,11 +142,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         return size(internalObject, feature) == 0;
     }
 
-    @Override
-    public int size(InternalEObject internalObject, EStructuralFeature feature) {
-        throw new UnsupportedOperationException();
-    }
-
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #containsAttribute(PersistentEObject, EAttribute, Object)
+     * @see #containsReference(PersistentEObject, EReference, PersistentEObject)
+     */
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         if (isNull(value)) {
@@ -125,6 +166,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #indexOfAttribute(PersistentEObject, EAttribute, Object)
+     * @see #indexOfReference(PersistentEObject, EReference, PersistentEObject)
+     */
     @Override
     public int indexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -137,6 +186,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #lastIndexOfAttribute(PersistentEObject, EAttribute, Object)
+     * @see #lastIndexOfReference(PersistentEObject, EReference, PersistentEObject)
+     */
     @Override
     public int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, Object value) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -149,6 +206,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #addAttribute(PersistentEObject, EAttribute, int, Object)
+     * @see #addReference(PersistentEObject, EReference, int, PersistentEObject)
+     */
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -161,6 +226,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #removeAttribute(PersistentEObject, EAttribute, int)
+     * @see #removeReference(PersistentEObject, EReference, int)
+     */
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -179,6 +252,14 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         return movedElement;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * By default, calls the associated methods depending on the type of the {@code feature}.
+     *
+     * @see #clearAttribute(PersistentEObject, EAttribute)
+     * @see #clearReference(PersistentEObject, EReference)
+     */
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -221,107 +302,317 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
         return Arrays.hashCode(toArray(internalObject, feature));
     }
 
-    @Override
-    public InternalEObject getContainer(InternalEObject internalObject) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public EStructuralFeature getContainingFeature(InternalEObject internalObject) {
-        throw new UnsupportedOperationException();
-    }
-
+    /**
+     * Returns the value at the {@code index} in the content of the {@code attribute} of the {@code object}.
+     *
+     * @param object    the object
+     * @param attribute an attribute of the {@code object}
+     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     *
+     * @return the value
+     *
+     * @see #get(InternalEObject, EStructuralFeature, int)
+     */
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the value at the {@code index} in the content of the {@code reference} of the {@code object}.
+     *
+     * @param object    the object
+     * @param reference a reference of the {@code object}
+     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     *
+     * @return the value
+     *
+     * @see #get(InternalEObject, EStructuralFeature, int)
+     */
     protected Object getReference(PersistentEObject object, EReference reference, int index) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Sets the value at the {@code index} in the content of the {@code attribute} of the {@code object}.
+     *
+     * @param object    the object
+     * @param attribute an attribute of the {@code object}
+     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     * @param value     the new value
+     *
+     * @return the previous value
+     *
+     * @see #set(InternalEObject, EStructuralFeature, int, Object)
+     */
     protected Object setAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Sets the value at the {@code index} in the content of the {@code reference} of the {@code object}.
+     *
+     * @param object    the object
+     * @param reference a reference of the {@code object}
+     * @param index     an index within the content or {@link PersistentStore#NO_INDEX}
+     * @param value     the new value
+     *
+     * @return the previous value
+     *
+     * @see #set(InternalEObject, EStructuralFeature, int, Object)
+     */
     protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns whether the {@code attribute} of the {@code object} is considered set.
+     *
+     * @param object    the object
+     * @param attribute an attribute of the {@code object}
+     *
+     * @return {@code true} if the attribute is considered set
+     *
+     * @see #isSet(InternalEObject, EStructuralFeature)
+     */
     protected boolean isSetAttribute(PersistentEObject object, EAttribute attribute) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns whether the {@code reference} of the {@code object} is considered set.
+     *
+     * @param object    the object
+     * @param reference a reference of the {@code object}
+     *
+     * @return {@code true} if the reference is considered set
+     *
+     * @see #isSet(InternalEObject, EStructuralFeature)
+     */
     protected boolean isSetReference(PersistentEObject object, EReference reference) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Unsets the {@code attribute} of the {@code object}.
+     *
+     * @param object    the object
+     * @param attribute an attribute of the {@code object}
+     *
+     * @see #unset(InternalEObject, EStructuralFeature)
+     */
     protected void unsetAttribute(PersistentEObject object, EAttribute attribute) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Unsets the {@code reference} of the {@code object}.
+     *
+     * @param object    the object
+     * @param reference a reference of the {@code object}
+     *
+     * @see #unset(InternalEObject, EStructuralFeature)
+     */
     protected void unsetReference(PersistentEObject object, EReference reference) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns whether the content of the {@code attribute} of the {@code object} contains the given {@code value}.
+     *
+     * @param object    the object
+     * @param attribute a many-valued attribute of the {@code object}
+     * @param value     the value to look for
+     *
+     * @return {@code true} if the attribute contains the given value
+     *
+     * @see #contains(InternalEObject, EStructuralFeature, Object)
+     */
     protected boolean containsAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns whether the content of the {@code reference} of the {@code object} contains the given {@code value}.
+     *
+     * @param object    the object
+     * @param reference a many-valued reference of the {@code object}
+     * @param value     the value to look for
+     *
+     * @return {@code true} if the reference contains the given value
+     *
+     * @see #contains(InternalEObject, EStructuralFeature, Object)
+     */
     protected boolean containsReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the first index of the given {@code value} in the content of the {@code attribute} of the {@code object}.
+     *
+     * @param object    the object
+     * @param attribute a many-valued attribute of the {@code object}
+     * @param value     the value to look for
+     *
+     * @return the first index of the given value, or {@link PersistentStore#NO_INDEX} if it is not found
+     *
+     * @see #indexOf(InternalEObject, EStructuralFeature, Object)
+     */
     protected int indexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the first index of the given {@code value} in the content of the {@code reference} of the {@code object}.
+     *
+     * @param object    the object
+     * @param reference a many-valued reference of the {@code object}
+     * @param value     the value to look for
+     *
+     * @return the first index of the given value, or {@link PersistentStore#NO_INDEX} if it is not found
+     *
+     * @see #indexOf(InternalEObject, EStructuralFeature, Object)
+     */
     protected int indexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the last index of the given {@code value} in the content of the {@code attribute} of the {@code object}.
+     *
+     * @param object    the object
+     * @param attribute a many-valued attribute of the {@code object}
+     * @param value     the value to look for
+     *
+     * @return the last index of the given value, or {@link PersistentStore#NO_INDEX} if it is not found
+     *
+     * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
+     */
     protected int lastIndexOfAttribute(PersistentEObject object, EAttribute attribute, Object value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the last index of the given {@code value} in the content of the {@code reference} of the {@code object}.
+     *
+     * @param object    the object
+     * @param reference a many-valued reference of the {@code object}
+     * @param value     the value to look for
+     *
+     * @return the last index of the given value, or {@link PersistentStore#NO_INDEX} if it is not
+     *
+     * @see #lastIndexOf(InternalEObject, EStructuralFeature, Object)
+     */
     protected int lastIndexOfReference(PersistentEObject object, EReference reference, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Adds the {@code value} at the {@code index} in the content of the {@code attribute} of the {@code object}.
+     *
+     * @param object    the object
+     * @param attribute a many-valued attribute of the {@code object}
+     * @param index     an index within the content
+     * @param value     the value to add
+     *
+     * @see #add(InternalEObject, EStructuralFeature, int, Object)
+     */
     protected void addAttribute(PersistentEObject object, EAttribute attribute, int index, Object value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Adds the {@code value} at the {@code index} in the content of the {@code reference} of the {@code object}.
+     *
+     * @param object the object
+     * @param reference a many-valued reference of the {@code object}
+     * @param index an index within the content
+     * @param value the value to add
+     *
+     * @see #add(InternalEObject, EStructuralFeature, int, Object)
+     */
     protected void addReference(PersistentEObject object, EReference reference, int index, PersistentEObject value) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Removes the value at the {@code index} in the content of the {@code attribute} of the {@code object}.
+     *
+     * @param object the object
+     * @param attribute a many-valued attribute of the {@code object}
+     * @param index the index within the content of the value to remove
+     *
+     * @return the removed value
+     *
+     * @see #remove(InternalEObject, EStructuralFeature, int)
+     */
     protected Object removeAttribute(PersistentEObject object, EAttribute attribute, int index) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Removes the value at the {@code index} in the content of the {@code reference} of the {@code object}.
+     *
+     * @param object the object
+     * @param reference a many-valued reference of the {@code object}
+     * @param index the index within the content of the value to remove
+     *
+     * @return the removed value
+     *
+     * @see #remove(InternalEObject, EStructuralFeature, int)
+     */
     protected Object removeReference(PersistentEObject object, EReference reference, int index) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Removes all values form the content of the {@code attribute} of the {@code object}.
+     *
+     * @param object the object
+     * @param attribute a many-valued attribute of the {@code object}
+     *
+     * @see #clear(InternalEObject, EStructuralFeature)
+     */
     protected void clearAttribute(PersistentEObject object, EAttribute attribute) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Removes all values form the content of the {@code reference} of the {@code object}.
+     *
+     * @param object the object
+     * @param reference a many-valued reference of the {@code object}
+     *
+     * @see #clear(InternalEObject, EStructuralFeature)
+     */
     protected void clearReference(PersistentEObject object, EReference reference) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Creates an instance of the {@code attribute}.
+     *
+     * @param attribute the attribute to instantiate
+     * @param property the string value of the attribute
+     *
+     * @return an instance of the attribute
+     *
+     * @see EcoreUtil#createFromString(EDataType, String)
+     */
     protected Object parseProperty(EAttribute attribute, Object property) {
-        if (isNull(property)) {
-            return null;
-        }
-        return EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
+        return isNull(property) ? null : EcoreUtil.createFromString(attribute.getEAttributeType(), property.toString());
     }
 
+    /**
+     * Converts an instance of the {@code attribute} to a string literal representation.
+     *
+     * @param attribute the attribute to instantiate
+     * @param value a value of the attribute
+     *
+     * @return the string literal representation of the value
+     *
+     * @see EcoreUtil#convertToString(EDataType, Object)
+     */
     protected Object serializeToProperty(EAttribute attribute, Object value) {
-        if (isNull(value)) {
-            return null;
-        }
-        return EcoreUtil.convertToString(attribute.getEAttributeType(), value);
+        return isNull(value) ? null : EcoreUtil.convertToString(attribute.getEAttributeType(), value);
     }
 }
