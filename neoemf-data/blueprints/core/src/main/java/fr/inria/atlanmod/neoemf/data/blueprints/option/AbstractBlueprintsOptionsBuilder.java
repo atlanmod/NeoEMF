@@ -14,7 +14,6 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
 /**

@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
-import fr.inria.atlanmod.neoemf.option.CommonOptions;
 
 /**
  * The abstract implementation of {@link CommonOptions} that holds generic options
