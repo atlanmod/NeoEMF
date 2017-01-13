@@ -11,8 +11,25 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
+import java.util.List;
+
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbListsStore;
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
+import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
+/**
+ * An implementation of {@link PersistentStoreOptions} holding MapDB related datastore access
+ * features, such as autocommit, direct write, usage of raw arrays or {@link List}s.
+ * 
+ * @see AutocommitStoreDecorator
+ * @see DirectWriteMapDbStore
+ * @see DirectWriteMapDbListsStore
+ * @see DirectWriteMapDbIndicesStore
+ * @see DirectWriteMapDbCacheManyStore
+ */
 public enum MapDbStoreOptions implements PersistentStoreOptions {
     AUTOCOMMIT,
     DIRECT_WRITE,

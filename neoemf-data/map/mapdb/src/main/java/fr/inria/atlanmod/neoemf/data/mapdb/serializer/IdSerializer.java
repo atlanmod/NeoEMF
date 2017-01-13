@@ -11,30 +11,34 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.serializer;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.StringId;
-
-import org.mapdb.DataInput2;
-import org.mapdb.DataOutput2;
-import org.mapdb.Serializer;
+import static java.util.Objects.isNull;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
+import org.mapdb.Serializer;
+
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.StringId;
 
 /**
- * Serializer for {@link Id}.
+ * A {@link Serializer} implementation for {@link Id}s.
  * <p>
- * <b>NOTE:</b> Only works with {@link StringId} instances.
+ * <b>Limitation:</b> For now this serializer only works with {@link StringId} instances.
+ * 
+ * @see Id
+ * @see StringId
  */
 public class IdSerializer implements Serializer<Id> {
-
+    
+    /**
+     * An embedded {@link String} {@link Serializer} used to handle {@link StringId}s.
+     */
     final Serializer<String> serializer = Serializer.STRING;
 
     @Override
