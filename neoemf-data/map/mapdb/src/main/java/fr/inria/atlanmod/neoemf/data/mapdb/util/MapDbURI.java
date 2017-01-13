@@ -56,8 +56,8 @@ public class MapDbURI extends PersistenceURI {
 
     /**
      * Constructs a new {@code MapDbURI} from the given {@code internalURI}.
-     * <p>
-     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
+     *
+     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File)}, or {@link #createFileURI(URI)} instead.
      *
      * @param internalURI the base {@code URI}
@@ -72,9 +72,9 @@ public class MapDbURI extends PersistenceURI {
      * @param uri the base {@code URI}
      * @return the created {@code URI}
      * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link PersistenceURI#FILE_SCHEME}
-     * @see MapDbURI#createFileURI(File)
-     * @see MapDbURI#createFileURI(URI)
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link #FILE_SCHEME}
+     * @see #createFileURI(File)
+     * @see #createFileURI(URI)
      */
     @Nonnull
     public static URI createURI(@Nonnull URI uri) {

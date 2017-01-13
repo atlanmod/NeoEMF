@@ -28,7 +28,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
- * {@link URI}.
+ * {@link URI}. All methods are delegated to the internal {@link URI}.
  * <p>
  * The created URI are used to register {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} in
  * {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol to factory} map of an existing
@@ -55,8 +55,8 @@ public class PersistenceURI extends URI {
 
     /**
      * Constructs a new {@code PersistenceURI} from the given {@code internalURI}.
-     * <p>
-     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
+     *
+     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File, String)}, or {@link #createFileURI(URI, String)} instead.
      *
      * @param internalUri the base {@code URI}
@@ -75,9 +75,13 @@ public class PersistenceURI extends URI {
      * @param uri the base {@code URI}
      *
      * @return the created {@code URI}
-     * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the
-     * {@link PersistenceBackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
+     *
+     * @throws NullPointerException     if the {@code uri} is {@code null}
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
+     *                                  PersistenceBackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
+     *
+     * @see #createFileURI(File, String)
+     * @see #createFileURI(URI, String)
      */
     @Nonnull
     public static URI createURI(@Nonnull URI uri) {
@@ -102,6 +106,7 @@ public class PersistenceURI extends URI {
      */
     @Nonnull
     public static URI createFileURI(@Nonnull File file, @Nullable String scheme) {
+        checkNotNull(file);
         URI fileUri = createFileURI(file.getAbsolutePath());
 
         if (isNull(scheme)) {
@@ -125,6 +130,7 @@ public class PersistenceURI extends URI {
      */
     @Nonnull
     public static URI createFileURI(@Nonnull URI uri, @Nullable String scheme) {
+        checkNotNull(uri);
         if (isNull(scheme)) {
             return createURI(uri);
         }

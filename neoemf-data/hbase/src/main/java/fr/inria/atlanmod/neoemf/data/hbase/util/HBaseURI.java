@@ -31,8 +31,8 @@ public class HBaseURI extends PersistenceURI {
 
     /**
      * Constructs a new {@code HBaseURI} from the given {@code internalURI}.
-     * <p>
-     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
+     *
+     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File)}, {@link #createFileURI(URI)} or {@link #createHierarchicalURI(String, String, URI)}
      * instead.
      *

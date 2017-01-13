@@ -31,8 +31,8 @@ public class BerkeleyDbURI extends PersistenceURI {
 
     /**
      * Constructs a new {@code BerkeleyDbURI} from the given {@code internalURI}.
-     * <p>
-     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)} or
+     *
+     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)} or
      * {@link #createFileURI(File)} instead.
      *
      * @param internalURI the base {@code URI}
@@ -42,12 +42,16 @@ public class BerkeleyDbURI extends PersistenceURI {
     }
 
     /**
+     * Creates a new {@code BerkeleyDbURI} from the given {@code uri}. This method checks that the
+     * scheme of the provided {@code uri} can be used to create a new {@code BerkeleyDbURI}.
      *
-     * @param uri
-     * @return
+     * @param uri the base {@code URI}
+     *
+     * @return the created {@code URI}
+     *
      * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or
-     *                                  {@link PersistenceURI#FILE_SCHEME}
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link #FILE_SCHEME}
+     * @see #createFileURI(File)
      */
     @Nonnull
     public static URI createURI(@Nonnull URI uri) {

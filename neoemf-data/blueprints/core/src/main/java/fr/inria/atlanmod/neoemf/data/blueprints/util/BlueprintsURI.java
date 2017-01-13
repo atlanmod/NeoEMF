@@ -55,8 +55,8 @@ public class BlueprintsURI extends PersistenceURI {
 
     /**
      * Constructs a new {@code BlueprintsURI} from the given {@code internalURI}.
-     * <p>
-     * This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
+     *
+     * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File)}, or {@link #createFileURI(URI)} instead.
      *
      * @param internalURI the base {@code URI}
@@ -66,18 +66,18 @@ public class BlueprintsURI extends PersistenceURI {
     }
 
     /**
-     * Creates a new {@link BlueprintsURI} from the given {@code uri}. This method checks that the
-     * scheme of the provided {@code uri} can be used to create a new {@link BlueprintsURI}.
+     * Creates a new {@code BlueprintsURI} from the given {@code uri}. This method checks that the
+     * scheme of the provided {@code uri} can be used to create a new {@code BlueprintsURI}.
      *
      * @param uri the base {@code URI}
      *
      * @return the created {@code URI}
      *
      * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or
-     *                                  {@link PersistenceURI#FILE_SCHEME}
-     * @see BlueprintsURI#createFileURI(File)
-     * @see BlueprintsURI#createFileURI(URI)
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link #FILE_SCHEME}
+     *
+     * @see #createFileURI(File)
+     * @see #createFileURI(URI)
      */
     @Nonnull
     public static URI createURI(@Nonnull URI uri) {
@@ -92,7 +92,7 @@ public class BlueprintsURI extends PersistenceURI {
     }
 
     /**
-     * Creates a new {@link BlueprintsURI} from the given {@link File} descriptor.
+     * Creates a new {@code BlueprintsURI} from the given {@link File} descriptor.
      *
      * @param file the {@link File} to build a {@code URI} from
      *
@@ -107,7 +107,7 @@ public class BlueprintsURI extends PersistenceURI {
     }
 
     /**
-     * Creates a new {@link BlueprintsURI} from the given {@code uri} by checking the referenced file exists on the file
+     * Creates a new {@code BlueprintsURI} from the given {@code uri} by checking the referenced file exists on the file
      * system.
      *
      * @param uri the base {@code URI}
