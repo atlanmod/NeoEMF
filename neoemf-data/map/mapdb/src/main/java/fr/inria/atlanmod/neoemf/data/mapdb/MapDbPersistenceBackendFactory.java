@@ -11,10 +11,25 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbStoreOptions;
 import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
@@ -27,22 +42,25 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.common.util.URI;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
-
+/**
+ * A factory that creates instances of {@link MapDbPersistenceBackend}. As other implementations of
+ * {@link AbstractPersistenceBackendFactory}, this class can create transient and persistent databases.
+ * Persistent backend creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
+ * option maps.
+ * <p>
+ * The factory handles transient backends by creating in-memory {@link Map} instances. Persistent 
+ * backends are created according to the provided resource options ({@see MapDbStoreOptions}).
+ * 
+ * @see PersistentResource
+ * @see MapDbPersistenceBackend
+ * @see MapDbOptionsBuilder
+ * @see MapDbStoreOptions
+ */
 public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
-
+    
+    /**
+     * The literal description of the factory.
+     */
     public static final String NAME = MapDbPersistenceBackend.NAME;
 
     private MapDbPersistenceBackendFactory() {

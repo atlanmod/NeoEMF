@@ -58,15 +58,20 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResource;
  * option maps.
  * <p>
  * The factory handles transient backends by creating an in-memory {@link TinkerGraph} instance. Persistent
- * backends are created according to the provided resource options. Default backend configuration (store directory and
+ * backends are created according to the provided resource options (@see {@link BlueprintsResourceOptions} and {@link BlueprintsStoreOptions}). Default backend configuration (store directory and
  * graph type) is called dynamically according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
  * 
  * @see PersistentResource
  * @see BlueprintsPersistenceBackend
  * @see BlueprintsOptionsBuilder
+ * @see BlueprintsResourceOptions
+ * @see BlueprintsStoreOptions
  */
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
-
+    
+    /**
+     * The literal description of the factory.
+     */
     public static final String NAME = BlueprintsPersistenceBackend.NAME;
 
     /**
