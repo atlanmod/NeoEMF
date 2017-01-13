@@ -21,7 +21,6 @@
 
     <properties>
         <cglib-nodep.version>3.2.4</cglib-nodep.version>
-        <osgi.version>6.0.0</osgi.version>
         <log4j.version>2.7</log4j.version>
     </properties>
 

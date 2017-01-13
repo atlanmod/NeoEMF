@@ -22,7 +22,7 @@ elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
 else
     echo -e "Generating Javadoc..."
 
-    mvn -B -q javadoc:javadoc javadoc:aggregate
+    mvn -B -q javadoc:javadoc javadoc:aggregate -P javadoc 2> /dev/null
 
     if ! [ -d target/site/apidocs ]; then
         echo -e "Skipping Javadoc publication: no Javadoc has been generated."
