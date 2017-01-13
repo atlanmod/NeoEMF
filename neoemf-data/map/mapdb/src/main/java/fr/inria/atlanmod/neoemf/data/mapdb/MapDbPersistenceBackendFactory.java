@@ -51,7 +51,7 @@ import javax.annotation.Nonnull;
  * option maps.
  * <p>
  * The factory handles transient backends by creating in-memory {@link Map} instances. Persistent
- * backends are created according to the provided resource options ({@see MapDbStoreOptions}).
+ * backends are created according to the provided resource options ({@link MapDbStoreOptions}).
  *
  * @see PersistentResource
  * @see MapDbPersistenceBackend

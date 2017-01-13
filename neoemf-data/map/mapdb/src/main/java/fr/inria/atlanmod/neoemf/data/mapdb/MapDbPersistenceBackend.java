@@ -154,8 +154,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     
     /**
      * Return all the {@link Collection}s contained in the database
-     * <p>
-     * <b>Note: </b>this method is public for test purposes, client code should not call it.
+     *
+     * @note This method is public for test purposes, client code should not call it.
      * @return a {@link Map} containing all the {@link Collection}s contained in the database and their associated names
      */
     public Map<String, Object> getAll() {
@@ -187,7 +187,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Retrieves the metaclass (EClass) of the element with the given {@link Id}.
      * @param id the {@link Id} of the element
-     * @return a {@link ClassInfo} descriptor containing element's metaclass informations ({@link EClass}, metamodel
+     * @return a {@link ClassInfo} descriptor containing element's metaclass informations ({@link org.eclipse.emf.ecore.EClass}, metamodel
      * name, and {@code nsURI})
      */
     public ClassInfo metaclassFor(Id id) {
@@ -197,7 +197,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Stores metaclass (EClass) information for the element with the given {@link Id}.
      * @param id the {@link Id} of the element
-     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link EClass}, metamodel
+     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link org.eclipse.emf.ecore.EClass}, metamodel
      * name, and {@code nsURI})
      */
     public void storeMetaclass(Id id, ClassInfo metaclass) {
@@ -224,7 +224,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@see MapDbPersistenceBackend#isFeatureSet(FeatureKey)}).
+     * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link MapDbPersistenceBackend#isFeatureSet(FeatureKey)}).
      * @param key the {@link FeatureKey} to remove
      * @return an {@link Object} representing the removed value, {@code null} if it
      * hasn't been found

@@ -344,13 +344,13 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     }
 
     /**
-     * Computes the type of {@object} in a {@link ClassInfo} object and persists it in the database.
+     * Computes the type of {@code object} in a {@link ClassInfo} object and persists it in the database.
      * <p>
      * As for {@link DirectWriteMapDbStore#updateContainment(PersistentEObject, EReference, PersistentEObject)},
      * instance-of informations are handled in a dedicated {@link Map}, easing their access. The method 
      * checks that the {@link Map} doesn't contain another type information for {@code object} and save it.
-     * <p>
-     * Note that the type is not updated if {@code object} was previously mapped to another type.
+     *
+     * @note The type is not updated if {@code object} was previously mapped to another type.
      * @param object the {@link PersistentEObject} to store the instance-of information from
      */
     protected void updateInstanceOf(PersistentEObject object) {
@@ -374,7 +374,7 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      * Get the value associated to ({@code object}, {@code feature}) in the underlying database.
      * <p>
      * This method is a wrapper for {@link DirectWriteMapDbStore#getFromMap(FeatureKey)}. A {@link FeatureKey}
-     * is computed for the given {@code object} and {@feature} using {@link FeatureKey#from(PersistentEObject, EStructuralFeature)}.
+     * is computed for the given {@code object} and {@code feature} using {@link FeatureKey#from(PersistentEObject, EStructuralFeature)}.
      * @param object the {@link PersistentEObject} to look for
      * @param feature the {@link EStructuralFeature} of {@code object} to look for
      * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that

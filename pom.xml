@@ -150,9 +150,25 @@
     </properties>
 
     <dependencies>
+
+        <!-- EMF -->
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
+        </dependency>
+
+        <!-- Annotations -->
+
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
+            <version>${javax-annotations.version}</version>
             <optional>true</optional><!-- needed only for annotations -->
         </dependency>
     </dependencies>
@@ -224,15 +240,6 @@
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
                 <version>${xcore.version}</version>
-            </dependency>
-
-            <!-- Annotations -->
-
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${javax-annotations.version}</version>
-                <optional>true</optional><!-- needed only for annotations -->
             </dependency>
 
             <!-- Test -->
@@ -424,6 +431,8 @@
                         <notimestamp>true</notimestamp>
                         <nosince>true</nosince>
                         <author>false</author>
+                        <includeDependencySources>true</includeDependencySources>
+                        <subpackages>fr.inria.atlanmod.neoemf</subpackages>
                         <excludePackageNames>
                             fr.inria.atlanmod.neoemf.data.berkeleydb*; <!-- Experimental functionality -->
                             fr.inria.atlanmod.neoemf.tests*
@@ -475,10 +484,6 @@
                             <group>
                                 <title>HBase</title>
                                 <packages>fr.inria.atlanmod.neoemf.data.hbase*</packages>
-                            </group>
-                            <group>
-                                <title>Tests</title>
-                                <packages>fr.inria.atlanmod.neoemf.tests*</packages>
                             </group>
                         </groups>
                         <tags>
