@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 
 /**
  * A {@link BundleActivator} that automatically registers an instance of {@link BlueprintsPersistenceBackendFactory}
- * in the global {@link PersistenceBackendFactoryRegistry}.
+ * in the global {@link PersistenceBackendFactoryRegistry} when the plugin is started.
  * 
  * @see BlueprintsPersistenceBackendFactory
  * @see PersistenceBackendFactoryRegistry

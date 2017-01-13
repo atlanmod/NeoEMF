@@ -11,16 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.store;
 
-import com.google.common.collect.Iterables;
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Vertex;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
-import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.emf.common.util.BasicEList;
@@ -33,19 +32,33 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.util.Map;
-import java.util.Objects;
+import com.google.common.collect.Iterables;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Vertex;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkElementIndex;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} implementation that translates model-level operations
- * into Blueprints calls.
+ * An {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} subclass that translates model-level operations
+ * to Blueprints calls.
+ * <p>
+ * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order
+ * to allow EMF persistence delegation. If this store is used, every method call and property access on
+ * {@link PersistentEObject} is forwarded to this class, that takes care of the database serialization and deserialization
+ * using its embedded {@link BlueprintsPersistenceBackend}.
+ * <p>
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
+ * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ *
+ * @see PersistentEObject
+ * @see BlueprintsPersistenceBackend
+ * @see AbstractPersistentStoreDecorator
  */
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
 
