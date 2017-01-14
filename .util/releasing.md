@@ -60,8 +60,8 @@ The procedure is the same as in the main project.
 
 __NOTE:__ Only the main project have to be deployed in Maven central !
 
-OSS-RH has some (see [requirements][ossrh-guide]) to accept the release.
-One of them is the signature of the artifacts. A full descrption is available [here][oss-signing], describing how to create his key.
+OSS-RH has some [requirements][ossrh-guide] to accept the release.
+One of them is the signature of the artifacts: A full description is available [here][oss-signing], describing how to create his key.
 
 Maven must be configured to handle signature and deployment.
 The following `settings.xml` file must be filled and placed at the root of your `.m2` directory:
@@ -97,13 +97,14 @@ Once is done, you can deploy your artifacts on Maven Central with the following:
 mvn clean package javadoc:jar source:jar-no-fork gpg:sign install deploy -DskipTests
 ```
 
-Artifacts are now staged and wait for validation and deployment on the [Nexus Repo Manager][oss-sonartype]. Staged artifacts can be removed if you think that they are corrupted.
-A full description of different steps is available [here][oss-sonartype-release].
+Artifacts are now staged and wait for validation and deployment on the [Nexus Repo Manager][oss-sonartype] (Note that staged artifacts, are not definitive, they can be removed/cancelled): A full description of different steps is available [here][oss-sonartype-release].
 
 # Upgrade to a SNAPSHOT version
 
 Once you have deployed yor artifacts, to avoid overwritten your release, you must upgrade your project in a SNAPSHOT state.
-Repeat the several steps described in the [#Upgrade to a RELEASE version] section by adding `-SNAPSHOT` or `.qualifier`.
+Repeat the several steps described in the [Upgrade to a RELEASE version](#upgrade-to-a-release-version) section by adding `-SNAPSHOT` or `.qualifier`.
+
+Once is done, you can now commit and push the changes in GitHub.
 
 [ossrh-guide]: http://central.sonatype.org/pages/ossrh-guide.html
 [oss-sonartype]: https://oss.sonatype.org
