@@ -22,6 +22,8 @@ import org.osgi.framework.BundleContext;
  * A {@link BundleActivator} that automatically registers a {@link PersistenceBackendFactory} with its
  * associated {@link org.eclipse.emf.common.util.URI URI} in the global {@link PersistenceBackendFactoryRegistry} when
  * loading an OSGi bundle.
+ *
+ * @note This class should not be used in standard use.
  */
 public abstract class AbstractActivator implements BundleActivator {
 
@@ -58,7 +60,7 @@ public abstract class AbstractActivator implements BundleActivator {
     /**
      * Returns the {@link org.eclipse.emf.common.util.URI URI} scheme associated with this bundle.
      *
-     * @return the URI scheme
+     * @return the {@code URI} scheme
      */
     protected abstract String scheme();
 

@@ -48,18 +48,18 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private static final int UNSETTED_FEATURE_ID = -1;
 
     /**
-     * The identifier of this {@code PersistentEObject}.
+     * The identifier of this object.
      */
     @Nonnull
     private Id id;
 
     /**
-     * The resource containing this {@code PersistentEObject}.
+     * The resource containing this object.
      */
     private Resource.Internal resource;
 
     /**
-     * Whether this {@code PersistentEObject} is mapped to an entity in a database.
+     * Whether this object is mapped to an entity in a database.
      */
     private boolean isMapped;
 
@@ -314,7 +314,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * Do not return the same value as standard EMF implementation if the container has not been accessed with the
      * public method {@link #eContainer()} before.
      *
-     * @return the container of this {@code PersistentEObject}.
+     * @return the container of this object.
      */
     @Override
     public InternalEObject eInternalContainer() {

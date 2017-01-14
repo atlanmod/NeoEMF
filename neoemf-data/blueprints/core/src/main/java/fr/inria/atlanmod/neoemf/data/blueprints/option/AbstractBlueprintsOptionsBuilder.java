@@ -25,8 +25,8 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  *
- * @param <B> the type of the "self" type of this {@link PersistenceOptionsBuilder}
- * @param <O> the type of {@link fr.inria.atlanmod.neoemf.option.CommonOptions} built by this builder
+ * @param <B> the "self"-type of this {@link PersistenceOptionsBuilder}
+ * @param <O> the type of {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions} built by this builder
  *
  * @see BlueprintsResourceOptions
  * @see BlueprintsStoreOptions

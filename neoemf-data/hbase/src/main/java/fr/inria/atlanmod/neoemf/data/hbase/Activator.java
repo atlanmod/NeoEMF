@@ -13,8 +13,20 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.AbstractActivator;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 
+import org.osgi.framework.BundleActivator;
+
+/**
+ * A {@link BundleActivator} that automatically registers a {@link HBasePersistenceBackendFactory} with its
+ * associated {@link HBaseURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
+ *
+ * @note This class should not be used in standard use.
+ *
+ * @see HBasePersistenceBackendFactory
+ * @see PersistenceBackendFactoryRegistry
+ */
 public class Activator extends AbstractActivator {
 
     @Override

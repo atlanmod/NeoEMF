@@ -95,7 +95,7 @@ public class PersistenceBackendFactoryRegistry {
      * If the given {@code URI} {@code scheme} is already registered, its value will be overridden by the given {@code
      * factory}.
      *
-     * @param scheme the URI scheme identifying the back-end factory
+     * @param scheme the {@code URI} scheme identifying the back-end factory
      */
     public static void register(@Nonnull String scheme, @Nonnull PersistenceBackendFactory factory) {
         checkNotNull(scheme);
@@ -106,7 +106,7 @@ public class PersistenceBackendFactoryRegistry {
     /**
      * Unregisters a {@link PersistenceBackendFactory} identified by the given {@code URI} {@code scheme}.
      *
-     * @param scheme the URI scheme identifying the back-end factory
+     * @param scheme the {@code URI} scheme identifying the back-end factory
      */
     public static void unregister(@Nullable String scheme) {
         if (nonNull(scheme)) {

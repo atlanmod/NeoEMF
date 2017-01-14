@@ -102,7 +102,7 @@ public class ClassInfo implements Serializable {
     /**
      * Returns the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}.
      *
-     * @return the literal representation of the URI
+     * @return the literal representation of the {@code URI}
      */
     @Nonnull
     public String uri() {

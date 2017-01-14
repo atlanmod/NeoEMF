@@ -51,7 +51,7 @@ public interface PersistentEObject extends InternalEObject {
     void id(@Nonnull Id id);
 
     /**
-     * Returns {@code true} if this {@code PersistentEObject} is mapped to an entity stored in a database.
+     * Returns whether this {@code PersistentEObject} is mapped to an entity stored in a database.
      *
      * @return {@code true} if this {@code PersistentEObject} is mapped to an entity stored in a database
      */

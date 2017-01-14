@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.option;
 import java.util.Map;
 
 /**
- * A builder of {@link CommonOptions}.
+ * A builder of {@link PersistenceOptions}.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */

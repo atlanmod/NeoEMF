@@ -84,13 +84,20 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     private Environment environment;
 
-    BerkeleyDbPersistenceBackend(File f, EnvironmentConfig ec) {
-        file = f;
-        environmentConfig = ec;
-        databaseConfig = new DatabaseConfig();
-        databaseConfig.setAllowCreate(true);
-        databaseConfig.setSortedDuplicates(false);
-        databaseConfig.setDeferredWrite(true);
+    /**
+     * Constructs a new {@code BerkeleyDbPersistenceBackend} on the given {@code file} with the given
+     * {@code environmentConfig}.
+     *
+     * @note This constructor is protected. To create a new {@code BerkeleyDbPersistenceBackend} use {@link
+     * BerkeleyDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     */
+    protected BerkeleyDbPersistenceBackend(File file, EnvironmentConfig environmentConfig) {
+        this.file = file;
+        this.environmentConfig = environmentConfig;
+        this.databaseConfig = new DatabaseConfig()
+                .setAllowCreate(true)
+                .setSortedDuplicates(false)
+                .setDeferredWrite(true);
     }
 
     public void open() {

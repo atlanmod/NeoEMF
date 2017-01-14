@@ -16,10 +16,10 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 
 /**
- * An identifier used to identify a {@link PersistentEObject} in datastores.
+ * An identifier used to identify {@link PersistentEObject}s in datastores.
  *
  * @note This is the primary key in datastores, so, each {@code Id} must be unique at back-end level to ensure data
- * consistency.
+ * consistency. The unicity is not guaranteed before adding a new {@link PersistentEObject} to a database.
  */
 public interface Id extends Comparable<Id>, Serializable {
 

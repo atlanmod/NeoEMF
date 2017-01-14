@@ -18,16 +18,22 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.Closeable;
 
 /**
- * An adapter on top of a database that provides specific methods for communicating with a database implementation.
- * <p>
+ * An adapter on top of a database that provides specific methods for communicating with the database that it uses.
  * Each {@code PersistenceBackend} manage one single instance of a database.
+ * <p>
+ * It does not provide model-level translation; these functions are handled by
+ * {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore}s.
  *
- * @future an abstraction of {@code PersistenceBackend} will be implemented to define a global behaviour
+ * @future an abstraction of {@code PersistenceBackend}s will be implemented to define a global behaviour. For now, it
+ * provides only basic methods for closing or saving a model, but later, it will provide generic methods to add, delete
+ * or get a value.
+ *
+ * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 public interface PersistenceBackend extends Closeable {
 
     /**
-     * Returns whether the underlying database has been started or not.
+     * Returns whether the underlying database is closed.
      *
      * @return {@code true} if the database is closed, otherwise {@code false}
      */

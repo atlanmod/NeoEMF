@@ -20,8 +20,8 @@ import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * An {@link EStore} to establish a mapping between {@link Resource}s and {@link EStore}s in a persistent context, i.e,
- * when storing data in a datastore.
+ * An {@link EStore} to establish a mapping between {@link Resource}s and {@link
+ * fr.inria.atlanmod.neoemf.data.PersistenceBackend}s.
  */
 public interface PersistentStore extends EStore {
 

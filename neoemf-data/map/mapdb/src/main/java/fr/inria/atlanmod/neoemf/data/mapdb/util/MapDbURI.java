@@ -43,7 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class MapDbURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the URI. This scheme is used to register {@link MapDbPersistenceBackendFactory}
+     * The scheme associated to the {@code URI}. This scheme is used to register {@link MapDbPersistenceBackendFactory}
      * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
      *
      * @see PersistenceBackendFactoryRegistry

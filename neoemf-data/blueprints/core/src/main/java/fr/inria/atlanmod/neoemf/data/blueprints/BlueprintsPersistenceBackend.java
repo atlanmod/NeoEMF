@@ -137,11 +137,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is package-private. To create a new {@code BlueprintsPersistenceBackend} see {@link
+     * @note This constructor is protected. To create a new {@code BlueprintsPersistenceBackend} use {@link
      * BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @see BlueprintsPersistenceBackendFactory
      */
-    BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
+    protected BlueprintsPersistenceBackend(KeyIndexableGraph baseGraph) {
         this.graph = new AutoCleanerIdGraph(baseGraph);
         this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();

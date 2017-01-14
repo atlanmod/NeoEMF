@@ -19,8 +19,10 @@ import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import org.osgi.framework.BundleActivator;
 
 /**
- * A {@link BundleActivator} that automatically registers an instance of {@link BlueprintsPersistenceBackendFactory}
- * in the global {@link PersistenceBackendFactoryRegistry} when the plugin is started.
+ * A {@link BundleActivator} that automatically registers a {@link BlueprintsPersistenceBackendFactory} with its
+ * associated {@link BlueprintsURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
+ *
+ * @note This class should not be used in standard use.
  *
  * @see BlueprintsPersistenceBackendFactory
  * @see PersistenceBackendFactoryRegistry

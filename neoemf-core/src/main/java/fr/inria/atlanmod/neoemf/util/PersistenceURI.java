@@ -30,7 +30,7 @@ import static java.util.Objects.isNull;
  * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
  * {@link URI}. All methods are delegated to the internal {@link URI}.
  * <p>
- * The created URI are used to register {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} in
+ * The created {@code URI} are used to register {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} in
  * {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol to factory} map of an existing
  * {@link org.eclipse.emf.ecore.resource.ResourceSet} with a
  * {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
@@ -42,13 +42,13 @@ import static java.util.Objects.isNull;
 public class PersistenceURI extends URI {
 
     /**
-     * The URI scheme corresponding to a file.
+     * The {@code URI} scheme corresponding to a file.
      */
     @Nonnull
     protected static final String FILE_SCHEME = "file";
 
     /**
-     * The base {@link URI}.
+     * The base {@code URI}.
      */
     @Nonnull
     private final URI internalUri;

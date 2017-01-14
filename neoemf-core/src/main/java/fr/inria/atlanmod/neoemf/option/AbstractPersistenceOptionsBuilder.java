@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
  * All features are all optional: options can be created using all or none of them.
  *
  * @param <B> the "self"-type of this {@link PersistenceOptionsBuilder}
- * @param <O> the type of {@link CommonOptions} built by this builder
+ * @param <O> the type of {@link PersistenceOptions} built by this builder
  */
 public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersistenceOptionsBuilder<B, O>, O extends AbstractPersistenceOptions> implements PersistenceOptionsBuilder {
 

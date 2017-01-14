@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
 
 /**
- * Dummy back-end implementation for HBase to fit core architecture.
+ * Dummy {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} implementation for HBase to fit core architecture.
  * <p>
  * The real access to the HBase Table is done in {@link DirectWriteHBaseStore} and {@link ReadOnlyHBaseStore}.
  */
@@ -26,6 +26,12 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
      * The literal description of this back-end.
      */
     public static final String NAME = "hbase";
+
+    /**
+     * Constructs a new {@code HBasePersistenceBackend}.
+     */
+    protected HBasePersistenceBackend() {
+    }
 
     @Override
     public boolean isClosed() {

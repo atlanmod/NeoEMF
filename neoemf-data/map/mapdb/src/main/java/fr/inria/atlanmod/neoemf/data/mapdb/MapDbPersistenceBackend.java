@@ -101,12 +101,12 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
-     * @note This constructor is package-private. To create a new {@link MapDbPersistenceBackend} see {@link
+     * @note This constructor is protected. To create a new {@code MapDbPersistenceBackend} use {@link
      * MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @see MapDbPersistenceBackendFactory
      */
     @SuppressWarnings("unchecked")
-    MapDbPersistenceBackend(DB db) {
+    protected MapDbPersistenceBackend(DB db) {
         this.db = db;
 
         containersMap = this.db.hashMap(KEY_CONTAINER)

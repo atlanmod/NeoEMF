@@ -61,7 +61,7 @@ import static java.util.Objects.nonNull;
  * PersistentResource#load(Map)} option maps.
  * <p>
  * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent back-ends
- * are created according to the provided resource options (@see {@link BlueprintsResourceOptions} and {@link
+ * are created according to the provided resource options (see {@link BlueprintsResourceOptions} and {@link
  * BlueprintsStoreOptions}). Default back-end configuration (store directory and graph type) is called dynamically
  * according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
  *
