@@ -106,7 +106,8 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
             backend = new BerkeleyDbPersistenceBackend(dir, envConfig);
             backend.open();
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             NeoLogger.error(e);
         }
         return backend;

@@ -40,7 +40,7 @@ public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandler
      * {@code handler}.
      *
      * @param handler the underlying handler
-     * @param name the name of this handler
+     * @param name    the name of this handler
      */
     public TimerPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
         super(handler);

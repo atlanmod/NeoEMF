@@ -35,18 +35,18 @@ import java.util.function.Function;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link DirectWriteMapDbStore} subclass that uses Java {@link List}s instead of arrays to 
- * persist multi-valued {@link EAttribute}s and {@link EReference}s.
+ * A {@link DirectWriteMapDbStore} subclass that uses Java {@link List}s instead of arrays to persist multi-valued
+ * {@link EAttribute}s and {@link EReference}s.
  * <p>
- * Using a {@link List}-based implementation allows to benefit from the rich Java {@link Collection} API,
- * with the cost of a small memory overhead compared to raw arrays.
+ * Using a {@link List}-based implementation allows to benefit from the rich Java {@link Collection} API, with the cost
+ * of a small memory overhead compared to raw arrays.
  * <p>
- * This class reimplements {@link EStructuralFeature} accessors and mutators as well as {@link Collection}
- * operations such as {@code size}, {@code clear}, or {@code indexOf}.
+ * This class reimplements {@link EStructuralFeature} accessors and mutators as well as {@link Collection} operations
+ * such as {@code size}, {@code clear}, or {@code indexOf}.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
  * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
- * 
+ *
  * @see DirectWriteMapDbStore
  * @see MapDbPersistenceBackend
  * @see AbstractPersistentStoreDecorator
@@ -60,7 +60,7 @@ public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
      * {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence back-end used to store the model
+     * @param backend  the persistence back-end used to store the model
      */
     public DirectWriteMapDbListsStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);

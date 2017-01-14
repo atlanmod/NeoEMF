@@ -29,7 +29,7 @@ public class Identifier {
     /**
      * Constructs a new {@code Identifier} with its {@code value}.
      *
-     * @param value the literal representation of this identifier
+     * @param value     the literal representation of this identifier
      * @param generated {@code true} if this identifier has been auto-generated
      *
      * @see #original(String)

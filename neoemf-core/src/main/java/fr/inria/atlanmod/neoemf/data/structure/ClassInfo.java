@@ -120,7 +120,8 @@ public class ClassInfo implements Serializable {
         EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(uri);
         if (isNull(ePackage)) {
             NeoLogger.warn("Unable to find EPackage for URI: {0}", uri);
-        } else {
+        }
+        else {
             eClass = (EClass) ePackage.getEClassifier(name);
         }
         return eClass;

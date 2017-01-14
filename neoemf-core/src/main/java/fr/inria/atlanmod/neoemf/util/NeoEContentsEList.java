@@ -55,7 +55,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     /**
      * Constructs a new {@code NeoEContentsEList} with the given {@code owner} and {@code features}.
      *
-     * @param owner the owner of this list
+     * @param owner    the owner of this list
      * @param features ???
      */
     protected NeoEContentsEList(EObject owner, EStructuralFeature[] features) {
@@ -79,7 +79,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
      * Creates a new {@code NeoEContentsEList} with the given {@code onwer}.
      *
      * @param owner the owner of this list
-     * @param <E> the type of elements in this list
+     * @param <E>   the type of elements in this list
      *
      * @return a new list
      */

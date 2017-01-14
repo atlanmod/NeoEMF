@@ -73,9 +73,9 @@ public class EcoreProcessor extends AbstractProcessor {
      * Returns the {@link EClass} associated with the given {@code classifier}.
      *
      * @param classifier the classifier representing the class
-     * @param ns the namespace of the {@code superClass}
+     * @param ns         the namespace of the {@code superClass}
      * @param superClass the super-type of the sought class
-     * @param ePackage the package where to find the class
+     * @param ePackage   the package where to find the class
      *
      * @return a class
      *
@@ -246,7 +246,7 @@ public class EcoreProcessor extends AbstractProcessor {
      * Processes an attribute.
      *
      * @param classifier the classifier representing the attribute
-     * @param attribute the associated EMF attribute
+     * @param attribute  the associated EMF attribute
      */
     private void processAttribute(@SuppressWarnings("unused") Classifier classifier, EAttribute attribute) {
         if (nonNull(waitingAttribute)) {
@@ -262,9 +262,9 @@ public class EcoreProcessor extends AbstractProcessor {
      * Processes a reference.
      *
      * @param classifier the classifier representing the reference
-     * @param ns the namespace of the class of the reference
-     * @param reference the associated EMF reference
-     * @param ePackage the package where to find the class of the reference
+     * @param ns         the namespace of the class of the reference
+     * @param reference  the associated EMF reference
+     * @param ePackage   the package where to find the class of the reference
      */
     private void processReference(Classifier classifier, Namespace ns, EReference reference, EPackage ePackage) {
         // Gets the type the reference or gets the type from the registered metaclass

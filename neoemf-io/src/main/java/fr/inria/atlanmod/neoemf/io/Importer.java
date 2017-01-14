@@ -43,7 +43,7 @@ public class Importer {
      * @param persistenceHandlers persistence handlers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify
-     * @throws IOException if an error occurred during the import
+     * @throws IOException              if an error occurred during the import
      */
     public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws IOException {
         checkArgument(persistenceHandlers.length > 0);

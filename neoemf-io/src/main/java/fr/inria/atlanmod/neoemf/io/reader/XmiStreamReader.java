@@ -38,6 +38,15 @@ import static java.util.Objects.nonNull;
  */
 public class XmiStreamReader extends AbstractXmiReader {
 
+    /**
+     * Logs the progress of the current reading.
+     *
+     * @param percent the percentage of data read on the total size of the data
+     */
+    private static void logProgress(double percent) {
+        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
+    }
+
     @Override
     public Processor defaultProcessor() {
         Processor defaultProcessor;
@@ -80,6 +89,41 @@ public class XmiStreamReader extends AbstractXmiReader {
         }
         finally {
             logProgressTimer.cancel();
+        }
+    }
+
+    /**
+     * A {@link TimerTask} that logs progress.
+     */
+    private static class LogProgressTimer extends TimerTask {
+
+        /**
+         * The stream to watch.
+         */
+        private final InputStream stream;
+
+        /**
+         * The total size of the stream.
+         */
+        private final long total;
+
+        /**
+         * Constructs a new {@code LogProgressTimer}.
+         *
+         * @param stream the stream to watch
+         */
+        private LogProgressTimer(InputStream stream) throws IOException {
+            this.stream = stream;
+            this.total = stream.available();
+        }
+
+        @Override
+        public void run() {
+            try {
+                logProgress((double) (total - stream.available()) / (double) total * 100d);
+            }
+            catch (Exception ignore) {
+            }
         }
     }
 
@@ -166,49 +210,5 @@ public class XmiStreamReader extends AbstractXmiReader {
                 throw new SAXException(e);
             }
         }
-    }
-
-    /**
-     * A {@link TimerTask} that logs progress.
-     */
-    private static class LogProgressTimer extends TimerTask {
-
-        /**
-         * The stream to watch.
-         */
-        private final InputStream stream;
-
-        /**
-         * The total size of the stream.
-         */
-        private final long total;
-
-        /**
-         * Constructs a new {@code LogProgressTimer}.
-         *
-         * @param stream the stream to watch
-         */
-        private LogProgressTimer(InputStream stream) throws IOException {
-            this.stream = stream;
-            this.total = stream.available();
-        }
-
-        @Override
-        public void run() {
-            try {
-                logProgress((double) (total - stream.available()) / (double) total * 100d);
-            }
-            catch (Exception ignore) {
-            }
-        }
-    }
-
-    /**
-     * Logs the progress of the current reading.
-     *
-     * @param percent the percentage of data read on the total size of the data
-     */
-    private static void logProgress(double percent) {
-        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
     }
 }

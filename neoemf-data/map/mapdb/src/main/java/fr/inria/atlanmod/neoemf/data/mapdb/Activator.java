@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import org.osgi.framework.BundleActivator;
-
 import fr.inria.atlanmod.neoemf.AbstractActivator;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+
+import org.osgi.framework.BundleActivator;
 
 /**
  * A {@link BundleActivator} that automatically registers an instance of {@link MapDbPersistenceBackendFactory}

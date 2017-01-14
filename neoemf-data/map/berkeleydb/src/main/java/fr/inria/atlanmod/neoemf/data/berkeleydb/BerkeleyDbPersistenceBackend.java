@@ -48,13 +48,14 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
     private static final String KEY_FEATURES = "features";
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
-    private boolean isClosed = true;
 
     private static final IdSerializer idSerializer = new IdSerializer();
     private static final FeatureKeySerializer fkSerializer = new FeatureKeySerializer();
     private static final ClassInfoSerializer classSerializer = new ClassInfoSerializer();
     private static final ContainerInfoSerializer containerSerializer = new ContainerInfoSerializer();
     private static final ObjectSerializer objSerializer = new ObjectSerializer();
+
+    private boolean isClosed = true;
 
     /**
      * A persistent map that stores the container of persistent EObjects.
@@ -116,24 +117,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             NeoLogger.debug("Database instances open, size: {0}", this.instances.count());
             NeoLogger.debug("Database features open, size: {0}", this.features.count());
             NeoLogger.debug("Database multivaluedFeatures open, size: {0}", this.multivaluedFeatures.count());
-        } catch (DatabaseException e) {
-            NeoLogger.error(e);
         }
-    }
-
-    public void close() {
-        NeoLogger.debug("Closing databases");
-
-        this.save();
-
-        try {
-            this.containers.close();
-            this.instances.close();
-            this.features.close();
-            this.multivaluedFeatures.close();
-            this.environment.close();
-            isClosed = true;
-        } catch (DatabaseException e) {
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
     }
@@ -151,6 +136,23 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         return isClosed;
     }
 
+    public void close() {
+        NeoLogger.debug("Closing databases");
+
+        this.save();
+
+        try {
+            this.containers.close();
+            this.instances.close();
+            this.features.close();
+            this.multivaluedFeatures.close();
+            this.environment.close();
+            isClosed = true;
+        }
+        catch (DatabaseException e) {
+            NeoLogger.error(e);
+        }
+    }
 
     @Override
     public void save() {
@@ -160,7 +162,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             this.features.sync();
             this.multivaluedFeatures.sync();
 //            env.sync();
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
     }
@@ -177,7 +180,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
                 byte[] data = value.getData();
                 containerInfo = containerSerializer.deserialize(data);
             }
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return containerInfo;
@@ -191,7 +195,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         DatabaseEntry value = new DatabaseEntry(containerSerializer.serialize(container));
         try {
             containers.put(null, key, value);
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
     }
@@ -208,7 +213,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
                 byte[] data = value.getData();
                 classInfo = classSerializer.deserialize(data);
             }
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return classInfo;
@@ -222,7 +228,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         DatabaseEntry value = new DatabaseEntry(classSerializer.serialize(metaclass));
         try {
             instances.put(null, key, value);
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
     }
@@ -237,7 +244,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             DatabaseEntry value = new DatabaseEntry(objSerializer.serialize(obj));
             features.put(null, key, value);
             old = obj;
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return old;
@@ -254,7 +262,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 old = objSerializer.deserialize(value.getData());
             }
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return old;
@@ -271,7 +280,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             features.get(null, key, value, LockMode.DEFAULT);
             features.delete(null, key);
             old = objSerializer.deserialize(value.getData());
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return old;
@@ -286,7 +296,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         DatabaseEntry value = new DatabaseEntry();
         try {
             isSet = (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return isSet;
@@ -319,7 +330,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             if (multivaluedFeatures.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 old = objSerializer.deserialize(value.getData());
             }
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
         return old;
@@ -338,7 +350,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             this.copyDatabaseTo(features, target.features);
             this.copyDatabaseTo(containers, target.containers);
             this.copyDatabaseTo(multivaluedFeatures, target.multivaluedFeatures);
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
     }

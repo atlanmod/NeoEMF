@@ -18,8 +18,8 @@ import javax.annotation.Nonnull;
 /**
  * A {@link AbstractBlueprintsOptionsBuilder} subclass that creates Blueprints TinkerGraph specific options.
  * <p>
- * This builder doesn't contain specific methods for now: the only {@link TinkerGraph} configuration
- * supported is the graph type, which is set by default.
+ * This builder doesn't contain specific methods for now: the only {@link TinkerGraph} configuration supported is the
+ * graph type, which is set by default.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
@@ -35,6 +35,7 @@ public class BlueprintsOptionsBuilder extends AbstractBlueprintsOptionsBuilder<B
 
     /**
      * Constructs a new {@code BlueprintsOptionsBuilder} instance.
+     *
      * @return a new builder
      */
     @Nonnull

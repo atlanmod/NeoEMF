@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.tg.config;
 
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
-
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import java.io.File;
 
@@ -25,12 +25,12 @@ import javax.annotation.Nonnull;
 import static java.util.Objects.isNull;
 
 /**
- * An internal class that sets Blueprints {@link TinkerGraph} default configuration properties
- * in the current NeoEMF {@link Configuration}.
+ * An internal class that sets Blueprints {@link TinkerGraph} default configuration properties in the current NeoEMF
+ * {@link Configuration}.
  * <p>
- * This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if {@link TinkerGraph} 
- * implementation is used to store the underlying database.
- * 
+ * This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if {@link TinkerGraph} implementation
+ * is used to store the underlying database.
+ *
  * @see BlueprintsPersistenceBackendFactory
  */
 @SuppressWarnings("unused") // Called dynamically
@@ -52,8 +52,9 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
 
     /**
      * Add Blueprints database directory and file-type to the current resource {@link Configuration}
+     *
      * @param currentConfiguration the {@link Configuration} holding resource properties
-     * @param dbLocation the {@link File} that contains the Blueprints database
+     * @param dbLocation           the {@link File} that contains the Blueprints database
      */
     @Override
     public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {

@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSampleFactory;
 import fr.inria.atlanmod.neoemf.tests.models.mapSample.MapSamplePackage;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -73,7 +74,8 @@ public abstract class AbstractBackendTest extends AbstractTest implements Contex
     public PersistentResource createPersistentStore() {
         try {
             return closeAtExit(context.createPersistentResource(EPACKAGE, file));
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             NeoLogger.error(e);
         }
         catch (IOException e) {

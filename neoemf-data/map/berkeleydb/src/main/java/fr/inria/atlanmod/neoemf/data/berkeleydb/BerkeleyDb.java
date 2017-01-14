@@ -21,12 +21,15 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import java.io.File;
 
+// TODO What does this class ?
 public class BerkeleyDb {
 
     private static final String KEY_CONTAINER = "eContainer";
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
     private static final String KEY_FEATURES = "features";
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
+
+    DatabaseConfig dbconf;
 
     /**
      * A persistent map that stores the container of persistent EObjects.
@@ -52,7 +55,6 @@ public class BerkeleyDb {
     private Database multivaluedFeatures;
 
     private Environment env;
-    DatabaseConfig dbconf;
 
     public BerkeleyDb(File file) {
 
@@ -64,9 +66,8 @@ public class BerkeleyDb {
             dbconf.setAllowCreate(true);
             dbconf.setSortedDuplicates(false);
             dbconf.setDeferredWrite(true);
-
-
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
     }
@@ -77,10 +78,10 @@ public class BerkeleyDb {
             this.instances = env.openDatabase(null, KEY_INSTANCE_OF, dbconf);
             this.features = env.openDatabase(null, KEY_FEATURES, dbconf);
             this.multivaluedFeatures = env.openDatabase(null, KEY_MULTIVALUED_FEATURES, dbconf);
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-
     }
 
     public void close() {
@@ -90,9 +91,9 @@ public class BerkeleyDb {
             this.features.close();
             this.multivaluedFeatures.close();
             env.close();
-        } catch (DatabaseException e) {
+        }
+        catch (DatabaseException e) {
             NeoLogger.error(e);
         }
-
     }
 }

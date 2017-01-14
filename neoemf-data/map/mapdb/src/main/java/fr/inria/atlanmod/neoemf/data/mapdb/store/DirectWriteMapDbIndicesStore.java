@@ -11,9 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
@@ -27,6 +24,9 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -45,19 +45,19 @@ import static java.util.Objects.nonNull;
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
  * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
- * 
+ *
  * @see DirectWriteMapDbStore
  * @see MapDbPersistenceBackend
  * @see AbstractPersistentStoreDecorator
  */
 public class DirectWriteMapDbIndicesStore extends DirectWriteMapDbStore {
-    
+
     /**
      * Constructs a new {@code DirectWriteMapDbIndicesStore} between the given {@code resource} and the
      * {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence back-end used to store the model
+     * @param backend  the persistence back-end used to store the model
      */
     public DirectWriteMapDbIndicesStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);

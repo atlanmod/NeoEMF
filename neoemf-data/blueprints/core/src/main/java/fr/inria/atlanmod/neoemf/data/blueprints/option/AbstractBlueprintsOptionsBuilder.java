@@ -17,13 +17,14 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
 /**
- * An abstract option builder that extends {@link AbstractPersistenceOptionsBuilder} by providing 
- * utility methods to create generic Blueprints options.
+ * An abstract option builder that extends {@link AbstractPersistenceOptionsBuilder} by providing utility methods to
+ * create generic Blueprints options.
  * <p>
- * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features, or
- * {@link BlueprintsStoreOptions} if they define database access feature.
+ * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features, or {@link
+ * BlueprintsStoreOptions} if they define database access feature.
  * <p>
  * All features are all optional: options can be created using all or none of them.
+ *
  * @param <B> the type of the "self" type of this {@link PersistenceOptionsBuilder}
  * @param <O> the type of {@link fr.inria.atlanmod.neoemf.option.CommonOptions} built by this builder
  *
@@ -40,9 +41,11 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
 
     /**
      * Add the given {@code graphType} in the created options
+     *
      * @param graphType the type of the Blueprints graph
+     *
      * @return this {@code CommonOptionsBuilder} (for chaining)
-     * 
+     *
      * @see BlueprintsResourceOptions#GRAPH_TYPE
      */
     protected B graph(String graphType) {
@@ -51,8 +54,9 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
 
     /**
      * Add the {@code autocommit} feature in the created options
+     *
      * @return this {@code CommonOptionsBuilder} (for chaining)
-     * 
+     *
      * @see BlueprintsStoreOptions#AUTOCOMMIT
      */
     public B autocommit() {
@@ -61,9 +65,11 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
 
     /**
      * Add the {@code autocommit} feature with the given {@code chunk} size in the created options
+     *
      * @param chunk the number of database operations between each commit
+     *
      * @return this {@code CommonOptionsBuilder} (for chaining)
-     * 
+     *
      * @see BlueprintsStoreOptions#AUTOCOMMIT
      */
     public B autocommit(int chunk) {
@@ -74,8 +80,9 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     /**
      * Add the {@code directWrite} feature in the created options. Created resource will embed a
      * {@link DirectWriteBlueprintsStore} to interact with the database
+     *
      * @return this {@code CommonOptionsBuilder} (for chaining)
-     * 
+     *
      * @see BlueprintsStoreOptions#DIRECT_WRITE
      * @see DirectWriteBlueprintsStore
      */
@@ -86,8 +93,9 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     /**
      * Add the {@code directWriteCacheMany} feature in the created options. Created resource will embed a
      * {@link DirectWriteBlueprintsCacheManyStore} to interact with the database
+     *
      * @return this {@code CommonOptionsBuilder} (for chaining)
-     * 
+     *
      * @see BlueprintsStoreOptions#CACHE_MANY
      * @see DirectWriteBlueprintsCacheManyStore
      */

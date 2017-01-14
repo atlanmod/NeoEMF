@@ -302,6 +302,58 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     /**
+     * A shutdown-hook that stops a persistent back-end when the application exits.
+     */
+    private static class PersistenceBackendShutdownHook extends Thread {
+
+        /**
+         * The backend to stop when the application will exit
+         */
+        private final PersistenceBackend backend;
+
+        /**
+         * The {@code URI} of the resource used by the {@code backend}
+         */
+        private final URI uri;
+
+        /**
+         * Creates a new {@code PersistenceBackendShutdownHook} with the given {@code backend}.
+         *
+         * @param backend the backend to stop when the application will exit
+         * @param uri     the {@code URI} of the resource used by the {@code backend}
+         */
+        private PersistenceBackendShutdownHook(PersistenceBackend backend, URI uri) {
+            this.backend = backend;
+            this.uri = uri;
+        }
+
+        /**
+         * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
+         *
+         * @param backend the backend to stop when the application will exit
+         * @param uri     the {@code URI} of the resource used by the {@code backend}
+         */
+        public static void closeOnExit(PersistenceBackend backend, URI uri) {
+            Runtime.getRuntime().addShutdownHook(new PersistenceBackendShutdownHook(backend, uri));
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Cleanly stops the underlying database.
+         *
+         * @see PersistenceBackend#close()
+         */
+        @Override
+        public void run() {
+            if (!backend.isClosed()) {
+                backend.close();
+                NeoLogger.info("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
+            }
+        }
+    }
+
+    /**
      * A notifying {@link EStoreEList} list implementation for supporting {@link Resource#getContents}.
      */
     private class ResourceContentsEStoreEList<E> extends EStoreEObjectImpl.EStoreEList<E> {
@@ -311,9 +363,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         /**
          * Constructs a new {@code ResourceContentsEStoreEList} with ???
          *
-         * @param owner ???
+         * @param owner   ???
          * @param feature ???
-         * @param store ???
+         * @param store   ???
          */
         public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, EStore store) {
             super(owner, feature, store);
@@ -471,58 +523,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             if (isTrackingModification()) {
                 setModified(true);
             }
-        }
-    }
-
-    /**
-     * A shutdown-hook that stops a persistent back-end when the application exits.
-     */
-    private static class PersistenceBackendShutdownHook extends Thread {
-
-        /**
-         * The backend to stop when the application will exit
-         */
-        private final PersistenceBackend backend;
-
-        /**
-         * The {@code URI} of the resource used by the {@code backend}
-         */
-        private final URI uri;
-
-        /**
-         * Creates a new {@code PersistenceBackendShutdownHook} with the given {@code backend}.
-         *
-         * @param backend the backend to stop when the application will exit
-         * @param uri the {@code URI} of the resource used by the {@code backend}
-         */
-        private PersistenceBackendShutdownHook(PersistenceBackend backend, URI uri) {
-            this.backend = backend;
-            this.uri = uri;
-        }
-
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Cleanly stops the underlying database.
-         *
-         * @see PersistenceBackend#close()
-         */
-        @Override
-        public void run() {
-            if (!backend.isClosed()) {
-                backend.close();
-                NeoLogger.info("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
-            }
-        }
-
-        /**
-         * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
-         *
-         * @param backend the backend to stop when the application will exit
-         * @param uri the {@code URI} of the resource used by the {@code backend}
-         */
-        public static void closeOnExit(PersistenceBackend backend, URI uri) {
-            Runtime.getRuntime().addShutdownHook(new PersistenceBackendShutdownHook(backend, uri));
         }
     }
 }

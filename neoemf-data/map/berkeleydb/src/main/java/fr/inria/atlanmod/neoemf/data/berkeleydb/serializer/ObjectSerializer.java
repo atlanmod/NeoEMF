@@ -30,7 +30,8 @@ public class ObjectSerializer implements Serializer<Object> {
             ObjectOutput out = new ObjectOutputStream(bos);
             out.writeObject(value);
             out.flush();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             NeoLogger.error(e);
         }
         data = bos.toByteArray();

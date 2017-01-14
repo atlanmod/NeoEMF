@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * ???
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
@@ -32,6 +32,7 @@ public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBase
 
     /**
      * Constructs a new {@code HBaseOptionsBuilder} instance.
+     *
      * @return a new builder
      */
     @Nonnull
@@ -40,6 +41,7 @@ public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBase
     }
 
     /**
+     * ???
      *
      * @return this {@code CommonOptionsBuilder} (for chaining)
      */

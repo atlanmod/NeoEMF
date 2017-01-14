@@ -24,11 +24,11 @@ import javax.annotation.Nonnull;
 
 /**
  * A {@link Serializer} implementation for {@link FeatureKey}.
- * 
+ *
  * @see FeatureKey
  */
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
-    
+
     /**
      * The {@link Serializer} that manages {@link String}s
      */

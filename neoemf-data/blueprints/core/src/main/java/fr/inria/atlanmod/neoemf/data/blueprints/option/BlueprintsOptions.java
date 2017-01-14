@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 /**
  * A specific class that holds Blueprints TinkerGraph specific options.
  *
- * @future This class is not used in the current release of the tool, it will simplify option management
- * in the near future.
+ * @future This class is not used in the current release of the tool, it will simplify option management in the near
+ * future.
  */
 public class BlueprintsOptions extends AbstractBlueprintsOptions {
 

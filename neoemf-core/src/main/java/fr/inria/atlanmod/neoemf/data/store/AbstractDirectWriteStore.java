@@ -49,7 +49,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * Constructs a new {@code AbstractDirectWriteStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence back-end used to store the model
+     * @param backend  the persistence back-end used to store the model
      */
     public AbstractDirectWriteStore(Resource.Internal resource, P backend) {
         this.resource = resource;
@@ -305,13 +305,13 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     @Override
-    public EObject create(EClass eClass) {
-        throw new IllegalStateException("This method should not be called");
+    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
+        return Arrays.hashCode(toArray(internalObject, feature));
     }
 
     @Override
-    public int hashCode(InternalEObject internalObject, EStructuralFeature feature) {
-        return Arrays.hashCode(toArray(internalObject, feature));
+    public EObject create(EClass eClass) {
+        throw new IllegalStateException("This method should not be called");
     }
 
     /**
@@ -535,10 +535,10 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     /**
      * Adds the {@code value} at the {@code index} in the content of the {@code reference} of the {@code object}.
      *
-     * @param object the object
+     * @param object    the object
      * @param reference a many-valued reference of the {@code object}
-     * @param index an index within the content
-     * @param value the value to add
+     * @param index     an index within the content
+     * @param value     the value to add
      *
      * @see #add(InternalEObject, EStructuralFeature, int, Object)
      */
@@ -549,9 +549,9 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     /**
      * Removes the value at the {@code index} in the content of the {@code attribute} of the {@code object}.
      *
-     * @param object the object
+     * @param object    the object
      * @param attribute a many-valued attribute of the {@code object}
-     * @param index the index within the content of the value to remove
+     * @param index     the index within the content of the value to remove
      *
      * @return the removed value
      *
@@ -564,9 +564,9 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     /**
      * Removes the value at the {@code index} in the content of the {@code reference} of the {@code object}.
      *
-     * @param object the object
+     * @param object    the object
      * @param reference a many-valued reference of the {@code object}
-     * @param index the index within the content of the value to remove
+     * @param index     the index within the content of the value to remove
      *
      * @return the removed value
      *
@@ -579,7 +579,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     /**
      * Removes all values form the content of the {@code attribute} of the {@code object}.
      *
-     * @param object the object
+     * @param object    the object
      * @param attribute a many-valued attribute of the {@code object}
      *
      * @see #clear(InternalEObject, EStructuralFeature)
@@ -591,7 +591,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     /**
      * Removes all values form the content of the {@code reference} of the {@code object}.
      *
-     * @param object the object
+     * @param object    the object
      * @param reference a many-valued reference of the {@code object}
      *
      * @see #clear(InternalEObject, EStructuralFeature)
@@ -604,7 +604,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * Creates an instance of the {@code attribute}.
      *
      * @param attribute the attribute to instantiate
-     * @param property the string value of the attribute
+     * @param property  the string value of the attribute
      *
      * @return an instance of the attribute
      *
@@ -618,7 +618,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * Converts an instance of the {@code attribute} to a string literal representation.
      *
      * @param attribute the attribute to instantiate
-     * @param value a value of the attribute
+     * @param value     a value of the attribute
      *
      * @return the string literal representation of the value
      *

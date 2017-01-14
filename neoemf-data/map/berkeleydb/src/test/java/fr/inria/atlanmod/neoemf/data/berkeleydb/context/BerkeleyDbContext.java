@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.store.DirectWriteBerkeleyDbStore
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -79,6 +80,7 @@ public class BerkeleyDbContext implements Context {
      * The initialization-on-demand holder of the singleton of this class.
      */
     private static class Holder {
+
         private static final Context INSTANCE = new BerkeleyDbContext();
     }
 }

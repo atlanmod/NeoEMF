@@ -26,6 +26,7 @@ public class AlreadyExistingIdException extends RuntimeException {
 
     /**
      * Constructs an {@code AlreadyExistingIdException} with the specified detail {@code message}.
+     *
      * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method)
      */
     public AlreadyExistingIdException(String message) {
@@ -35,6 +36,7 @@ public class AlreadyExistingIdException extends RuntimeException {
     /**
      * Constructs an {@code AlreadyExistingIdException} with the specified {@code cause} and a detail message of
      * {@code (cause==null ? null : cause.toString())} (which typically contains the class and detail message of cause).
+     *
      * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null}
      *              value is permitted, and indicates that the cause is nonexistent or unknown.)
      */
@@ -46,8 +48,8 @@ public class AlreadyExistingIdException extends RuntimeException {
      * Constructs an {@code AlreadyExistingIdException} with the specified detail {@code message} and {@code cause}.
      *
      * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method)
-     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null}
-     *              value is permitted, and indicates that the cause is nonexistent or unknown.)
+     * @param cause   the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null}
+     *                value is permitted, and indicates that the cause is nonexistent or unknown.)
      *
      * @note The detail message associated with cause is not automatically incorporated into this exception's detail
      * message.

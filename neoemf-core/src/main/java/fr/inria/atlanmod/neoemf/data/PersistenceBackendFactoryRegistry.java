@@ -92,7 +92,8 @@ public class PersistenceBackendFactoryRegistry {
     /**
      * Registers a {@link PersistenceBackendFactory} identified by the given {@code URI} {@code scheme}.
      * <p>
-     * If the given {@code URI} {@code scheme} is already registered, its value will be overriden by the given {@code factory}.
+     * If the given {@code URI} {@code scheme} is already registered, its value will be overriden by the given {@code
+     * factory}.
      *
      * @param scheme the URI scheme identifying the back-end factory
      */

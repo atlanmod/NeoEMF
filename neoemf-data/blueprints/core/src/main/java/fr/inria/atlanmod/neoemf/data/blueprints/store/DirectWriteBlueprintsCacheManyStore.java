@@ -31,17 +31,17 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link DirectWriteBlueprintsStore} subclass that uses an internal cache to store {@link Vertex} elements
- * that are part of multi-valued {@link EReference}s to speed-up their access.
+ * A {@link DirectWriteBlueprintsStore} subclass that uses an internal cache to store {@link Vertex} elements that are
+ * part of multi-valued {@link EReference}s to speed-up their access.
  * <p>
  * Large multi-valued {@link EReference}s can be an execution time bottleneck in the graph implementation because any
- * element access forces the underlying database engine to load all the {@link Edge}s corresponding to the {@link EReference}.
- * We overcome this limitation by caching all the {@link Vertex} elements involved in multi-valued {@link EReference}s the first time they are
- * traversed, limiting database access. Note that the cache can contain up to {@code 10000} elements, limiting memory consumption. 
- * is accessed.
+ * element access forces the underlying database engine to load all the {@link Edge}s corresponding to the {@link
+ * EReference}. We overcome this limitation by caching all the {@link Vertex} elements involved in multi-valued {@link
+ * EReference}s the first time they are traversed, limiting database access. Note that the cache can contain up to
+ * {@code 10000} elements, limiting memory consumption. is accessed.
  * <p>
- * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
- * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
+ * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  *
  * @see DirectWriteBlueprintsStore
  * @see BlueprintsPersistenceBackend
@@ -57,7 +57,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
      * {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence back-end used to store the model
+     * @param backend  the persistence back-end used to store the model
      */
     public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);
@@ -66,14 +66,16 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
 
     /**
      * Custom implementation of {@link DirectWriteBlueprintsStore#getReference(PersistentEObject, EReference, int)} that
-     * caches all the vertices traversed to retrieve the element at the given {@code index}. This implementation bypasses 
-     * the graph API limitation that has to traverse all the {@link Edge}s connected to the input vertex to 
+     * caches all the vertices traversed to retrieve the element at the given {@code index}. This implementation
+     * bypasses the graph API limitation that has to traverse all the {@link Edge}s connected to the input vertex to
      * find the one with the given {@code index}.
-     * @param object the input model element
+     *
+     * @param object    the input model element
      * @param reference the {@link EReference} to retrieve
-     * @param index the index of the element to retrieve
-     * @return a list of {@link EObject} if the given {@link EReference} is multi-valued, an {@link EObject} if 
-     * it is single-valued, {@code null} if the element doesn't exist
+     * @param index     the index of the element to retrieve
+     *
+     * @return a list of {@link EObject} if the given {@link EReference} is multi-valued, an {@link EObject} if it is
+     * single-valued, {@code null} if the element doesn't exist
      */
     @Override
     protected Object getReference(PersistentEObject object, EReference reference, int index) {

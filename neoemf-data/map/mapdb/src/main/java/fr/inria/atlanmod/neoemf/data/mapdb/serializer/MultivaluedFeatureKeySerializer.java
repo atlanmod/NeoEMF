@@ -11,25 +11,25 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.serializer;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
-import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
+import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 /**
  * A {@link FeatureKeySerializer} subclass that is able to serialize {@link MultivaluedFeatureKey}.
- * 
+ *
  * @see FeatureKeySerializer
  * @see MultivaluedFeatureKey
  */
 public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
-    
+
     /**
      * An embedded {@link Integer} {@link Serializer} used to handle collection indices.
      */

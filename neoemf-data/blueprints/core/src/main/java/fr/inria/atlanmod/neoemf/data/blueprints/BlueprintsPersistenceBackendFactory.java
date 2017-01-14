@@ -11,24 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
@@ -51,19 +33,36 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 /**
- * A factory that creates instances of {@link BlueprintsPersistenceBackend}. As other implementations of 
- * {@link PersistenceBackendFactory}, this class can create transient and persistent databases.
- * Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
- * option maps.
+ * A factory that creates instances of {@link BlueprintsPersistenceBackend}. As other implementations of {@link
+ * PersistenceBackendFactory}, this class can create transient and persistent databases. Persistent back-end creation
+ * can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)} option maps.
  * <p>
- * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent
- * back-ends are created according to the provided resource options (@see {@link BlueprintsResourceOptions} and {@link BlueprintsStoreOptions}).
- * Default back-end configuration (store directory and graph type) is called dynamically according to the provided
- * Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
- * 
+ * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent back-ends
+ * are created according to the provided resource options (@see {@link BlueprintsResourceOptions} and {@link
+ * BlueprintsStoreOptions}). Default back-end configuration (store directory and graph type) is called dynamically
+ * according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
+ *
  * @see PersistentResource
  * @see BlueprintsPersistenceBackend
  * @see BlueprintsOptionsBuilder
@@ -71,7 +70,7 @@ import javax.annotation.Nonnull;
  * @see BlueprintsStoreOptions
  */
 public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
-    
+
     /**
      * The literal description of the factory.
      */

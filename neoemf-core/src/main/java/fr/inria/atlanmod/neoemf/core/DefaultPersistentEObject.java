@@ -226,9 +226,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * ???
      *
-     * @param store ???
+     * @param store   ???
      * @param feature ???
-     * @param index ???
+     * @param index   ???
      *
      * @return ???
      */
@@ -368,7 +368,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         /**
          * Constructs a {@code EStoreEcoreEMap} with the given {@code type} and {@code feature}.
          *
-         * @param type ???
+         * @param type    ???
          * @param feature ???
          */
         public EStoreEcoreEMap(EClassifier type, EStructuralFeature feature) {

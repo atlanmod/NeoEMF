@@ -293,7 +293,8 @@ public final class NeoLogger {
     }
 
     /**
-     * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the given {@link Throwable}, using the root logger.
+     * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the given {@link Throwable},
+     * using the root logger.
      *
      * @param e       the exception to log, including its stack trace
      * @param message the message to log
@@ -346,7 +347,8 @@ public final class NeoLogger {
     }
 
     /**
-     * Logs the stack trace of the given {@link Throwable} at the {@link Level#ERROR ERROR} level, using the root logger.
+     * Logs the stack trace of the given {@link Throwable} at the {@link Level#ERROR ERROR} level, using the root
+     * logger.
      *
      * @param e the exception to log, including its stack trace
      *
@@ -358,7 +360,8 @@ public final class NeoLogger {
     }
 
     /**
-     * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the given {@link Throwable}, using the root logger.
+     * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the given {@link Throwable},
+     * using the root logger.
      *
      * @param e       the exception to log, including its stack trace
      * @param message the message to log

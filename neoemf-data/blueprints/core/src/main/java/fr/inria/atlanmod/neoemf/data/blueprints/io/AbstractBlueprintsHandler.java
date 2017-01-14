@@ -90,11 +90,12 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     }
 
     /**
-     * Updates the containment identified by its {@code name} between the {@code parentVertex} and the {@code childVertex}.
+     * Updates the containment identified by its {@code name} between the {@code parentVertex} and the {@code
+     * childVertex}.
      *
-     * @param localName the name of the property identifying the reference (parent -> child)
+     * @param localName    the name of the property identifying the reference (parent -> child)
      * @param parentVertex the parent vertex
-     * @param childVertex the child vertex
+     * @param childVertex  the child vertex
      */
     private static void updateContainment(final String localName, final Vertex parentVertex, final Vertex childVertex) {
         for (Edge edge : childVertex.getEdges(Direction.OUT, CONTAINER)) {
@@ -109,7 +110,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      * Returns the size of the property identified by its {@code name} in the given {@code vertex}.
      *
      * @param vertex the vertex containing the property
-     * @param name the name of the property
+     * @param name   the name of the property
      *
      * @return the size
      */
@@ -122,8 +123,8 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      * Defines the {@code size} of the property identified by its {@code name} in the given {@code vertex}.
      *
      * @param vertex the vertex containing the property
-     * @param name the name of the property
-     * @param size the size
+     * @param name   the name of the property
+     * @param size   the size
      */
     private static void setSize(final Vertex vertex, final String name, final int size) {
         vertex.setProperty(formatKeyValue(name, SIZE_LITERAL), size);

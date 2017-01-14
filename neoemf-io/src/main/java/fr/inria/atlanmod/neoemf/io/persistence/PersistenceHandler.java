@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.io.persistence;
 
 import fr.inria.atlanmod.neoemf.io.InputHandler;
-import fr.inria.atlanmod.neoemf.io.InputNotifier;
 
 /**
  * A {@link InputHandler} that process received events, in order to persist data.

@@ -14,7 +14,8 @@ package fr.inria.atlanmod.neoemf.option;
 import javax.annotation.Nonnull;
 
 /**
- * A common {@link PersistenceOptionsBuilder} that creates common options that are available for all back-end implementations.
+ * A common {@link PersistenceOptionsBuilder} that creates common options that are available for all back-end
+ * implementations.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  *

@@ -140,7 +140,8 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     /**
      * Creates and saves the NeoEMF configuration.
      * <p>
-     * The configuration is stored as a properties file beside a database in order to identify a {@link PersistenceBackend}.
+     * The configuration is stored as a properties file beside a database in order to identify a {@link
+     * PersistenceBackend}.
      *
      * @param directory the directory where the configuration must be stored.
      */

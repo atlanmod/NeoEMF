@@ -14,8 +14,6 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
-import fr.inria.atlanmod.neoemf.io.reader.AbstractReader;
-import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;

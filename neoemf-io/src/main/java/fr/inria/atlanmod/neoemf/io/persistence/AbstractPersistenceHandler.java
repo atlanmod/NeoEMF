@@ -29,9 +29,7 @@ import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 

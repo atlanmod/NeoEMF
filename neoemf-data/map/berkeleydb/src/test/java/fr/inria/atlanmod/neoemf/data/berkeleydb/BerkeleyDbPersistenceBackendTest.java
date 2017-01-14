@@ -80,8 +80,8 @@ public class BerkeleyDbPersistenceBackendTest extends AbstractTest {
         final int TIMES = 1000;
 
         IntStream.range(0, TIMES).forEach(i -> {
-            FeatureKey key = FeatureKey.of(new StringId("object"+i), "name"+i);
-            assertThat(backend.storeValue(key, "value"+i)).isNotNull();
+            FeatureKey key = FeatureKey.of(new StringId("object" + i), "name" + i);
+            assertThat(backend.storeValue(key, "value" + i)).isNotNull();
         });
 
 //        backend.save();

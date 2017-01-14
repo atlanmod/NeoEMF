@@ -40,7 +40,7 @@ public class AutocommitStoreDecorator extends AbstractPersistentStoreDecorator {
     /**
      * Constructs a new {@code AutocommitStoreDecorator} with the given {@code opsBetweenCommits}.
      *
-     * @param store the underlying store
+     * @param store             the underlying store
      * @param opsBetweenCommits the number of modifications between commit
      */
     public AutocommitStoreDecorator(PersistentStore store, long opsBetweenCommits) {

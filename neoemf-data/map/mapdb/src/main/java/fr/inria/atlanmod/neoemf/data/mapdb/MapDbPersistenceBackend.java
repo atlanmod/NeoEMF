@@ -35,23 +35,20 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * This class is responsible of low-level access to a MapDB database. 
+ * This class is responsible of low-level access to a MapDB database.
  * <p>
- * It wraps an existing {@link DB} and provides facilities to create and retrieve elements.
- * This class manages a set of {@link Map}s used to represent model elements:
- * <ul>
- *  <li><b>Containers Map: </b> holds containment and container links between elements</li>
- *  <li><b>InstanceOf Map: </b> holds metaclass information for each element</li>
- *  <li><b>Features Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li>
- *  <li><b>Multivalued Map: </b> optional Map used in {@link DirectWriteMapDbIndicesStore} that stores {@link Collection} indices instead of a serialized version of the collection itself</li>
- * </ul>
+ * It wraps an existing {@link DB} and provides facilities to create and retrieve elements. This class manages a set of
+ * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
+ * between elements</li> <li><b>InstanceOf Map: </b> holds metaclass information for each element</li> <li><b>Features
+ * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multivalued Map: </b>
+ * optional Map used in {@link DirectWriteMapDbIndicesStore} that stores {@link Collection} indices instead of a
+ * serialized version of the collection itself</li> </ul>
  * <p>
- * This class is used in {@link DirectWriteMapDbStore} and its subclasses to access and manipulate
- * the database.
+ * This class is used in {@link DirectWriteMapDbStore} and its subclasses to access and manipulate the database.
  * <p>
- * Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that
- * provides an usable {@link DB} that can be manipulated by this wrapper.
- * 
+ * Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that provides an
+ * usable {@link DB} that can be manipulated by this wrapper.
+ *
  * @see MapDbPersistenceBackendFactory
  * @see DirectWriteMapDbStore
  * @see DirectWriteMapDbListsStore
@@ -103,8 +100,9 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      * <p>
      * <b>Note: </b> this constructor is package-private. To create a new {@link MapDbPersistenceBackend}
      * see {@link MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
+     *
      * @param aDB the {@link DB} used to creates the used {@link Map}s and manage the database
-     * 
+     *
      * @see MapDbPersistenceBackendFactory
      */
     @SuppressWarnings("unchecked")
@@ -151,24 +149,27 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     public void save() {
         db.commit();
     }
-    
+
     /**
      * Return all the {@link Collection}s contained in the database
      *
-     * @note This method is public for test purposes, client code should not call it.
      * @return a {@link Map} containing all the {@link Collection}s contained in the database and their associated names
+     *
+     * @note This method is public for test purposes, client code should not call it.
      */
     public Map<String, Object> getAll() {
         return db.getAll();
     }
-    
+
     public <E> E get(String name) {
         return db.get(name);
     }
 
     /**
      * Retrieves container for a given object {@link Id}.
+     *
      * @param id the {@link Id} of the contained object
+     *
      * @return a {@link ContainerInfo} descriptor that contains element's container informations
      */
     public ContainerInfo containerFor(Id id) {
@@ -177,7 +178,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Stores container information for a given id in the Container Map.
-     * @param id the {@link Id} of the contained element
+     *
+     * @param id        the {@link Id} of the contained element
      * @param container the {@link ContainerInfo} descriptor containing element's container information to store
      */
     public void storeContainer(Id id, ContainerInfo container) {
@@ -186,9 +188,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Retrieves the metaclass (EClass) of the element with the given {@link Id}.
+     *
      * @param id the {@link Id} of the element
-     * @return a {@link ClassInfo} descriptor containing element's metaclass informations ({@link org.eclipse.emf.ecore.EClass}, metamodel
-     * name, and {@code nsURI})
+     *
+     * @return a {@link ClassInfo} descriptor containing element's metaclass informations ({@link
+     * org.eclipse.emf.ecore.EClass}, metamodel name, and {@code nsURI})
      */
     public ClassInfo metaclassFor(Id id) {
         return instanceOfMap.get(id);
@@ -196,9 +200,10 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Stores metaclass (EClass) information for the element with the given {@link Id}.
-     * @param id the {@link Id} of the element
-     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link org.eclipse.emf.ecore.EClass}, metamodel
-     * name, and {@code nsURI})
+     *
+     * @param id        the {@link Id} of the element
+     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link
+     *                  org.eclipse.emf.ecore.EClass}, metamodel name, and {@code nsURI})
      */
     public void storeMetaclass(Id id, ClassInfo metaclass) {
         instanceOfMap.put(id, metaclass);
@@ -206,7 +211,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Store the value of a given {@link FeatureKey}.
-     * @param key the {@link FeatureKey} to set the value of
+     *
+     * @param key   the {@link FeatureKey} to set the value of
      * @param value an {@link Object} representing the value associated to the given {@code key}
      */
     public Object storeValue(FeatureKey key, Object value) {
@@ -215,19 +221,23 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Retrieves the value of a given {@link FeatureKey}.
+     *
      * @param key the {@link FeatureKey} to look for
-     * @return an {@link Object} representing the value associated to the given {@code key}, {@code null}
-     * if it is not in the database
+     *
+     * @return an {@link Object} representing the value associated to the given {@code key}, {@code null} if it is not
+     * in the database
      */
     public Object valueOf(FeatureKey key) {
         return features.get(key);
     }
 
     /**
-     * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link MapDbPersistenceBackend#isFeatureSet(FeatureKey)}).
+     * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
+     * MapDbPersistenceBackend#isFeatureSet(FeatureKey)}).
+     *
      * @param key the {@link FeatureKey} to remove
-     * @return an {@link Object} representing the removed value, {@code null} if it
-     * hasn't been found
+     *
+     * @return an {@link Object} representing the removed value, {@code null} if it hasn't been found
      */
     public Object removeFeature(FeatureKey key) {
         return features.remove(key);
@@ -235,7 +245,9 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Checks if the given {@link FeatureKey} is set
+     *
      * @param key the {@link FeatureKey} to check
+     *
      * @return {@code true} if the feature is set, {@code false} otherwise
      */
     public boolean isFeatureSet(FeatureKey key) {
@@ -247,9 +259,10 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      * <p>
      * This method is similar to {@link MapDbPersistenceBackend#storeValue(FeatureKey, Object)} but it
      * uses the Multivalued {@link Map} that stores indices explicitly.
-     * @param key the {@link MultivaluedFeatureKey} to set the value of
-     * @param value an {@link Object} representing the value associated to the given {@code key} 
-     * 
+     *
+     * @param key   the {@link MultivaluedFeatureKey} to set the value of
+     * @param value an {@link Object} representing the value associated to the given {@code key}
+     *
      * @see DirectWriteMapDbIndicesStore
      */
     public Object storeValueAtIndex(MultivaluedFeatureKey key, Object value) {
@@ -262,9 +275,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      * This method is similar to {@link MapDbPersistenceBackend#valueOf(FeatureKey)} but it
      * uses Multivalued {@link Map} to retrieve the element at the given index directly instead of
      * returning the entire {@link Collection}.
+     *
      * @param key the {@link MultivaluedFeatureKey} to get the value from
+     *
      * @return an {@link Object} representing the value associated to the given {@code key}
-     * 
+     *
      * @see DirectWriteMapDbIndicesStore
      */
     public Object valueAtIndex(MultivaluedFeatureKey key) {
@@ -273,9 +288,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Copies all the contents of this this back-end to the target one.
+     *
      * @param target the {@link MapDbPersistenceBackend} to copy the database contents to
-     * @throws UnsupportedOperationException if the current {@link DB} contains {@link Collection}s
-     * which are not {@link Map}s
+     *
+     * @throws UnsupportedOperationException if the current {@link DB} contains {@link Collection}s which are not {@link
+     *                                       Map}s
      */
     @SuppressWarnings({"unchecked", "rawtypes"}) // Unchecked cast: 'Map' to 'Map<...>'
     public void copyTo(MapDbPersistenceBackend target) {

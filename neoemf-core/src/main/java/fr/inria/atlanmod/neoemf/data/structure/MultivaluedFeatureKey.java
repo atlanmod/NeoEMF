@@ -60,8 +60,10 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * This method behaves like: {@code MultivaluedFeatureKey.from(PersistentEObject.from(internalObject), feature,
      * position)}
      *
-     * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its identifier
-     * @param feature        the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be extracted
+     * @param internalObject the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its
+     *                       identifier
+     * @param feature        the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be
+     *                       extracted
      * @param position       the position of the {@link EStructuralFeature}
      *
      * @return a new {@code MultivaluedFeatureKey}
@@ -80,7 +82,8 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * This method behaves like: {@code MultivaluedFeatureKey.of(object.id(), feature.getName(), position)}
      *
      * @param object   the {@link PersistentEObject} from which the identifier will be extracted
-     * @param feature  the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be extracted
+     * @param feature  the {@link EStructuralFeature} of the {@link PersistentEObject} from which the name will be
+     *                 extracted
      * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@code MultivaluedFeatureKey}
@@ -98,8 +101,8 @@ public class MultivaluedFeatureKey extends FeatureKey {
      * used as a simple representation of a feature of an object. The "multivalued" characteric is identified with the
      * {@code position}.
      *
-     * @param id the identifier of the {@link PersistentEObject}
-     * @param name the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
+     * @param id       the identifier of the {@link PersistentEObject}
+     * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
      * @param position the position of the {@link EStructuralFeature}
      *
      * @return a new {@code MultivaluedFeatureKey}

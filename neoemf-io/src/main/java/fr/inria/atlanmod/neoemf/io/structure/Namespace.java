@@ -44,7 +44,7 @@ public class Namespace {
      * Constructs a new {@code Namespace} with the given {@code prefix} and {@code uri}.
      *
      * @param prefix the prefix of this namespace
-     * @param uri the literal representation of the URI of this namespace
+     * @param uri    the literal representation of the URI of this namespace
      */
     private Namespace(String prefix, String uri) {
         this.prefix = prefix;
@@ -71,6 +71,7 @@ public class Namespace {
 
     /**
      * Returns the literal representation of the URI of this namespace
+     *
      * @return the literal representation of the URI
      */
     public String getUri() {

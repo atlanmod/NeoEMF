@@ -30,7 +30,6 @@ import static java.util.Objects.isNull;
  * A {@link Serializer} implementation for {@link Id}s.
  *
  * @note For now this serializer only works with {@link StringId} instances.
- *
  * @see Id
  * @see StringId
  */

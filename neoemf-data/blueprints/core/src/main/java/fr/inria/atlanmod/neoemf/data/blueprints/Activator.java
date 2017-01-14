@@ -11,17 +11,17 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import org.osgi.framework.BundleActivator;
-
 import fr.inria.atlanmod.neoemf.AbstractActivator;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 
+import org.osgi.framework.BundleActivator;
+
 /**
  * A {@link BundleActivator} that automatically registers an instance of {@link BlueprintsPersistenceBackendFactory}
  * in the global {@link PersistenceBackendFactoryRegistry} when the plugin is started.
- * 
+ *
  * @see BlueprintsPersistenceBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */

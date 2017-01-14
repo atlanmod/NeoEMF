@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
  * The abstract implementation of {@link PersistenceOptionsBuilder}.
  * <p>
  * All features are all optional: options can be created using all or none of them.
+ *
  * @param <B> the "self"-type of this {@link PersistenceOptionsBuilder}
  * @param <O> the type of {@link CommonOptions} built by this builder
  */

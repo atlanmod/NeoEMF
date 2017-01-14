@@ -41,7 +41,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator 
     /**
      * Constructs a new {@code SizeCachingStoreDecorator} with the given {@code cacheSize}.
      *
-     * @param store the underlying store
+     * @param store     the underlying store
      * @param cacheSize the size of the cache
      */
     public SizeCachingStoreDecorator(PersistentStore store, int cacheSize) {

@@ -32,7 +32,7 @@ public class BlueprintsHandlerFactory {
     /**
      * Creates a {@link PersistenceHandler} on the given {@code backend}.
      *
-     * @param backend the persistence back-end where data must persist
+     * @param backend            the persistence back-end where data must persist
      * @param conflictResolution {@code true} if you want a conflict resolution feature
      *
      * @return a new persistence handler

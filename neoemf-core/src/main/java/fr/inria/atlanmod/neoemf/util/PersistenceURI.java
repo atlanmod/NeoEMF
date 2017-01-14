@@ -56,10 +56,10 @@ public class PersistenceURI extends URI {
     /**
      * Constructs a new {@code PersistenceURI} from the given {@code internalURI}.
      *
+     * @param internalUri the base {@code URI}
+     *
      * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File, String)}, or {@link #createFileURI(URI, String)} instead.
-     *
-     * @param internalUri the base {@code URI}
      */
     protected PersistenceURI(@Nonnull URI internalUri) {
         super(internalUri.hashCode());
@@ -79,7 +79,6 @@ public class PersistenceURI extends URI {
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
      *                                  PersistenceBackendFactoryRegistry} or if it is {@link #FILE_SCHEME}
-     *
      * @see #createFileURI(File, String)
      * @see #createFileURI(URI, String)
      */

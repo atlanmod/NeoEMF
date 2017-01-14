@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import javax.annotation.Nonnull;
 
 /**
- *
+ * ???
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
@@ -32,6 +32,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
 
     /**
      * Constructs a new {@code BerkeleyDbOptionsBuilder} instance.
+     *
      * @return a new builder
      */
     @Nonnull
@@ -40,6 +41,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     }
 
     /**
+     * ???
      *
      * @return this {@code CommonOptionsBuilder} (for chaining)
      */
@@ -49,6 +51,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     }
 
     /**
+     * ???
      *
      * @return this {@code CommonOptionsBuilder} (for chaining)
      */
@@ -58,6 +61,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     }
 
     /**
+     * ???
      *
      * @return this {@code CommonOptionsBuilder} (for chaining)
      */
@@ -67,6 +71,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     }
 
     /**
+     * ???
      *
      * @return this {@code CommonOptionsBuilder} (for chaining)
      */
@@ -76,6 +81,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     }
 
     /**
+     * ?
      *
      * @return this {@code CommonOptionsBuilder} (for chaining)
      */

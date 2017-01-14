@@ -42,7 +42,7 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
     /**
      * Constructs a new {@code FeatureCachingStoreDecorator} with the given {@code cacheSize}.
      *
-     * @param store the underlying store
+     * @param store     the underlying store
      * @param cacheSize the size of the cache
      */
     public FeatureCachingStoreDecorator(PersistentStore store, int cacheSize) {

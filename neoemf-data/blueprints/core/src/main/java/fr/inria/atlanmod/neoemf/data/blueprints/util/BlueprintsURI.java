@@ -29,12 +29,12 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A specific subclass of {@link PersistenceURI} that creates Blueprints specific resource {@link URI}s from
- * a {@link File} descriptor or an existing {@link URI}.
+ * A specific subclass of {@link PersistenceURI} that creates Blueprints specific resource {@link URI}s from a {@link
+ * File} descriptor or an existing {@link URI}.
  * <p>
- * The class defines a Blueprints specific {@link URI} scheme that is used to register {@link BlueprintsPersistenceBackendFactory}
- * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol to factory} map of an existing {@link ResourceSet}
- * with a {@link PersistentResourceFactory}.
+ * The class defines a Blueprints specific {@link URI} scheme that is used to register {@link
+ * BlueprintsPersistenceBackendFactory} in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol
+ * to factory} map of an existing {@link ResourceSet} with a {@link PersistentResourceFactory}.
  *
  * @see PersistenceBackendFactoryRegistry
  * @see BlueprintsPersistenceBackendFactory
@@ -56,10 +56,10 @@ public class BlueprintsURI extends PersistenceURI {
     /**
      * Constructs a new {@code BlueprintsURI} from the given {@code internalURI}.
      *
+     * @param internalURI the base {@code URI}
+     *
      * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File)}, or {@link #createFileURI(URI)} instead.
-     *
-     * @param internalURI the base {@code URI}
      */
     protected BlueprintsURI(URI internalURI) {
         super(internalURI);
@@ -73,9 +73,9 @@ public class BlueprintsURI extends PersistenceURI {
      *
      * @return the created {@code URI}
      *
-     * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link #FILE_SCHEME}
-     *
+     * @throws NullPointerException     if the {@code uri} is {@code null}
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
+     *                                  #FILE_SCHEME}
      * @see #createFileURI(File)
      * @see #createFileURI(URI)
      */
@@ -115,7 +115,7 @@ public class BlueprintsURI extends PersistenceURI {
      * @return the created {@code URI}
      *
      * @throws NullPointerException if the {@code uri} is {@code null} or if the file referenced by the {@code uri}
-     * cannot be found
+     *                              cannot be found
      */
     @Nonnull
     public static URI createFileURI(@Nonnull URI uri) {

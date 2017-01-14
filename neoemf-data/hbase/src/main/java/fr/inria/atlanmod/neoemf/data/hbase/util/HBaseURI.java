@@ -32,11 +32,11 @@ public class HBaseURI extends PersistenceURI {
     /**
      * Constructs a new {@code HBaseURI} from the given {@code internalURI}.
      *
+     * @param internalURI the base {@code URI}
+     *
      * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File)}, {@link #createFileURI(URI)} or {@link #createHierarchicalURI(String, String, URI)}
      * instead.
-     *
-     * @param internalURI the base {@code URI}
      */
     protected HBaseURI(@Nonnull URI internalURI) {
         super(internalURI);
@@ -48,10 +48,12 @@ public class HBaseURI extends PersistenceURI {
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@code HBaseURI}.
      *
      * @param uri the base {@code URI}
-     * @return the created {@code URI}
-     * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link #FILE_SCHEME}
      *
+     * @return the created {@code URI}
+     *
+     * @throws NullPointerException     if the {@code uri} is {@code null}
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
+     *                                  #FILE_SCHEME}
      * @see #createFileURI(File)
      * @see #createFileURI(URI)
      * @see #createHierarchicalURI(String, String, URI)
@@ -72,7 +74,9 @@ public class HBaseURI extends PersistenceURI {
      * Creates a new {@code HBaseURI} from the given {@link File} descriptor.
      *
      * @param file the {@link File} to build a {@code URI} from
+     *
      * @return the created {@code URI}
+     *
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull
@@ -86,7 +90,9 @@ public class HBaseURI extends PersistenceURI {
      * system.
      *
      * @param uri the base {@code URI}
+     *
      * @return the created {@code URI}
+     *
      * @throws NullPointerException if the {@code uri} is {@code null}
      */
     @Nonnull
@@ -98,10 +104,12 @@ public class HBaseURI extends PersistenceURI {
     /**
      * ???
      *
-     * @param host ???
-     * @param port ???
+     * @param host     ???
+     * @param port     ???
      * @param modelURI ???
+     *
      * @return the created {@code URI}
+     *
      * @throws NullPointerException if any of the parameters is {@code null}
      */
     @Nonnull

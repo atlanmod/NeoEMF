@@ -37,7 +37,7 @@ public interface Reader extends InputNotifier<Processor> {
      * @param stream the stream to read
      *
      * @throws IllegalArgumentException if this reader hasn't any handler
-     * @throws IOException if an error occurred during the I/O process
+     * @throws IOException              if an error occurred during the I/O process
      */
     void read(InputStream stream) throws IOException;
 }

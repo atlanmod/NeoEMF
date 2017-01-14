@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 /**
- * An implementation of {@link PersistentResourceOptions} holding Blueprints related 
- * resource-level features such as the Blueprints implementation used or the autocommit chunk size.
+ * An implementation of {@link PersistentResourceOptions} holding Blueprints related resource-level features such as the
+ * Blueprints implementation used or the autocommit chunk size.
  */
 public interface BlueprintsResourceOptions extends PersistentResourceOptions {
 
