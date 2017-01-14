@@ -14,6 +14,9 @@ package fr.inria.atlanmod.neoemf.data.mapdb.option;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 
 /**
+ * A {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions} that holds MapDB specific options.
+ *
+ * @note Not implemented yet.
  * @future This class is not used in the current release of the tool, it will simplify option management in the near
  * future.
  */

@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.option;
 
 /**
- * Represents common options managed by {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}.
+ * A {@link PersistenceOptions} that holds common options.
  *
+ * @note Not implemented yet.
  * @future This class is not used in the current release of the tool, it will simplify option management in the near
  * future.
  */

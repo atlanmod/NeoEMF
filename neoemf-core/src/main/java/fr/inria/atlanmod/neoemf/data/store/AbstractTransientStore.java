@@ -28,17 +28,17 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link TransientStore} that uses collections to store data in memory.
+ * A abstract {@link TransientStore} that uses collections to store data in memory.
  */
 public abstract class AbstractTransientStore implements TransientStore {
 
     /**
-     * ???
+     * Map that holds loaded single-valued features.
      */
     protected Map<FeatureKey, Object> singleMap;
 
     /**
-     * ???
+     * Map that holds loaded multi-valued features.
      */
     protected Map<FeatureKey, List<Object>> manyMap;
 

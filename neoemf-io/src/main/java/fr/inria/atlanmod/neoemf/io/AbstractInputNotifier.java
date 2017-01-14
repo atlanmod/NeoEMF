@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * The abstract implementation of {@link InputNotifier} that provides overall behavior for the management of handlers.
+ * An abstract {@link InputNotifier} that provides overall behavior for the management of handlers.
  *
  * @param <T> the type of the notified {@link InputHandler}
  */

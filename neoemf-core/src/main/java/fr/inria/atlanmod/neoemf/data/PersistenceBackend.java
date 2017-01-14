@@ -27,7 +27,6 @@ import java.io.Closeable;
  * @future an abstraction of {@code PersistenceBackend}s will be implemented to define a global behaviour. For now, it
  * provides only basic methods for closing or saving a model, but later, it will provide generic methods to add, delete
  * or get a value.
- *
  * @see fr.inria.atlanmod.neoemf.data.store.DirectWriteStore
  */
 public interface PersistenceBackend extends Closeable {

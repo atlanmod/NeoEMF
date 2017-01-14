@@ -29,7 +29,9 @@ import java.util.Arrays;
 import static java.util.Objects.isNull;
 
 /**
- * The abstract implementation of {@link DirectWriteStore}.
+ * An abstract {@link DirectWriteStore} that redirects certain methods according to the instance of the encountered
+ * {@link EStructuralFeature}. If the subclass does not re-implement the inherited methods of EMF, the call is
+ * automatically redirected to the associated method that begins with the same name.
  *
  * @param <P> the type of the supported {@link PersistenceBackend}
  */

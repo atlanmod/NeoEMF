@@ -23,7 +23,6 @@ import org.osgi.framework.BundleActivator;
  * associated {@link MapDbURI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
  *
  * @note This class should not be used in standard use.
- *
  * @see MapDbPersistenceBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */

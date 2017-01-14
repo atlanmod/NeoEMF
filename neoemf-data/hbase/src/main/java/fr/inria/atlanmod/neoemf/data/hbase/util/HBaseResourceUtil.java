@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import static java.util.Objects.isNull;
 
 /**
- * Utility singleton class that provides HBase-specific helpers. 
+ * Utility singleton class that provides HBase-specific helpers.
  */
 public class HBaseResourceUtil {
 

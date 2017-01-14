@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 import static java.util.Objects.nonNull;
 
 /**
- * An abstract implementation of {@link Reader} that processes XMI files.
+ * An abstract {@link Reader} that processes the raw structure of XMI files.
  */
 public abstract class AbstractXmiReader extends AbstractReader {
 

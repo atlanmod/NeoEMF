@@ -17,8 +17,7 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
 /**
- * An abstract option builder that extends {@link AbstractPersistenceOptionsBuilder} by providing utility methods to
- * create generic Blueprints options.
+ * An abstract {@link PersistenceOptionsBuilder} that provides utility methods to create generic Blueprints options.
  * <p>
  * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features, or {@link
  * BlueprintsStoreOptions} if they define database access feature.

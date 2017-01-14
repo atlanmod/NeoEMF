@@ -20,7 +20,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 /**
- * The abstract implementation of {@link PersistenceOptionsBuilder}.
+ * An abstract {@link PersistenceOptionsBuilder} that manages the assembly and the construction of
+ * {@link PersistenceOptions}.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  *
@@ -30,13 +31,13 @@ import javax.annotation.Nonnull;
 public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersistenceOptionsBuilder<B, O>, O extends AbstractPersistenceOptions> implements PersistenceOptionsBuilder {
 
     /**
-     * A temporary map that holds all defined key/value options in this builder.
+     * Map that holds all defined key/value options in this builder.
      */
     @Nonnull
     private final Map<String, Object> options;
 
     /**
-     * A temporary list that holds all defined store options in this builder.
+     * List that holds all defined store options in this builder.
      */
     @Nonnull
     private final List<PersistentStoreOptions> storeOptions;

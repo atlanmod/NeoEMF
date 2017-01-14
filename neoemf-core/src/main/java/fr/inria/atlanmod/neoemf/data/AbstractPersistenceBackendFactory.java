@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The abstract implementation of {@link PersistenceBackendFactory}.
+ * An abstract {@link PersistenceBackendFactory} that processes common store options and manages the configuration.
  */
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 

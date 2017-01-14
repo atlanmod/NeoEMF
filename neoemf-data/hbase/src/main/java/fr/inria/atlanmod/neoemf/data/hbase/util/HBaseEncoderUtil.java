@@ -15,7 +15,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
-import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 
 import org.apache.commons.io.IOUtils;
@@ -46,7 +45,7 @@ public class HBaseEncoderUtil {
      * Expected length (in {@code bytes}) of stored elements.
      */
     public static final int UUID_LENGTH = 23;
-    
+
     /**
      * The default separator used to serialize {@link Collection}s.
      */
@@ -54,12 +53,13 @@ public class HBaseEncoderUtil {
 
     /**
      * Decodes the provided {@code byte} array into an array of {@link String} representing {@link EReference}s.
+     *
      * @param value the HBase value to decode
+     *
      * @return an array of {@link String}s representing the {@link EReference}s decoded from the database
-     * 
-     * @throws NullPointerException if the given {@code value} is null
+     *
+     * @throws NullPointerException     if the given {@code value} is null
      * @throws IllegalArgumentException if the length of {@code value} is not a multiple of {@code UUID_LENGTH}
-     * 
      * @see HBaseEncoderUtil#toBytesReferences(String[])
      */
     public static String[] toStringsReferences(byte[] value) {
@@ -83,11 +83,12 @@ public class HBaseEncoderUtil {
 
     /**
      * Encodes the provided {@link String} array into an arrat of {@code bytes} that can be stored in the database
+     *
      * @param strings an array of {@link String}s representing the {@link EReference}s to encode.
-     * @return an array of {@code bytes} 
-     * 
+     *
+     * @return an array of {@code bytes}
+     *
      * @throws NullPointerException if the value to encode is {@code null}
-     * 
      * @see HBaseEncoderUtil#toStringsReferences(byte[])
      */
     public static byte[] toBytesReferences(String[] strings) {
@@ -99,9 +100,11 @@ public class HBaseEncoderUtil {
 
     /**
      * Encodes an array of {@link String}s into an array of {@code bytes} that can be stored in the database.
+     *
      * @param strings the array to encode
+     *
      * @return the encoded {@code byte} array
-     * 
+     *
      * @see HBaseEncoderUtil#toStrings(byte[])
      */
     public static byte[] toBytes(String[] strings) {
@@ -121,11 +124,12 @@ public class HBaseEncoderUtil {
 
     /**
      * Decodes an array of {@code bytes} into an array of {@link String}s.
+     *
      * @param bytes the {@code byte} array to decode
+     *
      * @return the decoded {@link String} array
-     * 
+     *
      * @throws NullPointerException if the given array is {@code null}
-     * 
      * @see HBaseEncoderUtil#toBytes(String[])
      */
     public static String[] toStrings(byte[] bytes) {

@@ -12,8 +12,9 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 /**
- * A specific class that holds Blueprints TinkerGraph specific options.
+ * A {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions} that holds Blueprints TinkerGraph specific options.
  *
+ * @note Not implemented yet.
  * @future This class is not used in the current release of the tool, it will simplify option management in the near
  * future.
  */

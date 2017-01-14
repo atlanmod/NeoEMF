@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.logging;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * The abstract implementation of {@link Logger}.
+ * An abstract {@link Logger} that holds the real logger. In our case, Log4j is used.
  */
 abstract class AbstractLogger implements Logger {
 

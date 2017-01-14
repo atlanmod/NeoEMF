@@ -33,7 +33,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler} specific to a Blueprints implementation.
+ * An abstract {@link fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler} specific to a Blueprints
+ * implementation.
  */
 public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 

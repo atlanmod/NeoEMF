@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.option;
 /**
  * Represents options managed by {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}.
  *
+ * @note Not implemented yet.
  * @future This class is not used in the current release of the tool, it will simplify option management in the near
  * future.
  */
