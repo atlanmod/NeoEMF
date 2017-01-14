@@ -39,7 +39,7 @@ mvn clean install -DskipTests
 mvn tycho-versions:set-version -DnewVersion='X.Y.Z'
 ```
 
-- Update feature.xml in features, and remove `.qualifier` for NeoEMF dependencies.
+- Update `feature.xml` in features and `category.xml` in the update-site: remove `.qualifier` for NeoEMF dependencies.
 
 - Install the new version in your local repository.
 ```
