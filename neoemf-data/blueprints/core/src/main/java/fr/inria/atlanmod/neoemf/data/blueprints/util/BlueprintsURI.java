@@ -29,8 +29,8 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A specific subclass of {@link PersistenceURI} that creates Blueprints specific resource {@link URI}s from a {@link
- * File} descriptor or an existing {@link URI}.
+ * A specific {@link PersistenceURI} that creates Blueprints specific resource {@link URI}s from a {@link File}
+ * descriptor or an existing {@link URI}.
  * <p>
  * The class defines a Blueprints specific {@link URI} scheme that is used to register {@link
  * BlueprintsPersistenceBackendFactory} in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol

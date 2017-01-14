@@ -14,23 +14,24 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 /**
- * An implementation of {@link PersistentResourceOptions} holding Blueprints related resource-level features such as the
- * Blueprints implementation used or the autocommit chunk size.
+ * {@link PersistentResourceOptions} that hold Blueprints related resource-level features, such as the Blueprints
+ * implementation used or the autocommit chunk size.
  */
 public interface BlueprintsResourceOptions extends PersistentResourceOptions {
 
     /**
-     * The Blueprints option key to define the graph implementation to use
+     * The Blueprints option key to define the graph implementation to use.
      */
     String GRAPH_TYPE = "blueprints.graph";
 
     /**
-     * The option key to define the number of operations between each commit in autocommit mode
+     * The option key to define the number of operations between each commit in autocommit mode.
      */
     String AUTOCOMMIT_CHUNK = "autocommit.chunk";
 
     /**
-     * The default option value to define TinkerGraph as the graph implementation to use
+     * The default option value to define {@link com.tinkerpop.blueprints.impls.tg.TinkerGraph} as the graph
+     * implementation to use.
      */
     String GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
 }

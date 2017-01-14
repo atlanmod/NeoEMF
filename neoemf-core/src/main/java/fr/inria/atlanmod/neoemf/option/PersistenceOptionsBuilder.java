@@ -23,7 +23,7 @@ public interface PersistenceOptionsBuilder {
     /**
      * Returns a immutable {@link Map} containing all defined options.
      *
-     * @throws InvalidOptionException if a conflit is detected during building
+     * @throws InvalidOptionException if a conflict is detected during building
      */
     Map<String, Object> asMap() throws InvalidOptionException;
 }

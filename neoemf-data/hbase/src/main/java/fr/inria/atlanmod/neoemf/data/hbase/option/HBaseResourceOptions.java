@@ -13,7 +13,13 @@ package fr.inria.atlanmod.neoemf.data.hbase.option;
 
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
+/**
+ * {@link PersistentResourceOptions} that hold HBase related resource-level features.
+ */
 public interface HBaseResourceOptions extends PersistentResourceOptions {
 
+    /**
+     * ???
+     */
     String READ_ONLY = "hbase.readOnly";
 }

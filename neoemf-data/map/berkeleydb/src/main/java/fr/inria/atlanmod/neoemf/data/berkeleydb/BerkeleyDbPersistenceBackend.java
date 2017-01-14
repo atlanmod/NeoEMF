@@ -55,36 +55,34 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     private static final ContainerInfoSerializer containerSerializer = new ContainerInfoSerializer();
     private static final ObjectSerializer objSerializer = new ObjectSerializer();
 
+    private final DatabaseConfig databaseConfig;
+    private final File file;
+    private final EnvironmentConfig environmentConfig;
     private boolean isClosed = true;
 
     /**
-     * A persistent map that stores the container of persistent EObjects.
+     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
      */
     private Database containers;
-
     /**
-     * A persistent map that stores the EClass for persistent EObjects.
-     * The key is the persistent object Id.
+     * A persistent map that stores the {@link org.eclipse.emf.ecore.EClass} for {@link
+     * fr.inria.atlanmod.neoemf.core.PersistentEObject}. The key is the object {@link Id}.
      */
     private Database instances;
-
     /**
-     * A persistent map that stores Structural feature values for persistent EObjects.
-     * The key is build using the persistent object Id plus the name of the feature.
+     * A persistent map that stores structural features values for {@link
+     * fr.inria.atlanmod.neoemf.core.PersistentEObject}. The key is build using the object {@link Id} plus the name of
+     * the feature.
      */
     private Database features;
-
     /**
-     * A persistent map that store the values of multivalued features for persistent EObjects.
-     * The key is build using the persistent object Id plus the name of the feature plus the index of the value.
+     * A persistent map that store the values of multi-valued features for {@link
+     * fr.inria.atlanmod.neoemf.core.PersistentEObject}. The key is build using the object {@link Id} plus the name of
+     * the feature plus the index of the value.
      */
     private Database multivaluedFeatures;
 
     private Environment environment;
-    private DatabaseConfig databaseConfig;
-    private File file;
-    private EnvironmentConfig environmentConfig;
-
 
     BerkeleyDbPersistenceBackend(File f, EnvironmentConfig ec) {
         file = f;
@@ -188,7 +186,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Stores containter information for an object id
+     * Stores container information for an object id
      */
     public void storeContainer(Id id, ContainerInfo container) {
         DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
@@ -304,7 +302,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Stores the single value of a given multivalued feature at the given index.
+     * Stores the single value of a given multi-valued feature at the given index.
      */
     public Object storeValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
         try {
@@ -320,7 +318,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Retrieves the value of a given multivalued feature at a given index.
+     * Retrieves the value of a given multi-valued feature at a given index.
      */
     public Object valueAtIndex(MultivaluedFeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));

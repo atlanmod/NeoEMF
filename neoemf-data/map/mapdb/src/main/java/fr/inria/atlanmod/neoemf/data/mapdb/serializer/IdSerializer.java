@@ -29,7 +29,7 @@ import static java.util.Objects.isNull;
 /**
  * A {@link Serializer} implementation for {@link Id}s.
  *
- * @note For now this serializer only works with {@link StringId} instances.
+ * @note For now, this serializer only works with {@link StringId}.
  * @see Id
  * @see StringId
  */
@@ -38,7 +38,7 @@ public class IdSerializer implements Serializer<Id> {
     /**
      * An embedded {@link String} {@link Serializer} used to handle {@link StringId}s.
      */
-    final Serializer<String> serializer = Serializer.STRING;
+    private final Serializer<String> serializer = Serializer.STRING;
 
     @Override
     public void serialize(@Nonnull DataOutput2 out, @Nonnull Id id) throws IOException {

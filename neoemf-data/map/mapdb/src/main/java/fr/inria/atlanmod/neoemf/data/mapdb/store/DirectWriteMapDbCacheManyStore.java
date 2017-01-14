@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link DirectWriteMapDbStore} subclass that uses an internal cache to store persisted {@link Object}s that are part
+ * A {@link DirectWriteMapDbStore} that uses an internal cache to store persisted {@link Object}s that are part
  * of multi-valued {@link EReference}s to speed-up their access.
  * <p>
  * Using a cache avoids multiple {@link List} deserialization to retrieve the same element, which can be an important
@@ -47,6 +47,9 @@ import static java.util.Objects.isNull;
  */
 public class DirectWriteMapDbCacheManyStore extends DirectWriteMapDbStore {
 
+    /**
+     * Cache that holds multi-valued {@link EReference}s.
+     */
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**

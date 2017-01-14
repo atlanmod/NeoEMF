@@ -293,7 +293,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         /**
          * Constructs a new {@code DummyRootEObject} with the given {@code resource}.
          *
-         * @param resource the resouce containing this object.
+         * @param resource the resource containing this object.
          */
         public DummyRootEObject(Resource.Internal resource) {
             super(new StringId(ROOT_EOBJECT_ID));

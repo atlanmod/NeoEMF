@@ -40,11 +40,11 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Add the given {@code graphType} in the created options
+     * Adds the given {@code graphType} in the created options.
      *
      * @param graphType the type of the Blueprints graph
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsResourceOptions#GRAPH_TYPE
      */
@@ -53,9 +53,9 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Add the {@code autocommit} feature in the created options
+     * Adds the {@code autocommit} feature in the created options.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#AUTOCOMMIT
      */
@@ -64,11 +64,11 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Add the {@code autocommit} feature with the given {@code chunk} size in the created options
+     * Adds the {@code autocommit} feature with the given {@code chunk} size in the created options.
      *
      * @param chunk the number of database operations between each commit
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#AUTOCOMMIT
      */
@@ -78,10 +78,10 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Add the {@code directWrite} feature in the created options. Created resource will embed a
-     * {@link DirectWriteBlueprintsStore} to interact with the database
+     * Adds the {@code directWrite} feature in the created options. Created resource will embed a
+     * {@link DirectWriteBlueprintsStore} to interact with the database.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#DIRECT_WRITE
      * @see DirectWriteBlueprintsStore
@@ -91,10 +91,10 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Add the {@code directWriteCacheMany} feature in the created options. Created resource will embed a
-     * {@link DirectWriteBlueprintsCacheManyStore} to interact with the database
+     * Adds the {@code directWriteCacheMany} feature in the created options. Created resource will embed a
+     * {@link DirectWriteBlueprintsCacheManyStore} to interact with the database.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsStoreOptions#CACHE_MANY
      * @see DirectWriteBlueprintsCacheManyStore

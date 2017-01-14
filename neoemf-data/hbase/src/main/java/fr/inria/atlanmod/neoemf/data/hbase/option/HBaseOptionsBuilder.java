@@ -24,8 +24,9 @@ public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBase
 
     /**
      * Constructs a new {@code HBaseOptionsBuilder}.
-     * <p>
-     * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
+     *
+     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * #newBuilder()}
      */
     protected HBaseOptionsBuilder() {
     }
@@ -43,7 +44,7 @@ public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBase
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public HBaseOptionsBuilder readOnly() {

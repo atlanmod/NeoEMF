@@ -31,7 +31,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link DirectWriteBlueprintsStore} subclass that uses an internal cache to store {@link Vertex} elements that are
+ * A {@link DirectWriteBlueprintsStore} that uses an internal cache to store {@link Vertex} elements that are
  * part of multi-valued {@link EReference}s to speed-up their access.
  * <p>
  * Large multi-valued {@link EReference}s can be an execution time bottleneck in the graph implementation because any
@@ -65,14 +65,11 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
     }
 
     /**
-     * Custom implementation of {@link DirectWriteBlueprintsStore#getReference(PersistentEObject, EReference, int)} that
-     * caches all the vertices traversed to retrieve the element at the given {@code index}. This implementation
+     * {@inheritDoc}
+     * <p>
+     * Caches all the vertices traversed to retrieve the element at the given {@code index}. This implementation
      * bypasses the graph API limitation that has to traverse all the {@link Edge}s connected to the input vertex to
      * find the one with the given {@code index}.
-     *
-     * @param object    the input model element
-     * @param reference the {@link EReference} to retrieve
-     * @param index     the index of the element to retrieve
      *
      * @return a list of {@link EObject} if the given {@link EReference} is multi-valued, an {@link EObject} if it is
      * single-valued, {@code null} if the element doesn't exist

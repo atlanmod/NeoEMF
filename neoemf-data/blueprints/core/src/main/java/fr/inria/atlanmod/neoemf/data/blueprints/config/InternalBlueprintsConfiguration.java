@@ -19,16 +19,21 @@ import org.apache.commons.configuration.Configuration;
 import java.io.File;
 
 /**
- * A configuration class that sets graph-specific default configuration properties in the current NeoEMF
- * {@link Configuration}.
- * <p>
- * Implementations of this interface are called dynamically by {@link BlueprintsPersistenceBackendFactory}
- * during database creation.
+ * A configuration class that sets graph-specific default configuration properties in the current NeoEMF {@link
+ * Configuration}.
  *
+ * @note Implementations of this interface are called dynamically by {@link BlueprintsPersistenceBackendFactory} during
+ * database creation.
  * @see BlueprintsPersistenceBackendFactory
  * @see InternalBlueprintsTgConfiguration
  */
 public interface InternalBlueprintsConfiguration {
 
+    /**
+     * ???
+     *
+     * @param currentConfiguration ???
+     * @param dbLocation           ???
+     */
     void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation);
 }

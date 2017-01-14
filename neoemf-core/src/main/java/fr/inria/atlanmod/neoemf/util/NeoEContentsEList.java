@@ -76,7 +76,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     }
 
     /**
-     * Creates a new {@code NeoEContentsEList} with the given {@code onwer}.
+     * Creates a new {@code NeoEContentsEList} with the given {@code owner}.
      *
      * @param owner the owner of this list
      * @param <E>   the type of elements in this list

@@ -45,7 +45,7 @@ public class PersistenceBackendFactoryRegistry {
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private PersistenceBackendFactoryRegistry() {
         throw new IllegalStateException("This class should not be instantiated");
@@ -92,7 +92,7 @@ public class PersistenceBackendFactoryRegistry {
     /**
      * Registers a {@link PersistenceBackendFactory} identified by the given {@code URI} {@code scheme}.
      * <p>
-     * If the given {@code URI} {@code scheme} is already registered, its value will be overriden by the given {@code
+     * If the given {@code URI} {@code scheme} is already registered, its value will be overridden by the given {@code
      * factory}.
      *
      * @param scheme the URI scheme identifying the back-end factory

@@ -20,7 +20,7 @@ import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link PersistenceHandler} for a {@link BlueprintsPersistenceBackend}, <b>without</b> key conflict resolution.
+ * A {@link PersistenceHandler} for {@link BlueprintsPersistenceBackend}s, <b>without</b> key conflict resolution.
  *
  * @note Unlike the {@link BlueprintsAwareHandler}, this handler does not solve key conflicts. However, they are
  * detected and an exception is raised to avoid the creation of an unusable back-end.

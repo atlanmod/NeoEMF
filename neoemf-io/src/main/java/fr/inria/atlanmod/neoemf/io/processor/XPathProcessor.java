@@ -48,7 +48,7 @@ public class XPathProcessor extends AbstractProcessor {
     private static final String XPATH_START_ELT = "/@";
 
     /**
-     * The string reprensenting the end of a XPath segment.
+     * The string representing the end of a XPath segment.
      */
     private static final String XPATH_END_EXPR = "/";
 
@@ -104,7 +104,7 @@ public class XPathProcessor extends AbstractProcessor {
             // Processes the id from the path of the element in XML tree
             String path = paths.getPath(classifier.getLocalName());
 
-            // Increments the number of occurence for this path
+            // Increments the number of occurrence for this path
             Integer count = paths.createOrIncrement(classifier.getLocalName());
 
             // Defines the id as '<path>.<index>'
@@ -332,7 +332,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
 
             /**
-             * Returns the node which has the specified {@code name} amoung the children of this node.
+             * Returns the node which has the specified {@code name} among the children of this node.
              *
              * @param id he identifier of the sought child
              *

@@ -94,7 +94,7 @@ public class Namespace {
         private final Cache<String, Namespace> nsByUriCache;
 
         /**
-         * Constrcuts a new {@code Registry}.
+         * Constructs a new {@code Registry}.
          */
         private Registry() {
             nsByPrefixCache = Caffeine.newBuilder().build();

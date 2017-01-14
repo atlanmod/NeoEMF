@@ -24,8 +24,9 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
 
     /**
      * Constructs a new {@code BerkeleyDbOptionsBuilder}.
-     * <p>
-     * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
+     *
+     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * #newBuilder()}
      */
     protected BerkeleyDbOptionsBuilder() {
     }
@@ -43,7 +44,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public BerkeleyDbOptionsBuilder autocommit() {
@@ -53,7 +54,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public BerkeleyDbOptionsBuilder directWrite() {
@@ -63,7 +64,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public BerkeleyDbOptionsBuilder directWriteLists() {
@@ -73,7 +74,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public BerkeleyDbOptionsBuilder directWriteIndices() {
@@ -83,7 +84,7 @@ public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<
     /**
      * ?
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public BerkeleyDbOptionsBuilder directWriteCacheMany() {

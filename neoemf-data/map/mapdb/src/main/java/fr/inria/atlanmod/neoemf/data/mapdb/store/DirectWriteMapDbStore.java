@@ -47,7 +47,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link AbstractDirectWriteStore} subclass that translates model-level operations to MapDB operations.
+ * An {@link AbstractDirectWriteStore} that translates model-level operations to MapDB operations.
  * <p>
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
  * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
@@ -64,7 +64,7 @@ import static java.util.Objects.nonNull;
 public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersistenceBackend> {
 
     /**
-     * An in-memory cache for persistent EObjects. This cache reduces database accesses and
+     * An in-memory cache for {@code PersistentEObject}s. This cache reduces database accesses and
      * speed-up element retrieval. The cache can contains up to 10000 model elements, that are
      * discarded if more elements have to be cached.
      */
@@ -325,10 +325,10 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     }
 
     /**
-     * Tells the underlying database to put {@code referencedObject} in the containment list of {@code object}.
+     * Tells the underlying database to put the {@code referencedObject} in the containment list of the {@code object}.
      * <p>
-     * Containment and containers informations are persisted in a dedicated {@link Map}. The method checks if an
-     * existing container is stored and update it if needed.
+     * Containment and containers information are persisted in a dedicated {@link Map}. The method checks if an existing
+     * container is stored and update it if needed.
      *
      * @param object           the container {@link PersistentEObject}
      * @param reference        the containment {@link EReference}
@@ -344,11 +344,11 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     }
 
     /**
-     * Computes the type of {@code object} in a {@link ClassInfo} object and persists it in the database.
+     * Computes the type of the {@code object} in a {@link ClassInfo} object and persists it in the database.
      * <p>
-     * As for {@link DirectWriteMapDbStore#updateContainment(PersistentEObject, EReference, PersistentEObject)},
-     * instance-of informations are handled in a dedicated {@link Map}, easing their access. The method checks that the
-     * {@link Map} doesn't contain another type information for {@code object} and save it.
+     * As for {@link #updateContainment(PersistentEObject, EReference, PersistentEObject)}, instance-of information are
+     * handled in a dedicated {@link Map}, easing their access. The method checks that the {@link Map} doesn't contain
+     * another type information for {@code object} and save it.
      *
      * @param object the {@link PersistentEObject} to store the instance-of information from
      *
@@ -362,7 +362,7 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     }
 
     /**
-     * Get the value associated to {@code featureKey} in the underlying database.
+     * Returns the value associated to the {@code featureKey} in the underlying database.
      *
      * @param featureKey the {@link FeatureKey} to look for
      *
@@ -374,10 +374,10 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     }
 
     /**
-     * Get the value associated to ({@code object}, {@code feature}) in the underlying database.
+     * Returns the value associated to ({@code object}, {@code feature}) in the underlying database.
      * <p>
-     * This method is a wrapper for {@link DirectWriteMapDbStore#getFromMap(FeatureKey)}. A {@link FeatureKey} is
-     * computed for the given {@code object} and {@code feature} using {@link FeatureKey#from(PersistentEObject,
+     * This method is a wrapper for {@link #getFromMap(FeatureKey)}. A {@link FeatureKey} is computed for the given
+     * {@code object} and {@code feature} using {@link FeatureKey#from(PersistentEObject,
      * EStructuralFeature)}.
      *
      * @param object  the {@link PersistentEObject} to look for
@@ -386,7 +386,7 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      * @return the {@link Object} stored in the database if it exists, {@code null} otherwise. Note that the returned
      * {@link Object} can be a single element or a {@link Collection}.
      *
-     * @see DirectWriteMapDbStore#getFromMap(FeatureKey)
+     * @see #getFromMap(FeatureKey)
      */
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
         return getFromMap(FeatureKey.from(object, feature));

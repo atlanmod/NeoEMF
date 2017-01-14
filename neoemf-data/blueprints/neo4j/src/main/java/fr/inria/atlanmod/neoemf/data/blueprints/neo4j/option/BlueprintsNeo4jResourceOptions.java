@@ -15,55 +15,56 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 /**
- * An implementation of {@link PersistentResourceOptions} holding Blueprints Neo4j related
- * resource-level features such as cache type, usage of memory mapped files, or internal buffer sizes.
+ * {@link PersistentResourceOptions} that hold Blueprints Neo4j related resource-level features, such as cache type,
+ * usage of memory mapped files, or internal buffer sizes.
  */
 public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOptions {
 
     /**
-     * The option value to define Neo4j as the graph implementation to use
+     * The option value to define {@link com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph} as the graph implementation to
+     * use.
      */
     String GRAPH_TYPE_NEO4J = "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph";
 
     /**
-     * The option key to define the cache type used by Neo4j
+     * The option key to define the cache type used by Neo4j.
      */
     String CACHE_TYPE = "blueprints.neo4j.conf.cache_type";
 
     /**
-     * The option key to enable/disable the usage of memory mapped files
+     * The option key to enable/disable the usage of memory mapped files.
      */
     String USE_MEMORY_MAPPED_BUFFERS = "blueprints.neo4j.conf.use_memory_mapped_buffers";
 
     /**
-     * The option key to set the size of the buffer that contains string values
+     * The option key to set the size of the buffer that contains string values.
      */
     String STRINGS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.strings.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains arrays
+     * The option key to set the size of the buffer that contains arrays.
      */
     String ARRAYS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.arrays.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains nodes
+     * The option key to set the size of the buffer that contains nodes.
      */
     String NODES_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.nodestore.db.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains properties
+     * The option key to set the size of the buffer that contains properties.
      */
     String PROPERTIES_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.propertystore.db.mapped_memory";
 
     /**
-     * The option key to set the size of the buffer that contains relationships
+     * The option key to set the size of the buffer that contains relationships.
      */
     String RELATIONSHIPS_MAPPED_MEMORY = "blueprints.neo4j.conf.neostore.relationshipstore.db.mapped_memory";
 
     /**
      * Possible values for {@link #CACHE_TYPE}.
      * <p>
-     * The cache type hpc is not available because the embedded Neo4j the Community Edition.
+     * The cache type "hpc" is not available because the embedded Neo4j is the Community Edition.
      */
     enum CacheType {
         NONE("none"),

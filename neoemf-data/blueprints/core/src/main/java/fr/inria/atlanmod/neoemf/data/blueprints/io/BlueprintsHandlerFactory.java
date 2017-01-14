@@ -23,7 +23,7 @@ public class BlueprintsHandlerFactory {
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private BlueprintsHandlerFactory() {
         throw new IllegalStateException("This class should not be instantiated");

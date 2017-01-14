@@ -32,25 +32,27 @@ public class BerkeleyDb {
     DatabaseConfig dbconf;
 
     /**
-     * A persistent map that stores the container of persistent EObjects.
+     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
      */
     private Database containers;
 
     /**
-     * A persistent map that stores the EClass for persistent EObjects.
-     * The key is the persistent object Id.
+     * A persistent map that stores the {@link org.eclipse.emf.ecore.EClass} for {@link
+     * fr.inria.atlanmod.neoemf.core.PersistentEObject}s. The key is the object {@link
+     * fr.inria.atlanmod.neoemf.core.Id}.
      */
     private Database instances;
 
     /**
-     * A persistent map that stores Structural feature values for persistent EObjects.
-     * The key is build using the persistent object Id plus the name of the feature.
+     * A persistent map that stores Structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * The key is build using the object {@link fr.inria.atlanmod.neoemf.core.Id} plus the name of the feature.
      */
     private Database features;
 
     /**
-     * A persistent map that store the values of multivalued features for persistent EObjects.
-     * The key is build using the persistent object Id plus the name of the feature plus the index of the value.
+     * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * The key is build using the object {@link fr.inria.atlanmod.neoemf.core.Id} plus the name of the feature plus the
+     * index of the value.
      */
     private Database multivaluedFeatures;
 

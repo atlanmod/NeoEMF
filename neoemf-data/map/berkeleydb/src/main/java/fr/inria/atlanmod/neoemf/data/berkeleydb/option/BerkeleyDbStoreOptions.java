@@ -13,10 +13,28 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
+/**
+ * {@link PersistentStoreOptions} that hold BerkeleyDB related database access features.
+ */
 public enum BerkeleyDbStoreOptions implements PersistentStoreOptions {
+    /**
+     * ???
+     */
     AUTOCOMMIT,
+    /**
+     * ???
+     */
     DIRECT_WRITE,
+    /**
+     * ???
+     */
     DIRECT_WRITE_LISTS,
+    /**
+     * ???
+     */
     DIRECT_WRITE_INDICES,
+    /**
+     * ???
+     */
     CACHE_MANY
 }

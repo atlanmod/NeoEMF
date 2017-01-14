@@ -57,8 +57,6 @@ public abstract class AbstractInputNotifier<T extends InputHandler> implements I
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return an immutable collection
      */
     @Override

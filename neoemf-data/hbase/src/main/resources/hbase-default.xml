@@ -870,14 +870,14 @@ possible configurations would overwhelm and obscure the important.
          values, included here for documentation purposes -->
     <property>
         <name>hbase.master.keytab.file</name>
-        <value></value>
+        <value />
         <description>Full path to the kerberos keytab file to use for logging in
             the configured HMaster server principal.
         </description>
     </property>
     <property>
         <name>hbase.master.kerberos.principal</name>
-        <value></value>
+        <value />
         <description>Ex. "hbase/_HOST@EXAMPLE.COM". The kerberos principal name
             that should be used to run the HMaster process. The principal name should
             be in the form: user/hostname@DOMAIN. If "_HOST" is used as the hostname
@@ -887,14 +887,14 @@ possible configurations would overwhelm and obscure the important.
     </property>
     <property>
         <name>hbase.regionserver.keytab.file</name>
-        <value></value>
+        <value />
         <description>Full path to the kerberos keytab file to use for logging in
             the configured HRegionServer server principal.
         </description>
     </property>
     <property>
         <name>hbase.regionserver.kerberos.principal</name>
-        <value></value>
+        <value />
         <description>Ex. "hbase/_HOST@EXAMPLE.COM". The kerberos principal name
             that should be used to run the HRegionServer process. The principal name
             should be in the form: user/hostname@DOMAIN. If "_HOST" is used as the
@@ -914,7 +914,7 @@ possible configurations would overwhelm and obscure the important.
     </property>
     <property>
         <name>hbase.superuser</name>
-        <value></value>
+        <value />
         <description>List of users or groups (comma-separated), who are allowed
             full privileges, regardless of stored ACLs, across the cluster.
             Only used when HBase security is enabled.
@@ -963,7 +963,7 @@ possible configurations would overwhelm and obscure the important.
     </property>
     <property>
         <name>hbase.coprocessor.region.classes</name>
-        <value></value>
+        <value />
         <description>A comma-separated list of Coprocessors that are loaded by
             default on all tables. For any override coprocessor method, these classes
             will be called in order. After implementing your own Coprocessor, just put
@@ -1030,7 +1030,7 @@ possible configurations would overwhelm and obscure the important.
     </property>
     <property>
         <name>hbase.coprocessor.master.classes</name>
-        <value></value>
+        <value />
         <description>A comma-separated list of
             org.apache.hadoop.hbase.coprocessor.MasterObserver coprocessors that are
             loaded by default on the active HMaster process. For any implemented
@@ -1349,7 +1349,7 @@ possible configurations would overwhelm and obscure the important.
     </property>
     <property>
         <name>hbase.procedure.regionserver.classes</name>
-        <value></value>
+        <value />
         <description>A comma-separated list of
             org.apache.hadoop.hbase.procedure.RegionServerProcedureManager procedure managers that are
             loaded by default on the active HRegionServer process. The lifecycle methods (init/start/stop)
@@ -1360,7 +1360,7 @@ possible configurations would overwhelm and obscure the important.
     </property>
     <property>
         <name>hbase.procedure.master.classes</name>
-        <value></value>
+        <value />
         <description>A comma-separated list of
             org.apache.hadoop.hbase.procedure.MasterProcedureManager procedure managers that are
             loaded by default on the active HMaster process. A procedure is identified by its signature and

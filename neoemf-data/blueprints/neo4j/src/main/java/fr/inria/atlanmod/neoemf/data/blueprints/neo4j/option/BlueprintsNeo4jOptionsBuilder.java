@@ -32,8 +32,9 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     /**
      * Constructs a new {@code BlueprintsNeo4jOptionsBuilder} and sets the graph type to
      * {@link BlueprintsNeo4jResourceOptions#GRAPH_TYPE_NEO4J}.
-     * <p>
-     * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
+     *
+     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * #newBuilder()}
      */
     protected BlueprintsNeo4jOptionsBuilder() {
         graph(BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
@@ -50,11 +51,11 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code cache type} feature in the created options
+     * Adds the {@code cache type} feature in the created options.
      *
      * @param type the {@link CacheType} to set
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType
      */
@@ -64,10 +65,9 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code no cache} feature in the created options. This tells Neo4j to disable all
-     * its caches
+     * Adds the {@code no cache} feature in the created options. This tells Neo4j to disable all its caches.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#NONE
      */
@@ -77,10 +77,10 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code soft cache} feature in the created options. This tells Neo4j to use a cache
-     * containing soft values
+     * Adds the {@code soft cache} feature in the created options. This tells Neo4j to use a cache containing soft
+     * values.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#SOFT
      */
@@ -90,10 +90,10 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code weak cache} feature in the created options. This tells Neo4j to use a cache
-     * containing weak values.
+     * Adds the {@code weak cache} feature in the created options. This tells Neo4j to use a cache containing weak
+     * values.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions.CacheType#WEAK
      */
@@ -103,10 +103,10 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code strong cache} feature in the created options. This tells Neo4j to use a cache
-     * containing string references.
+     * Adds the {@code strong cache} feature in the created options. This tells Neo4j to use a cache containing string
+     * references.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @note Using this option the created cache cannot be garbage collected, and {@link OutOfMemoryError} can occur if
      * there is not enough memory to handle the model
@@ -118,10 +118,10 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Add the {@code memory mapped buffer} feature in the created options. If the operating system
-     * supports memory mapped files Neo4j will use them to speed up read/write operations
+     * Adds the {@code memory mapped buffer} feature in the created options. If the operating system supports memory
+     * mapped files Neo4j will use them to speed up read/write operations.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions#USE_MEMORY_MAPPED_BUFFERS
      */
@@ -131,11 +131,11 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code memory mapped buffer} feature to the given value in the created options.
+     * Adds the {@code memory mapped buffer} feature to the given value in the created options.
      *
      * @param memoryBuffers true to enable {@code memory mapped buffers}, false otherwise
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions#USE_MEMORY_MAPPED_BUFFERS
      */
@@ -145,12 +145,12 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code string mapped memory} property in the created options. This tells Neo4j the size of
-     * the buffer to allocate to handle strings.
+     * Adds the {@code string mapped memory} property in the created options. This tells Neo4j the size of the buffer to
+     * allocate to handle strings.
      *
      * @param size the size of the buffer in megabytes
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions#STRINGS_MAPPED_MEMORY
      */
@@ -160,12 +160,12 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code arrays mapped memory} property in the created options. This tells Neo4j the size of
-     * the buffer to allocate to handle arrays.
+     * Adds the {@code arrays mapped memory} property in the created options. This tells Neo4j the size of the buffer to
+     * allocate to handle arrays.
      *
      * @param size the size of the buffer in megabytes
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions#ARRAYS_MAPPED_MEMORY
      */
@@ -175,12 +175,12 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code node mapped memory} property in the created options. This tells Neo4j the size of
-     * the buffer to allocate to handle nodes.
+     * Adds the {@code node mapped memory} property in the created options. This tells Neo4j the size of the buffer to
+     * allocate to handle nodes.
      *
      * @param size the size of the buffer in megabytes
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions#NODES_MAPPED_MEMORY
      */
@@ -190,12 +190,12 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code property mapped memory} property in the created options. This tells Neo4j the size of
-     * the buffer to allocate to handle properties.
+     * Adds the {@code property mapped memory} property in the created options. This tells Neo4j the size of the buffer
+     * to allocate to handle properties.
      *
      * @param size the size of the buffer in megabytes
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions#PROPERTIES_MAPPED_MEMORY
      */
@@ -205,12 +205,12 @@ public class BlueprintsNeo4jOptionsBuilder extends AbstractBlueprintsOptionsBuil
     }
 
     /**
-     * Set the {@code relationship mapped memory} property in the created options. This tells Neo4j the size of
-     * the buffer to allocate to handle properties.
+     * Adds the {@code relationship mapped memory} property in the created options. This tells Neo4j the size of the
+     * buffer to allocate to handle properties.
      *
      * @param size the size of the buffer in megabytes
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      *
      * @see BlueprintsNeo4jResourceOptions#RELATIONSHIPS_MAPPED_MEMORY
      */

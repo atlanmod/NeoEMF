@@ -69,16 +69,16 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     }
 
     /**
-     * Validates the defined options, and checks if there is conflit between them.
+     * Validates the defined options, and checks if there is conflict between them.
      *
-     * @throws InvalidOptionException if a conflit is detected
+     * @throws InvalidOptionException if a conflict is detected
      */
     protected void validate() throws InvalidOptionException {
         // Do nothing, for now
     }
 
     /**
-     * Returns this instance.
+     * Returns this instance, casted as a {@code <B>}.
      *
      * @return this instance
      */
@@ -90,7 +90,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds a feature defined by the given {@code storeOption} in the created options.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     protected B storeOption(PersistentStoreOptions storeOption) {
         this.storeOptions.add(storeOption);
@@ -100,7 +100,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds a key/value in the created options. A custom configuration, which is not part of NeoEMF, can be added.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     public B option(String key, Object value) {
         options.put(key, value);
@@ -110,7 +110,9 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds the {@code cache-is-set} feature in the created options.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
      */
     public B cacheIsSet() {
         return storeOption(CommonStoreOptions.CACHE_IS_SET);
@@ -119,7 +121,9 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds the {@code cache-sizes} feature in the created options.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
      */
     public B cacheSizes() {
         return storeOption(CommonStoreOptions.CACHE_SIZE);
@@ -128,7 +132,9 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds the {@code cache-features} feature in the created options.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
      */
     public B cacheFeatures() {
         return storeOption(CommonStoreOptions.CACHE_STRUCTURAL_FEATURE);
@@ -137,7 +143,9 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds the {@code log} feature in the created options.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
      */
     public B log() {
         return storeOption(CommonStoreOptions.LOG);
@@ -146,7 +154,9 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds the {@code count-loaded-objects} feature in the created options.
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
      */
     public B countLoadedObjects() {
         return storeOption(CommonStoreOptions.COUNT_LOADED_OBJECT);

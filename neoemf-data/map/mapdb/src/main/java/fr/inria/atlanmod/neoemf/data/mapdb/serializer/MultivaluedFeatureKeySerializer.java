@@ -23,7 +23,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link FeatureKeySerializer} subclass that is able to serialize {@link MultivaluedFeatureKey}.
+ * A {@link FeatureKeySerializer} that is able to serialize {@link MultivaluedFeatureKey}.
  *
  * @see FeatureKeySerializer
  * @see MultivaluedFeatureKey
@@ -33,7 +33,7 @@ public class MultivaluedFeatureKeySerializer extends FeatureKeySerializer {
     /**
      * An embedded {@link Integer} {@link Serializer} used to handle collection indices.
      */
-    final Serializer<Integer> intSerializer = INTEGER;
+    protected final Serializer<Integer> intSerializer = INTEGER;
 
     @Override
     public void serialize(@Nonnull DataOutput2 out, @Nonnull FeatureKey key) throws IOException {
