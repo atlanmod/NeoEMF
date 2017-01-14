@@ -11,10 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.util;
 
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
-
-import org.apache.commons.io.FileUtils;
-import org.eclipse.emf.common.util.URI;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -22,8 +19,27 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.apache.commons.io.FileUtils;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.util.PersistenceURI;
+
+/**
+ * A specific subclass of {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File}
+ * descriptor or an existing {@link URI}.
+ * <p>
+ * The class defines a HBase specific {@link URI} scheme that is used to register {@link HBasePersistenceBackendFactory}
+ * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol-to-factory} map of an existing {@link
+ * ResourceSet} with a {@link PersistentResourceFactory}.
+ *
+ * @see PersistenceBackendFactoryRegistry
+ * @see HBasePersistenceBackendFactory
+ * @see PersistentResourceFactory
+ */
 public class HBaseURI extends PersistenceURI {
 
     @Nonnull
@@ -102,11 +118,12 @@ public class HBaseURI extends PersistenceURI {
     }
 
     /**
-     * ???
+     * Creates a new {@code HBaseURI} from the {@code host}, {@code port}, and {@code modelURI} 
+     * by creating a hierarchical {@link URI} that references the distant model resource
      *
-     * @param host     ???
-     * @param port     ???
-     * @param modelURI ???
+     * @param host the address of the HBase server (use {@code localhost} if HBase is running locally)
+     * @param port the port of the HBase server 
+     * @param modelURI a {@link URI} identifying the model in the database
      *
      * @return the created {@code URI}
      *
@@ -121,9 +138,8 @@ public class HBaseURI extends PersistenceURI {
     }
 
     /**
-     * ???
-     *
-     * @param uri ???
+     * Format the given {@code URI} by removing HBase reserved characters.
+     * @param uri the {@code URI} to format
      *
      * @return the formatted {@code URI}
      */

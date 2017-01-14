@@ -11,8 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.option;
 
+import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
+import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
+/**
+ * An implementation of {@link PersistentResourceOptions} holding HBase related resource-level features.
+ *
+ * @see DirectWriteHBaseStore
+ * @see ReadOnlyHBaseStore
+ */
 public interface HBaseResourceOptions extends PersistentResourceOptions {
 
     String READ_ONLY = "hbase.readOnly";
