@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 public interface HBaseResourceOptions extends PersistentResourceOptions {
 
     /**
-     * ???
+     * The key value to set the {@code read-only} nature of the resource.
      */
     String READ_ONLY = "hbase.readOnly";
 }
