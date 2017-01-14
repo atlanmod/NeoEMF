@@ -30,7 +30,7 @@ public class Importer {
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private Importer() {
         throw new IllegalStateException("This class should not be instantiated");

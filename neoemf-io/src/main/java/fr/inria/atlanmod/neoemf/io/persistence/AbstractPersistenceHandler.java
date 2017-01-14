@@ -87,7 +87,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
-     * Cache holding conflited {@code Id}s.
+     * Cache holding conflicted {@code Id}s.
      *
      * @note In case of conflict detection only.
      */
@@ -171,8 +171,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param id    the identifier of the element
      * @param name  the name of the attribute
-     * @param index the index of the attribute if it's a multivalued attribute
-     * @param many  {@code true} if the attribute is multivalued
+     * @param index the index of the attribute if it's a multi-valued attribute
+     * @param many  {@code true} if the attribute is multi-valued
      * @param value the value of the attribute
      */
     protected abstract void addAttribute(Id id, String name, int index, boolean many, Object value);
@@ -182,8 +182,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param id          the identifier of the element
      * @param name        the name of the reference
-     * @param index       the index of the reference if it's a multivalued reference
-     * @param many        {@code true} if the reference is multivalued
+     * @param index       the index of the reference if it's a multi-valued reference
+     * @param many        {@code true} if the reference is multi-valued
      * @param containment {@code true} if the reference is a containment
      * @param idReference the identifier of the referenced element
      */
@@ -430,8 +430,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Tries to link elements that have not been linked at their creation.
      *
-     * @param reference the reference of the targetted element
-     * @param id        the identifier of the targetted element
+     * @param reference the reference of the targeted element
+     * @param id        the identifier of the targeted element
      */
     private void tryLink(final String reference, final Id id) {
         for (UnlinkedElement e : unlinkedElementsMap.removeAll(reference)) {

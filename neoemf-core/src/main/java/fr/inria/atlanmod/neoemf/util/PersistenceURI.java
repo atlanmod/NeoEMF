@@ -67,7 +67,7 @@ public class PersistenceURI extends URI {
     }
 
     /**
-     * Creates a new {@link PersistenceURI} from the given {@code uri}.
+     * Creates a new {@code PersistenceURI} from the given {@code uri}.
      * <p>
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
      * PersistenceURI}. Its scheme must be registered in the {@link PersistenceBackendFactoryRegistry}.
@@ -94,7 +94,7 @@ public class PersistenceURI extends URI {
     }
 
     /**
-     * Creates a new {@link PersistenceURI} from the given {@code file} descriptor.
+     * Creates a new {@code PersistenceURI} from the given {@code file} descriptor.
      *
      * @param file   the {@link File} to build a {@code URI} from
      * @param scheme the scheme to identify the {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} to use
@@ -117,7 +117,7 @@ public class PersistenceURI extends URI {
     }
 
     /**
-     * Creates a new {@link PersistenceURI} from the given {@code uri} by checking the referenced file exists on the
+     * Creates a new {@code PersistenceURI} from the given {@code uri} by checking the referenced file exists on the
      * file system.
      *
      * @param uri    the base {@code URI}

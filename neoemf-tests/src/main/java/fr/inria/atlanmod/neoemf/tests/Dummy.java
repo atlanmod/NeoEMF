@@ -21,7 +21,7 @@ final class Dummy {
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private Dummy() {
         throw new IllegalStateException("This class should not be instantiated");

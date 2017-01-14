@@ -45,7 +45,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} subclass that translates model-level operations to
+ * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to
  * Blueprints calls.
  * <p>
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
@@ -496,7 +496,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Find the number of elements contained in the given {@code feature}
+     * Finds the number of elements contained in the given {@code feature}
      *
      * @param vertex  the input {@link Vertex} of the {@code feature}
      * @param feature the {@link EStructuralFeature} describing the feature to access
@@ -509,7 +509,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Set the size property of the given {@code feature} in the given {@code vertex} to {@code size}
+     * Defines the size property of the given {@code feature} in the given {@code vertex} to {@code size}
      *
      * @param vertex  the input {@link Vertex} of the {@code feature}
      * @param feature the {@link EStructuralFeature} describing the feature to access
@@ -581,7 +581,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Search in the database the {@link Vertex} corresponing to the given {@code id} and reifies it
+     * Search in the database the {@link Vertex} corresponding to the given {@code id} and reifies it
      *
      * @param id the {@link Id} to search
      *

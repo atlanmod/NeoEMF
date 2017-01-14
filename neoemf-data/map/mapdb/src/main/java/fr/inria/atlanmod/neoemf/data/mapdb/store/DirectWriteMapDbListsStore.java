@@ -35,13 +35,13 @@ import java.util.function.Function;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link DirectWriteMapDbStore} subclass that uses Java {@link List}s instead of arrays to persist multi-valued
+ * A {@link DirectWriteMapDbStore} that uses Java {@link List}s instead of arrays to persist multi-valued
  * {@link EAttribute}s and {@link EReference}s.
  * <p>
  * Using a {@link List}-based implementation allows to benefit from the rich Java {@link Collection} API, with the cost
  * of a small memory overhead compared to raw arrays.
  * <p>
- * This class reimplements {@link EStructuralFeature} accessors and mutators as well as {@link Collection} operations
+ * This class re-implements {@link EStructuralFeature} accessors and mutators as well as {@link Collection} operations
  * such as {@code size}, {@code clear}, or {@code indexOf}.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
@@ -53,6 +53,9 @@ import static java.util.Objects.isNull;
  */
 public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
 
+    /**
+     * Cache that holds multi-valued {@link EStructuralFeature}s wrapped in a {@link List}.
+     */
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**
@@ -220,6 +223,13 @@ public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
         return value;
     }
 
+    /**
+     * Casts the {@code value} as a {@link List}.
+     *
+     * @param value the object to cast
+     *
+     * @return a list
+     */
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
     private List<Object> manyValueFrom(Object value) {
         return (List<Object>) value;

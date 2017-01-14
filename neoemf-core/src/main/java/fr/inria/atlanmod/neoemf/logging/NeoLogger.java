@@ -27,7 +27,7 @@ public final class NeoLogger {
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private NeoLogger() {
         throw new IllegalStateException("This class should not be instantiated");

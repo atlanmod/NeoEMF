@@ -25,8 +25,9 @@ public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<Comm
 
     /**
      * Constructs a new {@code CommonOptionsBuilder}.
-     * <p>
-     * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
+     *
+     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * #newBuilder()}
      */
     protected CommonOptionsBuilder() {
     }

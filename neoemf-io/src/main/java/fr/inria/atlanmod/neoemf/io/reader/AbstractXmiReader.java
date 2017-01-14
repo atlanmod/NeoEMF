@@ -82,7 +82,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * A regex pattern of an attribute containing one or several references (XPath reference). Multiple references must
-     * be seperated by a space.
+     * be separated by a space.
      * <p>
      * Example of recognized strings : {@code "//@&lt;name1&gt;.&lt;index1&gt;/@&lt;name2&gt;"}
      */

@@ -29,8 +29,8 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A specific subclass of {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File}
- * descriptor or an existing {@link URI}.
+ * A specific {@link PersistenceURI} that creates MapDB specific resource {@link URI}s from a {@link File} descriptor or
+ * an existing {@link URI}.
  * <p>
  * The class defines a MapDB specific {@link URI} scheme that is used to register {@link MapDbPersistenceBackendFactory}
  * in {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol-to-factory} map of an existing {@link
@@ -66,8 +66,8 @@ public class MapDbURI extends PersistenceURI {
     }
 
     /**
-     * Create a new {@code MapDbURI} from the given {@code uri}. This method checks that the
-     * scheme of the provided {@code uri} can be used to create a new {@code MapDbURI}.
+     * Create a new {@code MapDbURI} from the given {@code uri}. This method checks that the scheme of the provided
+     * {@code uri} can be used to create a new {@code MapDbURI}.
      *
      * @param uri the base {@code URI}
      *
@@ -107,8 +107,8 @@ public class MapDbURI extends PersistenceURI {
     }
 
     /**
-     * Creates a new {@code MapDbURI} from the given {@code uri} by checking the referenced file
-     * exists on the file system.
+     * Creates a new {@code MapDbURI} from the given {@code uri} by checking the referenced file exists on the file
+     * system.
      *
      * @param uri the base {@code URI}
      *

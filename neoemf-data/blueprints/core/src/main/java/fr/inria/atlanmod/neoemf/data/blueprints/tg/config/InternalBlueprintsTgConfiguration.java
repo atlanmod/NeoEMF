@@ -25,12 +25,11 @@ import javax.annotation.Nonnull;
 import static java.util.Objects.isNull;
 
 /**
- * An internal class that sets Blueprints {@link TinkerGraph} default configuration properties in the current NeoEMF
+ * An internal class that defines Blueprints {@link TinkerGraph} default configuration properties in the current NeoEMF
  * {@link Configuration}.
- * <p>
- * This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if {@link TinkerGraph} implementation
- * is used to store the underlying database.
  *
+ * @note This class is called dynamically by {@link BlueprintsPersistenceBackendFactory} if {@link TinkerGraph}
+ * implementation is used to store the underlying database.
  * @see BlueprintsPersistenceBackendFactory
  */
 @SuppressWarnings("unused") // Called dynamically
@@ -39,6 +38,9 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
     private static final String DIRECTORY = "blueprints.tg.directory";
     private static final String FILE_TYPE = "blueprints.tg.file-type";
 
+    /**
+     * Constructs a new {@code InternalBlueprintsTgConfiguration}.
+     */
     private InternalBlueprintsTgConfiguration() {
     }
 
@@ -51,7 +53,7 @@ public final class InternalBlueprintsTgConfiguration implements InternalBlueprin
     }
 
     /**
-     * Add Blueprints database directory and file-type to the current resource {@link Configuration}
+     * Adds Blueprints database directory and file-type to the current resource {@link Configuration}
      *
      * @param currentConfiguration the {@link Configuration} holding resource properties
      * @param dbLocation           the {@link File} that contains the Blueprints database

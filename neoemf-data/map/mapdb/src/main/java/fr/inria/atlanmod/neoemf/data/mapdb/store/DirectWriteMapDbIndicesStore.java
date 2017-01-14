@@ -32,15 +32,14 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link DirectWriteMapDbStore} subclass that persists {@link Collection} indices instead of
- * serialized arrays.
+ * A {@link DirectWriteMapDbStore} that persists {@link Collection} indices instead of serialized arrays.
  * <p>
  * Indices are persisted with dedicated {@link FeatureKey}s containing the index of the element to
  * store. Using this approach avoid to deserialize entire {@link Collection}s to retrieve a single
  * element, which can be an important bottleneck in terms of execution time and memory consumption
  * if the underlying model contains very large {@link Collections}.
  * <p>
- * This class reimplements {@link EStructuralFeature} accessors and mutators as well as {@link Collection}
+ * This class re-implements {@link EStructuralFeature} accessors and mutators as well as {@link Collection}
  * operations such as {@code size}, {@code clear}, or {@code indexOf}.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
@@ -100,7 +99,7 @@ public class DirectWriteMapDbIndicesStore extends DirectWriteMapDbStore {
         Integer size = (Integer) backend.valueOf(featureKey);
         // Get element to remove
         Object old = backend.valueAtIndex(featureKey.withPosition(index));
-        // Update indexes (element to remove is overwriten)
+        // Update indexes (element to remove is overwritten)
         for (int i = index + 1; i < size; i++) {
             Object movingValue = backend.valueAtIndex(featureKey.withPosition(i));
             backend.storeValueAtIndex(featureKey.withPosition(i - 1), movingValue);

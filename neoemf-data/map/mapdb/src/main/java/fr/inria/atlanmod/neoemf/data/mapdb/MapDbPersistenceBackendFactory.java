@@ -45,10 +45,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
 /**
- * A factory that creates instances of {@link MapDbPersistenceBackend}. As other implementations of {@link
- * AbstractPersistenceBackendFactory}, this class can create transient and persistent databases. Persistent back-end
- * creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)} option
- * maps.
+ * A factory that creates instances of {@link MapDbPersistenceBackend}.
+ * <p>
+ * As other implementations of {@link PersistenceBackendFactory}, this class can create transient and persistent
+ * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
+ * PersistentResource#load(Map)} option maps.
  * <p>
  * The factory handles transient back-ends by creating in-memory {@link Map} instances. Persistent back-ends are created
  * according to the provided resource options ({@link MapDbStoreOptions}).
@@ -65,6 +66,9 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
      */
     public static final String NAME = MapDbPersistenceBackend.NAME;
 
+    /**
+     * Constructs a new {@code MapDbPersistenceBackendFactory}.
+     */
     private MapDbPersistenceBackendFactory() {
     }
 

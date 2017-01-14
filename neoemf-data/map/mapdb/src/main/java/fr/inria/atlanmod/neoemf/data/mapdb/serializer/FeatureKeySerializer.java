@@ -30,13 +30,13 @@ import javax.annotation.Nonnull;
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
     /**
-     * The {@link Serializer} that manages {@link String}s
+     * The {@link Serializer} that manages {@link String}s.
      */
-    final Serializer<String> stringSerializer = Serializer.STRING;
+    protected final Serializer<String> stringSerializer = Serializer.STRING;
     /**
-     * The {@link Serializer} the manages {@link Id}s
+     * The {@link Serializer} the manages {@link Id}s.
      */
-    final Serializer<Id> idSerializer = new IdSerializer();
+    protected final Serializer<Id> idSerializer = new IdSerializer();
 
     @Override
     public void serialize(@Nonnull DataOutput2 out, @Nonnull FeatureKey key) throws IOException {

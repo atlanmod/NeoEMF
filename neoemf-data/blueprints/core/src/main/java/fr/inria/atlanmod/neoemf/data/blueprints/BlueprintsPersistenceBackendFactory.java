@@ -54,9 +54,11 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A factory that creates instances of {@link BlueprintsPersistenceBackend}. As other implementations of {@link
- * PersistenceBackendFactory}, this class can create transient and persistent databases. Persistent back-end creation
- * can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)} option maps.
+ * A factory that creates instances of {@link BlueprintsPersistenceBackend}.
+ * <p>
+ * As other implementations of {@link PersistenceBackendFactory}, this class can create transient and persistent
+ * databases. Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link
+ * PersistentResource#load(Map)} option maps.
  * <p>
  * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent back-ends
  * are created according to the provided resource options (@see {@link BlueprintsResourceOptions} and {@link
@@ -215,7 +217,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             configuration.setProperty(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         }
         else if (options.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
-            // The file already existed, check that the issued options are not conflictive
+            // The file already exists, verify that the problem options are not conflicting.
             String savedGraphType = configuration.getString(BlueprintsResourceOptions.GRAPH_TYPE);
             String issuedGraphType = options.get(BlueprintsResourceOptions.GRAPH_TYPE).toString();
             if (!Objects.equals(savedGraphType, issuedGraphType)) {

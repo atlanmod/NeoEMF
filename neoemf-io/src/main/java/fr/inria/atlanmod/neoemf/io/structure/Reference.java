@@ -37,7 +37,7 @@ public class Reference extends StructuralFeature {
     }
 
     /**
-     * Converts an {@link Attribute} to a {@link Reference}.
+     * Converts an {@link Attribute} to a {@code Reference}.
      *
      * @param attribute the attribute to convert
      *

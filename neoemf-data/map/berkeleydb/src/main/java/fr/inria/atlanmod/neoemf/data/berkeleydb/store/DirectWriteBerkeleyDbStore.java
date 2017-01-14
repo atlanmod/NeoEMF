@@ -46,7 +46,7 @@ import static java.util.Objects.nonNull;
 public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<BerkeleyDbPersistenceBackend> {
 
     /**
-     * An in-memory cache for persistent EObjects.
+     * An in-memory cache for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
      */
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 

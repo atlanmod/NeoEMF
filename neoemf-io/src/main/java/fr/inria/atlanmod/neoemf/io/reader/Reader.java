@@ -25,7 +25,7 @@ import java.io.InputStream;
 public interface Reader extends InputNotifier<Processor> {
 
     /**
-     * Creates a series of processors in order to build and analyze the read struture.
+     * Creates a series of processors in order to build and analyze the read structure.
      *
      * @return a processor, or several embedded
      */

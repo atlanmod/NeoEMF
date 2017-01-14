@@ -77,7 +77,7 @@ public class DirectWriteBerkeleyDbIndicesStore extends DirectWriteBerkeleyDbStor
         Integer size = (Integer) backend.valueOf(featureKey);
         // Get element to remove
         Object old = backend.valueAtIndex(featureKey.withPosition(index));
-        // Update indexes (element to remove is overwriten)
+        // Update indexes (element to remove is overwritten)
         for (int i = index + 1; i < size; i++) {
             Object movingValue = backend.valueAtIndex(featureKey.withPosition(i));
             backend.storeValueAtIndex(featureKey.withPosition(i - 1), movingValue);

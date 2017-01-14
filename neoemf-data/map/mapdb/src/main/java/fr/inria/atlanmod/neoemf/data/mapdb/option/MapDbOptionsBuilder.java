@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link AbstractPersistenceOptionsBuilder} subclass that creates MapDB specific options.
+ * A {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} that creates MapDB specific options.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
@@ -24,14 +24,15 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
 
     /**
      * Constructs a new {@code MapDbOptionsBuilder}.
-     * <p>
-     * This constructor is protected for API consistency purpose, to create a new builder use {@link #newBuilder()}
+     *
+     * @note This constructor is protected for API consistency purpose, to create a new builder use {@link
+     * #newBuilder()}
      */
     protected MapDbOptionsBuilder() {
     }
 
     /**
-     * Constructs a new {@code MapDbOptionsBuilder} instance.
+     * Creates a new {@code MapDbOptionsBuilder}.
      *
      * @return a new builder
      */
@@ -43,7 +44,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public MapDbOptionsBuilder autocommit() {
@@ -53,7 +54,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public MapDbOptionsBuilder directWrite() {
@@ -63,7 +64,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteLists() {
@@ -73,7 +74,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteIndices() {
@@ -83,7 +84,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     /**
      * ???
      *
-     * @return this {@code CommonOptionsBuilder} (for chaining)
+     * @return this builder (for chaining)
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteCacheMany() {

@@ -35,20 +35,18 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * This class is responsible of low-level access to a MapDB database.
+ * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} that is responsible of low-level access to a MapDB database.
  * <p>
  * It wraps an existing {@link DB} and provides facilities to create and retrieve elements. This class manages a set of
  * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
  * between elements</li> <li><b>InstanceOf Map: </b> holds metaclass information for each element</li> <li><b>Features
- * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multivalued Map: </b>
+ * Map: </b> holds non-containment {@link EStructuralFeature} links between elements </li> <li><b>Multi-valued Map: </b>
  * optional Map used in {@link DirectWriteMapDbIndicesStore} that stores {@link Collection} indices instead of a
  * serialized version of the collection itself</li> </ul>
- * <p>
- * This class is used in {@link DirectWriteMapDbStore} and its subclasses to access and manipulate the database.
- * <p>
- * Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that provides an
- * usable {@link DB} that can be manipulated by this wrapper.
  *
+ * @note This class is used in {@link DirectWriteMapDbStore} and its subclasses to access and manipulate the database.
+ * @note Instances of {@link MapDbPersistenceBackend} are created by {@link MapDbPersistenceBackendFactory} that
+ * provides an usable {@link DB} that can be manipulated by this wrapper.
  * @see MapDbPersistenceBackendFactory
  * @see DirectWriteMapDbStore
  * @see DirectWriteMapDbListsStore
@@ -67,64 +65,66 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     private static final String KEY_FEATURES = "features";
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
 
+    /**
+     * The MapDB database.
+     */
     private final DB db;
 
     /**
-     * A persistent map that stores the container of persistent EObjects.
+     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
      */
     private final HTreeMap<Id, ContainerInfo> containersMap;
 
     /**
-     * A persistent map that stores the EClass for persistent EObjects.
-     * The key is the persistent object Id.
+     * A persistent map that stores the EClass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * The key is the object {@link Id}.
      */
     private final HTreeMap<Id, ClassInfo> instanceOfMap;
 
     /**
-     * A persistent map that stores Structural feature values for persistent EObjects.
-     * The key is build using the persistent object Id plus the name of the feature.
+     * A persistent map that stores Structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * The key is build using the object {@link Id} plus the name of the feature.
      */
     private final HTreeMap<FeatureKey, Object> features;
 
     /**
-     * A persistent map that store the values of multivalued features for persistent EObjects.
-     * The key is build using the persistent object Id plus the name of the feature plus the index of the value.
+     * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * The key is build using the object {@link Id} plus the name of the feature plus the index of the value.
      */
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 
     /**
-     * Creates a new {@link MapDbPersistenceBackend} wrapping the provided {@code aDB}
+     * Constructs a new {@code MapDbPersistenceBackend} wrapping the provided {@code db}.
      * <p>
      * This constructor initialize the different {@link Map}s from the MapDB engine and set
      * their respective {@link Serializer}s.
-     * <p>
-     * <b>Note: </b> this constructor is package-private. To create a new {@link MapDbPersistenceBackend}
-     * see {@link MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      *
-     * @param aDB the {@link DB} used to creates the used {@link Map}s and manage the database
+     * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
+     * @note This constructor is package-private. To create a new {@link MapDbPersistenceBackend} see {@link
+     * MapDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @see MapDbPersistenceBackendFactory
      */
     @SuppressWarnings("unchecked")
-    MapDbPersistenceBackend(DB aDB) {
-        db = aDB;
+    MapDbPersistenceBackend(DB db) {
+        this.db = db;
 
-        containersMap = db.hashMap(KEY_CONTAINER)
+        containersMap = this.db.hashMap(KEY_CONTAINER)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        instanceOfMap = db.hashMap(KEY_INSTANCE_OF)
+        instanceOfMap = this.db.hashMap(KEY_INSTANCE_OF)
                 .keySerializer(new IdSerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        features = db.hashMap(KEY_FEATURES)
+        features = this.db.hashMap(KEY_FEATURES)
                 .keySerializer(new FeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
 
-        multivaluedFeatures = db.hashMap(KEY_MULTIVALUED_FEATURES)
+        multivaluedFeatures = this.db.hashMap(KEY_MULTIVALUED_FEATURES)
                 .keySerializer(new MultivaluedFeatureKeySerializer())
                 .valueSerializer(Serializer.JAVA)
                 .createOrOpen();
@@ -161,6 +161,14 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
         return db.getAll();
     }
 
+    /**
+     * ???
+     *
+     * @param name ???
+     * @param <E>  ???
+     *
+     * @return ???
+     */
     public <E> E get(String name) {
         return db.get(name);
     }
@@ -187,7 +195,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Retrieves the metaclass (EClass) of the element with the given {@link Id}.
+     * Retrieves the metaclass ({@link org.eclipse.emf.ecore.EClass}) of the element with the given {@link Id}.
      *
      * @param id the {@link Id} of the element
      *
@@ -199,7 +207,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Stores metaclass (EClass) information for the element with the given {@link Id}.
+     * Stores metaclass ({@link org.eclipse.emf.ecore.EClass}) information for the element with the given {@link Id}.
      *
      * @param id        the {@link Id} of the element
      * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link
@@ -210,7 +218,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Store the value of a given {@link FeatureKey}.
+     * Stores the value of a given {@link FeatureKey}.
      *
      * @param key   the {@link FeatureKey} to set the value of
      * @param value an {@link Object} representing the value associated to the given {@code key}
@@ -233,7 +241,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Removes the value of a given {@link FeatureKey} from the database, and unset it ({@link
-     * MapDbPersistenceBackend#isFeatureSet(FeatureKey)}).
+     * #isFeatureSet(FeatureKey)}).
      *
      * @param key the {@link FeatureKey} to remove
      *
@@ -257,8 +265,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Stores the value of a given {@link MultivaluedFeatureKey}.
      * <p>
-     * This method is similar to {@link MapDbPersistenceBackend#storeValue(FeatureKey, Object)} but it
-     * uses the Multivalued {@link Map} that stores indices explicitly.
+     * This method is similar to {@link #storeValue(FeatureKey, Object)} but it uses the multi-valued {@link Map} that
+     * stores indices explicitly.
      *
      * @param key   the {@link MultivaluedFeatureKey} to set the value of
      * @param value an {@link Object} representing the value associated to the given {@code key}
@@ -272,9 +280,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Retrieves the value of a given {@link MultivaluedFeatureKey}.
      * <p>
-     * This method is similar to {@link MapDbPersistenceBackend#valueOf(FeatureKey)} but it
-     * uses Multivalued {@link Map} to retrieve the element at the given index directly instead of
-     * returning the entire {@link Collection}.
+     * This method is similar to {@link #valueOf(FeatureKey)} but it uses multi-valued {@link Map} to retrieve the
+     * element at the given index directly instead of returning the entire {@link Collection}.
      *
      * @param key the {@link MultivaluedFeatureKey} to get the value from
      *

@@ -49,7 +49,7 @@ class PersistentEObjectAdapter {
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private PersistentEObjectAdapter() {
         throw new IllegalStateException("This class should not be instantiated");
@@ -126,7 +126,7 @@ class PersistentEObjectAdapter {
         Enhancer proxy = new Enhancer();
 
 		/*
-         * Use the ClassLoader of the type, otherwise it will cause OSGI troubles (like project trying to
+         * Use the ClassLoader of the type, otherwise it will cause OSGi troubles (like project trying to
 		 * create an PersistentEObject while it does not have a dependency to NeoEMF core)
 		 */
         proxy.setClassLoader(adapterType.getClassLoader());

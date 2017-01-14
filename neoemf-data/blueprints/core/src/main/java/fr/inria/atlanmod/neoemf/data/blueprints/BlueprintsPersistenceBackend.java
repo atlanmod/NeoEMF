@@ -55,17 +55,17 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * This class is responsible of low-level access to a Blueprints database. It wraps an existing Blueprints database and
- * provides facilities to create and retrieve elements, map {@link PersistentEObject}s to {@link Vertex} elements in
- * order to speed up attribute access, and manage a set of lightweight caches to improve access time of {@link Vertex}
- * from  their corresponding {@link PersistentEObject}.
+ * A {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} that is responsible of low-level access to a Blueprints
+ * database.
  * <p>
- * This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to access
- * and manipulate the database.
- * <p>
- * Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory} that
- * provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
+ * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
+ * PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight
+ * caches to improve access time of {@link Vertex} from  their corresponding {@link PersistentEObject}.
  *
+ * @note This class is used in {@link DirectWriteBlueprintsStore} and {@link DirectWriteBlueprintsCacheManyStore} to
+ * access and manipulate the database.
+ * @note Instances of {@link BlueprintsPersistenceBackend} are created by {@link BlueprintsPersistenceBackendFactory}
+ * that provides an usable {@link KeyIndexableGraph} that can be manipulated by this wrapper.
  * @see BlueprintsPersistenceBackendFactory
  * @see DirectWriteBlueprintsStore
  * @see DirectWriteBlueprintsCacheManyStore
@@ -100,24 +100,44 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
+    /**
+     * ???
+     */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
+
+    /**
+     * ???
+     */
     private final Cache<Id, Vertex> verticesCache;
+
+    /**
+     * ???
+     */
     private final List<EClass> indexedEClasses;
 
+    /**
+     * ???
+     */
+    private final Index<Vertex> metaclassIndex;
+
+    /**
+     * The Blueprints database.
+     */
     private final IdGraph<KeyIndexableGraph> graph;
 
-    private Index<Vertex> metaclassIndex;
+    /**
+     * Whether the underlying database is closed.
+     */
     private boolean isClosed = false;
 
     /**
-     * Creates a new {@link BlueprintsPersistenceBackend} wrapping the provided {@code baseGraph}
+     * Constructs a new {@code BlueprintsPersistenceBackend} wrapping the provided {@code baseGraph}.
      * <p>
-     * This constructor initialize the caches and create the metaclass index
-     * <p>
+     * This constructor initialize the caches and create the metaclass index.
      *
      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
      *
-     * @note This constructor is package-private. To create a new {@link BlueprintsPersistenceBackend} see {@link
+     * @note This constructor is package-private. To create a new {@code BlueprintsPersistenceBackend} see {@link
      * BlueprintsPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.
      * @see BlueprintsPersistenceBackendFactory
      */
@@ -126,9 +146,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).softValues().build();
         this.indexedEClasses = new ArrayList<>();
-        this.metaclassIndex = graph.getIndex(KEY_METACLASSES, Vertex.class);
-        if (isNull(metaclassIndex)) {
+
+        Index<Vertex> metaclasses = graph.getIndex(KEY_METACLASSES, Vertex.class);
+        if (isNull(metaclasses)) {
             metaclassIndex = graph.createIndex(KEY_METACLASSES, Vertex.class);
+        }
+        else {
+            metaclassIndex = metaclasses;
         }
     }
 
@@ -276,12 +300,25 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return vertex;
     }
 
+    /**
+     * ???
+     *
+     * @param vertex ???
+     * @param object ???
+     */
     private void setMappedVertex(Vertex vertex, PersistentEObject object) {
         object.setMapped(true);
         persistentObjectsCache.put(object.id(), object);
         verticesCache.put(object.id(), vertex);
     }
 
+    /**
+     * ???
+     *
+     * @param vertex ???
+     *
+     * @return ???
+     */
     private EClass resolveInstanceOf(Vertex vertex) {
         EClass eClass = null;
         Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
@@ -335,6 +372,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return object;
     }
 
+    /**
+     * ???
+     *
+     * @param object ???
+     *
+     * @return ???
+     */
     private Vertex createVertex(PersistentEObject object) {
         Vertex vertex = addVertex(object.id());
         EClass eClass = object.eClass();
@@ -353,7 +397,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Copies all the contents of this back-end to the target one.
      *
-     * @param target the {@link BlueprintsPersistenceBackend} to copy the elements to
+     * @param target the {@code BlueprintsPersistenceBackend} to copy the elements to
      */
     public void copyTo(BlueprintsPersistenceBackend target) {
         GraphHelper.copyGraph(graph, target.graph);
@@ -371,6 +415,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         return graph;
     }
 
+    /**
+     * ???
+     *
+     * @param eClassList ???
+     */
     private void initMetaClassesIndex(List<EClass> eClassList) {
         for (EClass eClass : eClassList) {
             checkArgument(Iterables.isEmpty(metaclassIndex.get(KEY_NAME, eClass.getName())), "Index is not consistent");
@@ -378,10 +427,21 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         }
     }
 
+    /**
+     * ???
+     */
     private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
+        /**
+         * The class associated with the object to retrieve.
+         */
         private final EClass eClass;
 
+        /**
+         * Constructs a new {@code PersistentEObjectCacheLoader} with the given {@code eClass}.
+         *
+         * @param eClass the class associated with the object to retrieve
+         */
         private PersistentEObjectCacheLoader(EClass eClass) {
             this.eClass = eClass;
         }
@@ -409,8 +469,16 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         }
     }
 
+    /**
+     * ???
+     */
     private static class AutoCleanerIdGraph extends IdGraph<KeyIndexableGraph> {
 
+        /**
+         * Constructs a new {@code AutoCleanerIdGraph} on the specified {@code baseGraph}.
+         *
+         * @param baseGraph the base graph
+         */
         public AutoCleanerIdGraph(KeyIndexableGraph baseGraph) {
             super(baseGraph);
         }
@@ -425,12 +493,27 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             return createFrom(super.getEdge(id));
         }
 
+        /**
+         * ???
+         *
+         * @param edge ???
+         *
+         * @return ???
+         */
         private Edge createFrom(Edge edge) {
             return isNull(edge) ? null : new AutoCleanerIdEdge(edge);
         }
 
+        /**
+         * ???
+         */
         private class AutoCleanerIdEdge extends IdEdge {
 
+            /**
+             * Constructs a new {@code AutoCleanerIdEdge} on the specified {@code edge}.
+             *
+             * @param edge the base edge
+             */
             public AutoCleanerIdEdge(Edge edge) {
                 super(edge, AutoCleanerIdGraph.this);
             }

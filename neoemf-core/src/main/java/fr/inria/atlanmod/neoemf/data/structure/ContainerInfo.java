@@ -37,7 +37,7 @@ public class ContainerInfo implements Serializable {
     private final Id id;
 
     /**
-     * The name of the reference used to retreive the container of the object.
+     * The name of the reference used to retrieve the container of the object.
      */
     @Nonnull
     private final String name;

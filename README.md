@@ -84,7 +84,7 @@ This will build NeoEMF core components and database specific implementations.
 
 _(optional)_ You can also run the tests by using :
 ```bash
-mvn test (-pl <core|map|graph>)
+mvn test (-pl <neoemf-core|neoemf-data|neoemf-io|...>)
 ```
 ### NeoEMF : Eclipse plugin
 To build NeoEMF Eclipse plugin, you need to run the following command:

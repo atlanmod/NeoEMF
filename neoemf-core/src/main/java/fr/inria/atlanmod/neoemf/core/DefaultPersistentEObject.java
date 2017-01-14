@@ -54,7 +54,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     private Id id;
 
     /**
-     * The resouce containing this {@code PersistentEObject}.
+     * The resource containing this {@code PersistentEObject}.
      */
     private Resource.Internal resource;
 
@@ -84,7 +84,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * Constructs a new {@code DefaultPersistentEObject} with the given {@code id}.
      *
-     * @param id the identifier of this {@link DefaultPersistentEObject}
+     * @param id the identifier of this object
      */
     protected DefaultPersistentEObject(@Nonnull Id id) {
         this.id = checkNotNull(id);

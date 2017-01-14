@@ -26,8 +26,8 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A simple representation of a multivalued {@link EStructuralFeature} of a {@link PersistentEObject}. The "multivalued"
- * characteric is identified with a position.
+ * A simple representation of a multi-valued {@link EStructuralFeature} of a {@link PersistentEObject}. The
+ * "multi-valued" characteristic is identified with a position.
  */
 public class MultivaluedFeatureKey extends FeatureKey {
 
@@ -41,8 +41,8 @@ public class MultivaluedFeatureKey extends FeatureKey {
 
     /**
      * Constructs a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
-     * used as a simple representation of a feature of an object. The "multivalued" characteric is identified with the
-     * {@code position}.
+     * used as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with
+     * the {@code position}.
      *
      * @param id       the identifier of the {@link PersistentEObject}
      * @param name     the name of the {@link EStructuralFeature} of the {@link PersistentEObject}
@@ -97,8 +97,8 @@ public class MultivaluedFeatureKey extends FeatureKey {
     }
 
     /**
-     * Creates a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are
-     * used as a simple representation of a feature of an object. The "multivalued" characteric is identified with the
+     * Creates a new {@code MultivaluedFeatureKey} with the given {@code id} and the given {@code name}, which are used
+     * as a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
      * {@code position}.
      *
      * @param id       the identifier of the {@link PersistentEObject}
@@ -145,9 +145,6 @@ public class MultivaluedFeatureKey extends FeatureKey {
         return Objects.hash(id(), name(), position);
     }
 
-    /**
-     * Defines equality between multivalued feature keys.
-     */
     @Override
     public boolean equals(@Nullable Object o) {
         return super.equals(o) && position == ((MultivaluedFeatureKey) o).position;

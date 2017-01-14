@@ -41,6 +41,8 @@ public enum CommonStoreOptions implements PersistentStoreOptions {
      */
     LOG,
     /**
+     * Counts all loaded objects.
+     *
      * @see fr.inria.atlanmod.neoemf.data.store.LoadedObjectCounterStoreDecorator
      */
     COUNT_LOADED_OBJECT

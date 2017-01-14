@@ -62,7 +62,7 @@ public class ClassInfo implements Serializable {
      * <p>
      * This method behaves like: {@code ClassInfo.of(eClass.getName(), eClass.getEPackage().getNsURI())}
      *
-     * @param object the object from which the {@link EClass} has to be retreive with the {@link
+     * @param object the object from which the {@link EClass} has to be retrieve with the {@link
      *               PersistentEObject#eClass()} method
      *
      * @return a new {@code ClassInfo}

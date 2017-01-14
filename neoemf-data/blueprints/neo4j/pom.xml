@@ -77,7 +77,6 @@
                 <groupId>com.tinkerpop.blueprints</groupId>
                 <artifactId>blueprints-neo4j-graph</artifactId>
                 <version>${blueprints.version}</version>
-                <scope>runtime</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

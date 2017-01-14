@@ -19,7 +19,7 @@ public class HasherFactory {
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private HasherFactory() {
         throw new IllegalStateException("This class should not be instantiated");

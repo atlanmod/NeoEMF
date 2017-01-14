@@ -189,7 +189,7 @@ public class EcoreProcessor extends AbstractProcessor {
     private void createRootObject(Classifier classifier) {
         Namespace ns = checkNotNull(classifier.getNamespace(), "The root element must have a namespace");
 
-        // Retreives the EPackage from NS prefix
+        // Retrieves the EPackage from NS prefix
         EPackage ePackage = checkNotNull((EPackage) EPackage.Registry.INSTANCE.get(ns.getUri()),
                 "EPackage %s is not registered.", ns.getUri());
 
@@ -224,7 +224,7 @@ public class EcoreProcessor extends AbstractProcessor {
      * @see #processReference(Classifier, Namespace, EReference, EPackage)
      */
     private void processFeature(Classifier classifier) {
-        // Retreive the parent EClass
+        // Retrieve the parent EClass
         EClass parentEClass = classesStack.getLast();
 
         // Gets the EPackage from it
@@ -272,7 +272,7 @@ public class EcoreProcessor extends AbstractProcessor {
 
         classifier.setNamespace(ns);
 
-        // Notify next handlers of new element, and retreive its identifier
+        // Notify next handlers of new element, and retrieve its identifier
         notifyStartElement(classifier);
         Identifier currentId = classifier.getId();
 
