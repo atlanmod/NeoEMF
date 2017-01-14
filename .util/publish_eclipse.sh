@@ -22,7 +22,7 @@ elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
 else
     echo -e "Generating update-site..."
 
-    mvn -B -q -f plugins/eclipse install 2> /dev/null
+    mvn -B -q -f plugins/eclipse install &> /dev/null
 
     if ! [ -d plugins/eclipse/update/target/repository ]; then
         echo -e "Skipping update-site publication: Update-site has not been built."
