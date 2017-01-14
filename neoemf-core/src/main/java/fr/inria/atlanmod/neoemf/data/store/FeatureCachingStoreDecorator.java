@@ -25,6 +25,9 @@ import org.eclipse.emf.ecore.InternalEObject;
  */
 public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
+    /**
+     * Cache that holds loaded features.
+     */
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**

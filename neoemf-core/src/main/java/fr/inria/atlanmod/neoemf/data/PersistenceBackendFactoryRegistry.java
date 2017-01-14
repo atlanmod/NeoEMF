@@ -38,18 +38,21 @@ import static java.util.Objects.nonNull;
 public class PersistenceBackendFactoryRegistry {
 
     /**
-     * A map containing all registered {@link PersistenceBackendFactory} identified by a URI scheme.
+     * A map containing all registered {@link PersistenceBackendFactory} identified by a {@code URI} scheme.
      */
     private static final Map<String, PersistenceBackendFactory> FACTORIES = new HashMap<>();
 
     /**
-     * Constructs a new {@code PersistenceBackendFactoryRegistry}.
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException everytime
      */
     private PersistenceBackendFactoryRegistry() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**
-     * Returns all registered URI schemes with their {@link PersistenceBackendFactory}.
+     * Returns all registered {@code URI} schemes with their {@link PersistenceBackendFactory}.
      *
      * @return an immutable map
      */
@@ -59,9 +62,9 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Returns a specific {@link PersistenceBackendFactory} identified by the given URI {@code scheme}.
+     * Returns a specific {@link PersistenceBackendFactory} identified by the given {@code URI} {@code scheme}.
      *
-     * @param scheme the URI scheme identifying the back-end factory
+     * @param scheme the {@code URI} scheme identifying the back-end factory
      *
      * @return the back-end factory
      *
@@ -76,9 +79,9 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Defines if a {@link PersistenceBackendFactory} is registered for the given URI {@code scheme}.
+     * Defines if a {@link PersistenceBackendFactory} is registered for the given {@code URI} {@code scheme}.
      *
-     * @param scheme the URI scheme identifying the back-end factory
+     * @param scheme the {@code URI} scheme identifying the back-end factory
      *
      * @return {@code true} if a back-end factory is registered for the given {@code scheme}
      */
@@ -87,9 +90,9 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Registers a {@link PersistenceBackendFactory} identified by the given URI {@code scheme}.
+     * Registers a {@link PersistenceBackendFactory} identified by the given {@code URI} {@code scheme}.
      * <p>
-     * If the given {@code scheme} is already registered, its value will be overriden by the given {@code factory}.
+     * If the given {@code URI} {@code scheme} is already registered, its value will be overriden by the given {@code factory}.
      *
      * @param scheme the URI scheme identifying the back-end factory
      */
@@ -100,7 +103,7 @@ public class PersistenceBackendFactoryRegistry {
     }
 
     /**
-     * Unregisters a {@link PersistenceBackendFactory} identified by the given URI {@code scheme}.
+     * Unregisters a {@link PersistenceBackendFactory} identified by the given {@code URI} {@code scheme}.
      *
      * @param scheme the URI scheme identifying the back-end factory
      */

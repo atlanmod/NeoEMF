@@ -32,9 +32,15 @@ public class ClassInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The name of the class.
+     */
     @Nonnull
     private final String name;
 
+    /**
+     * The literal representation of the {@code URI} of the class.
+     */
     @Nonnull
     private final String uri;
 

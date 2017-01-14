@@ -35,7 +35,7 @@ public class DirectWriteBerkeleyDbCacheManyStore extends DirectWriteBerkeleyDbSt
      * {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence backend used to store the model
+     * @param backend the persistence back-end used to store the model
      */
     public DirectWriteBerkeleyDbCacheManyStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
         super(resource, backend);

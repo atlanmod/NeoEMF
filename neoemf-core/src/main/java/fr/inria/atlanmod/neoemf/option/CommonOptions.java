@@ -18,4 +18,8 @@ package fr.inria.atlanmod.neoemf.option;
  * future.
  */
 public class CommonOptions extends AbstractPersistenceOptions {
+
+    private CommonOptions() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

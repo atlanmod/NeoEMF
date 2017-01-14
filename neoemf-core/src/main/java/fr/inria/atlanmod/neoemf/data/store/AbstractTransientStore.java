@@ -32,7 +32,14 @@ import static java.util.Objects.nonNull;
  */
 public abstract class AbstractTransientStore implements TransientStore {
 
+    /**
+     * ???
+     */
     protected Map<FeatureKey, Object> singleMap;
+
+    /**
+     * ???
+     */
     protected Map<FeatureKey, List<Object>> manyMap;
 
     /**

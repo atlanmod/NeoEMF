@@ -333,7 +333,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Copies all the contents of this backend to the target one.
+     * Copies all the contents of this back-end to the target one.
      * @param target the {@link BlueprintsPersistenceBackend} to copy the elements to
      */
     public void copyTo(BlueprintsPersistenceBackend target) {

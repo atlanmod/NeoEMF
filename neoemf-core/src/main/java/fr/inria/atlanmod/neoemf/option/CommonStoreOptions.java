@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.option;
 
 /**
- * Represents common options related to datastore access, managed by
+ * Represents common options related to database access, managed by
  * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}.
  */
 public enum CommonStoreOptions implements PersistentStoreOptions {

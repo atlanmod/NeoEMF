@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 /**
- * An implementation of {@link PersistentStoreOptions} holding MapDB related datastore access
+ * An implementation of {@link PersistentStoreOptions} holding MapDB related database access
  * features, such as autocommit, direct write, usage of raw arrays or {@link List}s.
  * 
  * @see AutocommitStoreDecorator

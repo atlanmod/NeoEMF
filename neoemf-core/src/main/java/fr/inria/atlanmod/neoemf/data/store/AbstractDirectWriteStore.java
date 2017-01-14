@@ -36,7 +36,7 @@ import static java.util.Objects.isNull;
 public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> extends AbstractPersistentStore implements DirectWriteStore {
 
     /**
-     * The persistence backend used to store the model.
+     * The persistence back-end used to store the model.
      */
     protected final P backend;
 
@@ -49,7 +49,7 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
      * Constructs a new {@code AbstractDirectWriteStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence backend used to store the model
+     * @param backend the persistence back-end used to store the model
      */
     public AbstractDirectWriteStore(Resource.Internal resource, P backend) {
         this.resource = resource;

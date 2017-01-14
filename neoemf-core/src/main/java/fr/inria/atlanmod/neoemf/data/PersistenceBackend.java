@@ -18,31 +18,31 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.Closeable;
 
 /**
- * An adapter on top of a data store that provides specific methods for communicating with a data store implementation.
+ * An adapter on top of a database that provides specific methods for communicating with a database implementation.
  * <p>
- * Each {@code PersistenceBackend} manage one single instance of a data store.
+ * Each {@code PersistenceBackend} manage one single instance of a database.
  *
  * @future an abstraction of {@code PersistenceBackend} will be implemented to define a global behaviour
  */
 public interface PersistenceBackend extends Closeable {
 
     /**
-     * Returns whether the underlying data store has been started or not.
+     * Returns whether the underlying database has been started or not.
      *
-     * @return {@code true} if the data store is closed, otherwise {@code false}
+     * @return {@code true} if the database is closed, otherwise {@code false}
      */
     boolean isClosed();
 
     /**
      * {@inheritDoc}
      * <p>
-     * In our case, it cleanly stops the underlying data store.
+     * In our case, it cleanly stops the underlying database.
      */
     @Override
     void close();
 
     /**
-     * Saves the modifications of the owned {@link EObject}s in the underlying data store.
+     * Saves the modifications of the owned {@link EObject}s in the underlying database.
      */
     void save();
 
@@ -58,7 +58,7 @@ public interface PersistenceBackend extends Closeable {
      * @throws UnsupportedOperationException if the back-end does not support all instances lookup
      */
     default Object getAllInstances(EClass eClass, boolean strict) {
-        throw new UnsupportedOperationException("This backend does not support custom all instances computation");
+        throw new UnsupportedOperationException("This back-end does not support custom all instances computation");
     }
 }
 

@@ -18,4 +18,8 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
  * in the near future.
  */
 public class BlueprintsOptions extends AbstractBlueprintsOptions {
+
+    private BlueprintsOptions() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

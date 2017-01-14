@@ -44,6 +44,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class AbstractPersistenceBackendFactory implements PersistenceBackendFactory {
 
     /**
+     * Constructs a new {@code AbstractPersistenceBackendFactory}.
+     */
+    protected AbstractPersistenceBackendFactory() {
+    }
+
+    /**
      * Parses the store options from the given {@code options}.
      * <p>
      * The store options must be a {@code List<PersistentStoreOptions>} registered with the
@@ -134,7 +140,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     /**
      * Creates and saves the NeoEMF configuration.
      * <p>
-     * The configuration is stored as a properties file beside a data store in order to identify a {@link PersistenceBackend}.
+     * The configuration is stored as a properties file beside a database in order to identify a {@link PersistenceBackend}.
      *
      * @param directory the directory where the configuration must be stored.
      */

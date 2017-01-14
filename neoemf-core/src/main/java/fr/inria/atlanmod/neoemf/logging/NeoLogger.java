@@ -24,7 +24,13 @@ public final class NeoLogger {
 
     private static final Cache<String, Logger> LOGGERS = Caffeine.newBuilder().build();
 
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException everytime
+     */
     private NeoLogger() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**

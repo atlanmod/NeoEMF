@@ -22,6 +22,12 @@ import fr.inria.atlanmod.neoemf.io.structure.Reference;
  */
 public final class PersistenceNotifier extends AbstractInputNotifier<PersistenceHandler> implements Processor {
 
+    /**
+     * Constructs a new {@code PersistenceNotifier}.
+     */
+    public PersistenceNotifier() {
+    }
+
     @Override
     public void processStartDocument() {
         notifyStartDocument();

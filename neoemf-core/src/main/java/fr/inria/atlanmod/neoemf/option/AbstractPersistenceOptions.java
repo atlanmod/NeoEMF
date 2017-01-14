@@ -18,4 +18,8 @@ package fr.inria.atlanmod.neoemf.option;
  * future.
  */
 public abstract class AbstractPersistenceOptions implements PersistenceOptions {
+
+    protected AbstractPersistenceOptions() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

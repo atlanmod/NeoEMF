@@ -46,7 +46,13 @@ class PersistentEObjectAdapter {
     private static final Cache<InternalEObject, PersistentEObject> ADAPTED_OBJECTS_CACHE =
             Caffeine.newBuilder().weakKeys().build();
 
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException everytime
+     */
     private PersistentEObjectAdapter() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**

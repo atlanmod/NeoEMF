@@ -24,6 +24,9 @@ import javax.annotation.Nonnull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * ???
+ */
 public class BerkeleyDbURI extends PersistenceURI {
 
     @Nonnull
@@ -42,8 +45,9 @@ public class BerkeleyDbURI extends PersistenceURI {
     }
 
     /**
-     * Creates a new {@code BerkeleyDbURI} from the given {@code uri}. This method checks that the
-     * scheme of the provided {@code uri} can be used to create a new {@code BerkeleyDbURI}.
+     * Creates a new {@code BerkeleyDbURI} from the given {@code uri}.
+     * <p>
+     * This method checks that the scheme of the provided {@code uri} can be used to create a new {@code BerkeleyDbURI}.
      *
      * @param uri the base {@code URI}
      *
@@ -51,6 +55,7 @@ public class BerkeleyDbURI extends PersistenceURI {
      *
      * @throws NullPointerException if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link #FILE_SCHEME}
+     *
      * @see #createFileURI(File)
      */
     @Nonnull
@@ -68,9 +73,10 @@ public class BerkeleyDbURI extends PersistenceURI {
     }
 
     /**
+     * Creates a new {@code BerkeleyDbURI} from the given {@link File} descriptor.
      *
-     * @param file
-     * @return
+     * @param file the {@link File} to build a {@code URI} from
+     * @return the created {@code URI}
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull

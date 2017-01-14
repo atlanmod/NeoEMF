@@ -22,6 +22,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class OwnedTransientStore extends AbstractTransientStore {
 
+    /**
+     * The owner of this store.
+     */
     private final EObject owner;
 
     /**
@@ -143,6 +146,10 @@ public class OwnedTransientStore extends AbstractTransientStore {
 
     /**
      * Checks that the {@code internalObject} is the owner of this store.
+     *
+     * @param internalObject the object to check the ownership
+     *
+     * @throws IllegalArgumentException if the {@code internalObject} is not {@link #owner}
      */
     private void checkOwner(InternalEObject internalObject) {
         checkArgument(owner == internalObject);

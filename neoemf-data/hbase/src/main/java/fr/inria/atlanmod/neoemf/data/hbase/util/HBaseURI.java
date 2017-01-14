@@ -43,12 +43,18 @@ public class HBaseURI extends PersistenceURI {
     }
 
     /**
+     * Creates a new {@code HBaseURI} from the given {@code uri}.
+     * <p>
+     * This method checks that the scheme of the provided {@code uri} can be used to create a new {@code HBaseURI}.
      *
-     * @param uri
-     * @return
+     * @param uri the base {@code URI}
+     * @return the created {@code URI}
      * @throws NullPointerException if the {@code uri} is {@code null}
-     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or
-     *                                  {@link PersistenceURI#FILE_SCHEME}
+     * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link #FILE_SCHEME}
+     *
+     * @see #createFileURI(File)
+     * @see #createFileURI(URI)
+     * @see #createHierarchicalURI(String, String, URI)
      */
     @Nonnull
     public static URI createURI(@Nonnull URI uri) {
@@ -63,9 +69,10 @@ public class HBaseURI extends PersistenceURI {
     }
 
     /**
+     * Creates a new {@code HBaseURI} from the given {@link File} descriptor.
      *
-     * @param file
-     * @return
+     * @param file the {@link File} to build a {@code URI} from
+     * @return the created {@code URI}
      * @throws NullPointerException if the {@code file} is {@code null}
      */
     @Nonnull
@@ -75,9 +82,11 @@ public class HBaseURI extends PersistenceURI {
     }
 
     /**
+     * Creates a new {@code HBaseURI} from the given {@code uri} by checking the referenced file exists on the file
+     * system.
      *
-     * @param uri
-     * @return
+     * @param uri the base {@code URI}
+     * @return the created {@code URI}
      * @throws NullPointerException if the {@code uri} is {@code null}
      */
     @Nonnull
@@ -87,11 +96,12 @@ public class HBaseURI extends PersistenceURI {
     }
 
     /**
+     * ???
      *
-     * @param host
-     * @param port
-     * @param modelURI
-     * @return
+     * @param host ???
+     * @param port ???
+     * @param modelURI ???
+     * @return the created {@code URI}
      * @throws NullPointerException if any of the parameters is {@code null}
      */
     @Nonnull
@@ -102,6 +112,13 @@ public class HBaseURI extends PersistenceURI {
         return URI.createHierarchicalURI(SCHEME, host + ":" + port, null, modelURI.segments(), null, null);
     }
 
+    /**
+     * ???
+     *
+     * @param uri ???
+     *
+     * @return the formatted {@code URI}
+     */
     @Nonnull
     public static String format(@Nonnull URI uri) {
         checkNotNull(uri);

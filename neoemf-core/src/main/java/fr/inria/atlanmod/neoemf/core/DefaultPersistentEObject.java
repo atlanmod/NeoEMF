@@ -47,11 +47,20 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     private static final int UNSETTED_FEATURE_ID = -1;
 
+    /**
+     * The identifier of this {@code PersistentEObject}.
+     */
     @Nonnull
     private Id id;
 
+    /**
+     * The resouce containing this {@code PersistentEObject}.
+     */
     private Resource.Internal resource;
 
+    /**
+     * Whether this {@code PersistentEObject} is mapped to an entity in a database.
+     */
     private boolean isMapped;
 
     /**
@@ -214,6 +223,15 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         return NeoEContentsEList.createNeoEContentsEList(this);
     }
 
+    /**
+     * ???
+     *
+     * @param store ???
+     * @param feature ???
+     * @param index ???
+     *
+     * @return ???
+     */
     private Object getAdaptedValue(EStore store, EStructuralFeature feature, int index) {
         Object value = store.get(this, feature, index);
         if (nonNull(value)) {
@@ -340,20 +358,38 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         return Objects.equals(id, other.id());
     }
 
+    /**
+     * ???
+     */
     private class EStoreEcoreEMap extends EcoreEMap<Object, Object> {
 
         private static final long serialVersionUID = 1L;
 
-        public EStoreEcoreEMap(EClassifier eType, EStructuralFeature feature) {
-            super((EClass) eType, BasicEMap.Entry.class, null);
+        /**
+         * Constructs a {@code EStoreEcoreEMap} with the given {@code type} and {@code feature}.
+         *
+         * @param type ???
+         * @param feature ???
+         */
+        public EStoreEcoreEMap(EClassifier type, EStructuralFeature feature) {
+            super((EClass) type, BasicEMap.Entry.class, null);
             delegateEList = new EntryBasicEStoreEList(feature);
             size = delegateEList.size();
         }
 
+        /**
+         * ???
+         */
         private class EntryBasicEStoreEList extends EStoreEObjectImpl.BasicEStoreEList<Entry<Object, Object>> {
 
             private static final long serialVersionUID = 1L;
 
+            /**
+             * Constructs a new {@code EntryBasicEStoreEList} with the given {@code feature}. This
+             * {@link PersistentEObject} is defined as the owner of this list.
+             *
+             * @param feature ???
+             */
             public EntryBasicEStoreEList(EStructuralFeature feature) {
                 super(DefaultPersistentEObject.this, feature);
             }
@@ -386,10 +422,19 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
     }
 
+    /**
+     * ???
+     */
     private class EStoreEcoreEList extends EStoreEObjectImpl.BasicEStoreEList<Object> {
 
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Constructs a new {@code EStoreEcoreEList} with the given {@code feature}. This {@link PersistentEObject} is
+         * defined as the owner of this list.
+         *
+         * @param feature ???
+         */
         public EStoreEcoreEList(EStructuralFeature feature) {
             super(DefaultPersistentEObject.this, feature);
         }

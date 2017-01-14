@@ -60,7 +60,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private static final long OPS_BETWEEN_COMMITS_DEFAULT = adaptFromMemory(50000);
 
     /**
-     * The persistence backend where to store data.
+     * The persistence back-end where to store data.
      */
     private final P backend;
 
@@ -104,7 +104,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Constructs a new {@code AbstractPersistenceHandler} on top of the {@code backend}.
      *
-     * @param backend the persistence backend where to store data
+     * @param backend the persistence back-end where to store data
      */
     protected AbstractPersistenceHandler(P backend) {
         this.backend = backend;

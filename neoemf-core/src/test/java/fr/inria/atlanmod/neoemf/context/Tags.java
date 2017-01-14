@@ -13,7 +13,13 @@ package fr.inria.atlanmod.neoemf.context;
 
 public final class Tags {
 
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException everytime
+     */
     private Tags() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**

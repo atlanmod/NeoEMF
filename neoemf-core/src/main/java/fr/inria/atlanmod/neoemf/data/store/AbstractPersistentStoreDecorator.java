@@ -25,6 +25,9 @@ import org.eclipse.emf.ecore.resource.Resource;
  */
 public abstract class AbstractPersistentStoreDecorator extends AbstractPersistentStore {
 
+    /**
+     * The underlying store.
+     */
     private final PersistentStore store;
 
     /**

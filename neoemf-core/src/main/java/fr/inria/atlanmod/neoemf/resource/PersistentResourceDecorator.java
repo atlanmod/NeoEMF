@@ -34,180 +34,188 @@ import java.util.Map;
  */
 public class PersistentResourceDecorator implements PersistentResource {
 
-    protected final PersistentResource base;
+    /**
+     * The underlying resource.
+     */
+    protected final PersistentResource resource;
 
-    public PersistentResourceDecorator(PersistentResource baseResource) {
-        this.base = baseResource;
+    /**
+     * Constructs a {@code PersistentResourceDecorator} on the given {@code resource}.
+     *
+     * @param resource the underlying resource
+     */
+    public PersistentResourceDecorator(PersistentResource resource) {
+        this.resource = resource;
     }
 
     @Override
     public ResourceSet getResourceSet() {
-        return base.getResourceSet();
+        return resource.getResourceSet();
     }
 
     @Override
     public URI getURI() {
-        return base.getURI();
+        return resource.getURI();
     }
 
     @Override
     public void setURI(URI uri) {
-        base.setURI(uri);
+        resource.setURI(uri);
     }
 
     @Override
     public long getTimeStamp() {
-        return base.getTimeStamp();
+        return resource.getTimeStamp();
     }
 
     @Override
     public void setTimeStamp(long timeStamp) {
-        base.setTimeStamp(timeStamp);
+        resource.setTimeStamp(timeStamp);
     }
 
     @Override
     public EList<EObject> getContents() {
-        return base.getContents();
+        return resource.getContents();
     }
 
     @Override
     public TreeIterator<EObject> getAllContents() {
-        return base.getAllContents();
+        return resource.getAllContents();
     }
 
     @Override
     public String getURIFragment(EObject eObject) {
-        return base.getURIFragment(eObject);
+        return resource.getURIFragment(eObject);
     }
 
     @Override
     public EObject getEObject(String uriFragment) {
-        return base.getEObject(uriFragment);
+        return resource.getEObject(uriFragment);
     }
 
     @Override
     public void save(Map<?, ?> options) throws IOException {
-        base.save(options);
+        resource.save(options);
     }
 
     @Override
     public void load(Map<?, ?> options) throws IOException {
-        base.load(options);
+        resource.load(options);
     }
 
     @Override
     public void save(OutputStream outputStream, Map<?, ?> options) throws IOException {
-        base.save(options);
+        resource.save(options);
     }
 
     @Override
     public void load(InputStream inputStream, Map<?, ?> options) throws IOException {
-        base.load(options);
+        resource.load(options);
     }
 
     @Override
     public boolean isTrackingModification() {
-        return base.isTrackingModification();
+        return resource.isTrackingModification();
     }
 
     @Override
     public void setTrackingModification(boolean isTrackingModification) {
-        base.setTrackingModification(isTrackingModification);
+        resource.setTrackingModification(isTrackingModification);
     }
 
     @Override
     public boolean isModified() {
-        return base.isModified();
+        return resource.isModified();
     }
 
     @Override
     public void setModified(boolean isModified) {
-        base.setModified(isModified);
+        resource.setModified(isModified);
     }
 
     @Override
     public boolean isLoaded() {
-        return base.isLoaded();
+        return resource.isLoaded();
     }
 
     @Override
     public void unload() {
-        base.unload();
+        resource.unload();
     }
 
     @Override
     public void delete(Map<?, ?> options) throws IOException {
-        base.delete(options);
+        resource.delete(options);
     }
 
     @Override
     public EList<Diagnostic> getErrors() {
-        return base.getErrors();
+        return resource.getErrors();
     }
 
     @Override
     public EList<Diagnostic> getWarnings() {
-        return base.getWarnings();
+        return resource.getWarnings();
     }
 
     @Override
     public EList<Adapter> eAdapters() {
-        return base.eAdapters();
+        return resource.eAdapters();
     }
 
     @Override
     public boolean eDeliver() {
-        return base.eDeliver();
+        return resource.eDeliver();
     }
 
     @Override
     public void eSetDeliver(boolean deliver) {
-        base.eSetDeliver(deliver);
+        resource.eSetDeliver(deliver);
     }
 
     @Override
     public void eNotify(Notification notification) {
-        base.eNotify(notification);
+        resource.eNotify(notification);
     }
 
     @Override
     public void attached(EObject eObject) {
-        base.attached(eObject);
+        resource.attached(eObject);
     }
 
     @Override
     public void detached(EObject eObject) {
-        base.detached(eObject);
+        resource.detached(eObject);
     }
 
     @Override
     public NotificationChain basicSetResourceSet(ResourceSet resourceSet, NotificationChain notifications) {
-        return base.basicSetResourceSet(resourceSet, notifications);
+        return resource.basicSetResourceSet(resourceSet, notifications);
     }
 
     @Override
     public boolean isLoading() {
-        return base.isLoading();
+        return resource.isLoading();
     }
 
     @Override
     public final void close() {
-        base.close();
+        resource.close();
     }
 
     @Override
     public EStore eStore() {
-        return base.eStore();
+        return resource.eStore();
     }
 
     @Override
     public EList<EObject> getAllInstances(EClass eClass) {
-        return base.getAllInstances(eClass);
+        return resource.getAllInstances(eClass);
     }
 
     @Override
     public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        return base.getAllInstances(eClass, strict);
+        return resource.getAllInstances(eClass, strict);
     }
 
 }

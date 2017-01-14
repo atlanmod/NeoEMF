@@ -18,6 +18,12 @@ package fr.inria.atlanmod.neoemf.tests;
  */
 final class Dummy {
 
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException everytime
+     */
     private Dummy() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 }

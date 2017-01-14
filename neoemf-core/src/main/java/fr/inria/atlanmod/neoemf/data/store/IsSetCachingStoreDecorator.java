@@ -26,6 +26,9 @@ import static java.util.Objects.nonNull;
  */
 public class IsSetCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
+    /**
+     * Cache that holds presence of a value.
+     */
     private final Cache<FeatureKey, Boolean> isSetCache;
 
     /**

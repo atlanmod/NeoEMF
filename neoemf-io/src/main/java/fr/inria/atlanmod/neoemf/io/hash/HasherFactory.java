@@ -16,7 +16,13 @@ package fr.inria.atlanmod.neoemf.io.hash;
  */
 public class HasherFactory {
 
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException everytime
+     */
     private HasherFactory() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**

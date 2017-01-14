@@ -31,7 +31,7 @@ public class BlueprintsAwareHandler extends AbstractBlueprintsHandler {
     /**
      * Constructs a new {@code BlueprintsAwareHandler} on the given {@code backend}.
      *
-     * @param backend the backend where to store data
+     * @param backend the back-end where to store data
      */
     protected BlueprintsAwareHandler(BlueprintsPersistenceBackend backend) {
         super(backend);

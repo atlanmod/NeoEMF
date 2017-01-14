@@ -55,14 +55,29 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * ???
+ */
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
 
+    /**
+     * ???
+     */
     private static final String URI_UNKNOWN = "/-1";
 
+    /**
+     * ???
+     */
     private static final ResourceContentsEStructuralFeature ROOT_CONTENTS_ESTRUCTURALFEATURE = new ResourceContentsEStructuralFeature();
 
+    /**
+     * ???
+     */
     private final DummyRootEObject dummyRootEObject;
 
+    /**
+     * ???
+     */
     protected PersistentStore store;
 
     /**
@@ -70,29 +85,29 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     protected PersistenceBackend backend;
 
+    /**
+     * ???
+     */
     private Map<?, ?> options;
 
+    /**
+     * ???
+     */
     private boolean isPersistent;
 
+    /**
+     * Constructs a new {@code DefaultPersistentResource} with the given {@code uri}.
+     *
+     * @param uri the {@code URI} of the resource
+     */
     public DefaultPersistentResource(URI uri) {
         super(uri);
         this.dummyRootEObject = new DummyRootEObject(this);
         this.backend = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientBackend();
         this.store = PersistenceBackendFactoryRegistry.getFactoryProvider(uri.scheme()).createTransientStore(this, backend);
         this.isPersistent = false;
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook(backend, getURI()));
+        PersistenceBackendShutdownHook.closeOnExit(backend, getURI());
         NeoLogger.info("{0} created", PersistentResource.class.getSimpleName());
-    }
-
-    /**
-     * @deprecated Use {@link PersistentResource#close()} instead.
-     */
-    @Deprecated
-    public static void shutdownWithoutUnload(PersistentResource resource) {
-        if (nonNull(resource)) {
-            resource.close();
-            NeoLogger.info("{0} closed: {1}", PersistentResource.class.getSimpleName(), resource.getURI());
-        }
     }
 
     /**
@@ -247,8 +262,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     private static class ResourceContentsEStructuralFeature extends EReferenceImpl {
 
+        /**
+         * ???
+         */
         private static final String CONTENTS = "eContents";
 
+        /**
+         * Constructs a new {@code ResourceContentsEStructuralFeature}.
+         */
         public ResourceContentsEStructuralFeature() {
             setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
             setLowerBound(0);
@@ -264,8 +285,16 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     private static final class DummyRootEObject extends DefaultPersistentEObject {
 
+        /**
+         * The literal representation of the identifier of the root element in a database.
+         */
         private static final String ROOT_EOBJECT_ID = "ROOT";
 
+        /**
+         * Constructs a new {@code DummyRootEObject} with the given {@code resource}.
+         *
+         * @param resource the resouce containing this object.
+         */
         public DummyRootEObject(Resource.Internal resource) {
             super(new StringId(ROOT_EOBJECT_ID));
             eSetDirectResource(resource);
@@ -279,6 +308,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         protected static final long serialVersionUID = 1L;
 
+        /**
+         * Constructs a new {@code ResourceContentsEStoreEList} with ???
+         *
+         * @param owner ???
+         * @param feature ???
+         * @param store ???
+         */
         public ResourceContentsEStoreEList(InternalEObject owner, EStructuralFeature feature, EStore store) {
             super(owner, feature, store);
         }
@@ -416,6 +452,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             }
         }
 
+        /**
+         * ???
+         */
         private void loaded() {
             if (!isLoaded()) {
                 Notification notification = setLoaded(true);
@@ -425,6 +464,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             }
         }
 
+        /**
+         * ???
+         */
         private void modified() {
             if (isTrackingModification()) {
                 setModified(true);
@@ -433,25 +475,54 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     /**
-     * A shutdown-hook that stops a back-end when the application is terminated.
+     * A shutdown-hook that stops a persistent back-end when the application exits.
      */
-    private static class ShutdownHook extends Thread {
+    private static class PersistenceBackendShutdownHook extends Thread {
 
+        /**
+         * The backend to stop when the application will exit
+         */
         private final PersistenceBackend backend;
 
+        /**
+         * The {@code URI} of the resource used by the {@code backend}
+         */
         private final URI uri;
 
-        public ShutdownHook(PersistenceBackend backend, URI uri) {
+        /**
+         * Creates a new {@code PersistenceBackendShutdownHook} with the given {@code backend}.
+         *
+         * @param backend the backend to stop when the application will exit
+         * @param uri the {@code URI} of the resource used by the {@code backend}
+         */
+        private PersistenceBackendShutdownHook(PersistenceBackend backend, URI uri) {
             this.backend = backend;
             this.uri = uri;
         }
 
+        /**
+         * {@inheritDoc}
+         * <p>
+         * Cleanly stops the underlying database.
+         *
+         * @see PersistenceBackend#close()
+         */
         @Override
         public void run() {
             if (!backend.isClosed()) {
                 backend.close();
                 NeoLogger.info("{0} closed: {1} ", PersistenceBackend.class.getSimpleName(), uri);
             }
+        }
+
+        /**
+         * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
+         *
+         * @param backend the backend to stop when the application will exit
+         * @param uri the {@code URI} of the resource used by the {@code backend}
+         */
+        public static void closeOnExit(PersistenceBackend backend, URI uri) {
+            Runtime.getRuntime().addShutdownHook(new PersistenceBackendShutdownHook(backend, uri));
         }
     }
 }

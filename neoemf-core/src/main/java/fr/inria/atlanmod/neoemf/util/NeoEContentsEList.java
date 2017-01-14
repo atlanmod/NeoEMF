@@ -25,27 +25,64 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
+/**
+ * ???
+ *
+ * @param <E> the type of elements in this list
+ */
 public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>, InternalEList<E> {
 
+    /**
+     * The instance of an empty {@code NeoEContentsEList}.
+     */
     private static final NeoEContentsEList<?> EMPTY_NEO_CONTENTS_ELIST = new EmptyNeoEContentsEList<>();
 
+    /**
+     * The owner of this list.
+     */
     private final PersistentEObject owner;
 
+    /**
+     * Constructs a new {@code NeoEContentsEList} with the given {@code owner}.
+     *
+     * @param owner the owner of this list
+     */
     protected NeoEContentsEList(EObject owner) {
         super(owner);
         this.owner = PersistentEObject.from(owner);
     }
 
+    /**
+     * Constructs a new {@code NeoEContentsEList} with the given {@code owner} and {@code features}.
+     *
+     * @param owner the owner of this list
+     * @param features ???
+     */
     protected NeoEContentsEList(EObject owner, EStructuralFeature[] features) {
         super(owner, features);
         this.owner = PersistentEObject.from(owner);
     }
 
+    /**
+     * Returns an empty {@code NeoEContentsEList}.
+     *
+     * @param <E> the type of elements in this list
+     *
+     * @return an empty list
+     */
     @SuppressWarnings("unchecked") // Unchecked cast: 'NeoEContentsEList<?>' to 'NeoEContentsEList<...>'
     public static <E> NeoEContentsEList<E> emptyNeoContentsEList() {
         return (NeoEContentsEList<E>) EMPTY_NEO_CONTENTS_ELIST;
     }
 
+    /**
+     * Creates a new {@code NeoEContentsEList} with the given {@code onwer}.
+     *
+     * @param owner the owner of this list
+     * @param <E> the type of elements in this list
+     *
+     * @return a new list
+     */
     public static <E> NeoEContentsEList<E> createNeoEContentsEList(EObject owner) {
         NeoEContentsEList<E> contentEList;
         EStructuralFeature[] features = ((EClassImpl.FeatureSubsetSupplier) owner.eClass().getEAllStructuralFeatures()).containments();
@@ -81,8 +118,16 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
         throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);
     }
 
+    /**
+     * ???
+     *
+     * @param <T> the type of elements in this list
+     */
     private static class EmptyNeoEContentsEList<T> extends NeoEContentsEList<T> {
 
+        /**
+         * Constructs a new {@code EmptyNeoEContentsEList}.
+         */
         public EmptyNeoEContentsEList() {
             super(null, null);
         }

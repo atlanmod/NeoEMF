@@ -92,7 +92,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      * {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence backend used to store the model
+     * @param backend the persistence back-end used to store the model
      */
     public DirectWriteBlueprintsStore(Resource.Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);

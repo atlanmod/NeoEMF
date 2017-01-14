@@ -23,14 +23,20 @@ import javax.annotation.Nonnull;
  * The abstract implementation of {@link PersistenceOptionsBuilder}.
  * <p>
  * All features are all optional: options can be created using all or none of them.
- * @param <B> the type of the "self" type of this {@link PersistenceOptionsBuilder}
+ * @param <B> the "self"-type of this {@link PersistenceOptionsBuilder}
  * @param <O> the type of {@link CommonOptions} built by this builder
  */
 public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersistenceOptionsBuilder<B, O>, O extends AbstractPersistenceOptions> implements PersistenceOptionsBuilder {
 
+    /**
+     * A temporary map that holds all defined key/value options in this builder.
+     */
     @Nonnull
     private final Map<String, Object> options;
 
+    /**
+     * A temporary list that holds all defined store options in this builder.
+     */
     @Nonnull
     private final List<PersistentStoreOptions> storeOptions;
 

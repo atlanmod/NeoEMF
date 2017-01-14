@@ -18,12 +18,25 @@ import org.apache.logging.log4j.LogManager;
  */
 abstract class AbstractLogger implements Logger {
 
+    /**
+     * The internal logger.
+     */
     private final org.apache.logging.log4j.Logger logger;
 
+    /**
+     * Constructs a new {@code AbstractLogger} with the given {@code name}.
+     *
+     * @param name the name of this logger
+     */
     protected AbstractLogger(String name) {
         this.logger = LogManager.getLogger(name);
     }
 
+    /**
+     * Returns the internal logger.
+     *
+     * @return the internal logger
+     */
     protected org.apache.logging.log4j.Logger logger() {
         return logger;
     }

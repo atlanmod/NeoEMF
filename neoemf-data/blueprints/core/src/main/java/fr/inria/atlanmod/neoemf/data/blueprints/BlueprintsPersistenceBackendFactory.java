@@ -56,12 +56,13 @@ import javax.annotation.Nonnull;
 /**
  * A factory that creates instances of {@link BlueprintsPersistenceBackend}. As other implementations of 
  * {@link PersistenceBackendFactory}, this class can create transient and persistent databases.
- * Persistent backend creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
+ * Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
  * option maps.
  * <p>
- * The factory handles transient backends by creating an in-memory {@link TinkerGraph} instance. Persistent
- * backends are created according to the provided resource options (@see {@link BlueprintsResourceOptions} and {@link BlueprintsStoreOptions}). Default backend configuration (store directory and
- * graph type) is called dynamically according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
+ * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent
+ * back-ends are created according to the provided resource options (@see {@link BlueprintsResourceOptions} and {@link BlueprintsStoreOptions}).
+ * Default back-end configuration (store directory and graph type) is called dynamically according to the provided
+ * Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
  * 
  * @see PersistentResource
  * @see BlueprintsPersistenceBackend

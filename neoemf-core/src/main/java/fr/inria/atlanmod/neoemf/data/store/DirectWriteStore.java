@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 /**
- * A {@link PersistentStore} that translates model-level operations into data store calls.
+ * A {@link PersistentStore} that translates model-level operations into datastore calls.
  */
 public interface DirectWriteStore extends PersistentStore {
 }

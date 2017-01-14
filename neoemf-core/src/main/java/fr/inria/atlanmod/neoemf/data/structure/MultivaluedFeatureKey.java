@@ -33,6 +33,9 @@ public class MultivaluedFeatureKey extends FeatureKey {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The position of this key.
+     */
     @Nonnegative
     private final int position;
 

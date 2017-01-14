@@ -19,11 +19,19 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
+/**
+ * ???
+ */
 public interface PersistentResource extends Resource, Resource.Internal, Closeable {
 
     @Override
     void close();
 
+    /**
+     * ???
+     *
+     * @return ???
+     */
     InternalEObject.EStore eStore();
 
     /**

@@ -30,7 +30,7 @@ public class BlueprintsNaiveHandler extends AbstractBlueprintsHandler {
     /**
      * Constructs a new {@code BlueprintsNaiveHandler} on the given {@code backend}.
      *
-     * @param backend the backend where to store data
+     * @param backend the back-end where to store data
      */
     protected BlueprintsNaiveHandler(BlueprintsPersistenceBackend backend) {
         super(backend);

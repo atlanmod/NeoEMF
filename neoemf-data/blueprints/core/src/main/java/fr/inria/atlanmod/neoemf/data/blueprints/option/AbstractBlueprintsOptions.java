@@ -21,4 +21,8 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
  * in the near future.
  */
 public abstract class AbstractBlueprintsOptions extends AbstractPersistenceOptions {
+
+    protected AbstractBlueprintsOptions() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

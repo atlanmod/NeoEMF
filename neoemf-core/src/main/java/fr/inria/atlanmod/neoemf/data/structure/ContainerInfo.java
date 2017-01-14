@@ -30,9 +30,15 @@ public class ContainerInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The identifier of the object.
+     */
     @Nonnull
     private final Id id;
 
+    /**
+     * The name of the reference used to retreive the container of the object.
+     */
     @Nonnull
     private final String name;
 

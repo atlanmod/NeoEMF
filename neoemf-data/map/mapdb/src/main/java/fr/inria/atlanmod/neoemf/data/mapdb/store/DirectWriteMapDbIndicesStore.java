@@ -57,7 +57,7 @@ public class DirectWriteMapDbIndicesStore extends DirectWriteMapDbStore {
      * {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence backend used to store the model
+     * @param backend the persistence back-end used to store the model
      */
     public DirectWriteMapDbIndicesStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);

@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
  * utility methods to create generic Blueprints options.
  * <p>
  * Created options can be {@link BlueprintsResourceOptions} if they define resource-level features, or
- * {@link BlueprintsStoreOptions} if they define datastore access feature.
+ * {@link BlueprintsStoreOptions} if they define database access feature.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  * @param <B> the type of the "self" type of this {@link PersistenceOptionsBuilder}

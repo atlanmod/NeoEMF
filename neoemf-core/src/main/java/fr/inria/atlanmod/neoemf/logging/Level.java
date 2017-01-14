@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.logging;
 
 /**
- * Levels used for identifying the severity of an event.
+ * An object used for identifying the severity of an event.
  * <p>
  * Levels are organized from most specific to least:
  * <ul>

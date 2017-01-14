@@ -22,6 +22,9 @@ import javax.annotation.Nonnull;
  */
 public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
+    /**
+     * Constructs a new {@code PersistenceFactory}.
+     */
     private PersistenceFactory() {
     }
 

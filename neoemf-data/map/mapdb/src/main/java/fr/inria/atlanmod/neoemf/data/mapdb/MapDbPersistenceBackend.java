@@ -272,7 +272,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Copies all the contents of this this backend to the target one.
+     * Copies all the contents of this this back-end to the target one.
      * @param target the {@link MapDbPersistenceBackend} to copy the database contents to
      * @throws UnsupportedOperationException if the current {@link DB} contains {@link Collection}s
      * which are not {@link Map}s

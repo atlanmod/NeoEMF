@@ -20,4 +20,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.AbstractBlueprintsOptions
  * in the near future.
  */
 public class BlueprintsNeo4jOptions extends AbstractBlueprintsOptions {
+
+    private BlueprintsNeo4jOptions() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

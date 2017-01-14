@@ -52,7 +52,7 @@ public interface PersistenceBackendFactory {
      *
      * @return the persistence back-end
      *
-     * @throws InvalidDataStoreException the invalid data store exception
+     * @throws InvalidDataStoreException the invalid datastore exception
      */
     PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException;
 

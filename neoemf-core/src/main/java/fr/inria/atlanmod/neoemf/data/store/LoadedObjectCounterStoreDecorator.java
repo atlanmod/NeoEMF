@@ -26,6 +26,9 @@ import java.util.Set;
  */
 public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDecorator {
 
+    /**
+     * Set that holds loaded objects.
+     */
     private final Set<Id> loadedObjects = new HashSet<>();
 
     /**
@@ -148,15 +151,23 @@ public class LoadedObjectCounterStoreDecorator extends AbstractPersistentStoreDe
         return super.getContainingFeature(internalObject);
     }
 
+    /**
+     * Defines the {@code object} as loaded, and adds it into {@link #loadedObjects}
+     *
+     * @param object the object to add
+     */
     private void setAsLoaded(Object object) {
         if (object instanceof PersistentEObject) {
-            loadedObjects.add(((PersistentEObject) object).id());
+            loadedObjects.add(PersistentEObject.from(object).id());
         }
         else {
             NeoLogger.debug("Not a {0} : This object will be ignored in the final count.", PersistentEObject.class.getSimpleName());
         }
     }
 
+    /**
+     * A shutdown hook that logs the total number of loaded objects when then application exits.
+     */
     private class ShutdownHook extends Thread {
 
         @Override

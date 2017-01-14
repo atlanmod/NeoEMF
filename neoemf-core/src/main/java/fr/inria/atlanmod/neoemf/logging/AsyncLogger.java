@@ -30,13 +30,24 @@ class AsyncLogger extends AbstractLogger {
      */
     private static final int THREADS = 1;
 
+    /**
+     * The time, in millis, to wait for the executor to finish before terminating the JVM.
+     */
     private static final int TERMINATION_TIMEOUT_MS = 100;
 
+    /**
+     * The concurrent pool.
+     */
     private static final ExecutorService pool =
             MoreExecutors.getExitingExecutorService(
                     (ThreadPoolExecutor) Executors.newFixedThreadPool(THREADS),
                     TERMINATION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
+    /**
+     * Constructs a new {@code AsyncLogger} with the given {@code name}.
+     *
+     * @param name the name of this logger
+     */
     public AsyncLogger(String name) {
         super(name);
     }
@@ -52,6 +63,11 @@ class AsyncLogger extends AbstractLogger {
         });
     }
 
+    /**
+     * Executes a {@link Runnable} in a concurrent pool to run asynchronously the logging methods.
+     *
+     * @param runnable the function to execute
+     */
     private void execute(Runnable runnable) {
         try {
             // Asynchronous call

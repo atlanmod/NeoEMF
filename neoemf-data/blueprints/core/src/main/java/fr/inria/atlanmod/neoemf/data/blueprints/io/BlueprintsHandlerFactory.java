@@ -20,7 +20,13 @@ import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
  */
 public class BlueprintsHandlerFactory {
 
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException everytime
+     */
     private BlueprintsHandlerFactory() {
+        throw new IllegalStateException("This class should not be instantiated");
     }
 
     /**

@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * An {@link org.eclipse.emf.ecore.EObject} identified by a unique {@link Id}, able to persist in data stores.
+ * An {@link org.eclipse.emf.ecore.EObject} identified by a unique {@link Id}, able to persist in datastores.
  */
 public interface PersistentEObject extends InternalEObject {
 
@@ -44,9 +44,9 @@ public interface PersistentEObject extends InternalEObject {
     Id id();
 
     /**
-     * Defines the new identifier of this {@code PersistentEObject}.
+     * Defines the identifier of this {@code PersistentEObject}.
      *
-     * @param id the new identifier
+     * @param id the identifier
      */
     void id(@Nonnull Id id);
 

@@ -47,11 +47,11 @@ import javax.annotation.Nonnull;
 /**
  * A factory that creates instances of {@link MapDbPersistenceBackend}. As other implementations of
  * {@link AbstractPersistenceBackendFactory}, this class can create transient and persistent databases.
- * Persistent backend creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
+ * Persistent back-end creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
  * option maps.
  * <p>
- * The factory handles transient backends by creating in-memory {@link Map} instances. Persistent
- * backends are created according to the provided resource options ({@link MapDbStoreOptions}).
+ * The factory handles transient back-ends by creating in-memory {@link Map} instances. Persistent
+ * back-ends are created according to the provided resource options ({@link MapDbStoreOptions}).
  *
  * @see PersistentResource
  * @see MapDbPersistenceBackend

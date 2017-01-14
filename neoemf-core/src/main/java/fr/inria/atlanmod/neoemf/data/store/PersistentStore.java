@@ -21,10 +21,13 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * An {@link EStore} to establish a mapping between {@link Resource}s and {@link EStore}s in a persistent context, i.e,
- * when storing data in a data store.
+ * when storing data in a datastore.
  */
 public interface PersistentStore extends EStore {
 
+    /**
+     * A value indicating that no index is specified.
+     */
     int NO_INDEX = EStore.NO_INDEX;
 
     /**

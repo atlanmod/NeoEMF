@@ -82,7 +82,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     /**
      * Constructs a new {@code AbstractBlueprintsHandler} on the given {@code backend}.
      *
-     * @param backend the backend where to store data
+     * @param backend the back-end where to store data
      */
     public AbstractBlueprintsHandler(BlueprintsPersistenceBackend backend) {
         super(backend);

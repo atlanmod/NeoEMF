@@ -12,7 +12,7 @@
 package fr.inria.atlanmod.neoemf.option;
 
 /**
- * Represents options related to datastore access features.
+ * Represents options related to database access features.
  */
 public interface PersistentStoreOptions {
 }

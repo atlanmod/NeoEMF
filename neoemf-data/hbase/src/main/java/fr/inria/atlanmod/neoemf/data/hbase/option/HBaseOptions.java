@@ -18,4 +18,8 @@ import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
  * in the near future.
  */
 public class HBaseOptions extends AbstractPersistenceOptions {
+
+    private HBaseOptions() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

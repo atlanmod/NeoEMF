@@ -54,7 +54,7 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
      * Constructs a new {@code DirectWriteBerkeleyDbStore} between the given {@code resource} and the {@code backend}.
      *
      * @param resource the resource to persist and access
-     * @param backend the persistence backend used to store the model
+     * @param backend the persistence back-end used to store the model
      */
     public DirectWriteBerkeleyDbStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
         super(resource, backend);

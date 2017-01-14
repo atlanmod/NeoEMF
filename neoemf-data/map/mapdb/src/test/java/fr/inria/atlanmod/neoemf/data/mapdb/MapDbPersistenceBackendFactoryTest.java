@@ -138,7 +138,7 @@ public class MapDbPersistenceBackendFactoryTest extends AbstractPersistenceBacke
     }
 
     /**
-     * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent data stores from the transient ones.
+     * Test if {@link PersistenceBackendFactory#copyBackend} creates the persistent datastores from the transient ones.
      * Only empty back-ends are tested.
      */
     @Test
