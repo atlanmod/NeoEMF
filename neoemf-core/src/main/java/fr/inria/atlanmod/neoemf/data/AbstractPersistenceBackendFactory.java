@@ -143,9 +143,8 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * The configuration is stored as a properties file beside a database in order to identify a {@link
      * PersistenceBackend}.
      *
-     * @param directory the directory where the configuration must be stored.
+     * @param directory the directory where the configuration must be stored
      */
-    // TODO Create a 'PersistenceConfiguration' class to manage the configuration of back-ends
     protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;
         Path path = Paths.get(directory.getAbsolutePath()).resolve(CONFIG_FILE);

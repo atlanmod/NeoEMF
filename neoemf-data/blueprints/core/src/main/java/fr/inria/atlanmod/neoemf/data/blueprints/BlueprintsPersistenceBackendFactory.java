@@ -139,12 +139,12 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     }
 
     @Override
-    public BlueprintsPersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
+    public BlueprintsPersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
         BlueprintsPersistenceBackend backend;
         PropertiesConfiguration configuration = null;
 
         try {
-            configuration = getOrCreateBlueprintsConfiguration(file, options);
+            configuration = getOrCreateBlueprintsConfiguration(directory, options);
 
             try {
                 Graph baseGraph = GraphFactory.open(configuration);
@@ -153,8 +153,8 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
                     backend = new BlueprintsPersistenceBackend((KeyIndexableGraph) baseGraph);
                 }
                 else {
-                    NeoLogger.error("Graph type {0} does not support Key Indices", file.getAbsolutePath());
-                    throw new InvalidDataStoreException("Graph type " + file.getAbsolutePath() + " does not support Key Indices");
+                    NeoLogger.error("Graph type {0} does not support Key Indices", directory.getAbsolutePath());
+                    throw new InvalidDataStoreException("Graph type " + directory.getAbsolutePath() + " does not support Key Indices");
                 }
             }
             catch (RuntimeException e) {
@@ -176,7 +176,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             }
         }
 
-        processGlobalConfiguration(file);
+        processGlobalConfiguration(directory);
 
         return backend;
     }

@@ -123,10 +123,10 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
     }
 
     @Override
-    public PersistenceBackend createPersistentBackend(File file, Map<?, ?> options) throws InvalidDataStoreException {
+    public PersistenceBackend createPersistentBackend(File directory, Map<?, ?> options) throws InvalidDataStoreException {
         MapDbPersistenceBackend backend;
 
-        File dbFile = FileUtils.getFile(MapDbURI.createURI(URI.createFileURI(file.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
+        File dbFile = FileUtils.getFile(MapDbURI.createURI(URI.createFileURI(directory.getAbsolutePath()).appendSegment("neoemf.mapdb")).toFileString());
         if (!dbFile.getParentFile().exists()) {
             try {
                 Files.createDirectories(dbFile.getParentFile().toPath());
@@ -138,7 +138,7 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
 
         DB db = DBMaker.fileDB(dbFile).fileMmapEnableIfSupported().make();
         backend = new MapDbPersistenceBackend(db);
-        processGlobalConfiguration(file);
+        processGlobalConfiguration(directory);
 
         return backend;
     }
