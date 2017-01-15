@@ -243,7 +243,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             String graphName = segments[segments.length - 2];
             String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1);
             String configClassName = MessageFormat.format("InternalBlueprints{0}Configuration", upperCaseGraphName);
-            String configClassQualifiedName = MessageFormat.format("fr.inria.atlanmod.neoemf.data.blueprints.{0}.config.{1}", graphName, configClassName);
+            String configClassQualifiedName = MessageFormat.format("{0}.{1}.config.{2}", BlueprintsPersistenceBackendFactory.class.getPackage().getName(), graphName, configClassName);
 
             try {
                 ClassLoader classLoader = BlueprintsPersistenceBackendFactory.class.getClassLoader();
