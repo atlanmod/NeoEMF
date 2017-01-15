@@ -116,7 +116,7 @@ public class HBaseEncoderUtil {
             return byteArrayOutputStream.toByteArray();
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to convert ''{0}'' to byte[]", Arrays.toString(strings));
+            NeoLogger.error("Unable to convert {0} to byte[]", Arrays.toString(strings));
         }
         return null;
     }
@@ -144,7 +144,7 @@ public class HBaseEncoderUtil {
             strings = (String[]) objectInputStream.readObject();
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to convert ''{0}'' to String[]", Arrays.toString(bytes));
+            NeoLogger.error("Unable to convert {0} to String[]", Arrays.toString(bytes));
         }
         catch (ClassNotFoundException e) {
             NeoLogger.error(e);

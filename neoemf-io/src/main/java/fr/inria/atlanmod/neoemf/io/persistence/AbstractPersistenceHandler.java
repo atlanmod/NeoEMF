@@ -70,24 +70,25 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private final Deque<Id> elementIdStack;
 
     /**
-     * Cache holding the recently processed {@link Id}.
+     * In-memory cache that holds the recently processed {@link Id}s, identified by their literal representation.
      */
     private final Cache<String, Id> elementIdCache;
 
     /**
-     * Cache holding the registered metaclasses, identified by their {@link Id}.
+     * In-memory cache that holds the registered metaclasses, identified by a {@link String} formatted as follow:
+     * {@code "uri:localName"}.
      */
     private final Cache<String, Id> metaclassIdCache;
 
     /**
-     * Cache holding the unlinked elements, waiting until their reference is created.
+     * Map holding the unlinked elements, waiting until their reference is created.
      *
      * @note In case of conflict detection only.
      */
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
-     * Cache holding conflicted {@link Id}s.
+     * In-memory cache that holds conflicted {@link Id}s, identified by their literal representation.
      *
      * @note In case of conflict detection only.
      */

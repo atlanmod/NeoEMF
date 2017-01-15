@@ -209,9 +209,10 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
      * ???
      *
      * @param directory ???
-     * @param options ???
+     * @param options   ???
      *
      * @return ???
+     *
      * @throws InvalidDataStoreException if ???
      */
     private PropertiesConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {

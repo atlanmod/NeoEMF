@@ -77,11 +77,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     public static final String NAME = "blueprints";
     /**
-     * The property key used to set metaclass name in metaclass {@link Vertex Vertices}.
+     * The property key used to set metaclass name in metaclass {@link Vertex}s.
      */
     public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
     /**
-     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex Vertices}.
+     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex}s.
      */
     public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
     /**
@@ -89,11 +89,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
     /**
-     * The name of the index entry holding metaclass {@link Vertex Vertices}.
+     * The name of the index entry holding metaclass {@link Vertex}s.
      */
     public static final String KEY_METACLASSES = "metaclasses";
     /**
-     * The index key used to retrieve metaclass {@link Vertex Vertices}.
+     * The index key used to retrieve metaclass {@link Vertex}s.
      */
     public static final String KEY_NAME = "name";
 
@@ -104,12 +104,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
-     * Cache that holds recently loaded {@link PersistentEObject}s.
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * Cache that holds recently loaded {@link Vertex Vertices}.
+     * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
      */
     private final Cache<Id, Vertex> verticesCache;
 
@@ -124,7 +124,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private final Index<Vertex> metaclassIndex;
 
     /**
-     * The Blueprints database.
+     * The Blueprints graph.
      */
     private final IdGraph<KeyIndexableGraph> graph;
 
@@ -341,7 +341,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
      * collected.
      * <p>
-     * This method behaves like {@code BlueprintsPersistenceBackend.reifyVertex(vertex, null)}.
+     * This method behaves like {@code reifyVertex(vertex, null)}.
      *
      * @param vertex the {@link Vertex} to reify
      *

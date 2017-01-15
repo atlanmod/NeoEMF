@@ -24,6 +24,9 @@ import java.text.MessageFormat;
  */
 public final class NeoLogger {
 
+    /**
+     * In-memory cache that holds loaded {@link Logger}s, identified by their name.
+     */
     private static final Cache<String, Logger> LOGGERS = Caffeine.newBuilder().build();
 
     /**

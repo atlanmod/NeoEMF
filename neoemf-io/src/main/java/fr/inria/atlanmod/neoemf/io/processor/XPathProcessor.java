@@ -287,7 +287,7 @@ public class XPathProcessor extends AbstractProcessor {
              */
             private final String name;
             /**
-             * A map containing all children of this node, identified by their name.
+             * In-memory cache that holds all children of this node, identified by their name.
              */
             private final Cache<String, XPathNode> childrenCache;
             /**

@@ -89,28 +89,24 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     private final DB db;
 
     /**
-     * A persistent map that stores the container of {@link PersistentEObject}s.
+     * A persistent map that stores the container of {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     private final HTreeMap<Id, ContainerInfo> containersMap;
 
     /**
-     * A persistent map that stores the EClass for {@link PersistentEObject}s.
-     * <p>
-     * The key is the object {@link Id}.
+     * A persistent map that stores the EClass for {@link PersistentEObject}s, identified by the object {@link Id}.
      */
     private final HTreeMap<Id, ClassInfo> instanceOfMap;
 
     /**
-     * A persistent map that stores Structural feature values for {@link PersistentEObject}s.
-     * <p>
-     * The key is build using the object {@link Id} plus the name of the feature.
+     * A persistent map that stores Structural feature values for {@link PersistentEObject}s, identified by the
+     * associated {@link FeatureKey}.
      */
     private final HTreeMap<FeatureKey, Object> features;
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s.
-     * <p>
-     * The key is build using the object {@link Id} plus the name of the feature plus the index of the value.
+     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s, identified by the
+     * associated {@link MultivaluedFeatureKey}.
      */
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
 

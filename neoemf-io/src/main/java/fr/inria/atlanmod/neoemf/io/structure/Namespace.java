@@ -84,12 +84,12 @@ public class Namespace {
     public static class Registry {
 
         /**
-         * Registered {@link Namespace} identified by their prefix.
+         * In-memory cache that holds registered {@link Namespace}, identified by their prefix.
          */
         private final Cache<String, Namespace> nsByPrefixCache;
 
         /**
-         * Registered {@link Namespace} identified by their URI.
+         * In-memory cache that holds registered {@link Namespace}, identified by their URI.
          */
         private final Cache<String, Namespace> nsByUriCache;
 

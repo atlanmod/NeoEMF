@@ -56,7 +56,7 @@ public class ContainerInfo implements Serializable {
     /**
      * Creates a new {@code ContainerInfo} from the given {@code object} and {@code reference}.
      * <p>
-     * This method behaves like: {@code ContainerInfo.of(object.id(), reference.getName())}.
+     * This method behaves like: {@code of(object.id(), reference.getName())}.
      *
      * @param object    the {@link PersistentEObject}
      * @param reference the reference used to retrieve the container of the {@link PersistentEObject}

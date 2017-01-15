@@ -27,6 +27,9 @@ import static java.util.Objects.nonNull;
  */
 public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
+    /**
+     * In-memory cache that holds recently processed sizes, identified by the associated {@link FeatureKey}.
+     */
     private final Cache<FeatureKey, Integer> sizesCache;
 
     /**

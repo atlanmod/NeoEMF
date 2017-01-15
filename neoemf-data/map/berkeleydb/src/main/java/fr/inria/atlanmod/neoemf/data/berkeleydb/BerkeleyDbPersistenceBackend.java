@@ -113,28 +113,25 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     private boolean isClosed = true;
 
     /**
-     * A persistent map that stores the container of {@link PersistentEObject}.
+     * A persistent map that stores the container of {@link PersistentEObject}, identified by the object {@link Id}.
      */
     private Database containers;
 
     /**
-     * A persistent map that stores the {@link EClass} for {@link PersistentEObject}.
-     * <p>
-     * The key is the object {@link Id}.
+     * A persistent map that stores the {@link EClass} for {@link PersistentEObject}, identified by the object {@link
+     * Id}.
      */
     private Database instances;
 
     /**
-     * A persistent map that stores structural features values for {@link PersistentEObject}.
-     * <p>
-     * The key is build using the object {@link Id} plus the name of the feature.
+     * A persistent map that stores structural features values for {@link PersistentEObject}, identified by the
+     * associated {@link FeatureKey}.
      */
     private Database features;
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}.
-     * <p>
-     * The key is build using the object {@link Id} plus the name of the feature plus the index of the value.
+     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}, identified by the
+     * associated {@link MultivaluedFeatureKey}.
      */
     private Database multivaluedFeatures;
 

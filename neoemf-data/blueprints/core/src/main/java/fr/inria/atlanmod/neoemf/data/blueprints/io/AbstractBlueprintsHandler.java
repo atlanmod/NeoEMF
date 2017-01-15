@@ -76,7 +76,8 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     private static final String ROOT_FEATURE_NAME = "eContents";
 
     /**
-     * Cache that holds recently processed {@link Vertex Vertices}.
+     * In-memory cache that holds recently processed {@link Vertex}s, identified by the associated object
+     * {@link Id}.
      */
     protected final Cache<Id, Vertex> verticesCache;
 

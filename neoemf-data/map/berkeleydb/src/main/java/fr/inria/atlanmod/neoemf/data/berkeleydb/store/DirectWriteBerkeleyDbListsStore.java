@@ -38,7 +38,7 @@ import static java.util.Objects.isNull;
 public class DirectWriteBerkeleyDbListsStore extends DirectWriteBerkeleyDbStore {
 
     /**
-     * ???
+     * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Object> objectsCache;
 

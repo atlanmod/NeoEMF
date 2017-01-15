@@ -70,54 +70,50 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * ???
      */
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
-
+    /**
+     * The default cache size.
+     */
+    // TODO Find the more predictable maximum cache size
+    protected static final int DEFAULT_CACHE_SIZE = 10000;
     /**
      * ???
      */
     private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
-
     /**
      * ???
      */
     private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
-
     /**
      * ???
      */
     private static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
-
     /**
      * ???
      */
     private static final byte[] CONTAINMENT_FAMILY = Bytes.toBytes("c");
-
     /**
      * ???
      */
     private static final byte[] CONTAINER_QUALIFIER = Bytes.toBytes("n");
-
     /**
      * ???
      */
     private static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
-
     /**
      * ???
      */
     private static final int ATTEMP_TIMES_DEFAULT = 10;
-
     /**
      * ???
      */
     private static final long SLEEP_DEFAULT = 1L;
-
     /**
-     * ???
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * ???
+     * The HBase table.
      */
     protected Table table;
 
@@ -131,7 +127,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
 
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();
+        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
 
         Configuration configuration = HBaseConfiguration.create();
         configuration.set("hbase.zookeeper.quorum", resource.getURI().host());
@@ -271,15 +267,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     /**
      * ???
      *
-     * @param object ???
-     */
-    private void updateLoadedEObjects(PersistentEObject object) {
-        persistentObjectsCache.put(object.id(), object);
-    }
-
-    /**
-     * ???
-     *
      * @param object           ???
      * @param reference        ???
      * @param referencedObject ???
@@ -342,7 +329,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             }
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
+            NeoLogger.error("Unable to get property {0} for {1}", feature.getName(), object);
         }
         return null;
     }
@@ -367,7 +354,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             return nonNull(value);
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to get information for element ''{0}''", object);
+            NeoLogger.error("Unable to get information for element {0}", object);
         }
         return false;
     }
@@ -504,18 +491,18 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
                     while (!passed);
                 }
                 catch (IOException e) {
-                    NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}''", value, attribute.getName(), object);
+                    NeoLogger.error("Unable to set {0} to {1} for element {2}", value, attribute.getName(), object);
                 }
                 catch (TimeoutException e) {
-                    NeoLogger.error("Unable to set ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
+                    NeoLogger.error("Unable to set {0} to {1} for element {2} after {3} times", value, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
                 }
                 catch (InterruptedException e) {
-                    NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
+                    NeoLogger.error(e, "InterruptedException while updating element {0}", object);
                 }
             }
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to set information for element ''{0}''", object);
+            NeoLogger.error("Unable to set information for element {0}", object);
         }
         return old;
     }
@@ -523,7 +510,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     @Override
     protected Object setReference(PersistentEObject object, EReference reference, int index, PersistentEObject referencedObject) {
         Object old = isSet(object, reference) ? get(object, reference, index) : null;
-        updateLoadedEObjects(referencedObject);
+        persistentObjectsCache.put(object.id(), object);
         updateContainment(object, reference, referencedObject);
         updateInstanceOf(referencedObject);
 
@@ -546,7 +533,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             }
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to set information for element ''{0}''", object);
+            NeoLogger.error("Unable to set information for element {0}", object);
         }
         return old;
     }
@@ -582,13 +569,13 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             while (!passed);
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", value, attribute.getName(), object);
+            NeoLogger.error("Unable to add {0} to {1} for element {2}", value, attribute.getName(), object);
         }
         catch (TimeoutException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", value, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
+            NeoLogger.error("Unable to add {0} to {1} for element {2} after {3} times", value, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
         }
         catch (InterruptedException e) {
-            NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
+            NeoLogger.error(e, "InterruptedException while updating element {0}", object);
         }
     }
 
@@ -599,7 +586,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
              * As long as the element is not attached to the resource, the containment and type  information are not
 			 * stored.
 			 */
-            updateLoadedEObjects(referencedObject);
+            persistentObjectsCache.put(object.id(), object);
             updateContainment(object, reference, referencedObject);
             updateInstanceOf(referencedObject);
 
@@ -634,13 +621,13 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             }
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}''", referencedObject, reference.getName(), object);
+            NeoLogger.error("Unable to add {0} to {1} for element {2}", referencedObject, reference.getName(), object);
         }
         catch (TimeoutException e) {
-            NeoLogger.error("Unable to add ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", referencedObject, reference.getName(), object, ATTEMP_TIMES_DEFAULT);
+            NeoLogger.error("Unable to add {0} to {1} for element {2} after {3} times", referencedObject, reference.getName(), object, ATTEMP_TIMES_DEFAULT);
         }
         catch (InterruptedException e) {
-            NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
+            NeoLogger.error(e, "InterruptedException while updating element {0}", object);
         }
     }
 
@@ -674,13 +661,13 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             while (!passed);
         }
         catch (IOException e) {
-            NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}''", old, attribute.getName(), object);
+            NeoLogger.error("Unable to delete {0} to {1} for element {2}", old, attribute.getName(), object);
         }
         catch (TimeoutException e) {
-            NeoLogger.error("Unable to delete ''{0}'' to ''{1}'' for element ''{2}'' after ''{3}'' times", old, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
+            NeoLogger.error("Unable to delete {0} to {1} for element {2} after {3} times", old, attribute.getName(), object, ATTEMP_TIMES_DEFAULT);
         }
         catch (InterruptedException e) {
-            NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
+            NeoLogger.error(e, "InterruptedException while updating element {0}", object);
         }
 
         return old;
@@ -717,10 +704,10 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             while (!passed);
         }
         catch (IOException | TimeoutException e) {
-            NeoLogger.error("Unable to delete ''{0}[{1}''] for element ''{2}''", reference.getName(), index, object);
+            NeoLogger.error("Unable to delete {0}[{1}] for element {2}", reference.getName(), index, object);
         }
         catch (InterruptedException e) {
-            NeoLogger.error("InterruptedException while updating element ''{0}''.\n{1}", object, e.getMessage());
+            NeoLogger.error("InterruptedException while updating element {0}", object);
         }
 
         return old;

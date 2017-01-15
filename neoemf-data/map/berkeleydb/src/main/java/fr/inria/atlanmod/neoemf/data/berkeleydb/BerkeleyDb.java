@@ -19,9 +19,12 @@ import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
+import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.io.File;
 
@@ -57,28 +60,24 @@ public class BerkeleyDb {
     DatabaseConfig dbconf;
 
     /**
-     * A persistent map that stores the container of {@link PersistentEObject}s.
+     * A persistent map that stores the container of {@link PersistentEObject}s, identified by their {@link Id}.
      */
     private Database containers;
 
     /**
-     * A persistent map that stores the {@link EClass} for {@link PersistentEObject}s.
-     * <p>
-     * The key is the object {@link Id}.
+     * A persistent map that stores the {@link EClass} for {@link PersistentEObject}s, identified by their {@link Id}.
      */
     private Database instances;
 
     /**
-     * A persistent map that stores Structural feature values for {@link PersistentEObject}s.
-     * <p>
-     * The key is build using the object {@link Id} plus the name of the feature.
+     * A persistent map that stores {@link EStructuralFeature} values for {@link PersistentEObject}s, identified by the
+     * associated {@link FeatureKey}.
      */
     private Database features;
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s.
-     * <p>
-     * The key is build using the object {@link Id} plus the name of the feature plus the index of the value.
+     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s, identified by the
+     * associated {@link MultivaluedFeatureKey}.
      */
     private Database multivaluedFeatures;
 

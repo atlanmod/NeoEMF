@@ -54,7 +54,8 @@ import static java.util.Objects.isNull;
 public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
 
     /**
-     * Cache that holds multi-valued {@link EStructuralFeature}s wrapped in a {@link List}.
+     * In-memory cache that holds multi-valued {@link EStructuralFeature}s wrapped in a {@link List}, identified by
+     * their associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Object> objectsCache;
 

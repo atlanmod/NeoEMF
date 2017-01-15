@@ -37,7 +37,7 @@ import static java.util.Objects.isNull;
 class PersistentEObjectAdapter {
 
     /**
-     * Cache that stores the {@link InternalEObject} that have been already adapted to avoid duplication of
+     * In-memory cache that stores the {@link InternalEObject} that have been already adapted to avoid duplication of
      * {@link PersistentEObject}s.
      * <p>
      * We use a weak-references cache since the adaptor is no longer needed when the original {@link InternalEObject}

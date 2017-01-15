@@ -49,7 +49,13 @@ import static java.util.Objects.nonNull;
 public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<BerkeleyDbPersistenceBackend> {
 
     /**
-     * An in-memory cache for {@link PersistentEObject}s.
+     * The default cache size.
+     */
+    // TODO Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
+
+    /**
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
@@ -61,7 +67,7 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
      */
     public DirectWriteBerkeleyDbStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
         super(resource, backend);
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();
+        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
@@ -344,6 +350,7 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
 
     /**
      * ???
+     * <p>
      *
      * @param featureKey ???
      *

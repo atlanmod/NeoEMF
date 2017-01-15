@@ -64,9 +64,12 @@ import static java.util.Objects.nonNull;
 public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersistenceBackend> {
 
     /**
-     * An in-memory cache for {@link PersistentEObject}s. This cache reduces database accesses and
-     * speed-up element retrieval. The cache can contains up to 10000 model elements, that are
-     * discarded if more elements have to be cached.
+     * The default cache size.
+     */
+    private static final int DEFAULT_CACHE_SIZE = 10000; // TODO Find the more predictable maximum cache size
+
+    /**
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
@@ -79,7 +82,7 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      */
     public DirectWriteMapDbStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(10000).build();
+        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
@@ -383,9 +386,7 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     /**
      * Returns the value associated to ({@code object}, {@code feature}) in the underlying database.
      * <p>
-     * This method is a wrapper for {@link #getFromMap(FeatureKey)}. A {@link FeatureKey} is computed for the given
-     * {@code object} and {@code feature} using {@link FeatureKey#from(PersistentEObject,
-     * EStructuralFeature)}.
+     * This method behaves like: {@code getFromMap(FeatureKey.from(object, feature)}.
      *
      * @param object  the {@link PersistentEObject} to look for
      * @param feature the {@link EStructuralFeature} of {@code object} to look for

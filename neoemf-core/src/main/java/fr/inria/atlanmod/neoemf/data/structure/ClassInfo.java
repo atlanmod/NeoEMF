@@ -61,7 +61,7 @@ public class ClassInfo implements Serializable {
      * Creates a new {@code ClassInfo} from the given {@code object}. The {@link EClass} will be found by calling the
      * {@link PersistentEObject#eClass()} method.
      * <p>
-     * This method behaves like: {@code ClassInfo.of(eClass.getName(), eClass.getEPackage().getNsURI())}.
+     * This method behaves like: {@code of(eClass.getName(), eClass.getEPackage().getNsURI())}.
      *
      * @param object the object from which the {@link EClass} has to be retrieve with the {@link
      *               PersistentEObject#eClass()} method

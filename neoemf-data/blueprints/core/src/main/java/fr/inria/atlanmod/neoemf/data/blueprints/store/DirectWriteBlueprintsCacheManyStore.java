@@ -49,6 +49,15 @@ import static java.util.Objects.nonNull;
  */
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
+    /**
+     * The default cache size.
+     */
+    // TODO Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
+
+    /**
+     * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
+     */
     // TODO Cache many properties in addition to vertices
     private final Cache<FeatureKey, Object[]> verticesCache;
 
@@ -61,13 +70,13 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
      */
     public DirectWriteBlueprintsCacheManyStore(Internal resource, BlueprintsPersistenceBackend backend) {
         super(resource, backend);
-        this.verticesCache = Caffeine.newBuilder().maximumSize(10000).build();
+        this.verticesCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * Caches all the {@link Vertex Vertices} traversed to retrieve the element at the given {@code index}. This implementation
+     * Caches all the {@link Vertex}s traversed to retrieve the element at the given {@code index}. This implementation
      * bypasses the graph API limitation that has to traverse all the {@link Edge}s connected to the input vertex to
      * find the one with the given {@code index}.
      *

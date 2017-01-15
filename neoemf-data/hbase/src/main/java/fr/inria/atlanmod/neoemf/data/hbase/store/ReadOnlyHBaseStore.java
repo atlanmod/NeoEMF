@@ -43,7 +43,7 @@ import java.util.function.Function;
 public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
     /**
-     * ???
+     * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Object> objectsCache;
 
@@ -56,7 +56,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
      */
     public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
-        this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
+        this.objectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
             value = objectsCache.get(entry, new FeatureCacheLoader());
         }
         catch (Exception e) {
-            NeoLogger.error("Unable to get property ''{0}'' for ''{1}''", feature.getName(), object);
+            NeoLogger.error("Unable to get property {0} for {1}", feature.getName(), object);
         }
         return value;
     }
