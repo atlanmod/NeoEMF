@@ -55,6 +55,9 @@ public class Md5Hasher implements Hasher {
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final Hasher INSTANCE = new Md5Hasher();
     }
 }

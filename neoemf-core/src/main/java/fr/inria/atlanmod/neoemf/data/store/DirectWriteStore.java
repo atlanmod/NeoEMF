@@ -11,12 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+
 /**
  * A {@link PersistentStore} that translates model-level operations into datastore calls.
  *
- * @future an abstraction of {@code DirectWriteStore}s will be implemented to define a global behaviour. For now, it
+ * @future an abstraction of {@link DirectWriteStore}s will be implemented to define a global behaviour. For now, it
  * requires to be re-implemented for handle a specific implementation of a database, but later, these functions will be
- * handled by {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend}.
+ * handled by {@link PersistenceBackend}.
  */
 public interface DirectWriteStore extends PersistentStore {
 }

@@ -122,7 +122,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     protected Table table;
 
     /**
-     * Constructs a new {@code DirectWriteBlueprintsStore} on the given {@code resource} .
+     * Constructs a new {@code DirectWriteHBaseStore} on the given {@code resource} .
      *
      * @param resource the resource to persist and access
      *
@@ -149,10 +149,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * ???
      *
      * @param connection ???
-     * @param tableName ???
-     * @param admin ???
+     * @param tableName  ???
+     * @param admin      ???
      *
      * @return ???
+     *
      * @throws IOException if ???
      */
     protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
@@ -172,9 +173,9 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     /**
      * ???
      *
-     * @param object ???
-     * @param reference ???
-     * @param atEnd ???
+     * @param object           ???
+     * @param reference        ???
+     * @param atEnd            ???
      * @param referencedObject ???
      *
      * @throws IOException if ???
@@ -279,8 +280,8 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     /**
      * ???
      *
-     * @param object ???
-     * @param reference ???
+     * @param object           ???
+     * @param reference        ???
      * @param referencedObject ???
      */
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
@@ -320,7 +321,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
      * PersistentEObject object}
      *
-     * @param object ???
+     * @param object  ???
      * @param feature ???
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link

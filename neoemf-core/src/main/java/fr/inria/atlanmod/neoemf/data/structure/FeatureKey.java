@@ -135,7 +135,7 @@ public class FeatureKey implements Comparable<FeatureKey>, Serializable {
      *
      * @param position the position of the {@link EStructuralFeature}
      *
-     * @return a new {@code MultivaluedFeatureKey}
+     * @return a new {@link MultivaluedFeatureKey}
      *
      * @see MultivaluedFeatureKey#of(Id, String)
      */

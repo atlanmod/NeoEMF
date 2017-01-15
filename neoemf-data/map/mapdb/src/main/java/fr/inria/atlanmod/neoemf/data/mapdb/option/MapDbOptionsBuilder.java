@@ -12,11 +12,12 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
 import javax.annotation.Nonnull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} that creates MapDB specific options.
+ * A {@link PersistenceOptionsBuilder} that creates MapDB specific options.
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */

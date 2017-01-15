@@ -34,7 +34,7 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
      * @param prefix the prefix of the value
      * @param value  the value
      *
-     * @return a formatted {@code String}
+     * @return the formatted value as {@code "prefix:value"}
      */
     @Nonnull
     protected static String format(@Nullable String prefix, @Nonnull String value) {

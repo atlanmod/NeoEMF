@@ -11,13 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.util.logging;
 
+import java.text.MessageFormat;
+
 /**
  * An object that provides logging operations, filtered by {@link Level}s.
  */
 public interface Logger {
 
     /**
-     * The name of the root {@code Logger}.
+     * The name of the root {@link Logger}.
      */
     String ROOT_LOGGER_NAME = "";
 
@@ -33,7 +35,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void trace(CharSequence message, Object... params) {
@@ -64,7 +66,7 @@ public interface Logger {
      * {@link Throwable}.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void trace(Throwable e, CharSequence message, Object... params) {
@@ -83,7 +85,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void debug(CharSequence message, Object... params) {
@@ -114,7 +116,7 @@ public interface Logger {
      * {@link Throwable}.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void debug(Throwable e, CharSequence message, Object... params) {
@@ -133,7 +135,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the {@link Level#INFO INFO} level.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void info(CharSequence message, Object... params) {
@@ -164,7 +166,7 @@ public interface Logger {
      * {@link Throwable}.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void info(Throwable e, CharSequence message, Object... params) {
@@ -183,7 +185,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the {@link Level#WARN WARN} level.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void warn(CharSequence message, Object... params) {
@@ -214,7 +216,7 @@ public interface Logger {
      * {@link Throwable}.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void warn(Throwable e, CharSequence message, Object... params) {
@@ -233,7 +235,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void error(CharSequence message, Object... params) {
@@ -264,7 +266,7 @@ public interface Logger {
      * {@link Throwable}.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void error(Throwable e, CharSequence message, Object... params) {
@@ -283,7 +285,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void fatal(CharSequence message, Object... params) {
@@ -314,7 +316,7 @@ public interface Logger {
      * {@link Throwable}.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void fatal(Throwable e, CharSequence message, Object... params) {
@@ -335,7 +337,7 @@ public interface Logger {
      * Logs a message with parameters at the given {@code level}.
      *
      * @param level   the logging level
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     default void log(Level level, CharSequence message, Object... params) {
@@ -369,7 +371,7 @@ public interface Logger {
      *
      * @param level   the logging level
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      */
     void log(Level level, Throwable e, CharSequence message, Object... params);

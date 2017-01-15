@@ -169,6 +169,9 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final PersistenceBackendFactory INSTANCE = new MapDbPersistenceBackendFactory();
     }
 }

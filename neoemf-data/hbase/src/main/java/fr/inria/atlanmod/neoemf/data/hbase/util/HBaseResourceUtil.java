@@ -112,6 +112,9 @@ public class HBaseResourceUtil {
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final HBaseResourceUtil INSTANCE = new HBaseResourceUtil();
     }
 }

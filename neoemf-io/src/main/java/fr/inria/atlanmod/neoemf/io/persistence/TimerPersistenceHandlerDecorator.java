@@ -21,7 +21,7 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
     /**
-     * The current number of created {@code TimerPersistenceHandlerDecorator}, used for name generation.
+     * The current number of created {@code TimerPersistenceHandlerDecorator}s, used for name generation.
      */
     private static int id = 0;
 

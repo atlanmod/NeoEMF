@@ -40,6 +40,9 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 
+/**
+ * ???
+ */
 public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
@@ -167,6 +170,9 @@ public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersisten
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final PersistenceBackendFactory INSTANCE = new BerkeleyDbPersistenceBackendFactory();
     }
 }

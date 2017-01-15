@@ -13,11 +13,12 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
+import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
+
 import javax.annotation.Nonnull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder} that creates Blueprints TinkerGraph specific
- * options.
+ * A {@link PersistenceOptionsBuilder} that creates Blueprints TinkerGraph specific options.
  * <p>
  * This builder doesn't contain specific methods for now: the only {@link TinkerGraph} configuration supported is the
  * graph type, which is set by default.

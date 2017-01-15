@@ -26,6 +26,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
+import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
@@ -62,7 +63,7 @@ import static java.util.Objects.nonNull;
  * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent back-ends
  * are created according to the provided resource options (see {@link BlueprintsResourceOptions} and {@link
  * BlueprintsStoreOptions}). Default back-end configuration (store directory and graph type) is called dynamically
- * according to the provided Blueprints implementation {@link fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration}.
+ * according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
  *
  * @see PersistentResource
  * @see BlueprintsPersistenceBackend
@@ -275,6 +276,9 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final PersistenceBackendFactory INSTANCE = new BlueprintsPersistenceBackendFactory();
     }
 }

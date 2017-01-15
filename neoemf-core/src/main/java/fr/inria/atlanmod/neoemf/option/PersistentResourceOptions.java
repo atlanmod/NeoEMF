@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import org.eclipse.emf.ecore.resource.Resource;
+
 import java.util.Map;
 
 /**
@@ -19,10 +21,10 @@ import java.util.Map;
 public interface PersistentResourceOptions {
 
     /**
-     * The key identifying the {@link PersistentStoreOptions} list in the options {@link java.util.Map}.
+     * The key identifying the {@link PersistentStoreOptions} list in the options {@link Map}.
      *
-     * @see org.eclipse.emf.ecore.resource.Resource#load(Map)
-     * @see org.eclipse.emf.ecore.resource.Resource#save(Map)
+     * @see Resource#load(Map)
+     * @see Resource#save(Map)
      */
     String STORE_OPTIONS = "stores";
 }

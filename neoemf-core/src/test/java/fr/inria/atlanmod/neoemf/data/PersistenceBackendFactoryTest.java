@@ -284,6 +284,9 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
          */
         private static class Holder {
 
+            /**
+             * The instance of the outer class.
+             */
             private static final Context INSTANCE = new MockContext();
         }
     }

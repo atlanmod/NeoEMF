@@ -43,7 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class MapDbURI extends PersistenceURI {
 
     /**
-     * The scheme associated to the {@code URI}. This scheme is used to register {@link MapDbPersistenceBackendFactory}
+     * The scheme associated to the {@link URI}. This scheme is used to register {@link MapDbPersistenceBackendFactory}
      * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
      *
      * @see PersistenceBackendFactoryRegistry
@@ -56,7 +56,7 @@ public class MapDbURI extends PersistenceURI {
     /**
      * Constructs a new {@code MapDbURI} from the given {@code internalURI}.
      *
-     * @param internalURI the base {@code URI}
+     * @param internalURI the base {@link URI}
      *
      * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File)}, or {@link #createFileURI(URI)} instead.
@@ -69,9 +69,9 @@ public class MapDbURI extends PersistenceURI {
      * Create a new {@code MapDbURI} from the given {@code uri}. This method checks that the scheme of the provided
      * {@code uri} can be used to create a new {@code MapDbURI}.
      *
-     * @param uri the base {@code URI}
+     * @param uri the base {@link URI}
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
@@ -94,9 +94,9 @@ public class MapDbURI extends PersistenceURI {
     /**
      * Creates a new {@code MapDbURI} from the given {@link File} descriptor.
      *
-     * @param file the {@link File} to build a {@code URI} from
+     * @param file the {@link File} to build a {@link URI} from
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException if the {@code file} is {@code null}
      */
@@ -110,9 +110,9 @@ public class MapDbURI extends PersistenceURI {
      * Creates a new {@code MapDbURI} from the given {@code uri} by checking the referenced file exists on the file
      * system.
      *
-     * @param uri the base {@code URI}
+     * @param uri the base {@link URI}
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException if the {@code uri} is {@code null} or if the file referenced by the {@code uri}
      *                              cannot be found

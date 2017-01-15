@@ -55,7 +55,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
     }
 
     /**
-     * Creates a new {@code FeatureKey} from the given {@code internalObject} and the given {@code feature}.
+     * Creates a new {@code MultivaluedFeatureKey} from the given {@code internalObject} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code MultivaluedFeatureKey.from(PersistentEObject.from(internalObject), feature,
      * position)}
@@ -77,7 +77,7 @@ public class MultivaluedFeatureKey extends FeatureKey {
     }
 
     /**
-     * Creates a new {@code FeatureKey} from the given {@code object} and the given {@code feature}.
+     * Creates a new {@code MultivaluedFeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
      * This method behaves like: {@code MultivaluedFeatureKey.of(object.id(), feature.getName(), position)}
      *

@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.configuration;
 
+import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
+
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprintsConfiguration;
 
@@ -34,7 +36,7 @@ import static java.util.Objects.isNull;
 public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {
 
     /**
-     * The property to define the directory of the {@link com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph} instance.
+     * The property to define the directory of the {@link Neo4jGraph} instance.
      */
     private static final String DIRECTORY = "blueprints.neo4j.directory";
 
@@ -66,6 +68,9 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final InternalBlueprintsConfiguration INSTANCE = new InternalBlueprintsNeo4jConfiguration();
     }
 }

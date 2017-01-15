@@ -32,8 +32,14 @@ import java.util.function.Function;
 
 import static java.util.Objects.isNull;
 
+/**
+ * ???
+ */
 public class DirectWriteBerkeleyDbListsStore extends DirectWriteBerkeleyDbStore {
 
+    /**
+     * ???
+     */
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**
@@ -201,6 +207,13 @@ public class DirectWriteBerkeleyDbListsStore extends DirectWriteBerkeleyDbStore 
         return value;
     }
 
+    /**
+     * ???
+     *
+     * @param value ???
+     *
+     * @return ???
+     */
     @SuppressWarnings("unchecked") // Unchecked cast: 'Object' to 'List<...>'
     private List<Object> manyValueFrom(Object value) {
         return (List<Object>) value;

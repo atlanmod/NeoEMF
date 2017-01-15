@@ -81,7 +81,7 @@ public class HBaseEncoderUtil {
     }
 
     /**
-     * Encodes the provided {@link String} array into an arrat of {@code bytes} that can be stored in the database
+     * Encodes the provided {@link String} array into an array of {@code bytes} that can be stored in the database
      *
      * @param strings an array of {@link String}s representing the {@link EReference}s to encode.
      *

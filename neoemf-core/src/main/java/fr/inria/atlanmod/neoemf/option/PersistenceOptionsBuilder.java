@@ -23,7 +23,7 @@ public interface PersistenceOptionsBuilder {
     /**
      * Returns an immutable {@link Map} containing all defined options.
      *
-     * @return an immutable {@code Map}
+     * @return an immutable {@link Map}
      *
      * @throws InvalidOptionException if a conflict is detected during building
      */

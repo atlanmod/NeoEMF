@@ -15,13 +15,13 @@ import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * A {@link BundleActivator} that automatically registers a {@link PersistenceBackendFactory} with its
- * associated {@link org.eclipse.emf.common.util.URI URI} in the global {@link PersistenceBackendFactoryRegistry} when
- * loading an OSGi bundle.
+ * A {@link BundleActivator} that automatically registers a {@link PersistenceBackendFactory} with its associated
+ * {@link URI URI} in the global {@link PersistenceBackendFactoryRegistry} when loading an OSGi bundle.
  *
  * @note This class should not be used in standard use.
  */
@@ -30,9 +30,8 @@ public abstract class AbstractActivator implements BundleActivator {
     /**
      * {@inheritDoc}
      * <p>
-     * Registers the {@link PersistenceBackendFactory} from {@link #factory()}, with its {@link
-     * org.eclipse.emf.common.util.URI URI} scheme from {@link #scheme()}, in the {@link
-     * PersistenceBackendFactoryRegistry registry} if it's not already.
+     * Registers the {@link PersistenceBackendFactory} from {@link #factory()}, with its {@link URI URI} scheme from
+     * {@link #scheme()}, in the {@link PersistenceBackendFactoryRegistry registry} if it's not already.
      *
      * @param bundleContext the execution context of the bundle being started
      */
@@ -58,9 +57,9 @@ public abstract class AbstractActivator implements BundleActivator {
     protected abstract String name();
 
     /**
-     * Returns the {@link org.eclipse.emf.common.util.URI URI} scheme associated with this bundle.
+     * Returns the {@link URI URI} scheme associated with this bundle.
      *
-     * @return the {@code URI} scheme
+     * @return the {@link URI} scheme
      */
     protected abstract String scheme();
 

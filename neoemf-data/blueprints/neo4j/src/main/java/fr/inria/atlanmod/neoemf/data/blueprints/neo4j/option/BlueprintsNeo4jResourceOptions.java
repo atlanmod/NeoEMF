@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option;
 
+import com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph;
+
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
@@ -21,8 +23,7 @@ import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOptions {
 
     /**
-     * The option value to define {@link com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph} as the graph implementation to
-     * use.
+     * The option value to define {@link Neo4jGraph} as the graph implementation to use.
      */
     String GRAPH_TYPE_NEO4J = "com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph";
 

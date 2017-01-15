@@ -16,12 +16,17 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+/**
+ * ???
+ */
 public class IdSerializer implements Serializer<Id> {
 
+    @Override
     public byte[] serialize(Id id) {
         return SerializationUtils.serialize(id.toString());
     }
 
+    @Override
     public Id deserialize(byte[] data) {
         return new StringId(SerializationUtils.deserialize(data));
     }

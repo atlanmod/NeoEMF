@@ -27,6 +27,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * ???
+ */
 public class DirectWriteBerkeleyDbIndicesStore extends DirectWriteBerkeleyDbStore {
 
     /**

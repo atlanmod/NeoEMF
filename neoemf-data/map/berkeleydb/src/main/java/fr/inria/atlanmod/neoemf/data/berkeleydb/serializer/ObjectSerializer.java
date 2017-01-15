@@ -21,8 +21,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
+/**
+ * ???
+ */
 public class ObjectSerializer implements Serializer<Object> {
 
+    @Override
     public byte[] serialize(Object value) {
         byte[] data;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -38,6 +42,7 @@ public class ObjectSerializer implements Serializer<Object> {
         return data;
     }
 
+    @Override
     public Object deserialize(byte[] data) {
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         Object value = null;

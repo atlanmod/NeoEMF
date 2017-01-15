@@ -11,9 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+
+import org.eclipse.emf.ecore.EStructuralFeature;
+
 /**
- * Represents common options related to database access, managed by
- * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}.
+ * Represents common options related to database access, managed by {@link PersistenceBackendFactory}.
  */
 public enum CommonStoreOptions implements PersistentStoreOptions {
     /**
@@ -29,7 +32,7 @@ public enum CommonStoreOptions implements PersistentStoreOptions {
      */
     CACHE_SIZE,
     /**
-     * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}.
+     * Caches {@link EStructuralFeature}.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
      */

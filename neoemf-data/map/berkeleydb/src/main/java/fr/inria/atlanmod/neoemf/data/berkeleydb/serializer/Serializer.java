@@ -11,9 +11,28 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
+/**
+ * ???
+ *
+ * @param <T> ???
+ */
 public interface Serializer<T> {
 
+    /**
+     * ???
+     *
+     * @param value ???
+     *
+     * @return ???
+     */
     byte[] serialize(T value);
 
+    /**
+     * ???
+     *
+     * @param data ???
+     *
+     * @return ???
+     */
     T deserialize(byte[] data);
 }

@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+
 import fr.inria.atlanmod.neoemf.option.PersistentResourceOptions;
 
 /**
@@ -30,8 +32,7 @@ public interface BlueprintsResourceOptions extends PersistentResourceOptions {
     String AUTOCOMMIT_CHUNK = "autocommit.chunk";
 
     /**
-     * The default option value to define {@link com.tinkerpop.blueprints.impls.tg.TinkerGraph} as the graph
-     * implementation to use.
+     * The default option value to define {@link TinkerGraph} as the graph implementation to use.
      */
     String GRAPH_TYPE_DEFAULT = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
 }

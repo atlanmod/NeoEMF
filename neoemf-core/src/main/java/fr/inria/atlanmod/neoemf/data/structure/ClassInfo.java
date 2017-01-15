@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.structure;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -39,7 +40,7 @@ public class ClassInfo implements Serializable {
     private final String name;
 
     /**
-     * The literal representation of the {@code URI} of the class.
+     * The literal representation of the {@link URI} of the class.
      */
     @Nonnull
     private final String uri;
@@ -49,7 +50,7 @@ public class ClassInfo implements Serializable {
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
-     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}
+     * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
     protected ClassInfo(@Nonnull String name, @Nonnull String uri) {
         this.name = checkNotNull(name);
@@ -80,7 +81,7 @@ public class ClassInfo implements Serializable {
      * representation of a an {@link EClass}.
      *
      * @param name the name of the {@link EClass}
-     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}
+     * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      *
      * @return a new {@code ClassInfo}
      */
@@ -100,9 +101,9 @@ public class ClassInfo implements Serializable {
     }
 
     /**
-     * Returns the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link EClass}.
+     * Returns the literal representation of the {@link URI} of the {@link EClass}.
      *
-     * @return the literal representation of the {@code URI}
+     * @return the literal representation of the {@link URI}
      */
     @Nonnull
     public String uri() {

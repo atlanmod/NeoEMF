@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.OwnedTransientStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -42,6 +43,8 @@ import static java.util.Objects.nonNull;
 
 /**
  * The default implementation of a {@link PersistentEObject}.
+ * <p>
+ * ???
  */
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
@@ -309,7 +312,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * {@inheritDoc}
      * <p>
-     * Returns the container of this {@code PersistentEObject}.
+     * Returns the container of this {@link PersistentEObject}.
      * <p>
      * Do not return the same value as standard EMF implementation if the container has not been accessed with the
      * public method {@link #eContainer()} before.
@@ -448,11 +451,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          * {@inheritDoc}
          * <p>
          * Override the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the
-         * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} has to append the result to the existing list.
+         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
+         * to append the result to the existing list.
          * <p>
-         * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} which
-         * would otherwise need to deserialize the underlying list to add the element at the specified index.
+         * This behavior allows fast write operation on {@link PersistenceBackend} which would otherwise need to
+         * deserialize the underlying list to add the element at the specified index.
          */
         @Override
         public boolean add(Object object) {

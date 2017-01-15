@@ -50,6 +50,9 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final PersistenceFactory INSTANCE = new PersistenceFactory();
     }
 }

@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
@@ -33,8 +34,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An abstract {@link fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler} specific to a Blueprints
- * implementation.
+ * An abstract {@link PersistenceHandler} specific to a Blueprints implementation.
  */
 public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 
@@ -76,7 +76,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     private static final String ROOT_FEATURE_NAME = "eContents";
 
     /**
-     * {@code Cache} that holds recently processed {@code Vertex}.
+     * Cache that holds recently processed {@link Vertex}.
      */
     protected final Cache<Id, Vertex> verticesCache;
 
@@ -134,7 +134,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
     /**
      * Formats a key/value pair as {@code "key:value"}.
      *
-     * @param key the key
+     * @param key   the key
      * @param value the value of the {@code key}
      *
      * @return the literal representation of a key/value pair
@@ -229,7 +229,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      *
      * @param id the identifier of the vertex
      *
-     * @return the {@code Vertex}
+     * @return the {@link Vertex}
      *
      * @throws NoSuchElementException if no element is found with the {@code id}
      */
@@ -240,7 +240,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      *
      * @param id the identifier of the vertex
      *
-     * @return the new {@code Vertex}
+     * @return the new {@link Vertex}
      *
      * @throws AlreadyExistingIdException if the {@code id} is already used as primary key for another element
      */

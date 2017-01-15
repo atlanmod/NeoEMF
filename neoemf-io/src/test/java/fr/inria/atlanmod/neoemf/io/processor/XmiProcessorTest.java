@@ -137,7 +137,7 @@ public class XmiProcessorTest extends AbstractXmiProcessorTest {
     }
 
     /**
-     * Check that the {@code XPath} references/id are properly processed.
+     * Check that the XPath references/id are properly processed.
      * <p>
      * Containment and inverse reference must have been created.
      * References previously detected as attributes, are now well placed.

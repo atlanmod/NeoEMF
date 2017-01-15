@@ -110,6 +110,9 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final PersistenceBackendFactory INSTANCE = new HBasePersistenceBackendFactory();
     }
 }

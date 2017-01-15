@@ -11,9 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource.Factory.Registry;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.util.List;
@@ -30,25 +34,24 @@ import static java.util.Objects.isNull;
  * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
  * {@link URI}. All methods are delegated to the internal {@link URI}.
  * <p>
- * The created {@code URI} are used to register {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} in
+ * The created {@link URI} are used to register {@link PersistenceBackendFactory} in
  * {@link PersistenceBackendFactoryRegistry} and configure the {@code protocol to factory} map of an existing
- * {@link org.eclipse.emf.ecore.resource.ResourceSet} with a
- * {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
+ * {@link ResourceSet} with a {@link PersistentResourceFactory}.
  *
  * @see PersistenceBackendFactoryRegistry
- * @see org.eclipse.emf.ecore.resource.ResourceSet#getResourceFactoryRegistry()
- * @see org.eclipse.emf.ecore.resource.Resource.Factory.Registry#getProtocolToFactoryMap()
+ * @see ResourceSet#getResourceFactoryRegistry()
+ * @see Registry#getProtocolToFactoryMap()
  */
 public class PersistenceURI extends URI {
 
     /**
-     * The {@code URI} scheme corresponding to a file.
+     * The {@link URI} scheme corresponding to a file.
      */
     @Nonnull
     protected static final String FILE_SCHEME = "file";
 
     /**
-     * The base {@code URI}.
+     * The base {@link URI}.
      */
     @Nonnull
     private final URI internalUri;
@@ -56,7 +59,7 @@ public class PersistenceURI extends URI {
     /**
      * Constructs a new {@code PersistenceURI} from the given {@code internalURI}.
      *
-     * @param internalUri the base {@code URI}
+     * @param internalUri the base {@link URI}
      *
      * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File, String)}, or {@link #createFileURI(URI, String)} instead.
@@ -72,9 +75,9 @@ public class PersistenceURI extends URI {
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
      * PersistenceURI}. Its scheme must be registered in the {@link PersistenceBackendFactoryRegistry}.
      *
-     * @param uri the base {@code URI}
+     * @param uri the base {@link URI}
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not registered in the {@link
@@ -96,10 +99,10 @@ public class PersistenceURI extends URI {
     /**
      * Creates a new {@code PersistenceURI} from the given {@code file} descriptor.
      *
-     * @param file   the {@link File} to build a {@code URI} from
-     * @param scheme the scheme to identify the {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} to use
+     * @param file   the {@link File} to build a {@link URI} from
+     * @param scheme the scheme to identify the {@link PersistenceBackendFactory} to use
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException if the {@code file} is {@code null}
      */
@@ -120,10 +123,10 @@ public class PersistenceURI extends URI {
      * Creates a new {@code PersistenceURI} from the given {@code uri} by checking the referenced file exists on the
      * file system.
      *
-     * @param uri    the base {@code URI}
-     * @param scheme the scheme to identify the {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} to use
+     * @param uri    the base {@link URI}
+     * @param scheme the scheme to identify the {@link PersistenceBackendFactory} to use
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException if the {@code uri} is {@code null}
      */

@@ -12,7 +12,9 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
@@ -26,6 +28,7 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -35,7 +38,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} that is responsible of low-level access to a MapDB database.
+ * {@link PersistenceBackend} that is responsible of low-level access to a MapDB database.
  * <p>
  * It wraps an existing {@link DB} and provides facilities to create and retrieve elements. This class manages a set of
  * {@link Map}s used to represent model elements: <ul> <li><b>Containers Map: </b> holds containment and container links
@@ -71,24 +74,27 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     private final DB db;
 
     /**
-     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * A persistent map that stores the container of {@link PersistentEObject}s.
      */
     private final HTreeMap<Id, ContainerInfo> containersMap;
 
     /**
-     * A persistent map that stores the EClass for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * A persistent map that stores the EClass for {@link PersistentEObject}s.
+     * <p>
      * The key is the object {@link Id}.
      */
     private final HTreeMap<Id, ClassInfo> instanceOfMap;
 
     /**
-     * A persistent map that stores Structural feature values for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * A persistent map that stores Structural feature values for {@link PersistentEObject}s.
+     * <p>
      * The key is build using the object {@link Id} plus the name of the feature.
      */
     private final HTreeMap<FeatureKey, Object> features;
 
     /**
-     * A persistent map that store the values of multi-valued features for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}s.
+     * <p>
      * The key is build using the object {@link Id} plus the name of the feature plus the index of the value.
      */
     private final HTreeMap<MultivaluedFeatureKey, Object> multivaluedFeatures;
@@ -96,8 +102,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Constructs a new {@code MapDbPersistenceBackend} wrapping the provided {@code db}.
      * <p>
-     * This constructor initialize the different {@link Map}s from the MapDB engine and set
-     * their respective {@link Serializer}s.
+     * This constructor initialize the different {@link Map}s from the MapDB engine and set their respective
+     * {@link Serializer}s.
      *
      * @param db the {@link DB} used to creates the used {@link Map}s and manage the database
      *
@@ -195,23 +201,23 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Retrieves the metaclass ({@link org.eclipse.emf.ecore.EClass}) of the element with the given {@link Id}.
+     * Retrieves the metaclass ({@link EClass}) of the element with the given {@link Id}.
      *
      * @param id the {@link Id} of the element
      *
-     * @return a {@link ClassInfo} descriptor containing element's metaclass informations ({@link
-     * org.eclipse.emf.ecore.EClass}, metamodel name, and {@code nsURI})
+     * @return a {@link ClassInfo} descriptor containing element's metaclass informations ({@link EClass}, metamodel
+     * name, and {@code nsURI})
      */
     public ClassInfo metaclassFor(Id id) {
         return instanceOfMap.get(id);
     }
 
     /**
-     * Stores metaclass ({@link org.eclipse.emf.ecore.EClass}) information for the element with the given {@link Id}.
+     * Stores metaclass ({@link EClass}) information for the element with the given {@link Id}.
      *
      * @param id        the {@link Id} of the element
-     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link
-     *                  org.eclipse.emf.ecore.EClass}, metamodel name, and {@code nsURI})
+     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link EClass},
+     *                  metamodel name, and {@code nsURI})
      */
     public void storeMetaclass(Id id, ClassInfo metaclass) {
         instanceOfMap.put(id, metaclass);

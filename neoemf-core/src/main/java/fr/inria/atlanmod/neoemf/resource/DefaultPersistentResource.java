@@ -56,6 +56,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
+ * The default implementation of a {@link PersistentResource} that contains {@link PersistentEObject}.
+ * <p>
  * ???
  */
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
@@ -98,7 +100,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     /**
      * Constructs a new {@code DefaultPersistentResource} with the given {@code uri}.
      *
-     * @param uri the {@code URI} of the resource
+     * @param uri the {@link URI} of the resource
      */
     public DefaultPersistentResource(URI uri) {
         super(uri);
@@ -314,7 +316,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         private final PersistenceBackend backend;
 
         /**
-         * The {@code URI} of the resource used by the {@code backend}
+         * The {@link URI} of the resource used by the {@code backend}
          */
         private final URI uri;
 
@@ -322,7 +324,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * Creates a new {@code PersistenceBackendShutdownHook} with the given {@code backend}.
          *
          * @param backend the backend to stop when the application will exit
-         * @param uri     the {@code URI} of the resource used by the {@code backend}
+         * @param uri     the {@link URI} of the resource used by the {@code backend}
          */
         private PersistenceBackendShutdownHook(PersistenceBackend backend, URI uri) {
             this.backend = backend;
@@ -333,7 +335,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
          * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
          *
          * @param backend the backend to stop when the application will exit
-         * @param uri     the {@code URI} of the resource used by the {@code backend}
+         * @param uri     the {@link URI} of the resource used by the {@code backend}
          */
         public static void closeOnExit(PersistenceBackend backend, URI uri) {
             Runtime.getRuntime().addShutdownHook(new PersistenceBackendShutdownHook(backend, uri));

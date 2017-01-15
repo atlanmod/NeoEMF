@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.option;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
+import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
 /**
@@ -25,7 +26,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
  * All features are all optional: options can be created using all or none of them.
  *
  * @param <B> the "self"-type of this {@link PersistenceOptionsBuilder}
- * @param <O> the type of {@link fr.inria.atlanmod.neoemf.option.PersistenceOptions} built by this builder
+ * @param <O> the type of {@link PersistenceOptions} built by this builder
  *
  * @see BlueprintsResourceOptions
  * @see BlueprintsStoreOptions

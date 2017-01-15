@@ -87,7 +87,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     private final HashMultimap<String, UnlinkedElement> unlinkedElementsMap;
 
     /**
-     * Cache holding conflicted {@code Id}s.
+     * Cache holding conflicted {@link Id}s.
      *
      * @note In case of conflict detection only.
      */
@@ -122,12 +122,11 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     /**
      * Adapts the given {@code value} according to the maximum memory dedicated to the JVM.
      *
-     * @note The formulas can be improved, for sure.
-     *
      * @param value the value to adapt
      *
      * @return the adapted value
      *
+     * @note The formulas can be improved, for sure.
      * @see #DEFAULT_CACHE_SIZE
      * @see #OPS_BETWEEN_COMMITS_DEFAULT
      */
@@ -156,7 +155,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param reference the reference
      *
-     * @return the {@code Id}
+     * @return the {@link Id}
      */
     protected abstract Id getId(String reference);
 
@@ -326,9 +325,9 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param classifier the information about the new element
      *
-     * @return the {@code Id} of the created element
+     * @return the {@link Id} of the created element
      *
-     * @throws NullPointerException if the {@code classifier} is {@code null} or if it does not have an {@code Id}
+     * @throws NullPointerException if the {@code classifier} is {@code null} or if it does not have an {@link Id}
      */
     private Id createElement(@Nonnull final Classifier classifier) {
         checkNotNull(classifier.getId());
@@ -360,7 +359,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param metaClassifier the meta classifier
      *
-     * @return the {@code Id} of the created metaclass
+     * @return the {@link Id} of the created metaclass
      *
      * @throws NullPointerException if the {@code metaClassifier} is {@code null}
      */
@@ -402,7 +401,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param identifier the representation of the {@link Id}
      *
-     * @return the registered {@code Id} of the given identifier, or {@code null} if the identifier is not registered.
+     * @return the registered {@link Id} of the given identifier, or {@code null} if the identifier is not registered.
      */
     @Nullable
     private Id getOrCreateId(final Identifier identifier) {
@@ -418,7 +417,7 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      *
      * @param identifier the representation of the {@link Id}
      *
-     * @return the {@code Id}
+     * @return the {@link Id}
      */
     private Id createId(final Identifier identifier) {
         String idValue = identifier.getValue();

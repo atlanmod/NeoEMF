@@ -89,7 +89,7 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     /**
      * Returns the literal description of the created {@link PersistenceBackend}.
      *
-     * @return the literal description of the created {@code PersistenceBackend}
+     * @return the literal description of the created {@link PersistenceBackend}
      */
     protected abstract String getName();
 

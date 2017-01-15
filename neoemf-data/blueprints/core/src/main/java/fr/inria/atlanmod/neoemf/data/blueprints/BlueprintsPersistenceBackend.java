@@ -28,6 +28,7 @@ import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
@@ -55,8 +56,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.data.PersistenceBackend} that is responsible of low-level access to a Blueprints
- * database.
+ * A {@link PersistenceBackend} that is responsible of low-level access to a Blueprints database.
  * <p>
  * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
  * PersistentEObject}s to {@link Vertex} elements in order to speed up attribute access, and manage a set of lightweight
@@ -101,17 +101,17 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
-     * Cache that holds recently loaded {@code PersistentEObject}s.
+     * Cache that holds recently loaded {@link PersistentEObject}s.
      */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * Cache that holds recently loaded {@code Vertex}s.
+     * Cache that holds recently loaded {@link Vertex}s.
      */
     private final Cache<Id, Vertex> verticesCache;
 
     /**
-     * List that holds indexed {@code EClass}es.
+     * List that holds indexed {@link EClass}es.
      */
     private final List<EClass> indexedEClasses;
 
@@ -379,7 +379,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param object the object from which to create the {@link Vertex}
      *
-     * @return the created {@code Vertex}
+     * @return the created {@link Vertex}
      */
     private Vertex createVertex(PersistentEObject object) {
         Vertex vertex = addVertex(object.id());

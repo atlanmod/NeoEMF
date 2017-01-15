@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
+import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -45,8 +46,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.data.store.DirectWriteStore} that translates model-level operations to
- * Blueprints calls.
+ * A {@link DirectWriteStore} that translates model-level operations to Blueprints calls.
  * <p>
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
  * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
@@ -554,7 +554,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     /**
      * Creates an {@link InternalEObject} from the given {@code vertex}, and sets its {@link EClass} with the given
-     * {@code EClass}.
+     * {@link EClass}.
      * <p>
      * This method speeds-up the reification for objects with a known {@link EClass} by avoiding unnecessary database
      * accesses.

@@ -51,6 +51,9 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final Context INSTANCE = new BlueprintsNeo4jContext();
     }
 }

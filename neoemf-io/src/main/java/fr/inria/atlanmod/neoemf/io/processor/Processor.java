@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.io.InputNotifier;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 
 /**
- * A {@code InputHandler} that pre-processes and post-processes received events.
+ * A {@link InputHandler} that pre-processes and post-processes received events.
  * <p>
  * It can add validation, redirection, cancellation, or data enhancement capabilities.
  */

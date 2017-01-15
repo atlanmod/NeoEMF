@@ -26,8 +26,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
+/**
+ * ???
+ */
 public class DirectWriteBerkeleyDbCacheManyStore extends DirectWriteBerkeleyDbStore {
 
+    /**
+     * ???
+     */
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**

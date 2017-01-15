@@ -110,8 +110,8 @@ public class FeatureCachingStoreDecorator extends AbstractPersistentStoreDecorat
      * Remove cached elements, from an initial {@code index} to the size of an element.
      *
      * @param internalObject ???
-     * @param feature ???
-     * @param index ???
+     * @param feature        ???
+     * @param index          ???
      */
     private void invalidateValues(InternalEObject internalObject, EStructuralFeature feature, int index) {
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);

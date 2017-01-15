@@ -14,6 +14,8 @@ package fr.inria.atlanmod.neoemf.util.logging;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import java.text.MessageFormat;
+
 /**
  * The factory that creates instances of {@link Logger}s.
  * <p>
@@ -70,7 +72,7 @@ public final class NeoLogger {
     /**
      * Logs a message with parameters at the {@link Level#TRACE TRACE} level, using the root logger.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -112,7 +114,7 @@ public final class NeoLogger {
      * {@link Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -137,7 +139,7 @@ public final class NeoLogger {
     /**
      * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level, using the root logger.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -179,7 +181,7 @@ public final class NeoLogger {
      * {@link Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -204,7 +206,7 @@ public final class NeoLogger {
     /**
      * Logs a message with parameters at the {@link Level#INFO INFO} level, using the root logger.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -245,7 +247,7 @@ public final class NeoLogger {
      * {@link Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -270,7 +272,7 @@ public final class NeoLogger {
     /**
      * Logs a message with parameters at the {@link Level#WARN WARN} level, using the root logger.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -311,7 +313,7 @@ public final class NeoLogger {
      * {@link Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -336,7 +338,7 @@ public final class NeoLogger {
     /**
      * Logs a message with parameters at the {@link Level#ERROR ERROR} level, using the root logger.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -378,7 +380,7 @@ public final class NeoLogger {
      * {@link Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -403,7 +405,7 @@ public final class NeoLogger {
     /**
      * Logs a message with parameters at the {@link Level#FATAL FATAL} level, using the root logger.
      *
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -445,7 +447,7 @@ public final class NeoLogger {
      * {@link Throwable}, using the root logger.
      *
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -472,7 +474,7 @@ public final class NeoLogger {
      * Logs a message with parameters at the given {@code level}, using the root logger.
      *
      * @param level   the logging level
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()
@@ -516,7 +518,7 @@ public final class NeoLogger {
      *
      * @param level   the logging level
      * @param e       the exception to log, including its stack trace
-     * @param message the message to log; the format depends on the {@link java.text.MessageFormat}
+     * @param message the message to log; the format depends on the {@link MessageFormat}
      * @param params  parameters to the message
      *
      * @see #rootLogger()

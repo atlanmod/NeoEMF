@@ -22,7 +22,7 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
 
     /**
-     * The current number of created {@code CounterPersistenceHandlerDecorator}, used for name generation.
+     * The current number of created {@code CounterPersistenceHandlerDecorator}s, used for name generation.
      */
     private static int id = 0;
 

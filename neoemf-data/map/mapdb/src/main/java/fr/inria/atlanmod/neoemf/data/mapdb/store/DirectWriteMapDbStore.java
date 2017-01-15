@@ -64,7 +64,7 @@ import static java.util.Objects.nonNull;
 public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersistenceBackend> {
 
     /**
-     * An in-memory cache for {@code PersistentEObject}s. This cache reduces database accesses and
+     * An in-memory cache for {@link PersistentEObject}s. This cache reduces database accesses and
      * speed-up element retrieval. The cache can contains up to 10000 model elements, that are
      * discarded if more elements have to be cached.
      */

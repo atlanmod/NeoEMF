@@ -22,6 +22,7 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ClassInfoSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ContainerInfoSerializer;
@@ -34,6 +35,8 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import org.eclipse.emf.ecore.EClass;
+
 import java.io.File;
 import java.util.Map;
 
@@ -44,44 +47,100 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
      */
     public static final String NAME = "berkeleydb";
 
+    /**
+     * ???
+     */
     private static final String KEY_CONTAINER = "eContainer";
+
+    /**
+     * ???
+     */
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
+
+    /**
+     * ???
+     */
     private static final String KEY_FEATURES = "features";
+
+    /**
+     * ???
+     */
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
 
+    /**
+     * ???
+     */
     private static final IdSerializer idSerializer = new IdSerializer();
+
+    /**
+     * ???
+     */
     private static final FeatureKeySerializer fkSerializer = new FeatureKeySerializer();
+
+    /**
+     * ???
+     */
     private static final ClassInfoSerializer classSerializer = new ClassInfoSerializer();
+
+    /**
+     * ???
+     */
     private static final ContainerInfoSerializer containerSerializer = new ContainerInfoSerializer();
+
+    /**
+     * ???
+     */
     private static final ObjectSerializer objSerializer = new ObjectSerializer();
 
+    /**
+     * ???
+     */
     private final DatabaseConfig databaseConfig;
-    private final File file;
+
+    /**
+     * ???
+     */
     private final EnvironmentConfig environmentConfig;
+
+    /**
+     * ???
+     */
+    private final File file;
+
+    /**
+     * ???
+     */
     private boolean isClosed = true;
 
     /**
-     * A persistent map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
+     * A persistent map that stores the container of {@link PersistentEObject}.
      */
     private Database containers;
+
     /**
-     * A persistent map that stores the {@link org.eclipse.emf.ecore.EClass} for {@link
-     * fr.inria.atlanmod.neoemf.core.PersistentEObject}. The key is the object {@link Id}.
+     * A persistent map that stores the {@link EClass} for {@link PersistentEObject}.
+     * <p>
+     * The key is the object {@link Id}.
      */
     private Database instances;
+
     /**
-     * A persistent map that stores structural features values for {@link
-     * fr.inria.atlanmod.neoemf.core.PersistentEObject}. The key is build using the object {@link Id} plus the name of
-     * the feature.
+     * A persistent map that stores structural features values for {@link PersistentEObject}.
+     * <p>
+     * The key is build using the object {@link Id} plus the name of the feature.
      */
     private Database features;
+
     /**
-     * A persistent map that store the values of multi-valued features for {@link
-     * fr.inria.atlanmod.neoemf.core.PersistentEObject}. The key is build using the object {@link Id} plus the name of
-     * the feature plus the index of the value.
+     * A persistent map that store the values of multi-valued features for {@link PersistentEObject}.
+     * <p>
+     * The key is build using the object {@link Id} plus the name of the feature plus the index of the value.
      */
     private Database multivaluedFeatures;
 
+    /**
+     * ???
+     */
     private Environment environment;
 
     /**
@@ -100,6 +159,9 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
                 .setDeferredWrite(true);
     }
 
+    /**
+     * ???
+     */
     public void open() {
         NeoLogger.debug("BerkeleyDBPersistentBackend::open()");
         //NeoLogger.debug(environmentConfig.getConfigParam(EnvironmentConfig.LOG_MEM_ONLY));
@@ -128,10 +190,23 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         }
     }
 
+    /**
+     * ???
+     *
+     * @return ???
+     */
     public Map<String, Object> getAll() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * ???
+     *
+     * @param name ???
+     * @param <E>  ???
+     *
+     * @return ???
+     */
     public <E> E get(String name) {
         throw new UnsupportedOperationException();
     }
@@ -141,6 +216,7 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
         return isClosed;
     }
 
+    @Override
     public void close() {
         NeoLogger.debug("Closing databases");
 
@@ -174,7 +250,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Retrieves container for a given object id.
+     * Retrieves the container for a given object id.
+     *
+     * @param id ???
+     *
+     * @return ???
      */
     public ContainerInfo containerFor(Id id) {
         ContainerInfo containerInfo = null;
@@ -193,7 +273,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Stores container information for an object id
+     * Stores the container information for an object id.
+     *
+     * @param id        ???
+     * @param container ???
      */
     public void storeContainer(Id id, ContainerInfo container) {
         DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
@@ -207,7 +290,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Retrieves metaclass (EClass) for a given object id
+     * Retrieves the metaclass (EClass) for a given object id.
+     *
+     * @param id ???
+     *
+     * @return ???
      */
     public ClassInfo metaclassFor(Id id) {
         ClassInfo classInfo = null;
@@ -226,7 +313,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Stores metaclass (EClass) information for an object id.
+     * Stores the metaclass (EClass) information for an object id.
+     *
+     * @param id        ???
+     * @param metaclass ???
      */
     public void storeMetaclass(Id id, ClassInfo metaclass) {
         DatabaseEntry key = new DatabaseEntry(idSerializer.serialize(id));
@@ -241,6 +331,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Store the value of a given feature.
+     *
+     * @param featureKey ???
+     * @param obj        ???
+     *
+     * @return ???
      */
     public Object storeValue(FeatureKey featureKey, Object obj) {
         Object old = null;
@@ -258,6 +353,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Retrieves the value of a given feature.
+     *
+     * @param featureKey ???
+     *
+     * @return ???
      */
     public Object valueOf(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
@@ -276,6 +375,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Removes the value of a given feature. The feature becomes unset.
+     *
+     * @param featureKey ???
+     *
+     * @return ???
      */
     public Object removeFeature(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
@@ -293,7 +396,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Return true if the feature was set, false otherwise.
+     * Return {@code true} if the feature was set, {@code false} otherwise.
+     *
+     * @param featureKey ???
+     *
+     * @return ???
      */
     public boolean isFeatureSet(FeatureKey featureKey) {
         boolean isSet = false;
@@ -310,6 +417,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Stores the single value of a given multi-valued feature at the given index.
+     *
+     * @param featureKey ???
+     * @param obj        ???
+     *
+     * @return ???
      */
     public Object storeValueAtIndex(MultivaluedFeatureKey featureKey, Object obj) {
         try {
@@ -326,6 +438,10 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Retrieves the value of a given multi-valued feature at a given index.
+     *
+     * @param featureKey ???
+     *
+     * @return ???
      */
     public Object valueAtIndex(MultivaluedFeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
@@ -344,6 +460,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Copies all the contents of this back-end to the target one.
+     *
+     * @param target ???
      */
     public void copyTo(BerkeleyDbPersistenceBackend target) {
         NeoLogger.debug("Copying " + this.toString() + "to: " + target.toString());
@@ -363,6 +481,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
      * Utility method to copy the contents from one database to another.
+     *
+     * @param from ???
+     * @param to   ???
+     *
+     * @throws DatabaseException if ???
      */
     private void copyDatabaseTo(Database from, Database to) throws DatabaseException {
         try (Cursor cursor = from.openCursor(null, null)) {

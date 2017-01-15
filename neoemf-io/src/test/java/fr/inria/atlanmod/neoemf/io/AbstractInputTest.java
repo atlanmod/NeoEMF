@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -56,10 +57,9 @@ public abstract class AbstractInputTest extends AbstractTest {
     }
 
     /**
-     * Registers a EPackage in {@link org.eclipse.emf.ecore.EPackage.Registry} according to its {@code prefix} and
-     * {@code uri}, from an Ecore file.
+     * Registers a EPackage in {@link Registry} according to its {@code prefix} and {@code uri}, from an Ecore file.
      * <p>
-     * The targetted Ecore file must be present in {@code /resources/ecore}.
+     * The targeted Ecore file must be present in {@code /resources/ecore}.
      */
     protected static void registerEPackageFromEcore(String prefix, String uri) {
         File file = getResourceFile(ECORE_PATH.replaceAll("\\{name\\}", prefix));
@@ -82,6 +82,6 @@ public abstract class AbstractInputTest extends AbstractTest {
 
         assertThat(ePackage).isNotNull(); // "EPackage does not exist"
 
-        EPackage.Registry.INSTANCE.put(uri, ePackage);
+        Registry.INSTANCE.put(uri, ePackage);
     }
 }

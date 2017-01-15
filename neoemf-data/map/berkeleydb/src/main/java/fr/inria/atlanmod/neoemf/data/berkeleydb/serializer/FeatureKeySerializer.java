@@ -15,12 +15,17 @@ import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+/**
+ * ???
+ */
 public class FeatureKeySerializer implements Serializer<FeatureKey> {
 
+    @Override
     public byte[] serialize(FeatureKey value) {
         return SerializationUtils.serialize(value);
     }
 
+    @Override
     public FeatureKey deserialize(byte[] data) {
         return (FeatureKey) SerializationUtils.deserialize(data);
     }

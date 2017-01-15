@@ -81,6 +81,9 @@ public class HBaseContext implements Context {
      */
     private static class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final Context INSTANCE = new HBaseContext();
     }
 }

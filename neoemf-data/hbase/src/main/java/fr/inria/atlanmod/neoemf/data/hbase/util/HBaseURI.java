@@ -56,7 +56,7 @@ public class HBaseURI extends PersistenceURI {
     /**
      * Constructs a new {@code HBaseURI} from the given {@code internalURI}.
      *
-     * @param internalURI the base {@code URI}
+     * @param internalURI the base {@link URI}
      *
      * @note This constructor is protected to avoid wrong {@link URI} instantiations. Use {@link #createURI(URI)},
      * {@link #createFileURI(File)}, {@link #createFileURI(URI)} or {@link #createHierarchicalURI(String, String, URI)}
@@ -71,9 +71,9 @@ public class HBaseURI extends PersistenceURI {
      * <p>
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@code HBaseURI}.
      *
-     * @param uri the base {@code URI}
+     * @param uri the base {@link URI}
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException     if the {@code uri} is {@code null}
      * @throws IllegalArgumentException if the scheme of the provided {@code uri} is not {@link #SCHEME} or {@link
@@ -97,9 +97,9 @@ public class HBaseURI extends PersistenceURI {
     /**
      * Creates a new {@code HBaseURI} from the given {@link File} descriptor.
      *
-     * @param file the {@link File} to build a {@code URI} from
+     * @param file the {@link File} to build a {@link URI} from
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException if the {@code file} is {@code null}
      */
@@ -113,9 +113,9 @@ public class HBaseURI extends PersistenceURI {
      * Creates a new {@code HBaseURI} from the given {@code uri} by checking the referenced file exists on the file
      * system.
      *
-     * @param uri the base {@code URI}
+     * @param uri the base {@link URI}
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException if the {@code uri} is {@code null}
      */
@@ -133,7 +133,7 @@ public class HBaseURI extends PersistenceURI {
      * @param port     the port of the HBase server
      * @param modelURI a {@link URI} identifying the model in the database
      *
-     * @return the created {@code URI}
+     * @return the created {@link URI}
      *
      * @throws NullPointerException if any of the parameters is {@code null}
      */
@@ -146,11 +146,11 @@ public class HBaseURI extends PersistenceURI {
     }
 
     /**
-     * Format the given {@code URI} by removing HBase reserved characters.
+     * Format the given {@code uri} by removing HBase reserved characters.
      *
-     * @param uri the {@code URI} to format
+     * @param uri the {@link URI} to format
      *
-     * @return the formatted {@code URI}
+     * @return the formatted {@link URI}
      */
     @Nonnull
     public static String format(@Nonnull URI uri) {

@@ -43,10 +43,13 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * ???
+ */
 public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<BerkeleyDbPersistenceBackend> {
 
     /**
-     * An in-memory cache for {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
+     * An in-memory cache for {@link PersistentEObject}s.
      */
     protected final Cache<Id, PersistentEObject> persistentObjectsCache;
 
@@ -295,6 +298,13 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
         return object;
     }
 
+    /**
+     * ???
+     *
+     * @param id ???
+     *
+     * @return ???
+     */
     private EClass resolveInstanceOf(Id id) {
         EClass eClass = null;
         ClassInfo classInfo = backend.metaclassFor(id);
@@ -304,6 +314,13 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
         return eClass;
     }
 
+    /**
+     * ???
+     *
+     * @param object           ???
+     * @param reference        ???
+     * @param referencedObject ???
+     */
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         if (reference.isContainment()) {
             ContainerInfo info = backend.containerFor(referencedObject.id());
@@ -313,6 +330,11 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
         }
     }
 
+    /**
+     * ???
+     *
+     * @param object ???
+     */
     protected void updateInstanceOf(PersistentEObject object) {
         ClassInfo info = backend.metaclassFor(object.id());
         if (isNull(info)) {
@@ -320,10 +342,25 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
         }
     }
 
+    /**
+     * ???
+     *
+     * @param featureKey ???
+     *
+     * @return ???
+     */
     protected Object getFromMap(FeatureKey featureKey) {
         return backend.valueOf(featureKey);
     }
 
+    /**
+     * ???
+     *
+     * @param object  ???
+     * @param feature ???
+     *
+     * @return ???
+     */
     protected Object getFromMap(PersistentEObject object, EStructuralFeature feature) {
         return getFromMap(FeatureKey.from(object, feature));
     }

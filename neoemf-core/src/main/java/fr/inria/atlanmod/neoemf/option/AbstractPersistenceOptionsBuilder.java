@@ -53,7 +53,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Returns an immutable empty {@link Map}.
      *
-     * @return an immutable {@code Map}
+     * @return an immutable {@link Map}
      */
     @Nonnull
     public static Map<String, Object> noOption() {
@@ -105,7 +105,7 @@ public abstract class AbstractPersistenceOptionsBuilder<B extends AbstractPersis
     /**
      * Adds a key/value in the created options. A custom configuration, which is not part of NeoEMF, can be added.
      *
-     * @param key the key to add
+     * @param key   the key to add
      * @param value the value of the {@code key}
      *
      * @return this builder (for chaining)
