@@ -86,6 +86,9 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
      */
     private static final String BLUEPRINTS_CONFIG_FILE = "config.properties";
 
+    /**
+     * Constructs a new {@code BlueprintsPersistenceBackendFactory}.
+     */
     private BlueprintsPersistenceBackendFactory() {
     }
 
@@ -202,6 +205,15 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
         source.copyTo(target);
     }
 
+    /**
+     * ???
+     *
+     * @param directory ???
+     * @param options ???
+     *
+     * @return ???
+     * @throws InvalidDataStoreException if ???
+     */
     private PropertiesConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;
 

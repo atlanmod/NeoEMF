@@ -63,27 +63,27 @@ import static java.util.Objects.nonNull;
 public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<BlueprintsPersistenceBackend> {
 
     /**
-     * The string used as a separator between values of multi-valued attributes
+     * The string used as a separator between values of multi-valued attributes.
      */
     protected static final String SEPARATOR = ":";
     /**
-     * The property key used to define the index of an edge
+     * The property key used to define the index of an edge.
      */
     protected static final String POSITION = "position";
     /**
-     * The label used to define container {@link Edge}s
+     * The label used to define container {@link Edge}s.
      */
     protected static final String CONTAINER = "eContainer";
     /**
-     * The label used to link root vertex to top-level elements
+     * The label used to link root vertex to top-level elements.
      */
     protected static final String CONTENTS = "eContents";
     /**
-     * The property key used to define the opposite containing feature in container {@link Edge}s
+     * The property key used to define the opposite containing feature in container {@link Edge}s.
      */
     protected static final String CONTAINING_FEATURE = "containingFeature";
     /**
-     * The property key used to define the number of edges with a specific label
+     * The property key used to define the number of edges with a specific label.
      */
     protected static final String SIZE_LITERAL = "size";
 
@@ -496,7 +496,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Finds the number of elements contained in the given {@code feature}
+     * Finds the number of elements contained in the given {@code feature}.
      *
      * @param vertex  the input {@link Vertex} of the {@code feature}
      * @param feature the {@link EStructuralFeature} describing the feature to access
@@ -509,7 +509,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Defines the size property of the given {@code feature} in the given {@code vertex} to {@code size}
+     * Defines the size property of the given {@code feature} in the given {@code vertex} to {@code size}.
      *
      * @param vertex  the input {@link Vertex} of the {@code feature}
      * @param feature the {@link EStructuralFeature} describing the feature to access
@@ -521,7 +521,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
 
     /**
      * Creates a new container edge between {@code parentVertex} and {@code childVertex}, and deletes any
-     * container edge previously linked to {@code childVertex}
+     * container edge previously linked to {@code childVertex}.
      *
      * @param reference    the containment {@link EReference}. This parameter is used to set the containing feature
      *                     property in the create edge.
@@ -540,7 +540,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Creates an {@link InternalEObject} from the given {@code vertex}
+     * Creates an {@link InternalEObject} from the given {@code vertex}.
      *
      * @param vertex the {@link Vertex} to reify
      *
@@ -581,7 +581,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
     }
 
     /**
-     * Search in the database the {@link Vertex} corresponding to the given {@code id} and reifies it
+     * Search in the database the {@link Vertex} corresponding to the given {@code id} and reifies it.
      *
      * @param id the {@link Id} to search
      *

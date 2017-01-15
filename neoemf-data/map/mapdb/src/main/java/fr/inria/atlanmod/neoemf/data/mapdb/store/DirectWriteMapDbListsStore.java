@@ -240,6 +240,9 @@ public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
      */
     private class FeatureKeyCacheLoader implements Function<FeatureKey, Object> {
 
+        /**
+         * ???
+         */
         private static final int ARRAY_SIZE_OFFSET = 10;
 
         @Override

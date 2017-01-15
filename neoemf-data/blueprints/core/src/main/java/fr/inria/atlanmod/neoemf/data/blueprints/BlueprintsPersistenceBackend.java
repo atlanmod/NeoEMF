@@ -77,26 +77,29 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     public static final String NAME = "blueprints";
     /**
-     * The property key used to set metaclass name in metaclass vertices
+     * The property key used to set metaclass name in metaclass vertices.
      */
     public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
     /**
-     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass vertices
+     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass vertices.
      */
     public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
     /**
-     * The label of type conformance {@link Edge}s
+     * The label of type conformance {@link Edge}s.
      */
     public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
     /**
-     * The name of the index entry holding metaclass vertices
+     * The name of the index entry holding metaclass vertices.
      */
     public static final String KEY_METACLASSES = "metaclasses";
     /**
-     * The index key used to retrieve metaclass vertices
+     * The index key used to retrieve metaclass vertices.
      */
     public static final String KEY_NAME = "name";
 
+    /**
+     * The default cache size.
+     */
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
@@ -332,12 +335,13 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Reifies the given {@link Vertex} as a {@link PersistentEObject}
+     * Reifies the given {@link Vertex} as a {@link PersistentEObject}.
      * <p>
      * The method guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
      * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
-     * collected. This method is a shortcut for {@link BlueprintsPersistenceBackend#reifyVertex(Vertex, EClass)} with a
-     * {@code null} EClass.
+     * collected.
+     * <p>
+     * This method behaves like {@code BlueprintsPersistenceBackend.reifyVertex(vertex, null)}.
      *
      * @param vertex the {@link Vertex} to reify
      *
@@ -348,10 +352,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Reifies the given {@link Vertex} as an {@link EObject}.
+     * Reifies the given {@link Vertex} as an {@link PersistentEObject}.
      * <p>
-     * The method guarantees that the same {@link EObject} is returned for a given {@link Vertex} in subsequent calls,
-     * unless the {@link EObject} returned in previous calls has been already garbage collected.
+     * The method guarantees that the same {@link PersistentEObject} is returned for a given {@link Vertex} in
+     * subsequent calls, unless the {@link PersistentEObject} returned in previous calls has been already garbage
+     * collected.
      *
      * @param vertex the {@link Vertex} to reify
      * @param eClass the expected {@link EClass} of the reified object. Can be set to {@code null} if not known.
@@ -407,8 +412,10 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Provides a direct access to the underlying graph. This method is public for tool compatibility (see
-     * <a href="https://github.com/atlanmod/Mogwai">the Mogwaï framework</a>), NeoEMF consistency is not guaranteed if
+     * Provides a direct access to the underlying graph.
+     * <p>
+     * This method is public for tool compatibility (see the
+     * <a href="https://github.com/atlanmod/Mogwai">Mogwaï</a>) framework, NeoEMF consistency is not guaranteed if
      * the graph is modified manually.
      *
      * @return the underlying Blueprints {@link IdGraph}

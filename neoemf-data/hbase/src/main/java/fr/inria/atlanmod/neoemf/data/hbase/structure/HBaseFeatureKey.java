@@ -49,7 +49,7 @@ public class HBaseFeatureKey extends FeatureKey {
     /**
      * Creates a new {@code HBaseFeatureKey} from the given {@code object} and the given {@code feature}.
      * <p>
-     * This method behaves like: {@code HBaseFeatureKey.of(object.id(), feature)}
+     * This method behaves like: {@code HBaseFeatureKey.of(object.id(), feature)}.
      *
      * @param object  the {@link PersistentEObject}
      * @param feature the {@link EStructuralFeature} of the {@link PersistentEObject}

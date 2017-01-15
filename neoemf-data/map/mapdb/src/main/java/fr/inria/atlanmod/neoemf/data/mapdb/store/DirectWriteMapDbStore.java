@@ -315,6 +315,13 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
         return object;
     }
 
+    /**
+     * ???
+     *
+     * @param id ???
+     *
+     * @return ???
+     */
     private EClass resolveInstanceOf(Id id) {
         EClass eClass = null;
         ClassInfo classInfo = backend.metaclassFor(id);

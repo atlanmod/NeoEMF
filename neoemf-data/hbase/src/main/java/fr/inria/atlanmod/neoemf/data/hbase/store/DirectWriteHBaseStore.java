@@ -122,7 +122,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     protected Table table;
 
     /**
-     * Constructs a new {@code DirectWriteHBaseStore} on the given {@code resource} .
+     * Constructs a new {@code DirectWriteHBaseStore} on the given {@code resource}.
      *
      * @param resource the resource to persist and access
      *
@@ -319,7 +319,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
     /**
      * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
-     * PersistentEObject object}
+     * PersistentEObject object}.
      *
      * @param object  ???
      * @param feature ???

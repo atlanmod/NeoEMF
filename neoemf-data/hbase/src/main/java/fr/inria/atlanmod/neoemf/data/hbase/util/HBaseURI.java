@@ -127,7 +127,7 @@ public class HBaseURI extends PersistenceURI {
 
     /**
      * Creates a new {@code HBaseURI} from the {@code host}, {@code port}, and {@code modelURI} by creating a
-     * hierarchical {@link URI} that references the distant model resource
+     * hierarchical {@link URI} that references the distant model resource.
      *
      * @param host     the address of the HBase server (use {@code localhost} if HBase is running locally)
      * @param port     the port of the HBase server

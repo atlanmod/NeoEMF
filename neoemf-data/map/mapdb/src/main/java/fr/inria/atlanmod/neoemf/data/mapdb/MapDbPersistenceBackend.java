@@ -63,9 +63,24 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      */
     public static final String NAME = "mapdb";
 
+    /**
+     * ???
+     */
     private static final String KEY_CONTAINER = "eContainer";
+
+    /**
+     * ???
+     */
     private static final String KEY_INSTANCE_OF = "neoInstanceOf";
+
+    /**
+     * ???
+     */
     private static final String KEY_FEATURES = "features";
+
+    /**
+     * ???
+     */
     private static final String KEY_MULTIVALUED_FEATURES = "multivaluedFeatures";
 
     /**
@@ -184,7 +199,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param id the {@link Id} of the contained object
      *
-     * @return a {@link ContainerInfo} descriptor that contains element's container informations
+     * @return a {@link ContainerInfo} descriptor that contains element's container information
      */
     public ContainerInfo containerFor(Id id) {
         return containersMap.get(id);
@@ -260,7 +275,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Checks if the given {@link FeatureKey} is set
+     * Checks if the given {@link FeatureKey} is set.
      *
      * @param key the {@link FeatureKey} to check
      *
@@ -306,7 +321,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Copies all the contents of this this back-end to the target one.
      *
-     * @param target the {@link MapDbPersistenceBackend} to copy the database contents to
+     * @param target the {@code MapDbPersistenceBackend} to copy the database contents to
      *
      * @throws UnsupportedOperationException if the current {@link DB} contains {@link Collection}s which are not {@link
      *                                       Map}s

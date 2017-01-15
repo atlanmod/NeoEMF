@@ -79,7 +79,7 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
     /**
      * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
-     * PersistentEObject} {@code object}
+     * PersistentEObject} {@code object}.
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
      * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s

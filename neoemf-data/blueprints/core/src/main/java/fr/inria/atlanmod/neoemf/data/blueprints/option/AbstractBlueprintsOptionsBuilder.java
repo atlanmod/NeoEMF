@@ -78,8 +78,7 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Adds the {@code directWrite} feature in the created options. Created resource will embed a
-     * {@link DirectWriteBlueprintsStore} to interact with the database.
+     * Adds the {@code direct-write} feature in the created options.
      *
      * @return this builder (for chaining)
      *
@@ -91,8 +90,7 @@ public abstract class AbstractBlueprintsOptionsBuilder<B extends AbstractBluepri
     }
 
     /**
-     * Adds the {@code directWriteCacheMany} feature in the created options. Created resource will embed a
-     * {@link DirectWriteBlueprintsCacheManyStore} to interact with the database.
+     * Adds the {@code direct-write-cache-many} feature in the created options.
      *
      * @return this builder (for chaining)
      *
