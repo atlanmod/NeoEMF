@@ -634,10 +634,21 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         return old;
     }
 
+    /**
+     * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
+     */
     private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
+        /**
+         * The class associated with the object to retrieve.
+         */
         private final EClass eClass;
 
+        /**
+         * Constructs a new {@code PersistentEObjectCacheLoader} with the given {@code eClass}.
+         *
+         * @param eClass the class associated with the object to retrieve
+         */
         private PersistentEObjectCacheLoader(EClass eClass) {
             this.eClass = eClass;
         }

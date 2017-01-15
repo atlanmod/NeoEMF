@@ -235,6 +235,9 @@ public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
         return (List<Object>) value;
     }
 
+    /**
+     * A cache loader to retrieve a {@link Object} stored in the database.
+     */
     private class FeatureKeyCacheLoader implements Function<FeatureKey, Object> {
 
         private static final int ARRAY_SIZE_OFFSET = 10;

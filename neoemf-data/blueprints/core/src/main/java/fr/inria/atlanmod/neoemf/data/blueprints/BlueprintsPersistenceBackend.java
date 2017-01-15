@@ -101,22 +101,22 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
-     * ???
+     * Cache that holds recently loaded {@code PersistentEObject}s.
      */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * ???
+     * Cache that holds recently loaded {@code Vertex}s.
      */
     private final Cache<Id, Vertex> verticesCache;
 
     /**
-     * ???
+     * List that holds indexed {@code EClass}es.
      */
     private final List<EClass> indexedEClasses;
 
     /**
-     * ???
+     * Index containing metaclasses.
      */
     private final Index<Vertex> metaclassIndex;
 
@@ -301,10 +301,12 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * ???
+     * Defines the {@code object} as mapped to the given {@code vertex}.
      *
-     * @param vertex ???
-     * @param object ???
+     * @param vertex the vertex
+     * @param object the object to define as mapped
+     *
+     * @see PersistentEObject#setMapped(boolean)
      */
     private void setMappedVertex(Vertex vertex, PersistentEObject object) {
         object.setMapped(true);
@@ -373,11 +375,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * ???
+     * Creates a new {@link Vertex} from the given {@code object}.
      *
-     * @param object ???
+     * @param object the object from which to create the {@link Vertex}
      *
-     * @return ???
+     * @return the created {@code Vertex}
      */
     private Vertex createVertex(PersistentEObject object) {
         Vertex vertex = addVertex(object.id());
@@ -428,7 +430,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * ???
+     * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
      */
     private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 

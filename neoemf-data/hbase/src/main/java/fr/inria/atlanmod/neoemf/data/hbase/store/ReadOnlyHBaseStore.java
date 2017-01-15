@@ -127,6 +127,9 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
         return new UnsupportedOperationException(MessageFormat.format(message, tableName));
     }
 
+    /**
+     * A cache loader to retrieve a {@link Object} stored in the database.
+     */
     private class FeatureCacheLoader implements Function<FeatureKey, Object> {
 
         @Override
