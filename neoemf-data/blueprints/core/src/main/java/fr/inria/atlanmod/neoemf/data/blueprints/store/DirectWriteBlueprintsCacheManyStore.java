@@ -67,7 +67,7 @@ public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsSt
     /**
      * {@inheritDoc}
      * <p>
-     * Caches all the vertices traversed to retrieve the element at the given {@code index}. This implementation
+     * Caches all the {@link Vertex Vertices} traversed to retrieve the element at the given {@code index}. This implementation
      * bypasses the graph API limitation that has to traverse all the {@link Edge}s connected to the input vertex to
      * find the one with the given {@code index}.
      *

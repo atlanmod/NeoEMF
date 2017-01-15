@@ -77,11 +77,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     public static final String NAME = "blueprints";
     /**
-     * The property key used to set metaclass name in metaclass vertices.
+     * The property key used to set metaclass name in metaclass {@link Vertex Vertices}.
      */
     public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
     /**
-     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass vertices.
+     * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex Vertices}.
      */
     public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
     /**
@@ -89,11 +89,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      */
     public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
     /**
-     * The name of the index entry holding metaclass vertices.
+     * The name of the index entry holding metaclass {@link Vertex Vertices}.
      */
     public static final String KEY_METACLASSES = "metaclasses";
     /**
-     * The index key used to retrieve metaclass vertices.
+     * The index key used to retrieve metaclass {@link Vertex Vertices}.
      */
     public static final String KEY_NAME = "name";
 
@@ -109,7 +109,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * Cache that holds recently loaded {@link Vertex}s.
+     * Cache that holds recently loaded {@link Vertex Vertices}.
      */
     private final Cache<Id, Vertex> verticesCache;
 
