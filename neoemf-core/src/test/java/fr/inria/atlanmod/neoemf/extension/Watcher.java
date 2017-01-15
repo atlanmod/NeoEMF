@@ -11,8 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.extension;
 
-import fr.inria.atlanmod.neoemf.logging.Logger;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.Logger;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.runner.Description;
 

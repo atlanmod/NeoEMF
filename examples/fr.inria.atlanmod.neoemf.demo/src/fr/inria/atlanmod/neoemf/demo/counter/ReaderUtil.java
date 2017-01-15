@@ -18,6 +18,7 @@ public class ReaderUtil {
 
     /**
      * @param resource the resource to compute the size of
+     *
      * @return the number of elements in the containment tree of the Resource
      */
     public static int countElements(Resource resource) {
@@ -28,5 +29,5 @@ public class ReaderUtil {
         }
         return count;
     }
-    
+
 }

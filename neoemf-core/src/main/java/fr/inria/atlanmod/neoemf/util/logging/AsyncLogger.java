@@ -9,7 +9,7 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.logging;
+package fr.inria.atlanmod.neoemf.util.logging;
 
 import com.google.common.util.concurrent.MoreExecutors;
 

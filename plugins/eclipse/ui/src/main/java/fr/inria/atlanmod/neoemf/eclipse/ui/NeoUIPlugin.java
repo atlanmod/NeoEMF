@@ -33,13 +33,13 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      */
     public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui";
 
-    private static NeoUIPlugin SHARED_INSTANCE;
-
     private static final ILogListener logListener = (status, listener) -> {
         if (status.matches(IStatus.ERROR)) {
             StatusManager.getManager().handle(status, StatusManager.BLOCK);
         }
     };
+
+    private static NeoUIPlugin SHARED_INSTANCE;
 
     public NeoUIPlugin() {
         SHARED_INSTANCE = this;
@@ -60,20 +60,6 @@ public class NeoUIPlugin extends AbstractUIPlugin {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-    @Override
-    public void start(BundleContext context) throws Exception {
-        super.start(context);
-        getLog().addLogListener(logListener);
-        registerFactories();
-        MetamodelRegistry.getInstance();
-    }
-
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        getLog().removeLogListener(logListener);
-        super.stop(context);
-    }
-
     /**
      * Registers all instances of {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} in the
      * {@link PersistenceBackendFactoryRegistry}.
@@ -92,5 +78,19 @@ public class NeoUIPlugin extends AbstractUIPlugin {
         if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
             PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbPersistenceBackendFactory.getInstance());
         }
+    }
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        getLog().addLogListener(logListener);
+        registerFactories();
+        MetamodelRegistry.getInstance();
+    }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        getLog().removeLogListener(logListener);
+        super.stop(context);
     }
 }

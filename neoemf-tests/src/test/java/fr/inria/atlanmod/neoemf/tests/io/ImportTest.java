@@ -24,8 +24,8 @@ import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorato
 import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.persistence.TimerPersistenceHandlerDecorator;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;

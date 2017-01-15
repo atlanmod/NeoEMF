@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.persistence;
 
 import com.google.common.base.Stopwatch;
 
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 /**
  * A {@link PersistenceHandler} wrapper that measures elapsed time between the start and the end of an I/O process.

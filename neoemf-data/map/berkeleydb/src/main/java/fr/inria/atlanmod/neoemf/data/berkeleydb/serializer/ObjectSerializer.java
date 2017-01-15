@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

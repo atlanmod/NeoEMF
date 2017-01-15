@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io.persistence;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 /**
  * A {@link PersistenceHandler} wrapper that counts the number of different element.

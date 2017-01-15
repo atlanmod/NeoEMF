@@ -18,9 +18,9 @@ import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -51,7 +51,7 @@ public class OCLProtectedMethods {
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
         rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
-        
+
         JavaPackage.eINSTANCE.eClass();
 
         long begin, end;
@@ -80,7 +80,7 @@ public class OCLProtectedMethods {
             NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private static List<MethodDeclaration> getProtectedMethodDeclarations(Resource resource) {
         try {
@@ -88,7 +88,8 @@ public class OCLProtectedMethods {
             OCLInput oclInput = new OCLInput(new FileInputStream(new File("ocl/protectedMethods.ocl")));
             List<Constraint> constraints = ocl.parse(oclInput);
             return (List<MethodDeclaration>) ocl.createQuery(constraints.get(0)).evaluate(resource.getContents().get(0));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             NeoLogger.error(e);
             return Collections.emptyList();
         }

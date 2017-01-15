@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf;
 
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

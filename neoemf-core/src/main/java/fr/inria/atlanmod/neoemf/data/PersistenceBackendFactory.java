@@ -47,8 +47,8 @@ public interface PersistenceBackendFactory {
     /**
      * Creates a {@link PersistenceBackend} in the given {@code directory}.
      *
-     * @param directory    the directory
-     * @param options the options that defines the behaviour of the back-end
+     * @param directory the directory
+     * @param options   the options that defines the behaviour of the back-end
      *
      * @return the persistence back-end
      *

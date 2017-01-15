@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.io.BlueprintsHandlerFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.gmt.modisco.java.JavaPackage;
@@ -34,10 +34,10 @@ public class EfficientBlueprintsImporter {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
-        
+
         PersistenceBackendFactory factory = BlueprintsPersistenceBackendFactory.getInstance();
         PersistenceBackend backend = factory.createPersistentBackend(new File("models/sample2.graphdb"), options);
-        
+
         PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler((BlueprintsPersistenceBackend) backend, false);
 
         long begin = System.currentTimeMillis();
