@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.config;
+package fr.inria.atlanmod.neoemf.data.blueprints.configuration;
 
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.tg.config.InternalBlueprintsTgConfiguration;
+import fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration;
 
 import org.apache.commons.configuration.Configuration;
 
@@ -30,10 +30,10 @@ import java.io.File;
 public interface InternalBlueprintsConfiguration {
 
     /**
-     * ???
+     * Adds specific properties about the Blueprints database in the given {@code configuration}.
      *
-     * @param currentConfiguration ???
-     * @param dbLocation           ???
+     * @param configuration the {@link Configuration} that holds the resource properties
+     * @param directory     the {@link File} that contains the Blueprints database
      */
-    void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation);
+    void putDefaultConfiguration(Configuration configuration, File directory);
 }

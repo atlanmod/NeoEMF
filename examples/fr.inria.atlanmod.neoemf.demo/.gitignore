@@ -1,3 +1,2 @@
-**/sample.graphdb
-**/sample.mapdb
-
+models/
+!models/sample.xmi

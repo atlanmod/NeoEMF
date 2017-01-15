@@ -9,10 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config;
+package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.configuration;
 
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfiguration;
+import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprintsConfiguration;
 
 import org.apache.commons.configuration.Configuration;
 
@@ -34,7 +34,7 @@ import static java.util.Objects.isNull;
 public final class InternalBlueprintsNeo4jConfiguration implements InternalBlueprintsConfiguration {
 
     /**
-     * ???
+     * The property to define the directory of the {@link com.tinkerpop.blueprints.impls.neo4j.Neo4jGraph} instance.
      */
     private static final String DIRECTORY = "blueprints.neo4j.directory";
 
@@ -52,16 +52,10 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
         return Holder.INSTANCE;
     }
 
-    /**
-     * Adds Neo4j database directory to the current resource {@link Configuration}
-     *
-     * @param currentConfiguration the {@link Configuration} holding resource properties
-     * @param dbLocation           the {@link File} that contains the Blueprints database
-     */
     @Override
-    public void putDefaultConfiguration(Configuration currentConfiguration, File dbLocation) {
-        if (isNull(currentConfiguration.getString(DIRECTORY))) {
-            currentConfiguration.addProperty(DIRECTORY, dbLocation.getAbsolutePath());
+    public void putDefaultConfiguration(Configuration configuration, File directory) {
+        if (isNull(configuration.getString(DIRECTORY))) {
+            configuration.addProperty(DIRECTORY, directory.getAbsolutePath());
         }
     }
 

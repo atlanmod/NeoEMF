@@ -20,13 +20,12 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.config.InternalBlueprintsConfiguration;
+import fr.inria.atlanmod.neoemf.data.blueprints.configuration.InternalBlueprintsConfiguration;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsStoreOptions;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.tg.config.InternalBlueprintsTgConfiguration;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
@@ -63,7 +62,7 @@ import static java.util.Objects.nonNull;
  * The factory handles transient back-ends by creating an in-memory {@link TinkerGraph} instance. Persistent back-ends
  * are created according to the provided resource options (see {@link BlueprintsResourceOptions} and {@link
  * BlueprintsStoreOptions}). Default back-end configuration (store directory and graph type) is called dynamically
- * according to the provided Blueprints implementation {@link InternalBlueprintsTgConfiguration}.
+ * according to the provided Blueprints implementation {@link fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration.InternalBlueprintsTgConfiguration}.
  *
  * @see PersistentResource
  * @see BlueprintsPersistenceBackend
@@ -212,7 +211,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             throw new InvalidDataStoreException(e);
         }
 
-        // Initialize value if the config file has just been created
+        // Initialize value if the configuration file has just been created
         if (!configuration.containsKey(BlueprintsResourceOptions.GRAPH_TYPE)) {
             configuration.setProperty(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
         }
@@ -243,7 +242,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
             String graphName = segments[segments.length - 2];
             String upperCaseGraphName = Character.toUpperCase(graphName.charAt(0)) + graphName.substring(1);
             String configClassName = MessageFormat.format("InternalBlueprints{0}Configuration", upperCaseGraphName);
-            String configClassQualifiedName = MessageFormat.format("{0}.{1}.config.{2}", BlueprintsPersistenceBackendFactory.class.getPackage().getName(), graphName, configClassName);
+            String configClassQualifiedName = MessageFormat.format("{0}.{1}.configuration.{2}", BlueprintsPersistenceBackendFactory.class.getPackage().getName(), graphName, configClassName);
 
             try {
                 ClassLoader classLoader = BlueprintsPersistenceBackendFactory.class.getClassLoader();
