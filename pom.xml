@@ -406,7 +406,7 @@
                 </plugin>
 
                 <plugin>
-                    <!-- Do not forget to update the "javadoc" profile which comes in addition to this configuration -->
+                    <!-- "deploy-javadoc" profile comes in addition to this configuration -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.4</version>
@@ -535,9 +535,9 @@
     </build>
 
     <profiles>
-        <!-- A profile to manage Javadoc dependencies -->
+        <!-- A profile to manage Javadoc dependencies (EMF, OSGi,...) -->
         <profile>
-            <id>javadoc</id>
+            <id>deploy-javadoc</id>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.emf</groupId>
