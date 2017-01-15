@@ -422,6 +422,10 @@
                             fr.inria.atlanmod.neoemf.data.berkeleydb*; <!-- Experimental functionality -->
                             fr.inria.atlanmod.neoemf.tests*;
                         </excludePackageNames>
+                        <sourceFileExcludes><!-- Exclude bundle activators -->
+                            <sourceFileExclude>**/AbstractActivator.java</sourceFileExclude>
+                            <sourceFileExclude>**/Activator.java</sourceFileExclude>
+                        </sourceFileExcludes>
                         <links>
                             <!-- Common -->
                             <link>https://google.github.io/guava/releases/20.0/api/docs/</link>
