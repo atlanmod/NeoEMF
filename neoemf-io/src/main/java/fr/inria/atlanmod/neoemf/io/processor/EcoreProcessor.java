@@ -184,6 +184,8 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Creates the root element from the given {@code classifier}.
      *
+     * @param classifier the classifier representing the root element
+     *
      * @throws NullPointerException if the {@code classifier} does not have a namespace
      */
     private void createRootObject(Classifier classifier) {

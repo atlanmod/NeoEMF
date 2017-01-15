@@ -37,14 +37,22 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.function.Function;
 
+/**
+ * ???
+ */
 public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
+    /**
+     * ???
+     */
     private final Cache<FeatureKey, Object> objectsCache;
 
     /**
      * Constructs a new {@code ReadOnlyHBaseStore} on the given {@code resource}.
      *
      * @param resource the resource to persist and access
+     *
+     * @throws IOException if ???
      */
     public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
@@ -119,6 +127,11 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
         throw unsupportedOperation();
     }
 
+    /**
+     * Processes the exception to thrown when an operation is impossible.
+     *
+     * @return a new {@link UnsupportedOperationException}
+     */
     private UnsupportedOperationException unsupportedOperation() {
         String message = "Unable to write to resource with URI {0}. Make sure that the resource is not read-only";
         String tableName = table.getName().getNameAsString();

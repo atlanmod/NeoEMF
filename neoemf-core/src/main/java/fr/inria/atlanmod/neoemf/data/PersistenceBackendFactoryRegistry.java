@@ -96,6 +96,7 @@ public class PersistenceBackendFactoryRegistry {
      * factory}.
      *
      * @param scheme the {@code URI} scheme identifying the back-end factory
+     * @param factory the back-end factory
      */
     public static void register(@Nonnull String scheme, @Nonnull PersistenceBackendFactory factory) {
         checkNotNull(scheme);

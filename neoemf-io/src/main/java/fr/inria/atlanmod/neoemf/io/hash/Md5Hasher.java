@@ -35,6 +35,8 @@ public class Md5Hasher implements Hasher {
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static Hasher getInstance() {

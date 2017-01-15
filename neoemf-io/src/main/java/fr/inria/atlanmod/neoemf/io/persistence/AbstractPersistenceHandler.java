@@ -120,9 +120,13 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
     }
 
     /**
-     * Adapts the given {@code value} according  to the maximum memory dedicated to the JVM.
-     * <p>
-     * The formulas can be improved, for sure.
+     * Adapts the given {@code value} according to the maximum memory dedicated to the JVM.
+     *
+     * @note The formulas can be improved, for sure.
+     *
+     * @param value the value to adapt
+     *
+     * @return the adapted value
      *
      * @see #DEFAULT_CACHE_SIZE
      * @see #OPS_BETWEEN_COMMITS_DEFAULT

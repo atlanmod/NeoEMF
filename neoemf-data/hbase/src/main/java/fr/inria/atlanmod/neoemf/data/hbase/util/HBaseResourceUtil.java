@@ -35,13 +35,21 @@ import static java.util.Objects.isNull;
  */
 public class HBaseResourceUtil {
 
+    /**
+     * ???
+     */
     private final Configuration conf = HBaseConfiguration.create();
 
+    /**
+     * Constructs a new {@code HBaseResourceUtil}.
+     */
     private HBaseResourceUtil() {
     }
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static HBaseResourceUtil getInstance() {
@@ -49,9 +57,13 @@ public class HBaseResourceUtil {
     }
 
     /**
-     * Deletes a table if exist
+     * Deletes a table if exist.
+     *
+     * @param modelURI ???
      *
      * @return {@code true} if deleted, {@code false} otherwise
+     *
+     * @throws IOException if ???
      */
     public boolean deleteResourceIfExists(URI modelURI) throws IOException {
 

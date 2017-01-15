@@ -29,6 +29,9 @@ public class HBaseFeatureKey extends FeatureKey {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The feature of the object.
+     */
     @Nonnull
     private final EStructuralFeature feature;
 

@@ -31,6 +31,9 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
      * Formats a prefixed value as {@code "prefix:value"}. If the {@code prefix} is {@code null}, the returned value
      * only contains the {@code value}.
      *
+     * @param prefix the prefix of the value
+     * @param value  the value
+     *
      * @return a formatted {@code String}
      */
     @Nonnull

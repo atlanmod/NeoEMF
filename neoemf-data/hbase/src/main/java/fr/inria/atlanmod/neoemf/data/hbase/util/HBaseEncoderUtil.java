@@ -35,9 +35,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class
- * is used to ensure that HBase keys have the same size, and provides an uniformized API to
- * encode strings and {@link EReference}.
+ * Utility class that is responsible of {@link Object} to {@link Byte} encoding. This class is used to ensure that HBase
+ * keys have the same size, and provides an uniformized API to encode strings and {@link EReference}.
  */
 public class HBaseEncoderUtil {
 

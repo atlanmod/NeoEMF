@@ -42,6 +42,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class HBaseURI extends PersistenceURI {
 
+    /**
+     * The scheme associated to the URI. This scheme is used to register {@link HBasePersistenceBackendFactory}
+     * and provide a {@link PersistentResourceFactory} to an existing {@link ResourceSet}.
+     *
+     * @see PersistenceBackendFactoryRegistry
+     * @see HBasePersistenceBackendFactory
+     * @see PersistentResourceFactory
+     */
     @Nonnull
     public static final String SCHEME = "neo-hbase";
 

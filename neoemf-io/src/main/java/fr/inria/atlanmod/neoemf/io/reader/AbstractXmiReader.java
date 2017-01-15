@@ -103,6 +103,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * Returns a list of {@code String} representing XPath references, or {@code null} if the {@code attribute} does not
      * match with {@link #PATTERN_WELL_FORMED_REF}.
      *
+     * @param attribute the attribute to parse
+     *
      * @return a list of {@code String} representing XPath references, or {@code null} if the {@code attribute} does not
      * match with {@link #PATTERN_WELL_FORMED_REF}
      *
@@ -131,6 +133,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * Returns the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix.
      *
+     * @param prefixedValue the value from which to extract the prefix
+     *
      * @return the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix
      */
     private static String getPrefix(String prefixedValue) {
@@ -148,6 +152,10 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Processes a new element and send a notification to handlers.
+     *
+     * @param uri the URI of the element
+     * @param localName the name of the element
+     * @param attributes the attributes of the element
      */
     protected void processStartElement(String uri, String localName, Attributes attributes) {
         Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
@@ -191,6 +199,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * Processes a feature, which can be an attribute or a reference.
      *
+     * @param classifier the classifier representing the feature
+     * @param prefix the prefix of the feature
+     * @param localName the name of the feature
+     * @param value the value of the feature
+     *
      * @return a list of {@code StructuralFeature} that can be empty.
      *
      * @see #processAttributes(String, String)
@@ -214,6 +227,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Processes a special feature as 'xsi:type', 'xmi:id' or 'xmi:idref'.
+     *
+     * @param classifier the classifier representing the feature
+     * @param prefix the prefix of the feature
+     * @param localName the name of the feature
+     * @param value the value of the feature
      *
      * @return {@code true} if the given feature is a special feature
      */
@@ -261,6 +279,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
     /**
      * Processes an attribute.
      *
+     * @param localName the name of the attribute
+     * @param value the value of the attribute
+     *
      * @return a singleton list of {@code StructuralFeature} containing the processed attribute.
      */
     private List<StructuralFeature> processAttributes(String localName, String value) {
@@ -273,6 +294,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Processes a list of {@code references} and returns a list of {@link Reference}.
+     *
+     * @param localName the name of the reference
+     * @param references the list that holds the identifier of referenced elements
      *
      * @return a list of {@code Reference} from the given {@code references}
      */
@@ -295,6 +319,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * Processes a metaclass attribute from the {@code prefixedValue}, and defines is as the metaclass of the given
      * {@code element}.
      *
+     * @param element the element for which to define the metaclass
+     * @param prefixedValue the value representing the metaclass
+     *
      * @see #PATTERN_PREFIXED_VALUE
      */
     private void processMetaClass(Classifier element, String prefixedValue) {
@@ -310,6 +337,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Processes characters.
+     *
+     * @param characters a set of characters, as {@link String}
      */
     protected void processCharacters(String characters) {
         notifyCharacters(characters);
@@ -317,6 +346,9 @@ public abstract class AbstractXmiReader extends AbstractReader {
 
     /**
      * Processes the end of an element.
+     *
+     * @param uri the URI of the element
+     * @param localName the name of the element
      */
     protected void processEndElement(String uri, String localName) {
         if (!ignoreElement) {

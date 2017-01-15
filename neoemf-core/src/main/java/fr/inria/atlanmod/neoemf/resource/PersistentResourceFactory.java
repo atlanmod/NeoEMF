@@ -34,6 +34,8 @@ public class PersistentResourceFactory implements Resource.Factory {
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static PersistentResourceFactory getInstance() {

@@ -111,6 +111,8 @@ public class XmiStreamReader extends AbstractXmiReader {
          * Constructs a new {@code LogProgressTimer}.
          *
          * @param stream the stream to watch
+         *
+         * @throws IOException if an I/O error occurs
          */
         private LogProgressTimer(InputStream stream) throws IOException {
             this.stream = stream;

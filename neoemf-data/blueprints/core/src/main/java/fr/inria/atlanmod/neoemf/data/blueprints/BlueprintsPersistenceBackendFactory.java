@@ -90,6 +90,8 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static PersistenceBackendFactory getInstance() {

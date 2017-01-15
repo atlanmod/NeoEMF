@@ -21,7 +21,9 @@ import java.util.Map;
 public interface PersistenceOptionsBuilder {
 
     /**
-     * Returns a immutable {@link Map} containing all defined options.
+     * Returns an immutable {@link Map} containing all defined options.
+     *
+     * @return an immutable {@code Map}
      *
      * @throws InvalidOptionException if a conflict is detected during building
      */

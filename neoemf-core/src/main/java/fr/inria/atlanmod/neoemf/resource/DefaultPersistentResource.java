@@ -112,6 +112,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     /**
      * Returns the database file.
+     *
+     * @return the database file
      */
     protected File getFile() {
         return FileUtils.getFile(PersistenceURI.createURI(getURI()).toFileString());

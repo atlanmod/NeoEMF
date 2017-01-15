@@ -32,15 +32,26 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+/**
+ * ???
+ */
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
+    /**
+     * The literal description of the factory.
+     */
     public static final String NAME = HBasePersistenceBackend.NAME;
 
+    /**
+     * Constructs a new {@code HBasePersistenceBackendFactory}.
+     */
     private HBasePersistenceBackendFactory() {
     }
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static PersistenceBackendFactory getInstance() {

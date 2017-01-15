@@ -46,6 +46,8 @@ public final class InternalBlueprintsNeo4jConfiguration implements InternalBluep
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static InternalBlueprintsConfiguration getInstance() {

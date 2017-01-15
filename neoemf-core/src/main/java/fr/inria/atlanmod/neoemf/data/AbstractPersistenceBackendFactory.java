@@ -87,7 +87,9 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
     }
 
     /**
-     * Returns the literal description of the created persistence back-end.
+     * Returns the literal description of the created {@link PersistenceBackend}.
+     *
+     * @return the literal description of the created {@code PersistenceBackend}
      */
     protected abstract String getName();
 
@@ -144,6 +146,8 @@ public abstract class AbstractPersistenceBackendFactory implements PersistenceBa
      * PersistenceBackend}.
      *
      * @param directory the directory where the configuration must be stored
+     *
+     * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}
      */
     protected void processGlobalConfiguration(File directory) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;

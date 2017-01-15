@@ -32,12 +32,17 @@ public interface PersistentStore extends EStore {
 
     /**
      * Returns the {@link Resource} to persist and access.
+     *
+     * @return the resource to persist and access
      */
     Resource resource();
 
     /**
-     * Returns the resolved {@link EObject} identified by the given {@code id} or {@code null} if no {@link EObject} can
-     * be resolved.
+     * Returns the resolved {@link EObject} identified by the given {@code id} or {@code null}.
+     *
+     * @param id the identifier of the {@link EObject} to resolve
+     *
+     * @return the resolved {@link EObject}, or {@code null} if no {@link EObject} can be resolved
      */
     EObject eObject(Id id);
 
@@ -57,11 +62,13 @@ public interface PersistentStore extends EStore {
 
     /**
      * Utility method used for tests. Returns the decorated {@code PersistentStore}, if it exists.
+     *
+     * @return the decorated {@code PersistentStore}, or {@code null} if it doesn't exist
      */
     PersistentStore getEStore();
 
     /**
-     * Saves the modifications of the owned {@link org.eclipse.emf.ecore.EObject}s in the persistence back-end.
+     * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
      */
     void save();
 }

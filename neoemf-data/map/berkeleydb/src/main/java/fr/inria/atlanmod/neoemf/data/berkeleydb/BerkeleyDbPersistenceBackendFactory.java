@@ -42,13 +42,21 @@ import static java.util.Objects.isNull;
 
 public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
+    /**
+     * The literal description of the factory.
+     */
     public static final String NAME = BerkeleyDbPersistenceBackend.NAME;
 
+    /**
+     * Constructs a new {@code BerkeleyDbPersistenceBackendFactory}.
+     */
     private BerkeleyDbPersistenceBackendFactory() {
     }
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static PersistenceBackendFactory getInstance() {

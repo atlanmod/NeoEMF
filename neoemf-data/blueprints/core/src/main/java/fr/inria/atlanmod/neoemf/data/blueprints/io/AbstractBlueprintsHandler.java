@@ -94,7 +94,7 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      * Updates the containment identified by its {@code name} between the {@code parentVertex} and the {@code
      * childVertex}.
      *
-     * @param localName    the name of the property identifying the reference (parent -> child)
+     * @param localName    the name of the property identifying the reference (parent -&gt; child)
      * @param parentVertex the parent vertex
      * @param childVertex  the child vertex
      */
@@ -133,6 +133,9 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
 
     /**
      * Formats a key/value pair as {@code "key:value"}.
+     *
+     * @param key the key
+     * @param value the value of the {@code key}
      *
      * @return the literal representation of a key/value pair
      */

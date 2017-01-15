@@ -74,6 +74,8 @@ public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBac
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static PersistenceBackendFactory getInstance() {

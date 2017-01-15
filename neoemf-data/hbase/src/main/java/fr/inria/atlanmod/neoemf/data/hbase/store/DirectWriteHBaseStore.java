@@ -60,29 +60,73 @@ import java.util.function.Function;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * ???
+ */
 // TODO Continue cleaning, there is still code duplication
 public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersistenceBackend> {
 
+    /**
+     * ???
+     */
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 
+    /**
+     * ???
+     */
     private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
+
+    /**
+     * ???
+     */
     private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
+
+    /**
+     * ???
+     */
     private static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
+
+    /**
+     * ???
+     */
     private static final byte[] CONTAINMENT_FAMILY = Bytes.toBytes("c");
+
+    /**
+     * ???
+     */
     private static final byte[] CONTAINER_QUALIFIER = Bytes.toBytes("n");
+
+    /**
+     * ???
+     */
     private static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
 
+    /**
+     * ???
+     */
     private static final int ATTEMP_TIMES_DEFAULT = 10;
+
+    /**
+     * ???
+     */
     private static final long SLEEP_DEFAULT = 1L;
 
+    /**
+     * ???
+     */
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
+    /**
+     * ???
+     */
     protected Table table;
 
     /**
      * Constructs a new {@code DirectWriteBlueprintsStore} on the given {@code resource} .
      *
      * @param resource the resource to persist and access
+     *
+     * @throws IOException if ???
      */
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
@@ -101,6 +145,16 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         this.table = initTable(connection, tableName, admin);
     }
 
+    /**
+     * ???
+     *
+     * @param connection ???
+     * @param tableName ???
+     * @param admin ???
+     *
+     * @return ???
+     * @throws IOException if ???
+     */
     protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
         if (!admin.tableExists(tableName)) {
             HTableDescriptor desc = new HTableDescriptor(tableName);
@@ -115,6 +169,16 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         return connection.getTable(tableName);
     }
 
+    /**
+     * ???
+     *
+     * @param object ???
+     * @param reference ???
+     * @param atEnd ???
+     * @param referencedObject ???
+     *
+     * @throws IOException if ???
+     */
     private void addAsAppend(PersistentEObject object, EReference reference, boolean atEnd, PersistentEObject referencedObject) throws IOException {
         Append append = new Append(Bytes.toBytes(object.id().toString()));
         append.add(PROPERTY_FAMILY,
@@ -181,6 +245,13 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         return object;
     }
 
+    /**
+     * ???
+     *
+     * @param id ???
+     *
+     * @return ???
+     */
     private EClass resolveInstanceOf(Id id) {
         try {
             Result result = table.get(new Get(Bytes.toBytes(id.toString())));
@@ -196,10 +267,22 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         return null;
     }
 
+    /**
+     * ???
+     *
+     * @param object ???
+     */
     private void updateLoadedEObjects(PersistentEObject object) {
         persistentObjectsCache.put(object.id(), object);
     }
 
+    /**
+     * ???
+     *
+     * @param object ???
+     * @param reference ???
+     * @param referencedObject ???
+     */
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         if (reference.isContainment()) {
             try {
@@ -215,6 +298,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
         }
     }
 
+    /**
+     * ???
+     *
+     * @param object ???
+     */
     protected void updateInstanceOf(PersistentEObject object) {
         try {
             Put put = new Put(Bytes.toBytes(object.id().toString()));
@@ -231,6 +319,9 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     /**
      * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
      * PersistentEObject object}
+     *
+     * @param object ???
+     * @param feature ???
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
      * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s

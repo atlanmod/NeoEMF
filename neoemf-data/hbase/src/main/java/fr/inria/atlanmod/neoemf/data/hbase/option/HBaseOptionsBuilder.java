@@ -42,9 +42,11 @@ public class HBaseOptionsBuilder extends AbstractPersistenceOptionsBuilder<HBase
     }
 
     /**
-     * ???
+     * Adds the {@code read-only} feature in the created options.
      *
      * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore
      */
     @Nonnull
     public HBaseOptionsBuilder readOnly() {

@@ -222,6 +222,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param key   the {@link FeatureKey} to set the value of
      * @param value an {@link Object} representing the value associated to the given {@code key}
+     *
+     * @return ???
      */
     public Object storeValue(FeatureKey key, Object value) {
         return features.put(key, value);
@@ -270,6 +272,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param key   the {@link MultivaluedFeatureKey} to set the value of
      * @param value an {@link Object} representing the value associated to the given {@code key}
+     *
+     * @return ???
      *
      * @see DirectWriteMapDbIndicesStore
      */

@@ -30,6 +30,8 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
     /**
      * Returns the instance of this class.
+     *
+     * @return the instance of this class
      */
     @Nonnull
     public static PersistenceFactory getInstance() {
