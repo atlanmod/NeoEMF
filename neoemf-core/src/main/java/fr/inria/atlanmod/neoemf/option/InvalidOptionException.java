@@ -36,8 +36,7 @@ public class InvalidOptionException extends RuntimeException {
     }
 
     /**
-     * Constructs an {@code InvalidOptionException} with the specified {@code cause} and a detail message of
-     * {@code (cause==null ? null : cause.toString())} (which typically contains the class and detail message of cause).
+     * Constructs an {@code InvalidOptionException} with the specified {@code cause} and its detail message.
      *
      * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method). (A {@code null}
      *              value is permitted, and indicates that the cause is nonexistent or unknown.)
