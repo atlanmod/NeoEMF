@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides the base classes that extends EMF API to enable lazy-loading of model elements.
  */
 
 package fr.inria.atlanmod.neoemf.core;
