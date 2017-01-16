@@ -17,6 +17,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.hbase.structure.HBaseFeatureKey;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -38,12 +39,20 @@ import java.text.MessageFormat;
 import java.util.function.Function;
 
 /**
- * ???
+ * A {@link DirectWriteHBaseStore} that only allows read operations on the underlying database.
+ * <p>
+ * Read-only configuration allows to access model element faster, without checking value consistency
+ * between database calls. This store reimplements all the mutators and throws an 
+ * {@link UnsupportedOperationException} when they are called, preventing resource corruption.
+ * <p>
+ *  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
+ * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * 
  */
 public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
 
     /**
-     * In-memory cache that holds ???, identified by the associated {@link FeatureKey}.
+     * In-memory cache that holds persisted model elements identifiers mapped to the {@link FeatureKey} used to access them.
      */
     private final Cache<FeatureKey, Object> objectsCache;
 
@@ -52,13 +61,26 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
      *
      * @param resource the resource to persist and access
      *
-     * @throws IOException if ???
+     * @throws IOException if the HBase server cannot be found
      */
     public ReadOnlyHBaseStore(Resource.Internal resource) throws IOException {
         super(resource);
         this.objectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
+    /**
+     * Checks that the provided {@code tableName} corresponds to an existing HBase table and opens it.
+     * <p>
+     * @note Read-only mode is only available for existing databases.
+     *
+     * @param connection the connection to the HBase server
+     * @param tableName  the name of the table to access on the server
+     * @param admin the administrator client of the HBase server     
+     *
+     * @return the opened HBase table
+     *
+     * @throws IOException if the HBase server cannot be found or if {@code tableName} does not reference an existing table
+     */
     @Override
     protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
         if (!admin.tableExists(tableName)) {
@@ -67,11 +89,17 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
         return connection.getTable(tableName);
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         throw unsupportedOperation();
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     protected void updateInstanceOf(PersistentEObject object) {
         throw unsupportedOperation();
@@ -97,31 +125,49 @@ public class ReadOnlyHBaseStore extends DirectWriteHBaseStore {
         return value;
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     public void unset(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         throw unsupportedOperation();
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     public Object set(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         throw unsupportedOperation();
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     public void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
         throw unsupportedOperation();
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     public Object remove(InternalEObject internalObject, EStructuralFeature feature, int index) {
         throw unsupportedOperation();
     }
 
+    /**
+     * @throws UnsupportedOperationException operation not supported in read-only mode
+     */
     @Override
     public Object move(InternalEObject internalObject, EStructuralFeature feature, int targetIndex, int sourceIndex) {
         throw unsupportedOperation();

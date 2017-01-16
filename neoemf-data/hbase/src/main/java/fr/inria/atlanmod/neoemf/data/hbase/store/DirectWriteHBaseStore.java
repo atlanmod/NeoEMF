@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseEncoderUtil;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -48,6 +49,7 @@ import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -61,13 +63,27 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * ???
+ * An {@link AbstractDirectWriteStore} that translates model-level operations to HBase operations.
+ * <p>
+ * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
+ * allow EMF persistence delegation. If this store is used, every method call and property access on {@link PersistentEObject}
+ * is forwarded to this class, that takes care of the serialization/deserialization from/to HBase.
+ * <p>
+ * @note For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead,
+ * it accesses HBase directly using the low-level database API.
+ * <p>
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
+ * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
+ * 
+ * @see PersistentEObject
+ * @see HBasePersistenceBackend
+ * @see AbstractDirectWriteStore
  */
 // TODO Continue cleaning, there is still code duplication
 public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersistenceBackend> {
 
     /**
-     * ???
+     * The column family holding properties.
      */
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
 
@@ -123,7 +139,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     private final Cache<Id, PersistentEObject> persistentObjectsCache;
 
     /**
-     * The HBase table.
+     * The HBase table used to access the model.
      */
     protected Table table;
 
@@ -132,7 +148,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      *
      * @param resource the resource to persist and access
      *
-     * @throws IOException if ???
+     * @throws IOException if the HBase server cannot be found
      */
     public DirectWriteHBaseStore(Resource.Internal resource) throws IOException {
         super(resource, null);
@@ -152,15 +168,15 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * ???
+     * Initialize the HBase table by creating the columns and column families to store the model.
      *
-     * @param connection ???
-     * @param tableName  ???
-     * @param admin      ???
+     * @param connection the connection to the HBase server
+     * @param tableName  the name of the table to access on the server
+     * @param admin the administrator client of the HBase server     
      *
-     * @return ???
+     * @return the created HBase table containing the columns and column families to store the model
      *
-     * @throws IOException if ???
+     * @throws IOException if the HBase server cannot be found
      */
     protected Table initTable(Connection connection, TableName tableName, Admin admin) throws IOException {
         if (!admin.tableExists(tableName)) {
@@ -177,14 +193,16 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * ???
+     * A specific implementation of {@link EStore#add(InternalEObject, EStructuralFeature, int, Object)} that takes
+     * benefit of the HBase facilities to append an element in a multi-valued {@link EReference} without deserializing 
+     * the entire collection.
      *
-     * @param object           ???
-     * @param reference        ???
-     * @param atEnd            ???
-     * @param referencedObject ???
+     * @param object           the source element
+     * @param reference        the multi-valued {@link EReference} 
+     * @param atEnd            {@code true} to append {@code referencedObject} at the end of the collection, {@code false} to put it at the beginning (if the persisted collection is empty)
+     * @param referencedObject the {@link PersistentEObject} to append
      *
-     * @throws IOException if ???
+     * @throws IOException if the HBase database cannot be found
      */
     private void addAsAppend(PersistentEObject object, EReference reference, boolean atEnd, PersistentEObject referencedObject) throws IOException {
         Append append = new Append(Bytes.toBytes(object.id().toString()));
@@ -253,11 +271,11 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * ???
+     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
      *
-     * @param id ???
+     * @param id the {@link Id} of the model element to compute the {@link EClass} from
      *
-     * @return ???
+     * @return an {@link EClass} representing the metaclass of the element
      */
     private EClass resolveInstanceOf(Id id) {
         try {
@@ -275,11 +293,12 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * ???
+     * Add {@code referencedObject} in the {@code reference} containment list of {@code object}. Inverse container
+     * feature between {@code referencedObject} and {@code object} is also updated.
      *
-     * @param object           ???
-     * @param reference        ???
-     * @param referencedObject ???
+     * @param object           the container element
+     * @param reference        the containment {@link EReference}
+     * @param referencedObject the element to add to {@code object}'s containment list
      */
     protected void updateContainment(PersistentEObject object, EReference reference, PersistentEObject referencedObject) {
         if (reference.isContainment()) {
@@ -297,9 +316,9 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * ???
+     * Computes {@code object}'s metaclass informations and persists them in the database.
      *
-     * @param object ???
+     * @param object the {@link PersistentEObject} to persist the metaclass of
      */
     protected void updateInstanceOf(PersistentEObject object) {
         try {
@@ -318,8 +337,8 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * Gets the {@link EStructuralFeature} {@code feature} from the {@link Table} for the {@link
      * PersistentEObject object}.
      *
-     * @param object  ???
-     * @param feature ???
+     * @param object  the source element
+     * @param feature the {@link EStructuralFeature} to get the value of
      *
      * @return The value of the {@code feature}. It can be a {@link String} for single-valued {@link
      * EStructuralFeature}s or a {@link String}[] for many-valued {@link EStructuralFeature}s

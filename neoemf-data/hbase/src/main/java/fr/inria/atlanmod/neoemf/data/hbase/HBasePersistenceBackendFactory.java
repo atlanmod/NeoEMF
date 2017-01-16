@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseResourceOptions;
 import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
 import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
@@ -33,7 +34,21 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
- * ???
+ * A factory that creates instances of {@link HBasePersistenceBackend}.
+ * <p>
+ * This class only creates persistent databases that can be configured using 
+ * {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
+ * options maps.
+ * <p>
+ * Note that transient backends can be instantiated using this factory, but they will
+ * be handed as persistent ones. This is a limitation that will be solved in next releases.
+ * To avoid any consistency issue we recommend every HBase resource right after their creation,
+ * ensuring the resource is using a persistent backend.
+ * 
+ * @see PersistentResource
+ * @see HBasePersistenceBackend
+ * @see HBaseOptionsBuilder
+ * @see HBaseResourceOptions
  */
 public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 

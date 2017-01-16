@@ -36,7 +36,8 @@ import static java.util.Objects.isNull;
 public class HBaseResourceUtil {
 
     /**
-     * ???
+     * The configuration of the HBase server. This is used to set HBase properties
+     * such as ZooKeeper address and port.
      */
     private final Configuration conf = HBaseConfiguration.create();
 
