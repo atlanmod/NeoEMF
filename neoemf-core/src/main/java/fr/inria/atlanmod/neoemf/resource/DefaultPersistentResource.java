@@ -58,7 +58,8 @@ import static java.util.Objects.nonNull;
 /**
  * The default implementation of a {@link PersistentResource} that contains {@link PersistentEObject}.
  * <p>
- * ???
+ * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations 
+ * to its internal {@link PersistentStore} which is reponsible of database access.
  */
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
 
@@ -78,7 +79,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private final DummyRootEObject dummyRootEObject;
 
     /**
-     * ???
+     * The {@link PersistentStore} responsible of the database serialization.
      */
     protected PersistentStore store;
 

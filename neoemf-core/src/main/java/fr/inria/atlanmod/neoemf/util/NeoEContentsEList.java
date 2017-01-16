@@ -12,6 +12,8 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -26,7 +28,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * ???
+ * An {@link EContentsEList} implementation that delegates its operations to the associated
+ * {@link PersistentStore}.
+ * <p>
+ * Instances of this class are created by {@link PersistentResource#getContents()} and allows to access the content
+ * of a {@link PersistentResource} by lazily loading the elements.
  *
  * @param <E> the type of elements in this list
  */
@@ -56,7 +62,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
      * Constructs a new {@code NeoEContentsEList} with the given {@code owner} and {@code features}.
      *
      * @param owner    the owner of this list
-     * @param features ???
+     * @param features the containment features that are handled by this list
      */
     protected NeoEContentsEList(EObject owner, EStructuralFeature[] features) {
         super(owner, features);
