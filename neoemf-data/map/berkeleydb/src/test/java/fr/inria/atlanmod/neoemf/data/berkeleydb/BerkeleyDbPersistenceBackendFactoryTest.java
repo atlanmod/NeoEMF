@@ -50,7 +50,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteBerkeleyDbStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BerkeleyDbOptionsBuilder.newBuilder().asMap());
         assertThat(store).isInstanceOf(DirectWriteBerkeleyDbStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(DirectWriteBerkeleyDbStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(DirectWriteBerkeleyDbListsStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(DirectWriteBerkeleyDbIndicesStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class BerkeleyDbPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(DirectWriteBerkeleyDbCacheManyStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     /**

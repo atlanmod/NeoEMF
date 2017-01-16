@@ -13,32 +13,48 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 
 import org.eclipse.emf.ecore.InternalEObject;
 
 import java.lang.reflect.Field;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnitTest {
 
-    /**
-     * Utility method to retreive the {@link PersistentStore} included in the given {@code store}.
-     */
-    protected PersistentStore getChildStore(InternalEObject.EStore store) throws SecurityException, IllegalArgumentException {
-        assertThat(store).isInstanceOf(PersistentStore.class); // "Invalid call, can not get the child store if the given one is not a DelegatedResourceEStoreImpl"
-        return ((PersistentStore) store).getEStore();
+    private static final String INNER_STORE_FIELDNAME = "store";
+
+    private static final String INNER_BACKEND_FIELDNAME = "backend";
+
+    protected PersistentStore getInnerStore(InternalEObject.EStore store) {
+        return getField(store, INNER_STORE_FIELDNAME, AbstractPersistentStoreDecorator.class, PersistentStore.class);
     }
 
-    protected void assertHasInnerBackend(PersistentStore store, PersistenceBackend expectedInnerBackend) throws NoSuchFieldException, IllegalAccessException {
-        PersistentStore context = store.getEStore();
+    protected PersistenceBackend getInnerBackend(InternalEObject.EStore store) {
         PersistenceBackend innerBackend;
 
-        Field field = AbstractDirectWriteStore.class.getDeclaredField("backend");
-        field.setAccessible(true);
-        innerBackend = (PersistenceBackend) field.get(context);
+        try {
+            innerBackend = getField(store, INNER_BACKEND_FIELDNAME, AbstractDirectWriteStore.class, PersistenceBackend.class);
+        }
+        catch (IllegalArgumentException e) {
+            return getInnerBackend(getInnerStore(store));
+        }
 
-        assertThat(innerBackend).isSameAs(expectedInnerBackend); // "The back-end in the EStore is not the created one"
+        return innerBackend;
+    }
+
+    private static <F> F getField(Object object, String fieldName, Class<?> in, Class<F> out) {
+        if (!in.isInstance(object)) {
+            throw new IllegalArgumentException();
+        }
+
+        try {
+            Field storeField = in.getDeclaredField(fieldName);
+            storeField.setAccessible(true);
+            return out.cast(storeField.get(object));
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

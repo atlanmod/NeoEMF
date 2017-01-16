@@ -154,11 +154,6 @@ public class InvalidStore implements PersistentStore {
     }
 
     @Override
-    public PersistentStore getEStore() {
-        throw new UnsupportedOperationException(MSG);
-    }
-
-    @Override
     public void save() {
         throw new UnsupportedOperationException(MSG);
     }

@@ -43,7 +43,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createTransientStore(null, backend);
         assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, BlueprintsOptionsBuilder.newBuilder().asMap());
         assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(DirectWriteBlueprintsStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(DirectWriteBlueprintsCacheManyStore.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 
     @Test
@@ -133,6 +133,6 @@ public class BlueprintsPersistenceBackendFactoryTest extends AbstractPersistence
         PersistentStore store = context().persistenceBackendFactory().createPersistentStore(null, backend, options);
         assertThat(store).isInstanceOf(AutocommitStoreDecorator.class); // "Invalid EStore created"
 
-        assertHasInnerBackend(store, backend);
+        assertThat(getInnerBackend(store)).isSameAs(backend);
     }
 }

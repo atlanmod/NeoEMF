@@ -64,12 +64,6 @@ public abstract class AbstractDirectWriteStore<P extends PersistenceBackend> ext
     }
 
     @Override
-    // TODO Should returns null instead of this
-    public PersistentStore getEStore() {
-        return this;
-    }
-
-    @Override
     public void save() {
         backend.save();
     }
