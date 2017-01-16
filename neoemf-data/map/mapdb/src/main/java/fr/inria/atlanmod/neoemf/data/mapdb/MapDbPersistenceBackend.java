@@ -186,6 +186,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return ???
      */
+    @VisibleForTesting
     public <E> E get(String name) {
         return db.get(name);
     }

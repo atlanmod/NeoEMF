@@ -206,14 +206,15 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
     }
 
     /**
-     * ???
+     * Creates and saves the Blueprints configuration.
      *
-     * @param directory ???
-     * @param options   ???
+     * @param directory the directory where the configuration must be stored
+     * @param options   options to define the behavior of Blueprints
      *
-     * @return ???
+     * @return the created configuration
      *
-     * @throws InvalidDataStoreException if ???
+     * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
+     * {@code options} are missing or invalid.
      */
     private PropertiesConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;

@@ -119,7 +119,7 @@ public class NeoEContentsEList<E> extends EContentsEList<E> implements EList<E>,
     }
 
     /**
-     * ???
+     * An empty {@code NeoEContentsEList}.
      *
      * @param <T> the type of elements in this list
      */

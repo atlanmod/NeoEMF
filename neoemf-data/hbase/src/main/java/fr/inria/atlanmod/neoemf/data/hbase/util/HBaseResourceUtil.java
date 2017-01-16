@@ -60,11 +60,11 @@ public class HBaseResourceUtil {
     /**
      * Deletes a table if exist.
      *
-     * @param modelURI ???
+     * @param modelURI the {@link URI} to configure the concerned HBase instance
      *
      * @return {@code true} if deleted, {@code false} otherwise
      *
-     * @throws IOException if ???
+     * @throws IOException if a remote or network exception occurs
      */
     public boolean deleteResourceIfExists(URI modelURI) throws IOException {
 
