@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ContainerInfo implements Serializable {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
 
     /**

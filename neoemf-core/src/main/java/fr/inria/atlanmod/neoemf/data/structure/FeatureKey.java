@@ -31,6 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class FeatureKey implements Comparable<FeatureKey>, Serializable {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
 
     /**

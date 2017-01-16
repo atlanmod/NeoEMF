@@ -21,6 +21,7 @@ import java.io.IOException;
  */
 public class InvalidDataStoreException extends IOException {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
 
     /**

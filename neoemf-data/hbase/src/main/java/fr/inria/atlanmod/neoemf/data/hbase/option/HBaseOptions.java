@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
  */
 public class HBaseOptions extends AbstractPersistenceOptions {
 
+    @SuppressWarnings("JavaDoc")
     private HBaseOptions() {
         throw new UnsupportedOperationException("Not implemented yet");
     }

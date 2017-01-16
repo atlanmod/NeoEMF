@@ -18,6 +18,7 @@ package fr.inria.atlanmod.neoemf.option;
  */
 public class InvalidOptionException extends RuntimeException {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
 
     /**

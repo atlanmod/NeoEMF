@@ -101,6 +101,13 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
         NeoLogger.warn("NeoEMF/HBase does not support copy backend feature");
     }
 
+    /**
+     * Wraps the given {@code store} in the default {@link PersistentStore}.
+     *
+     * @param store the store to wrap
+     *
+     * @return the {@code store} wrapped in another
+     */
     private PersistentStore embedInDefaultWrapper(PersistentStore store) {
         return new IsSetCachingStoreDecorator(new SizeCachingStoreDecorator(store));
     }

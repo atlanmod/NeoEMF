@@ -216,6 +216,11 @@ public abstract class AbstractTransientStore implements TransientStore {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Creates a new value that will be stored in the {@link #manyMap}.
+     *
+     * @return a new {@link List}
+     */
     protected List<Object> createValue() {
         return new ArrayList<>();
     }

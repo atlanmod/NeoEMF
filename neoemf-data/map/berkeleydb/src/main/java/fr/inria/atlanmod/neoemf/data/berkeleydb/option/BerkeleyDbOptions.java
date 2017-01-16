@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
  */
 public class BerkeleyDbOptions extends AbstractPersistenceOptions {
 
+    @SuppressWarnings("JavaDoc")
     private BerkeleyDbOptions() {
         throw new UnsupportedOperationException("Not implemented yet");
     }

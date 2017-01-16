@@ -20,6 +20,7 @@ package fr.inria.atlanmod.neoemf.option;
  */
 public class CommonOptions extends AbstractPersistenceOptions {
 
+    @SuppressWarnings("JavaDoc")
     private CommonOptions() {
         throw new UnsupportedOperationException("Not implemented yet");
     }

@@ -48,6 +48,9 @@ import static java.util.Objects.nonNull;
  */
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
+    /**
+     * ???
+     */
     private static final int UNSETTED_FEATURE_ID = -1;
 
     /**
@@ -73,8 +76,14 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     private InternalEObject eContainer;
 
+    /**
+     * ???
+     */
     private int eContainerFeatureId;
 
+    /**
+     * ???
+     */
     private EStore store;
 
     /**
@@ -366,6 +375,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     private class EStoreEcoreEMap extends EcoreEMap<Object, Object> {
 
+        @SuppressWarnings("JavaDoc")
         private static final long serialVersionUID = 1L;
 
         /**
@@ -385,6 +395,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
          */
         private class EntryBasicEStoreEList extends EStoreEObjectImpl.BasicEStoreEList<Entry<Object, Object>> {
 
+            @SuppressWarnings("JavaDoc")
             private static final long serialVersionUID = 1L;
 
             /**
@@ -430,6 +441,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     private class EStoreEcoreEList extends EStoreEObjectImpl.BasicEStoreEList<Object> {
 
+        @SuppressWarnings("JavaDoc")
         private static final long serialVersionUID = 1L;
 
         /**

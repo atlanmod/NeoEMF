@@ -31,6 +31,7 @@ import static java.util.Objects.isNull;
  */
 public class ClassInfo implements Serializable {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
 
     /**

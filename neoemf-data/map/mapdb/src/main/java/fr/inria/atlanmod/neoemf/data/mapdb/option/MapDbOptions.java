@@ -23,6 +23,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
  */
 public class MapDbOptions extends AbstractPersistenceOptions {
 
+    @SuppressWarnings("JavaDoc")
     private MapDbOptions() {
         throw new UnsupportedOperationException("Not implemented yet");
     }

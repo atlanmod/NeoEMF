@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
  */
 public class BlueprintsOptions extends AbstractBlueprintsOptions {
 
+    @SuppressWarnings("JavaDoc")
     private BlueprintsOptions() {
         throw new UnsupportedOperationException("Not implemented yet");
     }

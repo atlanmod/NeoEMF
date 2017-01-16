@@ -362,7 +362,8 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     private class ResourceContentsEStoreEList<E> extends EStoreEObjectImpl.EStoreEList<E> {
 
-        protected static final long serialVersionUID = 1L;
+        @SuppressWarnings("JavaDoc")
+        private static final long serialVersionUID = 1L;
 
         /**
          * Constructs a new {@code ResourceContentsEStoreEList} with ???

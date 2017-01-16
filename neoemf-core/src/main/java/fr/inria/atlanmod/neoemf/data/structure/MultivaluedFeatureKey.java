@@ -31,6 +31,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class MultivaluedFeatureKey extends FeatureKey {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
 
     /**

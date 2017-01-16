@@ -40,6 +40,9 @@ import org.eclipse.emf.ecore.EClass;
 import java.io.File;
 import java.util.Map;
 
+/**
+ * ???
+ */
 public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**
@@ -143,6 +146,9 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Constructs a new {@code BerkeleyDbPersistenceBackend} on the given {@code file} with the given
      * {@code environmentConfig}.
+     *
+     * @param file              ???
+     * @param environmentConfig ???
      *
      * @note This constructor is protected. To create a new {@code BerkeleyDbPersistenceBackend} use {@link
      * BerkeleyDbPersistenceBackendFactory#createPersistentBackend(java.io.File, Map)}.

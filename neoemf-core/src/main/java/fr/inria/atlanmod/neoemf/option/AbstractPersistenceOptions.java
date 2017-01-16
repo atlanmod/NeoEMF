@@ -20,6 +20,7 @@ package fr.inria.atlanmod.neoemf.option;
  */
 public abstract class AbstractPersistenceOptions implements PersistenceOptions {
 
+    @SuppressWarnings("JavaDoc")
     protected AbstractPersistenceOptions() {
         throw new UnsupportedOperationException("Not implemented yet");
     }

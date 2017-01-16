@@ -97,6 +97,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private static final Pattern PATTERN_PREFIXED_VALUE =
             Pattern.compile("(\\w+):(\\w+)");
 
+    /**
+     * Whether the current element has to be ignored.
+     * <p>
+     * Used when a special or unmanaged feature is encountered.
+     */
     private boolean ignoreElement = false;
 
     /**

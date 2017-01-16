@@ -459,12 +459,40 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
      */
     private class UnlinkedElement {
 
+        /**
+         * The identifier of this element.
+         */
         public final Id id;
+
+        /**
+         * The name of the reference.
+         */
         public final String name;
+
+        /**
+         * The index of the reference.
+         */
         public final int index;
+
+        /**
+         * Whether the reference is multi-valued.
+         */
         public final boolean many;
+
+        /**
+         * Whether the reference is a containment.
+         */
         public final boolean containment;
 
+        /**
+         * Constructs a new {@code UnlinkedElement} with the given {@code id} and information about the {@link Reference}.
+         *
+         * @param id          the identifier of the unlinked element
+         * @param name        the name of the reference
+         * @param index       the index of the reference
+         * @param many        {@code true} if the reference is multi-valued
+         * @param containment {@code true} if the reference is a containment
+         */
         public UnlinkedElement(Id id, String name, int index, boolean many, boolean containment) {
             this.id = id;
             this.name = name;
@@ -473,6 +501,12 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
             this.containment = containment;
         }
 
+        /**
+         * Constructs a new {@code UnlinkedElement} with the given {@code id} and {@code reference}.
+         *
+         * @param id        the identifier of the unlinked element
+         * @param reference the concerned reference
+         */
         public UnlinkedElement(Id id, Reference reference) {
             this(id, reference.getLocalName(), reference.getIndex(), reference.isMany(), reference.isContainment());
         }

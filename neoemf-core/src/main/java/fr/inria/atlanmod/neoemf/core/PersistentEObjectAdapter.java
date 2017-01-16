@@ -137,6 +137,9 @@ class PersistentEObjectAdapter {
         return proxy.create();
     }
 
+    /**
+     * ???
+     */
     private static class PersistentEObjectProxyHandler implements MethodInterceptor {
 
         @Override

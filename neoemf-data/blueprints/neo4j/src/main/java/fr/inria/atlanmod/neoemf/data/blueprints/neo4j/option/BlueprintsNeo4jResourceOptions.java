@@ -85,8 +85,16 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
          */
         STRONG("strong");
 
+        /**
+         * The value of the property.
+         */
         private final String value;
 
+        /**
+         * Constructs a new {@code CacheType} with its {@code value}.
+         *
+         * @param value the value of the property
+         */
         CacheType(String value) {
             this.value = value;
         }

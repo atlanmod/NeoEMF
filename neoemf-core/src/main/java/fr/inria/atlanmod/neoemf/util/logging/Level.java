@@ -53,12 +53,25 @@ public enum Level {
      */
     FATAL(org.apache.logging.log4j.Level.FATAL);
 
+    /**
+     * The associated Log4j level.
+     */
     private final org.apache.logging.log4j.Level level;
 
+    /**
+     * Constructs a new {@code Level} with its associated {@code level}.
+     *
+     * @param level the associated Log4j level
+     */
     Level(org.apache.logging.log4j.Level level) {
         this.level = level;
     }
 
+    /**
+     * Returns the Log4j {@link org.apache.logging.log4j.Level} associated with this {@code Level}.
+     *
+     * @return the Log4j level
+     */
     org.apache.logging.log4j.Level level() {
         return level;
     }

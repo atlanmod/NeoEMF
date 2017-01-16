@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
  */
 public class AlreadyExistingIdException extends RuntimeException {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 1L;
 
     /**

@@ -107,6 +107,9 @@ public class BerkeleyDb {
         }
     }
 
+    /**
+     * ???
+     */
     public void open() {
         try {
             this.containers = env.openDatabase(null, KEY_CONTAINER, dbconf);
@@ -119,6 +122,9 @@ public class BerkeleyDb {
         }
     }
 
+    /**
+     * ???
+     */
     public void close() {
         try {
             this.containers.close();

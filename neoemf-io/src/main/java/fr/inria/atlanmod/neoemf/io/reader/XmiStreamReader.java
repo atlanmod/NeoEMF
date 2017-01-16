@@ -130,10 +130,15 @@ public class XmiStreamReader extends AbstractXmiReader {
     }
 
     /**
-     * The real implementation of the XML parser.
+     * The real implementation of the XMI parser.
      */
     private class XmiSaxHandler extends DefaultHandler {
 
+        /**
+         * The URI used to declare an XMI element.
+         *
+         * @see #XMI_NS
+         */
         private String xmiUri;
 
         @Override
