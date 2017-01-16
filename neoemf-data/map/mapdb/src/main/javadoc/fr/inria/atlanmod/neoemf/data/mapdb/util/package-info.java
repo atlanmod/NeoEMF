@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides utility classes to create MapDB specific URIs.
  */
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;

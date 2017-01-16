@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Specific classes allowing to store model-level elements in HBAse efficiently.
  */
 
 package fr.inria.atlanmod.neoemf.data.hbase.structure;

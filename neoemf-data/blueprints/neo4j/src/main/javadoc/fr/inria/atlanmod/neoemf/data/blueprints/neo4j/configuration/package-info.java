@@ -10,10 +10,7 @@
  */
 
 /**
- * Provides utility configuration classes that are dynamically called to setup Blueprints databases.
- * 
- * @note The classes in this package have to be overriden for each backend implementation that has to
- * perform some startup configuration.
+ * Provides utility configuration classes that are dynamically called to setup Neo4j Blueprints implementation.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.configuration;

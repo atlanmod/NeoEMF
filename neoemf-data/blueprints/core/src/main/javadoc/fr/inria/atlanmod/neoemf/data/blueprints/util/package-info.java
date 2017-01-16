@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides utility classes to create Blueprints specific URIs.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.util;

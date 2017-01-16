@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides specific classes to map model-level operations into Blueprints-level operations.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.store;

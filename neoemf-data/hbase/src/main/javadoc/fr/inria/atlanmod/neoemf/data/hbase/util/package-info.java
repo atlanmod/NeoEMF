@@ -10,7 +10,8 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides utility classes to create HBase specific URIs, serialize and deserialize HBase records, and 
+ * manage HBase resource life-cycle.
  */
 
 package fr.inria.atlanmod.neoemf.data.hbase.util;

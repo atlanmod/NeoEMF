@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides utility configuration classes that are dynamically called to setup TinkerGraph Blueprints implementation.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.tg.configuration;

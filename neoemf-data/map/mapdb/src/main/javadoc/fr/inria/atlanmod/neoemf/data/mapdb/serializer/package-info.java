@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides serializers that allows to persist model-level elements into MapDB collections.
  */
 
 package fr.inria.atlanmod.neoemf.data.mapdb.serializer;

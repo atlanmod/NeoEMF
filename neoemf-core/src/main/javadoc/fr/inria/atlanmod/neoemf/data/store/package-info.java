@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides classes to map model-level operations in persistence calls.
+ * Provides classes to map model-level operations into persistence-level operations.
  */
 
 package fr.inria.atlanmod.neoemf.data.store;
