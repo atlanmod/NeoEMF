@@ -76,29 +76,34 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      * The literal description of this back-end.
      */
     public static final String NAME = "blueprints";
+
     /**
      * The property key used to set metaclass name in metaclass {@link Vertex}s.
      */
     public static final String KEY_ECLASS_NAME = EcorePackage.eINSTANCE.getENamedElement_Name().getName();
+
     /**
      * The property key used to set the {@link EPackage} {@code nsURI} in metaclass {@link Vertex}s.
      */
     public static final String KEY_EPACKAGE_NSURI = EcorePackage.eINSTANCE.getEPackage_NsURI().getName();
+
     /**
      * The label of type conformance {@link Edge}s.
      */
     public static final String KEY_INSTANCE_OF = "kyanosInstanceOf";
+
     /**
      * The name of the index entry holding metaclass {@link Vertex}s.
      */
     public static final String KEY_METACLASSES = "metaclasses";
+
     /**
      * The index key used to retrieve metaclass {@link Vertex}s.
      */
     public static final String KEY_NAME = "name";
 
     /**
-     * The default cache size.
+     * The default cache size (10 000).
      */
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;

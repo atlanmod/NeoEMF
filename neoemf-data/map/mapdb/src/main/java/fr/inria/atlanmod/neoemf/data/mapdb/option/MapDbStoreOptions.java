@@ -31,22 +31,27 @@ import java.util.List;
  * @see DirectWriteMapDbCacheManyStore
  */
 public enum MapDbStoreOptions implements PersistentStoreOptions {
+
     /**
      * ???
      */
     AUTOCOMMIT,
+
     /**
      * ???
      */
     DIRECT_WRITE,
+
     /**
      * ???
      */
     DIRECT_WRITE_LISTS,
+
     /**
      * ???
      */
     DIRECT_WRITE_INDICES,
+
     /**
      * ???
      */

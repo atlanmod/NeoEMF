@@ -68,7 +68,7 @@ public class DirectWriteMapDbListsStore extends DirectWriteMapDbStore {
      */
     public DirectWriteMapDbListsStore(Resource.Internal resource, MapDbPersistenceBackend backend) {
         super(resource, backend);
-        this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
+        this.objectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override

@@ -66,22 +66,27 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      * The string used as a separator between values of multi-valued attributes.
      */
     protected static final String SEPARATOR = ":";
+
     /**
      * The property key used to define the index of an edge.
      */
     protected static final String POSITION = "position";
+
     /**
      * The label used to define container {@link Edge}s.
      */
     protected static final String CONTAINER = "eContainer";
+
     /**
      * The label used to link root vertex to top-level elements.
      */
     protected static final String CONTENTS = "eContents";
+
     /**
      * The property key used to define the opposite containing feature in container {@link Edge}s.
      */
     protected static final String CONTAINING_FEATURE = "containingFeature";
+
     /**
      * The property key used to define the number of edges with a specific label.
      */

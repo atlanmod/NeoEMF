@@ -28,26 +28,32 @@ package fr.inria.atlanmod.neoemf.util.logging;
  * that are more specific to pass through the filter.
  */
 public enum Level {
+
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
     TRACE(org.apache.logging.log4j.Level.TRACE),
+
     /**
      * A general debugging event.
      */
     DEBUG(org.apache.logging.log4j.Level.DEBUG),
+
     /**
      * An event for informational purposes.
      */
     INFO(org.apache.logging.log4j.Level.INFO),
+
     /**
      * An event that might possible lead to an error.
      */
     WARN(org.apache.logging.log4j.Level.WARN),
+
     /**
      * An error in the application, possibly recoverable.
      */
     ERROR(org.apache.logging.log4j.Level.ERROR),
+
     /**
      * A severe error that will prevent the application from continuing.
      */

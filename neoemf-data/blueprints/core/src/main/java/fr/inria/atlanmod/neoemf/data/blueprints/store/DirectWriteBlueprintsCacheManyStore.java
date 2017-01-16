@@ -37,8 +37,7 @@ import static java.util.Objects.nonNull;
  * Large multi-valued {@link EReference}s can be an execution time bottleneck in the graph implementation because any
  * element access forces the underlying database engine to load all the {@link Edge}s corresponding to the {@link
  * EReference}. We overcome this limitation by caching all the {@link Vertex} elements involved in multi-valued {@link
- * EReference}s the first time they are traversed, limiting database access. Note that the cache can contain up to
- * {@code 10000} elements, limiting memory consumption. is accessed.
+ * EReference}s the first time they are traversed, limiting database access.
  * <p>
  * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
  * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
@@ -50,7 +49,7 @@ import static java.util.Objects.nonNull;
 public class DirectWriteBlueprintsCacheManyStore extends DirectWriteBlueprintsStore {
 
     /**
-     * The default cache size.
+     * The default cache size (10 000).
      */
     // TODO Find the more predictable maximum cache size
     private static final int DEFAULT_CACHE_SIZE = 10000;

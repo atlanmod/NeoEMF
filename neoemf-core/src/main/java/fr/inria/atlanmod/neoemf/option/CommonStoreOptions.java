@@ -19,30 +19,35 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * Represents common options related to database access, managed by {@link PersistenceBackendFactory}.
  */
 public enum CommonStoreOptions implements PersistentStoreOptions {
+
     /**
      * Caches the presence of a value.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.IsSetCachingStoreDecorator
      */
     CACHE_IS_SET,
+
     /**
      * Caches the size data.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.SizeCachingStoreDecorator
      */
     CACHE_SIZE,
+
     /**
      * Caches {@link EStructuralFeature}.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.FeatureCachingStoreDecorator
      */
     CACHE_STRUCTURAL_FEATURE,
+
     /**
      * Logs every call to a methods.
      *
      * @see fr.inria.atlanmod.neoemf.data.store.LoggingStoreDecorator
      */
     LOG,
+
     /**
      * Counts all loaded objects.
      *

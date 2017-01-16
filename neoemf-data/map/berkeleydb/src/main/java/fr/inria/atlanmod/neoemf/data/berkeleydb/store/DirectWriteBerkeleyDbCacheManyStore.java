@@ -45,7 +45,7 @@ public class DirectWriteBerkeleyDbCacheManyStore extends DirectWriteBerkeleyDbSt
      */
     public DirectWriteBerkeleyDbCacheManyStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
         super(resource, backend);
-        this.objectsCache = Caffeine.newBuilder().maximumSize(10000).build();
+        this.objectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
     @Override

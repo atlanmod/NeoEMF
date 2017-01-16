@@ -25,14 +25,17 @@ import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
  * @see DirectWriteBlueprintsCacheManyStore
  */
 public enum BlueprintsStoreOptions implements PersistentStoreOptions {
+
     /**
      * ???
      */
     AUTOCOMMIT,
+
     /**
      * ???
      */
     DIRECT_WRITE,
+
     /**
      * ???
      */

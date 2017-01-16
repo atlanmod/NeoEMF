@@ -28,6 +28,12 @@ import static java.util.Objects.nonNull;
 public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator {
 
     /**
+     * The default cache size (10 000).
+     */
+    // TODO Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
+
+    /**
      * In-memory cache that holds recently processed sizes, identified by the associated {@link FeatureKey}.
      */
     private final Cache<FeatureKey, Integer> sizesCache;
@@ -38,7 +44,7 @@ public class SizeCachingStoreDecorator extends AbstractPersistentStoreDecorator 
      * @param store the underlying store
      */
     public SizeCachingStoreDecorator(PersistentStore store) {
-        this(store, 10000);
+        this(store, DEFAULT_CACHE_SIZE);
     }
 
     /**

@@ -49,10 +49,10 @@ import static java.util.Objects.nonNull;
 public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<BerkeleyDbPersistenceBackend> {
 
     /**
-     * The default cache size.
+     * The default cache size (10 000).
      */
     // TODO Find the more predictable maximum cache size
-    private static final int DEFAULT_CACHE_SIZE = 10000;
+    protected static final int DEFAULT_CACHE_SIZE = 10000;
 
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.

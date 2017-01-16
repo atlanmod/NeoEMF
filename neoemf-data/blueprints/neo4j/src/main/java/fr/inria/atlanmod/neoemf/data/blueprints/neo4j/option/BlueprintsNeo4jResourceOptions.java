@@ -68,18 +68,22 @@ public interface BlueprintsNeo4jResourceOptions extends BlueprintsResourceOption
      * The cache type "hpc" is not available because the embedded Neo4j is the Community Edition.
      */
     enum CacheType {
+
         /**
          *
          */
         NONE("none"),
+
         /**
          *
          */
         SOFT("soft"),
+
         /**
          *
          */
         WEAK("weak"),
+
         /**
          *
          */

@@ -70,43 +70,53 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      * ???
      */
     protected static final byte[] PROPERTY_FAMILY = Bytes.toBytes("p");
+
     /**
-     * The default cache size.
+     * The default cache size (10 000).
      */
     // TODO Find the more predictable maximum cache size
     protected static final int DEFAULT_CACHE_SIZE = 10000;
+
     /**
      * ???
      */
     private static final byte[] TYPE_FAMILY = Bytes.toBytes("t");
+
     /**
      * ???
      */
     private static final byte[] METAMODEL_QUALIFIER = Bytes.toBytes("m");
+
     /**
      * ???
      */
     private static final byte[] ECLASS_QUALIFIER = Bytes.toBytes("e");
+
     /**
      * ???
      */
     private static final byte[] CONTAINMENT_FAMILY = Bytes.toBytes("c");
+
     /**
      * ???
      */
     private static final byte[] CONTAINER_QUALIFIER = Bytes.toBytes("n");
+
     /**
      * ???
      */
     private static final byte[] CONTAINING_FEATURE_QUALIFIER = Bytes.toBytes("g");
+
     /**
      * ???
      */
     private static final int ATTEMP_TIMES_DEFAULT = 10;
+
     /**
      * ???
      */
     private static final long SLEEP_DEFAULT = 1L;
+
     /**
      * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
      */
