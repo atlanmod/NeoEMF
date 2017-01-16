@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides utility classes to define specific behaviors of MapDB data persistence.
  */
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
