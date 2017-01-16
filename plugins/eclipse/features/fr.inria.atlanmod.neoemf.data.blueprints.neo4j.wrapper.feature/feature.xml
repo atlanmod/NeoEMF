@@ -2,7 +2,7 @@
 <feature
         id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
         label="Neo4j Convenience Wrapper"
-        version="1.0.1.qualifier">
+        version="1.0.1">
 
     <description url="http://www.example.com/description">
         Optional plugin providing an implementation of Neo4j for "NeoEMF : Blueprints Neo4j" back-end.
@@ -12,7 +12,7 @@
             id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper"
             download-size="0"
             install-size="0"
-            version="1.0.1.qualifier"
+            version="1.0.1"
             unpack="false" />
 
     <copyright url="https://www.gnu.org/licenses/gpl-3.0-standalone.html">
