@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 
 import javax.annotation.Nonnull;
@@ -20,6 +21,7 @@ import javax.annotation.Nonnull;
  * <p>
  * All features are all optional: options can be created using all or none of them.
  */
+@Experimental
 public class BerkeleyDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<BerkeleyDbOptionsBuilder, BerkeleyDbOptions> {
 
     /**

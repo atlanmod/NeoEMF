@@ -61,13 +61,6 @@ public interface PersistentStore extends EStore {
     }
 
     /**
-     * Utility method used for tests. Returns the decorated {@code PersistentStore}, if it exists.
-     *
-     * @return the decorated {@code PersistentStore}, or {@code null} if it doesn't exist
-     */
-    PersistentStore getEStore();
-
-    /**
      * Saves the modifications of the owned {@link EObject}s in the persistence back-end.
      */
     void save();

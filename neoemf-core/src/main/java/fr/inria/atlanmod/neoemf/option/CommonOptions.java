@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
+
 /**
  * A {@link PersistenceOptions} that holds common options.
  *
@@ -18,6 +20,7 @@ package fr.inria.atlanmod.neoemf.option;
  * @future This class is not used in the current release of the tool, it will simplify option management in the near
  * future.
  */
+@Experimental
 public class CommonOptions extends AbstractPersistenceOptions {
 
     @SuppressWarnings("JavaDoc")

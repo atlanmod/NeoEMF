@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -40,6 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @see BerkeleyDbPersistenceBackendFactory
  * @see PersistentResourceFactory
  */
+@Experimental
 public class BerkeleyDbURI extends PersistenceURI {
 
     /**

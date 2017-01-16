@@ -59,7 +59,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -77,7 +77,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -95,7 +95,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -113,7 +113,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -131,7 +131,7 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoadedObjectCounterStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -154,10 +154,10 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -180,10 +180,10 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -206,10 +206,10 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name
@@ -235,16 +235,16 @@ public class PersistenceBackendFactoryTest extends AbstractPersistenceBackendFac
         store = context().persistenceBackendFactory().createPersistentStore(null, null, options);
         assertThat(store).isInstanceOf(LoggingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(SizeCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(FeatureCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(IsSetCachingStoreDecorator.class);
 
-        store = getChildStore(store);
+        store = getInnerStore(store);
         assertThat(store).isInstanceOf(PersistentStore.class);
 
         // Ensure this is the mock that is returned by checking the real class name

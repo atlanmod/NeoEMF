@@ -364,11 +364,6 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     @Override
-    public PersistentStore getEStore() {
-        return this;
-    }
-
-    @Override
     // TODO Implement this method
     public void save() {
         throw new UnsupportedOperationException();

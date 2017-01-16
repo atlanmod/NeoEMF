@@ -11,11 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
+
 /**
  * ???
  *
  * @param <T> ???
  */
+@Experimental
 public interface Serializer<T> {
 
     /**

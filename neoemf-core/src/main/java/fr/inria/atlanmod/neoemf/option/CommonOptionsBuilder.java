@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -18,9 +20,8 @@ import javax.annotation.Nonnull;
  * implementations.
  * <p>
  * All features are all optional: options can be created using all or none of them.
- *
- * @note This class is intended for testing and should not be used in standard use.
  */
+@VisibleForTesting
 public class CommonOptionsBuilder extends AbstractPersistenceOptionsBuilder<CommonOptionsBuilder, CommonOptions> {
 
     /**

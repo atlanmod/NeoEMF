@@ -17,6 +17,7 @@ import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -32,6 +33,7 @@ import java.io.File;
  * ???
  */
 // TODO What does this class ?
+@Experimental
 public class BerkeleyDb {
 
     /**

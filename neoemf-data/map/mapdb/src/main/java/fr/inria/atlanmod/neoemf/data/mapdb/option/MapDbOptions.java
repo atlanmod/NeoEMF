@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptions;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
 
@@ -21,6 +22,7 @@ import fr.inria.atlanmod.neoemf.option.PersistenceOptions;
  * @future This class is not used in the current release of the tool, it will simplify option management in the near
  * future.
  */
+@Experimental
 public class MapDbOptions extends AbstractPersistenceOptions {
 
     @SuppressWarnings("JavaDoc")

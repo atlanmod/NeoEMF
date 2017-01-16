@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.StringId;
 
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.SerializationUtils;
 /**
  * ???
  */
+@Experimental
 public class IdSerializer implements Serializer<Id> {
 
     @Override

@@ -13,6 +13,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import com.sleepycat.je.EnvironmentConfig;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidDataStoreException;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
@@ -43,6 +44,7 @@ import static java.util.Objects.isNull;
 /**
  * ???
  */
+@Experimental
 public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**

@@ -11,11 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.option;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.option.PersistentStoreOptions;
 
 /**
  * {@link PersistentStoreOptions} that hold BerkeleyDB related database access features.
  */
+@Experimental
 public enum BerkeleyDbStoreOptions implements PersistentStoreOptions {
 
     /**

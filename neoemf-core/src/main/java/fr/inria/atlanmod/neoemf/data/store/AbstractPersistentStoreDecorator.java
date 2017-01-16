@@ -150,11 +150,6 @@ public abstract class AbstractPersistentStoreDecorator extends AbstractPersisten
     }
 
     @Override
-    public PersistentStore getEStore() {
-        return store;
-    }
-
-    @Override
     public void save() {
         store.save();
     }
