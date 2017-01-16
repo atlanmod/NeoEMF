@@ -485,7 +485,8 @@ public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> i
         public final boolean containment;
 
         /**
-         * Constructs a new {@code UnlinkedElement} with the given {@code id} and information about the {@link Reference}.
+         * Constructs a new {@code UnlinkedElement} with the given {@code id} and information about the {@link
+         * Reference}.
          *
          * @param id          the identifier of the unlinked element
          * @param name        the name of the reference
