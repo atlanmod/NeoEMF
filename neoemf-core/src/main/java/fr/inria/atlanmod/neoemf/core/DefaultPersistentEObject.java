@@ -47,7 +47,7 @@ import static java.util.Objects.nonNull;
  * This class extends {@link MinimalEStoreEObjectImpl} that delegates {@link EStructuralFeature} accesses
  * to an underlying {@link EStore} that interacts with the database used to store the model.
  * <p>
- * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all 
+ * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all
  * existing database implementations.
  */
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {

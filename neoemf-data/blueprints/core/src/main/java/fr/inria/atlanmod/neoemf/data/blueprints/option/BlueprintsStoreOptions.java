@@ -11,8 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.option;
 
-import com.tinkerpop.blueprints.Vertex;
-
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsCacheManyStore;
 import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
 import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;

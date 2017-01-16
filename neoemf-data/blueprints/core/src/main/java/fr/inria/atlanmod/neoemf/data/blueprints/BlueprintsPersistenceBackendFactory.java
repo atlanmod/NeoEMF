@@ -214,7 +214,7 @@ public final class BlueprintsPersistenceBackendFactory extends AbstractPersisten
      * @return the created configuration
      *
      * @throws InvalidDataStoreException if the configuration cannot be created in the {@code directory}, or if some
-     * {@code options} are missing or invalid.
+     *                                   {@code options} are missing or invalid.
      */
     private PropertiesConfiguration getOrCreateBlueprintsConfiguration(File directory, Map<?, ?> options) throws InvalidDataStoreException {
         PropertiesConfiguration configuration;

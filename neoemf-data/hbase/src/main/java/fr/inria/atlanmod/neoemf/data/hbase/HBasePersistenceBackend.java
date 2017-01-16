@@ -20,12 +20,12 @@ import fr.inria.atlanmod.neoemf.data.hbase.store.ReadOnlyHBaseStore;
  * Mock {@link PersistenceBackend} implementation for HBase to fit core architecture.
  * <p>
  * This class does not access HBase database, but is here to fit the requirement of the
- * core architecture. For historical reasons the real access to the HBase Table 
+ * core architecture. For historical reasons the real access to the HBase Table
  * is done in {@link DirectWriteHBaseStore} and {@link ReadOnlyHBaseStore}.
  * <p>
- * Moving HBase access to this class to fit NeoEMF backend architecture is planned in
+ * Moving HBase access to this class to fit NeoEMF back-end architecture is planned in
  * a future release.
- * 
+ *
  * @see DirectWriteHBaseStore
  * @see ReadOnlyHBaseStore
  */

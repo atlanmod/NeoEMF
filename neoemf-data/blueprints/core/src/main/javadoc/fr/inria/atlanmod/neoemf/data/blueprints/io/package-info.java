@@ -10,11 +10,13 @@
  */
 
 /**
- * Provides Blueprints' specific readers and writers used in the {@code io} module to save and persist models from external sources.
+ * Provides Blueprints' specific readers and writers used in the {@code io} module to save and persist models from
+ * external sources.
  * <p>
- * Providing efficient model import and export is tightly coupled to the database and the data representation. In order to provide this
- * feature, a backend module should contain an I/O specific package that overrides {@link fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler}.
- * 
+ * Providing efficient model import and export is tightly coupled to the database and the data representation. In order
+ * to provide this feature, a back-end module should contain an I/O specific package that overrides {@link
+ * fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler}.
+ *
  * @see fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler
  */
 

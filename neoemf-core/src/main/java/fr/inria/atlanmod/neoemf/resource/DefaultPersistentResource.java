@@ -58,8 +58,8 @@ import static java.util.Objects.nonNull;
 /**
  * The default implementation of a {@link PersistentResource} that contains {@link PersistentEObject}.
  * <p>
- * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations 
- * to its internal {@link PersistentStore} which is reponsible of database access.
+ * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations
+ * to its internal {@link PersistentStore} which is responsible of database access.
  */
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
 
@@ -312,19 +312,19 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private static class PersistenceBackendShutdownHook extends Thread {
 
         /**
-         * The backend to stop when the application will exit
+         * The back-end to stop when the application will exit.
          */
         private final PersistenceBackend backend;
 
         /**
-         * The {@link URI} of the resource used by the {@code backend}
+         * The {@link URI} of the resource used by the {@code backend}.
          */
         private final URI uri;
 
         /**
          * Creates a new {@code PersistenceBackendShutdownHook} with the given {@code backend}.
          *
-         * @param backend the backend to stop when the application will exit
+         * @param backend the back-end to stop when the application will exit
          * @param uri     the {@link URI} of the resource used by the {@code backend}
          */
         private PersistenceBackendShutdownHook(PersistenceBackend backend, URI uri) {
@@ -335,7 +335,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         /**
          * Adds a shutdown hook on the given {@code backend}. It will be stopped when the application will exit.
          *
-         * @param backend the backend to stop when the application will exit
+         * @param backend the back-end to stop when the application will exit
          * @param uri     the {@link URI} of the resource used by the {@code backend}
          */
         public static void closeOnExit(PersistenceBackend backend, URI uri) {

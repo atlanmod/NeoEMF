@@ -26,6 +26,21 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
 
     private static final String INNER_BACKEND_FIELDNAME = "backend";
 
+    private static <F> F getField(Object object, String fieldName, Class<?> in, Class<F> out) {
+        if (!in.isInstance(object)) {
+            throw new IllegalArgumentException();
+        }
+
+        try {
+            Field storeField = in.getDeclaredField(fieldName);
+            storeField.setAccessible(true);
+            return out.cast(storeField.get(object));
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected PersistentStore getInnerStore(InternalEObject.EStore store) {
         return getField(store, INNER_STORE_FIELDNAME, AbstractPersistentStoreDecorator.class, PersistentStore.class);
     }
@@ -41,20 +56,5 @@ public abstract class AbstractPersistenceBackendFactoryTest extends AbstractUnit
         }
 
         return innerBackend;
-    }
-
-    private static <F> F getField(Object object, String fieldName, Class<?> in, Class<F> out) {
-        if (!in.isInstance(object)) {
-            throw new IllegalArgumentException();
-        }
-
-        try {
-            Field storeField = in.getDeclaredField(fieldName);
-            storeField.setAccessible(true);
-            return out.cast(storeField.get(object));
-        }
-        catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

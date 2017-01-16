@@ -74,7 +74,7 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     }
 
     /**
-     *  Adds the {@code direct-write-with-lists} feature in the created options.
+     * Adds the {@code direct-write-with-lists} feature in the created options.
      *
      * @return this builder (for chaining)
      *
