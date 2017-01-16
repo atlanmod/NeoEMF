@@ -262,10 +262,13 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
     @Override
     public EObject eObject(Id id) {
-        EClass eClass = resolveInstanceOf(id);
-        PersistentEObject object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
-        if (object.resource() != resource()) {
-            object.resource(resource());
+        PersistentEObject object = null;
+        if(id != null) {
+            EClass eClass = resolveInstanceOf(id);
+            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
+            if (object.resource() != resource()) {
+                object.resource(resource());
+            }
         }
         return object;
     }
