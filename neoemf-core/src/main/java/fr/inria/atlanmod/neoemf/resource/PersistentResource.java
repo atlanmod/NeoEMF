@@ -15,12 +15,16 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 
 /**
- * ???
+ * Extends the {@link Resource} interface by providing efficient model-level operations that
+ * are not accessible using the standard EMF API. For example, {@code getAllInstances} is a 
+ * utility method that computes efficiently all the instances of a given type by delegating the 
+ * operation to the underlying database, that can benefits of its internal optimizations and indices.
  */
 public interface PersistentResource extends Resource, Resource.Internal, Closeable {
 
@@ -28,9 +32,8 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
     void close();
 
     /**
-     * ???
      *
-     * @return ???
+     * @return the {@link EStore} used to store the model
      */
     InternalEObject.EStore eStore();
 
