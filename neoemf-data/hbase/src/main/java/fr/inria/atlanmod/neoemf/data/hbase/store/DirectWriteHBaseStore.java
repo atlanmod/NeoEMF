@@ -66,15 +66,14 @@ import static java.util.Objects.nonNull;
  * An {@link AbstractDirectWriteStore} that translates model-level operations to HBase operations.
  * <p>
  * This class implements the {@link PersistentStore} interface that defines a set of operations to implement in order to
- * allow EMF persistence delegation. If this store is used, every method call and property access on {@link PersistentEObject}
- * is forwarded to this class, that takes care of the serialization/deserialization from/to HBase.
+ * allow EMF persistence delegation. If this store is used, every method call and property access on {@link
+ * PersistentEObject} is forwarded to this class, that takes care of the serialization/deserialization from/to HBase.
+ *
+ * @note For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead, it accesses HBase
+ * directly using the low-level database API.
  * <p>
- * @note For historical purposes this class does not use a {@link HBasePersistenceBackend}, instead,
- * it accesses HBase directly using the low-level database API.
- * <p>
- * This store can be used as a base store that can be complemented by plugging decorator stores on top of it
- * (see {@link AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
- * 
+ * This store can be used as a base store that can be complemented by plugging decorator stores on top of it (see {@link
+ * AbstractPersistentStoreDecorator} subclasses) to provide additional features such as caching or logging.
  * @see PersistentEObject
  * @see HBasePersistenceBackend
  * @see AbstractDirectWriteStore
@@ -172,7 +171,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
      *
      * @param connection the connection to the HBase server
      * @param tableName  the name of the table to access on the server
-     * @param admin the administrator client of the HBase server     
+     * @param admin      the administrator client of the HBase server
      *
      * @return the created HBase table containing the columns and column families to store the model
      *
@@ -194,12 +193,13 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
 
     /**
      * A specific implementation of {@link EStore#add(InternalEObject, EStructuralFeature, int, Object)} that takes
-     * benefit of the HBase facilities to append an element in a multi-valued {@link EReference} without deserializing 
+     * benefit of the HBase facilities to append an element in a multi-valued {@link EReference} without de-serializing
      * the entire collection.
      *
      * @param object           the source element
-     * @param reference        the multi-valued {@link EReference} 
-     * @param atEnd            {@code true} to append {@code referencedObject} at the end of the collection, {@code false} to put it at the beginning (if the persisted collection is empty)
+     * @param reference        the multi-valued {@link EReference}
+     * @param atEnd            {@code true} to append {@code referencedObject} at the end of the collection, {@code
+     *                         false} to put it at the beginning (if the persisted collection is empty)
      * @param referencedObject the {@link PersistentEObject} to append
      *
      * @throws IOException if the HBase database cannot be found
@@ -319,7 +319,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     }
 
     /**
-     * Computes {@code object}'s metaclass informations and persists them in the database.
+     * Computes {@code object}'s metaclass information and persists them in the database.
      *
      * @param object the {@link PersistentEObject} to persist the metaclass of
      */

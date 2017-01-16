@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides utility classes to create HBase specific URIs, serialize and deserialize HBase records, and 
+ * Provides utility classes to create HBase specific URIs, serialize and deserialize HBase records, and
  * manage HBase resource life-cycle.
  */
 

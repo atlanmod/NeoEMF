@@ -323,11 +323,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * ???
+     * Compute the {@link EClass} associated to the model element with the provided {@link Vertex}.
      *
-     * @param vertex ???
+     * @param vertex the {@link Vertex} of the model element to compute the {@link EClass} from
      *
-     * @return ???
+     * @return an {@link EClass} representing the metaclass of the element
      */
     private EClass resolveInstanceOf(Vertex vertex) {
         EClass eClass = null;

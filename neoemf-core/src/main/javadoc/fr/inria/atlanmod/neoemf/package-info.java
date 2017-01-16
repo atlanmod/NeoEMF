@@ -10,7 +10,7 @@
  */
 
 /**
- * <b>TODO:</b> Provides...
+ * Provides all NeoEMF features.
  */
 
-package fr.inria.atlanmod.neoemf.core;
+package fr.inria.atlanmod.neoemf;

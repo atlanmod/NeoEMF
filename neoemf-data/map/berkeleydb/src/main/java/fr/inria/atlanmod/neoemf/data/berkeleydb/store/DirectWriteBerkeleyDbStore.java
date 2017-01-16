@@ -310,11 +310,11 @@ public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<Berkele
     }
 
     /**
-     * ???
+     * Compute the {@link EClass} associated to the model element with the provided {@link Id}.
      *
-     * @param id ???
+     * @param id the {@link Id} of the model element to compute the {@link EClass} from
      *
-     * @return ???
+     * @return an {@link EClass} representing the metaclass of the element
      */
     private EClass resolveInstanceOf(Id id) {
         EClass eClass = null;

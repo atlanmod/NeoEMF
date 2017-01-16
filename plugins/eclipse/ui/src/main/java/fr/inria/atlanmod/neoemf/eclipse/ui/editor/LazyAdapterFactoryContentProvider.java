@@ -27,7 +27,8 @@ import org.eclipse.ui.views.properties.IPropertySourceProvider;
 
 public class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider implements
         ILazyTreeContentProvider, INotifyChangedListener, ITreeContentProvider,
-        IPropertySourceProvider {
+        IPropertySourceProvider
+{
 
     public LazyAdapterFactoryContentProvider(AdapterFactory adapterFactory) {
         super(adapterFactory);

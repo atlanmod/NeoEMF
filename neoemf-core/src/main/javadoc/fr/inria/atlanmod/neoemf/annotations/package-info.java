@@ -13,4 +13,4 @@
  * Provides common annotation types.
  */
 
-package fr.inria.atlanmod.neoemf.core;
+package fr.inria.atlanmod.neoemf.annotations;

@@ -186,6 +186,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return ???
      */
+    @VisibleForTesting
     public <E> E get(String name) {
         return db.get(name);
     }
@@ -216,7 +217,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param id the {@link Id} of the element
      *
-     * @return a {@link ClassInfo} descriptor containing element's metaclass informations ({@link EClass}, metamodel
+     * @return a {@link ClassInfo} descriptor containing element's metaclass information ({@link EClass}, meta-model
      * name, and {@code nsURI})
      */
     public ClassInfo metaclassFor(Id id) {
@@ -227,8 +228,8 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
      * Stores metaclass ({@link EClass}) information for the element with the given {@link Id}.
      *
      * @param id        the {@link Id} of the element
-     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass informations ({@link EClass},
-     *                  metamodel name, and {@code nsURI})
+     * @param metaclass the {@link ClassInfo} descriptor containing element's metaclass information ({@link EClass},
+     *                  meta-model name, and {@code nsURI})
      */
     public void storeMetaclass(Id id, ClassInfo metaclass) {
         instanceOfMap.put(id, metaclass);

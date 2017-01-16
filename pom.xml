@@ -418,7 +418,6 @@
                         <notimestamp>true</notimestamp>
                         <nosince>true</nosince>
                         <author>false</author>
-                        <overview>${project.basedir}/overview.html</overview>
                         <excludePackageNames>
                             fr.inria.atlanmod.neoemf.data.berkeleydb*; <!-- Experimental functionality -->
                             fr.inria.atlanmod.neoemf.tests*;
