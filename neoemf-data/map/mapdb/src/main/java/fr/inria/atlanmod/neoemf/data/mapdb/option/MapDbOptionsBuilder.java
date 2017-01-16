@@ -11,6 +11,11 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.option;
 
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbCacheManyStore;
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbIndicesStore;
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbListsStore;
+import fr.inria.atlanmod.neoemf.data.mapdb.store.DirectWriteMapDbStore;
+import fr.inria.atlanmod.neoemf.data.store.AutocommitStoreDecorator;
 import fr.inria.atlanmod.neoemf.option.AbstractPersistenceOptionsBuilder;
 import fr.inria.atlanmod.neoemf.option.PersistenceOptionsBuilder;
 
@@ -43,9 +48,12 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     }
 
     /**
-     * ???
+     * Adds the {@code autocommit} feature in the created options.
      *
      * @return this builder (for chaining)
+     *
+     * @see MapDbStoreOptions#AUTOCOMMIT
+     * @see AutocommitStoreDecorator
      */
     @Nonnull
     public MapDbOptionsBuilder autocommit() {
@@ -53,9 +61,12 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     }
 
     /**
-     * ???
+     * Adds the {@code direct-write} feature in the created options.
      *
      * @return this builder (for chaining)
+     *
+     * @see MapDbStoreOptions#DIRECT_WRITE
+     * @see DirectWriteMapDbStore
      */
     @Nonnull
     public MapDbOptionsBuilder directWrite() {
@@ -63,9 +74,12 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     }
 
     /**
-     * ???
+     *  Adds the {@code direct-write-with-lists} feature in the created options.
      *
      * @return this builder (for chaining)
+     *
+     * @see MapDbStoreOptions#DIRECT_WRITE_LISTS
+     * @see DirectWriteMapDbListsStore
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteLists() {
@@ -73,9 +87,12 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     }
 
     /**
-     * ???
+     * Adds the {@code direct-write-with-indices} feature in the created options.
      *
      * @return this builder (for chaining)
+     *
+     * @see MapDbStoreOptions#DIRECT_WRITE_INDICES
+     * @see DirectWriteMapDbIndicesStore
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteIndices() {
@@ -83,9 +100,12 @@ public class MapDbOptionsBuilder extends AbstractPersistenceOptionsBuilder<MapDb
     }
 
     /**
-     * ???
+     * Adds the {@code direct-write-cache-many} feature in the created options.
      *
      * @return this builder (for chaining)
+     *
+     * @see MapDbStoreOptions#CACHE_MANY
+     * @see DirectWriteMapDbCacheManyStore
      */
     @Nonnull
     public MapDbOptionsBuilder directWriteCacheMany() {
