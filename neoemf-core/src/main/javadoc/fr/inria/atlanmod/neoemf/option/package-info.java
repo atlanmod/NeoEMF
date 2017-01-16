@@ -10,7 +10,7 @@
  */
 
 /**
- * Provides classes defining the behavior of data persistence.
+ * Provides utility classes to define the behavior of data persistence.
  */
 
 package fr.inria.atlanmod.neoemf.option;
