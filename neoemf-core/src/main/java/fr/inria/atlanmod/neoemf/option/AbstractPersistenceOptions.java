@@ -11,6 +11,8 @@
 
 package fr.inria.atlanmod.neoemf.option;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
+
 /**
  * The abstract implementation of {@link PersistenceOptions}.
  *
@@ -18,6 +20,7 @@ package fr.inria.atlanmod.neoemf.option;
  * @future This class is not used in the current release of the tool, it will simplify option management in the near
  * future.
  */
+@Experimental
 public abstract class AbstractPersistenceOptions implements PersistenceOptions {
 
     @SuppressWarnings("JavaDoc")

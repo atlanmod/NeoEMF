@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.store;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
@@ -30,6 +31,7 @@ import static java.util.Objects.nonNull;
 /**
  * ???
  */
+@Experimental
 public class DirectWriteBerkeleyDbIndicesStore extends DirectWriteBerkeleyDbStore {
 
     /**

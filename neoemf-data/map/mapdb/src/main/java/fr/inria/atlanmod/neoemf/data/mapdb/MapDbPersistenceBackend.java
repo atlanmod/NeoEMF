@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
+import fr.inria.atlanmod.neoemf.annotations.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
@@ -168,12 +169,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     }
 
     /**
-     * Return all the {@link Collection}s contained in the database
+     * Return all the {@link Collection}s contained in the database.
      *
      * @return a {@link Map} containing all the {@link Collection}s contained in the database and their associated names
-     *
-     * @note This method is public for test purposes, client code should not call it.
      */
+    @VisibleForTesting
     public Map<String, Object> getAll() {
         return db.getAll();
     }

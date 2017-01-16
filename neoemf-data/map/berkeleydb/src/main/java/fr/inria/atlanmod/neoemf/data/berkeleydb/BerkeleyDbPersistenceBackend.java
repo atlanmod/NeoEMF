@@ -21,6 +21,7 @@ import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
@@ -43,6 +44,7 @@ import java.util.Map;
 /**
  * ???
  */
+@Experimental
 public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     /**

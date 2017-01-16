@@ -14,6 +14,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.store;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -29,6 +30,7 @@ import static java.util.Objects.isNull;
 /**
  * ???
  */
+@Experimental
 public class DirectWriteBerkeleyDbCacheManyStore extends DirectWriteBerkeleyDbStore {
 
     /**

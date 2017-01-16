@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.AbstractActivator;
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
@@ -26,6 +27,7 @@ import org.osgi.framework.BundleActivator;
  * @see BerkeleyDbPersistenceBackendFactory
  * @see PersistenceBackendFactoryRegistry
  */
+@Experimental
 public class Activator extends AbstractActivator {
 
     @Override

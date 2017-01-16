@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +25,7 @@ import java.io.ObjectOutputStream;
 /**
  * ???
  */
+@Experimental
 public class ObjectSerializer implements Serializer<Object> {
 
     @Override

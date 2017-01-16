@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.serializer;
 
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.SerializationUtils;
 /**
  * ???
  */
+@Experimental
 public class ContainerInfoSerializer implements Serializer<ContainerInfo> {
 
     @Override
