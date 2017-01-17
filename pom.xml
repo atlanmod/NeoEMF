@@ -412,39 +412,15 @@
                     <version>2.10.4</version>
                     <configuration>
                         <additionalparam>-Xdoclint:none</additionalparam>
-                        <detectLinks>true</detectLinks>
                         <failOnError>false</failOnError>
                         <quiet>true</quiet>
                         <notimestamp>true</notimestamp>
                         <nosince>true</nosince>
                         <author>false</author>
-                        <excludePackageNames>
-                            fr.inria.atlanmod.neoemf.data.berkeleydb*; <!-- Experimental functionality -->
-                            fr.inria.atlanmod.neoemf.tests*;
-                        </excludePackageNames>
                         <sourceFileExcludes><!-- Exclude bundle activators -->
                             <sourceFileExclude>**/AbstractActivator.java</sourceFileExclude>
                             <sourceFileExclude>**/Activator.java</sourceFileExclude>
                         </sourceFileExcludes>
-                        <links>
-                            <!-- Common -->
-                            <link>https://google.github.io/guava/releases/20.0/api/docs/</link>
-                            <link>https://commons.apache.org/proper/commons-io/javadocs/api-release/</link>
-                            <link>https://commons.apache.org/proper/commons-configuration/javadocs/v1.10/apidocs/</link>
-                            <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
-                            <link>https://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
-                            <link>https://osgi.org/javadoc/r6/core/</link>
-
-                            <!-- EMF -->
-                            <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
-
-                            <!-- Back-end implementations -->
-                            <link>http://www.tinkerpop.com/docs/javadocs/blueprints/2.6.0/</link>   <!-- Blueprints -->
-                            <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>            <!-- BerkeleyDB -->
-                            <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>                 <!-- MapDB -->
-                            <link>https://hbase.apache.org/1.2/apidocs/</link>                      <!-- HBase -->
-                            <link>https://hadoop.apache.org/docs/r2.7.3/api/</link>                 <!-- Hadoop -->
-                        </links>
                         <groups>
                             <group>
                                 <title>Core</title>
@@ -574,10 +550,78 @@
                                     org.eclipse.emf*;
                                     org.osgi*;
                                 </excludePackageNames>
+                                <detectLinks>true</detectLinks>
+                                <links>
+                                    <!-- Common -->
+                                    <link>https://google.github.io/guava/releases/20.0/api/docs/</link>
+                                    <link>https://commons.apache.org/proper/commons-io/javadocs/api-release/</link>
+                                    <link>https://commons.apache.org/proper/commons-configuration/javadocs/v1.10/apidocs/</link>
+                                    <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
+                                    <link>https://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
+                                    <link>https://osgi.org/javadoc/r6/core/</link>
+
+                                    <!-- EMF -->
+                                    <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
+
+                                    <!-- Back-end implementations -->
+                                    <link>http://www.tinkerpop.com/docs/javadocs/blueprints/2.6.0/</link>   <!-- Blueprints -->
+                                    <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>            <!-- BerkeleyDB -->
+                                    <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>                 <!-- MapDB -->
+                                    <link>https://hbase.apache.org/1.2/apidocs/</link>                      <!-- HBase -->
+                                    <link>https://hadoop.apache.org/docs/r2.7.3/api/</link>                 <!-- Hadoop -->
+                                </links>
                             </configuration>
                         </plugin>
                     </plugins>
                 </pluginManagement>
+            </build>
+        </profile>
+        <!-- A profile to deploy artifacts on OSS Sonartype -->
+        <profile>
+            <id>deploy-artifacts</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>
