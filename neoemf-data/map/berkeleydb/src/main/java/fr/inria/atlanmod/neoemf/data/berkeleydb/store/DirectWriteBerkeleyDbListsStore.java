@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.map.core.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -51,7 +52,7 @@ public class DirectWriteBerkeleyDbListsStore extends DirectWriteBerkeleyDbStore 
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteBerkeleyDbListsStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
+    public DirectWriteBerkeleyDbListsStore(Resource.Internal resource, MapPersistenceBackend backend) {
         super(resource, backend);
         this.objectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }

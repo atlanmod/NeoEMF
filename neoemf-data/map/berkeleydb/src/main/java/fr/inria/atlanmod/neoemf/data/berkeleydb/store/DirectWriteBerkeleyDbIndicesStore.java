@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.map.core.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 
@@ -41,7 +42,7 @@ public class DirectWriteBerkeleyDbIndicesStore extends DirectWriteBerkeleyDbStor
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteBerkeleyDbIndicesStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
+    public DirectWriteBerkeleyDbIndicesStore(Resource.Internal resource, MapPersistenceBackend backend) {
         super(resource, backend);
     }
 
