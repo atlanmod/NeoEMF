@@ -17,6 +17,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.map.core.store.MapDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
@@ -61,7 +62,7 @@ import static java.util.Objects.nonNull;
  * @see MapDbPersistenceBackend
  * @see AbstractPersistentStoreDecorator
  */
-public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersistenceBackend> {
+public class DirectWriteMapDbStore extends MapDirectWriteStore<MapDbPersistenceBackend> {
 
     /**
      * The default cache size (10 000).

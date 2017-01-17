@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.map.core.store.MapDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
@@ -48,7 +49,7 @@ import static java.util.Objects.nonNull;
  * ???
  */
 @Experimental
-public class DirectWriteBerkeleyDbStore extends AbstractDirectWriteStore<BerkeleyDbPersistenceBackend> {
+public class DirectWriteBerkeleyDbStore extends MapDirectWriteStore<BerkeleyDbPersistenceBackend> {
 
     /**
      * The default cache size (10 000).
