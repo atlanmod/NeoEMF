@@ -11,9 +11,16 @@
 
 package fr.inria.atlanmod.neoemf.data.map.core.store;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.map.core.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
@@ -23,7 +30,19 @@ import org.eclipse.emf.ecore.resource.Resource;
  *
  * @param <P> the type of the supported {@link PersistenceBackend}
  */
-public abstract class MapDirectWriteStore<P extends PersistenceBackend> extends AbstractDirectWriteStore<P> {
+public abstract class MapDirectWriteStore<P extends MapPersistenceBackend> extends AbstractDirectWriteStore<P> {
+
+    /**
+     * The default cache size (10 000).
+     */
+    // TODO Find the more predictable maximum cache size
+    private static final int DEFAULT_CACHE_SIZE = 10000;
+
+    /**
+     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
+     */
+    protected final Cache<Id, PersistentEObject> persistentObjectsCache = Caffeine.newBuilder()
+            .maximumSize(DEFAULT_CACHE_SIZE).build();
 
     /**
      * Constructs a new {@code MapDirectWriteStore} between the given {@code resource} and the {@code backend}.
@@ -35,4 +54,15 @@ public abstract class MapDirectWriteStore<P extends PersistenceBackend> extends 
         super(resource, backend);
     }
 
+    @Override
+    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        return backend.isFeatureSet(featureKey);
+    }
+
+    @Override
+    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
+        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
+        backend.removeFeature(featureKey);
+    }
 }

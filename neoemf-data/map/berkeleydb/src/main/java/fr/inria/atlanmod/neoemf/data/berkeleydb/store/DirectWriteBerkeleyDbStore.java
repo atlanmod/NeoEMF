@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.map.core.MapPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.map.core.store.MapDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.AbstractDirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
@@ -49,18 +50,7 @@ import static java.util.Objects.nonNull;
  * ???
  */
 @Experimental
-public class DirectWriteBerkeleyDbStore extends MapDirectWriteStore<BerkeleyDbPersistenceBackend> {
-
-    /**
-     * The default cache size (10 000).
-     */
-    // TODO Find the more predictable maximum cache size
-    protected static final int DEFAULT_CACHE_SIZE = 10000;
-
-    /**
-     * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
-     */
-    protected final Cache<Id, PersistentEObject> persistentObjectsCache;
+public class DirectWriteBerkeleyDbStore extends MapDirectWriteStore<MapPersistenceBackend> {
 
     /**
      * Constructs a new {@code DirectWriteBerkeleyDbStore} between the given {@code resource} and the {@code backend}.
@@ -68,22 +58,10 @@ public class DirectWriteBerkeleyDbStore extends MapDirectWriteStore<BerkeleyDbPe
      * @param resource the resource to persist and access
      * @param backend  the persistence back-end used to store the model
      */
-    public DirectWriteBerkeleyDbStore(Resource.Internal resource, BerkeleyDbPersistenceBackend backend) {
+    public DirectWriteBerkeleyDbStore(Resource.Internal resource, MapPersistenceBackend backend) {
         super(resource, backend);
-        this.persistentObjectsCache = Caffeine.newBuilder().maximumSize(DEFAULT_CACHE_SIZE).build();
     }
 
-    @Override
-    public boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        return backend.isFeatureSet(featureKey);
-    }
-
-    @Override
-    public void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        FeatureKey featureKey = FeatureKey.from(internalObject, feature);
-        backend.removeFeature(featureKey);
-    }
 
     @Override
     public boolean contains(InternalEObject internalObject, EStructuralFeature feature, Object value) {
