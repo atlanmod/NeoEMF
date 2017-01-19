@@ -11,6 +11,27 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.store;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
@@ -24,27 +45,6 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.EPackageImpl;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An {@link AbstractDirectWriteStore} that translates model-level operations to MapDB operations.
@@ -143,6 +143,75 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
     public void clear(InternalEObject internalObject, EStructuralFeature feature) {
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         backend.storeValue(featureKey, new Object[]{});
+    }
+    
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     */
+    @Override
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Object value = getFromMap(object, feature);
+        if (feature.isMany()) {
+            int valueLength = ((Object[]) value).length;
+            return internalToArray(value, feature, new Object[valueLength]);
+        } else {
+            return internalToArray(value, feature, new Object[1]);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     */
+    @Override
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Object value = getFromMap(object, feature);
+        return internalToArray(value, feature, array);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
+        if(feature.isMany()) {
+            Object[] storedArray = (Object[])value;
+            if(feature instanceof EReference) {
+                for(int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T)eObject((Id)storedArray[i]);
+                }
+            }
+            else { // EAttribute
+                for(int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T)parseProperty((EAttribute)feature, storedArray[i]);
+                }
+            }
+        }
+        else {
+            if(feature instanceof EReference) {
+                output[0] = (T)eObject((Id)value);
+            }
+            else { // EAttribute
+                output[0] = (T)parseProperty((EAttribute)feature, value);
+            }
+        }
+        return output;
     }
 
     @Override

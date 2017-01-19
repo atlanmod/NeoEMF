@@ -167,6 +167,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend {
     public void save() {
         db.commit();
     }
+    
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
 
     /**
      * Return all the {@link Collection}s contained in the database.

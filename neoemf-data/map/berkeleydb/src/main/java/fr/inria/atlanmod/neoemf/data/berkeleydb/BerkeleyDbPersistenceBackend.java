@@ -253,6 +253,11 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             NeoLogger.error(e);
         }
     }
+    
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
 
     /**
      * Retrieves the container for a given object id.
