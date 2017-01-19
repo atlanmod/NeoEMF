@@ -145,24 +145,43 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
         backend.storeValue(featureKey, new Object[]{});
     }
     
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     */
     @Override
     public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        checkArgument(feature instanceof EReference || feature instanceof EAttribute, "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
                 feature.getName(), feature.getClass().getSimpleName());
         PersistentEObject object = PersistentEObject.from(internalObject);
         Object value = getFromMap(object, feature);
-        if(feature.isMany()) {
-            int valueLength = ((Object[])value).length;
+        if (feature.isMany()) {
+            int valueLength = ((Object[]) value).length;
             return internalToArray(value, feature, new Object[valueLength]);
-        }
-        else {
+        } else {
             return internalToArray(value, feature, new Object[1]);
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     */
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
-        checkArgument(feature instanceof EReference || feature instanceof EAttribute, "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
                 feature.getName(), feature.getClass().getSimpleName());
         PersistentEObject object = PersistentEObject.from(internalObject);
         Object value = getFromMap(object, feature);
