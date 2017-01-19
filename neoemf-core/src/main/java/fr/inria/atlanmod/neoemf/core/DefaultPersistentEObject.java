@@ -177,10 +177,21 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public EObject eContainer() {
         EObject container;
         if (resource instanceof PersistentResource) {
-            InternalEObject internalContainer = eStore().getContainer(this);
-            eBasicSetContainer(internalContainer);
-            eBasicSetContainerFeatureID(eContainerFeatureID());
-            container = internalContainer;
+            /*
+             * If the resource is not distributed and if the value of the eContainer field
+             * is set it is not needed to get it from the backend.
+             * This is not true in a distributed context when another client can the database
+             * without notifying others.
+             */
+            if(!((PersistentResource) resource).isDistributed() && nonNull(eContainer)) {
+                container = eContainer;
+            }
+            else {
+                InternalEObject internalContainer = eStore().getContainer(this);
+                eBasicSetContainer(internalContainer);
+                eBasicSetContainerFeatureID(eContainerFeatureID());
+                container = internalContainer;
+            }
         }
         else {
             container = super.eContainer();

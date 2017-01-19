@@ -200,6 +200,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             graph.shutdown();
         }
     }
+    
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
 
     @Override
     public Map<EClass, Iterable<Vertex>> getAllInstances(EClass eClass, boolean strict) {

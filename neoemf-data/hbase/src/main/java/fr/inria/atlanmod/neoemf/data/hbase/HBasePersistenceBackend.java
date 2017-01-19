@@ -54,4 +54,9 @@ public class HBasePersistenceBackend extends AbstractPersistenceBackend {
     @Override
     public void save() {
     }
+    
+    @Override
+    public boolean isDistributed() {
+        return true;
+    }
 }
