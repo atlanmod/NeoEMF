@@ -152,7 +152,8 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
         PersistentEObject object = PersistentEObject.from(internalObject);
         Object value = getFromMap(object, feature);
         if(feature.isMany()) {
-            return internalToArray(value, feature, (Object[])value);
+            int valueLength = ((Object[])value).length;
+            return internalToArray(value, feature, new Object[valueLength]);
         }
         else {
             return internalToArray(value, feature, new Object[1]);
