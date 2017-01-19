@@ -11,12 +11,21 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
-public interface Contextual {
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+
+import java.io.IOException;
+
+/**
+ * A builder of {@link PersistentResource}.
+ */
+public interface ResourceBuilder {
 
     /**
-     * Returns the current {@link Context}.
+     * Builds a {@link PersistentResource} according to the specified options.
      *
-     * @return the current {@link Context}.
+     * @return a new {@link PersistentResource}
+     *
+     * @throws IOException if an I/O error occurs
      */
-    Context context();
+    PersistentResource build() throws IOException;
 }

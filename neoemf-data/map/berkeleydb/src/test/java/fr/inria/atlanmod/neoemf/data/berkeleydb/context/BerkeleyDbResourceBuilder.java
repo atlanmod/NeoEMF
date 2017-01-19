@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
 
 import fr.inria.atlanmod.neoemf.context.AbstractResourceBuilder;
+import fr.inria.atlanmod.neoemf.context.ResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
@@ -19,40 +20,45 @@ import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 
-public class BerkeleyDbResourceBuilder extends AbstractResourceBuilder {
+/**
+ * A specific {@link ResourceBuilder} for the BerkeleyDB implementation.
+ */
+public class BerkeleyDbResourceBuilder extends AbstractResourceBuilder<BerkeleyDbResourceBuilder> {
 
+    /**
+     * Constructs a new {@code BerkeleyDbResourceBuilder} with the given {@code ePackage}.
+     *
+     * @param ePackage the {@link EPackage} associated to the built {@link Resource}
+     *
+     * @see EPackage.Registry
+     */
     public BerkeleyDbResourceBuilder(EPackage ePackage) {
         super(ePackage);
-        initMapBuilder();
     }
 
     @Override
     protected void initBuilder() {
         super.initBuilder();
-        initMapBuilder();
+        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
+            PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME,
+                    BerkeleyDbPersistenceBackendFactory.getInstance());
+        }
+        resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
     }
 
     @Override
     public BerkeleyDbResourceBuilder uri(URI uri) {
         this.uri = BerkeleyDbURI.createURI(uri);
-        return this;
+        return me();
     }
 
     @Override
     public BerkeleyDbResourceBuilder file(File file) {
         this.uri = BerkeleyDbURI.createFileURI(file);
-        return this;
-    }
-
-    private void initMapBuilder() {
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME,
-                    BerkeleyDbPersistenceBackendFactory.getInstance());
-        }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME,
-                PersistentResourceFactory.getInstance());
+        return me();
     }
 }

@@ -11,52 +11,31 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
-import fr.inria.atlanmod.neoemf.context.AbstractResourceBuilder;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.context.ResourceBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.AbstractBlueprintsResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsResourceOptions;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.Resource;
 
-import java.io.File;
+/**
+ * A specific {@link ResourceBuilder} for the Blueprints implementation.
+ */
+public class BlueprintsResourceBuilder extends AbstractBlueprintsResourceBuilder<BlueprintsResourceBuilder> {
 
-public class BlueprintsResourceBuilder extends AbstractResourceBuilder {
-
+    /**
+     * Constructs a new {@code BlueprintsResourceBuilder} with the given {@code ePackage}.
+     *
+     * @param ePackage the {@link EPackage} associated to the built {@link Resource}
+     *
+     * @see EPackage.Registry
+     */
     public BlueprintsResourceBuilder(EPackage ePackage) {
         super(ePackage);
-        initBlueprintsBuilder();
     }
 
     @Override
-    protected void initBuilder() {
-        super.initBuilder();
-        initBlueprintsBuilder();
-    }
-
-    @Override
-    public BlueprintsResourceBuilder uri(URI uri) {
-        this.uri = BlueprintsURI.createURI(uri);
-        return this;
-    }
-
-    @Override
-    public BlueprintsResourceBuilder file(File file) {
-        this.uri = BlueprintsURI.createFileURI(file);
-        return this;
-    }
-
-    private void initBlueprintsBuilder() {
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        }
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-    }
-
-    public BlueprintsResourceBuilder tinkerGraph() {
+    protected void registerFactory() {
         resourceOptions.put(BlueprintsResourceOptions.GRAPH_TYPE, BlueprintsResourceOptions.GRAPH_TYPE_DEFAULT);
-        return this;
     }
 }

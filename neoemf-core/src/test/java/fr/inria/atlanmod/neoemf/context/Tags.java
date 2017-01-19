@@ -11,12 +11,15 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
+/**
+ * A utility class that regroups every tags used in test-cases.
+ */
 public final class Tags {
 
     /**
      * This class should not be instantiated.
      *
-     * @throws IllegalStateException everytime
+     * @throws IllegalStateException every time
      */
     private Tags() {
         throw new IllegalStateException("This class should not be instantiated");

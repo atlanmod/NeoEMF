@@ -20,13 +20,27 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A specific {@link Context} for the Blueprints Neo4j implementation.
+ */
 public class BlueprintsNeo4jContext extends BlueprintsContext {
 
+    /**
+     * The name of this context.
+     */
     public static final String NAME = "Neo4j";
 
+    /**
+     * Constructs a new {@code BlueprintsNeo4jContext}.
+     */
     protected BlueprintsNeo4jContext() {
     }
 
+    /**
+     * Returns the instance of this class.
+     *
+     * @return the instance of this class.
+     */
     public static Context get() {
         return Holder.INSTANCE;
     }
@@ -38,12 +52,12 @@ public class BlueprintsNeo4jContext extends BlueprintsContext {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4jResourceBuilder(ePackage).neo4j().persistent().file(file).build();
+        return new BlueprintsNeo4jResourceBuilder(ePackage).persistent().file(file).build();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4jResourceBuilder(ePackage).neo4j().file(file).build();
+        return new BlueprintsNeo4jResourceBuilder(ePackage).file(file).build();
     }
 
     /**

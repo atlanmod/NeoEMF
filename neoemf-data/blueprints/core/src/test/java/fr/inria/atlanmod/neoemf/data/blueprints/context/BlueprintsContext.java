@@ -25,13 +25,27 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A specific {@link Context} for the Blueprints implementation.
+ */
 public class BlueprintsContext implements Context {
 
+    /**
+     * The name of this context.
+     */
     public static final String NAME = "Tinker";
 
+    /**
+     * Constructs a new {@code BlueprintsContext}.
+     */
     protected BlueprintsContext() {
     }
 
+    /**
+     * Returns the instance of this class.
+     *
+     * @return the instance of this class.
+     */
     public static Context get() {
         return Holder.INSTANCE;
     }
@@ -58,12 +72,12 @@ public class BlueprintsContext implements Context {
 
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).tinkerGraph().persistent().file(file).build();
+        return new BlueprintsResourceBuilder(ePackage).persistent().file(file).build();
     }
 
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).tinkerGraph().file(file).build();
+        return new BlueprintsResourceBuilder(ePackage).file(file).build();
     }
 
     @Override
