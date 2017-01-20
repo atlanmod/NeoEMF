@@ -264,8 +264,7 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     public EObject eObject(Id id) {
         PersistentEObject object = null;
         if(nonNull(id)) {
-            EClass eClass = resolveInstanceOf(id);
-            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
+            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader());
             if (object.resource() != resource()) {
                 object.resource(resource());
             }
@@ -743,25 +742,12 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
     /**
      * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
      */
-    private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
-
-        /**
-         * The class associated with the object to retrieve.
-         */
-        private final EClass eClass;
-
-        /**
-         * Constructs a new {@code PersistentEObjectCacheLoader} with the given {@code eClass}.
-         *
-         * @param eClass the class associated with the object to retrieve
-         */
-        private PersistentEObjectCacheLoader(EClass eClass) {
-            this.eClass = eClass;
-        }
+    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
         @Override
         public PersistentEObject apply(Id id) {
             PersistentEObject object;
+            EClass eClass = DirectWriteHBaseStore.this.resolveInstanceOf(id);
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
