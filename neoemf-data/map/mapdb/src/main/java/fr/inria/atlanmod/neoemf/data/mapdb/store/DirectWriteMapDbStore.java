@@ -188,6 +188,13 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
         return internalToArray(value, feature, array);
     }
     
+    /**
+     * Reifies the element(s) in {@code value} and put them into {@code output}.
+     * @param value the backend record to reify
+     * @param feature the {@link EStructuralFeature} used to reify {@code value}
+     * @param output the array to fill
+     * @return {@code output} filled with the reified values
+     */
     @SuppressWarnings("unchecked")
     private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
         if(feature.isMany()) {
