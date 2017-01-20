@@ -59,6 +59,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -449,7 +450,65 @@ public class DirectWriteHBaseStore extends AbstractDirectWriteStore<HBasePersist
             NeoLogger.error("Unable to get containment information for {0}", object);
         }
     }
+    
+    @Override
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Object value = getFromTable(object, feature);
+        if (feature.isMany()) {
+            int valueLength = ((Object[]) value).length;
+            return internalToArray(value, feature, new Object[valueLength]);
+        } else {
+            return internalToArray(value, feature, new Object[1]);
+        }
+    }
+    
+    @Override
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Object value = getFromTable(object, feature);
+        return internalToArray(value, feature, array);
+    }
 
+    /**
+     * Reifies the element(s) in {@code value} and put them into {@code output}.
+     * @param value the backend record to reify
+     * @param feature the {@link EStructuralFeature} used to reify {@code value}
+     * @param output the array to fill
+     * @return {@code output} filled with the reified values
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
+        if(feature.isMany()) {
+            Object[] storedArray = (Object[])value;
+            if(feature instanceof EReference) {
+                for(int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T)eObject(new StringId((String) storedArray[i]));
+                }
+            }
+            else { // EAttribute
+                for(int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T)parseProperty((EAttribute)feature, storedArray[i]);
+                }
+            }
+        }
+        else {
+            if(feature instanceof EReference) {
+                output[0] = (T)eObject((Id)value);
+            }
+            else { // EAttribute
+                output[0] = (T)parseProperty((EAttribute)feature, value);
+            }
+        }
+        return output;
+    }
+    
     @Override
     protected Object getAttribute(PersistentEObject object, EAttribute attribute, int index) {
         Object soughtAttribute = getFromTable(object, attribute);
