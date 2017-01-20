@@ -212,8 +212,7 @@ public abstract class AbstractTransientStore implements TransientStore {
 
     @Override
     public EObject create(EClass eClass) {
-        // TODO Unimplemented - In which case is needed?
-        throw new UnsupportedOperationException();
+        throw new IllegalStateException("This method should not be called");
     }
 
     /**

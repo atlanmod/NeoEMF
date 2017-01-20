@@ -13,8 +13,12 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsTest;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 
+/**
+ * A test-case that uses a {@link BlueprintsNeo4jContext}.
+ */
 public interface BlueprintsNeo4jTest extends BlueprintsTest {
 
     @Override

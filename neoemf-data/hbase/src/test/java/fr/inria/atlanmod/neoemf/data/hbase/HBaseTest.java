@@ -12,10 +12,13 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.Contextual;
+import fr.inria.atlanmod.neoemf.context.ContextualTest;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 
-public interface HBaseTest extends Contextual {
+/**
+ * A test-case that uses a {@link HBaseContext}.
+ */
+public interface HBaseTest extends ContextualTest {
 
     @Override
     default Context context() {

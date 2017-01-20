@@ -18,11 +18,20 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
+/**
+ * An abstract test-case that holds the {@link Workspace} and the logger.
+ */
 public abstract class AbstractTest {
 
+    /**
+     * The workspace that manages temporary files and folders.
+     */
     @ClassRule
     public static Workspace workspace = new Workspace();
 
+    /**
+     * The test-case logger.
+     */
     @Rule
     public TestRule watcher = new Watcher();
 }

@@ -16,8 +16,14 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import org.junit.runner.Description;
 
+/**
+ * A {@link org.junit.Rule} that logs each test-case call.
+ */
 public class Watcher extends org.junit.rules.TestWatcher {
 
+    /**
+     * The special logger where messages will be sent.
+     */
     private static final Logger LOG = NeoLogger.customLogger("test");
 
     @Override

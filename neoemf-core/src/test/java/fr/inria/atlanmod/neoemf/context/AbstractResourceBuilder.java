@@ -23,39 +23,105 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractResourceBuilder {
+/**
+ * An abstract {@link ResourceBuilder} that manages the assembly and the construction of {@link PersistentResource}.
+ * @param <B> the "self"-type of this {@link ResourceBuilder}
+ */
+public abstract class AbstractResourceBuilder<B extends AbstractResourceBuilder<B>> implements ResourceBuilder {
 
+    /**
+     * The {@link EPackage} associated to the built resource.
+     */
     private final EPackage ePackage;
 
-    protected ResourceSet rSet;
+    /**
+     * The {@link ResourceSet} used to create the resource.
+     */
+    protected ResourceSet resourceSet;
+
+    /**
+     * The {@link URI} of the resource.
+     */
     protected URI uri;
+
+    /**
+     * Map of options used to define the behavior of the resource.
+     */
     protected Map<Object, Object> resourceOptions;
 
+    /**
+     * Whether the {@link PersistentResource} is persistent.
+     */
     private boolean isPersistent;
 
+    /**
+     * Constructs a new {@code AbstractResourceBuilder} with the given {@code ePackage}.
+     *
+     * @param ePackage the {@link EPackage} associated to the built {@link org.eclipse.emf.ecore.resource.Resource}
+     *
+     * @see EPackage.Registry
+     */
     public AbstractResourceBuilder(EPackage ePackage) {
         this.ePackage = ePackage;
         initBuilder();
     }
 
+    /**
+     * Returns this instance, casted as a {@code <B>}.
+     *
+     * @return this instance
+     */
+    @SuppressWarnings("unchecked")
+    protected B me() {
+        return (B) this;
+    }
+
+    /**
+     * Initializes this builder, and registers the {@link EPackage} in the
+     * {@link org.eclipse.emf.ecore.EPackage.Registry}.
+     */
     protected void initBuilder() {
         isPersistent = false;
         EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
-        rSet = new ResourceSetImpl();
+        resourceSet = new ResourceSetImpl();
         resourceOptions = new HashMap<>();
     }
 
-    public abstract AbstractResourceBuilder uri(URI uri);
+    /**
+     * Defines the {@link URI} of the created resource from another.
+     *
+     * @param uri the base {@link URI}
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.util.PersistenceURI#createURI(URI)
+     */
+    public abstract B uri(URI uri);
 
-    public abstract AbstractResourceBuilder file(File file);
+    /**
+     * Defines the {@link URI} of the created resource from a file.
+     *
+     * @param file the {@link File} associated to the created resource
+     *
+     * @return this builder (for chaining)
+     *
+     * @see fr.inria.atlanmod.neoemf.util.PersistenceURI#createFileURI(File, String)
+     */
+    public abstract B file(File file);
 
-    public AbstractResourceBuilder persistent() {
+    /**
+     * Defines the created resource as persistent.
+     *
+     * @return this builder (for chaining)
+     */
+    public B persistent() {
         isPersistent = true;
-        return this;
+        return me();
     }
 
+    @Override
     public PersistentResource build() throws IOException {
-        PersistentResource resource = (PersistentResource) rSet.createResource(uri);
+        PersistentResource resource = (PersistentResource) resourceSet.createResource(uri);
         if (isPersistent) {
             resource.save(resourceOptions);
         }

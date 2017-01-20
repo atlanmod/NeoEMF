@@ -25,13 +25,27 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A specific {@link Context} for the HBase implementation.
+ */
 public class HBaseContext implements Context {
 
+    /**
+     * The name of this context.
+     */
     public static final String NAME = "HBase";
 
+    /**
+     * Constructs a new {@code HBaseContext}.
+     */
     protected HBaseContext() {
     }
 
+    /**
+     * Returns the instance of this class.
+     *
+     * @return the instance of this class.
+     */
     public static Context get() {
         return Holder.INSTANCE;
     }

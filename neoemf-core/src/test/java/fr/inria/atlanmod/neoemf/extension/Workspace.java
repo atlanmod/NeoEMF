@@ -21,10 +21,19 @@ import java.nio.file.Path;
 
 import static java.util.Objects.nonNull;
 
+/**
+ * An {@link ExternalResource} that manages temporary resources.
+ */
 public class Workspace extends ExternalResource {
 
+    /**
+     * The prefix for temporary folder.
+     */
     private static final String PREFIX = "neoemf";
 
+    /**
+     * The temporary folder.
+     */
     private File temporaryFolder;
 
     @Override
@@ -43,6 +52,15 @@ public class Workspace extends ExternalResource {
         }
     }
 
+    /**
+     * Creates a new temporary file that begins with the given {@code prefix}.
+     *
+     * @param prefix the prefix of the file name
+     *
+     * @return a new {@code File} (not created)
+     *
+     * @throws IOException if an I/O error occurs
+     */
     public File newFile(String prefix) throws IOException {
         Path createdFolder = Files.createTempDirectory(temporaryFolder.toPath(), prefix);
         Files.deleteIfExists(createdFolder);

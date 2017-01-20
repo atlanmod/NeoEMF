@@ -20,10 +20,19 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+/**
+ * An abstract test-case that checks the behavior of {@link PersistenceURI}s.
+ */
 public abstract class AbstractUriTest extends AbstractUnitTest {
 
+    /**
+     * The scheme of an invalid {@link URI}.
+     */
     protected static final String SCHEME_INVALID = "invalid";
 
+    /**
+     * Checks the creation of a {@link URI} from another.
+     */
     @Test
     public void testCreateUriFromStandardUri() {
         URI validURI = URI.createURI(context().uriScheme() + ":/test");
@@ -31,6 +40,9 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
         assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
     }
 
+    /**
+     * Checks the creation of a {@link URI} from another file {@link URI}.
+     */
     @Test
     public void testCreateUriFromFileUri() {
         URI fileURI = URI.createFileURI(file().getAbsolutePath());
@@ -38,12 +50,18 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
         assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
     }
 
+    /**
+     * Checks the creation of a {@link URI} from a {@link java.io.File}.
+     */
     @Test
     public void testCreateFileUriFromFile() {
         URI neoURI = context().createFileURI(file());
         assertThat(neoURI.scheme()).isEqualTo(context().uriScheme());
     }
 
+    /**
+     * Checks the creation of a {@link URI} with an invalid scheme.
+     */
     @Test
     public void testCreateUriFromStandardUriInvalidScheme() {
         URI invalidURI = URI.createURI(SCHEME_INVALID + ":/test");
