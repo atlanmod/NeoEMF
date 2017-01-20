@@ -38,6 +38,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -569,7 +571,7 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
      *
      * @return an {@link InternalEObject} build from the provided {@link Vertex}
      */
-    protected InternalEObject reifyVertex(Vertex vertex, EClass eClass) {
+    protected InternalEObject reifyVertex(Vertex vertex, @Nullable EClass eClass) {
         PersistentEObject internalEObject = backend.reifyVertex(vertex, eClass);
         if (internalEObject.resource() != resource()) {
             if (Iterables.isEmpty(vertex.getEdges(Direction.OUT, CONTAINER))) {
