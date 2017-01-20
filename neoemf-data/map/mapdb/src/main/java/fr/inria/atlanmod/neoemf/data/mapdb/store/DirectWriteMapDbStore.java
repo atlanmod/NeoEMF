@@ -177,6 +177,8 @@ public class DirectWriteMapDbStore extends AbstractDirectWriteStore<MapDbPersist
      * that takes benefit of the underlying backend to deserialize the entire
      * list once and return it as an array, avoiding multiple {@code get()}
      * operations.
+     * <p>
+     * Returns the given {@code array} reference if it is not {@code null}.
      */
     @Override
     public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
