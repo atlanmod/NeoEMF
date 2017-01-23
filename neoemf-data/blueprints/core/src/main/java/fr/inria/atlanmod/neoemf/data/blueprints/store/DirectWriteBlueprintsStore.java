@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
@@ -501,13 +502,16 @@ public class DirectWriteBlueprintsStore extends AbstractDirectWriteStore<Bluepri
         Vertex vertex = backend.getVertex(object.id());
         if(feature instanceof EReference) {
             if(feature.isMany()) {
+                Comparator<Edge> byPosition = (e1, e2) -> Integer.compare(e1.getProperty(POSITION),
+                        e2.getProperty(POSITION));
                 Object[] result = StreamSupport.stream(
                         vertex.query()
                             .labels(feature.getName())
                             .direction(Direction.OUT)
-                            .vertices()
+                            .edges()
                             .spliterator(),false)
-                            .map(vv -> reifyVertex(vv))
+                            .sorted(byPosition)
+                            .map(ee -> reifyVertex(ee.getVertex(Direction.IN)))
                             .toArray();
                 if(isNull(array)) {
                     return (T[]) result;
