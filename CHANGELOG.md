@@ -1,6 +1,13 @@
 ## *1.0.2*
 
 Current SNAPSHOT.
+- __[NEW]__ Add experimental EMF Compare integration (will stay experimental as
+  long as Guava issues remain)
+- __[FIX]__ Issue #53: WildCardType '?' in sample (mapdb) throws an exception
+  when accessed in the Editor
+- __[FIX]__ Issue #54: AbstractDirectWrite.toArray is not efficient
+- __[FIX]__ Issue #55: DefaultPersistentEObject.eContainer is not efficient
+- __[FIX]__ Issue #56: Unnecessary backend lookups in Store.eObject(Id)
 
 ## 1.0.1 _(2017-01-16)_
 
