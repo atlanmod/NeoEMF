@@ -11,33 +11,35 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.compare.Comparison;
-import org.eclipse.emf.compare.Diff;
-import org.eclipse.emf.compare.EMFCompare;
-import org.eclipse.emf.compare.match.IMatchEngine;
-import org.eclipse.emf.compare.match.impl.MatchEngineFactoryRegistryImpl;
-import org.eclipse.emf.compare.scope.DefaultComparisonScope;
-import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.gmt.modisco.java.JavaPackage;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.option.HBaseOptionsBuilder;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+
+//EMF Compare related imports, uncomment to enable model comparison
+//import java.util.List;
+//import org.eclipse.emf.compare.Comparison;
+//import org.eclipse.emf.compare.Diff;
+//import org.eclipse.emf.compare.EMFCompare;
+//import org.eclipse.emf.compare.match.IMatchEngine;
+//import org.eclipse.emf.compare.match.impl.MatchEngineFactoryRegistryImpl;
+//import org.eclipse.emf.compare.scope.DefaultComparisonScope;
+//import org.eclipse.emf.compare.scope.IComparisonScope;
+//import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
 public class HBaseImporter {
 
@@ -73,21 +75,21 @@ public class HBaseImporter {
              * in real-world applications: NeoEMF ensures that created models from input 
              * XMI files contains all the input elements.
              */
-            IMatchEngine.Factory.Registry matchEngineRegistry = new MatchEngineFactoryRegistryImpl();
-            matchEngineRegistry.add(new LazyMatchEngineFactory());
-            IComparisonScope scope = new DefaultComparisonScope(xmiResource, persistentResource, null);
-            Comparison comparison = EMFCompare.builder().setMatchEngineFactoryRegistry(matchEngineRegistry).build().compare(scope);
-            
-            List<Diff> diffs = comparison.getDifferences();
-            if(diffs.size() > 0) {
-                NeoLogger.error("Created model has {0} diffs compared to the input XMI", diffs.size());
-                for(Diff diff : diffs) {
-                    NeoLogger.error("\t {0}", diff.toString());
-                }
-            }
-            else {
-                NeoLogger.info("Created model contains all the elements from the input XMI");
-            }
+//            IMatchEngine.Factory.Registry matchEngineRegistry = new MatchEngineFactoryRegistryImpl();
+//            matchEngineRegistry.add(new LazyMatchEngineFactory());
+//            IComparisonScope scope = new DefaultComparisonScope(xmiResource, persistentResource, null);
+//            Comparison comparison = EMFCompare.builder().setMatchEngineFactoryRegistry(matchEngineRegistry).build().compare(scope);
+//            
+//            List<Diff> diffs = comparison.getDifferences();
+//            if(diffs.size() > 0) {
+//                NeoLogger.error("Created model has {0} diffs compared to the input XMI", diffs.size());
+//                for(Diff diff : diffs) {
+//                    NeoLogger.error("\t {0}", diff.toString());
+//                }
+//            }
+//            else {
+//                NeoLogger.info("Created model contains all the elements from the input XMI");
+//            }
         }
     }
 }

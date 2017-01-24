@@ -14,17 +14,11 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
+
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.compare.Comparison;
-import org.eclipse.emf.compare.Diff;
-import org.eclipse.emf.compare.EMFCompare;
-import org.eclipse.emf.compare.match.IMatchEngine;
-import org.eclipse.emf.compare.match.impl.MatchEngineFactoryRegistryImpl;
-import org.eclipse.emf.compare.scope.DefaultComparisonScope;
-import org.eclipse.emf.compare.scope.IComparisonScope;
+
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -38,8 +32,19 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
+
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+
+// EMF Compare related imports, uncomment to enable model comparison
+//import java.util.List;
+//import org.eclipse.emf.compare.Comparison;
+//import org.eclipse.emf.compare.Diff;
+//import org.eclipse.emf.compare.EMFCompare;
+//import org.eclipse.emf.compare.match.IMatchEngine;
+//import org.eclipse.emf.compare.match.impl.MatchEngineFactoryRegistryImpl;
+//import org.eclipse.emf.compare.scope.DefaultComparisonScope;
+//import org.eclipse.emf.compare.scope.IComparisonScope;
+//import fr.inria.atlanmod.neoemf.util.emf.compare.LazyMatchEngineFactory;
 
 public class BlueprintsImporter {
 
@@ -76,21 +81,21 @@ public class BlueprintsImporter {
              * in real-world applications: NeoEMF ensures that created models from input 
              * XMI files contains all the input elements.
              */
-            IMatchEngine.Factory.Registry matchEngineRegistry = new MatchEngineFactoryRegistryImpl();
-            matchEngineRegistry.add(new LazyMatchEngineFactory());
-            IComparisonScope scope = new DefaultComparisonScope(xmiResource, persistentResource, null);
-            Comparison comparison = EMFCompare.builder().setMatchEngineFactoryRegistry(matchEngineRegistry).build().compare(scope);
-            
-            List<Diff> diffs = comparison.getDifferences();
-            if(diffs.size() > 0) {
-                NeoLogger.error("Created model has {0} diffs compared to the input XMI", diffs.size());
-                for(Diff diff : diffs) {
-                    NeoLogger.error("\t {0}", diff.toString());
-                }
-            }
-            else {
-                NeoLogger.info("Created model contains all the elements from the input XMI");
-            }
+//            IMatchEngine.Factory.Registry matchEngineRegistry = new MatchEngineFactoryRegistryImpl();
+//            matchEngineRegistry.add(new LazyMatchEngineFactory());
+//            IComparisonScope scope = new DefaultComparisonScope(xmiResource, persistentResource, null);
+//            Comparison comparison = EMFCompare.builder().setMatchEngineFactoryRegistry(matchEngineRegistry).build().compare(scope);
+//            
+//            List<Diff> diffs = comparison.getDifferences();
+//            if(diffs.size() > 0) {
+//                NeoLogger.error("Created model has {0} diffs compared to the input XMI", diffs.size());
+//                for(Diff diff : diffs) {
+//                    NeoLogger.error("\t {0}", diff.toString());
+//                }
+//            }
+//            else {
+//                NeoLogger.info("Created model contains all the elements from the input XMI");
+//            }
         }
     }
 }
