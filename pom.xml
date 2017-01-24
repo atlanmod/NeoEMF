@@ -261,6 +261,9 @@
                 <directory>${project.basedir}/src/main/resources</directory>
                 <excludes>
                     <exclude>**/.empty</exclude>
+					<!-- EMFCompare is not needed for now, it can only be used in an Eclipse 
+						context and thus it is set as an optional dependency in the generated MANIFEST -->
+                    <exclude>org.eclipse.emf.compare_3.4.0.201611041634.jar</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -334,6 +337,7 @@
                                 scope=compile|runtime;
                                 type=!pom;
                                 artifactId=!jsr305;
+                                groupId=!static-import;
                                 groupId=!${project.groupId}|org.eclipse.emf|org.osgi
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
