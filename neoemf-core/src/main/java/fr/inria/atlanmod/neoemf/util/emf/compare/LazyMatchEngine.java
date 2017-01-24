@@ -28,20 +28,48 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+
+/**
+ * Overrides {@link DefaultMatchEngine} to allow lazy comparison of
+ * {@link PersistentEObject}s. Elements are compared using the
+ * {@link LazyEqualityHelper} provided in the {@code comparisonFactory} using
+ * {@link Objects#equal(Object, Object)} instead of {@code ==} when at least one
+ * of the element is stored in NeoEMF.
+ * <p>
+ * <b>Note:</b> This class overrides all the {@code match} methods to remove old
+ * Guava dependencies. It should be removed if/when Guava dependencies become
+ * compatible with NeoEMF.
+ * 
+ * @see LazyMatchEngineFactory
+ * @see LazyEqualityHelper
+ */
 public class LazyMatchEngine extends DefaultMatchEngine {
 
     /**
      * Creates a new LazyMatchEngine.
-     * @param matcher the matcher to use
-     * @param comparisonFactory the {@link IComparisonFactory} to use
+     * 
+     * @param matcher
+     *            the matcher to use
+     * @param comparisonFactory
+     *            the {@link IComparisonFactory} to use
      */
     public LazyMatchEngine(IEObjectMatcher matcher, IComparisonFactory comparisonFactory) {
         super(matcher, comparisonFactory);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <b>Note:</b> This method overrides
+     * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, ResourceSet, ResourceSet, ResourceSet, Monitor)}
+     * to remove incompatible Guava dependencies. It should be removed if/when
+     * Guava dependencies become compatible with NeoEMF.
+     */
     @Override
     protected void match(Comparison comparison, IComparisonScope scope, ResourceSet left,
             ResourceSet right, ResourceSet origin, Monitor monitor) {
@@ -55,8 +83,8 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         }
 
         final IResourceMatcher resourceMatcher = createResourceMatcher();
-        final Iterable<MatchResource> mappings = resourceMatcher.createMappings(leftChildren, rightChildren,
-                originChildren);
+        final Iterable<MatchResource> mappings = resourceMatcher.createMappings(leftChildren,
+                rightChildren, originChildren);
 
         final List<Iterator<? extends EObject>> leftIterators = Lists.newLinkedList();
         final List<Iterator<? extends EObject>> rightIterators = Lists.newLinkedList();
@@ -83,12 +111,23 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         }
 
         final Iterator<? extends EObject> leftEObjects = Iterators.concat(leftIterators.iterator());
-        final Iterator<? extends EObject> rightEObjects = Iterators.concat(rightIterators.iterator());
-        final Iterator<? extends EObject> originEObjects = Iterators.concat(originIterators.iterator());
+        final Iterator<? extends EObject> rightEObjects = Iterators.concat(rightIterators
+                .iterator());
+        final Iterator<? extends EObject> originEObjects = Iterators.concat(originIterators
+                .iterator());
 
-        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects, monitor);
+        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects,
+                monitor);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <b>Note:</b> This method overrides
+     * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, EObject, EObject, EObject, Monitor)}
+     * to remove incompatible Guava dependencies. It should be removed if/when
+     * Guava dependencies become compatible with NeoEMF.
+     */
     @Override
     protected void match(Comparison comparison, IComparisonScope scope, EObject left,
             EObject right, EObject origin, Monitor monitor) {
@@ -96,20 +135,30 @@ public class LazyMatchEngine extends DefaultMatchEngine {
             throw new IllegalArgumentException();
         }
 
-        final Iterator<? extends EObject> leftEObjects = Iterators.concat(Iterators.singletonIterator(left),
-                scope.getChildren(left));
+        final Iterator<? extends EObject> leftEObjects = Iterators.concat(
+                Iterators.singletonIterator(left), scope.getChildren(left));
         final Iterator<? extends EObject> rightEObjects = Iterators.concat(
                 Iterators.singletonIterator(right), scope.getChildren(right));
         final Iterator<? extends EObject> originEObjects;
         if (origin != null) {
-            originEObjects = Iterators.concat(Iterators.singletonIterator(origin), scope.getChildren(origin));
+            originEObjects = Iterators.concat(Iterators.singletonIterator(origin),
+                    scope.getChildren(origin));
         } else {
             originEObjects = Collections.emptyIterator();
         }
 
-        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects, monitor);
+        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects,
+                monitor);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * <b>Note:</b> This method overrides
+     * {@link DefaultMatchEngine#match(Comparison, IComparisonScope, Resource, Resource, Resource, Monitor)}
+     * to remove incompatible Guava dependencies. It should be removed if/when
+     * Guava dependencies become compatible with NeoEMF.
+     */
     @Override
     protected void match(Comparison comparison, IComparisonScope scope, Resource left,
             Resource right, Resource origin, Monitor monitor) {
@@ -146,8 +195,8 @@ public class LazyMatchEngine extends DefaultMatchEngine {
         // We need at least two resources to match them
         if (atLeastTwo(left == null, right == null, origin == null)) {
             /*
-             * TODO But if we have only one resource, which is then unmatched, should we not still do
-             * something with it?
+             * TODO But if we have only one resource, which is then unmatched,
+             * should we not still do something with it?
              */
             return;
         }
@@ -171,11 +220,13 @@ public class LazyMatchEngine extends DefaultMatchEngine {
             originEObjects = Collections.emptyIterator();
         }
 
-        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects, monitor);
+        getEObjectMatcher().createMatches(comparison, leftEObjects, rightEObjects, originEObjects,
+                monitor);
     }
-    
+
     /**
-     * This will check that at least two of the three given booleans are <code>true</code>.
+     * This will check that at least two of the three given booleans are
+     * <code>true</code>.
      * 
      * @param condition1
      *            First of the three booleans.
@@ -183,11 +234,11 @@ public class LazyMatchEngine extends DefaultMatchEngine {
      *            Second of the three booleans.
      * @param condition3
      *            Third of the three booleans.
-     * @return <code>true</code> if at least two of the three given booleans are <code>true</code>,
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if at least two of the three given booleans are
+     *         <code>true</code>, <code>false</code> otherwise.
      */
     private static boolean atLeastTwo(boolean condition1, boolean condition2, boolean condition3) {
         return condition1 && (condition2 || condition3) || (condition2 && condition3);
     }
-    
+
 }

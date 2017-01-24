@@ -38,6 +38,8 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
  * comparisons involving at least one {@link PersistentEObject} are computed
  * using {@code equals} which may imply some data query process to compute the
  * object identifier.
+ * 
+ * @see LazyEqualityHelperFactory
  */
 class LazyEqualityHelper extends EqualityHelper {
 

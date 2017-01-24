@@ -12,23 +12,35 @@ package fr.inria.atlanmod.neoemf.util.emf.compare;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.match.DefaultEqualityHelperFactory;
+import org.eclipse.emf.compare.utils.EqualityHelper;
 import org.eclipse.emf.compare.utils.IEqualityHelper;
 import org.eclipse.emf.ecore.EObject;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 
+/**
+ * Overrides {@link DefaultEqualityHelperFactory} methods to create
+ * {@link LazyEqualityHelper} instances instead of default
+ * {@link EqualityHelper} ones.
+ * 
+ * @see LazyEqualityHelper
+ */
 public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
 
     /**
-     * {@inheritDoc}
+     * Constructs a new {@link LazyEqualityHelperFactory} with a default cache.
      */
     public LazyEqualityHelperFactory() {
         super();
     }
-    
+
     /**
-     * {@inheritDoc}
+     * Constructs a new {@link LazyEqualityHelperFactory} using the given
+     * {@code cacheBuilder}.
+     * 
+     * @param cacheBuilder
+     *            the {@link CacheBuilder} to use
      */
     public LazyEqualityHelperFactory(CacheBuilder<Object, Object> cacheBuilder) {
         super(cacheBuilder);
