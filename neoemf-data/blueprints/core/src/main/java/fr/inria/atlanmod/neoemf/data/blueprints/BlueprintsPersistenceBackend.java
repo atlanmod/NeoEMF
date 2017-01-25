@@ -334,7 +334,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return an {@link EClass} representing the metaclass of the element
      */
-    private EClass resolveInstanceOf(Vertex vertex) {
+    public EClass resolveInstanceOf(Vertex vertex) {
         EClass eClass = null;
         Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
         if (nonNull(eClassVertex)) {
