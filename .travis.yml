@@ -14,10 +14,6 @@ env:
     # CI_DEPLOY_PASSWORD
     - secure: FbSKxzPkjTrkom1EAjqbOKfSLmeWDfUj6FZks5pmTvdO6bFX641HRPOkWQ7o3p0QnXTWIl3KaT6PLCdRlVmIdepHbHjJt1x1HTuD/j82aOxUl1JUhiG3WFWE2V4tOuvABE8eRyvE1uGJ5Ik0F5BXy1QYwlWpbO9VORA3Kz4Xm6yu/kroH2EQlRxJN4LtM6ufDeimfU3LmbSSPs54Et3e45GNzbAw0KmupOvphfr5sJd3xpS3vQMtdHbVlCoDu0/F9ntEgBzwrOphX7rpo90MOU2j8dakAGGMku1DddPEuOckCkn0KjYfcvBwETJWd09my6L3BFCyto3doaYpjv361/GYc5508eYLmGom+AQVybhXTVOzIDn8gdr7UkvgJgeown8STMiiTKfq7HmJ3vTXpNrAXzS6Oa9la2OFa+wW54hs+nABfsPLNkIuaC9X5FXt8X356OgAOv0GUn3EiofMXH928dIXb3kftnF9Y+oS7OE+mwnbp5SfrOOp3TF8v0E3fOuWs/Wfe1QWuDu3+xa7wXfMLLxBb6HqsUV5A4/DaCqwcH4/tMge3PVWJ56jWIpzL33On7wMuzaRnxjbuO6brL3ywLWgXJnuGv2FVfe3CYpLLgT4zstspM/oftREBQlAQffpYQMiaSRuqm+rMbQuXpH2Fi+AO7jA2ENiQBkOk98=
 
-branches:
-  only:
-    - master
-
 before_install:
   # Replace 'nexus.codehaus.org' from '.m2/settings.xml' in Travis (see https://github.com/travis-ci/travis-ci/issues/4629#issuecomment-131214465)
   - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
@@ -44,4 +40,4 @@ notifications:
       - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository} %{result} in %{duration}
     on_success: always
     on_failure: always
-    on_pull_requests: false
+    on_pull_requests: true
