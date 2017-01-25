@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.map.core.MapPersistenceBackend;
+import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.mapdb.serializer.MultivaluedFeatureKeySerializer;
@@ -29,7 +29,6 @@ import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
 import fr.inria.atlanmod.neoemf.data.structure.MultivaluedFeatureKey;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.mapdb.DB;
 import org.mapdb.HTreeMap;
@@ -57,7 +56,7 @@ import java.util.Map;
  * @see DirectWriteMapDbIndicesStore
  * @see DirectWriteMapDbCacheManyStore
  */
-public class MapDbPersistenceBackend extends AbstractPersistenceBackend implements MapPersistenceBackend {
+public class MapDbPersistenceBackend extends AbstractPersistenceBackend implements MapBackend {
 
     /**
      * The literal description of this back-end.
@@ -125,6 +124,7 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
      */
     @SuppressWarnings("unchecked")
     protected MapDbPersistenceBackend(DB db) {
+
         this.db = db;
 
         containersMap = this.db.hashMap(KEY_CONTAINER)
