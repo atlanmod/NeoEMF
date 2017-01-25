@@ -47,7 +47,7 @@ public class NeoMapdbBackend extends AbstractNeoBackend {
     @Override
     public Map<String, Object> getOptions() {
         return MapDbOptionsBuilder.newBuilder()
-                .directWrite()
+                .directWriteIndices()
                 .autocommit()
                 .asMap();
     }
