@@ -71,7 +71,7 @@ import static java.util.Objects.nonNull;
  * @see BlueprintsResourceOptions
  * @see BlueprintsStoreOptions
  */
-public final class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
      * The literal description of the factory.

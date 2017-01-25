@@ -45,7 +45,7 @@ import static java.util.Objects.isNull;
  * ???
  */
 @Experimental
-public final class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
      * The literal description of the factory.

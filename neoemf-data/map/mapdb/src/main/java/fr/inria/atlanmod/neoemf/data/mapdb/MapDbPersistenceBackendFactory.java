@@ -59,7 +59,7 @@ import static java.util.Objects.isNull;
  * @see MapDbOptionsBuilder
  * @see MapDbStoreOptions
  */
-public final class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
+public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFactory {
 
     /**
      * The literal description of the factory.
