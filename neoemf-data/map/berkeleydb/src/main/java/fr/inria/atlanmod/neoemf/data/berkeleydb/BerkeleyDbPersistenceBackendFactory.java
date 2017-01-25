@@ -55,7 +55,7 @@ public class BerkeleyDbPersistenceBackendFactory extends AbstractPersistenceBack
     /**
      * Constructs a new {@code BerkeleyDbPersistenceBackendFactory}.
      */
-    private BerkeleyDbPersistenceBackendFactory() {
+    protected BerkeleyDbPersistenceBackendFactory() {
     }
 
     /**

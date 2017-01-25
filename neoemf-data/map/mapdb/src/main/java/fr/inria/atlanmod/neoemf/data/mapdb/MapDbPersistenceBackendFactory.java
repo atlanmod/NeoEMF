@@ -69,7 +69,7 @@ public class MapDbPersistenceBackendFactory extends AbstractPersistenceBackendFa
     /**
      * Constructs a new {@code MapDbPersistenceBackendFactory}.
      */
-    private MapDbPersistenceBackendFactory() {
+    protected MapDbPersistenceBackendFactory() {
     }
 
     /**

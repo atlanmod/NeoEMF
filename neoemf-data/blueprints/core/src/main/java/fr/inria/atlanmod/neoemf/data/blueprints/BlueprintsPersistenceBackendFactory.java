@@ -89,7 +89,7 @@ public class BlueprintsPersistenceBackendFactory extends AbstractPersistenceBack
     /**
      * Constructs a new {@code BlueprintsPersistenceBackendFactory}.
      */
-    private BlueprintsPersistenceBackendFactory() {
+    protected BlueprintsPersistenceBackendFactory() {
     }
 
     /**
