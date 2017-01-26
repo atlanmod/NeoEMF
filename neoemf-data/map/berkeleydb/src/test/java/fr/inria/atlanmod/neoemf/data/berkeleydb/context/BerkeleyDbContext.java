@@ -25,13 +25,27 @@ import org.eclipse.emf.ecore.EPackage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A specific {@link Context} for the BerkeleyDB implementation.
+ */
 public class BerkeleyDbContext implements Context {
 
+    /**
+     * The name of this context.
+     */
     public static final String NAME = "BerkeleyDB";
 
+    /**
+     * Constructs a new {@code BerkeleyDbContext}.
+     */
     protected BerkeleyDbContext() {
     }
 
+    /**
+     * Returns the instance of this class.
+     *
+     * @return the instance of this class.
+     */
     public static Context get() {
         return Holder.INSTANCE;
     }

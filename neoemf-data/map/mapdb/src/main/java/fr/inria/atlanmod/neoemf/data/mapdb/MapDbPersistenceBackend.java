@@ -167,6 +167,11 @@ public class MapDbPersistenceBackend extends AbstractPersistenceBackend implemen
     public void save() {
         db.commit();
     }
+    
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
 
     @Override
     @VisibleForTesting

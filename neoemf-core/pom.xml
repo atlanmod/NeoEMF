@@ -105,6 +105,15 @@
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
+        
+        <!-- Temporary fix: unable to resolve EMFCompare maven dependency -->
+        <dependency>
+		    <groupId>static-import</groupId>
+		    <artifactId>emf.compare</artifactId>
+		    <version>1.0</version>
+		    <scope>system</scope>
+		    <systemPath>${project.basedir}/src/main/resources/org.eclipse.emf.compare_3.4.0.201611041634.jar</systemPath>
+		</dependency>
 
         <!-- Test -->
 
@@ -199,6 +208,7 @@
                         </_exportcontents>
                         <Require-Bundle>
                             org.eclipse.emf.ecore;visibility:=reexport,
+                            org.eclipse.emf.compare;resolution:=optional,
                             org.eclipse.core.runtime
                         </Require-Bundle>
                     </instructions>

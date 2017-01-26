@@ -136,7 +136,7 @@
         <commons-configuration.version>1.10</commons-configuration.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
-        <guava.version>20.0</guava.version>
+        <guava.version>21.0</guava.version>
         <osgi.version>6.0.0</osgi.version>
 
         <emf.version>2.12.0</emf.version>
@@ -148,6 +148,7 @@
         <assertj.version>3.6.1</assertj.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
+        <cglib-nodep.version>3.2.4</cglib-nodep.version>
     </properties>
 
     <dependencies>
@@ -168,6 +169,12 @@
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
                 <version>${caffeine.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>${cglib-nodep.version}</version>
             </dependency>
 
             <!-- Common -->
@@ -261,6 +268,9 @@
                 <directory>${project.basedir}/src/main/resources</directory>
                 <excludes>
                     <exclude>**/.empty</exclude>
+					<!-- EMFCompare is not needed for now, it can only be used in an Eclipse 
+						context and thus it is set as an optional dependency in the generated MANIFEST -->
+                    <exclude>org.eclipse.emf.compare_3.4.0.201611041634.jar</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -334,6 +344,7 @@
                                 scope=compile|runtime;
                                 type=!pom;
                                 artifactId=!jsr305;
+                                groupId=!static-import;
                                 groupId=!${project.groupId}|org.eclipse.emf|org.osgi
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>

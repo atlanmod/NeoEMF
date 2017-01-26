@@ -29,10 +29,16 @@
         <log4j.version>2.7</log4j.version>
 
         <jmh.version>1.17.1</jmh.version>
+        <cglib-nodep.version>3.2.4</cglib-nodep.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>${cglib-nodep.version}</version>
+            </dependency>
 
             <!-- CDO -->
 

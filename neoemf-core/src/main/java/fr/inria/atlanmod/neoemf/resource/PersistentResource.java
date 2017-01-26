@@ -36,6 +36,12 @@ public interface PersistentResource extends Resource, Resource.Internal, Closeab
      * @return the {@link EStore}
      */
     EStore eStore();
+    
+    /**
+     * Returns {@code true} if the resource is distributed, {@code false} otherwise.
+     * @return {@code true} if the resource is distributed, {@code false} otherwise.
+     */
+    boolean isDistributed();
 
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).

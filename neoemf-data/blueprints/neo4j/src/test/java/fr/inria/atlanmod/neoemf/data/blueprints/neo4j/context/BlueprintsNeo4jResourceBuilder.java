@@ -11,19 +11,31 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context;
 
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsResourceBuilder;
+import fr.inria.atlanmod.neoemf.context.ResourceBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.AbstractBlueprintsResourceBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jResourceOptions;
 
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.Resource;
 
-public class BlueprintsNeo4jResourceBuilder extends BlueprintsResourceBuilder {
+/**
+ * A specific {@link ResourceBuilder} for the Blueprints Neo4j implementation.
+ */
+public class BlueprintsNeo4jResourceBuilder extends AbstractBlueprintsResourceBuilder<BlueprintsNeo4jResourceBuilder> {
 
+    /**
+     * Constructs a new {@code BlueprintsNeo4jResourceBuilder} with the given {@code ePackage}.
+     *
+     * @param ePackage the {@link EPackage} associated to the built {@link Resource}
+     *
+     * @see EPackage.Registry
+     */
     public BlueprintsNeo4jResourceBuilder(EPackage ePackage) {
         super(ePackage);
     }
 
-    public BlueprintsNeo4jResourceBuilder neo4j() {
+    @Override
+    protected void registerFactory() {
         resourceOptions.put(BlueprintsNeo4jResourceOptions.GRAPH_TYPE, BlueprintsNeo4jResourceOptions.GRAPH_TYPE_NEO4J);
-        return this;
     }
 }

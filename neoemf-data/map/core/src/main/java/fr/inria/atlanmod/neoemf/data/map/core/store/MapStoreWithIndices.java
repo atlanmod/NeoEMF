@@ -216,4 +216,105 @@ public class MapStoreWithIndices<P extends MapBackend> extends MapStore<P> {
 
         return isNull(value) ? 0 : (Integer) value;
     }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     */
+    @Override
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        boolean isReference = feature instanceof EReference;
+
+        if (feature.isMany()) {
+            int length = (int) getFromMap(object, feature);
+            if (isReference) {
+                return multiValuedReferenceToArray(object, (EReference) feature, new PersistentEObject[length]);
+            } else {
+                return multiValuedAttributeToArray(object, (EAttribute) feature, new Object[length]);
+            }
+        } else { //monovalued
+            if (isReference) {
+                return monoValuedReferenceToArray(object, (EReference) feature, new PersistentEObject[1]);
+            } else {
+                return monoValuedAttributeToArray(object, (EAttribute)feature, new Object[1]);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     * <p>
+     * Returns the given {@code array} reference if it is not {@code null}.
+     */
+    @Override
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        boolean isReference = feature instanceof EReference;
+
+        if (feature.isMany()) {
+            //int length = (int) getFromMap(object, feature);
+            if (isReference) {
+                return multiValuedReferenceToArray(object, (EReference) feature, array);
+            } else {
+                return multiValuedAttributeToArray(object, (EAttribute) feature, array);
+            }
+        } else { //monovalued
+            if (isReference) {
+                return monoValuedReferenceToArray(object, (EReference) feature, array);
+            } else {
+                return monoValuedAttributeToArray(object, (EAttribute)feature, array);
+            }
+        }
+
+    }
+
+
+    private <T> T[] monoValuedAttributeToArray(PersistentEObject object, EAttribute attr, T[] output) {
+        FeatureKey fk = FeatureKey.from(object,attr);
+        output[0] = (T) parseProperty(attr, backend.valueOf(fk));
+        return output;
+    }
+
+    private <T> T[] multiValuedAttributeToArray(PersistentEObject object, EAttribute attr,  T[] output) {
+        FeatureKey fk = FeatureKey.from(object,attr);
+        for (int i = 0; i < output.length; i++) {
+            output[i] = (T) parseProperty(attr,backend.valueAtIndex(fk.withPosition(i)));
+        }
+        return output;
+    }
+
+    private <T> T[] monoValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
+        FeatureKey fk = FeatureKey.from(object,ref);
+        Id id = (Id) backend.valueOf(fk);
+        output[0] = (T) eObject(id);
+        return output;
+    }
+
+    private <T> T[] multiValuedReferenceToArray(PersistentEObject object, EReference ref,  T[] output) {
+        FeatureKey fk = FeatureKey.from(object,ref);
+        for (int i = 0; i < output.length ; i++) {
+            Id id = (Id) backend.valueAtIndex(fk.withPosition(i));
+            output[i] = (T) eObject(id);
+        }
+        return output;
+    }
 }

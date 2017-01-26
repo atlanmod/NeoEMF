@@ -31,5 +31,4 @@ public class DirectWriteBerkeleyDbStore extends MapStore<MapBackend> {
     public DirectWriteBerkeleyDbStore(Resource.Internal resource, MapBackend backend) {
         super(resource, backend);
     }
-
 }

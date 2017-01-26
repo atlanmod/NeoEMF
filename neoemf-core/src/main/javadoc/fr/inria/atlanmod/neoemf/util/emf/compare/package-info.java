@@ -9,14 +9,8 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.context;
+/**
+ * Provides EMF Compare specific implementation classes that allow model comparison involving PersistentEObjects. (<b>Experimental</b>)
+ */
 
-public interface Contextual {
-
-    /**
-     * Returns the current {@link Context}.
-     *
-     * @return the current {@link Context}.
-     */
-    Context context();
-}
+package fr.inria.atlanmod.neoemf.util;

@@ -25,13 +25,27 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
 
+/**
+ * A specific {@link Context} for the core.
+ */
 public class CoreContext implements Context {
 
+    /**
+     * The name of this context.
+     */
     public static final String NAME = "Core";
 
+    /**
+     * Constructs a new {@code CoreContext}.
+     */
     protected CoreContext() {
     }
 
+    /**
+     * Returns the instance of this class.
+     *
+     * @return the instance of this class.
+     */
     public static Context get() {
         return Holder.INSTANCE;
     }
@@ -56,11 +70,25 @@ public class CoreContext implements Context {
         return PersistenceURI.createFileURI(file, uriScheme());
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This {@code Context} doesn't support the {@link PersistentResource} creation.
+     *
+     * @throws UnsupportedOperationException every time
+     */
     @Override
     public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This {@code Context} doesn't support the {@link PersistentResource} creation.
+     *
+     * @throws UnsupportedOperationException every time
+     */
     @Override
     public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
         throw new UnsupportedOperationException();
@@ -71,6 +99,13 @@ public class CoreContext implements Context {
         return mock(AbstractPersistenceBackendFactory.class);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This {@code Context} doesn't have {@link DirectWriteStore} implementation.
+     *
+     * @throws UnsupportedOperationException every time
+     */
     @Override
     public Class<? extends DirectWriteStore> directWriteClass() {
         throw new UnsupportedOperationException();

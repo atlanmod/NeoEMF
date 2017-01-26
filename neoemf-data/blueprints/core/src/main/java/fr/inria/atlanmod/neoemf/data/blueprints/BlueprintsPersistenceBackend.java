@@ -200,6 +200,11 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
             graph.shutdown();
         }
     }
+    
+    @Override
+    public boolean isDistributed() {
+        return false;
+    }
 
     @Override
     public Map<EClass, Iterable<Vertex>> getAllInstances(EClass eClass, boolean strict) {
@@ -329,7 +334,7 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @return an {@link EClass} representing the metaclass of the element
      */
-    private EClass resolveInstanceOf(Vertex vertex) {
+    public EClass resolveInstanceOf(Vertex vertex) {
         EClass eClass = null;
         Vertex eClassVertex = Iterables.getOnlyElement(vertex.getVertices(Direction.OUT, KEY_INSTANCE_OF), null);
         if (nonNull(eClassVertex)) {
@@ -372,11 +377,8 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
         PersistentEObject object = null;
 
         Id id = new StringId(vertex.getId().toString());
-        if (isNull(eClass)) {
-            eClass = resolveInstanceOf(vertex);
-        }
         try {
-            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
+            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(vertex, eClass));
         }
         catch (Exception e) {
             NeoLogger.error(e);
@@ -444,25 +446,38 @@ public class BlueprintsPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
      */
-    private static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
+    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
+        /**
+         * The vertex associated with the object to retrieve.
+         */
+        private final Vertex vertex;
         /**
          * The class associated with the object to retrieve.
          */
-        private final EClass eClass;
+        private EClass eClass;
 
         /**
          * Constructs a new {@code PersistentEObjectCacheLoader} with the given {@code eClass}.
          *
+         * @param vertex the vertex associated with the object to retrieve
          * @param eClass the class associated with the object to retrieve
          */
-        private PersistentEObjectCacheLoader(EClass eClass) {
+        private PersistentEObjectCacheLoader(Vertex vertex, EClass eClass) {
+            this.vertex = vertex;
             this.eClass = eClass;
         }
 
         @Override
         public PersistentEObject apply(Id id) {
             PersistentEObject object;
+            if(isNull(eClass)) {
+                /*
+                 *  Use the embedded vertex to compute the eClass instead of the id to avoid
+                 *  a backend query to retrieve the vertex
+                 */
+                eClass = BlueprintsPersistenceBackend.this.resolveInstanceOf(vertex);
+            }
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {

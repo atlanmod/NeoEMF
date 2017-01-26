@@ -179,8 +179,7 @@ public abstract class MapStore<P extends MapBackend> extends AbstractDirectWrite
 
         PersistentEObject object = null;
         if (nonNull(id)) {
-            EClass eClass = resolveInstanceOf(id);
-            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader(eClass));
+            object = persistentObjectsCache.get(id, new PersistentEObjectCacheLoader());
             if (object.resource() != resource()) {
                 object.resource(resource());
             }
@@ -291,6 +290,84 @@ public abstract class MapStore<P extends MapBackend> extends AbstractDirectWrite
 
         FeatureKey featureKey = FeatureKey.from(internalObject, feature);
         backend.storeValue(featureKey, new Object[]{});
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature)}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     */
+    @Override
+    public Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Object value = getFromMap(object, feature);
+        if (feature.isMany()) {
+            int valueLength = ((Object[]) value).length;
+            return internalToArray(value, feature, new Object[valueLength]);
+        } else {
+            return internalToArray(value, feature, new Object[1]);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is an efficient implementation of
+     * {@link AbstractDirectWriteStore#toArray(InternalEObject, EStructuralFeature, Object[])}
+     * that takes benefit of the underlying backend to deserialize the entire
+     * list once and return it as an array, avoiding multiple {@code get()}
+     * operations.
+     * <p>
+     * Returns the given {@code array} reference if it is not {@code null}.
+     */
+    @Override
+    public <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, T[] array) {
+        checkArgument(feature instanceof EReference || feature instanceof EAttribute,
+                "Cannot compute toArray from feature {0}: unkown EStructuralFeature type {1}",
+                feature.getName(), feature.getClass().getSimpleName());
+        PersistentEObject object = PersistentEObject.from(internalObject);
+        Object value = getFromMap(object, feature);
+        return internalToArray(value, feature, array);
+    }
+
+    /**
+     * Reifies the element(s) in {@code value} and put them into {@code output}.
+     * @param value the backend record to reify
+     * @param feature the {@link EStructuralFeature} used to reify {@code value}
+     * @param output the array to fill
+     * @return {@code output} filled with the reified values
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T[] internalToArray(Object value, EStructuralFeature feature, T[] output) {
+        if(feature.isMany()) {
+            Object[] storedArray = (Object[])value;
+            if(feature instanceof EReference) {
+                for(int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T)eObject((Id)storedArray[i]);
+                }
+            }
+            else { // EAttribute
+                for(int i = 0; i < storedArray.length; i++) {
+                    output[i] = (T)parseProperty((EAttribute)feature, storedArray[i]);
+                }
+            }
+        }
+        else {
+            if(feature instanceof EReference) {
+                output[0] = (T)eObject((Id)value);
+            }
+            else { // EAttribute
+                output[0] = (T)parseProperty((EAttribute)feature, value);
+            }
+        }
+        return output;
     }
 
     @Override
@@ -455,40 +532,30 @@ public abstract class MapStore<P extends MapBackend> extends AbstractDirectWrite
         return eObject((Id) oldId);
     }
 
+
     /**
      * A cache loader to retrieve a {@link PersistentEObject} stored in the database.
      */
-    protected static class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
-
-        /**
-         * The class associated with the object to retrieve.
-         */
-        private final EClass eClass;
-
-        /**
-         * Constructs a new {@code PersistentEObjectCacheLoader} with the given {@code eClass}.
-         *
-         * @param eClass the class associated with the object to retrieve
-         */
-        public PersistentEObjectCacheLoader(EClass eClass) {
-            this.eClass = eClass;
-        }
+    private class PersistentEObjectCacheLoader implements Function<Id, PersistentEObject> {
 
         @Override
         public PersistentEObject apply(Id id) {
             PersistentEObject object;
+            EClass eClass = MapStore.this.resolveInstanceOf(id);
             if (nonNull(eClass)) {
                 EObject eObject;
                 if (Objects.equals(eClass.getEPackage().getClass(), EPackageImpl.class)) {
                     // Dynamic EMF
                     eObject = PersistenceFactory.getInstance().create(eClass);
-                } else {
+                }
+                else {
                     eObject = EcoreUtil.create(eClass);
                 }
                 object = PersistentEObject.from(eObject);
                 object.id(id);
                 object.setMapped(true);
-            } else {
+            }
+            else {
                 throw new RuntimeException("Element " + id + " does not have an associated EClass");
             }
             return object;

@@ -60,7 +60,7 @@ public class HBasePersistenceBackendFactory extends AbstractPersistenceBackendFa
     /**
      * Constructs a new {@code HBasePersistenceBackendFactory}.
      */
-    private HBasePersistenceBackendFactory() {
+    protected HBasePersistenceBackendFactory() {
     }
 
     /**

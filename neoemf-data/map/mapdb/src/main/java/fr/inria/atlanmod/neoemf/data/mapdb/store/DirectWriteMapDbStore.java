@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.store.AbstractPersistentStoreDecorator;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import org.eclipse.emf.ecore.resource.Resource;
 
+
 /**
  * An {@link AbstractDirectWriteStore} that translates model-level operations to MapDB operations.
  * <p>
@@ -47,4 +48,5 @@ public class DirectWriteMapDbStore extends MapStore<MapBackend> {
     public DirectWriteMapDbStore(Resource.Internal resource, MapBackend backend) {
         super(resource, backend);
     }
+
 }

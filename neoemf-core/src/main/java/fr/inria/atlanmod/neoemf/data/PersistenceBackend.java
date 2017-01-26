@@ -51,6 +51,12 @@ public interface PersistenceBackend extends Closeable {
      * Saves the modifications of the owned {@link EObject}s in the underlying database.
      */
     void save();
+    
+    /**
+     * Returns {@code true} if the backend is distributed, {@code false} otherwise.
+     * @return {@code true} if the backend is distributed, {@code false} otherwise.
+     */
+    boolean isDistributed();
 
     /**
      * Back-end specific computation of {@link Resource#getAllContents()}.
