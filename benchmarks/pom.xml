@@ -25,9 +25,7 @@
     <properties>
         <cdo.version>4.3.0</cdo.version>
         <neo4j.version>1.9.6</neo4j.version>
-
         <log4j.version>2.7</log4j.version>
-
         <jmh.version>1.17.1</jmh.version>
         <cglib-nodep.version>3.2.4</cglib-nodep.version>
     </properties>
@@ -40,6 +38,11 @@
                 <version>${cglib-nodep.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>${cglib-nodep.version}</version>
+            </dependency>
             <!-- CDO -->
 
             <dependency>
@@ -79,6 +82,12 @@
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-data-mapdb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-berkeleydb</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

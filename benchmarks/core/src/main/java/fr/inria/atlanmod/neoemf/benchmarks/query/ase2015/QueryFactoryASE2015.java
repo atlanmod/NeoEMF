@@ -117,7 +117,7 @@ public class QueryFactoryASE2015 extends QueryFactory {
                 }
             }
             catch (NullPointerException e) {
-                log.error(e);
+                log.error("Null pointer", e);
             }
 
             return result.size();
