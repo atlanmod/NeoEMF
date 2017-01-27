@@ -388,16 +388,17 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
      *
      * @param featureKey ???
      *
-     * @return ???
+     * @return the previous (eventually null) value of the feature.
      */
     public Object removeFeature(FeatureKey featureKey) {
         DatabaseEntry key = new DatabaseEntry(fkSerializer.serialize(featureKey));
         DatabaseEntry value = new DatabaseEntry();
         Object old = null;
         try {
-            features.get(null, key, value, LockMode.DEFAULT);
-            features.delete(null, key);
-            old = objSerializer.deserialize(value.getData());
+            if (features.get(null, key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS){
+                features.delete(null, key);
+                old = objSerializer.deserialize(value.getData());
+            }
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
@@ -428,8 +429,8 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
     /**
      * Stores the single value of a given multi-valued feature at the given index.
      *
-     * @param featureKey ???
-     * @param obj        ???
+     * @param featureKey the key
+     * @param obj        the value
      *
      * @return ???
      */
