@@ -12,6 +12,7 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.io.InputHandler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +23,13 @@ import java.io.OutputStream;
  * @note It correspond to the tail of the parsing process in case of an export.
  */
 public interface Writer extends InputHandler {
+
+    /**
+     * Creates a series of processors in order to build and analyze the writen structure.
+     *
+     * @return a processor, or several embedded
+     */
+    Processor defaultProcessor();
 
     /**
      * Writes in a stream based on received notifications.

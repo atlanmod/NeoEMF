@@ -15,5 +15,4 @@ package fr.inria.atlanmod.neoemf.io.writer;
  * An abstract {@link Writer}.
  */
 public abstract class AbstractWriter implements Writer {
-
 }
