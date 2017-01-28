@@ -14,6 +14,12 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
+import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,6 +32,11 @@ import static java.util.Objects.isNull;
  * namespaces.
  */
 public abstract class AbstractReader extends AbstractInputNotifier<Processor> implements Reader {
+
+    /**
+     * The timer to log reading progress.
+     */
+    private Timer progressTimer;
 
     /**
      * Formats a prefixed value as {@code "prefix:value"}. If the {@code prefix} is {@code null}, the returned value
@@ -48,6 +59,7 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
      */
     protected void processStartDocument() {
         notifyStartDocument();
+        progress(0);
     }
 
     /**
@@ -66,6 +78,69 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
      * Processes the end of the current document.
      */
     protected void processEndDocument() {
+        progress(100);
         notifyEndDocument();
+    }
+
+    @Override
+    public void read(InputStream stream) throws IOException {
+        if (!hasHandler()) {
+            throw new IllegalStateException("This notifier hasn't any handler");
+        }
+
+        checkNotNull(stream);
+
+        progressTimer = new Timer(true);
+        progressTimer.schedule(new ProgressTimer(stream), 10000, 30000);
+    }
+
+    /**
+     * Logs the progress of the current reading.
+     *
+     * @param percent the percentage of data read on the total size of the data
+     */
+    protected void progress(double percent) {
+        NeoLogger.debug("Progress : {0}", String.format("%5s", String.format("%,.0f %%", percent)));
+
+        if (percent >= 100) {
+            progressTimer.cancel();
+        }
+    }
+
+    /**
+     * A {@link TimerTask} that logs progress.
+     */
+    private class ProgressTimer extends TimerTask {
+
+        /**
+         * The stream to watch.
+         */
+        private final InputStream stream;
+
+        /**
+         * The total size of the stream.
+         */
+        private final long total;
+
+        /**
+         * Constructs a new {@code ProgressTimer}.
+         *
+         * @param stream the stream to watch
+         *
+         * @throws IOException if an I/O error occurs
+         */
+        private ProgressTimer(InputStream stream) throws IOException {
+            this.stream = stream;
+            this.total = stream.available();
+        }
+
+        @Override
+        public void run() {
+            try {
+                progress((double) (total - stream.available()) / (double) total * 100d);
+            }
+            catch (Exception ignore) {
+            }
+        }
     }
 }

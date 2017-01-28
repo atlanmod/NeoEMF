@@ -74,7 +74,7 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
     protected StructuralPersistanceHandler read(File filePath) throws IOException {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
-        XmiStreamReader reader = new XmiStreamReader();
+        Reader reader = new XmiStAXCursorReader();
 
         Processor processor = new PersistenceNotifier();
         processor.addHandler(persistanceHandler);

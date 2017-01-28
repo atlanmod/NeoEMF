@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * Tests that verify that the {@link XmiStreamReader} properly interprets the read data.
+ * Tests that verify that the XMI reader properly interprets the read data.
  */
 public class XmiStreamReaderTest extends AbstractXmiReaderTest {
 
@@ -263,7 +263,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      */
     @Test
     public void testReaderWithoutHandler() {
-        Throwable thrown = catchThrowable(() -> new XmiStreamReader().read(null));
+        Throwable thrown = catchThrowable(() -> new XmiStAXCursorReader().read(null));
         assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }
 }

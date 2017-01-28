@@ -15,6 +15,8 @@ import com.google.common.base.Stopwatch;
 
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
+import static java.util.Objects.nonNull;
+
 /**
  * A {@link PersistenceHandler} wrapper that measures elapsed time between the start and the end of an I/O process.
  */
@@ -66,7 +68,12 @@ public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandler
 
     @Override
     public void processEndDocument() {
-        NeoLogger.info("[{0}] Document analysis done in {1}", name, stopWatch.stop());
+        if (nonNull(stopWatch)) {
+            NeoLogger.info("[{0}] Document analysis done in {1}", name, stopWatch.stop());
+        }
+        else {
+            NeoLogger.info("[{0}] Document analysis done", name);
+        }
 
         super.processEndDocument();
     }

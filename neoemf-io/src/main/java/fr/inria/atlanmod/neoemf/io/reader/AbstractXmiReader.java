@@ -14,6 +14,10 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
@@ -22,8 +26,6 @@ import fr.inria.atlanmod.neoemf.io.structure.Namespace;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
 import fr.inria.atlanmod.neoemf.io.structure.StructuralFeature;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
-
-import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,24 +137,15 @@ public abstract class AbstractXmiReader extends AbstractReader {
         return references;
     }
 
-    /**
-     * Returns the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix.
-     *
-     * @param prefixedValue the value from which to extract the prefix
-     *
-     * @return the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix
-     */
-    private static String getPrefix(String prefixedValue) {
-        String prefix = null;
+    @Override
+    public Processor defaultProcessor() {
+        Processor defaultProcessor;
 
-        if (nonNull(prefixedValue)) {
-            List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
-            if (splittedName.size() > 1) {
-                prefix = splittedName.get(0);
-            }
-        }
+        defaultProcessor = new PersistenceNotifier();
+        defaultProcessor = new XPathProcessor(defaultProcessor);
+        defaultProcessor = new EcoreProcessor(defaultProcessor);
 
-        return prefix;
+        return defaultProcessor;
     }
 
     /**
@@ -162,29 +155,26 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param localName  the name of the element
      * @param attributes the attributes of the element
      */
-    protected void processStartElement(String uri, String localName, Attributes attributes) {
+    protected void processStartElement(String uri, String localName, Iterable<javax.xml.stream.events.Attribute> attributes) {
         Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
 
-        int attrLength = attributes.getLength();
-
-        List<StructuralFeature> structuralFeatures = new ArrayList<>(attrLength);
+        List<StructuralFeature> structuralFeatures = new ArrayList<>();
 
         // Processes features
-        if (attrLength > 0) {
-            for (int i = 0; i < attrLength; i++) {
-                List<StructuralFeature> features = processFeatures(element,
-                        getPrefix(attributes.getQName(i)),
-                        attributes.getLocalName(i),
-                        attributes.getValue(i));
+        for (javax.xml.stream.events.Attribute attribute : attributes) {
+            List<StructuralFeature> features = processFeatures(
+                    element,
+                    attribute.getName().getPrefix(),
+                    attribute.getName().getLocalPart(),
+                    attribute.getValue());
 
-                if (ignoreElement) {
-                    // No need to go further
-                    return;
-                }
+            if (ignoreElement) {
+                // No need to go further
+                return;
+            }
 
-                if (nonNull(features) && !features.isEmpty()) {
-                    structuralFeatures.addAll(features);
-                }
+            if (nonNull(features) && !features.isEmpty()) {
+                structuralFeatures.addAll(features);
             }
         }
 
@@ -244,7 +234,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
         boolean isSpecialFeature = false;
 
         // A special feature always has a prefix
-        if (nonNull(prefix)) {
+        if (nonNull(prefix) && !prefix.isEmpty()) {
             final String prefixedValue = prefix + ':' + localName;
 
             if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type

@@ -14,7 +14,7 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ public class Importer {
     public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws IOException {
         checkArgument(persistenceHandlers.length > 0);
 
-        Reader reader = new XmiStreamReader();
+        Reader reader = new XmiStAXCursorReader();
         Processor processor = reader.defaultProcessor();
 
         Arrays.stream(persistenceHandlers).forEach(processor::addHandler);

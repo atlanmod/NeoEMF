@@ -15,7 +15,8 @@ import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
-import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.Reader;
+import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
 import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.Namespace;
@@ -79,7 +80,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
     private StructuralPersistanceHandler read(File filePath) throws IOException {
         StructuralPersistanceHandler persistanceHandler = new StructuralPersistanceHandler();
 
-        XmiStreamReader reader = new XmiStreamReader();
+        Reader reader = new XmiStAXCursorReader();
 
         Processor processor = new PersistenceNotifier();
         processor = new XPathProcessor(processor);
