@@ -21,7 +21,6 @@ import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
 import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
-import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.persistence.TimerPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -357,7 +356,6 @@ public class ImportTest extends AbstractInputTest {
         BlueprintsPersistenceBackend backend = createNeo4jPersistenceBackend();
         PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
 
-        persistenceHandler = new LoggingPersistenceHandlerDecorator(persistenceHandler);
         persistenceHandler = new CounterPersistenceHandlerDecorator(persistenceHandler);
         persistenceHandler = new TimerPersistenceHandlerDecorator(persistenceHandler);
 

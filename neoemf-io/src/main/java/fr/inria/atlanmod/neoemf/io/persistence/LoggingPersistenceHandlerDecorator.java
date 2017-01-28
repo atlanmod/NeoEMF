@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.io.structure.Attribute;
 import fr.inria.atlanmod.neoemf.io.structure.Classifier;
 import fr.inria.atlanmod.neoemf.io.structure.Identifier;
 import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.Objects;
@@ -23,6 +24,11 @@ import java.util.Objects;
  * A {@link PersistenceHandler} wrapper that logs every events.
  */
 public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
+
+    /**
+     * The special logger.
+     */
+    private static final Logger log = NeoLogger.rootLogger();
 
     /**
      * The current identifier, used to replace a full reference by "this".
@@ -40,14 +46,14 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processStartDocument() {
-        NeoLogger.debug("Starting document");
+        log.info("Starting document");
 
         super.processStartDocument();
     }
 
     @Override
     public void processStartElement(Classifier classifier) {
-        NeoLogger.debug("[E] {0}:{1} \"{2}\" : {3} = {4}",
+        log.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
                 classifier.getNamespace().getPrefix(),
                 classifier.getLocalName(),
                 classifier.getClassName(),
@@ -61,7 +67,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processAttribute(Attribute attribute) {
-        NeoLogger.debug("[A]    {0} ({1}) = {2}",
+        log.info("[A]    {0} ({1}) = {2}",
                 attribute.getLocalName(),
                 attribute.getIndex(),
                 attribute.getValue());
@@ -71,7 +77,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processReference(Reference reference) {
-        NeoLogger.debug("[R]    {0} ({1}) = {2} -> {3}",
+        log.info("[R]    {0} ({1}) = {2} -> {3}",
                 reference.getLocalName(),
                 reference.getIndex(),
                 Objects.isNull(reference.getId()) ? "this" : reference.getId(),
@@ -82,7 +88,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
 
     @Override
     public void processEndDocument() {
-        NeoLogger.debug("Ending document");
+        log.info("Ending document");
 
         super.processEndDocument();
     }
