@@ -11,6 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
@@ -43,7 +44,7 @@ public final class Importer {
      * @throws IllegalArgumentException if there is no handler to notify
      * @throws IOException              if an error occurred during the import
      */
-    public static void fromXmi(InputStream stream, Handler inputHandler) throws IOException {
+    public static void fromXmi(InputStream stream, PersistenceHandler inputHandler) throws IOException {
         checkNotNull(inputHandler, "The handler must be defined");
 
         Reader reader = new XmiStAXCursorReader();

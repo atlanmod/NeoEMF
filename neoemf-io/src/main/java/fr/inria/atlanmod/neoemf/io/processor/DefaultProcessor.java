@@ -26,6 +26,7 @@ public final class DefaultProcessor extends AbstractNotifier<Handler> implements
      * Constructs a new {@code DefaultProcessor}.
      */
     public DefaultProcessor() {
+        super();
     }
 
     @Override

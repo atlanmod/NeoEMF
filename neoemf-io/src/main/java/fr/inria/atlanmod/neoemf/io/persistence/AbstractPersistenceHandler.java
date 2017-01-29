@@ -18,7 +18,6 @@ import com.google.common.collect.HashMultimap;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.hash.HasherFactory;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
@@ -38,11 +37,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link Handler} that persists data in a {@link PersistenceBackend}, based on received events.
+ * An {@link PersistenceHandler} that persists data in a {@link PersistenceBackend}, based on received events.
  *
  * @param <P> the type of the {@link PersistenceBackend} targeted by this handler.
  */
-public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements Handler {
+public abstract class AbstractPersistenceHandler<P extends PersistenceBackend> implements PersistenceHandler {
 
     /**
      * The default cache size.

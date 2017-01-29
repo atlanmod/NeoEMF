@@ -19,8 +19,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.io.BlueprintsHandlerFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOptionsBuilder;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Importer;
+import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -343,7 +343,7 @@ public class ImportTest extends AbstractInputTest {
         return resource.getContents().get(0);
     }
 
-    private void loadWithNeo(final File file, final Handler inputHandler) throws IOException {
+    private void loadWithNeo(final File file, final PersistenceHandler inputHandler) throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
@@ -352,7 +352,7 @@ public class ImportTest extends AbstractInputTest {
 
     private EObject loadWithNeoBlueprints(final File file) throws IOException {
         BlueprintsPersistenceBackend backend = createNeo4jPersistenceBackend();
-        Handler handler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
+        PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
 
         loadWithNeo(file, handler);
 
