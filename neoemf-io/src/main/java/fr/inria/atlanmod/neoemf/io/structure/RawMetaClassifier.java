@@ -12,27 +12,27 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A simple representation of a element with a {@link Namespace} and a name.
+ * A simple representation of a element with a {@link RawNamespace} and a name.
  */
-public class MetaClassifier extends NamedElement {
+public class RawMetaClassifier extends RawElement {
 
     /**
-     * The instance of the default {@code MetaClassifier}.
+     * The instance of the default {@code RawMetaClassifier}.
      */
-    private static final MetaClassifier DEFAULT = new MetaClassifier(Namespace.getDefault(), "EObject");
+    private static final RawMetaClassifier DEFAULT = new RawMetaClassifier(RawNamespace.getDefault(), "EObject");
 
     /**
      * The namespace of this metaclassifier.
      */
-    private Namespace namespace;
+    private RawNamespace namespace;
 
     /**
-     * Constructs a new {@code MetaClassifier} with the given {@code namespace} and {@code localName}.
+     * Constructs a new {@code RawMetaClassifier} with the given {@code namespace} and {@code localName}.
      *
      * @param namespace the namespace of this metaclassifier
      * @param localName the name of this metaclassifier
      */
-    public MetaClassifier(Namespace namespace, String localName) {
+    public RawMetaClassifier(RawNamespace namespace, String localName) {
         super(localName);
         this.namespace = namespace;
     }
@@ -42,7 +42,7 @@ public class MetaClassifier extends NamedElement {
      *
      * @return the metaclassifier representing "ecore:EObject"
      */
-    public static MetaClassifier getDefault() {
+    public static RawMetaClassifier getDefault() {
         return DEFAULT;
     }
 
@@ -51,7 +51,7 @@ public class MetaClassifier extends NamedElement {
      *
      * @return the namespace
      */
-    public Namespace getNamespace() {
+    public RawNamespace namespace() {
         return namespace;
     }
 
@@ -60,12 +60,12 @@ public class MetaClassifier extends NamedElement {
      *
      * @param namespace the namespace
      */
-    public void setNamespace(Namespace namespace) {
+    public void namespace(RawNamespace namespace) {
         this.namespace = namespace;
     }
 
     @Override
     public String toString() {
-        return namespace.getPrefix() + ':' + getLocalName();
+        return namespace.prefix() + ':' + localName();
     }
 }

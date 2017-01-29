@@ -9,52 +9,51 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.mock;
+package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.annotations.Experimental;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
- * A persistence handler that does nothing.
- * <p>
- * Using for basic tests.
+ *
  */
-public class DummyPersistenceHandler implements Handler {
+@Experimental
+public abstract class AbstractXmiWriter extends AbstractWriter {
 
     @Override
     public void processStartDocument() {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void processStartElement(RawClassifier classifier) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void processAttribute(RawAttribute attribute) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void processReference(RawReference reference) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void processEndElement() {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void processEndDocument() {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void processCharacters(String characters) {
-        // Do nothing
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

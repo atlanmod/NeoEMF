@@ -16,12 +16,12 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 /**
  * A simple representation of a structural feature, which can be either a reference or an attribute.
  */
-public abstract class StructuralFeature extends NamedElement {
+public abstract class RawFeature extends RawElement {
 
     /**
      * The identifier of the feature.
      */
-    private Identifier id;
+    private RawIdentifier id;
 
     /**
      * The index of the feature.
@@ -34,12 +34,12 @@ public abstract class StructuralFeature extends NamedElement {
     private boolean many;
 
     /**
-     * Constructs a new {@code StructuralFeature} with the given {@code name}. Its index is initialized to
+     * Constructs a new {@code RawFeature} with the given {@code name}. Its index is initialized to
      * {@link PersistentStore#NO_INDEX}.
      *
      * @param localName the name of this feature
      */
-    public StructuralFeature(String localName) {
+    public RawFeature(String localName) {
         super(localName);
         this.index = PersistentStore.NO_INDEX;
     }
@@ -49,7 +49,7 @@ public abstract class StructuralFeature extends NamedElement {
      *
      * @return the identifier
      */
-    public Identifier getId() {
+    public RawIdentifier id() {
         return id;
     }
 
@@ -58,7 +58,7 @@ public abstract class StructuralFeature extends NamedElement {
      *
      * @param id the identifier
      */
-    public void setId(Identifier id) {
+    public void id(RawIdentifier id) {
         this.id = id;
     }
 
@@ -67,7 +67,7 @@ public abstract class StructuralFeature extends NamedElement {
      *
      * @return the index
      */
-    public int getIndex() {
+    public int index() {
         return index;
     }
 
@@ -76,7 +76,7 @@ public abstract class StructuralFeature extends NamedElement {
      *
      * @param index the index
      */
-    public void setIndex(int index) {
+    public void index(int index) {
         this.index = index;
     }
 
@@ -85,7 +85,7 @@ public abstract class StructuralFeature extends NamedElement {
      *
      * @return {@code true} if this feature is multi-valued
      */
-    public boolean isMany() {
+    public boolean many() {
         return many;
     }
 
@@ -94,12 +94,12 @@ public abstract class StructuralFeature extends NamedElement {
      *
      * @param many {@code true} if this feature is multi-valued
      */
-    public void setMany(boolean many) {
+    public void many(boolean many) {
         this.many = many;
     }
 
     /**
-     * Defines whether this feature is a {@link Reference}.
+     * Defines whether this feature is a {@link RawReference}.
      *
      * @return {@code true} if this feature is a reference.
      */
@@ -108,7 +108,7 @@ public abstract class StructuralFeature extends NamedElement {
     }
 
     /**
-     * Defines whether this feature is an {@link Attribute}.
+     * Defines whether this feature is an {@link RawAttribute}.
      *
      * @return {@code true} if this feature is an attribute.
      */

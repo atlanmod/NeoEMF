@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * Tests that verify that the {@link XmiStreamReader} properly interprets the read data.
+ * Tests that verify that the XMI reader properly interprets the read data.
  */
 public class XmiStreamReaderTest extends AbstractXmiReaderTest {
 
@@ -42,13 +42,13 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      */
     @Test
     public void testNamespaces() {
-        Namespace.Registry nsRegistry = Namespace.Registry.getInstance();
+        RawNamespace.Registry nsRegistry = RawNamespace.Registry.getInstance();
         Iterable<String> prefixes = nsRegistry.getPrefixes();
         assertThat(prefixes).containsExactlyInAnyOrder("xsi", "java", "xmi");
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         assertThat(root.getNamespace()).isNotNull();
-        assertThat(root.getNamespace().getPrefix()).isEqualTo("java");
+        assertThat(root.getNamespace().prefix()).isEqualTo("java");
     }
 
     /**
@@ -104,7 +104,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
-        List<Attribute> attributeList;
+        List<RawAttribute> attributeList;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         assertThat(root.getAttributes()).isEmpty(); // Assert that 'xmi:version' and 'xmlns' don't exist
@@ -158,7 +158,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
-        List<Reference> referenceList;
+        List<RawReference> referenceList;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         assertThat(root.getReferences()).isEmpty();
@@ -216,7 +216,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
         ClassifierMock mockChild;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
-        Namespace ns = root.getNamespace();
+        RawNamespace ns = root.getNamespace();
         assertThat(root.getMetaClassifier()).isNull();
         {
             //@Model/@ownedElements.0/@ownedPackages[4]/@ownedElements.0
@@ -263,7 +263,7 @@ public class XmiStreamReaderTest extends AbstractXmiReaderTest {
      */
     @Test
     public void testReaderWithoutHandler() {
-        Throwable thrown = catchThrowable(() -> new XmiStreamReader().read(null));
+        Throwable thrown = catchThrowable(() -> new XmiStAXCursorReader().read(null));
         assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }
 }

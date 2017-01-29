@@ -12,24 +12,29 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
-import fr.inria.atlanmod.neoemf.io.structure.StructuralFeature;
+import fr.inria.atlanmod.neoemf.io.processor.DefaultProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawFeature;
+import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import org.xml.sax.Attributes;
-
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
 
 import static java.util.Objects.nonNull;
 
@@ -37,48 +42,6 @@ import static java.util.Objects.nonNull;
  * An abstract {@link Reader} that processes the raw structure of XMI files.
  */
 public abstract class AbstractXmiReader extends AbstractReader {
-
-    /**
-     * The namespace prefix of XSI.
-     */
-    protected static final String XSI_NS = "xsi";
-
-    /**
-     * The namespace prefix of XMI.
-     */
-    protected static final String XMI_NS = "xmi";
-
-    /**
-     * The attribute key representing the identifier of an element.
-     */
-    private static final String XMI_ID = format(XMI_NS, "id");
-
-    /**
-     * The attribute key representing a reference to an identified element.
-     *
-     * @see #XMI_ID
-     */
-    private static final String XMI_IDREF = format(XMI_NS, "idref");
-
-    /**
-     * The attribute key representing the metaclass of an element.
-     */
-    private static final String XMI_XSI_TYPE = format("(" + XMI_NS + "|" + XSI_NS + ")", "type");
-
-    /**
-     * The attribute key representing the version of the parsed XMI file.
-     */
-    private static final String XMI_VERSION_ATTR = format(XMI_NS, "version");
-
-    /**
-     * The attribute key representing a link to another document.
-     */
-    private static final String PROXY = "href";
-
-    /**
-     * The attribute key representing a name of an element.
-     */
-    private static final String NAME = "name";
 
     /**
      * A regex pattern of an attribute containing one or several references (XPath reference). Multiple references must
@@ -105,6 +68,182 @@ public abstract class AbstractXmiReader extends AbstractReader {
     private boolean ignoreElement = false;
 
     /**
+     * The current element.
+     */
+    private RawClassifier currentElement;
+
+    /**
+     * A collection that holds all features of the {@link #currentElement}.
+     */
+    private Collection<RawFeature> currentFeatures;
+
+    @Override
+    public Processor defaultProcessor() {
+        Processor defaultProcessor;
+
+        defaultProcessor = new DefaultProcessor();
+        defaultProcessor = new XPathProcessor(defaultProcessor);
+        defaultProcessor = new EcoreProcessor(defaultProcessor);
+
+        return defaultProcessor;
+    }
+
+    /**
+     * Starts a new element.
+     * <p>
+     * <b>Note:</b> An element must be flushed with the {@link #flushStartElement()} method after analysing all its
+     * attributes.
+     *
+     * @param uri  the URI of the element
+     * @param name the name of the element
+     */
+    protected void readStartElement(String uri, String name) {
+        currentElement = new RawClassifier(RawNamespace.Registry.getInstance().getFromUri(uri), name);
+        currentFeatures = new ArrayList<>();
+    }
+
+    /**
+     * Reads a new attribute of the current element.
+     *
+     * @param prefix the prefix of the attribute
+     * @param name   the name of the attribute
+     * @param value  the value of the attribute
+     */
+    protected void readAttribute(String prefix, String name, String value) {
+        if (!ignoreElement) {
+            Collection<RawFeature> localFeatures = processFeatures(prefix, name, value);
+
+            if (ignoreElement) {
+                // No need to go further
+                return;
+            }
+
+            if (!localFeatures.isEmpty()) {
+                currentFeatures.addAll(localFeatures);
+            }
+        }
+    }
+
+    /**
+     * Finalizes the current element and sends notifications to handlers.
+     */
+    protected void flushStartElement() {
+        if (!ignoreElement) {
+            // Notifies the current element
+            notifyStartElement(currentElement);
+
+            // Notifies the features
+            for (RawFeature feature : currentFeatures) {
+                if (feature.isAttribute()) {
+                    notifyAttribute((RawAttribute) feature);
+                }
+                else {
+                    notifyReference((RawReference) feature);
+                }
+            }
+
+            // Reset the current element/features
+            currentElement = null;
+            currentFeatures = null;
+        }
+    }
+
+    /**
+     * Processes the end of an element.
+     */
+    protected void readEndElement() {
+        if (!ignoreElement) {
+            notifyEndElement();
+        }
+        else {
+            ignoreElement = false;
+        }
+    }
+
+    /**
+     * Processes a feature, which can be an attribute or a reference.
+     *
+     * @param prefix the prefix of the feature
+     * @param name   the name of the feature
+     * @param value  the value of the feature
+     *
+     * @return a list of {@link RawFeature} that can be empty.
+     *
+     * @see #processAttribute(String, String)
+     * @see #processReference(String, Iterable)
+     */
+    @Nonnull
+    private Collection<RawFeature> processFeatures(String prefix, String name, String value) {
+        Collection<RawFeature> features;
+
+        if (!processSpecialFeature(prefix, name, value)) {
+            Collection<String> references = parseReference(value);
+            if (!references.isEmpty()) {
+                features = processReference(name, references);
+            }
+            else {
+                features = processAttribute(name, value);
+            }
+        }
+        else {
+            features = Collections.emptyList();
+        }
+
+        return features;
+    }
+
+    /**
+     * Processes a special feature as 'xsi:type', 'xmi:id' or 'xmi:idref'.
+     *
+     * @param prefix the prefix of the feature
+     * @param name   the name of the feature
+     * @param value  the value of the feature
+     *
+     * @return {@code true} if the given feature is a special feature
+     */
+    private boolean processSpecialFeature(String prefix, String name, String value) {
+        boolean isSpecialFeature = false;
+
+        // A special feature always has a prefix
+        if (nonNull(prefix) && !prefix.isEmpty()) {
+            final String prefixedValue = prefix + ':' + name;
+
+            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) { // xsi:type or xsi:type
+                processMetaClass(value);
+                isSpecialFeature = true;
+            }
+            else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // xmi:id
+                currentElement.id(RawIdentifier.original(value));
+                isSpecialFeature = true;
+            }
+            else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // xmi:idref
+                // It's not a feature of the current element, but a reference of the previous
+                RawReference reference = new RawReference(currentElement.localName());
+                reference.idReference(RawIdentifier.original(value));
+                notifyReference(reference);
+                ignoreElement = true;
+                isSpecialFeature = true;
+            }
+            else if (Objects.equals(XmiConstants.XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
+                NeoLogger.debug("XMI version : " + value);
+                isSpecialFeature = true;
+            }
+        }
+        else if (Objects.equals(XmiConstants.PROXY, name)) {
+            NeoLogger.warn(
+                    "{0} is an external reference to {1}. This feature is not supported yet.",
+                    currentElement.localName(), value);
+            ignoreElement = true;
+        }
+        else if (Objects.equals(XmiConstants.NAME, name)) {
+            currentElement.className(value);
+            isSpecialFeature = true;
+        }
+
+        return isSpecialFeature;
+    }
+
+    /**
      * Returns a list of {@link String} representing XPath references, or {@code null} if the {@code attribute} does not
      * match with {@link #PATTERN_WELL_FORMED_REF}.
      *
@@ -115,252 +254,90 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @see #PATTERN_WELL_FORMED_REF
      */
-    private static List<String> getReferences(String attribute) {
-        List<String> references = null;
+    @Nonnull
+    private Collection<String> parseReference(String attribute) {
+        List<String> references;
 
         if (!attribute.trim().isEmpty()) {
             references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
 
             boolean isReference = true;
-            for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
+            for (int i = 0, referenceCount = references.size(); i < referenceCount && isReference; i++) {
                 String ref = references.get(i);
                 isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
             }
 
             if (!isReference) {
-                references = null;
+                references = Collections.emptyList();
             }
+        }
+        else {
+            references = Collections.emptyList();
         }
 
         return references;
     }
 
     /**
-     * Returns the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix.
+     * Processes an attribute.
      *
-     * @param prefixedValue the value from which to extract the prefix
+     * @param name  the name of the attribute
+     * @param value the value of the attribute
      *
-     * @return the prefix of the {@code prefixedValue}, or {@code null} if there is no prefix
+     * @return a singleton list of {@link RawFeature} containing the processed attribute.
      */
-    private static String getPrefix(String prefixedValue) {
-        String prefix = null;
+    @Nonnull
+    private Collection<RawFeature> processAttribute(String name, String value) {
+        RawAttribute attribute = new RawAttribute(name);
+        attribute.index(0);
+        attribute.value(value);
 
-        if (nonNull(prefixedValue)) {
-            List<String> splittedName = Splitter.on(":").omitEmptyStrings().trimResults().splitToList(prefixedValue);
-            if (splittedName.size() > 1) {
-                prefix = splittedName.get(0);
-            }
-        }
-
-        return prefix;
+        return Collections.singleton(attribute);
     }
 
     /**
-     * Processes a new element and send a notification to handlers.
+     * Processes a list of {@code references} and returns a list of {@link RawReference}.
      *
-     * @param uri        the URI of the element
-     * @param localName  the name of the element
-     * @param attributes the attributes of the element
+     * @param name       the name of the reference
+     * @param references the list that holds the identifier of referenced elements
+     *
+     * @return a list of {@link RawReference} from the given {@code references}
      */
-    protected void processStartElement(String uri, String localName, Attributes attributes) {
-        Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
+    @Nonnull
+    private Collection<RawFeature> processReference(String name, Iterable<String> references) {
+        Collection<RawFeature> features = new ArrayList<>();
 
-        int attrLength = attributes.getLength();
-
-        List<StructuralFeature> structuralFeatures = new ArrayList<>(attrLength);
-
-        // Processes features
-        if (attrLength > 0) {
-            for (int i = 0; i < attrLength; i++) {
-                List<StructuralFeature> features = processFeatures(element,
-                        getPrefix(attributes.getQName(i)),
-                        attributes.getLocalName(i),
-                        attributes.getValue(i));
-
-                if (ignoreElement) {
-                    // No need to go further
-                    return;
-                }
-
-                if (nonNull(features) && !features.isEmpty()) {
-                    structuralFeatures.addAll(features);
-                }
-            }
-        }
-
-        notifyStartElement(element);
-
-        // Send attributes and references
-        for (StructuralFeature feature : structuralFeatures) {
-            if (feature.isAttribute()) {
-                notifyAttribute((Attribute) feature);
-            }
-            else {
-                notifyReference((Reference) feature);
-            }
-        }
-    }
-
-    /**
-     * Processes a feature, which can be an attribute or a reference.
-     *
-     * @param classifier the classifier representing the feature
-     * @param prefix     the prefix of the feature
-     * @param localName  the name of the feature
-     * @param value      the value of the feature
-     *
-     * @return a list of {@link StructuralFeature} that can be empty.
-     *
-     * @see #processAttributes(String, String)
-     * @see #processReferences(String, List)
-     */
-    private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) {
-        List<StructuralFeature> features = null;
-
-        if (!processSpecialFeatures(classifier, prefix, localName, value)) {
-            List<String> references = getReferences(value);
-            if (nonNull(references)) {
-                features = processReferences(localName, references);
-            }
-            else {
-                features = processAttributes(localName, value);
-            }
+        int index = 0;
+        for (String rawReference : references) {
+            RawReference ref = new RawReference(name);
+            ref.index(index);
+            ref.idReference(RawIdentifier.generated(rawReference));
+            features.add(ref);
+            index++;
         }
 
         return features;
     }
 
     /**
-     * Processes a special feature as 'xsi:type', 'xmi:id' or 'xmi:idref'.
-     *
-     * @param classifier the classifier representing the feature
-     * @param prefix     the prefix of the feature
-     * @param localName  the name of the feature
-     * @param value      the value of the feature
-     *
-     * @return {@code true} if the given feature is a special feature
-     */
-    private boolean processSpecialFeatures(Classifier classifier, String prefix, String localName, String value) {
-        boolean isSpecialFeature = false;
-
-        // A special feature always has a prefix
-        if (nonNull(prefix)) {
-            final String prefixedValue = prefix + ':' + localName;
-
-            if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type
-                processMetaClass(classifier, value);
-                isSpecialFeature = true;
-            }
-            else if (Objects.equals(XMI_ID, prefixedValue)) { // xmi:id
-                classifier.setId(Identifier.original(value));
-                isSpecialFeature = true;
-            }
-            else if (Objects.equals(XMI_IDREF, prefixedValue)) { // xmi:idref
-                // It's not a feature of the current element, but a reference of the previous
-                Reference reference = new Reference(classifier.getLocalName());
-                reference.setIdReference(Identifier.original(value));
-                notifyReference(reference);
-                ignoreElement = true;
-                isSpecialFeature = true;
-            }
-            else if (Objects.equals(XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
-                NeoLogger.debug("XMI version : " + value);
-                isSpecialFeature = true;
-            }
-        }
-        else if (Objects.equals(PROXY, localName)) {
-            NeoLogger.warn("{0} is an external reference to {1}. This feature is not supported yet.",
-                    classifier.getLocalName(), value);
-            ignoreElement = true;
-        }
-        else if (Objects.equals(NAME, localName)) {
-            classifier.setClassName(value);
-            isSpecialFeature = true;
-        }
-
-        return isSpecialFeature;
-    }
-
-    /**
-     * Processes an attribute.
-     *
-     * @param localName the name of the attribute
-     * @param value     the value of the attribute
-     *
-     * @return a singleton list of {@link StructuralFeature} containing the processed attribute.
-     */
-    private List<StructuralFeature> processAttributes(String localName, String value) {
-        Attribute attribute = new Attribute(localName);
-        attribute.setIndex(0);
-        attribute.setValue(value);
-
-        return Lists.newArrayList((StructuralFeature) attribute);
-    }
-
-    /**
-     * Processes a list of {@code references} and returns a list of {@link Reference}.
-     *
-     * @param localName  the name of the reference
-     * @param references the list that holds the identifier of referenced elements
-     *
-     * @return a list of {@link Reference} from the given {@code references}
-     */
-    private List<StructuralFeature> processReferences(String localName, List<String> references) {
-        List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
-
-        int index = 0;
-        for (String s : references) {
-            Reference ref = new Reference(localName);
-            ref.setIndex(index);
-            ref.setIdReference(Identifier.generated(s));
-            structuralFeatures.add(ref);
-            index++;
-        }
-
-        return structuralFeatures;
-    }
-
-    /**
      * Processes a metaclass attribute from the {@code prefixedValue}, and defines is as the metaclass of the given
      * {@code element}.
      *
-     * @param element       the element for which to define the metaclass
      * @param prefixedValue the value representing the metaclass
      *
      * @see #PATTERN_PREFIXED_VALUE
      */
-    private void processMetaClass(Classifier element, String prefixedValue) {
+    private void processMetaClass(String prefixedValue) {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
-            MetaClassifier metaClassifier = new MetaClassifier(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
-            element.setMetaClassifier(metaClassifier);
+            RawNamespace ns = RawNamespace.Registry.getInstance().getFromPrefix(m.group(1));
+            String localName = m.group(2);
+
+            RawMetaClassifier metaClassifier = new RawMetaClassifier(ns, localName);
+            currentElement.metaClassifier(metaClassifier);
         }
         else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
-        }
-    }
-
-    /**
-     * Processes characters.
-     *
-     * @param characters a set of characters, as {@link String}
-     */
-    protected void processCharacters(String characters) {
-        notifyCharacters(characters);
-    }
-
-    /**
-     * Processes the end of an element.
-     *
-     * @param uri       the URI of the element
-     * @param localName the name of the element
-     */
-    protected void processEndElement(String uri, String localName) {
-        if (!ignoreElement) {
-            notifyEndElement();
-        }
-        else {
-            ignoreElement = false;
         }
     }
 }

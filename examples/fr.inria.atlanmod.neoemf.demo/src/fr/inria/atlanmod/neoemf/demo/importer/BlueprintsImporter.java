@@ -13,6 +13,8 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 
 import java.util.Map;
@@ -61,7 +63,7 @@ public class BlueprintsImporter {
             Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().weakCache().autocommit().asMap();
             persistentResource.save(options);
 
-            long begin = System.currentTimeMillis();
+            Instant start = Instant.now();
 
             Resource xmiResource = rSet.createResource(URI.createURI("models/sample.xmi"));
             xmiResource.load(Collections.emptyMap());
@@ -70,8 +72,8 @@ public class BlueprintsImporter {
             
             persistentResource.save(options);
 
-            long end = System.currentTimeMillis();
-            NeoLogger.info("Graph Model created in {0} seconds", (end - begin) / 1000);
+            Instant end = Instant.now();
+            NeoLogger.info("Graph Model created in {0} seconds", Duration.between(start, end).getSeconds());
             
             /*
              * Checks that NeoEMF model contains the same elements as the input XMI.

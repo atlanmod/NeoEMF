@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,13 +38,13 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
      */
     @Test
     public void testNamespacesWithId() {
-        Namespace.Registry nsRegistry = Namespace.Registry.getInstance();
+        RawNamespace.Registry nsRegistry = RawNamespace.Registry.getInstance();
         Iterable<String> prefixes = nsRegistry.getPrefixes();
         assertThat(prefixes).containsExactlyInAnyOrder("uml", "xmi");
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         assertThat(root.getNamespace()).isNotNull();
-        assertThat(root.getNamespace().getPrefix()).isEqualTo("uml");
+        assertThat(root.getNamespace().prefix()).isEqualTo("uml");
     }
 
     /**
@@ -101,7 +101,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
-        List<Attribute> attributeList;
+        List<RawAttribute> attributeList;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         attributeList = root.getAttributes();
@@ -160,7 +160,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
         ClassifierMock mock;
         ClassifierMock mockChild;
 
-        List<Reference> referenceList;
+        List<RawReference> referenceList;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
         assertThat(root.getReferences()).isEmpty();
@@ -209,7 +209,7 @@ public class XmiStreamReaderWithIdTest extends AbstractXmiReaderTest {
         ClassifierMock mockChild;
 
         ClassifierMock root = persistanceHandler.getElements().get(0);
-        Namespace ns = root.getNamespace();
+        RawNamespace ns = root.getNamespace();
         assertValidMetaClass(root.getMetaClassifier(), "Model", ns);
         {
             //@Model/@packagedElement.0

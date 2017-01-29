@@ -15,7 +15,22 @@
     <name>NeoEMF I/O</name>
     <description />
 
+    <properties>
+        <stax2.version>4.0.0</stax2.version>
+        <woodstox.version>4.4.1</woodstox.version>
+    </properties>
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>stax2-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>woodstox-core-asl</artifactId>
+        </dependency>
 
         <!-- Cache -->
 
@@ -78,6 +93,22 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>stax2-api</artifactId>
+                <version>${stax2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>woodstox-core-asl</artifactId>
+                <version>${woodstox.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -89,7 +120,10 @@
                             ${project.groupId}.io
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            fr.inria.atlanmod.neoemf.io.*
+                            fr.inria.atlanmod.neoemf.io.*,
+                            javax.xml.stream.*,
+                            org.codehaus.stax2.*,
+                            com.ctc.wstx.*
                         </Export-Package>
                         <_exportcontents />
                         <Require-Bundle>

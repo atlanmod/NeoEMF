@@ -9,20 +9,21 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 /**
- * A {@link PersistenceHandler} wrapper that counts the number of different element.
+ * An {@link Handler} wrapper that counts the number of different element.
  */
-public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
+public class CounterProcessor extends AbstractProcessor {
 
     /**
-     * The current number of created {@code CounterPersistenceHandlerDecorator}s, used for name generation.
+     * The current number of created {@code CounterProcessor}s, used for name generation.
      */
     private static int id = 0;
 
@@ -47,22 +48,22 @@ public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandl
     private long referenceCount;
 
     /**
-     * Constructs a new {@code CounterPersistenceHandlerDecorator} on the underlying {@code handler}.
+     * Constructs a new {@code CounterProcessor} on the underlying {@code handler}.
      *
      * @param handler the underlying handler
      */
-    public CounterPersistenceHandlerDecorator(PersistenceHandler handler) {
-        this(handler, "dummy-" + ++id);
+    public CounterProcessor(Processor handler) {
+        this(handler, "counter-" + ++id);
     }
 
     /**
-     * Constructs a new {@code CounterPersistenceHandlerDecorator} with the given {@code name} on the underlying
+     * Constructs a new {@code CounterProcessor} with the given {@code name} on the underlying
      * {@code handler}.
      *
      * @param handler the underlying handler
      * @param name    the name of this handler
      */
-    public CounterPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
+    public CounterProcessor(Processor handler, String name) {
         super(handler);
         this.name = name;
         this.elementCount = 0;
@@ -71,21 +72,21 @@ public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         elementCount++;
 
         super.processStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         attributeCount++;
 
         super.processAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         referenceCount++;
 
         super.processReference(reference);

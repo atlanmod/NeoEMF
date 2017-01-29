@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link StructuralFeature} representing a reference, which links several {@link Classifier}s.
+ * A {@link RawFeature} representing a reference, which links several {@link RawClassifier}s.
  */
-public class Reference extends StructuralFeature {
+public class RawReference extends RawFeature {
 
     /**
      * The identifier of the referenced element.
      */
-    private Identifier idReference;
+    private RawIdentifier idReference;
 
     /**
      * Whether this reference is a containment.
@@ -27,27 +27,27 @@ public class Reference extends StructuralFeature {
     private boolean containment;
 
     /**
-     * Constructs a new {@code Reference} with the given {@code localName}.
+     * Constructs a new {@code RawReference} with the given {@code localName}.
      *
      * @param localName the name of this reference
      */
-    public Reference(String localName) {
+    public RawReference(String localName) {
         super(localName);
         this.containment = false;
     }
 
     /**
-     * Converts an {@link Attribute} to a {@code Reference}.
+     * Converts an {@link RawAttribute} to a {@code RawReference}.
      *
      * @param attribute the attribute to convert
      *
      * @return a new reference
      */
-    public static Reference from(Attribute attribute) {
-        Reference reference = new Reference(attribute.getLocalName());
-        reference.setId(attribute.getId());
-        reference.setIndex(attribute.getIndex());
-        reference.setIdReference(Identifier.original(attribute.getValue().toString()));
+    public static RawReference from(RawAttribute attribute) {
+        RawReference reference = new RawReference(attribute.localName());
+        reference.id(attribute.id());
+        reference.index(attribute.index());
+        reference.idReference(RawIdentifier.original(attribute.value().toString()));
         return reference;
     }
 
@@ -56,7 +56,7 @@ public class Reference extends StructuralFeature {
      *
      * @return the identifier
      */
-    public Identifier getIdReference() {
+    public RawIdentifier idReference() {
         return idReference;
     }
 
@@ -65,7 +65,7 @@ public class Reference extends StructuralFeature {
      *
      * @param idReference the identifier
      */
-    public void setIdReference(Identifier idReference) {
+    public void idReference(RawIdentifier idReference) {
         this.idReference = idReference;
     }
 
@@ -79,7 +79,7 @@ public class Reference extends StructuralFeature {
      *
      * @return {@code true} if this reference is a containment
      */
-    public boolean isContainment() {
+    public boolean containment() {
         return containment;
     }
 
@@ -88,7 +88,7 @@ public class Reference extends StructuralFeature {
      *
      * @param containment {@code true} if this reference is a containment
      */
-    public void setContainment(boolean containment) {
+    public void containment(boolean containment) {
         this.containment = containment;
     }
 }

@@ -11,18 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.InputNotifier;
+import fr.inria.atlanmod.neoemf.io.Notifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An {@link InputNotifier} that reads data from a file.
+ * An {@link Notifier} that reads data from a file.
  *
  * @note It correspond to the head of the parsing process in case of an import.
  */
-public interface Reader extends InputNotifier<Processor> {
+public interface Reader extends Notifier<Processor> {
 
     /**
      * Creates a series of processors in order to build and analyze the read structure.

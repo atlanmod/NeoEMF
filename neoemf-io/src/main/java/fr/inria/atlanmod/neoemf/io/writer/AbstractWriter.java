@@ -9,12 +9,10 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
-
-import fr.inria.atlanmod.neoemf.io.Handler;
+package fr.inria.atlanmod.neoemf.io.writer;
 
 /**
- * A {@link Handler} that process received events, in order to persist data.
+ * An abstract {@link Writer}.
  */
-public interface PersistenceHandler extends Handler {
+public abstract class AbstractWriter implements Writer {
 }

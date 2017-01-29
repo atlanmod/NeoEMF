@@ -12,14 +12,14 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A identifiable {@link MetaClassifier} which can be typed.
+ * A identifiable {@link RawMetaClassifier} which can be typed.
  */
-public class Classifier extends MetaClassifier {
+public class RawClassifier extends RawMetaClassifier {
 
     /**
      * The identifier of this classifier.
      */
-    private Identifier id;
+    private RawIdentifier id;
 
     /**
      * The name of the class of this classifier.
@@ -29,7 +29,7 @@ public class Classifier extends MetaClassifier {
     /**
      * The metaclassifier of this classifier.
      */
-    private MetaClassifier metaClassifier;
+    private RawMetaClassifier metaClassifier;
 
     /**
      * Whether this classifier is the root element of a structure.
@@ -37,12 +37,12 @@ public class Classifier extends MetaClassifier {
     private boolean root;
 
     /**
-     * Constructs a new {@code Classifier} with the given {@code namespace} and {@code localName}.
+     * Constructs a new {@code RawClassifier} with the given {@code namespace} and {@code localName}.
      *
      * @param namespace the namespace of this classifier
      * @param localName the name of this classifier
      */
-    public Classifier(Namespace namespace, String localName) {
+    public RawClassifier(RawNamespace namespace, String localName) {
         super(namespace, localName);
         this.root = false;
     }
@@ -52,7 +52,7 @@ public class Classifier extends MetaClassifier {
      *
      * @return the identifier
      */
-    public Identifier getId() {
+    public RawIdentifier id() {
         return id;
     }
 
@@ -61,7 +61,7 @@ public class Classifier extends MetaClassifier {
      *
      * @param id the identifier
      */
-    public void setId(Identifier id) {
+    public void id(RawIdentifier id) {
         this.id = id;
     }
 
@@ -70,7 +70,7 @@ public class Classifier extends MetaClassifier {
      *
      * @return the name of the class
      */
-    public String getClassName() {
+    public String className() {
         return className;
     }
 
@@ -79,7 +79,7 @@ public class Classifier extends MetaClassifier {
      *
      * @param className the name of the class
      */
-    public void setClassName(String className) {
+    public void className(String className) {
         this.className = className;
     }
 
@@ -88,7 +88,7 @@ public class Classifier extends MetaClassifier {
      *
      * @return the metaclassifier
      */
-    public MetaClassifier getMetaClassifier() {
+    public RawMetaClassifier metaClassifier() {
         return metaClassifier;
     }
 
@@ -97,7 +97,7 @@ public class Classifier extends MetaClassifier {
      *
      * @param metaClassifier the metaclassifier
      */
-    public void setMetaClassifier(MetaClassifier metaClassifier) {
+    public void metaClassifier(RawMetaClassifier metaClassifier) {
         this.metaClassifier = metaClassifier;
     }
 
@@ -106,7 +106,7 @@ public class Classifier extends MetaClassifier {
      *
      * @return {@code true} if this classifier is a root element
      */
-    public boolean isRoot() {
+    public boolean root() {
         return root;
     }
 
@@ -115,7 +115,7 @@ public class Classifier extends MetaClassifier {
      *
      * @param root {@code true} if this classifier is a root element
      */
-    public void setRoot(boolean root) {
+    public void root(boolean root) {
         this.root = root;
     }
 }

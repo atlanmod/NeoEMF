@@ -26,6 +26,8 @@ import org.eclipse.gmt.modisco.java.JavaPackage;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 
 public class EfficientBlueprintsImporter {
@@ -36,15 +38,15 @@ public class EfficientBlueprintsImporter {
         Map<String, Object> options = BlueprintsNeo4jOptionsBuilder.newBuilder().asMap();
 
         PersistenceBackendFactory factory = BlueprintsPersistenceBackendFactory.getInstance();
-        PersistenceBackend backend = factory.createPersistentBackend(new File("models/sample2.graphdb"), options);
+        try (PersistenceBackend backend = factory.createPersistentBackend(new File("models/sample2.graphdb"), options)) {
+            PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler((BlueprintsPersistenceBackend) backend, false);
 
-        PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler((BlueprintsPersistenceBackend) backend, false);
+            Instant start = Instant.now();
 
-        long begin = System.currentTimeMillis();
+            Importer.fromXmi(new FileInputStream(new File("models/sample.xmi")), handler);
 
-        Importer.fromXmi(new FileInputStream(new File("models/sample.xmi")), handler);
-
-        long end = System.currentTimeMillis();
-        NeoLogger.info("Import done in {0} seconds", (end - begin) / 1000);
+            Instant end = Instant.now();
+            NeoLogger.info("Import done in {0} seconds", Duration.between(start, end).getSeconds());
+        }
     }
 }

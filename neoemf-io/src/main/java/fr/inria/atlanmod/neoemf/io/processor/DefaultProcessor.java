@@ -9,23 +9,24 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
+import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
- * A {@link Processor} that notifies registered {@link PersistenceHandler} of events.
+ * A {@link Processor} that notifies registered {@link Handler} of events, without any treatment.
  */
-public final class PersistenceNotifier extends AbstractInputNotifier<PersistenceHandler> implements Processor {
+public final class DefaultProcessor extends AbstractNotifier<Handler> implements Processor {
 
     /**
-     * Constructs a new {@code PersistenceNotifier}.
+     * Constructs a new {@code DefaultProcessor}.
      */
-    public PersistenceNotifier() {
+    public DefaultProcessor() {
+        super();
     }
 
     @Override
@@ -34,17 +35,17 @@ public final class PersistenceNotifier extends AbstractInputNotifier<Persistence
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         notifyStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         notifyReference(reference);
     }
 

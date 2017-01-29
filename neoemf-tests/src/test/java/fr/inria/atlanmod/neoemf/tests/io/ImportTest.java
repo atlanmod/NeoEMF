@@ -20,10 +20,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.option.BlueprintsNeo4jOpti
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.Importer;
-import fr.inria.atlanmod.neoemf.io.persistence.CounterPersistenceHandlerDecorator;
-import fr.inria.atlanmod.neoemf.io.persistence.LoggingPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.persistence.TimerPersistenceHandlerDecorator;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -346,22 +343,18 @@ public class ImportTest extends AbstractInputTest {
         return resource.getContents().get(0);
     }
 
-    private void loadWithNeo(final File file, final PersistenceHandler persistenceHandler) throws IOException {
+    private void loadWithNeo(final File file, final PersistenceHandler inputHandler) throws IOException {
         registerEPackageFromEcore("java", "http://www.eclipse.org/MoDisco/Java/0.2.incubation/java");
         registerEPackageFromEcore("uml", "http://schema.omg.org/spec/UML/2.1");
 
-        Importer.fromXmi(new FileInputStream(file), persistenceHandler);
+        Importer.fromXmi(new FileInputStream(file), inputHandler);
     }
 
     private EObject loadWithNeoBlueprints(final File file) throws IOException {
         BlueprintsPersistenceBackend backend = createNeo4jPersistenceBackend();
-        PersistenceHandler persistenceHandler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
+        PersistenceHandler handler = BlueprintsHandlerFactory.createPersistenceHandler(backend, false);
 
-        persistenceHandler = new LoggingPersistenceHandlerDecorator(persistenceHandler);
-        persistenceHandler = new CounterPersistenceHandlerDecorator(persistenceHandler);
-        persistenceHandler = new TimerPersistenceHandlerDecorator(persistenceHandler);
-
-        loadWithNeo(file, persistenceHandler);
+        loadWithNeo(file, handler);
 
         backend.close();
 

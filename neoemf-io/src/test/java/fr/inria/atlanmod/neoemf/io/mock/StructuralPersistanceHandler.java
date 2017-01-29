@@ -14,11 +14,11 @@ package fr.inria.atlanmod.neoemf.io.mock;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import static java.util.Objects.nonNull;
 /**
  *
  */
-public class StructuralPersistanceHandler implements PersistenceHandler {
+public class StructuralPersistanceHandler implements Handler {
 
     private final Cache<String, ClassifierMock> classifierMockCache;
 
@@ -56,7 +56,7 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         ClassifierMock mock = new ClassifierMock(classifier);
 
         if (!classifierStack.isEmpty()) {
@@ -66,20 +66,20 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
             elements.add(mock);
         }
 
-        if (nonNull(classifier.getId())) {
-            classifierMockCache.put(classifier.getId().getValue(), mock);
+        if (nonNull(classifier.id())) {
+            classifierMockCache.put(classifier.id().value(), mock);
         }
         classifierStack.addLast(mock);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
-        if (isNull(attribute.getId()) || attribute.getId().equals(classifierStack.getLast().getId())) {
+    public void processAttribute(RawAttribute attribute) {
+        if (isNull(attribute.id()) || attribute.id().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getAttributes().add(attribute);
         }
         else {
-            ClassifierMock mock = classifierMockCache.getIfPresent(attribute.getId().getValue());
-            if (nonNull(mock) && Objects.equals(mock.getId(), attribute.getId())) {
+            ClassifierMock mock = classifierMockCache.getIfPresent(attribute.id().value());
+            if (nonNull(mock) && Objects.equals(mock.getId(), attribute.id())) {
                 mock.getAttributes().add(attribute);
             }
             else {
@@ -89,13 +89,13 @@ public class StructuralPersistanceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void processReference(Reference reference) {
-        if (isNull(reference.getId()) || reference.getId().equals(classifierStack.getLast().getId())) {
+    public void processReference(RawReference reference) {
+        if (isNull(reference.id()) || reference.id().equals(classifierStack.getLast().getId())) {
             classifierStack.getLast().getReferences().add(reference);
         }
         else {
-            ClassifierMock mock = classifierMockCache.getIfPresent(reference.getId().getValue());
-            if (nonNull(mock) && Objects.equals(mock.getId(), reference.getId())) {
+            ClassifierMock mock = classifierMockCache.getIfPresent(reference.id().value());
+            if (nonNull(mock) && Objects.equals(mock.getId(), reference.id())) {
                 mock.getReferences().add(reference);
             }
             else {

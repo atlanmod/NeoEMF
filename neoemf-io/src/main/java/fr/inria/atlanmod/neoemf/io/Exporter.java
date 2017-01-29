@@ -9,12 +9,19 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
-
-import fr.inria.atlanmod.neoemf.io.Handler;
+package fr.inria.atlanmod.neoemf.io;
 
 /**
- * A {@link Handler} that process received events, in order to persist data.
+ * Static methods to export data from NeoEMF.
  */
-public interface PersistenceHandler extends Handler {
+public final class Exporter {
+
+    /**
+     * This class should not be instantiated.
+     *
+     * @throws IllegalStateException every time
+     */
+    private Exporter() {
+        throw new IllegalStateException("This class should not be instantiated");
+    }
 }

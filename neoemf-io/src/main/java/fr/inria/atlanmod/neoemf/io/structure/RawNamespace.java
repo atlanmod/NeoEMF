@@ -23,12 +23,12 @@ import static java.util.Objects.isNull;
 /**
  * A simple representation of a namespace with a prefix and an URI.
  */
-public class Namespace {
+public class RawNamespace {
 
     /**
-     * The instance of the default {@code Namespace}.
+     * The instance of the default {@code RawNamespace}.
      */
-    private static final Namespace DEFAULT = new Namespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
+    private static final RawNamespace DEFAULT = new RawNamespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
 
     /**
      * The prefix of this namespace.
@@ -41,12 +41,12 @@ public class Namespace {
     private final String uri;
 
     /**
-     * Constructs a new {@code Namespace} with the given {@code prefix} and {@code uri}.
+     * Constructs a new {@code RawNamespace} with the given {@code prefix} and {@code uri}.
      *
      * @param prefix the prefix of this namespace
      * @param uri    the literal representation of the URI of this namespace
      */
-    private Namespace(String prefix, String uri) {
+    private RawNamespace(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
     }
@@ -56,7 +56,7 @@ public class Namespace {
      *
      * @return the namespace representing "ecore @ http://www.eclipse.org/emf/2002/Ecore"
      */
-    public static Namespace getDefault() {
+    public static RawNamespace getDefault() {
         return DEFAULT;
     }
 
@@ -65,7 +65,7 @@ public class Namespace {
      *
      * @return the prefix
      */
-    public String getPrefix() {
+    public String prefix() {
         return prefix;
     }
 
@@ -74,24 +74,24 @@ public class Namespace {
      *
      * @return the literal representation of the URI
      */
-    public String getUri() {
+    public String uri() {
         return uri;
     }
 
     /**
-     * Registry of all declared {@link Namespace}.
+     * Registry of all declared {@link RawNamespace}.
      */
     public static class Registry {
 
         /**
-         * In-memory cache that holds registered {@link Namespace}, identified by their prefix.
+         * In-memory cache that holds registered {@link RawNamespace}, identified by their prefix.
          */
-        private final Cache<String, Namespace> nsByPrefixCache;
+        private final Cache<String, RawNamespace> nsByPrefixCache;
 
         /**
-         * In-memory cache that holds registered {@link Namespace}, identified by their URI.
+         * In-memory cache that holds registered {@link RawNamespace}, identified by their URI.
          */
-        private final Cache<String, Namespace> nsByUriCache;
+        private final Cache<String, RawNamespace> nsByUriCache;
 
         /**
          * Constructs a new {@code Registry}.
@@ -121,15 +121,15 @@ public class Namespace {
         }
 
         /**
-         * Returns a {@link Namespace} identified by the given {@code prefix}, or {@code null} if no
+         * Returns a {@link RawNamespace} identified by the given {@code prefix}, or {@code null} if no
          * namespace is registered with this {@code prefix}.
          *
          * @param prefix the prefix of the desired namespace
          *
-         * @return a {@code Namespace} identified by the given {@code prefix}, or {@code null} if no namespace is
+         * @return a {@code RawNamespace} identified by the given {@code prefix}, or {@code null} if no namespace is
          * registered with this {@code prefix}
          */
-        public Namespace getFromPrefix(String prefix) {
+        public RawNamespace getFromPrefix(String prefix) {
             if (isNull(prefix)) {
                 return null;
             }
@@ -137,15 +137,15 @@ public class Namespace {
         }
 
         /**
-         * Returns a {@link Namespace} identified by the given {@code uri}, or {@code null} if no
+         * Returns a {@link RawNamespace} identified by the given {@code uri}, or {@code null} if no
          * namespace is registered with this {@code uri}.
          *
          * @param uri the URI of the desired namespace
          *
-         * @return a {@code Namespace} identified by the given {@code uri}, or {@code null} if no namespace is
+         * @return a {@code RawNamespace} identified by the given {@code uri}, or {@code null} if no namespace is
          * registered with this {@code uri}.
          */
-        public Namespace getFromUri(String uri) {
+        public RawNamespace getFromUri(String uri) {
             if (isNull(uri)) {
                 return null;
             }
@@ -153,13 +153,13 @@ public class Namespace {
         }
 
         /**
-         * Registers a new {@link Namespace} with the given {@code prefix} and {@code uri}.
+         * Registers a new {@link RawNamespace} with the given {@code prefix} and {@code uri}.
          *
          * @param prefix the prefix of the new namespace
          * @param uri    the URI associated with the prefix
          */
         public void register(String prefix, String uri) {
-            Namespace ns = new Namespace(prefix, uri);
+            RawNamespace ns = new RawNamespace(prefix, uri);
             nsByPrefixCache.put(prefix, ns);
             nsByUriCache.put(uri, ns);
         }

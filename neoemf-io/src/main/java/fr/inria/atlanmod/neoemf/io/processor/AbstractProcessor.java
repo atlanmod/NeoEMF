@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  * A {@link Processor} that delegates all methods to its underlying processor.
@@ -43,17 +43,17 @@ public class AbstractProcessor implements Processor {
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         notifyStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         notifyReference(reference);
     }
 
@@ -75,8 +75,13 @@ public class AbstractProcessor implements Processor {
     // Notifier methods
 
     @Override
-    public final void addHandler(PersistenceHandler persistenceHandler) {
-        processor.addHandler(persistenceHandler);
+    public final Handler handler() {
+        return processor.handler();
+    }
+
+    @Override
+    public final void handler(Handler inputHandler) {
+        processor.handler(inputHandler);
     }
 
     @Override
@@ -85,27 +90,22 @@ public class AbstractProcessor implements Processor {
     }
 
     @Override
-    public final Iterable<PersistenceHandler> getHandlers() {
-        return processor.getHandlers();
-    }
-
-    @Override
     public final void notifyStartDocument() {
         processor.processStartDocument();
     }
 
     @Override
-    public final void notifyStartElement(Classifier classifier) {
+    public final void notifyStartElement(RawClassifier classifier) {
         processor.processStartElement(classifier);
     }
 
     @Override
-    public final void notifyAttribute(Attribute attribute) {
+    public final void notifyAttribute(RawAttribute attribute) {
         processor.processAttribute(attribute);
     }
 
     @Override
-    public final void notifyReference(Reference reference) {
+    public final void notifyReference(RawReference reference) {
         processor.processReference(reference);
     }
 

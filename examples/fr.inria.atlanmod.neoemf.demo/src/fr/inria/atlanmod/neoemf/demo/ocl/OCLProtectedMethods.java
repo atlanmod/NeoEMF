@@ -36,6 +36,8 @@ import org.eclipse.ocl.ecore.OCL;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,30 +56,30 @@ public class OCLProtectedMethods {
 
         JavaPackage.eINSTANCE.eClass();
 
-        long begin, end;
+        Instant start, end;
 
         try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
             resource.load(Collections.emptyMap());
-            begin = System.currentTimeMillis();
+            start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            end = Instant.now();
+            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
 
         try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
             resource.load(Collections.emptyMap());
-            begin = System.currentTimeMillis();
+            start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            end = Instant.now();
+            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
 
         try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
             resource.load(Collections.emptyMap());
-            begin = System.currentTimeMillis();
+            start = Instant.now();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = System.currentTimeMillis();
-            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), (end - begin) / 1000);
+            end = Instant.now();
+            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
         }
     }
 
