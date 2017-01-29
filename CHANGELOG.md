@@ -9,6 +9,9 @@ Current SNAPSHOT.
 - __[FIX]__ Issue #55: DefaultPersistentEObject.eContainer is not efficient
 - __[FIX]__ Issue #56: Unnecessary backend lookups in Store.eObject(Id)
 
+### Back-ends
+- __[NEW]__ Merge common code from MapDB & BerkeleyDB in Map module
+
 ## 1.0.1 _(2017-01-16)_
 
 ### Review of the structure
