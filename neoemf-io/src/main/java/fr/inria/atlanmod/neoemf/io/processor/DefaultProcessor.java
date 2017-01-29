@@ -18,7 +18,7 @@ import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
- * A {@link Processor} that notifies registered {@link Handler} of events.
+ * A {@link Processor} that notifies registered {@link Handler} of events, without any treatment.
  */
 public final class DefaultProcessor extends AbstractNotifier<Handler> implements Processor {
 
