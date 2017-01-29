@@ -11,6 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.evt.XMLEventFactory2;
+
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -18,7 +21,6 @@ import java.util.stream.IntStream;
 
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.Attribute;
@@ -30,7 +32,7 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
 
     @Override
     public void run(InputStream stream) throws Exception {
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+        XMLInputFactory factory = XMLInputFactory2.newInstance();
         factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 
         read(factory.createXMLStreamReader(stream));
@@ -45,15 +47,15 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
      */
     private void read(XMLStreamReader reader) throws XMLStreamException {
 
-        XMLEventFactory factory = XMLEventFactory.newFactory();
+        XMLEventFactory eventFactory = XMLEventFactory2.newFactory();
 
         while (reader.hasNext()) {
             int event = reader.next();
 
-            if (event == XMLStreamConstants.START_DOCUMENT) {
+            if (event == XMLStreamReader.START_DOCUMENT) {
                 processStartDocument();
             }
-            else if (event == XMLStreamConstants.START_ELEMENT) {
+            else if (event == XMLStreamReader.START_ELEMENT) {
                 int namespaceCount = reader.getNamespaceCount();
                 if (namespaceCount > 0) {
                     IntStream.range(0, namespaceCount).forEach(i ->
@@ -64,7 +66,7 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
                 int attributeCount = reader.getAttributeCount();
                 if (attributeCount > 0) {
                     attributes = IntStream.range(0, attributeCount)
-                            .mapToObj(i -> factory.createAttribute(
+                            .mapToObj(i -> eventFactory.createAttribute(
                                     reader.getAttributePrefix(i),
                                     reader.getAttributeNamespace(i),
                                     reader.getAttributeLocalName(i),
@@ -76,13 +78,13 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
                 }
                 processStartElement(reader.getNamespaceURI(), reader.getLocalName(), attributes);
             }
-            else if (event == XMLStreamConstants.END_ELEMENT) {
+            else if (event == XMLStreamReader.END_ELEMENT) {
                 processEndElement(reader.getNamespaceURI(), reader.getLocalName());
             }
-            else if (event == XMLStreamConstants.END_DOCUMENT) {
+            else if (event == XMLStreamReader.END_DOCUMENT) {
                 processEndDocument();
             }
-            else if (event == XMLStreamConstants.CHARACTERS) {
+            else if (event == XMLStreamReader.CHARACTERS) {
                 if (reader.getTextLength() > 0 && !reader.isWhiteSpace()) {
                     processCharacters(reader.getText());
                 }
