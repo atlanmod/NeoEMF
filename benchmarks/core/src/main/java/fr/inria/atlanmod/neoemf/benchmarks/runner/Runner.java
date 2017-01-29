@@ -31,7 +31,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Timeout(time = 2, timeUnit = TimeUnit.HOURS)
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
@@ -57,6 +57,7 @@ public class Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 0)
     @Measurement(iterations = 1)
+    @OutputTimeUnit(TimeUnit.SECONDS)
     public void create(RunnerState state) throws Exception {
         state.getBackend().createTempStore(state.getResourceFile());
     }

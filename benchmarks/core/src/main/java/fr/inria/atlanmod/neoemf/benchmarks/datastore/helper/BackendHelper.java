@@ -129,7 +129,8 @@ public class BackendHelper {
 
         log.info("Migrating");
         targetBackend.save(targetResource);
-        targetResource.getContents().addAll(sourceResource.getContents());
+
+        targetResource.getContents().addAll(EcoreUtil.copyAll(sourceResource.getContents()));
 
         sourceResource.unload();
 

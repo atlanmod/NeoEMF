@@ -45,7 +45,7 @@ public class NeoBerkeleydbBackend extends AbstractNeoBackend {
     @Override
     public Map<String, Object> getOptions() {
         return BerkeleyDbOptionsBuilder.newBuilder()
-                .directWrite()
+                .directWriteIndices()
                 .autocommit()
                 .asMap();
     }

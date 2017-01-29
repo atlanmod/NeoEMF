@@ -116,6 +116,11 @@
             <artifactId>log4j-jul</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+        </dependency>
+
         <!-- Benchmark -->
 
         <dependency>

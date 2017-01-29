@@ -30,6 +30,7 @@ import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ContainerInfoSerializ
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.FeatureKeySerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.IdSerializer;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.serializer.ObjectSerializer;
+import fr.inria.atlanmod.neoemf.data.map.core.MapBackend;
 import fr.inria.atlanmod.neoemf.data.structure.ClassInfo;
 import fr.inria.atlanmod.neoemf.data.structure.ContainerInfo;
 import fr.inria.atlanmod.neoemf.data.structure.FeatureKey;
@@ -45,7 +46,7 @@ import java.util.Map;
  * ???
  */
 @Experimental
-public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
+public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend implements MapBackend {
 
     /**
      * The literal description of this back-end.
@@ -168,9 +169,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
      * ???
      */
     public void open() {
-        NeoLogger.debug("BerkeleyDBPersistentBackend::open()");
-        //NeoLogger.debug(environmentConfig.getConfigParam(EnvironmentConfig.LOG_MEM_ONLY));
-
         if (!isClosed()) {
             NeoLogger.warn("This backend is already open");
         }
@@ -182,13 +180,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
             this.features = environment.openDatabase(null, KEY_FEATURES, databaseConfig);
             this.multivaluedFeatures = environment.openDatabase(null, KEY_MULTIVALUED_FEATURES, databaseConfig);
             isClosed = false;
-
-            NeoLogger.debug("BerkeleyDB Environment info: {0}", environment.getConfig());
-            NeoLogger.debug("Databases: {0}", environment.getDatabaseNames());
-            NeoLogger.debug("Database containers open, size: {0}", this.containers.count());
-            NeoLogger.debug("Database instances open, size: {0}", this.instances.count());
-            NeoLogger.debug("Database features open, size: {0}", this.features.count());
-            NeoLogger.debug("Database multivaluedFeatures open, size: {0}", this.multivaluedFeatures.count());
         }
         catch (DatabaseException e) {
             NeoLogger.error(e);
@@ -223,8 +214,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
 
     @Override
     public void close() {
-        NeoLogger.debug("Closing databases");
-
         this.save();
 
         try {
@@ -475,9 +464,6 @@ public class BerkeleyDbPersistenceBackend extends AbstractPersistenceBackend {
      * @param target ???
      */
     public void copyTo(BerkeleyDbPersistenceBackend target) {
-        NeoLogger.debug("Copying " + this.toString() + "to: " + target.toString());
-        NeoLogger.debug("This is closed: " + this.isClosed);
-        NeoLogger.debug("Target is closed: " + target.isClosed);
 
         try {
             this.copyDatabaseTo(instances, target.instances);
