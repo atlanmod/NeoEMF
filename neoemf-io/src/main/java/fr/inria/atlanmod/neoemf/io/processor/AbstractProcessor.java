@@ -16,20 +16,22 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
 /**
  * A {@link Processor} that delegates all methods to its underlying processor.
  */
 public class AbstractProcessor implements Processor {
 
     /**
-     * The underlying processor.
+     * The processor to notify.
      */
     private final Processor processor;
 
     /**
-     * Constructs a new {@code AbstractProcessor} with an embedded {@code processor}.
+     * Constructs a new {@code AbstractProcessor} with the given {@code processor}.
      *
-     * @param processor the embedded processor
+     * @param processor the processor to notify
      */
     protected AbstractProcessor(Processor processor) {
         this.processor = processor;
@@ -38,36 +40,43 @@ public class AbstractProcessor implements Processor {
     // Handler methods
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void processStartDocument() {
         notifyStartDocument();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void processStartElement(RawClassifier classifier) {
         notifyStartElement(classifier);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void processAttribute(RawAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void processReference(RawReference reference) {
         notifyReference(reference);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void processEndElement() {
         notifyEndElement();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void processEndDocument() {
         notifyEndDocument();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void processCharacters(String characters) {
         notifyCharacters(characters);
     }

@@ -13,13 +13,12 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import com.google.common.base.Stopwatch;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import static java.util.Objects.nonNull;
 
 /**
- * An {@link Handler} wrapper that measures elapsed time between the start and the end of an I/O process.
+ * An {@link Processor} that measures elapsed time between the start and the end of an I/O process.
  */
 public class TimerProcessor extends AbstractProcessor {
 

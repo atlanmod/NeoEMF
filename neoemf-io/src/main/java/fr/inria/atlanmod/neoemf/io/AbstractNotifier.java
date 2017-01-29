@@ -11,28 +11,40 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * An abstract {@link Notifier} that provides overall behavior for the management of handlers.
  *
- * @param <T> the type of the notified {@link Handler}
+ * @param <H> the type of the notified {@link Handler}
  */
-@ParametersAreNonnullByDefault
-public abstract class AbstractNotifier<T extends Handler> implements Notifier<T> {
+public abstract class AbstractNotifier<H extends Handler> implements Notifier<H> {
 
     /**
-     * The registered handler.
+     * The handler to notify.
      */
-    private T handler;
+    private H handler;
+
+    /**
+     * Constructs a new {@code AbstractNotifier}.
+     */
+    protected AbstractNotifier() {
+    }
+
+    /**
+     * Constructs a new {@code AbstractNotifier} with the given {@code handler}.
+     *
+     * @param handler the handler to notify
+     */
+    protected AbstractNotifier(H handler) {
+        this.handler = handler;
+    }
 
     @Override
-    public T handler() {
+    public H handler() {
         return handler;
     }
 
     @Override
-    public void handler(T handler) {
+    public void handler(H handler) {
         this.handler = handler;
     }
 }

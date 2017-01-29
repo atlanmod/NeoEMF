@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
@@ -22,7 +21,7 @@ import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 import java.util.Objects;
 
 /**
- * An {@link Handler} wrapper that logs every events.
+ * An {@link Processor} that logs every events.
  */
 public class LoggingProcessor extends AbstractProcessor {
 

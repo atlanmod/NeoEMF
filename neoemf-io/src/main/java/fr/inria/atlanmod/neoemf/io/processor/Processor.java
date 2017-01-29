@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
 
 /**
- * A {@link Handler} that pre-processes and post-processes received events.
+ * A {@link Handler} that pre-processes and post-processes received events, before notifying the next {@link Handler}.
  * <p>
  * It can add validation, redirection, cancellation, or data enhancement capabilities.
  */

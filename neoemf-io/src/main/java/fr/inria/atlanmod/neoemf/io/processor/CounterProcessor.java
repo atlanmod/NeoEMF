@@ -11,14 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 /**
- * An {@link Handler} wrapper that counts the number of different element.
+ * An {@link Processor} that counts the number of different element.
  */
 public class CounterProcessor extends AbstractProcessor {
 

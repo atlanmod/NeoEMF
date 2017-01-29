@@ -121,7 +121,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
         }
 
-        notifyStartElement(classifier);
+        super.processStartElement(classifier);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class XPathProcessor extends AbstractProcessor {
             reference.idReference(RawIdentifier.generated(formatPath(reference.idReference().value())));
         }
 
-        notifyReference(reference);
+        super.processReference(reference);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class XPathProcessor extends AbstractProcessor {
             paths.clearLast();
         }
 
-        notifyEndElement();
+        super.processEndElement();
     }
 
     @Override
@@ -153,7 +153,7 @@ public class XPathProcessor extends AbstractProcessor {
             }
         }
 
-        notifyEndDocument();
+        super.processEndDocument();
     }
 
     /**

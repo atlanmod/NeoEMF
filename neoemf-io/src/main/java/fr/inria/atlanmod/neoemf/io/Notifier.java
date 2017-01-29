@@ -27,21 +27,21 @@ import static java.util.Objects.nonNull;
 public interface Notifier<T extends Handler> {
 
     /**
-     * Returns the {@link Handler} that will be notified.
+     * Returns the {@link Handler} that will be notified by this {@code Notifier}.
      *
-     * @return the handler
+     * @return the handler to notify
      */
     T handler();
 
     /**
-     * Defines the {@link Handler} that will be notified.
+     * Defines the {@link Handler} that will be notified by this {@code Notifier}.
      *
-     * @param handler the handler
+     * @param handler the handler to notify
      */
     void handler(T handler);
 
     /**
-     * Defines if this notifier has a {@link Handler} to notify.
+     * Defines if this {@code Notifier} has a {@link Handler} to notify.
      *
      * @return {@code true} if this notifier has a handler to notify.
      */

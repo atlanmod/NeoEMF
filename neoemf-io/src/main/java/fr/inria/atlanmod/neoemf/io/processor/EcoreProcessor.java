@@ -107,6 +107,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod") // Redirect
     public void processStartElement(RawClassifier classifier) {
         // Is root
         if (classesStack.isEmpty()) {
@@ -127,7 +128,7 @@ public class EcoreProcessor extends AbstractProcessor {
         if (feature instanceof EAttribute) {
             EAttribute eAttribute = (EAttribute) feature;
             attribute.many(eAttribute.isMany());
-            notifyAttribute(attribute);
+            super.processAttribute(attribute);
         }
 
         // Otherwise redirect to the reference handler
@@ -146,7 +147,7 @@ public class EcoreProcessor extends AbstractProcessor {
             EReference eReference = (EReference) feature;
             reference.containment(eReference.isContainment());
             reference.many(eReference.isMany());
-            notifyReference(reference);
+            super.processReference(reference);
         }
 
         // Otherwise redirect to the attribute handler
@@ -161,7 +162,7 @@ public class EcoreProcessor extends AbstractProcessor {
             classesStack.removeLast();
             idsStack.removeLast();
 
-            notifyEndElement();
+            super.processEndElement();
         }
         else {
             NeoLogger.warn("An attribute still waiting for a value : it will be ignored");
@@ -171,6 +172,7 @@ public class EcoreProcessor extends AbstractProcessor {
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod") // Redirect
     public void processCharacters(String characters) {
         // Defines the value of the waiting attribute, if exists
         if (nonNull(waitingAttribute)) {
@@ -207,7 +209,7 @@ public class EcoreProcessor extends AbstractProcessor {
         classifier.root(true);
 
         // Notifies next handlers
-        notifyStartElement(classifier);
+        super.processStartElement(classifier);
 
         // Saves the current EClass
         classesStack.addLast(eClass);
@@ -275,7 +277,7 @@ public class EcoreProcessor extends AbstractProcessor {
         classifier.namespace(ns);
 
         // Notify next handlers of new element, and retrieve its identifier
-        notifyStartElement(classifier);
+        super.processStartElement(classifier);
         RawIdentifier currentId = classifier.id();
 
         // Create a reference from the parent to this element, with the given local name
