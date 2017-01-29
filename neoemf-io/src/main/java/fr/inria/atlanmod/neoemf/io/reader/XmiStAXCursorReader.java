@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -30,21 +29,11 @@ import javax.xml.stream.events.Attribute;
 public class XmiStAXCursorReader extends AbstractXmiReader {
 
     @Override
-    public void read(InputStream stream) throws IOException {
-        super.read(stream);
-
+    public void run(InputStream stream) throws Exception {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 
-        try {
-            read(factory.createXMLStreamReader(stream));
-        }
-        catch (Exception e) {
-            throw new IOException(e);
-        }
-        finally {
-            progress(100);
-        }
+        read(factory.createXMLStreamReader(stream));
     }
 
     /**
@@ -91,7 +80,6 @@ public class XmiStAXCursorReader extends AbstractXmiReader {
                 processEndElement(reader.getNamespaceURI(), reader.getLocalName());
             }
             else if (event == XMLStreamConstants.END_DOCUMENT) {
-                progress(100);
                 processEndDocument();
             }
             else if (event == XMLStreamConstants.CHARACTERS) {

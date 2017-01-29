@@ -21,11 +21,7 @@ import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link Reader} that notifies {@link Processor} and provides overall behavior for the management of
@@ -37,22 +33,6 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
      * The timer to log reading progress.
      */
     private Timer progressTimer;
-
-    /**
-     * Formats a prefixed value as {@code "prefix:value"}. If the {@code prefix} is {@code null}, the returned value
-     * only contains the {@code value}.
-     *
-     * @param prefix the prefix of the value
-     * @param value  the value
-     *
-     * @return the formatted value as {@code "prefix:value"}
-     */
-    @Nonnull
-    protected static String format(@Nullable String prefix, @Nonnull String value) {
-        checkNotNull(value);
-
-        return (isNull(prefix) ? "" : prefix + ':') + value;
-    }
 
     /**
      * Processes the start of the document.
@@ -82,8 +62,17 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
         notifyEndDocument();
     }
 
+    /**
+     * Processes characters.
+     *
+     * @param characters a set of characters, as {@link String}
+     */
+    protected void processCharacters(String characters) {
+        notifyCharacters(characters);
+    }
+
     @Override
-    public void read(InputStream stream) throws IOException {
+    public final void read(InputStream stream) throws IOException {
         if (!hasHandler()) {
             throw new IllegalStateException("This notifier hasn't any handler");
         }
@@ -92,7 +81,26 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
 
         progressTimer = new Timer(true);
         progressTimer.schedule(new ProgressTimer(stream), 10000, 30000);
+
+        try {
+            run(stream);
+        }
+        catch (Exception e) {
+            throw new IOException(e);
+        }
+        finally {
+            progressTimer.cancel();
+        }
     }
+
+    /**
+     * Runs the reading on the {@code stream}.
+     *
+     * @param stream the stream to read
+     *
+     * @throws Exception if an error occurred during the I/O process
+     */
+    public abstract void run(InputStream stream) throws Exception;
 
     /**
      * Logs the progress of the current reading.

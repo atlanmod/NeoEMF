@@ -17,7 +17,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -36,22 +35,12 @@ import static java.util.Objects.nonNull;
 public class XmiSAXReader extends AbstractXmiReader {
 
     @Override
-    public void read(InputStream stream) throws IOException {
-        super.read(stream);
-
+    public void run(InputStream stream) throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
 
-        try {
-            factory.newSAXParser().parse(stream, new SAXHandler());
-        }
-        catch (Exception e) {
-            throw new IOException(e);
-        }
-        finally {
-            progress(100);
-        }
+        factory.newSAXParser().parse(stream, new SAXHandler());
     }
 
     /**

@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.namespace.QName;
@@ -30,21 +29,11 @@ import javax.xml.stream.events.XMLEvent;
 public class XmiStAXIteratorReader extends AbstractXmiReader {
 
     @Override
-    public void read(InputStream stream) throws IOException {
-        super.read(stream);
-
+    public void run(InputStream stream) throws Exception {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 
-        try {
-            read(factory.createXMLEventReader(factory.createXMLStreamReader(stream)));
-        }
-        catch (Exception e) {
-            throw new IOException(e);
-        }
-        finally {
-            progress(100);
-        }
+        read(factory.createXMLEventReader(factory.createXMLStreamReader(stream)));
     }
 
     /**

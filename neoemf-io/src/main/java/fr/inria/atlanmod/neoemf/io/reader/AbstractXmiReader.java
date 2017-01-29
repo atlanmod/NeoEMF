@@ -12,7 +12,6 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
@@ -28,6 +27,8 @@ import fr.inria.atlanmod.neoemf.io.structure.StructuralFeature;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -39,48 +40,6 @@ import static java.util.Objects.nonNull;
  * An abstract {@link Reader} that processes the raw structure of XMI files.
  */
 public abstract class AbstractXmiReader extends AbstractReader {
-
-    /**
-     * The namespace prefix of XSI.
-     */
-    protected static final String XSI_NS = "xsi";
-
-    /**
-     * The namespace prefix of XMI.
-     */
-    protected static final String XMI_NS = "xmi";
-
-    /**
-     * The attribute key representing the identifier of an element.
-     */
-    private static final String XMI_ID = format(XMI_NS, "id");
-
-    /**
-     * The attribute key representing a reference to an identified element.
-     *
-     * @see #XMI_ID
-     */
-    private static final String XMI_IDREF = format(XMI_NS, "idref");
-
-    /**
-     * The attribute key representing the metaclass of an element.
-     */
-    private static final String XMI_XSI_TYPE = format("(" + XMI_NS + "|" + XSI_NS + ")", "type");
-
-    /**
-     * The attribute key representing the version of the parsed XMI file.
-     */
-    private static final String XMI_VERSION_ATTR = format(XMI_NS, "version");
-
-    /**
-     * The attribute key representing a link to another document.
-     */
-    private static final String PROXY = "href";
-
-    /**
-     * The attribute key representing a name of an element.
-     */
-    private static final String NAME = "name";
 
     /**
      * A regex pattern of an attribute containing one or several references (XPath reference). Multiple references must
@@ -106,37 +65,6 @@ public abstract class AbstractXmiReader extends AbstractReader {
      */
     private boolean ignoreElement = false;
 
-    /**
-     * Returns a list of {@link String} representing XPath references, or {@code null} if the {@code attribute} does not
-     * match with {@link #PATTERN_WELL_FORMED_REF}.
-     *
-     * @param attribute the attribute to parse
-     *
-     * @return a list of {@link String} representing XPath references, or {@code null} if the {@code attribute} does not
-     * match with {@link #PATTERN_WELL_FORMED_REF}
-     *
-     * @see #PATTERN_WELL_FORMED_REF
-     */
-    private static List<String> getReferences(String attribute) {
-        List<String> references = null;
-
-        if (!attribute.trim().isEmpty()) {
-            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
-
-            boolean isReference = true;
-            for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
-                String ref = references.get(i);
-                isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
-            }
-
-            if (!isReference) {
-                references = null;
-            }
-        }
-
-        return references;
-    }
-
     @Override
     public Processor defaultProcessor() {
         Processor defaultProcessor;
@@ -158,11 +86,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
     protected void processStartElement(String uri, String localName, Iterable<javax.xml.stream.events.Attribute> attributes) {
         Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
 
-        List<StructuralFeature> structuralFeatures = new ArrayList<>();
+        Collection<StructuralFeature> structuralFeatures = new ArrayList<>();
 
         // Processes features
         for (javax.xml.stream.events.Attribute attribute : attributes) {
-            List<StructuralFeature> features = processFeatures(
+            Collection<StructuralFeature> features = processFeatures(
                     element,
                     attribute.getName().getPrefix(),
                     attribute.getName().getLocalPart(),
@@ -202,13 +130,13 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @return a list of {@link StructuralFeature} that can be empty.
      *
      * @see #processAttributes(String, String)
-     * @see #processReferences(String, List)
+     * @see #processReferences(String, Collection)
      */
-    private List<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) {
-        List<StructuralFeature> features = null;
+    private Collection<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) {
+        Collection<StructuralFeature> features = null;
 
         if (!processSpecialFeatures(classifier, prefix, localName, value)) {
-            List<String> references = getReferences(value);
+            Collection<String> references = getReferences(value);
             if (nonNull(references)) {
                 features = processReferences(localName, references);
             }
@@ -237,15 +165,15 @@ public abstract class AbstractXmiReader extends AbstractReader {
         if (nonNull(prefix) && !prefix.isEmpty()) {
             final String prefixedValue = prefix + ':' + localName;
 
-            if (prefixedValue.matches(XMI_XSI_TYPE)) { // xsi:type or xsi:type
+            if (prefixedValue.matches(XmiConstants.XMI_XSI_TYPE)) { // xsi:type or xsi:type
                 processMetaClass(classifier, value);
                 isSpecialFeature = true;
             }
-            else if (Objects.equals(XMI_ID, prefixedValue)) { // xmi:id
+            else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // xmi:id
                 classifier.setId(Identifier.original(value));
                 isSpecialFeature = true;
             }
-            else if (Objects.equals(XMI_IDREF, prefixedValue)) { // xmi:idref
+            else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // xmi:idref
                 // It's not a feature of the current element, but a reference of the previous
                 Reference reference = new Reference(classifier.getLocalName());
                 reference.setIdReference(Identifier.original(value));
@@ -253,22 +181,53 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 ignoreElement = true;
                 isSpecialFeature = true;
             }
-            else if (Objects.equals(XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
+            else if (Objects.equals(XmiConstants.XMI_VERSION_ATTR, prefixedValue)) { // xmi:version
                 NeoLogger.debug("XMI version : " + value);
                 isSpecialFeature = true;
             }
         }
-        else if (Objects.equals(PROXY, localName)) {
+        else if (Objects.equals(XmiConstants.PROXY, localName)) {
             NeoLogger.warn("{0} is an external reference to {1}. This feature is not supported yet.",
                     classifier.getLocalName(), value);
             ignoreElement = true;
         }
-        else if (Objects.equals(NAME, localName)) {
+        else if (Objects.equals(XmiConstants.NAME, localName)) {
             classifier.setClassName(value);
             isSpecialFeature = true;
         }
 
         return isSpecialFeature;
+    }
+
+    /**
+     * Returns a list of {@link String} representing XPath references, or {@code null} if the {@code attribute} does not
+     * match with {@link #PATTERN_WELL_FORMED_REF}.
+     *
+     * @param attribute the attribute to parse
+     *
+     * @return a list of {@link String} representing XPath references, or {@code null} if the {@code attribute} does not
+     * match with {@link #PATTERN_WELL_FORMED_REF}
+     *
+     * @see #PATTERN_WELL_FORMED_REF
+     */
+    private Collection<String> getReferences(String attribute) {
+        List<String> references = null;
+
+        if (!attribute.trim().isEmpty()) {
+            references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
+
+            boolean isReference = true;
+            for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
+                String ref = references.get(i);
+                isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
+            }
+
+            if (!isReference) {
+                references = null;
+            }
+        }
+
+        return references;
     }
 
     /**
@@ -279,12 +238,12 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return a singleton list of {@link StructuralFeature} containing the processed attribute.
      */
-    private List<StructuralFeature> processAttributes(String localName, String value) {
+    private Collection<StructuralFeature> processAttributes(String localName, String value) {
         Attribute attribute = new Attribute(localName);
         attribute.setIndex(0);
         attribute.setValue(value);
 
-        return Lists.newArrayList((StructuralFeature) attribute);
+        return Collections.singleton(attribute);
     }
 
     /**
@@ -295,8 +254,8 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return a list of {@link Reference} from the given {@code references}
      */
-    private List<StructuralFeature> processReferences(String localName, List<String> references) {
-        List<StructuralFeature> structuralFeatures = new ArrayList<>(references.size());
+    private Collection<StructuralFeature> processReferences(String localName, Collection<String> references) {
+        Collection<StructuralFeature> structuralFeatures = new ArrayList<>();
 
         int index = 0;
         for (String s : references) {
@@ -328,15 +287,6 @@ public abstract class AbstractXmiReader extends AbstractReader {
         else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);
         }
-    }
-
-    /**
-     * Processes characters.
-     *
-     * @param characters a set of characters, as {@link String}
-     */
-    protected void processCharacters(String characters) {
-        notifyCharacters(characters);
     }
 
     /**
