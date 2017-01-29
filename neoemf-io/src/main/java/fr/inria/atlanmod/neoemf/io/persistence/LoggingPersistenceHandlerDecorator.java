@@ -11,10 +11,10 @@
 
 package fr.inria.atlanmod.neoemf.io.persistence;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
@@ -33,7 +33,7 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
     /**
      * The current identifier, used to replace a full reference by "this".
      */
-    private Identifier currentId;
+    private RawIdentifier currentId;
 
     /**
      * Constructs a new {@code LoggingPersistenceHandlerDecorator}.
@@ -52,36 +52,36 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         log.info("[E] {0}:{1} \"{2}\" : {3} = {4}",
-                classifier.getNamespace().getPrefix(),
-                classifier.getLocalName(),
-                classifier.getClassName(),
-                classifier.getMetaClassifier().getLocalName(),
-                classifier.getId());
+                classifier.namespace().prefix(),
+                classifier.localName(),
+                classifier.className(),
+                classifier.metaClassifier().localName(),
+                classifier.id());
 
-        currentId = classifier.getId();
+        currentId = classifier.id();
 
         super.processStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         log.info("[A]    {0} ({1}) = {2}",
-                attribute.getLocalName(),
-                attribute.getIndex(),
-                attribute.getValue());
+                attribute.localName(),
+                attribute.index(),
+                attribute.value());
 
         super.processAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         log.info("[R]    {0} ({1}) = {2} -> {3}",
-                reference.getLocalName(),
-                reference.getIndex(),
-                Objects.isNull(reference.getId()) ? "this" : reference.getId(),
-                Objects.equals(reference.getIdReference(), currentId) ? "this" : reference.getIdReference());
+                reference.localName(),
+                reference.index(),
+                Objects.isNull(reference.id()) ? "this" : reference.id(),
+                Objects.equals(reference.idReference(), currentId) ? "this" : reference.idReference());
 
         super.processReference(reference);
     }

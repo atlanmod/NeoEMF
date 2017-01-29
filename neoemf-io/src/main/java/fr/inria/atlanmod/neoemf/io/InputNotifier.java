@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  * An object that notifies registered {@link InputHandler}s of events during an I/O process, such as import or export.
@@ -61,9 +61,9 @@ public interface InputNotifier<T extends InputHandler> {
      * @param classifier the classifier of the new element
      *
      * @see #notifyEndElement()
-     * @see InputHandler#processStartElement(Classifier)
+     * @see InputHandler#processStartElement(RawClassifier)
      */
-    default void notifyStartElement(Classifier classifier) {
+    default void notifyStartElement(RawClassifier classifier) {
         getHandlers().forEach(h -> h.processStartElement(classifier));
     }
 
@@ -72,9 +72,9 @@ public interface InputNotifier<T extends InputHandler> {
      *
      * @param attribute the new attribute
      *
-     * @see InputHandler#processAttribute(Attribute)
+     * @see InputHandler#processAttribute(RawAttribute)
      */
-    default void notifyAttribute(Attribute attribute) {
+    default void notifyAttribute(RawAttribute attribute) {
         getHandlers().forEach(h -> h.processAttribute(attribute));
     }
 
@@ -83,9 +83,9 @@ public interface InputNotifier<T extends InputHandler> {
      *
      * @param reference the new reference
      *
-     * @see InputHandler#processReference(Reference)
+     * @see InputHandler#processReference(RawReference)
      */
-    default void notifyReference(Reference reference) {
+    default void notifyReference(RawReference reference) {
         getHandlers().forEach(h -> h.processReference(reference));
     }
 
@@ -103,7 +103,7 @@ public interface InputNotifier<T extends InputHandler> {
     /**
      * Notifies all registered handlers of the end of the current element.
      *
-     * @see #notifyStartElement(Classifier)
+     * @see #notifyStartElement(RawClassifier)
      * @see InputHandler#processEndElement()
      */
     default void notifyEndElement() {

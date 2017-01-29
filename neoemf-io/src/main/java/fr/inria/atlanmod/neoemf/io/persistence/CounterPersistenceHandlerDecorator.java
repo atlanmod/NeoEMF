@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.persistence;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 /**
@@ -71,21 +71,21 @@ public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandl
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         elementCount++;
 
         super.processStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         attributeCount++;
 
         super.processAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         referenceCount++;
 
         super.processReference(reference);

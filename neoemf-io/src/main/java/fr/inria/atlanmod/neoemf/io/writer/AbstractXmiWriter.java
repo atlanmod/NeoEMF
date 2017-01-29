@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.annotations.Experimental;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  *
@@ -28,17 +28,17 @@ public abstract class AbstractXmiWriter extends AbstractWriter {
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

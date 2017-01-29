@@ -17,13 +17,13 @@ import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
-import fr.inria.atlanmod.neoemf.io.structure.StructuralFeature;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawFeature;
+import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayList;
@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.xml.stream.events.Attribute;
 
 import static java.util.Objects.nonNull;
 
@@ -83,14 +86,14 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param localName  the name of the element
      * @param attributes the attributes of the element
      */
-    protected void processStartElement(String uri, String localName, Iterable<javax.xml.stream.events.Attribute> attributes) {
-        Classifier element = new Classifier(Namespace.Registry.getInstance().getFromUri(uri), localName);
+    protected void processStartElement(String uri, String localName, Iterable<Attribute> attributes) {
+        RawClassifier element = new RawClassifier(RawNamespace.Registry.getInstance().getFromUri(uri), localName);
 
-        Collection<StructuralFeature> structuralFeatures = new ArrayList<>();
+        Collection<RawFeature> allFeatures = new ArrayList<>();
 
         // Processes features
-        for (javax.xml.stream.events.Attribute attribute : attributes) {
-            Collection<StructuralFeature> features = processFeatures(
+        for (Attribute attribute : attributes) {
+            Collection<RawFeature> localFeatures = processFeatures(
                     element,
                     attribute.getName().getPrefix(),
                     attribute.getName().getLocalPart(),
@@ -101,20 +104,20 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 return;
             }
 
-            if (nonNull(features) && !features.isEmpty()) {
-                structuralFeatures.addAll(features);
+            if (!localFeatures.isEmpty()) {
+                allFeatures.addAll(localFeatures);
             }
         }
 
         notifyStartElement(element);
 
         // Send attributes and references
-        for (StructuralFeature feature : structuralFeatures) {
+        for (RawFeature feature : allFeatures) {
             if (feature.isAttribute()) {
-                notifyAttribute((Attribute) feature);
+                notifyAttribute((RawAttribute) feature);
             }
             else {
-                notifyReference((Reference) feature);
+                notifyReference((RawReference) feature);
             }
         }
     }
@@ -127,22 +130,26 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param localName  the name of the feature
      * @param value      the value of the feature
      *
-     * @return a list of {@link StructuralFeature} that can be empty.
+     * @return a list of {@link RawFeature} that can be empty.
      *
      * @see #processAttributes(String, String)
      * @see #processReferences(String, Collection)
      */
-    private Collection<StructuralFeature> processFeatures(Classifier classifier, String prefix, String localName, String value) {
-        Collection<StructuralFeature> features = null;
+    @Nonnull
+    private Collection<RawFeature> processFeatures(RawClassifier classifier, String prefix, String localName, String value) {
+        Collection<RawFeature> features;
 
         if (!processSpecialFeatures(classifier, prefix, localName, value)) {
             Collection<String> references = getReferences(value);
-            if (nonNull(references)) {
+            if (!references.isEmpty()) {
                 features = processReferences(localName, references);
             }
             else {
                 features = processAttributes(localName, value);
             }
+        }
+        else {
+            features = Collections.emptyList();
         }
 
         return features;
@@ -158,7 +165,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @return {@code true} if the given feature is a special feature
      */
-    private boolean processSpecialFeatures(Classifier classifier, String prefix, String localName, String value) {
+    private boolean processSpecialFeatures(RawClassifier classifier, String prefix, String localName, String value) {
         boolean isSpecialFeature = false;
 
         // A special feature always has a prefix
@@ -170,13 +177,13 @@ public abstract class AbstractXmiReader extends AbstractReader {
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // xmi:id
-                classifier.setId(Identifier.original(value));
+                classifier.id(RawIdentifier.original(value));
                 isSpecialFeature = true;
             }
             else if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // xmi:idref
                 // It's not a feature of the current element, but a reference of the previous
-                Reference reference = new Reference(classifier.getLocalName());
-                reference.setIdReference(Identifier.original(value));
+                RawReference reference = new RawReference(classifier.localName());
+                reference.idReference(RawIdentifier.original(value));
                 notifyReference(reference);
                 ignoreElement = true;
                 isSpecialFeature = true;
@@ -188,11 +195,11 @@ public abstract class AbstractXmiReader extends AbstractReader {
         }
         else if (Objects.equals(XmiConstants.PROXY, localName)) {
             NeoLogger.warn("{0} is an external reference to {1}. This feature is not supported yet.",
-                    classifier.getLocalName(), value);
+                    classifier.localName(), value);
             ignoreElement = true;
         }
         else if (Objects.equals(XmiConstants.NAME, localName)) {
-            classifier.setClassName(value);
+            classifier.className(value);
             isSpecialFeature = true;
         }
 
@@ -210,21 +217,25 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @see #PATTERN_WELL_FORMED_REF
      */
+    @Nonnull
     private Collection<String> getReferences(String attribute) {
-        List<String> references = null;
+        List<String> references;
 
         if (!attribute.trim().isEmpty()) {
             references = Splitter.on(" ").omitEmptyStrings().trimResults().splitToList(attribute);
 
             boolean isReference = true;
-            for (int i = 0, referencesSize = references.size(); i < referencesSize && isReference; i++) {
+            for (int i = 0, referenceCount = references.size(); i < referenceCount && isReference; i++) {
                 String ref = references.get(i);
                 isReference = PATTERN_WELL_FORMED_REF.matcher(ref).matches();
             }
 
             if (!isReference) {
-                references = null;
+                references = Collections.emptyList();
             }
+        }
+        else {
+            references = Collections.emptyList();
         }
 
         return references;
@@ -236,37 +247,39 @@ public abstract class AbstractXmiReader extends AbstractReader {
      * @param localName the name of the attribute
      * @param value     the value of the attribute
      *
-     * @return a singleton list of {@link StructuralFeature} containing the processed attribute.
+     * @return a singleton list of {@link RawFeature} containing the processed attribute.
      */
-    private Collection<StructuralFeature> processAttributes(String localName, String value) {
-        Attribute attribute = new Attribute(localName);
-        attribute.setIndex(0);
-        attribute.setValue(value);
+    @Nonnull
+    private Collection<RawFeature> processAttributes(String localName, String value) {
+        RawAttribute attribute = new RawAttribute(localName);
+        attribute.index(0);
+        attribute.value(value);
 
         return Collections.singleton(attribute);
     }
 
     /**
-     * Processes a list of {@code references} and returns a list of {@link Reference}.
+     * Processes a list of {@code references} and returns a list of {@link RawReference}.
      *
      * @param localName  the name of the reference
      * @param references the list that holds the identifier of referenced elements
      *
-     * @return a list of {@link Reference} from the given {@code references}
+     * @return a list of {@link RawReference} from the given {@code references}
      */
-    private Collection<StructuralFeature> processReferences(String localName, Collection<String> references) {
-        Collection<StructuralFeature> structuralFeatures = new ArrayList<>();
+    @Nonnull
+    private Collection<RawFeature> processReferences(String localName, Collection<String> references) {
+        Collection<RawFeature> features = new ArrayList<>();
 
         int index = 0;
-        for (String s : references) {
-            Reference ref = new Reference(localName);
-            ref.setIndex(index);
-            ref.setIdReference(Identifier.generated(s));
-            structuralFeatures.add(ref);
+        for (String rawReference : references) {
+            RawReference ref = new RawReference(localName);
+            ref.index(index);
+            ref.idReference(RawIdentifier.generated(rawReference));
+            features.add(ref);
             index++;
         }
 
-        return structuralFeatures;
+        return features;
     }
 
     /**
@@ -278,11 +291,13 @@ public abstract class AbstractXmiReader extends AbstractReader {
      *
      * @see #PATTERN_PREFIXED_VALUE
      */
-    private void processMetaClass(Classifier element, String prefixedValue) {
+    private void processMetaClass(RawClassifier element, String prefixedValue) {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         if (m.find()) {
-            MetaClassifier metaClassifier = new MetaClassifier(Namespace.Registry.getInstance().getFromPrefix(m.group(1)), m.group(2));
-            element.setMetaClassifier(metaClassifier);
+            RawNamespace ns = RawNamespace.Registry.getInstance().getFromPrefix(m.group(1));
+            String localName = m.group(2);
+            RawMetaClassifier metaClassifier = new RawMetaClassifier(ns, localName);
+            element.metaClassifier(metaClassifier);
         }
         else {
             throw new IllegalArgumentException("Malformed metaclass " + prefixedValue);

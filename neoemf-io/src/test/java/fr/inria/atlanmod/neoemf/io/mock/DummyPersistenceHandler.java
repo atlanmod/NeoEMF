@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.mock;
 
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  * A persistence handler that does nothing.
@@ -29,17 +29,17 @@ public class DummyPersistenceHandler implements PersistenceHandler {
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         // Do nothing
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         // Do nothing
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         // Do nothing
     }
 

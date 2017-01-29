@@ -11,12 +11,12 @@
 
 package fr.inria.atlanmod.neoemf.io.mock.beans;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +26,14 @@ import java.util.List;
  */
 public class ClassifierMock {
 
-    private final Classifier classifier;
+    private final RawClassifier classifier;
 
-    private final List<Attribute> attributes;
-    private final List<Reference> references;
+    private final List<RawAttribute> attributes;
+    private final List<RawReference> references;
 
     private final List<ClassifierMock> elements;
 
-    public ClassifierMock(Classifier classifier) {
+    public ClassifierMock(RawClassifier classifier) {
         this.classifier = classifier;
 
         this.attributes = new ArrayList<>();
@@ -56,34 +56,34 @@ public class ClassifierMock {
     }
 
     public String getLocalName() {
-        return classifier.getLocalName();
+        return classifier.localName();
     }
 
-    public Namespace getNamespace() {
-        return classifier.getNamespace();
+    public RawNamespace getNamespace() {
+        return classifier.namespace();
     }
 
     public boolean isRoot() {
-        return classifier.isRoot();
+        return classifier.root();
     }
 
     public String getClassName() {
-        return classifier.getClassName();
+        return classifier.className();
     }
 
-    public Identifier getId() {
-        return classifier.getId();
+    public RawIdentifier getId() {
+        return classifier.id();
     }
 
-    public MetaClassifier getMetaClassifier() {
-        return classifier.getMetaClassifier();
+    public RawMetaClassifier getMetaClassifier() {
+        return classifier.metaClassifier();
     }
 
-    public List<Attribute> getAttributes() {
+    public List<RawAttribute> getAttributes() {
         return attributes;
     }
 
-    public List<Reference> getReferences() {
+    public List<RawReference> getReferences() {
         return references;
     }
 

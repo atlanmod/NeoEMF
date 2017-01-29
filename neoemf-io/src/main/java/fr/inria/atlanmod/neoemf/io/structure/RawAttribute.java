@@ -12,9 +12,9 @@
 package fr.inria.atlanmod.neoemf.io.structure;
 
 /**
- * A {@link StructuralFeature} representing an attribute, with a value.
+ * A {@link RawFeature} representing an attribute, with a value.
  */
-public class Attribute extends StructuralFeature {
+public class RawAttribute extends RawFeature {
 
     /**
      * The value of this attribute.
@@ -22,26 +22,26 @@ public class Attribute extends StructuralFeature {
     private Object value;
 
     /**
-     * Constructs a new {@code Attribute} with the given {@code localName}.
+     * Constructs a new {@code RawAttribute} with the given {@code localName}.
      *
      * @param localName the name of this attribute
      */
-    public Attribute(String localName) {
+    public RawAttribute(String localName) {
         super(localName);
     }
 
     /**
-     * Converts a {@link Reference} to an {@code Attribute}.
+     * Converts a {@link RawReference} to an {@code RawAttribute}.
      *
      * @param reference the reference to convert
      *
      * @return a new attribute
      */
-    public static Attribute from(Reference reference) {
-        Attribute attribute = new Attribute(reference.getLocalName());
-        attribute.setId(reference.getId());
-        attribute.setIndex(reference.getIndex());
-        attribute.setValue(reference.getIdReference().getValue());
+    public static RawAttribute from(RawReference reference) {
+        RawAttribute attribute = new RawAttribute(reference.localName());
+        attribute.id(reference.id());
+        attribute.index(reference.index());
+        attribute.value(reference.idReference().value());
         return attribute;
     }
 
@@ -50,7 +50,7 @@ public class Attribute extends StructuralFeature {
      *
      * @return the value
      */
-    public Object getValue() {
+    public Object value() {
         return value;
     }
 
@@ -59,7 +59,7 @@ public class Attribute extends StructuralFeature {
      *
      * @param value the value
      */
-    public void setValue(Object value) {
+    public void value(Object value) {
         this.value = value;
     }
 

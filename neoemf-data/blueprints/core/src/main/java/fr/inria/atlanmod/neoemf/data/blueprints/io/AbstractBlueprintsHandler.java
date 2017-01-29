@@ -24,9 +24,9 @@ import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
 import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
 
 import java.util.NoSuchElementException;
 
@@ -252,14 +252,14 @@ public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandl
      */
     private void createRootVertex() {
         // Create the 'ROOT' node with the default metaclass
-        MetaClassifier metaClassifier = MetaClassifier.getDefault();
+        RawMetaClassifier metaClassifier = RawMetaClassifier.getDefault();
 
-        Classifier rootClassifier = new Classifier(metaClassifier.getNamespace(), metaClassifier.getLocalName());
+        RawClassifier rootClassifier = new RawClassifier(metaClassifier.namespace(), metaClassifier.localName());
 
-        rootClassifier.setId(Identifier.generated(ROOT_ID.toString()));
-        rootClassifier.setClassName(metaClassifier.getLocalName());
-        rootClassifier.setRoot(false);
-        rootClassifier.setMetaClassifier(metaClassifier);
+        rootClassifier.id(RawIdentifier.generated(ROOT_ID.toString()));
+        rootClassifier.className(metaClassifier.localName());
+        rootClassifier.root(false);
+        rootClassifier.metaClassifier(metaClassifier);
 
         Id id = createElement(rootClassifier, ROOT_ID);
         Id metaClassId = getOrCreateMetaClass(metaClassifier);

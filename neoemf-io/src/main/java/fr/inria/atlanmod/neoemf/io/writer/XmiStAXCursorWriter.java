@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- *
+ * A {@link Writer} that uses a StAX implementation with cursors for writing XMI files.
  */
 @Experimental
-public class XmiStreamWriter extends AbstractXmiWriter {
+public class XmiStAXCursorWriter extends AbstractXmiWriter {
 
     @Override
     public Processor defaultProcessor() {

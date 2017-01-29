@@ -11,9 +11,9 @@
 
 package fr.inria.atlanmod.neoemf.io.persistence;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
  * A {@link PersistenceHandler} that delegates all methods to its underlying handler.
@@ -40,17 +40,17 @@ public abstract class AbstractPersistenceHandlerDecorator implements Persistence
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         handler.processStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         handler.processAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         handler.processReference(reference);
     }
 

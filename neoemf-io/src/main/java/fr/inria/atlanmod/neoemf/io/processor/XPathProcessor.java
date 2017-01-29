@@ -14,9 +14,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Identifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.ArrayDeque;
@@ -95,17 +95,17 @@ public class XPathProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
-        if (nonNull(classifier.getId())) {
+    public void processStartElement(RawClassifier classifier) {
+        if (nonNull(classifier.id())) {
             hasIds = true;
         }
 
         if (!hasIds) {
             // Processes the id from the path of the element in XML tree
-            String path = paths.getPath(classifier.getLocalName());
+            String path = paths.getPath(classifier.localName());
 
             // Increments the number of occurrence for this path
-            Integer count = paths.createOrIncrement(classifier.getLocalName());
+            Integer count = paths.createOrIncrement(classifier.localName());
 
             // Defines the id as '<path>.<index>'
             String id = path + XPATH_INDEX_SEPARATOR + count;
@@ -116,8 +116,8 @@ public class XPathProcessor extends AbstractProcessor {
             }
 
             // Defines the new identifier as identifier of the classifier if it not already exist
-            if (isNull(classifier.getId())) {
-                classifier.setId(Identifier.generated(id));
+            if (isNull(classifier.id())) {
+                classifier.id(RawIdentifier.generated(id));
             }
         }
 
@@ -125,10 +125,10 @@ public class XPathProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         if (!hasIds) {
             // Format the reference according internal XPath management
-            reference.setIdReference(Identifier.generated(formatPath(reference.getIdReference().getValue())));
+            reference.idReference(RawIdentifier.generated(formatPath(reference.idReference().value())));
         }
 
         notifyReference(reference);

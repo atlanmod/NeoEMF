@@ -13,9 +13,9 @@ package fr.inria.atlanmod.neoemf.io.persistence;
 
 import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Classifier;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 
 /**
  * A {@link Processor} that notifies registered {@link PersistenceHandler} of events.
@@ -34,17 +34,17 @@ public final class PersistenceNotifier extends AbstractInputNotifier<Persistence
     }
 
     @Override
-    public void processStartElement(Classifier classifier) {
+    public void processStartElement(RawClassifier classifier) {
         notifyStartElement(classifier);
     }
 
     @Override
-    public void processAttribute(Attribute attribute) {
+    public void processAttribute(RawAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void processReference(Reference reference) {
+    public void processReference(RawReference reference) {
         notifyReference(reference);
     }
 

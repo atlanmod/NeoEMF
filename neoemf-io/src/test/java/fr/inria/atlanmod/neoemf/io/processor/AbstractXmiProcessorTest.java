@@ -17,10 +17,10 @@ import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
 import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.MetaClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
+import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
+import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,7 +41,7 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
 
     @After
     public final void unregisterNamespaces() {
-        Namespace.Registry.getInstance().clean();
+        RawNamespace.Registry.getInstance().clean();
     }
 
     protected void assertValidElement(final ClassifierMock mock, final String name, final int size, final String id, final String className, final boolean root) {
@@ -54,27 +54,27 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
             assertThat(mock.getId()).isNull();
         }
         else {
-            assertThat(mock.getId().getValue()).isEqualTo(id);
+            assertThat(mock.getId().value()).isEqualTo(id);
         }
     }
 
-    protected void assertValidMetaClass(final MetaClassifier metaClassifier, final String name, final Namespace ns) {
-        assertThat(metaClassifier.getLocalName()).isEqualTo(name);
-        assertThat(metaClassifier.getNamespace()).isSameAs(ns);
+    protected void assertValidMetaClass(final RawMetaClassifier metaClassifier, final String name, final RawNamespace ns) {
+        assertThat(metaClassifier.localName()).isEqualTo(name);
+        assertThat(metaClassifier.namespace()).isSameAs(ns);
     }
 
-    protected void assertValidReference(final Reference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
-        assertThat(reference.getLocalName()).isEqualTo(name);
-        assertThat(reference.getIndex()).isEqualTo(index);
-        assertThat(reference.getIdReference().getValue()).isEqualTo(idReference);
-        assertThat(reference.isContainment()).isEqualTo(containment);
-        assertThat(reference.isMany()).isEqualTo(many);
+    protected void assertValidReference(final RawReference reference, final String name, final int index, final String idReference, final boolean many, final boolean containment) {
+        assertThat(reference.localName()).isEqualTo(name);
+        assertThat(reference.index()).isEqualTo(index);
+        assertThat(reference.idReference().value()).isEqualTo(idReference);
+        assertThat(reference.containment()).isEqualTo(containment);
+        assertThat(reference.many()).isEqualTo(many);
     }
 
-    protected void assertValidAttribute(final Attribute attribute, final String name, final int index, final Object value) {
-        assertThat(attribute.getLocalName()).isEqualTo(name);
-        assertThat(attribute.getValue()).isEqualTo(value);
-        assertThat(attribute.getIndex()).isEqualTo(index);
+    protected void assertValidAttribute(final RawAttribute attribute, final String name, final int index, final Object value) {
+        assertThat(attribute.localName()).isEqualTo(name);
+        assertThat(attribute.value()).isEqualTo(value);
+        assertThat(attribute.index()).isEqualTo(index);
     }
 
     private StructuralPersistanceHandler read(File filePath) throws IOException {

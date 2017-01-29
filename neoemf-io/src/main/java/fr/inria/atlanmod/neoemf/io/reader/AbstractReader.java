@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.structure.Namespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.io.IOException;
@@ -43,15 +43,15 @@ public abstract class AbstractReader extends AbstractInputNotifier<Processor> im
     }
 
     /**
-     * Processes a {@link Namespace} declaration.
+     * Processes a {@link RawNamespace} declaration.
      *
      * @param prefix the prefix
      * @param uri    the URI associated with the {@code prefix}
      *
-     * @see fr.inria.atlanmod.neoemf.io.structure.Namespace.Registry#register(String, String)
+     * @see RawNamespace.Registry#register(String, String)
      */
     protected void processNamespace(String prefix, String uri) {
-        Namespace.Registry.getInstance().register(prefix, uri);
+        RawNamespace.Registry.getInstance().register(prefix, uri);
     }
 
     /**
