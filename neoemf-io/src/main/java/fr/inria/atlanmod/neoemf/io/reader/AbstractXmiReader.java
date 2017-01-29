@@ -129,9 +129,10 @@ public abstract class AbstractXmiReader extends AbstractReader {
      */
     protected void flushStartElement() {
         if (!ignoreElement) {
+            // Notifies the current element
             notifyStartElement(currentElement);
 
-            // Send attributes and references
+            // Notifies the features
             for (RawFeature feature : currentFeatures) {
                 if (feature.isAttribute()) {
                     notifyAttribute((RawAttribute) feature);
@@ -140,6 +141,10 @@ public abstract class AbstractXmiReader extends AbstractReader {
                     notifyReference((RawReference) feature);
                 }
             }
+
+            // Reset the current element/features
+            currentElement = null;
+            currentFeatures = null;
         }
     }
 
