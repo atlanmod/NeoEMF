@@ -55,7 +55,7 @@ public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandler
      * @param handler the underlying handler
      */
     public TimerPersistenceHandlerDecorator(PersistenceHandler handler) {
-        this(handler, "dummy-" + ++id);
+        this(handler, "timer-" + ++id);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class CounterPersistenceHandlerDecorator extends AbstractPersistenceHandl
      * @param handler the underlying handler
      */
     public CounterPersistenceHandlerDecorator(PersistenceHandler handler) {
-        this(handler, "dummy-" + ++id);
+        this(handler, "counter-" + ++id);
     }
 
     /**
