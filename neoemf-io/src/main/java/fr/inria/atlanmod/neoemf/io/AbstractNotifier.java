@@ -44,7 +44,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
     }
 
     @Override
-    public void handler(H handler) {
+    public void andThen(H handler) {
         this.handler = handler;
     }
 }

@@ -50,8 +50,8 @@ public final class Importer {
         Reader reader = new XmiStAXCursorReader();
         Processor processor = reader.defaultProcessor();
 
-        processor.handler(inputHandler);
-        reader.handler(processor);
+        processor.andThen(inputHandler);
+        reader.andThen(processor);
 
         reader.read(stream);
     }

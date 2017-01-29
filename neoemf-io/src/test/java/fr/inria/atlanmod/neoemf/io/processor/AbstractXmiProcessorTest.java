@@ -84,9 +84,9 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         Processor processor = new DefaultProcessor();
         processor = new XPathProcessor(processor);
         processor = new EcoreProcessor(processor);
-        processor.handler(persistanceHandler);
+        processor.andThen(persistanceHandler);
 
-        reader.handler(processor);
+        reader.andThen(processor);
         reader.read(new FileInputStream(filePath));
 
         return persistanceHandler;

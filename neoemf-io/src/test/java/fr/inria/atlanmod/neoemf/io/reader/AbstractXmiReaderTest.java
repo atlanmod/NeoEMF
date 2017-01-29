@@ -77,9 +77,9 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
         Reader reader = new XmiStAXCursorReader();
 
         Processor processor = new DefaultProcessor();
-        processor.handler(persistanceHandler);
+        processor.andThen(persistanceHandler);
 
-        reader.handler(processor);
+        reader.andThen(processor);
         reader.read(new FileInputStream(filePath));
 
         return persistanceHandler;

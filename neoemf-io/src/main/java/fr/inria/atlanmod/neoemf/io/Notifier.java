@@ -38,7 +38,7 @@ public interface Notifier<T extends Handler> {
      *
      * @param handler the handler to notify
      */
-    void handler(T handler);
+    void andThen(T handler);
 
     /**
      * Defines if this {@code Notifier} has a {@link Handler} to notify.
