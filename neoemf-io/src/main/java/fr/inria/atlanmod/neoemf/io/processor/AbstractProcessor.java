@@ -11,7 +11,6 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
@@ -22,15 +21,20 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 /**
  * A {@link Processor} that delegates all methods to its underlying processor.
  */
-public class AbstractProcessor extends AbstractNotifier<Handler> implements Processor {
+public class AbstractProcessor implements Processor {
 
     /**
-     * Constructs a new {@code AbstractProcessor} with the given {@code handler}.
-     *
-     * @param handler the handler to notify
+     * The processor to notify.
      */
-    protected AbstractProcessor(Handler handler) {
-        super(handler);
+    private final Processor processor;
+
+    /**
+     * Constructs a new {@code AbstractProcessor} with the given {@code processor}.
+     *
+     * @param processor the processor to notify
+     */
+    protected AbstractProcessor(Processor processor) {
+        this.processor = processor;
     }
 
     // Handler methods
@@ -81,61 +85,51 @@ public class AbstractProcessor extends AbstractNotifier<Handler> implements Proc
 
     @Override
     public final Handler handler() {
-        return subHandler().handler();
+        return processor.handler();
     }
 
     @Override
     public final void andThen(Handler inputHandler) {
-        subHandler().andThen(inputHandler);
+        processor.andThen(inputHandler);
     }
 
     @Override
     public final boolean hasHandler() {
-        return subHandler().hasHandler();
+        return processor.hasHandler();
     }
 
     @Override
     public final void notifyStartDocument() {
-        subHandler().processStartDocument();
+        processor.processStartDocument();
     }
 
     @Override
     public final void notifyStartElement(RawClassifier classifier) {
-        subHandler().processStartElement(classifier);
+        processor.processStartElement(classifier);
     }
 
     @Override
     public final void notifyAttribute(RawAttribute attribute) {
-        subHandler().processAttribute(attribute);
+        processor.processAttribute(attribute);
     }
 
     @Override
     public final void notifyReference(RawReference reference) {
-        subHandler().processReference(reference);
+        processor.processReference(reference);
     }
 
     @Override
     public final void notifyCharacters(String characters) {
-        subHandler().processCharacters(characters);
+        processor.processCharacters(characters);
     }
 
     @Override
     public final void notifyEndElement() {
-        subHandler().processEndElement();
+        processor.processEndElement();
     }
 
     @Override
     public final void notifyEndDocument() {
-        subHandler().processEndDocument();
-    }
-
-    private Processor subHandler() {
-        Handler handler = super.handler();
-
-        if (handler instanceof Processor) {
-            return (Processor) handler;
-        }
-
-        throw new IllegalStateException("WTF ???");
+        processor.processEndDocument();
     }
 }

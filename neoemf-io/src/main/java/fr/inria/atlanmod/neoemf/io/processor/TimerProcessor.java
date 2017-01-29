@@ -39,23 +39,23 @@ public class TimerProcessor extends AbstractProcessor {
 
     /**
      * Constructs a new {@code TimerProcessor} with the given {@code name} on the underlying
-     * {@code handler}.
+     * {@code processor}.
      *
-     * @param handler the underlying handler
-     * @param name    the name of this handler
+     * @param processor the processor to notify
+     * @param name    the name of this processor
      */
-    public TimerProcessor(Processor handler, String name) {
-        super(handler);
+    public TimerProcessor(Processor processor, String name) {
+        super(processor);
         this.name = name;
     }
 
     /**
-     * Constructs a new {@code TimerProcessor} on the underlying {@code handler}.
+     * Constructs a new {@code TimerProcessor} on the underlying {@code processor}.
      *
-     * @param handler the underlying handler
+     * @param processor the processor to notify
      */
-    public TimerProcessor(Processor handler) {
-        this(handler, "timer-" + ++id);
+    public TimerProcessor(Processor processor) {
+        this(processor, "timer-" + ++id);
     }
 
     @Override

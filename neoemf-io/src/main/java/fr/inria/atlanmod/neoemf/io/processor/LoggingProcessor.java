@@ -38,10 +38,10 @@ public class LoggingProcessor extends AbstractProcessor {
     /**
      * Constructs a new {@code LoggingProcessor}.
      *
-     * @param handler the underlying handler
+     * @param processor the processor to notify
      */
-    public LoggingProcessor(Processor handler) {
-        super(handler);
+    public LoggingProcessor(Processor processor) {
+        super(processor);
     }
 
     @Override

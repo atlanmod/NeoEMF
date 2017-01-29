@@ -82,6 +82,9 @@ public class AbstractXmiProcessorTest extends AbstractInputTest {
         Reader reader = new XmiStAXCursorReader();
 
         Processor processor = new DefaultProcessor();
+//        processor = new CounterProcessor(processor);
+//        processor = new TimerProcessor(processor);
+//        processor = new LoggingProcessor(processor);
         processor = new XPathProcessor(processor);
         processor = new EcoreProcessor(processor);
         processor.andThen(persistanceHandler);

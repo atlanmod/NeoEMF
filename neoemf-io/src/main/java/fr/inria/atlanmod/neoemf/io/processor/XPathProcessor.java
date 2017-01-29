@@ -86,7 +86,7 @@ public class XPathProcessor extends AbstractProcessor {
     /**
      * Constructs a new {@code XPathProcessor} on the given {@code processor}.
      *
-     * @param processor the underlying processor
+     * @param processor the processor to notify
      */
     public XPathProcessor(Processor processor) {
         super(processor);

@@ -47,23 +47,23 @@ public class CounterProcessor extends AbstractProcessor {
     private long referenceCount;
 
     /**
-     * Constructs a new {@code CounterProcessor} on the underlying {@code handler}.
+     * Constructs a new {@code CounterProcessor} on the underlying {@code processor}.
      *
-     * @param handler the underlying handler
+     * @param processor the underlying processor
      */
-    public CounterProcessor(Processor handler) {
-        this(handler, "counter-" + ++id);
+    public CounterProcessor(Processor processor) {
+        this(processor, "counter-" + ++id);
     }
 
     /**
      * Constructs a new {@code CounterProcessor} with the given {@code name} on the underlying
-     * {@code handler}.
+     * {@code processor}.
      *
-     * @param handler the underlying handler
-     * @param name    the name of this handler
+     * @param processor the underlying processor
+     * @param name    the name of this processor
      */
-    public CounterProcessor(Processor handler, String name) {
-        super(handler);
+    public CounterProcessor(Processor processor, String name) {
+        super(processor);
         this.name = name;
         this.elementCount = 0;
         this.attributeCount = 0;

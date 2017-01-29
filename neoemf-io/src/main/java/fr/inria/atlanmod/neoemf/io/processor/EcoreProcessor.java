@@ -60,7 +60,7 @@ public class EcoreProcessor extends AbstractProcessor {
     /**
      * Constructs a new {@code EcoreProcessor} on the given {@code processor}.
      *
-     * @param processor the underlying processor
+     * @param processor the processor to notify
      */
     public EcoreProcessor(Processor processor) {
         super(processor);
