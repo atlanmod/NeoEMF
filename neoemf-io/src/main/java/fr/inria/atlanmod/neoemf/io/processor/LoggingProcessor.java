@@ -9,21 +9,22 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.util.logging.Logger;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import java.util.Objects;
 
 /**
- * A {@link PersistenceHandler} wrapper that logs every events.
+ * An {@link Handler} wrapper that logs every events.
  */
-public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
+public class LoggingProcessor extends AbstractProcessor {
 
     /**
      * The special logger.
@@ -36,11 +37,11 @@ public class LoggingPersistenceHandlerDecorator extends AbstractPersistenceHandl
     private RawIdentifier currentId;
 
     /**
-     * Constructs a new {@code LoggingPersistenceHandlerDecorator}.
+     * Constructs a new {@code LoggingProcessor}.
      *
      * @param handler the underlying handler
      */
-    public LoggingPersistenceHandlerDecorator(PersistenceHandler handler) {
+    public LoggingProcessor(Processor handler) {
         super(handler);
     }
 

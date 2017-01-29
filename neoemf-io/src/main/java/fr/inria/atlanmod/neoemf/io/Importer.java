@@ -11,16 +11,14 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStAXCursorReader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Static methods to import data into NeoEMF.
@@ -40,19 +38,19 @@ public final class Importer {
      * Imports a XMI file into persistence handlers.
      *
      * @param stream              the stream of XMI data
-     * @param persistenceHandlers persistence handlers where to store the read data
+     * @param inputHandler persistence handlers where to store the read data
      *
      * @throws IllegalArgumentException if there is no handler to notify
      * @throws IOException              if an error occurred during the import
      */
-    public static void fromXmi(InputStream stream, PersistenceHandler... persistenceHandlers) throws IOException {
-        checkArgument(persistenceHandlers.length > 0, "At least one handler must be defined");
+    public static void fromXmi(InputStream stream, Handler inputHandler) throws IOException {
+        checkNotNull(inputHandler, "The handler must be defined");
 
         Reader reader = new XmiStAXCursorReader();
         Processor processor = reader.defaultProcessor();
 
-        Arrays.stream(persistenceHandlers).forEach(processor::addHandler);
-        reader.addHandler(processor);
+        processor.handler(inputHandler);
+        reader.handler(processor);
 
         reader.read(stream);
     }

@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
+import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * An abstract {@link Reader} that notifies {@link Processor} and provides overall behavior for the management of
  * namespaces.
  */
-public abstract class AbstractReader extends AbstractInputNotifier<Processor> implements Reader {
+public abstract class AbstractReader extends AbstractNotifier<Processor> implements Reader {
 
     /**
      * The timer to log reading progress.

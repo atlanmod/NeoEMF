@@ -14,8 +14,8 @@ package fr.inria.atlanmod.neoemf.io.mock;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
@@ -32,7 +32,7 @@ import static java.util.Objects.nonNull;
 /**
  *
  */
-public class StructuralPersistanceHandler implements PersistenceHandler {
+public class StructuralPersistanceHandler implements Handler {
 
     private final Cache<String, ClassifierMock> classifierMockCache;
 

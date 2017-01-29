@@ -22,11 +22,11 @@ import fr.inria.atlanmod.neoemf.core.StringId;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.persistence.AbstractPersistenceHandler;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
-import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawIdentifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
 
 import java.util.NoSuchElementException;
 
@@ -34,7 +34,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * An abstract {@link PersistenceHandler} specific to a Blueprints implementation.
+ * An abstract {@link Handler} specific to a Blueprints implementation.
  */
 public abstract class AbstractBlueprintsHandler extends AbstractPersistenceHandler<BlueprintsPersistenceBackend> {
 

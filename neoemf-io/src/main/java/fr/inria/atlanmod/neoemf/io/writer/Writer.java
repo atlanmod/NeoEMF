@@ -11,18 +11,18 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.neoemf.io.InputHandler;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * An {@link InputHandler} that writes data into a file.
+ * An {@link Handler} that writes data into a file.
  *
  * @note It correspond to the tail of the parsing process in case of an export.
  */
-public interface Writer extends InputHandler {
+public interface Writer extends Handler {
 
     /**
      * Creates a series of processors in order to build and analyze the writen structure.

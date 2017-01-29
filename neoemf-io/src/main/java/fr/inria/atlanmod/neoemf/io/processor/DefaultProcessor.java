@@ -9,23 +9,23 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.AbstractInputNotifier;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
- * A {@link Processor} that notifies registered {@link PersistenceHandler} of events.
+ * A {@link Processor} that notifies registered {@link Handler} of events.
  */
-public final class PersistenceNotifier extends AbstractInputNotifier<PersistenceHandler> implements Processor {
+public final class DefaultProcessor extends AbstractNotifier<Handler> implements Processor {
 
     /**
-     * Constructs a new {@code PersistenceNotifier}.
+     * Constructs a new {@code DefaultProcessor}.
      */
-    public PersistenceNotifier() {
+    public DefaultProcessor() {
     }
 
     @Override

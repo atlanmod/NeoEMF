@@ -9,21 +9,22 @@
  *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
  */
 
-package fr.inria.atlanmod.neoemf.io.persistence;
+package fr.inria.atlanmod.neoemf.io.processor;
 
 import com.google.common.base.Stopwatch;
 
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link PersistenceHandler} wrapper that measures elapsed time between the start and the end of an I/O process.
+ * An {@link Handler} wrapper that measures elapsed time between the start and the end of an I/O process.
  */
-public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandlerDecorator {
+public class TimerProcessor extends AbstractProcessor {
 
     /**
-     * The current number of created {@code TimerPersistenceHandlerDecorator}s, used for name generation.
+     * The current number of created {@code TimerProcessor}s, used for name generation.
      */
     private static int id = 0;
 
@@ -38,23 +39,23 @@ public class TimerPersistenceHandlerDecorator extends AbstractPersistenceHandler
     private Stopwatch stopWatch;
 
     /**
-     * Constructs a new {@code TimerPersistenceHandlerDecorator} with the given {@code name} on the underlying
+     * Constructs a new {@code TimerProcessor} with the given {@code name} on the underlying
      * {@code handler}.
      *
      * @param handler the underlying handler
      * @param name    the name of this handler
      */
-    public TimerPersistenceHandlerDecorator(PersistenceHandler handler, String name) {
+    public TimerProcessor(Processor handler, String name) {
         super(handler);
         this.name = name;
     }
 
     /**
-     * Constructs a new {@code TimerPersistenceHandlerDecorator} on the underlying {@code handler}.
+     * Constructs a new {@code TimerProcessor} on the underlying {@code handler}.
      *
      * @param handler the underlying handler
      */
-    public TimerPersistenceHandlerDecorator(PersistenceHandler handler) {
+    public TimerProcessor(Processor handler) {
         this(handler, "timer-" + ++id);
     }
 

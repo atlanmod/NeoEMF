@@ -15,44 +15,48 @@ import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
+import static java.util.Objects.nonNull;
+
 /**
- * An object that notifies registered {@link InputHandler}s of events during an I/O process, such as import or export.
+ * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
  *
  * @param <T> the type of handlers
  *
- * @see InputHandler
+ * @see Handler
  */
-public interface InputNotifier<T extends InputHandler> {
+public interface Notifier<T extends Handler> {
 
     /**
-     * Adds an {@link InputHandler} that will be notified.
+     * Returns the {@link Handler} that will be notified.
      *
-     * @param handler the handler to add
+     * @return the handler
      */
-    void addHandler(T handler);
+    T handler();
 
     /**
-     * Defines if this notifier has at least one {@link InputHandler} to notify.
+     * Defines the {@link Handler} that will be notified.
      *
-     * @return {@code true} if this notifier has at least one handler to notify.
+     * @param handler the handler
      */
-    boolean hasHandler();
+    void handler(T handler);
 
     /**
-     * Returns all registered handlers.
+     * Defines if this notifier has a {@link Handler} to notify.
      *
-     * @return an collection
+     * @return {@code true} if this notifier has a handler to notify.
      */
-    Iterable<T> getHandlers();
+    default boolean hasHandler() {
+        return nonNull(handler());
+    }
 
     /**
      * Notifies all registered handlers of the start of a document.
      *
      * @see #notifyEndDocument()
-     * @see InputHandler#processStartDocument()
+     * @see Handler#processStartDocument()
      */
     default void notifyStartDocument() {
-        getHandlers().forEach(InputHandler::processStartDocument);
+        handler().processStartDocument();
     }
 
     /**
@@ -61,10 +65,10 @@ public interface InputNotifier<T extends InputHandler> {
      * @param classifier the classifier of the new element
      *
      * @see #notifyEndElement()
-     * @see InputHandler#processStartElement(RawClassifier)
+     * @see Handler#processStartElement(RawClassifier)
      */
     default void notifyStartElement(RawClassifier classifier) {
-        getHandlers().forEach(h -> h.processStartElement(classifier));
+        handler().processStartElement(classifier);
     }
 
     /**
@@ -72,10 +76,10 @@ public interface InputNotifier<T extends InputHandler> {
      *
      * @param attribute the new attribute
      *
-     * @see InputHandler#processAttribute(RawAttribute)
+     * @see Handler#processAttribute(RawAttribute)
      */
     default void notifyAttribute(RawAttribute attribute) {
-        getHandlers().forEach(h -> h.processAttribute(attribute));
+        handler().processAttribute(attribute);
     }
 
     /**
@@ -83,10 +87,10 @@ public interface InputNotifier<T extends InputHandler> {
      *
      * @param reference the new reference
      *
-     * @see InputHandler#processReference(RawReference)
+     * @see Handler#processReference(RawReference)
      */
     default void notifyReference(RawReference reference) {
-        getHandlers().forEach(h -> h.processReference(reference));
+        handler().processReference(reference);
     }
 
     /**
@@ -94,29 +98,29 @@ public interface InputNotifier<T extends InputHandler> {
      *
      * @param characters the new characters
      *
-     * @see InputHandler#processCharacters(String)
+     * @see Handler#processCharacters(String)
      */
     default void notifyCharacters(String characters) {
-        getHandlers().forEach(p -> p.processCharacters(characters));
+        handler().processCharacters(characters);
     }
 
     /**
      * Notifies all registered handlers of the end of the current element.
      *
      * @see #notifyStartElement(RawClassifier)
-     * @see InputHandler#processEndElement()
+     * @see Handler#processEndElement()
      */
     default void notifyEndElement() {
-        getHandlers().forEach(InputHandler::processEndElement);
+        handler().processEndElement();
     }
 
     /**
      * Notifies all registered handlers of the end of the current document.
      *
      * @see #notifyStartDocument()
-     * @see InputHandler#processEndDocument()
+     * @see Handler#processEndDocument()
      */
     default void notifyEndDocument() {
-        getHandlers().forEach(InputHandler::processEndDocument);
+        handler().processEndDocument();
     }
 }

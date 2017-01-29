@@ -11,7 +11,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawReference;
@@ -75,18 +75,18 @@ public class AbstractProcessor implements Processor {
     // Notifier methods
 
     @Override
-    public final void addHandler(PersistenceHandler persistenceHandler) {
-        processor.addHandler(persistenceHandler);
+    public final Handler handler() {
+        return processor.handler();
+    }
+
+    @Override
+    public final void handler(Handler inputHandler) {
+        processor.handler(inputHandler);
     }
 
     @Override
     public final boolean hasHandler() {
         return processor.hasHandler();
-    }
-
-    @Override
-    public final Iterable<PersistenceHandler> getHandlers() {
-        return processor.getHandlers();
     }
 
     @Override

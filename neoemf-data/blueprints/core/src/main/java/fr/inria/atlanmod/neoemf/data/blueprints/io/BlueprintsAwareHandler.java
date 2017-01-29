@@ -16,12 +16,12 @@ import com.tinkerpop.blueprints.Vertex;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackend;
 import fr.inria.atlanmod.neoemf.io.AlreadyExistingIdException;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.Handler;
 
 import java.util.NoSuchElementException;
 
 /**
- * A {@link PersistenceHandler} for {@link BlueprintsPersistenceBackend}s.
+ * A {@link Handler} for {@link BlueprintsPersistenceBackend}s.
  *
  * @note This handler has a key conflicts resolution feature, but it consumes much more memory than a handler without
  * conflicts resolution. Make sure you have enough memory to avoid heap space.

@@ -14,12 +14,12 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.neoemf.io.AbstractInputTest;
 import fr.inria.atlanmod.neoemf.io.mock.StructuralPersistanceHandler;
 import fr.inria.atlanmod.neoemf.io.mock.beans.ClassifierMock;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.DefaultProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.structure.RawMetaClassifier;
 import fr.inria.atlanmod.neoemf.io.structure.RawNamespace;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 import org.junit.After;
 import org.junit.Before;
@@ -76,10 +76,10 @@ public abstract class AbstractXmiReaderTest extends AbstractInputTest {
 
         Reader reader = new XmiStAXCursorReader();
 
-        Processor processor = new PersistenceNotifier();
-        processor.addHandler(persistanceHandler);
+        Processor processor = new DefaultProcessor();
+        processor.handler(persistanceHandler);
 
-        reader.addHandler(processor);
+        reader.handler(processor);
         reader.read(new FileInputStream(filePath));
 
         return persistanceHandler;

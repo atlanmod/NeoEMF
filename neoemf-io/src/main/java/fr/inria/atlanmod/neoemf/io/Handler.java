@@ -12,22 +12,22 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.io.structure.RawAttribute;
-import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 import fr.inria.atlanmod.neoemf.io.structure.RawClassifier;
+import fr.inria.atlanmod.neoemf.io.structure.RawReference;
 
 /**
- * A object that handles events notified by a {@link InputNotifier}.
+ * A object that handles events notified by a {@link Notifier}.
  * <p>
- * It must be previously registered with the {@link InputNotifier#addHandler(InputHandler)}.
+ * It must be previously registered with the {@link Notifier#handler(Handler)}.
  *
- * @see InputNotifier
+ * @see Notifier
  */
-public interface InputHandler {
+public interface Handler {
 
     /**
      * Process the start of a document.
      *
-     * @see InputNotifier#notifyStartDocument()
+     * @see Notifier#notifyStartDocument()
      */
     void processStartDocument();
 
@@ -36,7 +36,7 @@ public interface InputHandler {
      *
      * @param classifier the classifier of the new element
      *
-     * @see InputNotifier#notifyStartElement(RawClassifier)
+     * @see Notifier#notifyStartElement(RawClassifier)
      */
     void processStartElement(RawClassifier classifier);
 
@@ -47,7 +47,7 @@ public interface InputHandler {
      *
      * @param attribute the new attribute
      *
-     * @see InputNotifier#notifyAttribute(RawAttribute)
+     * @see Notifier#notifyAttribute(RawAttribute)
      */
     void processAttribute(RawAttribute attribute);
 
@@ -58,21 +58,21 @@ public interface InputHandler {
      *
      * @param reference the new reference
      *
-     * @see InputNotifier#notifyReference(RawReference)
+     * @see Notifier#notifyReference(RawReference)
      */
     void processReference(RawReference reference);
 
     /**
      * Process the end of the current element.
      *
-     * @see InputNotifier#notifyEndElement()
+     * @see Notifier#notifyEndElement()
      */
     void processEndElement();
 
     /**
      * Process the end of a document.
      *
-     * @see InputNotifier#notifyEndDocument()
+     * @see Notifier#notifyEndDocument()
      */
     void processEndDocument();
 
@@ -81,7 +81,7 @@ public interface InputHandler {
      *
      * @param characters the new characters
      *
-     * @see InputNotifier#notifyCharacters(String)
+     * @see Notifier#notifyCharacters(String)
      */
     void processCharacters(String characters);
 }

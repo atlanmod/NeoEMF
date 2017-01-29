@@ -13,7 +13,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.google.common.base.Splitter;
 
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.DefaultProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathProcessor;
@@ -81,7 +81,7 @@ public abstract class AbstractXmiReader extends AbstractReader {
     public Processor defaultProcessor() {
         Processor defaultProcessor;
 
-        defaultProcessor = new PersistenceNotifier();
+        defaultProcessor = new DefaultProcessor();
         defaultProcessor = new XPathProcessor(defaultProcessor);
         defaultProcessor = new EcoreProcessor(defaultProcessor);
 

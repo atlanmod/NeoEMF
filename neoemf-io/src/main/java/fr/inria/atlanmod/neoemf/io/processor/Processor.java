@@ -11,14 +11,13 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.InputHandler;
-import fr.inria.atlanmod.neoemf.io.InputNotifier;
-import fr.inria.atlanmod.neoemf.io.persistence.PersistenceHandler;
+import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.Notifier;
 
 /**
- * A {@link InputHandler} that pre-processes and post-processes received events.
+ * A {@link Handler} that pre-processes and post-processes received events.
  * <p>
  * It can add validation, redirection, cancellation, or data enhancement capabilities.
  */
-public interface Processor extends InputHandler, InputNotifier<PersistenceHandler> {
+public interface Processor extends Handler, Notifier<Handler> {
 }
